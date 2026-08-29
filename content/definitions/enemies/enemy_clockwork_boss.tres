@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_clockwork_boss.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_clockwork_boss"
+DisplayName = "塔顶主宰：欺诈机神"
+Description = "首领结界要求先争夺信标，才能有效伤害本体。"
+Role = 7
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 1500
+AttackDamage = 46
+AttackRange = 4.5
+AttackCooldown = 1.2
+MoveInterval = 0.52
+Armor = 12
+HealPower = 0
+SplashRadius = 1.8
+LifeSteal = 0
+Tags = Array[StringName]([&"enemy", &"machine"])

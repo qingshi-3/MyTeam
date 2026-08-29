@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/fixture_unit_portrait.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = "fixture_unit"
+DisplayName = "夹具单位"
+Description = "验证独立内容根契约。"
+Portrait = ExtResource("2")
+IsHero = false
+MaxHealth = 100.0
+AttackDamage = 10.0

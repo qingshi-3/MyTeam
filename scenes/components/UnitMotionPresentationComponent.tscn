@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Components/UnitMotionPresentationComponent.cs" id="1"]
+
+[node name="UnitMotionPresentationComponent" type="Node"]
+script = ExtResource("1")
+OneTimesCellSeconds = 0.24
+TwoTimesCellSeconds = 0.14
+FourTimesCellSeconds = 0.09
+MaximumVisualLagSeconds = 0.25
+MaximumFrameDeltaSeconds = 0.05
+MaximumQueuedWaypoints = 12

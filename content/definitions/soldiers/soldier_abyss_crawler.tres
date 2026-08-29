@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_abyss_crawler.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_abyss_crawler"
+DisplayName = "深渊爬兽"
+Description = "廉价、快速、适合牺牲。"
+Role = 1
+Faction = 2
+IsHero = false
+IsEnemy = false
+RecruitCost = 4
+MaxHealth = 74
+AttackDamage = 17
+AttackRange = 1.2
+AttackCooldown = 0.85
+MoveInterval = 0.28
+Armor = 0
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"undead", &"beast"])

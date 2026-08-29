@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_dune_caster.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_dune_caster"
+DisplayName = "沙丘术士"
+Description = "远程轰击小片区域。"
+Role = 6
+Faction = 1
+IsHero = false
+IsEnemy = false
+RecruitCost = 8
+MaxHealth = 78
+AttackDamage = 26
+AttackRange = 5.4
+AttackCooldown = 1.8
+MoveInterval = 0.58
+Armor = 0
+HealPower = 0
+SplashRadius = 1.5
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"desert"])

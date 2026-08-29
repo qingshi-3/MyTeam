@@ -1,0 +1,24 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
+
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="1"]
+[ext_resource type="Resource" path="res://content/definitions/enemies/enemy_scale_brute.tres" id="2"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f5_tank/frames.tres" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
+[node name="enemy_scale_brute" type="Node2D"]
+script = ExtResource("1")
+Definition = ExtResource("2")
+
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("4")]
+Frames = ExtResource("3")
+
+[node name="HealthViewComponent" parent="." instance=ExtResource("5")]
+
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("6")]

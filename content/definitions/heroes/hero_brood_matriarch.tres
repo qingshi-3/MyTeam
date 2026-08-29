@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_brood_matriarch.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "hero_brood_matriarch"
+DisplayName = "原兽母皇"
+Description = "野兽军团以更高的伤害和战斗进化压倒敌人。"
+Role = 5
+Faction = 3
+IsHero = true
+IsEnemy = false
+RecruitCost = 0
+MaxHealth = 285
+AttackDamage = 31
+AttackRange = 1.4
+AttackCooldown = 1.25
+MoveInterval = 0.38
+Armor = 3
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"hero", &"beast"])

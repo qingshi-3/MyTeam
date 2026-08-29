@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_lantern_fox.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_lantern_fox"
+DisplayName = "灯狐"
+Description = "灵活的远程支援兽。"
+Role = 3
+Faction = 1
+IsHero = false
+IsEnemy = false
+RecruitCost = 7
+MaxHealth = 98
+AttackDamage = 18
+AttackRange = 4
+AttackCooldown = 1.2
+MoveInterval = 0.35
+Armor = 1
+HealPower = 7
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"desert", &"beast"])

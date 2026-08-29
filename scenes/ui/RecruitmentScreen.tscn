@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/RewardScreen.tscn" id="1"]
+
+[node name="RecruitmentScreen" instance=ExtResource("1")]
+
+[node name="Panel" parent="Center" index="0"]
+custom_minimum_size = Vector2(980, 760)

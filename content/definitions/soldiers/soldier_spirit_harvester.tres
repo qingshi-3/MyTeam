@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_spirit_harvester.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_spirit_harvester"
+DisplayName = "灵魂收割者"
+Description = "高伤害后排施法者。"
+Role = 6
+Faction = 3
+IsHero = false
+IsEnemy = false
+RecruitCost = 9
+MaxHealth = 92
+AttackDamage = 31
+AttackRange = 5.2
+AttackCooldown = 1.65
+MoveInterval = 0.52
+Armor = 1
+HealPower = 0
+SplashRadius = 1.2
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"beast"])

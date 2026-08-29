@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_aegis_guard.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_aegis_guard"
+DisplayName = "曜盾卫"
+Description = "阻挡前线的重甲护卫。"
+Role = 0
+Faction = 0
+IsHero = false
+IsEnemy = false
+RecruitCost = 7
+MaxHealth = 190
+AttackDamage = 15
+AttackRange = 1.2
+AttackCooldown = 1.35
+MoveInterval = 0.55
+Armor = 9
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"order"])

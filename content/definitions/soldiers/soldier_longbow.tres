@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_longbow.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_longbow"
+DisplayName = "长弓手"
+Description = "稳定的远程单体输出。"
+Role = 2
+Faction = 0
+IsHero = false
+IsEnemy = false
+RecruitCost = 6
+MaxHealth = 88
+AttackDamage = 23
+AttackRange = 5.2
+AttackCooldown = 1.35
+MoveInterval = 0.5
+Armor = 1
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"order"])

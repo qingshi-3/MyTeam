@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_ice_hawker.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_ice_hawker"
+DisplayName = "冻原鹰手"
+Description = "塔内战斗单位。"
+Role = 2
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 82
+AttackDamage = 20
+AttackRange = 4.8
+AttackCooldown = 1.05
+MoveInterval = 0.44
+Armor = 1
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"enemy"])

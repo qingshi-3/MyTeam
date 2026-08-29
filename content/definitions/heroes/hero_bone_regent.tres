@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_bone_regent.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "hero_bone_regent"
+DisplayName = "骸骨摄政"
+Description = "把阵亡转化为新兵，依靠死亡经济滚起军团。"
+Role = 5
+Faction = 2
+IsHero = true
+IsEnemy = false
+RecruitCost = 0
+MaxHealth = 220
+AttackDamage = 27
+AttackRange = 4.2
+AttackCooldown = 1.3
+MoveInterval = 0.48
+Armor = 2
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"hero", &"undead"])

@@ -1,0 +1,274 @@
+[gd_resource type="Resource" script_class="SemanticIconCatalog" load_steps=79 format=3]
+
+[ext_resource type="Script" path="res://src/UI/SemanticIconEntry.cs" id="1"]
+[ext_resource type="Script" path="res://src/UI/SemanticIconCatalog.cs" id="2"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/health.svg" id="3"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/damage.svg" id="4"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/shield.svg" id="5"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/healing.svg" id="6"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/mana.svg" id="7"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/gold.svg" id="8"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/time.svg" id="9"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/kills.svg" id="10"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/deaths.svg" id="11"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/hero.svg" id="12"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/melee.svg" id="13"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/ranged.svg" id="14"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/risk.svg" id="15"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/loot.svg" id="16"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/reach.svg" id="17"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/role-vanguard.svg" id="18"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/role-fighter.svg" id="19"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/role-ranged.svg" id="20"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/role-support.svg" id="21"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/role-assassin.svg" id="22"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/role-summoner.svg" id="23"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/role-artillery.svg" id="24"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/role-boss.svg" id="25"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-order.svg" id="26"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-desert.svg" id="27"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-undead.svg" id="28"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-beast.svg" id="29"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-machine.svg" id="30"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-frost.svg" id="31"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-neutral.svg" id="32"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-enemy.svg" id="33"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-combat.svg" id="34"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-elite.svg" id="35"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-recruitment.svg" id="36"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-shop.svg" id="37"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-event.svg" id="38"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-rest.svg" id="39"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-boss.svg" id="40"]
+
+[sub_resource type="Resource" id="health"]
+script = ExtResource("1")
+Key = &"health"
+Icon = ExtResource("3")
+PresentationRole = &"HealthValue"
+
+[sub_resource type="Resource" id="damage"]
+script = ExtResource("1")
+Key = &"damage"
+Icon = ExtResource("4")
+PresentationRole = &"DamageValue"
+
+[sub_resource type="Resource" id="shield"]
+script = ExtResource("1")
+Key = &"shield"
+Icon = ExtResource("5")
+PresentationRole = &"ShieldValue"
+
+[sub_resource type="Resource" id="healing"]
+script = ExtResource("1")
+Key = &"healing"
+Icon = ExtResource("6")
+PresentationRole = &"HealingValue"
+
+[sub_resource type="Resource" id="mana"]
+script = ExtResource("1")
+Key = &"mana"
+Icon = ExtResource("7")
+PresentationRole = &"ManaValue"
+
+[sub_resource type="Resource" id="gold"]
+script = ExtResource("1")
+Key = &"gold"
+Icon = ExtResource("8")
+PresentationRole = &"GoldValue"
+
+[sub_resource type="Resource" id="time"]
+script = ExtResource("1")
+Key = &"time"
+Icon = ExtResource("9")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="kills"]
+script = ExtResource("1")
+Key = &"kills"
+Icon = ExtResource("10")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="deaths"]
+script = ExtResource("1")
+Key = &"deaths"
+Icon = ExtResource("11")
+PresentationRole = &"DangerValue"
+
+[sub_resource type="Resource" id="hero"]
+script = ExtResource("1")
+Key = &"hero"
+Icon = ExtResource("12")
+PresentationRole = &"HeroIdentity"
+
+[sub_resource type="Resource" id="melee"]
+script = ExtResource("1")
+Key = &"melee"
+Icon = ExtResource("13")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="ranged"]
+script = ExtResource("1")
+Key = &"ranged"
+Icon = ExtResource("14")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="risk"]
+script = ExtResource("1")
+Key = &"risk"
+Icon = ExtResource("15")
+PresentationRole = &"RiskValue"
+
+[sub_resource type="Resource" id="loot"]
+script = ExtResource("1")
+Key = &"loot"
+Icon = ExtResource("16")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="reach"]
+script = ExtResource("1")
+Key = &"reach"
+Icon = ExtResource("17")
+PresentationRole = &"RangeValue"
+
+[sub_resource type="Resource" id="role_vanguard"]
+script = ExtResource("1")
+Key = &"role.vanguard"
+Icon = ExtResource("18")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="role_fighter"]
+script = ExtResource("1")
+Key = &"role.fighter"
+Icon = ExtResource("19")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="role_ranged"]
+script = ExtResource("1")
+Key = &"role.ranged"
+Icon = ExtResource("20")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="role_support"]
+script = ExtResource("1")
+Key = &"role.support"
+Icon = ExtResource("21")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="role_assassin"]
+script = ExtResource("1")
+Key = &"role.assassin"
+Icon = ExtResource("22")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="role_summoner"]
+script = ExtResource("1")
+Key = &"role.summoner"
+Icon = ExtResource("23")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="role_artillery"]
+script = ExtResource("1")
+Key = &"role.artillery"
+Icon = ExtResource("24")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="role_boss"]
+script = ExtResource("1")
+Key = &"role.boss"
+Icon = ExtResource("25")
+PresentationRole = &"EnemyLabel"
+
+[sub_resource type="Resource" id="faction_order"]
+script = ExtResource("1")
+Key = &"faction.order"
+Icon = ExtResource("26")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="faction_desert"]
+script = ExtResource("1")
+Key = &"faction.desert"
+Icon = ExtResource("27")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="faction_undead"]
+script = ExtResource("1")
+Key = &"faction.undead"
+Icon = ExtResource("28")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="faction_beast"]
+script = ExtResource("1")
+Key = &"faction.beast"
+Icon = ExtResource("29")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="faction_machine"]
+script = ExtResource("1")
+Key = &"faction.machine"
+Icon = ExtResource("30")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="faction_frost"]
+script = ExtResource("1")
+Key = &"faction.frost"
+Icon = ExtResource("31")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="faction_neutral"]
+script = ExtResource("1")
+Key = &"faction.neutral"
+Icon = ExtResource("32")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="faction_enemy"]
+script = ExtResource("1")
+Key = &"faction.enemy"
+Icon = ExtResource("33")
+PresentationRole = &"EnemyLabel"
+
+[sub_resource type="Resource" id="tower_combat"]
+script = ExtResource("1")
+Key = &"tower.combat"
+Icon = ExtResource("34")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="tower_elite"]
+script = ExtResource("1")
+Key = &"tower.elite"
+Icon = ExtResource("35")
+PresentationRole = &"WarningLabel"
+
+[sub_resource type="Resource" id="tower_recruitment"]
+script = ExtResource("1")
+Key = &"tower.recruitment"
+Icon = ExtResource("36")
+PresentationRole = &"HealingLabel"
+
+[sub_resource type="Resource" id="tower_shop"]
+script = ExtResource("1")
+Key = &"tower.shop"
+Icon = ExtResource("37")
+PresentationRole = &"HeroLabel"
+
+[sub_resource type="Resource" id="tower_event"]
+script = ExtResource("1")
+Key = &"tower.event"
+Icon = ExtResource("38")
+PresentationRole = &"PlayerLabel"
+
+[sub_resource type="Resource" id="tower_rest"]
+script = ExtResource("1")
+Key = &"tower.rest"
+Icon = ExtResource("39")
+PresentationRole = &"HealingLabel"
+
+[sub_resource type="Resource" id="tower_boss"]
+script = ExtResource("1")
+Key = &"tower.boss"
+Icon = ExtResource("40")
+PresentationRole = &"EnemyLabel"
+
+[resource]
+script = ExtResource("2")
+Entries = Array[SemanticIconEntry]([SubResource("health"), SubResource("damage"), SubResource("shield"), SubResource("healing"), SubResource("mana"), SubResource("gold"), SubResource("time"), SubResource("kills"), SubResource("deaths"), SubResource("hero"), SubResource("melee"), SubResource("ranged"), SubResource("risk"), SubResource("loot"), SubResource("reach"), SubResource("role_vanguard"), SubResource("role_fighter"), SubResource("role_ranged"), SubResource("role_support"), SubResource("role_assassin"), SubResource("role_summoner"), SubResource("role_artillery"), SubResource("role_boss"), SubResource("faction_order"), SubResource("faction_desert"), SubResource("faction_undead"), SubResource("faction_beast"), SubResource("faction_machine"), SubResource("faction_frost"), SubResource("faction_neutral"), SubResource("faction_enemy"), SubResource("tower_combat"), SubResource("tower_elite"), SubResource("tower_recruitment"), SubResource("tower_shop"), SubResource("tower_event"), SubResource("tower_rest"), SubResource("tower_boss")])

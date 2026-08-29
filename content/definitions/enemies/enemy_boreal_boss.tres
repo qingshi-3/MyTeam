@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_boreal_boss.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_boreal_boss"
+DisplayName = "第一层主：北境重装"
+Description = "周期性获得护盾，逼迫军团保持输出。"
+Role = 7
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 850
+AttackDamage = 32
+AttackRange = 1.5
+AttackCooldown = 1.3
+MoveInterval = 0.5
+Armor = 9
+HealPower = 0
+SplashRadius = 1.2
+LifeSteal = 0
+Tags = Array[StringName]([&"enemy"])

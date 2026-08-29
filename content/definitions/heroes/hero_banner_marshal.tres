@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_banner_marshal.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "hero_banner_marshal"
+DisplayName = "曜旗元帅"
+Description = "阵线越完整，普通士兵越坚韧。适合六人军团。"
+Role = 0
+Faction = 0
+IsHero = true
+IsEnemy = false
+RecruitCost = 0
+MaxHealth = 250
+AttackDamage = 24
+AttackRange = 1.3
+AttackCooldown = 1.15
+MoveInterval = 0.42
+Armor = 6
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"hero", &"order"])

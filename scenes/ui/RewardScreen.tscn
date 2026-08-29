@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[node name="RewardScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(900, 650)
+layout_mode = 2
+[node name="Layout" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+[node name="Title" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "选择奖励"
+[node name="Hint" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+autowrap_mode = 2
+text = "选择一项带走。"
+[node name="ChoiceScroll" type="ScrollContainer" parent="Center/Panel/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Choices" type="VBoxContainer" parent="Center/Panel/Layout/ChoiceScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 9
+[node name="ConvertButton" type="Button" parent="Center/Panel/Layout"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+text = "将本次征募转化为英雄收益"
+[node name="ContinueButton" type="Button" parent="Center/Panel/Layout"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+text = "暂不选择，继续登塔"

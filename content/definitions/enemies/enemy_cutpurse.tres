@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_cutpurse.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_cutpurse"
+DisplayName = "沙路割喉者"
+Description = "塔内战斗单位。"
+Role = 4
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 95
+AttackDamage = 24
+AttackRange = 1.2
+AttackCooldown = 1
+MoveInterval = 0.33
+Armor = 1
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"enemy"])

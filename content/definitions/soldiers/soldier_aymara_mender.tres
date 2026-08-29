@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_aymara_mender.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_aymara_mender"
+DisplayName = "艾玛拉医师"
+Description = "高效治疗但自身脆弱。"
+Role = 3
+Faction = 1
+IsHero = false
+IsEnemy = false
+RecruitCost = 8
+MaxHealth = 84
+AttackDamage = 8
+AttackRange = 4.8
+AttackCooldown = 1.5
+MoveInterval = 0.52
+Armor = 0
+HealPower = 25
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"desert"])

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_frost_freeblade.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_frost_freeblade"
+DisplayName = "霜原自由刃"
+Description = "可靠的中坚近战。"
+Role = 1
+Faction = 5
+IsHero = false
+IsEnemy = false
+RecruitCost = 7
+MaxHealth = 150
+AttackDamage = 25
+AttackRange = 1.3
+AttackCooldown = 1.2
+MoveInterval = 0.42
+Armor = 4
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"frost"])

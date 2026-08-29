@@ -1,0 +1,124 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/UI/HeroDetailPanel.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/StatBlock.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/TraitBadge.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/HeroAbilityPanel.tscn" id="5"]
+
+[node name="HeroDetailPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(540, 0)
+size_flags_vertical = 3
+script = ExtResource("1")
+TraitBadgeScene = ExtResource("4")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DetailScroll" type="ScrollContainer" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Content" type="VBoxContainer" parent="Layout/DetailScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="Layout/DetailScroll/Content"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="DetailPortrait" parent="Layout/DetailScroll/Content/Header" instance=ExtResource("2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(142, 142)
+layout_mode = 2
+
+[node name="Identity" type="VBoxContainer" parent="Layout/DetailScroll/Content/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="DetailName" type="Label" parent="Layout/DetailScroll/Content/Header/Identity"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeroIdentity"
+theme_override_font_sizes/font_size = 28
+text = "英雄名称"
+
+[node name="DetailTraits" type="HFlowContainer" parent="Layout/DetailScroll/Content/Header/Identity"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 5
+
+[node name="HeroDescription" type="Label" parent="Layout/DetailScroll/Content/Header/Identity"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"ChoiceBody"
+theme_override_font_sizes/font_size = 15
+text = "英雄说明"
+autowrap_mode = 2
+max_lines_visible = 4
+
+[node name="Stats" type="HBoxContainer" parent="Layout/DetailScroll/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HealthStat" parent="Layout/DetailScroll/Content/Stats" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DamageStat" parent="Layout/DetailScroll/Content/Stats" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ReachStat" parent="Layout/DetailScroll/Content/Stats" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RulePanel" type="PanelContainer" parent="Layout/DetailScroll/Content"]
+layout_mode = 2
+
+[node name="Layout" type="VBoxContainer" parent="Layout/DetailScroll/Content/RulePanel"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="RuleName" type="Label" parent="Layout/DetailScroll/Content/RulePanel/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeroIdentity"
+theme_override_font_sizes/font_size = 18
+text = "军团规则"
+
+[node name="RuleCopy" type="Label" parent="Layout/DetailScroll/Content/RulePanel/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ChoiceBody"
+theme_override_font_sizes/font_size = 15
+text = "军团规则说明"
+autowrap_mode = 2
+max_lines_visible = 3
+
+[node name="HeroAbilityPanel" parent="Layout/DetailScroll/Content" instance=ExtResource("5")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Availability" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HealingValue"
+text = "已解锁 · 可以出征"
+horizontal_alignment = 1
+
+[node name="DeployButton" type="Button" parent="Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+text = "以该英雄出征"
+

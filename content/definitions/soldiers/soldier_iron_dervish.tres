@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_iron_dervish.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_iron_dervish"
+DisplayName = "铁砂旋卫"
+Description = "兼具护甲和范围压制。"
+Role = 0
+Faction = 1
+IsHero = false
+IsEnemy = false
+RecruitCost = 8
+MaxHealth = 175
+AttackDamage = 20
+AttackRange = 1.5
+AttackCooldown = 1.35
+MoveInterval = 0.52
+Armor = 7
+HealPower = 0
+SplashRadius = 1
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"desert"])

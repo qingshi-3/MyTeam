@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hour_arbiter.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "hero_hour_arbiter"
+DisplayName = "时序仲裁者"
+Description = "操纵冷却与行动窗口，用有限指令逆转战场。"
+Role = 3
+Faction = 5
+IsHero = true
+IsEnemy = false
+RecruitCost = 0
+MaxHealth = 225
+AttackDamage = 22
+AttackRange = 4.5
+AttackCooldown = 1.2
+MoveInterval = 0.45
+Armor = 2
+HealPower = 8
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"hero", &"frost"])

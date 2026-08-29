@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_fire_breather.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_fire_breather"
+DisplayName = "烈焰吐息兽"
+Description = "缓慢但强力的范围火力。"
+Role = 6
+Faction = 3
+IsHero = false
+IsEnemy = false
+RecruitCost = 10
+MaxHealth = 150
+AttackDamage = 36
+AttackRange = 4.2
+AttackCooldown = 2
+MoveInterval = 0.58
+Armor = 3
+HealPower = 0
+SplashRadius = 1.7
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"beast"])

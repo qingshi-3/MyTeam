@@ -1,0 +1,35 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
+
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="1"]
+[ext_resource type="Resource" path="res://content/definitions/soldiers/soldier_blade_runner.tres" id="2"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f2_melee/frames.tres" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
+[node name="soldier_blade_runner" type="Node2D"]
+script = ExtResource("1")
+Definition = ExtResource("2")
+
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("4")]
+Frames = ExtResource("3")
+
+[node name="HealthViewComponent" parent="." instance=ExtResource("5")]
+
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("6")]
+SlowOnHitTicks = 0
+AdjacentArmorAura = 0
+ExecuteHealthThreshold = 0.25
+LowHealthDamageBonus = 0
+OnDeathDamage = 0
+PiercingLine = false
+PeriodicShieldTicks = 0
+PeriodicShieldAmount = 0
+PeriodicSummonTicks = 0
+PreferBacklineTargets = false
+SummonContentId = ""

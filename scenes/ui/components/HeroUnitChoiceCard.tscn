@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitChoiceCard.tscn" id="1"]
+
+[node name="HeroUnitChoiceCard" instance=ExtResource("1")]
+custom_minimum_size = Vector2(0, 190)
+
+[node name="UnitPortrait" parent="Margin/Layout" index="0"]
+custom_minimum_size = Vector2(146, 146)
+
+[node name="UnitDescription" parent="Margin/Layout/Copy" index="4"]
+max_lines_visible = 4
+
+[editable path="Margin/Layout/UnitPortrait"]

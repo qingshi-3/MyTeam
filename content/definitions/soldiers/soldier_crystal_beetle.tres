@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_crystal_beetle.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_crystal_beetle"
+DisplayName = "晶甲虫"
+Description = "小型重甲单位，适合堵路。"
+Role = 0
+Faction = 5
+IsHero = false
+IsEnemy = false
+RecruitCost = 7
+MaxHealth = 180
+AttackDamage = 14
+AttackRange = 1.2
+AttackCooldown = 1.3
+MoveInterval = 0.5
+Armor = 9
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"frost", &"beast"])

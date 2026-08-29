@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Battle/FloorRules/HealingBeaconFloorRuleContent.cs" id="1"]
+
+[node name="rule_healing_beacon" type="Node"]
+script = ExtResource("1")
+Id = "rule_healing_beacon"
+DisplayName = "生命信标"
+PreviewText = "中央信标每3秒治疗控制它的一方。"
+PulseInterval = 3
+PulseAmount = 18

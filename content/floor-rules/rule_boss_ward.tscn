@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Battle/FloorRules/BossWardFloorRuleContent.cs" id="1"]
+
+[node name="rule_boss_ward" type="Node"]
+script = ExtResource("1")
+Id = "rule_boss_ward"
+DisplayName = "主宰结界"
+PreviewText = "首领受到结界保护；控制中央信标可削弱结界。"
+PulseInterval = 3
+PulseAmount = 20

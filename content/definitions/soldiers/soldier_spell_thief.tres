@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_spell_thief.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_spell_thief"
+DisplayName = "窃术者"
+Description = "命中会短暂延缓敌人行动。"
+Role = 4
+Faction = 1
+IsHero = false
+IsEnemy = false
+RecruitCost = 8
+MaxHealth = 96
+AttackDamage = 20
+AttackRange = 2.2
+AttackCooldown = 1.05
+MoveInterval = 0.34
+Armor = 1
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"desert"])

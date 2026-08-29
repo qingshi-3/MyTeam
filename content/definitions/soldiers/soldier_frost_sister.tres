@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_frost_sister.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_frost_sister"
+DisplayName = "寒霜修女"
+Description = "兼顾治疗和远程牵制。"
+Role = 3
+Faction = 5
+IsHero = false
+IsEnemy = false
+RecruitCost = 7
+MaxHealth = 104
+AttackDamage = 12
+AttackRange = 4.4
+AttackCooldown = 1.45
+MoveInterval = 0.5
+Armor = 2
+HealPower = 16
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"frost"])

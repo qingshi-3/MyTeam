@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[node name="EventScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(760, 500)
+layout_mode = 2
+[node name="Layout" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 18
+[node name="Title" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "塔内异象"
+[node name="Description" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+autowrap_mode = 2
+text = "一扇渗出金光的门挡住去路。冒险开启可能获得丰厚军费，也可能让英雄受伤。"
+[node name="RiskButton" type="Button" parent="Center/Panel/Layout"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+text = "冒险开启：高收益或受伤"
+[node name="SafeButton" type="Button" parent="Center/Panel/Layout"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+text = "谨慎绕行：获得少量金币"

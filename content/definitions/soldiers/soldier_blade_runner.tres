@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_blade_runner.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_blade_runner"
+DisplayName = "迅刃客"
+Description = "快速切入后排的轻装战士。"
+Role = 4
+Faction = 1
+IsHero = false
+IsEnemy = false
+RecruitCost = 7
+MaxHealth = 105
+AttackDamage = 28
+AttackRange = 1.25
+AttackCooldown = 0.9
+MoveInterval = 0.3
+Armor = 1
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"desert"])

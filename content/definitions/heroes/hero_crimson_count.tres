@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_crimson_count.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "hero_crimson_count"
+DisplayName = "猩红伯爵"
+Description = "吸血Carry，可选择少带士兵换取个人战力。"
+Role = 4
+Faction = 2
+IsHero = true
+IsEnemy = false
+RecruitCost = 0
+MaxHealth = 310
+AttackDamage = 40
+AttackRange = 1.4
+AttackCooldown = 0.95
+MoveInterval = 0.34
+Armor = 4
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0.3
+Tags = Array[StringName]([&"hero", &"undead"])

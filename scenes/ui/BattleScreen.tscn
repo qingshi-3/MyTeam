@@ -1,0 +1,103 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/Presentation/BattleScreenController.cs" id="1"]
+[ext_resource type="Script" path="res://src/Presentation/BattleBoard.cs" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/HeroCommandHud.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/SelectedUnitPanel.tscn" id="4"]
+
+[node name="BattleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 20
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BattleTitle" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "战斗"
+
+[node name="RuleText" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "楼层规则"
+
+[node name="BattleBoard" type="Control" parent="Margin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(980, 430)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 0
+script = ExtResource("2")
+
+[node name="UnitsRoot" type="Node2D" parent="Margin/Layout/BattleBoard"]
+unique_name_in_owner = true
+
+[node name="SelectedUnitPanel" parent="Margin/Layout/BattleBoard" instance=ExtResource("4")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -270.0
+offset_top = 14.0
+offset_right = -14.0
+offset_bottom = 110.0
+grow_horizontal = 0
+
+[node name="Hud" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BattleStatus" type="Label" parent="Margin/Layout/Hud"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "准备战斗"
+
+[node name="PauseButton" type="Button" parent="Margin/Layout/Hud"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 48)
+layout_mode = 2
+text = "暂停"
+
+[node name="SpeedButton" type="Button" parent="Margin/Layout/Hud"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 48)
+layout_mode = 2
+text = "速度 x1"
+
+[node name="HeroCommandHud" parent="Margin/Layout/Hud" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EndFadeOverlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0, 0, 0, 0)

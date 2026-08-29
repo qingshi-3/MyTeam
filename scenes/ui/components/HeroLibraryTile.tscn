@@ -1,0 +1,72 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/UI/HeroLibraryTile.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/TraitBadge.tscn" id="3"]
+
+[node name="HeroLibraryTile" type="Button"]
+custom_minimum_size = Vector2(190, 164)
+size_flags_horizontal = 3
+focus_mode = 2
+text = ""
+script = ExtResource("1")
+TraitBadgeScene = ExtResource("3")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Identity" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="HeroPortrait" parent="Margin/Layout/Identity" instance=ExtResource("2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(82, 82)
+layout_mode = 2
+
+[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Identity"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="HeroName" type="Label" parent="Margin/Layout/Identity/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"HeroIdentity"
+theme_override_font_sizes/font_size = 18
+text = "英雄名称"
+autowrap_mode = 2
+
+[node name="HeroState" type="Label" parent="Margin/Layout/Identity/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 14
+text = "可出征"
+
+[node name="HeroTraits" type="HFlowContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 4
+

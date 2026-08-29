@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemContentRoot.cs" id="1"]
+[ext_resource type="Resource" path="res://content/definitions/items/item_aegis_standard.tres" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/components/ModifierProviderComponent.tscn" id="3"]
+
+[node name="item_aegis_standard" type="Node"]
+script = ExtResource("1")
+Definition = ExtResource("2")
+
+[node name="ModifierProviderComponent" parent="." instance=ExtResource("3")]
+ArmyHealthMultiplier = 1
+ArmyDamageMultiplier = 1
+HeroHealthMultiplier = 1
+HeroDamageMultiplier = 1
+ArmyLifeStealBonus = 0
+HeroLifeStealBonus = 0
+StartBattleShield = 15
+GoldPerBattle = 0
+EmptySlotPower = 0
+SummonToken = false
+FormationAdjacentArmor = 0
+FormationAdjacentDamageMultiplier = 1
+SummonContentId = ""

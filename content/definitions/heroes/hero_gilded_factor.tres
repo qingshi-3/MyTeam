@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_gilded_factor.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "hero_gilded_factor"
+DisplayName = "鎏金商主"
+Description = "用经济购买强军，并从每场胜利中抽取军费。"
+Role = 3
+Faction = 1
+IsHero = true
+IsEnemy = false
+RecruitCost = 0
+MaxHealth = 235
+AttackDamage = 25
+AttackRange = 3.8
+AttackCooldown = 1.15
+MoveInterval = 0.44
+Armor = 3
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"hero", &"desert"])

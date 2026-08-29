@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Battle/FloorRules/HazardPulseFloorRuleContent.cs" id="1"]
+
+[node name="rule_hazard_pulse" type="Node"]
+script = ExtResource("1")
+Id = "rule_hazard_pulse"
+DisplayName = "灼热脉冲"
+PreviewText = "每4秒，标记地格对站立单位造成伤害。"
+PulseInterval = 4
+PulseAmount = 16

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Battle/FloorRules/NarrowLanesFloorRuleContent.cs" id="1"]
+
+[node name="rule_narrow_lanes" type="Node"]
+script = ExtResource("1")
+Id = "rule_narrow_lanes"
+DisplayName = "狭路封锁"
+PreviewText = "中央四格被阻挡，军队必须从上下通道接敌。"
+PulseInterval = 4
+PulseAmount = 0

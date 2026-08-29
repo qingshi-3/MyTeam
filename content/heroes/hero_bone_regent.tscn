@@ -1,0 +1,49 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
+
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="1"]
+[ext_resource type="Resource" path="res://content/definitions/heroes/hero_bone_regent.tres" id="2"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f4_general/frames.tres" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/components/HeroRuleComponent.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/components/hero_commands/RaiseDeadCommand.tscn" id="8"]
+
+[node name="hero_bone_regent" type="Node2D"]
+script = ExtResource("1")
+Definition = ExtResource("2")
+
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("4")]
+Frames = ExtResource("3")
+
+[node name="HealthViewComponent" parent="." instance=ExtResource("5")]
+
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("6")]
+[node name="HeroRuleComponent" parent="." instance=ExtResource("7")]
+RuleTitle = "亡者服役"
+RuleDescription = "友军阵亡会召出临时骸骨。"
+MaxMana = 3
+SoldierHealthMultiplier = 1
+SoldierDamageMultiplier = 1
+HeroDamageMultiplier = 1.0
+EmptySlotHeroBonus = 0
+RequiredSoldierTag = &""
+TaggedSoldierHealthMultiplier = 1
+TaggedSoldierDamageMultiplier = 1
+FormationArmorBonus = 0
+FormationDamageBonus = 0
+KillGrowth = 0
+HeroLifeStealBonus = 0
+SummonOnAllyDeath = true
+AddBattleConstruct = false
+BattleGoldBonus = 0
+RecruitConversionGold = 0
+SummonContentId = "soldier_abyss_crawler"
+
+[node name="HeroCommandContentRoot" parent="." instance=ExtResource("8")]

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_wyrm.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_wyrm"
+DisplayName = "塔巢幼龙"
+Description = "塔内战斗单位。"
+Role = 2
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 120
+AttackDamage = 25
+AttackRange = 3.5
+AttackCooldown = 1.2
+MoveInterval = 0.38
+Armor = 2
+HealPower = 0
+SplashRadius = 1
+LifeSteal = 0
+Tags = Array[StringName]([&"enemy", &"beast"])

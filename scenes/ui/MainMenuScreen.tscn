@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[node name="MainMenuScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(560, 560)
+layout_mode = 2
+
+[node name="Menu" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Center/Panel/Menu"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "军团登塔"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Center/Panel/Menu"]
+layout_mode = 2
+text = "选择英雄，征募军团，攻上三重高塔"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="Center/Panel/Menu"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="NewRunButton" type="Button" parent="Center/Panel/Menu"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+text = "开始新征程"
+
+[node name="ContinueButton" type="Button" parent="Center/Panel/Menu"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+text = "继续征程"
+
+[node name="SettingsButton" type="Button" parent="Center/Panel/Menu"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+text = "设置"
+
+[node name="QuitButton" type="Button" parent="Center/Panel/Menu"]
+custom_minimum_size = Vector2(0, 58)
+layout_mode = 2
+text = "退出"

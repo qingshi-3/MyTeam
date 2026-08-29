@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TowerRegionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Run/TowerRegionDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "region_ember_foundry"
+DisplayName = "余烬铸层"
+Description = "狭路、铁卫与仍在运转的炉膛。"
+AccentColor = Color(0.92, 0.42, 0.2, 1)
+EnemyPool = PackedStringArray("enemy_rust_guard", "enemy_crossbow", "enemy_cutpurse")
+BossId = "enemy_boreal_boss"
+BossFloorRuleId = "rule_narrow_lanes"
+FloorRulePool = PackedStringArray("rule_clear", "rule_narrow_lanes")

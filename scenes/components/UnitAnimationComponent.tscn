@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Components/UnitAnimationComponent.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitReadabilityComponent.tscn" id="2"]
+
+[node name="UnitAnimationComponent" type="Node2D"]
+script = ExtResource("1")
+StepLiftPixels = 3.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -22)
+centered = true
+
+[node name="UnitReadabilityComponent" parent="." instance=ExtResource("2")]

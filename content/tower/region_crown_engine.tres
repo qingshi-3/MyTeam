@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TowerRegionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Run/TowerRegionDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "region_crown_engine"
+DisplayName = "冠冕机层"
+Description = "野兽与冰誓者守卫塔顶主宰的结界。"
+AccentColor = Color(0.25, 0.72, 0.86, 1)
+EnemyPool = PackedStringArray("enemy_scale_brute", "enemy_wyrm", "enemy_ice_blade", "enemy_ice_hawker")
+BossId = "enemy_clockwork_boss"
+BossFloorRuleId = "rule_boss_ward"
+FloorRulePool = PackedStringArray("rule_narrow_lanes", "rule_hazard_pulse", "rule_healing_beacon")

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_edge_ascetic.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "hero_edge_ascetic"
+DisplayName = "无尽剑圣"
+Description = "纯Solo路线。空位就是修行，强攻但惧怕围困。"
+Role = 4
+Faction = 5
+IsHero = true
+IsEnemy = false
+RecruitCost = 0
+MaxHealth = 340
+AttackDamage = 48
+AttackRange = 1.5
+AttackCooldown = 0.8
+MoveInterval = 0.3
+Armor = 5
+HealPower = 0
+SplashRadius = 2.0
+LifeSteal = 0.12
+Tags = Array[StringName]([&"hero", &"frost"])

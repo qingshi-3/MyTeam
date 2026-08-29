@@ -1,0 +1,95 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/UI/HeroCommandHud.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/ResourceCostBadge.tscn" id="2"]
+
+[node name="HeroCommandHud" type="PanelContainer"]
+custom_minimum_size = Vector2(390, 104)
+script = ExtResource("1")
+
+[node name="Layout" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Info" type="VBoxContainer" parent="Layout"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="CommandName" type="Label" parent="Layout/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.4, 1)
+theme_override_font_sizes/font_size = 18
+text = "战场指令"
+
+[node name="CommandEffect" type="Label" parent="Layout/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "指令效果"
+autowrap_mode = 2
+max_lines_visible = 2
+
+[node name="FailureReason" type="Label" parent="Layout/Info"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.48, 0.42, 1)
+theme_override_font_sizes/font_size = 14
+text = "失败原因"
+
+[node name="Mana" type="VBoxContainer" parent="Layout"]
+layout_mode = 2
+custom_minimum_size = Vector2(130, 0)
+theme_override_constants/separation = 3
+
+[node name="ManaText" type="Label" parent="Layout/Mana"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.72, 1, 1)
+text = "MP 3/3"
+horizontal_alignment = 1
+
+[node name="Segments" type="HBoxContainer" parent="Layout/Mana"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ManaSegment0" type="ColorRect" parent="Layout/Mana/Segments"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 10)
+layout_mode = 2
+color = Color(0.235, 0.553, 1, 1)
+
+[node name="ManaSegment1" type="ColorRect" parent="Layout/Mana/Segments"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 10)
+layout_mode = 2
+color = Color(0.235, 0.553, 1, 1)
+
+[node name="ManaSegment2" type="ColorRect" parent="Layout/Mana/Segments"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(38, 10)
+layout_mode = 2
+color = Color(0.235, 0.553, 1, 1)
+
+[node name="Costs" type="HBoxContainer" parent="Layout/Mana"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 4
+
+[node name="ManaCostBadge" parent="Layout/Mana/Costs" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="GoldCostBadge" parent="Layout/Mana/Costs" instance=ExtResource("2")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="CommandButton" type="Button" parent="Layout/Mana"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 38)
+layout_mode = 2
+text = "发动指令"

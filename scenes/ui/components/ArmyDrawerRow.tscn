@@ -1,0 +1,68 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/UI/ArmyDrawerRow.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/SemanticChip.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/ResourceCostBadge.tscn" id="4"]
+
+[node name="ArmyDrawerRow" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 84)
+script = ExtResource("1")
+SemanticChipScene = ExtResource("3")
+
+[node name="Layout" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="UnitPortrait" parent="Layout" instance=ExtResource("2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(68, 68)
+layout_mode = 2
+
+[node name="Copy" type="VBoxContainer" parent="Layout"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="RowTitle" type="Label" parent="Layout/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.52, 1)
+theme_override_font_sizes/font_size = 17
+text = "条目"
+
+[node name="RowDetails" type="Label" parent="Layout/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "说明"
+autowrap_mode = 2
+
+[node name="RowFacts" type="HFlowContainer" parent="Layout/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 9
+theme_override_constants/v_separation = 2
+
+[node name="RowCosts" type="HFlowContainer" parent="Layout/Copy"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 6
+
+[node name="ManaCostBadge" parent="Layout/Copy/RowCosts" instance=ExtResource("4")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="GoldCostBadge" parent="Layout/Copy/RowCosts" instance=ExtResource("4")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="RowFooter" type="Label" parent="Layout/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.76, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "状态"
+autowrap_mode = 2

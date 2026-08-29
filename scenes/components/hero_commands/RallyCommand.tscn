@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://src/Battle/Commands/RallyCommandContent.cs" id="1"]
+[node name="HeroCommandContentRoot" type="Node"]
+script = ExtResource("1")
+DisplayName = "全军集结"
+ManaCost = 1
+ShieldAmount = 22.0
+AttackCooldownCapTicks = 2

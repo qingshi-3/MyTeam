@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/UI/StatBlock.cs" id="1"]
+[ext_resource type="Resource" path="res://content/ui/semantic_icon_catalog.tres" id="2"]
+
+[sub_resource type="StyleBoxFlat" id="StatSurface"]
+bg_color = Color(0.09, 0.115, 0.17, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.37, 0.5, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 10.0
+content_margin_top = 7.0
+content_margin_right = 10.0
+content_margin_bottom = 7.0
+
+[node name="StatBlock" type="PanelContainer"]
+custom_minimum_size = Vector2(124, 66)
+theme_override_styles/panel = SubResource("StatSurface")
+script = ExtResource("1")
+Catalog = ExtResource("2")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="Primary" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="StatIcon" type="TextureRect" parent="Layout/Primary"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StatValue" type="Label" parent="Layout/Primary"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PlayerLabel"
+text = "0"
+
+[node name="StatLabel" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 14
+text = "属性"
+

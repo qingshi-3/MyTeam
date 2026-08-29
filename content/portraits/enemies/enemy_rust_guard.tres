@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="UnitPortraitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="1"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f1_tank/frames.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+StableId = "enemy_rust_guard"
+Frames = ExtResource("2")
+AnimationName = &"idle"
+FrameIndex = 0
+Zoom = 1.9
+OffsetRatio = Vector2(0, 0.05)

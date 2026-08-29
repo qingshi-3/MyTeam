@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_drogon.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_drogon"
+DisplayName = "幼龙卓贡"
+Description = "快速喷吐并波及邻格。"
+Role = 2
+Faction = 3
+IsHero = false
+IsEnemy = false
+RecruitCost = 8
+MaxHealth = 125
+AttackDamage = 24
+AttackRange = 3.5
+AttackCooldown = 1.15
+MoveInterval = 0.35
+Armor = 2
+HealPower = 0
+SplashRadius = 1
+LifeSteal = 0
+Tags = Array[StringName]([&"soldier", &"beast"])

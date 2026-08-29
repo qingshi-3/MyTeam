@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "item_commander_map"
+DisplayName = "统帅阵图"
+Description = "相邻友军获得4点护甲与8%伤害。"
+Rarity = 2
+Price = 22
+Tags = Array[StringName]([&"item"])

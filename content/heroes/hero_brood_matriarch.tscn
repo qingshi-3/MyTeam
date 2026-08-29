@@ -1,0 +1,49 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
+
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="1"]
+[ext_resource type="Resource" path="res://content/definitions/heroes/hero_brood_matriarch.tres" id="2"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f5_general/frames.tres" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/components/HeroRuleComponent.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/components/hero_commands/BeastRoarCommand.tscn" id="8"]
+
+[node name="hero_brood_matriarch" type="Node2D"]
+script = ExtResource("1")
+Definition = ExtResource("2")
+
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("4")]
+Frames = ExtResource("3")
+
+[node name="HealthViewComponent" parent="." instance=ExtResource("5")]
+
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("6")]
+[node name="HeroRuleComponent" parent="." instance=ExtResource("7")]
+RuleTitle = "群落进化"
+RuleDescription = "士兵伤害提高25%，野兽更适合密集冲锋。"
+MaxMana = 3
+SoldierHealthMultiplier = 1
+SoldierDamageMultiplier = 1.25
+HeroDamageMultiplier = 1.0
+EmptySlotHeroBonus = 0
+RequiredSoldierTag = &"beast"
+TaggedSoldierHealthMultiplier = 1.2
+TaggedSoldierDamageMultiplier = 1.25
+FormationArmorBonus = 0
+FormationDamageBonus = 0
+KillGrowth = 0.03
+HeroLifeStealBonus = 0
+SummonOnAllyDeath = false
+AddBattleConstruct = false
+BattleGoldBonus = 0
+RecruitConversionGold = 0
+SummonContentId = ""
+
+[node name="HeroCommandContentRoot" parent="." instance=ExtResource("8")]
