@@ -1,6 +1,6 @@
 # Publish Project To GitHub
 
-Status: In Progress  
+Status: Completed  
 Confirmed: 2026-08-30
 
 ## Goal
@@ -58,11 +58,17 @@ This task changes Git history and the external GitHub repository only. It does n
 - 2026-08-30: Read-only preflight confirmed local `main` has no commits and no remote; the target is an empty public repository whose default branch is `main`.
 - 2026-08-30: The intended source set contains approximately 697 files / 3.36 MiB. `.godot/` and `/android/` are ignored, no obvious credential filename/content was found, and OpenDuelyst-derived animation art retains its checked-in CC0 provenance and legal text.
 - 2026-08-30: User confirmed publishing the current project as-is, without adding a root README or project-code license.
+- 2026-08-30: Execution preflight reconfirmed `main`, no local commits, no configured remote, the confirmed Git identity, an empty remote (`ls-remote --heads` returned no refs), and effective `.godot/` ignore behavior. The exact intended/staged set was 709 added files / 3,552,820 bytes (3.388 MiB), with staged-list SHA-256 `b7a754af9231a55b91f02fa175ea5eec67851349b4ece255fd74d63127eea97e`. It contained no `.godot/`, credential-like filename, symlink/gitlink, abnormal large file, or obvious secret-pattern match. `diff --check` reported only existing Markdown hard-break whitespace and final blank lines, so the confirmed as-is publication set was retained.
+- 2026-08-30: Created local root commit `e541449b6da89d6e304e48af8e0e80d0f35e2b58` (`Initial Godot tower autobattler`) as `qs <2575217256@qq.com>`, tree `b499f85a8c291f0d023663924b71ff9b9fba7db9`, containing 709 files. Added `origin` as `https://github.com/qingshi-3/MyTeam.git`; a final pre-push `ls-remote` still showed the remote empty.
+- 2026-08-30: The authorized non-force `git push -u origin main` stopped at HTTPS authentication: Git could not execute its prompt because `/dev/tty` was unavailable and reported `fatal: could not read Username for 'https://github.com'`. No remote ref was created, no upstream was configured, and no alternative authentication or credential bypass was attempted.
+- 2026-08-30: After the user established Git Credential Manager access and the existing Codex network environment was confirmed healthy, execution resumed without changing proxy or credential configuration. The remote was rechecked and remained empty; the existing local commit was not recreated or amended.
+- 2026-08-30: The ordinary non-force `git push -u origin main` succeeded and created `origin/main`. Immediate `ls-remote` verification matched local and remote at `e541449b6da89d6e304e48af8e0e80d0f35e2b58`, and local `main` began tracking `origin/main`.
+- 2026-08-30: Publication completion was recorded by moving this task from `work-items/active/` to `work-items/archive/`. The commit containing this archived record is the required archive-only follow-up documentation commit; its exact local/remote hash is verified from both refs in the final execution handoff.
 
 ## Current State And Resume Condition
 
-Confirmed and authorized for execution. Resume by rechecking `main`, remote absence, ignore behavior, exact staged contents, and secret scan. Create the initial commit and push only if those checks remain clean. After remote verification, archive this task, create one follow-up documentation commit, push again, and verify a clean synchronized `main`.
+Publication is complete. The initial project commit `e541449b6da89d6e304e48af8e0e80d0f35e2b58` was published unchanged, and this archived document is the only project-tree change in the follow-up documentation commit. No gameplay, UI, content, asset, test, project setting, branch, tag, release, README, license, workflow, proxy, credential, or GitHub repository-setting change was made by this task.
 
 ## Verification Handoff
 
-Pending execution. Record staged-file/size evidence, commit hashes, push results, remote URL, upstream state, final clean-tree evidence, and any authentication or publication caveat here before archiving.
+Verified publication evidence: intended/staged source set `709 files / 3,552,820 bytes` with list SHA-256 `b7a754af9231a55b91f02fa175ea5eec67851349b4ece255fd74d63127eea97e`; no `.godot/`, credential-like file, obvious secret, symlink, or gitlink; initial commit `e541449b6da89d6e304e48af8e0e80d0f35e2b58`, tree `b499f85a8c291f0d023663924b71ff9b9fba7db9`, identity `qs <2575217256@qq.com>`; origin `https://github.com/qingshi-3/MyTeam.git`; initial local/remote comparison exact; upstream `origin/main`. The final archive-only commit is verified after its normal push by comparing `git rev-parse HEAD` with `git ls-remote origin refs/heads/main`, confirming upstream, and requiring a clean tree. The user Godot editor remained outside executor control.
