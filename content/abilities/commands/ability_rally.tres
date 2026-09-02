@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3 uid="uid://bg3073bi5864b"]
+
+[ext_resource type="Script" uid="uid://wsmn7xt2uqi6" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="1_ability"]
+[ext_resource type="Script" uid="uid://cdun7tpnl026k" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="3_binding"]
+[ext_resource type="Script" uid="uid://cwdf0vp61fd4e" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="4_trigger"]
+[ext_resource type="Script" uid="uid://c1hinyu21fiye" path="res://src/Effects/Authoring/RelativeTeamTargetQuerySpec.cs" id="5_target"]
+[ext_resource type="Script" uid="uid://cwo5jn4t7qd0o" path="res://src/Effects/Authoring/ShieldEffectSpec.cs" id="6_shield"]
+[ext_resource type="Script" uid="uid://dgkrqjbfxnpnu" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="7_limits"]
+[ext_resource type="Script" uid="uid://dk2ql37wqhrju" path="res://src/Effects/Authoring/EffectConditionSpec.cs" id="8_condition"]
+[ext_resource type="Script" uid="uid://bkqgx5lyspiiv" path="res://src/Abilities/Authoring/EffectAbilityOperationSpec.cs" id="10_effect_operation"]
+[ext_resource type="Script" uid="uid://dstwvaqblh34y" path="res://src/Abilities/Authoring/CooldownAbilityOperationSpec.cs" id="11_cooldown_operation"]
+
+[sub_resource type="Resource" id="Shield"]
+script = ExtResource("6_shield")
+Amount = 22.0
+
+[sub_resource type="Resource" id="Limits"]
+script = ExtResource("7_limits")
+
+[sub_resource type="Resource" id="Allies"]
+script = ExtResource("5_target")
+
+[sub_resource type="Resource" id="Trigger"]
+script = ExtResource("4_trigger")
+
+[sub_resource type="Resource" id="Binding"]
+script = ExtResource("3_binding")
+StableId = "ability_rally_shield"
+Trigger = SubResource("Trigger")
+TargetQuery = SubResource("Allies")
+Effects = [SubResource("Shield")]
+Limits = SubResource("Limits")
+
+[sub_resource type="Resource" id="ShieldOperation"]
+script = ExtResource("10_effect_operation")
+Binding = SubResource("Binding")
+
+[sub_resource type="Resource" id="CooldownOperation"]
+script = ExtResource("11_cooldown_operation")
+TargetQuery = SubResource("Allies")
+AttackAdjustment = 3
+AttackValue = 2
+
+[resource]
+script = ExtResource("1_ability")
+StableId = "ability_rally"
+DisplayName = "全军集结"
+ManaCost = 1
+Operations = [SubResource("ShieldOperation"), SubResource("CooldownOperation")]

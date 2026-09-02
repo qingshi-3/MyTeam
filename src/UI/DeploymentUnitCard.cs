@@ -1,6 +1,7 @@
 using System;
 using Godot;
 using TowerAutobattler.Content;
+using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
 
@@ -32,12 +33,18 @@ public partial class DeploymentUnitCard : Button
     {
         InstanceId = model.InstanceId;
         Text = string.Empty;
+        ThemeTypeVariation = selected ? "SelectedButton" : "SecondaryButton";
         Portrait.Bind(model.Portrait, Fallback(model.Role));
-        _name.Text = $"{(selected ? "▶ " : string.Empty)}{model.DisplayName}";
+        _name.Text = $"{(model.IsHero ? "★ " : string.Empty)}{model.DisplayName}";
+        _name.ThemeTypeVariation = model.IsHero ? "HeroIdentity" : "ChoiceTitle";
         _health.Bind(UnitSemanticFacts.Health(model.HealthRatio.ToString("P0"), includeLabel: false));
         _role.Bind(UnitSemanticFacts.Responsibility(model.Role, includeLabel: false));
         _reach.Bind(UnitSemanticFacts.Reach(model.AttackRange, includeLabel: false));
-        _state.Text = model.Slot >= 0 ? $"已部署 · 槽位 {model.Slot + 1}" : "候命";
+        _state.Text = model.Cell is { } cell
+            ? model.IsHero
+                ? $"英雄 · 第 {cell.X + 1} 列 / 第 {cell.Y + 1} 行"
+                : $"已部署 · 第 {cell.X + 1} 列 / 第 {cell.Y + 1} 行"
+            : "候命";
         TooltipText = model.Description;
     }
 
@@ -48,7 +55,7 @@ public partial class DeploymentUnitCard : Button
         preview.CustomMinimumSize = new Vector2(250, 72);
         preview.MouseFilter = MouseFilterEnum.Ignore;
         SetDragPreview(preview);
-        return new Godot.Collections.Dictionary { ["unit_id"] = InstanceId };
+        return new Godot.Collections.Dictionary { ["piece_id"] = InstanceId };
     }
 
     private void OnPressed() => UnitSelected?.Invoke(InstanceId);

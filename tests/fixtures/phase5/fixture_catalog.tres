@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ContentCatalog" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ContentCatalog.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/entries/hero_phase5_fixture.tres" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/entries/soldier_phase5_fixture.tres" id="3"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/entries/enemy_phase5_fixture.tres" id="4"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/entries/item_phase5_fixture.tres" id="5"]
+[ext_resource type="PackedScene" path="res://tests/fixtures/phase5/rule_phase5_clear.tscn" id="6"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/entries/equipment_phase5_fixture.tres" id="7"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/entries/item_phase5_reactive_fixture.tres" id="8"]
+
+[resource]
+script = ExtResource("1")
+Heroes = Array[CatalogEntry]([ExtResource("2")])
+Soldiers = Array[CatalogEntry]([ExtResource("3")])
+Enemies = Array[CatalogEntry]([ExtResource("4")])
+Items = Array[CatalogEntry]([ExtResource("5"), ExtResource("7"), ExtResource("8")])
+FloorRules = Array[PackedScene]([ExtResource("6")])

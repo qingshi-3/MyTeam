@@ -1,11 +1,19 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://src/UI/BattleReportScreen.cs" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportMetric.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportUnitRow.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/IconText.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/IconText.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/SemanticChip.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportTeamSummary.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportComparison.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportRosterStrip.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportLeaderboardHeader.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportLeaderboardRow.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportUnitDetail.tscn" id="11"]
 
-[sub_resource type="ButtonGroup" id="ReportTabs"]
+[sub_resource type="ButtonGroup" id="DimensionTabs"]
+resource_local_to_scene = true
+
+[sub_resource type="ButtonGroup" id="AllegianceTabs"]
 resource_local_to_scene = true
 
 [node name="BattleReportScreen" type="Control"]
@@ -16,8 +24,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
-MetricScene = ExtResource("2")
-UnitRowScene = ExtResource("3")
+LeaderboardRowScene = ExtResource("10")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -26,82 +33,246 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 34
-theme_override_constants/margin_top = 22
-theme_override_constants/margin_right = 34
-theme_override_constants/margin_bottom = 22
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 14
 
 [node name="Panel" type="PanelContainer" parent="Margin"]
 layout_mode = 2
+theme_type_variation = &"ModalPanel"
 
 [node name="Layout" type="VBoxContainer" parent="Margin/Panel"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 
-[node name="Header" type="HBoxContainer" parent="Margin/Panel/Layout"]
+[node name="OutcomeBanner" type="PanelContainer" parent="Margin/Panel/Layout"]
+custom_minimum_size = Vector2(0, 66)
 layout_mode = 2
+theme_type_variation = &"NotificationPanel"
 
-[node name="Headline" type="VBoxContainer" parent="Margin/Panel/Layout/Header"]
+[node name="Header" type="HBoxContainer" parent="Margin/Panel/Layout/OutcomeBanner"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Headline" type="VBoxContainer" parent="Margin/Panel/Layout/OutcomeBanner/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ReportOutcome" type="Label" parent="Margin/Panel/Layout/Header/Headline"]
+[node name="ReportOutcome" type="Label" parent="Margin/Panel/Layout/OutcomeBanner/Header/Headline"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "我方胜利"
 
-[node name="ReportEncounter" type="Label" parent="Margin/Panel/Layout/Header/Headline"]
+[node name="ReportEncounter" type="Label" parent="Margin/Panel/Layout/OutcomeBanner/Header/Headline"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PlayerLabel"
 text = "遭遇战"
 
-[node name="ReportDuration" parent="Margin/Panel/Layout/Header" instance=ExtResource("4")]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ReportMetrics" type="HBoxContainer" parent="Margin/Panel/Layout"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 88)
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Tabs" type="HBoxContainer" parent="Margin/Panel/Layout"]
+[node name="Meta" type="VBoxContainer" parent="Margin/Panel/Layout/OutcomeBanner/Header"]
 layout_mode = 2
 alignment = 1
 
-[node name="PlayerTab" type="Button" parent="Margin/Panel/Layout/Tabs"]
+[node name="ReportDuration" parent="Margin/Panel/Layout/OutcomeBanner/Header/Meta" instance=ExtResource("3")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+
+[node name="CommandMeta" parent="Margin/Panel/Layout/OutcomeBanner/Header/Meta" instance=ExtResource("4")]
+unique_name_in_owner = true
+layout_mode = 2
+FontSizeOverride = 16
+
+[node name="TeamComparison" type="HBoxContainer" parent="Margin/Panel/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlayerSummary" parent="Margin/Panel/Layout/TeamComparison" instance=ExtResource("5")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EnemySummary" parent="Margin/Panel/Layout/TeamComparison" instance=ExtResource("5")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Controls" type="HBoxContainer" parent="Margin/Panel/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="DimensionTabs" type="HBoxContainer" parent="Margin/Panel/Layout/Controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="OverviewTab" type="Button" parent="Margin/Panel/Layout/Controls/DimensionTabs"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(142, 40)
 layout_mode = 2
 theme_type_variation = &"ReportTabButton"
 toggle_mode = true
-button_group = SubResource("ReportTabs")
+button_group = SubResource("DimensionTabs")
+text = "战局总览"
+
+[node name="OffenseTab" type="Button" parent="Margin/Panel/Layout/Controls/DimensionTabs"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 40)
+layout_mode = 2
+theme_type_variation = &"ReportTabButton"
+toggle_mode = true
+button_group = SubResource("DimensionTabs")
+text = "输出"
+
+[node name="SurvivalTab" type="Button" parent="Margin/Panel/Layout/Controls/DimensionTabs"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 40)
+layout_mode = 2
+theme_type_variation = &"ReportTabButton"
+toggle_mode = true
+button_group = SubResource("DimensionTabs")
+text = "生存"
+
+[node name="HealingTab" type="Button" parent="Margin/Panel/Layout/Controls/DimensionTabs"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 40)
+layout_mode = 2
+theme_type_variation = &"ReportTabButton"
+toggle_mode = true
+button_group = SubResource("DimensionTabs")
+text = "治疗"
+
+[node name="RosterContext" type="Label" parent="Margin/Panel/Layout/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "我方 · 总览"
+vertical_alignment = 1
+
+[node name="AllegianceTabs" type="HBoxContainer" parent="Margin/Panel/Layout/Controls"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PlayerTab" type="Button" parent="Margin/Panel/Layout/Controls/AllegianceTabs"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(104, 40)
+layout_mode = 2
+theme_type_variation = &"ReportTabButton"
+toggle_mode = true
+button_group = SubResource("AllegianceTabs")
 text = "我方"
 
-[node name="EnemyTab" type="Button" parent="Margin/Panel/Layout/Tabs"]
+[node name="EnemyTab" type="Button" parent="Margin/Panel/Layout/Controls/AllegianceTabs"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 44)
+custom_minimum_size = Vector2(104, 40)
 layout_mode = 2
 theme_type_variation = &"ReportTabButton"
 toggle_mode = true
-button_group = SubResource("ReportTabs")
+button_group = SubResource("AllegianceTabs")
 text = "敌方"
 
-[node name="RosterScroll" type="ScrollContainer" parent="Margin/Panel/Layout"]
+[node name="ReportContentScroll" type="ScrollContainer" parent="Margin/Panel/Layout"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 2
+follow_focus = true
 horizontal_scroll_mode = 0
 
-[node name="ReportRows" type="VBoxContainer" parent="Margin/Panel/Layout/RosterScroll"]
+[node name="ReportContent" type="VBoxContainer" parent="Margin/Panel/Layout/ReportContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="OverviewPage" type="VBoxContainer" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 7
+theme_override_constants/separation = 8
+
+[node name="OverviewComparison" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/OverviewPage" instance=ExtResource("6")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RosterStrips" type="HBoxContainer" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/OverviewPage"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PlayerRosterStrip" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/OverviewPage/RosterStrips" instance=ExtResource("8")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EnemyRosterStrip" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/OverviewPage/RosterStrips" instance=ExtResource("8")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="LeaderboardPage" type="VBoxContainer" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="LeaderboardTitle" type="Label" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SectionTitleLabel"
+text = "我方 · 输出排行榜"
+
+[node name="LeaderboardBody" type="HFlowContainer" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 8
+
+[node name="LeaderboardPanel" type="VBoxContainer" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage/LeaderboardBody"]
+custom_minimum_size = Vector2(740, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.2
+theme_override_constants/separation = 5
+
+[node name="LeaderboardHeader" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage/LeaderboardBody/LeaderboardPanel" instance=ExtResource("9")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="LeaderboardList" type="VBoxContainer" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage/LeaderboardBody/LeaderboardPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="EmptyState" type="PanelContainer" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage/LeaderboardBody/LeaderboardPanel"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EmptyStateText" type="Label" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage/LeaderboardBody/LeaderboardPanel/EmptyState"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "本方没有产生有效治疗"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="UnitDetail" parent="Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage/LeaderboardBody" instance=ExtResource("11")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SettlementMessage" type="Label" parent="Margin/Panel/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"WarningLabel"
+text = "战斗结果暂未保存，军团状态没有改变。请重试结算。"
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="ReportContinue" type="Button" parent="Margin/Panel/Layout"]
+theme_type_variation = &"PrimaryButton"
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 52)
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "继续"

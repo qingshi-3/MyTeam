@@ -1,27 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/UI/HeroAbilityPanel.cs" id="1"]
 [ext_resource type="Resource" path="res://content/ui/semantic_icon_catalog.tres" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/ResourceCostBadge.tscn" id="3"]
 
-[sub_resource type="StyleBoxFlat" id="AbilitySurface"]
-bg_color = Color(0.075, 0.095, 0.15, 0.98)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.45, 0.38, 0.18, 0.9)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_right = 7
-corner_radius_bottom_left = 7
-content_margin_left = 12.0
-content_margin_top = 9.0
-content_margin_right = 12.0
-content_margin_bottom = 9.0
-
 [node name="HeroAbilityPanel" type="PanelContainer"]
-theme_override_styles/panel = SubResource("AbilitySurface")
 script = ExtResource("1")
 Catalog = ExtResource("2")
 
@@ -68,4 +51,3 @@ theme_override_font_sizes/font_size = 15
 text = "指令效果"
 autowrap_mode = 2
 max_lines_visible = 3
-

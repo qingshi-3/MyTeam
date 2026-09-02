@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityOperationSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="3"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/statuses/status_phase5_focus.tres" id="4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="5"]
+
+[sub_resource type="Resource" id="Owner"]
+script = ExtResource("3")
+
+[sub_resource type="Resource" id="ApplyFocus"]
+script = ExtResource("5")
+Status = ExtResource("4")
+TargetQuery = SubResource("Owner")
+
+[resource]
+script = ExtResource("1")
+StableId = "ability_phase5_focus"
+DisplayName = "扩展专注"
+ActivationKind = 0
+Trigger = 0
+ManaCost = 1
+GoldCost = 0
+CooldownTicks = 0
+MaxUses = 1
+IntervalTicks = 0
+Operations = Array[ExtResource("2")]([SubResource("ApplyFocus")])

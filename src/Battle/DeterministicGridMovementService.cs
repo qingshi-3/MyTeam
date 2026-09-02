@@ -49,6 +49,14 @@ public sealed class DeterministicGridMovementService : IGridMovementService
         _requests.Any(request => request.Mover.RuntimeId == runtimeId || request.TargetRuntimeId == runtimeId) ||
         _snapshotById.ContainsKey(runtimeId) || _snapshotByCell.Values.Any(unit => unit.RuntimeId == runtimeId);
 
+    internal MovementStateCheckpoint CaptureState() => new(this);
+
+    internal void RestoreState(MovementStateCheckpoint checkpoint)
+    {
+        ArgumentNullException.ThrowIfNull(checkpoint);
+        checkpoint.Restore(this);
+    }
+
     public DeterministicGridMovementService(
         int width,
         int height,
@@ -193,7 +201,7 @@ public sealed class DeterministicGridMovementService : IGridMovementService
         foreach (var proposal in commitOrder)
         {
             proposal.Mover.Cell = proposal.Candidate.To;
-            proposal.Mover.MoveCooldown = proposal.Mover.Definition.MoveTicks;
+            proposal.Mover.MoveCooldown = proposal.Mover.EffectiveMoveTicks;
             proposal.Mover.Mode = BattleUnitMode.Moving;
             proposal.Mover.WaitingTicks = 0;
             _retargetFromByUnit.Remove(proposal.Mover.RuntimeId);
@@ -464,7 +472,7 @@ public sealed class DeterministicGridMovementService : IGridMovementService
                 continue;
             var currentDistance = proposal.Mover.Cell.DistanceTo(targetProposal.Mover.Cell);
             var finalDistance = proposal.Candidate.To.DistanceTo(targetProposal.Candidate.To);
-            var finalCanAct = finalDistance <= proposal.Mover.Definition.Range &&
+            var finalCanAct = finalDistance <= proposal.Mover.AttackRange &&
                               _hasLineAccess(proposal.Candidate.To, proposal.Mover.Definition, targetProposal.Candidate.To);
             var lineImproved = !_hasLineAccess(proposal.Mover.Cell, proposal.Mover.Definition, targetProposal.Mover.Cell) &&
                                _hasLineAccess(proposal.Candidate.To, proposal.Mover.Definition, targetProposal.Candidate.To);
@@ -556,10 +564,10 @@ public sealed class DeterministicGridMovementService : IGridMovementService
 
     private bool IsEngagementCell(BattleUnitState mover, BattleUnitState target, Vector2I cell) =>
         InBounds(cell) && TerrainAllowsSnapshot(cell) && cell != target.Cell &&
-        cell.DistanceTo(target.Cell) <= mover.Definition.Range && _hasLineAccess(cell, mover.Definition, target.Cell);
+        cell.DistanceTo(target.Cell) <= mover.AttackRange && _hasLineAccess(cell, mover.Definition, target.Cell);
 
     private bool CanActFrom(BattleUnitState mover, BattleUnitState target, Vector2I cell) =>
-        cell.DistanceTo(target.Cell) <= mover.Definition.Range && _hasLineAccess(cell, mover.Definition, target.Cell);
+        cell.DistanceTo(target.Cell) <= mover.AttackRange && _hasLineAccess(cell, mover.Definition, target.Cell);
 
     private Dictionary<Vector2I, int> BuildDistanceMap(BattleUnitState mover)
     {
@@ -688,6 +696,56 @@ public sealed class DeterministicGridMovementService : IGridMovementService
         int RemainingCost,
         ulong TieBreak);
     private sealed record MoveProposal(BattleUnitState Mover, PlanCandidate Candidate);
+
+    internal sealed class MovementStateCheckpoint
+    {
+        private readonly DeterministicGridMovementService _owner;
+        private readonly Dictionary<string, string> _targetByUnit;
+        private readonly Dictionary<string, Vector2I> _goalByUnit;
+        private readonly Dictionary<Vector2I, string> _goalOwnerByCell;
+        private readonly Dictionary<string, string> _retargetFromByUnit;
+        private readonly Dictionary<string, BattleUnitState> _snapshotById;
+        private readonly Dictionary<Vector2I, BattleUnitState> _snapshotByCell;
+        private readonly Dictionary<Vector2I, bool> _terrainSnapshot;
+        private readonly MoveRequest[] _requests;
+
+        internal MovementStateCheckpoint(DeterministicGridMovementService owner)
+        {
+            _owner = owner;
+            _targetByUnit = new Dictionary<string, string>(owner._targetByUnit, StringComparer.Ordinal);
+            _goalByUnit = new Dictionary<string, Vector2I>(owner._goalByUnit, StringComparer.Ordinal);
+            _goalOwnerByCell = owner._goalOwnerByCell.ToDictionary(pair => pair.Key, pair => pair.Value);
+            _retargetFromByUnit = new Dictionary<string, string>(owner._retargetFromByUnit, StringComparer.Ordinal);
+            _snapshotById = new Dictionary<string, BattleUnitState>(owner._snapshotById, StringComparer.Ordinal);
+            _snapshotByCell = owner._snapshotByCell.ToDictionary(pair => pair.Key, pair => pair.Value);
+            _terrainSnapshot = owner._terrainSnapshot.ToDictionary(pair => pair.Key, pair => pair.Value);
+            _requests = owner._requests.ToArray();
+        }
+
+        internal void Restore(DeterministicGridMovementService owner)
+        {
+            if (!ReferenceEquals(owner, _owner))
+                throw new InvalidOperationException("Movement checkpoint belongs to another service.");
+            Restore(owner._targetByUnit, _targetByUnit);
+            Restore(owner._goalByUnit, _goalByUnit);
+            Restore(owner._goalOwnerByCell, _goalOwnerByCell);
+            Restore(owner._retargetFromByUnit, _retargetFromByUnit);
+            Restore(owner._snapshotById, _snapshotById);
+            Restore(owner._snapshotByCell, _snapshotByCell);
+            Restore(owner._terrainSnapshot, _terrainSnapshot);
+            owner._requests.Clear();
+            owner._requests.AddRange(_requests);
+        }
+
+        private static void Restore<TKey, TValue>(
+            IDictionary<TKey, TValue> target,
+            IReadOnlyDictionary<TKey, TValue> source) where TKey : notnull
+        {
+            target.Clear();
+            foreach (var pair in source) target.Add(pair.Key, pair.Value);
+        }
+    }
+
     private readonly record struct GoalKey(string RuntimeId, Vector2I Goal);
     private readonly record struct CandidateKey(string RuntimeId, Vector2I? Goal, Vector2I Destination)
     {

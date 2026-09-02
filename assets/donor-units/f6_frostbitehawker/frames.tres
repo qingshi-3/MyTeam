@@ -1,6 +1,6 @@
-[gd_resource type="SpriteFrames" load_steps=65 format=3]
+[gd_resource type="SpriteFrames" format=3 uid="uid://dov6fxv4il01r"]
 
-[ext_resource type="Texture2D" path="res://assets/donor-units/f6_frostbitehawker/f6_frostbitehawker.png" id="1_texture"]
+[ext_resource type="Texture2D" uid="uid://1j1p0lg35q1f" path="res://assets/donor-units/f6_frostbitehawker/f6_frostbitehawker.png" id="1_texture"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_000"]
 atlas = ExtResource("1_texture")
@@ -329,104 +329,9 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_023")
 }],
-"loop": false,
+"loop": 0,
 "name": &"attack",
 "speed": 10.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_038")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_039")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_040")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_041")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_042")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_043")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_044")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_045")
-}],
-"loop": false,
-"name": &"defeated",
-"speed": 6.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_046")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_047")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_048")
-}],
-"loop": false,
-"name": &"hit",
-"speed": 10.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_049")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_050")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_051")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_052")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_053")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_054")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_055")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_056")
-}],
-"loop": true,
-"name": &"idle",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_057")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_058")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_059")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_060")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_061")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_062")
-}],
-"loop": true,
-"name": &"move",
-"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -471,7 +376,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_037")
 }],
-"loop": true,
+"loop": 1,
 "name": &"breathing",
 "speed": 5.0
 }, {
@@ -500,9 +405,81 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_045")
 }],
-"loop": false,
+"loop": 0,
 "name": &"death",
 "speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_038")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_039")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_040")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_041")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_042")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_043")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_044")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_045")
+}],
+"loop": 0,
+"name": &"defeated",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_046")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_047")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_048")
+}],
+"loop": 0,
+"name": &"hit",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_049")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_050")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_051")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_052")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_053")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_054")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_055")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_056")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -523,7 +500,30 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_062")
 }],
-"loop": true,
+"loop": 1,
+"name": &"move",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_057")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_058")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_059")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_060")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_061")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_062")
+}],
+"loop": 1,
 "name": &"run",
 "speed": 8.0
 }]

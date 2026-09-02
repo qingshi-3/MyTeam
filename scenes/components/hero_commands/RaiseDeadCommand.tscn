@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3]
-[ext_resource type="Script" path="res://src/Battle/Commands/RaiseDeadCommandContent.cs" id="1"]
-[node name="HeroCommandContentRoot" type="Node"]
-script = ExtResource("1")
-DisplayName = "死者起身"
-ManaCost = 1
-SummonCount = 2
-HealthMultiplier = 0.75
-DamageMultiplier = 0.8

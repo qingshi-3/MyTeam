@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using TowerAutobattler.Battle;
 using TowerAutobattler.Components;
 using TowerAutobattler.Content;
 using TowerAutobattler.Presentation;
+using TowerAutobattler.TacticalCommands;
 
 public partial class MovementPresentationContractSmoke : Node
 {
@@ -24,8 +26,8 @@ public partial class MovementPresentationContractSmoke : Node
         {
             var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres")
                 ?? throw new InvalidOperationException("catalog load");
-            var gate = await ContentRegistry.CreateReadyAsync(this, catalog);
-            var registry = gate.Registry ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
+            var gate = await TestProjectFixture.PublishAsync(this);
+            var registry = gate.Package?.Content ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
 
             IndependentSceneContract(registry);
             await FacingContractAsync();
@@ -366,7 +368,7 @@ public partial class MovementPresentationContractSmoke : Node
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         try
         {
-            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!, heroRoot.HeroCommand!);
+            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!);
             var mutualHero = BattleSetupFactory.Snapshot(heroEntry) with
             {
                 MaxHealth = 1000,
@@ -512,7 +514,7 @@ public partial class MovementPresentationContractSmoke : Node
                 AttackTicks = 1000,
                 MoveTicks = 1000
             };
-            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!, heroRoot.HeroCommand!);
+            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!);
             var config = new BattleConfig
             {
                 Seed = 77,
@@ -554,7 +556,7 @@ public partial class MovementPresentationContractSmoke : Node
                 GlobalPosition = clickPosition
             }, true);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            if (!screen.GetNode<Control>("Margin/Layout/BattleBoard/SelectedUnitPanel").Visible)
+            if (!screen.GetNode<Control>("%SelectedUnitPanel").Visible)
                 throw new InvalidOperationException("pointer hit testing did not follow the presenter's visible interpolated position");
 
             var pause = screen.GetNode<Button>("%PauseButton");
@@ -619,7 +621,7 @@ public partial class MovementPresentationContractSmoke : Node
                 AttackTicks = 1000,
                 MoveTicks = 1000
             };
-            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!, heroRoot.HeroCommand!);
+            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!);
             var config = new BattleConfig
             {
                 Seed = 177,
@@ -684,15 +686,21 @@ public partial class MovementPresentationContractSmoke : Node
         {
             var hero = BattleSetupFactory.Snapshot((UnitDefinition)merchantEntry.Definition, merchantRoot.Behavior);
             var enemy = BattleSetupFactory.Snapshot((UnitDefinition)enemyEntry.Definition, enemyRoot.Behavior);
-            var rule = BattleSetupFactory.Snapshot(merchantRoot.HeroRule!, merchantRoot.HeroCommand!);
+            var rule = BattleSetupFactory.Snapshot(merchantRoot.HeroRule!);
             var summonEntry = registry.Catalog.Soldiers.Single(entry => entry.StableId == merchantRoot.HeroRule!.SummonContentId);
             var summon = BattleSetupFactory.Snapshot(summonEntry);
+            var tacticalCommands = ImmutableArray.Create(
+                registry.Graph.ResolveTacticalCommand("tactical_paid_reinforcement"),
+                registry.Graph.ResolveTacticalCommand("tactical_rally"));
             screen.StartBattle(registry, new BattleConfig
             {
                 Seed = 91,
                 FloorRule = new ClearFloorRuleRuntime("motion-summon", "常规", "召唤落点测试"),
                 HeroRule = rule,
-                Summons = new SummonProfiles(Mercenary: summon),
+                TacticalCommands = new TacticalCommandBattlePreparation(
+                    TacticalCommandBattlePreparationBuilder.Fingerprint(tacticalCommands), tacticalCommands),
+                TacticalSummons = ImmutableDictionary<string, UnitSnapshot>.Empty
+                    .Add("soldier_aegis_guard", summon),
                 StartingGold = 5,
                 Spawns =
                 [
@@ -700,7 +708,7 @@ public partial class MovementPresentationContractSmoke : Node
                     new BattleSpawn(enemy, 1, new Vector2I(9, 2), "enemy")
                 ]
             }, "召唤直接落点");
-            screen.GetNode<Button>("Margin/Layout/Hud/HeroCommandHud/Layout/Mana/CommandButton")
+            screen.GetNode<Button>("Margin/Layout/Hud/ControlRow/TacticalCommandHud/Layout/Slots/TacticalCommandSlot0")
                 .EmitSignal(BaseButton.SignalName.Pressed);
             var summoned = screen.GetNode<Node2D>("%UnitsRoot").GetChildren().OfType<UnitContentRoot>()
                 .Single(unit => unit.RuntimeId.StartsWith("s-", StringComparison.Ordinal));
@@ -727,7 +735,7 @@ public partial class MovementPresentationContractSmoke : Node
         {
             var hero = BattleSetupFactory.Snapshot((UnitDefinition)heroEntry.Definition, heroRoot.Behavior);
             var enemy = BattleSetupFactory.Snapshot((UnitDefinition)enemyEntry.Definition, enemyRoot.Behavior);
-            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!, heroRoot.HeroCommand!);
+            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!);
             var config = new BattleConfig
             {
                 Seed = 9127,

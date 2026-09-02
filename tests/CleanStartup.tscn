@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/app/GameRoot.tscn" id="1_root"]
+[ext_resource type="Script" path="res://tests/CleanStartupFinalizerDrain.cs" id="2_drain"]
+
+[node name="CleanStartup" instance=ExtResource("1_root")]
+SaveNamespace = "tests/clean-startup"
+
+[node name="FinalizerDrain" type="Node" parent="."]
+script = ExtResource("2_drain")

@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>高塔军团 · 内容系统架构视觉审查</title>
+  <style>
+    :root {
+      --bg:#071014; --panel:#0d181c; --panel-2:#122126; --panel-3:#192b30;
+      --line:#38545b; --line-soft:#243a40; --text:#edf4f0; --muted:#9eb2ad;
+      --gold:#e8bd68; --cyan:#79d7dc; --green:#78cf9c; --amber:#eba95b;
+      --red:#ea7e78; --violet:#b7a5e2; --ink:#071014;
+      --sans:"Microsoft YaHei UI","PingFang SC","Noto Sans CJK SC",system-ui,sans-serif;
+      --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:68px}
+    body{margin:0;min-width:280px;background:
+      linear-gradient(rgba(121,215,220,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(121,215,220,.025) 1px,transparent 1px),
+      radial-gradient(circle at 82% -10%,rgba(232,189,104,.12),transparent 34rem),var(--bg);
+      background-size:32px 32px,32px 32px,auto,auto;color:var(--text);font:14px/1.6 var(--sans)}
+    a{color:inherit} button,select,textarea{font:inherit} button,select{min-height:38px}
+    :focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+    .skip{position:fixed;left:12px;top:-70px;z-index:100;padding:8px 12px;background:var(--text);color:var(--ink)}
+    .skip:focus{top:8px}
+    .topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line-soft);background:rgba(7,16,20,.95);backdrop-filter:blur(14px)}
+    .topbar-inner{max-width:1500px;margin:auto;padding:8px 22px;display:flex;align-items:center;gap:20px}
+    .brand{flex:0 0 auto;color:var(--gold);font-weight:900;letter-spacing:.08em}
+    .brand small{display:block;color:var(--muted);font:9px/1.3 var(--mono);letter-spacing:.13em}
+    nav{display:flex;gap:3px;overflow-x:auto;scrollbar-width:thin}
+    nav a{white-space:nowrap;padding:7px 9px;border-radius:4px;color:var(--muted);font-size:12px;text-decoration:none}
+    nav a:hover,nav a:focus-visible{background:var(--panel-2);color:var(--text)}
+    main{max-width:1500px;margin:auto;padding:26px 22px 78px;min-width:0}
+    section{margin:0 0 72px;min-width:0} section[id]{scroll-margin-top:72px}
+    .eyebrow{color:var(--cyan);font:800 11px/1.4 var(--mono);letter-spacing:.13em;text-transform:uppercase}
+    h1{max-width:1050px;margin:8px 0 8px;font-size:clamp(34px,5.2vw,68px);line-height:1.04;letter-spacing:-.045em}
+    h1 em{font-style:normal;color:var(--gold)}
+    h2{margin:0;font-size:clamp(25px,3vw,39px);line-height:1.15;letter-spacing:-.025em}
+    h3{margin:0 0 8px;font-size:17px} p{margin:0 0 10px}.muted{color:var(--muted)}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:26px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--line-soft)}
+    .section-head>p{max-width:500px;color:var(--muted);margin:0;text-align:right}
+    .hero-brief{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;margin-bottom:14px}
+    .verdict{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--red);background:rgba(234,126,120,.08)}
+    .verdict strong{font:900 22px/1 var(--mono);color:var(--red)}
+    .verdict span{max-width:250px;color:#d9e4df;font-size:12px}
+    .facts{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 14px}
+    .fact{padding:5px 8px;border:1px solid var(--line-soft);background:var(--panel);color:var(--muted);font-size:11px}
+    .fact b{color:var(--gold);font-family:var(--mono)}
+    .state-key{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0 14px}
+    .state-key span{display:inline-flex;align-items:center;gap:6px;padding:4px 7px;border:1px solid var(--line-soft);background:var(--panel);color:var(--muted);font-size:10px}
+    .state-key i{width:10px;height:10px;border:2px solid currentColor}.state-key .observed{color:var(--green)}.state-key .proposed{color:var(--cyan)}.state-key .missing{color:var(--red)}.state-key .nongoal{color:var(--violet)}.state-key .nongoal i{border-style:dashed}
+    .legend{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0;color:var(--muted);font-size:11px}
+    .legend span{display:inline-flex;align-items:center;gap:6px}
+    .legend i{width:14px;height:8px;border:1px solid currentColor;background:transparent}
+    .legend .good{color:var(--green)}.legend .warn{color:var(--amber)}.legend .bad{color:var(--red)}.legend .target{color:var(--cyan)}
+
+    figure{margin:0}.diagram-shell{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;border:1px solid var(--line);background:linear-gradient(180deg,rgba(18,33,38,.96),rgba(8,18,21,.98));box-shadow:0 18px 60px rgba(0,0,0,.24)}
+    .diagram-shell:focus{outline:3px solid var(--cyan);outline-offset:2px}
+    .diagram{display:block;width:100%;height:auto;min-width:980px}
+    .diagram text{font-family:var(--sans);fill:var(--text)}
+    .diagram .mono{font-family:var(--mono)}
+    .diagram .title{font-size:22px;font-weight:900}.diagram .label{font-size:14px;font-weight:800}.diagram .small{font-size:11px;fill:var(--muted)}
+    .diagram .tiny{font-size:10px;fill:var(--muted)}.diagram .metric{font-size:24px;font-weight:900;font-family:var(--mono)}
+    .diagram .node{fill:#0f1d21;stroke:var(--line);stroke-width:1.5}.diagram .node.good{stroke:var(--green)}
+    .diagram .node.warn{stroke:var(--amber)}.diagram .node.bad{stroke:var(--red)}.diagram .node.target{stroke:var(--cyan)}.diagram .node.nongoal{stroke:var(--violet);stroke-dasharray:7 5}
+    .diagram .band{fill:#0a1518;stroke:var(--line-soft)}.diagram .group{fill:none;stroke:var(--line);stroke-width:1.5;stroke-dasharray:6 5}
+    .diagram .edge{fill:none;stroke:#71878a;stroke-width:2}.diagram .edge.hot{stroke:var(--amber)}.diagram .edge.good{stroke:var(--green)}
+    .diagram .edge.target{stroke:var(--cyan)}.diagram .edge.dashed{stroke-dasharray:6 5}.diagram .divider{stroke:var(--line);stroke-width:1}
+    .diagram .status-good{fill:var(--green)}.diagram .status-warn{fill:var(--amber)}.diagram .status-bad{fill:var(--red)}.diagram .status-target{fill:var(--cyan)}
+    .diagram .ink{fill:var(--ink)}.diagram .gold{fill:var(--gold)}.diagram .cyan{fill:var(--cyan)}.diagram .green{fill:var(--green)}.diagram .red{fill:var(--red)}.diagram .violet{fill:var(--violet)}
+    figcaption{display:flex;justify-content:space-between;gap:18px;padding:9px 12px;border:1px solid var(--line-soft);border-top:0;color:var(--muted);font-size:11px;background:var(--panel)}
+    figcaption b{color:var(--text)}
+
+    .review-strip{margin-top:12px;border:1px solid var(--line-soft);background:rgba(13,24,28,.86)}
+    .review-line{display:flex;align-items:center;gap:8px;padding:8px 10px}.review-line strong{margin-right:auto;color:var(--gold);font-size:12px}
+    .review-actions{display:flex;gap:5px;flex-wrap:wrap}.decision-btn,.action-btn{cursor:pointer;border:1px solid var(--line);border-radius:3px;background:var(--panel-2);color:var(--muted);padding:6px 9px}
+    .decision-btn[aria-pressed=true]{color:var(--ink);font-weight:900;border-color:transparent}
+    .decision-btn[data-value="认可"][aria-pressed=true]{background:var(--green)}
+    .decision-btn[data-value="需调整"][aria-pressed=true]{background:var(--amber)}
+    .decision-btn[data-value="暂缓"][aria-pressed=true]{background:var(--violet)}
+    .review-notes{padding:0 10px 10px}.review-notes label{display:block;margin-bottom:4px;color:var(--muted);font-size:10px}
+    textarea,select{border:1px solid var(--line);border-radius:3px;background:#081316;color:var(--text)}
+    textarea{width:100%;min-height:60px;padding:8px;resize:vertical}select{padding:6px 28px 6px 8px}
+
+    .decision-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel)}
+    .decision-group{padding:15px;border-right:1px solid var(--line-soft)}.decision-group:last-child{border:0}
+    .decision-group h3{color:var(--gold);font-size:13px}.decision-group ul{margin:6px 0 0;padding-left:18px;color:var(--muted);font-size:12px}
+    .decision-group li+li{margin-top:5px}
+
+    .appendix-intro{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:12px}
+    details{border:1px solid var(--line-soft);background:var(--panel);margin-bottom:8px}
+    summary{cursor:pointer;padding:12px 14px;color:var(--cyan);font-weight:800;list-style-position:inside}
+    details[open] summary{border-bottom:1px solid var(--line-soft)}
+    .detail-body{padding:14px}.detail-body>p{color:var(--muted)}
+    .scroll-x{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;border:1px solid var(--line-soft)}
+    table{width:100%;min-width:850px;border-collapse:collapse;font-size:12px;background:#0a1518}
+    th,td{padding:9px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line-soft)}
+    th{color:var(--gold);font:800 10px/1.4 var(--mono);background:#112025;position:sticky;top:0}tr:last-child td{border-bottom:0}td:first-child{color:var(--text);font-weight:700}
+    .tag{display:inline-block;margin:1px 2px;padding:1px 5px;background:var(--panel-3);color:var(--muted);font-size:10px}.p0{color:var(--red)}.p1{color:var(--amber)}.p2{color:var(--green)}
+    .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;color:var(--muted);font-size:11px}
+    .evidence-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.evidence-cell{padding:12px;border:1px solid var(--line-soft);background:#091417}.evidence-cell h3{font-size:13px}.evidence-cell p{font-size:11px;color:var(--muted)}
+    code,.mono-text{font-family:var(--mono);color:#cce4de}
+
+    .actionbar{position:sticky;bottom:10px;z-index:15;display:flex;gap:7px;align-items:center;margin-top:36px;padding:9px;border:1px solid var(--line);background:rgba(13,24,28,.95);box-shadow:0 12px 40px rgba(0,0,0,.35);backdrop-filter:blur(12px)}
+    .save-state{margin-right:auto;color:var(--muted);font-size:11px}.action-btn.primary{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:900}
+    dialog{max-width:500px;border:1px solid var(--line);padding:0;background:var(--panel);color:var(--text)}dialog::backdrop{background:rgba(0,0,0,.72)}
+    dialog form{padding:20px}dialog menu{display:flex;justify-content:flex-end;gap:8px;padding:0;margin:18px 0 0}
+    footer{margin-top:30px;padding-top:18px;border-top:1px solid var(--line-soft);color:var(--muted);font-size:10px}
+
+    @media(max-width:1050px){.hero-brief{grid-template-columns:1fr}.verdict{justify-content:space-between}.decision-grid{grid-template-columns:repeat(2,1fr)}.decision-group:nth-child(2){border-right:0}.decision-group:nth-child(-n+2){border-bottom:1px solid var(--line-soft)}.evidence-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:700px){html{scroll-padding-top:116px}.topbar-inner{display:block;padding:7px 12px}.brand{margin-bottom:4px}main{padding:20px 12px 60px}section{margin-bottom:54px}.section-head{display:block}.section-head>p{text-align:left;margin-top:7px}.hero-brief{gap:10px}.verdict{align-items:flex-start}.verdict strong{font-size:18px}.diagram{min-width:920px}.diagram-shell{scrollbar-gutter:stable}.diagram-shell::after{content:"横向滑动查看完整架构图";position:sticky;left:8px;display:inline-block;margin:0 0 7px 8px;padding:3px 6px;background:var(--panel-3);color:var(--muted);font-size:9px}.decision-grid{grid-template-columns:1fr}.decision-group{border-right:0;border-bottom:1px solid var(--line-soft)}.decision-group:last-child{border-bottom:0}.review-line{align-items:flex-start;flex-wrap:wrap}.review-line strong{flex-basis:100%}.evidence-grid{grid-template-columns:1fr}.actionbar{flex-wrap:wrap;bottom:5px}.save-state{flex-basis:100%}figcaption{display:block}figcaption span{display:block;margin-top:3px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <header class="topbar"><div class="topbar-inner"><div class="brand">高塔军团<small>VISUAL ARCHITECTURE REVIEW</small></div><nav aria-label="审查导航"><a href="#landscape">总览</a><a href="#patterns">成熟模式</a><a href="#factory">内容工厂</a><a href="#kernel">效果联动</a><a href="#lifecycle">生命周期</a><a href="#runtime">运行配置</a><a href="#contracts">硬契约</a><a href="#migration">迁移依赖</a><a href="#decisions">待决策</a><a href="#appendix">证据附录</a></nav></div></header>
+
+  <main id="main">
+    <section id="landscape" aria-labelledby="landscape-title">
+      <div class="hero-brief">
+        <div><div class="eyebrow">Executive landscape · architecture-only</div><h1 id="landscape-title">地基可用，<em>扩展门尚未打开</em></h1><div class="state-key" aria-label="架构状态图例"><span class="observed"><i></i>已观察当前基础</span><span class="proposed"><i></i>拟议未实现目标</span><span class="missing"><i></i>缺失硬契约</span><span class="nongoal"><i></i>明确非目标</span></div></div>
+        <div class="verdict"><strong>PARTIAL</strong><span>成熟度只看所有权、生命周期、依赖方向、确定性、隔离、版本化、验证、可观测性与扩展成本。</span></div>
+      </div>
+      <figure>
+        <div class="diagram-shell" tabindex="0" role="group" aria-label="系统总览图，可横向滚动">
+          <svg class="diagram" viewBox="0 0 1200 520" role="img" aria-labelledby="d1-title d1-desc">
+            <title id="d1-title">内容扩张准备度总览</title><desc id="d1-desc">左侧是四项可复用基础，中间是三项主要阻断，右侧是推荐的类型化内容平台。</desc>
+            <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#71878a"/></marker></defs>
+            <rect x="22" y="20" width="1156" height="56" class="band"/><text x="48" y="54" class="title">从“可运行 Alpha”到“可规模化内容生产”</text><text x="1148" y="54" text-anchor="end" class="small mono">结论等级：观察实现 + 推荐目标</text>
+            <rect x="34" y="104" width="326" height="360" rx="10" class="group"/><text x="54" y="132" class="label green">FOUNDATION / 可复用地基</text>
+            <rect x="54" y="154" width="286" height="60" rx="6" class="node good"/><text x="72" y="180" class="label">独立内容场景</text><text x="72" y="199" class="small">hero / soldier / enemy / item 可单独实例化</text>
+            <rect x="54" y="226" width="286" height="60" rx="6" class="node good"/><text x="72" y="252" class="label">稳定身份与目录</text><text x="72" y="271" class="small">stable id · CatalogEntry · definition 引用</text>
+            <rect x="54" y="298" width="286" height="60" rx="6" class="node good"/><text x="72" y="324" class="label">确定性战斗权威</text><text x="72" y="343" class="small">fixed tick · seed · digest · no presenter</text>
+            <rect x="54" y="370" width="286" height="60" rx="6" class="node good"/><text x="72" y="396" class="label">保存与契约测试</text><text x="72" y="415" class="small">v3 DTO · migration · fingerprint · source guard</text>
+            <path d="M360 284H420" class="edge" marker-end="url(#a1)"/>
+            <rect x="430" y="104" width="338" height="360" rx="10" class="group"/><text x="450" y="132" class="label red">MISSING CONTRACT / 扩展阻断</text>
+            <polygon points="458,160 728,160 748,207 728,254 458,254 438,207" class="node bad"/><text x="593" y="190" text-anchor="middle" class="metric red">8 / 24 / 13 / 45</text><text x="593" y="216" text-anchor="middle" class="label">固定数量校验</text><text x="593" y="235" text-anchor="middle" class="small">新增合法内容也会失败</text>
+            <polygon points="458,270 728,270 748,317 728,364 458,364 438,317" class="node warn"/><text x="593" y="301" text-anchor="middle" class="label">三组 optional-field bags</text><text x="593" y="324" text-anchor="middle" class="small">HeroRule · UnitBehavior · ItemModifier</text><text x="593" y="343" text-anchor="middle" class="small">字段增长代替系统边界</text>
+            <rect x="458" y="382" width="270" height="58" rx="6" class="node warn"/><text x="593" y="406" text-anchor="middle" class="label">中心职责拥塞</text><text x="593" y="426" text-anchor="middle" class="small">GameRoot · RunApplication · BattleSimulation</text>
+            <path d="M768 284H828" class="edge hot" marker-end="url(#a1)"/>
+            <rect x="838" y="104" width="328" height="360" rx="10" class="group"/><text x="858" y="132" class="label cyan">TARGET / 类型化内容平台</text>
+            <rect x="858" y="154" width="288" height="76" rx="8" class="node target"/><text x="1002" y="181" text-anchor="middle" class="label">独立产品系统</text><text x="1002" y="202" text-anchor="middle" class="small">Ability · Relic · Floor · Boss · Encounter</text>
+            <path d="M1002 230V258" class="edge target" marker-end="url(#a1)"/>
+            <rect x="858" y="268" width="288" height="76" rx="8" class="node target"/><text x="1002" y="295" text-anchor="middle" class="label">共享 typed effect kernel</text><text x="1002" y="316" text-anchor="middle" class="small">Trigger · Condition · Target · Effect · Limit</text>
+            <path d="M1002 344V370" class="edge target" marker-end="url(#a1)"/>
+            <rect x="858" y="380" width="288" height="60" rx="8" class="node good"/><text x="1002" y="405" text-anchor="middle" class="label">内容组合 data / scene-only</text><text x="1002" y="425" text-anchor="middle" class="small">新原子机制仅一条窄扩展路径</text>
+            <text x="32" y="494" class="small">内容数量与完成度不参与架构评分；8/24/13/45 仅证明 validator 把样本总数误写成硬契约。</text><text x="1166" y="494" text-anchor="end" class="small mono">NON-GOAL: network sync · universal DSL · ECS/DI rewrite</text>
+          </svg>
+        </div>
+        <figcaption><b>首屏答案：当前基础部分成立，但缺少扩展所需硬契约。</b><span>具体英雄、遗物、构筑与平衡只做压力测试，不影响成熟度结论。</span></figcaption>
+      </figure>
+      <div class="review-strip" data-review-id="landscape"><div class="review-line"><strong>决策 · 总体方向</strong><div class="review-actions" role="group" aria-label="总体方向决策"></div></div><div class="review-notes"><label for="notes-landscape">备注</label><textarea id="notes-landscape" data-review-notes placeholder="只记录需要改变方向的意见"></textarea></div></div>
+    </section>
+
+    <section id="patterns" aria-labelledby="patterns-title">
+      <div class="section-head"><div><div class="eyebrow">01 · Mature pattern alignment</div><h2 id="patterns-title">成熟模式对照：借模式，不猜源码</h2></div><p>只引用公开文档或玩家可观察行为；映射的是可迁移模式。</p></div>
+      <figure>
+        <div class="diagram-shell" tabindex="0" role="group" aria-label="成熟架构模式对照图，可横向滚动">
+          <svg class="diagram" viewBox="0 0 1200 670" role="img" aria-labelledby="d6-title d6-desc">
+            <title id="d6-title">公开成熟模式与本项目提案的对照</title><desc id="d6-desc">五条对照泳道从公开文档或游戏可观察行为提取可迁移模式，并映射到本项目的已观察基础、拟议目标和缺失契约；不声称了解任何专有游戏源码。</desc>
+            <defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#71878a"/></marker></defs>
+            <text x="32" y="38" class="title">PUBLIC PATTERN → TRANSFERABLE RULE → PROJECT ALIGNMENT</text>
+            <rect x="28" y="58" width="1144" height="46" class="band"/><text x="48" y="86" class="small">边界：以下只使用公开文档化概念或产品行为；不推断《杀戮尖塔》《哈迪斯》《陷阵之志》等专有内部实现。</text>
+            <text x="54" y="132" class="label gold">公开信号</text><text x="390" y="132" class="label gold">可迁移模式</text><text x="806" y="132" class="label gold">本项目映射</text>
+            <line x1="332" y1="118" x2="332" y2="582" class="divider"/><line x1="744" y1="118" x2="744" y2="582" class="divider"/>
+
+            <rect x="48" y="152" width="246" height="70" rx="6" class="node good"/><text x="68" y="178" class="label">Godot 公开文档</text><text x="68" y="199" class="small">Resource 数据容器 · Scene/Node 实例生命周期</text>
+            <path d="M294 187H368" class="edge" marker-end="url(#a6)"/><rect x="378" y="152" width="326" height="70" rx="6" class="node target"/><text x="398" y="178" class="label">不可变定义 ≠ 可变运行实例</text><text x="398" y="199" class="small">共享规格可复用；战斗/run 状态由 scope owner 持有</text>
+            <path d="M704 187H780" class="edge" marker-end="url(#a6)"/><rect x="790" y="152" width="362" height="70" rx="6" class="node good"/><text x="810" y="178" class="label green">已观察基础</text><text x="810" y="199" class="small">独立 .tscn + 外部 .tres + definition fingerprint</text>
+
+            <rect x="48" y="236" width="246" height="70" rx="6" class="node good"/><text x="68" y="262" class="label">Unreal GAS 公开文档</text><text x="68" y="283" class="small">Ability · Effect · Tag · Attribute 的分离概念</text>
+            <path d="M294 271H368" class="edge" marker-end="url(#a6)"/><rect x="378" y="236" width="326" height="70" rx="6" class="node target"/><text x="398" y="262" class="label">产品系统分离 + typed primitive</text><text x="398" y="283" class="small">能力/遗物保留生命周期；只共享 ordered effect queue</text>
+            <path d="M704 271H780" class="edge" marker-end="url(#a6)"/><rect x="790" y="236" width="362" height="70" rx="6" class="node target"/><text x="810" y="262" class="label cyan">拟议未实现目标</text><text x="810" y="283" class="small">Ability / Relic / Status + narrow typed extension</text>
+
+            <rect x="48" y="320" width="246" height="70" rx="6" class="node good"/><text x="68" y="346" class="label">Roguelike 可观察行为</text><text x="68" y="367" class="small">《杀戮尖塔》《哈迪斯》单局构筑与长期解锁分域</text>
+            <path d="M294 355H368" class="edge" marker-end="url(#a6)"/><rect x="378" y="320" width="326" height="70" rx="6" class="node target"/><text x="398" y="346" class="label">Battle / Run / Meta 状态隔离</text><text x="398" y="367" class="small">跨域只传 sanctioned result；不允许战斗直写存档</text>
+            <path d="M704 355H780" class="edge" marker-end="url(#a6)"/><rect x="790" y="320" width="362" height="70" rx="6" class="node warn"/><text x="810" y="346" class="label">部分基础 + 拟议桥</text><text x="810" y="367" class="small">v3 run/meta/settings 已分；TransitionResult 尚未成契约</text>
+
+            <rect x="48" y="404" width="246" height="70" rx="6" class="node good"/><text x="68" y="430" class="label">《陷阵之志》可观察行为</text><text x="68" y="451" class="small">敌方意图可见 · 行动分步结算 · 结果可解释</text>
+            <path d="M294 439H368" class="edge" marker-end="url(#a6)"/><rect x="378" y="404" width="326" height="70" rx="6" class="node target"/><text x="398" y="430" class="label">确定性顺序 + causal observability</text><text x="398" y="451" class="small">队列阶段、稳定序、来源归因、失败 reason</text>
+            <path d="M704 439H780" class="edge" marker-end="url(#a6)"/><rect x="790" y="404" width="362" height="70" rx="6" class="node bad"/><text x="810" y="430" class="label red">缺失硬契约</text><text x="810" y="451" class="small">simultaneous resolution · reentrancy · typed trace</text>
+
+            <rect x="48" y="488" width="246" height="70" rx="6" class="node good"/><text x="68" y="514" class="label">公开 mod / 引擎扩展模式</text><text x="68" y="535" class="small">catalog · stable identity · validator · typed hook</text>
+            <path d="M294 523H368" class="edge" marker-end="url(#a6)"/><rect x="378" y="488" width="326" height="70" rx="6" class="node target"/><text x="398" y="514" class="label">稳定目录 + 依赖编译 + 窄扩展口</text><text x="398" y="535" class="small">普通组合 data-only；原子机制单一路径</text>
+            <path d="M704 523H780" class="edge" marker-end="url(#a6)"/><rect x="790" y="488" width="362" height="70" rx="6" class="node warn"/><text x="810" y="514" class="label">已观察 id / 缺依赖图</text><text x="810" y="535" class="small">stable id 与目录已有；compile/cycle/type gate 待建</text>
+
+            <rect x="48" y="590" width="1104" height="48" rx="5" class="node nongoal"/><text x="70" y="620" class="label violet">明确非目标：网络同步 · 通用脚本语言 · ECS/DI 重写（除非未来需求改变）</text>
+          </svg>
+        </div>
+        <figcaption><b>对照目的：验证方向是否符合成熟模式。</b><span>它不是竞品源码审计，也不把任何游戏内容数量作为架构证据。</span></figcaption>
+      </figure>
+      <div class="review-strip" data-review-id="patterns"><div class="review-line"><strong>决策 · 成熟模式对齐</strong><div class="review-actions" role="group" aria-label="成熟模式对齐决策"></div></div><div class="review-notes"><label for="notes-patterns">备注</label><textarea id="notes-patterns" data-review-notes placeholder="记录模式引用、迁移边界或非目标调整"></textarea></div></div>
+    </section>
+
+    <section id="factory" aria-labelledby="factory-title">
+      <div class="section-head"><div><div class="eyebrow">02 · Content-production factory</div><h2 id="factory-title">内容工厂：场景可调，资源可组，运行态隔离</h2></div><p>内容类型只测试工厂吞吐与扩展成本，不参与成熟度评分。</p></div>
+      <figure>
+        <div class="diagram-shell" tabindex="0" role="group" aria-label="内容工厂图，可横向滚动">
+          <svg class="diagram" viewBox="0 0 1200 600" role="img" aria-labelledby="d2-title d2-desc">
+            <title id="d2-title">英雄、士兵、敌人、能力和遗物的内容生产工厂</title><desc id="d2-desc">内容简报进入独立场景与不可变资源两条创作线，通过验证与编译形成运行时快照和实例状态。</desc>
+            <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#71878a"/></marker></defs>
+            <text x="34" y="40" class="title">CONTENT FACTORY</text><text x="1164" y="40" text-anchor="end" class="small mono">ordinary composition = .tscn / .tres only</text>
+            <rect x="30" y="68" width="160" height="474" rx="8" class="group"/><text x="110" y="94" text-anchor="middle" class="label">压力测试输入</text><text x="110" y="110" text-anchor="middle" class="tiny">不参与成熟度评分</text>
+            <rect x="50" y="116" width="120" height="54" rx="4" class="node good"/><text x="110" y="140" text-anchor="middle" class="label">英雄</text><text x="110" y="157" text-anchor="middle" class="tiny">军团 + 命令</text>
+            <rect x="50" y="182" width="120" height="54" rx="4" class="node good"/><text x="110" y="206" text-anchor="middle" class="label">士兵</text><text x="110" y="223" text-anchor="middle" class="tiny">职能 + 站位</text>
+            <rect x="50" y="248" width="120" height="54" rx="4" class="node good"/><text x="110" y="272" text-anchor="middle" class="label">敌人 / Boss</text><text x="110" y="289" text-anchor="middle" class="tiny">AI + 阶段</text>
+            <rect x="50" y="314" width="120" height="54" rx="4" class="node target"/><text x="110" y="338" text-anchor="middle" class="label">能力</text><text x="110" y="355" text-anchor="middle" class="tiny">成本 + 触发</text>
+            <rect x="50" y="380" width="120" height="54" rx="4" class="node target"/><text x="110" y="404" text-anchor="middle" class="label">遗物</text><text x="110" y="421" text-anchor="middle" class="tiny">获取 + 生命周期</text>
+            <rect x="50" y="446" width="120" height="54" rx="4" class="node target"/><text x="110" y="470" text-anchor="middle" class="label">楼层 / 遭遇</text><text x="110" y="487" text-anchor="middle" class="tiny">空间 + 内容池</text>
+            <path d="M190 304H236" class="edge" marker-end="url(#a2)"/>
+            <rect x="246" y="68" width="300" height="474" rx="8" class="group"/><text x="396" y="94" text-anchor="middle" class="label cyan">AUTHORING / 两种形状</text>
+            <path d="M396 110V516" class="divider"/>
+            <rect x="266" y="122" width="120" height="336" rx="8" class="node good"/><text x="326" y="150" text-anchor="middle" class="label">独立 .tscn</text><text x="326" y="175" text-anchor="middle" class="small">具体 hero</text><text x="326" y="199" text-anchor="middle" class="small">soldier / enemy</text><text x="326" y="223" text-anchor="middle" class="small">boss / summon</text><text x="326" y="247" text-anchor="middle" class="small">item / relic</text><line x1="282" y1="270" x2="370" y2="270" class="divider"/><text x="326" y="296" text-anchor="middle" class="tiny">可单独打开</text><text x="326" y="314" text-anchor="middle" class="tiny">可实例化调参</text><text x="326" y="332" text-anchor="middle" class="tiny">可独立验证</text><text x="326" y="366" text-anchor="middle" class="tiny">挂 focused</text><text x="326" y="384" text-anchor="middle" class="tiny">components</text><text x="326" y="420" text-anchor="middle" class="tiny">不依赖 level/UI</text>
+            <rect x="406" y="122" width="120" height="336" rx="8" class="node target"/><text x="466" y="150" text-anchor="middle" class="label">不可变 .tres</text><text x="466" y="175" text-anchor="middle" class="small">Definition</text><text x="466" y="199" text-anchor="middle" class="small">Trigger</text><text x="466" y="223" text-anchor="middle" class="small">Condition</text><text x="466" y="247" text-anchor="middle" class="small">Target Query</text><text x="466" y="271" text-anchor="middle" class="small">Effect / Status</text><text x="466" y="295" text-anchor="middle" class="small">Tables / Campaign</text><line x1="422" y1="318" x2="510" y2="318" class="divider"/><text x="466" y="346" text-anchor="middle" class="tiny">共享规格</text><text x="466" y="364" text-anchor="middle" class="tiny">版本化引用</text><text x="466" y="382" text-anchor="middle" class="tiny">描述可生成</text><text x="466" y="420" text-anchor="middle" class="tiny">绝不写入</text><text x="466" y="438" text-anchor="middle" class="tiny">runtime state</text>
+            <path d="M546 304H592" class="edge" marker-end="url(#a2)"/>
+            <rect x="602" y="68" width="258" height="474" rx="8" class="group"/><text x="731" y="94" text-anchor="middle" class="label">VALIDATE + COMPILE</text>
+            <rect x="622" y="124" width="218" height="62" rx="5" class="node warn"/><text x="731" y="150" text-anchor="middle" class="label">结构与引用校验</text><text x="731" y="169" text-anchor="middle" class="tiny">category · id · scene · definition</text>
+            <path d="M731 186V214" class="edge" marker-end="url(#a2)"/>
+            <rect x="622" y="224" width="218" height="62" rx="5" class="node target"/><text x="731" y="250" text-anchor="middle" class="label">Loadout Compiler</text><text x="731" y="269" text-anchor="middle" class="tiny">scene bindings → typed specs</text>
+            <path d="M731 286V314" class="edge" marker-end="url(#a2)"/>
+            <rect x="622" y="324" width="218" height="62" rx="5" class="node target"/><text x="731" y="350" text-anchor="middle" class="label">Description Renderer</text><text x="731" y="369" text-anchor="middle" class="tiny">执行规格 = 玩家文案来源</text>
+            <path d="M731 386V414" class="edge" marker-end="url(#a2)"/>
+            <rect x="622" y="424" width="218" height="62" rx="5" class="node good"/><text x="731" y="450" text-anchor="middle" class="label">Contract Tests</text><text x="731" y="469" text-anchor="middle" class="tiny">isolation · digest · save · workflow</text>
+            <path d="M860 304H906" class="edge" marker-end="url(#a2)"/>
+            <rect x="916" y="68" width="254" height="474" rx="8" class="group"/><text x="1043" y="94" text-anchor="middle" class="label green">RUNTIME PROJECTION</text>
+            <rect x="936" y="124" width="214" height="90" rx="6" class="node good"/><text x="1043" y="151" text-anchor="middle" class="label">Immutable Snapshot</text><text x="1043" y="173" text-anchor="middle" class="small">身份 · stats · loadout</text><text x="1043" y="193" text-anchor="middle" class="tiny">BattleSimulation 只消费投影</text>
+            <rect x="936" y="232" width="214" height="90" rx="6" class="node target"/><text x="1043" y="259" text-anchor="middle" class="label">Runtime Instance</text><text x="1043" y="281" text-anchor="middle" class="small">cooldown · status · charge</text><text x="1043" y="301" text-anchor="middle" class="tiny">每场 / 每 run 独立</text>
+            <rect x="936" y="340" width="214" height="90" rx="6" class="node target"/><text x="1043" y="367" text-anchor="middle" class="label">Stable-id DTO</text><text x="1043" y="389" text-anchor="middle" class="small">stacks · charges · roll</text><text x="1043" y="409" text-anchor="middle" class="tiny">版本化保存与迁移</text>
+            <rect x="936" y="448" width="214" height="58" rx="6" class="node bad"/><text x="1043" y="473" text-anchor="middle" class="label">禁止回写共享 Resource</text><text x="1043" y="492" text-anchor="middle" class="tiny">battle/run state 不污染内容定义</text>
+            <text x="34" y="576" class="small">验收：已有原语重组 = 0 个中心代码改动；新原子机制 = processor + validator + renderer + focused tests。</text>
+          </svg>
+        </div>
+        <figcaption><b>架构结论来自创作形状与生命周期，不来自内容好坏。</b><span>英雄、士兵、Boss、能力与遗物仅验证同一工厂能否低成本承压。</span></figcaption>
+      </figure>
+      <div class="review-strip" data-review-id="factory"><div class="review-line"><strong>决策 · 内容创作形状</strong><div class="review-actions" role="group" aria-label="内容工厂决策"></div></div><div class="review-notes"><label for="notes-factory">备注</label><textarea id="notes-factory" data-review-notes placeholder="记录场景、资源、编译或验证边界的调整"></textarea></div></div>
+    </section>
+
+    <section id="kernel" aria-labelledby="kernel-title">
+      <div class="section-head"><div><div class="eyebrow">03 · Causality and interaction</div><h2 id="kernel-title">效果联动：分产品入口，共用确定性因果链</h2></div><p>示例链只压力测试 queue、归因与安全边界，不评价具体玩法。</p></div>
+      <figure>
+        <div class="diagram-shell" tabindex="0" role="group" aria-label="效果联动与因果链图，可横向滚动">
+          <svg class="diagram" viewBox="0 0 1200 790" role="img" aria-labelledby="d3-title d3-desc">
+            <title id="d3-title">能力、遗物、楼层和首领汇入类型化效果内核并形成两条因果链</title><desc id="d3-desc">上部是四个产品系统经过 authored binding 汇入四阶段处理管线，下部是过量治疗连锁和死亡召唤连锁，右侧是确定性安全闸。</desc>
+            <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#71878a"/></marker></defs>
+            <text x="32" y="38" class="title">TYPED EFFECT KERNEL + CAUSAL CHAINS</text>
+            <rect x="28" y="62" width="1144" height="224" rx="8" class="group"/>
+            <rect x="48" y="86" width="130" height="54" rx="5" class="node target"/><text x="113" y="111" text-anchor="middle" class="label">Ability</text><text x="113" y="128" text-anchor="middle" class="tiny">cast / cooldown</text>
+            <rect x="48" y="150" width="130" height="54" rx="5" class="node target"/><text x="113" y="175" text-anchor="middle" class="label">Relic</text><text x="113" y="192" text-anchor="middle" class="tiny">acquire / charge</text>
+            <rect x="48" y="214" width="130" height="54" rx="5" class="node target"/><text x="113" y="239" text-anchor="middle" class="label">Floor / Boss</text><text x="113" y="256" text-anchor="middle" class="tiny">tick / phase</text>
+            <path d="M178 113H230M178 177H230M178 241H230" class="edge"/><path d="M230 113V241M230 177H264" class="edge" marker-end="url(#a3)"/>
+            <rect x="274" y="86" width="216" height="182" rx="7" class="node target"/><text x="382" y="113" text-anchor="middle" class="label">Authored Binding</text><text x="294" y="143" class="small">01 Trigger</text><text x="294" y="164" class="small">02 Conditions</text><text x="294" y="185" class="small">03 Target Query</text><text x="294" y="206" class="small">04 Ordered Effects</text><text x="294" y="227" class="small">05 Rate / Usage / Recursion</text><text x="294" y="248" class="small">06 Presentation / Report</text>
+            <path d="M490 177H538" class="edge target" marker-end="url(#a3)"/>
+            <rect x="548" y="100" width="134" height="118" rx="6" class="node warn"/><text x="615" y="130" text-anchor="middle" class="label">Modifier</text><text x="615" y="154" text-anchor="middle" class="small">预结算</text><text x="615" y="177" text-anchor="middle" class="tiny">修改请求参数</text><text x="615" y="195" text-anchor="middle" class="tiny">不写权威状态</text>
+            <path d="M682 159H714" class="edge" marker-end="url(#a3)"/>
+            <rect x="724" y="100" width="134" height="118" rx="6" class="node target"/><text x="791" y="130" text-anchor="middle" class="label">Effect</text><text x="791" y="154" text-anchor="middle" class="small">状态变更</text><text x="791" y="177" text-anchor="middle" class="tiny">窄 processor</text><text x="791" y="195" text-anchor="middle" class="tiny">BattleState 权威</text>
+            <path d="M858 159H890" class="edge" marker-end="url(#a3)"/>
+            <rect x="900" y="100" width="134" height="118" rx="6" class="node good"/><text x="967" y="130" text-anchor="middle" class="label">Domain Event</text><text x="967" y="154" text-anchor="middle" class="small">已结算事实</text><text x="967" y="177" text-anchor="middle" class="tiny">typed · immutable</text><text x="967" y="195" text-anchor="middle" class="tiny">source attribution</text>
+            <path d="M1034 159H1060" class="edge" marker-end="url(#a3)"/>
+            <rect x="1070" y="100" width="82" height="118" rx="6" class="node target"/><text x="1111" y="130" text-anchor="middle" class="label">Trigger</text><text x="1111" y="154" text-anchor="middle" class="small">响应入队</text><text x="1111" y="179" text-anchor="middle" class="tiny">next</text><text x="1111" y="196" text-anchor="middle" class="tiny">invocation</text>
+            <path d="M1111 218V250H615V218" class="edge dashed" marker-end="url(#a3)"/><text x="855" y="271" text-anchor="middle" class="tiny">只入队，不在事件回调中递归写状态</text>
+            <text x="32" y="320" class="label gold">PRESSURE CHAIN A · 过量治疗 → 充能 → 护盾 → 冷却</text>
+            <line x1="56" y1="370" x2="900" y2="370" class="edge target"/>
+            <g><circle cx="72" cy="370" r="16" class="status-target"/><text x="72" y="375" text-anchor="middle" class="ink label">1</text><text x="48" y="404" class="small">治疗请求</text><text x="48" y="421" class="tiny mono">60</text></g>
+            <g><circle cx="230" cy="370" r="16" class="status-target"/><text x="230" y="375" text-anchor="middle" class="ink label">2</text><text x="198" y="404" class="small">实际治疗</text><text x="198" y="421" class="tiny mono">25 / overheal 35</text></g>
+            <g><circle cx="410" cy="370" r="16" class="status-target"/><text x="410" y="375" text-anchor="middle" class="ink label">3</text><text x="376" y="404" class="small">遗物充能</text><text x="376" y="421" class="tiny mono">2 → 3</text></g>
+            <g><circle cx="580" cy="370" r="16" class="status-target"/><text x="580" y="375" text-anchor="middle" class="ink label">4</text><text x="540" y="404" class="small">消费满充能</text><text x="540" y="421" class="tiny mono">cost 3</text></g>
+            <g><circle cx="744" cy="370" r="16" class="status-target"/><text x="744" y="375" text-anchor="middle" class="ink label">5</text><text x="708" y="404" class="small">全军护盾</text><text x="708" y="421" class="tiny mono">+12</text></g>
+            <g><circle cx="900" cy="370" r="16" class="status-target"/><text x="900" y="375" text-anchor="middle" class="ink label">6</text><text x="858" y="404" class="small">持盾者冷却</text><text x="858" y="421" class="tiny mono">-1</text></g>
+            <text x="32" y="468" class="label gold">PRESSURE CHAIN B · 死亡 →（可选尸体）→ 召唤</text>
+            <line x1="56" y1="518" x2="900" y2="518" class="edge hot"/>
+            <g><circle cx="72" cy="518" r="16" class="status-warn"/><text x="72" y="523" text-anchor="middle" class="ink label">1</text><text x="46" y="552" class="small">致命伤害</text><text x="46" y="569" class="tiny">生命归零</text></g>
+            <g><circle cx="230" cy="518" r="16" class="status-warn"/><text x="230" y="523" text-anchor="middle" class="ink label">2</text><text x="194" y="552" class="small">UnitDefeated</text><text x="194" y="569" class="tiny">释放占位</text></g>
+            <g><rect x="374" y="502" width="32" height="32" rx="3" class="node warn"/><text x="390" y="523" text-anchor="middle" class="label">3</text><text x="348" y="552" class="small">创建尸体*</text><text x="348" y="569" class="tiny">未来可选</text></g>
+            <g><rect x="544" y="502" width="32" height="32" rx="3" class="node warn"/><text x="560" y="523" text-anchor="middle" class="label">4</text><text x="518" y="552" class="small">消费尸体*</text><text x="518" y="569" class="tiny">未来可选</text></g>
+            <g><circle cx="730" cy="518" r="16" class="status-warn"/><text x="730" y="523" text-anchor="middle" class="ink label">5</text><text x="689" y="552" class="small">查询合法落点</text><text x="689" y="569" class="tiny">稳定格序</text></g>
+            <g><circle cx="900" cy="518" r="16" class="status-warn"/><text x="900" y="523" text-anchor="middle" class="ink label">6</text><text x="870" y="552" class="small">召唤入场</text><text x="870" y="569" class="tiny">归属 + runtime id</text></g>
+            <path d="M230 500C360 455 710 455 900 500" class="edge hot dashed" marker-end="url(#a3)"/><text x="560" y="477" text-anchor="middle" class="tiny">当前实现：友军死亡后直接召唤，不创建或消费尸体</text>
+            <rect x="956" y="310" width="216" height="386" rx="8" class="group"/><text x="1064" y="338" text-anchor="middle" class="label red">DETERMINISM GATE</text>
+            <rect x="976" y="360" width="176" height="74" rx="5" class="node good"/><text x="1064" y="386" text-anchor="middle" class="label">归因</text><text x="1064" y="407" text-anchor="middle" class="tiny mono">chain · source · owner</text><text x="1064" y="423" text-anchor="middle" class="tiny mono">depth · sequence</text>
+            <rect x="976" y="450" width="176" height="88" rx="5" class="node warn"/><text x="1064" y="476" text-anchor="middle" class="label">循环安全</text><text x="1064" y="497" text-anchor="middle" class="tiny">step / event budget</text><text x="1064" y="513" text-anchor="middle" class="tiny">rate limit · repeated edge</text><text x="1064" y="529" text-anchor="middle" class="tiny">recursion / summon cap</text>
+            <rect x="976" y="554" width="176" height="118" rx="5" class="node bad"/><text x="1064" y="580" text-anchor="middle" class="label">可解释中断</text><text x="1064" y="602" text-anchor="middle" class="tiny">资源不足 · 无目标</text><text x="1064" y="619" text-anchor="middle" class="tiny">无落点 · 来源失效</text><text x="1064" y="636" text-anchor="middle" class="tiny">预算 / 频率 / 递归</text><text x="1064" y="653" text-anchor="middle" class="tiny">typed reason，不静默</text>
+            <rect x="28" y="716" width="1144" height="46" class="band"/><text x="48" y="745" class="small">表现和战报只消费 resolved event + presentation metadata；不靠 raw type/cue 字符串推断规则。</text>
+          </svg>
+        </div>
+        <figcaption><b>共同的是执行原语，不是内容完成度或产品生命周期。</b><span>两条链只验证架构；尸体资源仍属未决产品能力。</span></figcaption>
+      </figure>
+      <div class="review-strip" data-review-id="kernel"><div class="review-line"><strong>决策 · 效果内核与因果安全</strong><div class="review-actions" role="group" aria-label="效果内核决策"></div></div><div class="review-notes"><label for="notes-kernel">备注</label><textarea id="notes-kernel" data-review-notes placeholder="记录顺序、归因、预算或中断边界"></textarea></div></div>
+    </section>
+
+    <section id="lifecycle" aria-labelledby="lifecycle-title">
+      <div class="section-head"><div><div class="eyebrow">04 · Runtime lifecycle and ownership</div><h2 id="lifecycle-title">生命周期：每个对象都有出生、所有者与终点</h2></div><p>跨 scope 只传不可变结果；共享定义永不承载可变状态。</p></div>
+      <figure>
+        <div class="diagram-shell" tabindex="0" role="group" aria-label="运行态生命周期与所有权图，可横向滚动">
+          <svg class="diagram" viewBox="0 0 1200 790" role="img" aria-labelledby="d7-title d7-desc">
+            <title id="d7-title">从作者定义到保存迁移的运行态生命周期和所有权</title><desc id="d7-desc">六条泳道分别展示作者定义、编译规格、战斗运行实例、领域事件、跨域结果和保存 DTO 的创建者、所有者、订阅清理、作用域跨越与迁移责任。</desc>
+            <defs><marker id="a7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#71878a"/></marker></defs>
+            <text x="32" y="38" class="title">LIFECYCLE / OWNERSHIP SWIMLANES</text>
+            <text x="210" y="76" text-anchor="middle" class="small mono">CREATE</text><text x="420" y="76" text-anchor="middle" class="small mono">AUTHORITATIVE OWNER</text><text x="640" y="76" text-anchor="middle" class="small mono">USE / SUBSCRIBE</text><text x="850" y="76" text-anchor="middle" class="small mono">END / CLEANUP</text><text x="1062" y="76" text-anchor="middle" class="small mono">CROSS / PERSIST</text>
+            <line x1="318" y1="86" x2="318" y2="736" class="divider"/><line x1="530" y1="86" x2="530" y2="736" class="divider"/><line x1="746" y1="86" x2="746" y2="736" class="divider"/><line x1="958" y1="86" x2="958" y2="736" class="divider"/>
+
+            <rect x="28" y="94" width="1144" height="92" class="band"/><text x="48" y="124" class="label green">AUTHORING · Definition Resource</text>
+            <rect x="150" y="135" width="136" height="34" rx="4" class="node good"/><text x="218" y="157" text-anchor="middle" class="small">内容作者 / Editor</text><path d="M286 152H350" class="edge" marker-end="url(#a7)"/><rect x="360" y="135" width="136" height="34" rx="4" class="node good"/><text x="428" y="157" text-anchor="middle" class="small">ContentCatalog</text><path d="M496 152H566" class="edge" marker-end="url(#a7)"/><rect x="576" y="135" width="136" height="34" rx="4" class="node good"/><text x="644" y="157" text-anchor="middle" class="small">只读引用</text><path d="M712 152H778" class="edge" marker-end="url(#a7)"/><rect x="788" y="135" width="136" height="34" rx="4" class="node good"/><text x="856" y="157" text-anchor="middle" class="small">项目卸载释放</text><text x="1138" y="157" text-anchor="end" class="tiny red">禁止 mutable battle/run state</text>
+
+            <rect x="28" y="194" width="1144" height="92" class="band"/><text x="48" y="224" class="label cyan">CONTENT LOAD · CompiledSpec</text>
+            <rect x="150" y="235" width="136" height="34" rx="4" class="node target"/><text x="218" y="257" text-anchor="middle" class="small">ContentCompiler</text><path d="M286 252H350" class="edge target" marker-end="url(#a7)"/><rect x="360" y="235" width="136" height="34" rx="4" class="node target"/><text x="428" y="257" text-anchor="middle" class="small">ContentRegistry</text><path d="M496 252H566" class="edge target" marker-end="url(#a7)"/><rect x="576" y="235" width="136" height="34" rx="4" class="node target"/><text x="644" y="257" text-anchor="middle" class="small">BattleSetup 只读</text><path d="M712 252H778" class="edge target" marker-end="url(#a7)"/><rect x="788" y="235" width="136" height="34" rx="4" class="node target"/><text x="856" y="257" text-anchor="middle" class="small">registry unload</text><text x="1138" y="257" text-anchor="end" class="tiny">依赖图验证后才发布</text>
+
+            <rect x="28" y="294" width="1144" height="112" class="band"/><text x="48" y="324" class="label cyan">BATTLE SCOPE · RuntimeInstance</text>
+            <rect x="150" y="345" width="136" height="42" rx="4" class="node target"/><text x="218" y="363" text-anchor="middle" class="small">BattleRuntime</text><text x="218" y="379" text-anchor="middle" class="tiny">scope start</text><path d="M286 366H350" class="edge target" marker-end="url(#a7)"/><rect x="360" y="345" width="136" height="42" rx="4" class="node target"/><text x="428" y="363" text-anchor="middle" class="small">BattleState</text><text x="428" y="379" text-anchor="middle" class="tiny">唯一权威 owner</text><path d="M496 366H566" class="edge target" marker-end="url(#a7)"/><rect x="576" y="345" width="136" height="42" rx="4" class="node warn"/><text x="644" y="363" text-anchor="middle" class="small">subscription handle</text><text x="644" y="379" text-anchor="middle" class="tiny">typed event / queue</text><path d="M712 366H778" class="edge hot" marker-end="url(#a7)"/><rect x="788" y="345" width="136" height="42" rx="4" class="node bad"/><text x="856" y="363" text-anchor="middle" class="small">unsubscribe + dispose</text><text x="856" y="379" text-anchor="middle" class="tiny">battle end / abort / error</text><text x="1138" y="365" text-anchor="end" class="tiny">不得越过 Battle scope 存活</text>
+
+            <rect x="28" y="414" width="1144" height="92" class="band"/><text x="48" y="444" class="label gold">CAUSAL QUEUE · DomainEvent</text>
+            <rect x="150" y="455" width="136" height="34" rx="4" class="node warn"/><text x="218" y="477" text-anchor="middle" class="small">EffectProcessor</text><path d="M286 472H350" class="edge hot" marker-end="url(#a7)"/><rect x="360" y="455" width="136" height="34" rx="4" class="node warn"/><text x="428" y="477" text-anchor="middle" class="small">Simulation Queue</text><path d="M496 472H566" class="edge hot" marker-end="url(#a7)"/><rect x="576" y="455" width="136" height="34" rx="4" class="node warn"/><text x="644" y="477" text-anchor="middle" class="small">reactive enqueue</text><path d="M712 472H778" class="edge hot" marker-end="url(#a7)"/><rect x="788" y="455" width="136" height="34" rx="4" class="node warn"/><text x="856" y="477" text-anchor="middle" class="small">sequence drain</text><text x="1138" y="477" text-anchor="end" class="tiny">不可变 trace 可交给报告</text>
+
+            <rect x="28" y="514" width="1144" height="92" class="band"/><text x="48" y="544" class="label green">SCOPE BRIDGE · TransitionResult</text>
+            <rect x="150" y="555" width="136" height="34" rx="4" class="node good"/><text x="218" y="577" text-anchor="middle" class="small">Battle finalizer</text><path d="M286 572H350" class="edge good" marker-end="url(#a7)"/><rect x="360" y="555" width="136" height="34" rx="4" class="node good"/><text x="428" y="577" text-anchor="middle" class="small">immutable result</text><path d="M496 572H566" class="edge good" marker-end="url(#a7)"/><rect x="576" y="555" width="136" height="34" rx="4" class="node good"/><text x="644" y="577" text-anchor="middle" class="small">Run validates</text><path d="M712 572H778" class="edge good" marker-end="url(#a7)"/><rect x="788" y="555" width="136" height="34" rx="4" class="node good"/><text x="856" y="577" text-anchor="middle" class="small">apply exactly once</text><path d="M924 572H990" class="edge good" marker-end="url(#a7)"/><rect x="1000" y="555" width="136" height="34" rx="4" class="node good"/><text x="1068" y="577" text-anchor="middle" class="small">RunState mutation</text>
+
+            <rect x="28" y="614" width="1144" height="112" class="band"/><text x="48" y="644" class="label violet">PERSISTENCE · SaveDTO + Migration</text>
+            <rect x="150" y="665" width="136" height="42" rx="4" class="node target"/><text x="218" y="683" text-anchor="middle" class="small">Run projection</text><text x="218" y="699" text-anchor="middle" class="tiny">stable ids + values</text><path d="M286 686H350" class="edge target" marker-end="url(#a7)"/><rect x="360" y="665" width="136" height="42" rx="4" class="node target"/><text x="428" y="683" text-anchor="middle" class="small">SaveService</text><text x="428" y="699" text-anchor="middle" class="tiny">owns IO transaction</text><path d="M496 686H566" class="edge target" marker-end="url(#a7)"/><rect x="576" y="665" width="136" height="42" rx="4" class="node target"/><text x="644" y="683" text-anchor="middle" class="small">version N DTO</text><text x="644" y="699" text-anchor="middle" class="tiny">no live Node/Resource</text><path d="M712 686H778" class="edge target" marker-end="url(#a7)"/><rect x="788" y="665" width="136" height="42" rx="4" class="node warn"/><text x="856" y="683" text-anchor="middle" class="small">MigrationService</text><text x="856" y="699" text-anchor="middle" class="tiny">N → current, then validate</text><path d="M924 686H990" class="edge target" marker-end="url(#a7)"/><rect x="1000" y="665" width="136" height="42" rx="4" class="node good"/><text x="1068" y="683" text-anchor="middle" class="small">publish RunState</text><text x="1068" y="699" text-anchor="middle" class="tiny">fail safely if invalid</text>
+            <rect x="28" y="742" width="1144" height="26" class="node bad"/><text x="600" y="760" text-anchor="middle" class="tiny">HARD RULE: subscription cleanup 必须覆盖 success / defeat / timeout / abort / exception；scope crossing 只允许白名单 immutable result。</text>
+          </svg>
+        </div>
+        <figcaption><b>生命周期本身就是架构契约。</b><span>创建、owner、退订、销毁、跨域和迁移均有唯一责任方。</span></figcaption>
+      </figure>
+      <div class="review-strip" data-review-id="lifecycle"><div class="review-line"><strong>决策 · 生命周期与所有权</strong><div class="review-actions" role="group" aria-label="生命周期所有权决策"></div></div><div class="review-notes"><label for="notes-lifecycle">备注</label><textarea id="notes-lifecycle" data-review-notes placeholder="记录 owner、scope crossing、cleanup 或 migration 调整"></textarea></div></div>
+    </section>
+
+    <section id="runtime" aria-labelledby="runtime-title">
+      <div class="section-head"><div><div class="eyebrow">05 · Current → target runtime</div><h2 id="runtime-title">拆开配置、业务事务与界面路由</h2></div><p>RunApplication 保持 facade；GameRoot 收缩为 bootstrap + ScreenRouter。</p></div>
+      <figure>
+        <div class="diagram-shell" tabindex="0" role="group" aria-label="当前到目标运行配置对照图，可横向滚动">
+          <svg class="diagram" viewBox="0 0 1200 710" role="img" aria-labelledby="d4-title d4-desc">
+            <title id="d4-title">当前集中式运行配置与推荐分层架构的对照</title><desc id="d4-desc">左侧显示 GameRoot、RunApplication 和 BattleSimulation 的当前耦合，右侧显示项目定义、活动 facade、内聚服务、界面路由和 Battle Run Meta 作用域桥。</desc>
+            <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#71878a"/></marker></defs>
+            <text x="32" y="38" class="title">RUNTIME / CONFIGURATION COMPARISON</text>
+            <rect x="28" y="62" width="500" height="606" rx="8" class="group"/><text x="50" y="92" class="label red">CURRENT · 中心职责缠结</text>
+            <rect x="56" y="120" width="202" height="150" rx="7" class="node bad"/><text x="157" y="148" text-anchor="middle" class="label">GameRoot</text><text x="76" y="176" class="small">加载 catalog + 3 region 路径</text><text x="76" y="198" class="small">加载 3 种 card 场景</text><text x="76" y="220" class="small">缓存 13 screen 节点路径</text><text x="76" y="242" class="small">页面文案 + 路由 + 业务结算</text>
+            <rect x="292" y="120" width="202" height="248" rx="7" class="node warn"/><text x="393" y="148" text-anchor="middle" class="label">RunApplication</text><text x="312" y="176" class="small">编队 / 后备 / 合法性</text><text x="312" y="198" class="small">节点 / 事件 / 休整</text><text x="312" y="220" class="small">奖励 / 商店 / 征募</text><text x="312" y="242" class="small">战斗配置 / 结算</text><text x="312" y="264" class="small">进度 / 解锁 / 保存</text><line x1="312" y1="284" x2="474" y2="284" class="divider"/><text x="312" y="307" class="tiny">15 层 / 3 区 / 每区 5 层</text><text x="312" y="325" class="tiny">部署 6 + 后备 3</text><text x="312" y="343" class="tiny">经济 / 恢复 / 奖励常量</text>
+            <rect x="56" y="316" width="202" height="150" rx="7" class="node warn"/><text x="157" y="344" text-anchor="middle" class="label">TowerGenerator</text><text x="76" y="372" class="small">节点轮换公式</text><text x="76" y="394" class="small">敌军数量公式</text><text x="76" y="416" class="small">区域 / 楼层索引公式</text><text x="76" y="438" class="small">内容池直接读取</text>
+            <rect x="292" y="414" width="202" height="150" rx="7" class="node warn"/><text x="393" y="442" text-anchor="middle" class="label">BattleSimulation</text><text x="312" y="470" class="small">权威 tick / damage / death</text><text x="312" y="492" class="small">+ 多个具体机制分支</text><text x="312" y="514" class="small">+ raw type / cue strings</text><text x="312" y="536" class="small">+ floor / summon 特例</text>
+            <path d="M258 195H292M157 270V316M258 391C310 391 330 380 393 368M393 368V414M157 466C190 540 300 580 393 564" class="edge hot" marker-end="url(#a4)"/>
+            <rect x="56" y="590" width="438" height="48" class="band"/><text x="275" y="619" text-anchor="middle" class="small">后果：新增内容同时触碰 setup / simulation / UI / save / route</text>
+            <path d="M544 352H636" class="edge target" marker-end="url(#a4)"/><text x="590" y="334" text-anchor="middle" class="label cyan">DECOUPLE</text>
+            <rect x="652" y="62" width="520" height="606" rx="8" class="group"/><text x="674" y="92" class="label cyan">TARGET · 项目组合根 + 内聚服务</text>
+            <rect x="680" y="116" width="464" height="78" rx="7" class="node target"/><text x="912" y="143" text-anchor="middle" class="label">GameProjectDefinition</text><text x="912" y="166" text-anchor="middle" class="small">ContentCatalog · CampaignDefinition · RunRulesDefinition · Semantic / Presentation</text><text x="912" y="184" text-anchor="middle" class="tiny">唯一顶层资源入口；引用而非路径字符串</text>
+            <path d="M912 194V222" class="edge target" marker-end="url(#a4)"/>
+            <rect x="680" y="232" width="212" height="92" rx="7" class="node target"/><text x="786" y="259" text-anchor="middle" class="label">Campaign</text><text x="786" y="281" text-anchor="middle" class="small">region · node · encounter</text><text x="786" y="302" text-anchor="middle" class="small">reward / recruit / loot tables</text>
+            <rect x="912" y="232" width="232" height="92" rx="7" class="node target"/><text x="1028" y="259" text-anchor="middle" class="label">RunRules</text><text x="1028" y="281" text-anchor="middle" class="small">capacity · economy · recovery</text><text x="1028" y="302" text-anchor="middle" class="small">current 15-floor contract</text>
+            <path d="M786 324V354M1028 324V354" class="edge target"/>
+            <rect x="680" y="364" width="464" height="80" rx="7" class="node good"/><text x="912" y="391" text-anchor="middle" class="label">RunApplication · Facade</text><text x="912" y="415" text-anchor="middle" class="small">stable use-case API · transaction boundary · validated run state</text><text x="912" y="434" text-anchor="middle" class="tiny">委托，不继续扩大单类</text>
+            <path d="M912 444V470" class="edge good" marker-end="url(#a4)"/>
+            <g><rect x="680" y="480" width="86" height="62" rx="4" class="node good"/><text x="723" y="507" text-anchor="middle" class="tiny">Formation</text><text x="723" y="526" text-anchor="middle" class="tiny">Service</text><rect x="774" y="480" width="86" height="62" rx="4" class="node good"/><text x="817" y="507" text-anchor="middle" class="tiny">Node</text><text x="817" y="526" text-anchor="middle" class="tiny">Resolution</text><rect x="868" y="480" width="86" height="62" rx="4" class="node good"/><text x="911" y="507" text-anchor="middle" class="tiny">Battle</text><text x="911" y="526" text-anchor="middle" class="tiny">Preparation</text><rect x="962" y="480" width="86" height="62" rx="4" class="node good"/><text x="1005" y="507" text-anchor="middle" class="tiny">Reward</text><text x="1005" y="526" text-anchor="middle" class="tiny">Service</text><rect x="1056" y="480" width="88" height="62" rx="4" class="node good"/><text x="1100" y="507" text-anchor="middle" class="tiny">Progression</text><text x="1100" y="526" text-anchor="middle" class="tiny">Persistence</text></g>
+            <rect x="680" y="568" width="214" height="70" rx="6" class="node target"/><text x="787" y="594" text-anchor="middle" class="label">GameRoot</text><text x="787" y="617" text-anchor="middle" class="small">bootstrap + ScreenRouter only</text>
+            <rect x="912" y="568" width="232" height="70" rx="6" class="node target"/><text x="1028" y="594" text-anchor="middle" class="label">Screen Controllers</text><text x="1028" y="617" text-anchor="middle" class="small">bind ViewModel · emit typed intent</text>
+            <path d="M894 603H912" class="edge target" marker-end="url(#a4)"/>
+            <rect x="28" y="682" width="1144" height="1" class="divider"/><text x="32" y="703" class="small">作用域：BattleState → sanctioned TransitionResult → RunState → explicit MetaResult；任何战斗效果都不能直接写 save。</text>
+          </svg>
+        </div>
+        <figcaption><b>保留确定性战斗和 Run facade，拆出职责。</b><span>不是 ECS/DI 重写；是把已经存在的业务事务放回明确所有者。</span></figcaption>
+      </figure>
+      <div class="review-strip" data-review-id="runtime"><div class="review-line"><strong>决策 · 运行与配置拆分</strong><div class="review-actions" role="group" aria-label="运行配置决策"></div></div><div class="review-notes"><label for="notes-runtime">备注</label><textarea id="notes-runtime" data-review-notes placeholder="记录项目定义、facade、service 或 screen ownership 调整"></textarea></div></div>
+    </section>
+
+    <section id="contracts" aria-labelledby="contracts-title">
+      <div class="section-head"><div><div class="eyebrow">06 · Architecture hard contracts</div><h2 id="contracts-title">六道硬契约：全部通过，内容才可发布</h2></div><p>它们不是建议清单，而是后续实现与 CI 的架构门禁。</p></div>
+      <figure>
+        <div class="diagram-shell" tabindex="0" role="group" aria-label="架构硬契约图，可横向滚动">
+          <svg class="diagram" viewBox="0 0 1200 730" role="img" aria-labelledby="d8-title d8-desc">
+            <title id="d8-title">内容发布前必须同时通过的六道架构硬契约</title><desc id="d8-desc">六个契约节点围绕中心发布门禁，分别规定确定性时序与队列、生命周期清理、内容编译依赖、保存迁移、因果可观测性和架构符合性测试。</desc>
+            <defs><marker id="a8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#71878a"/></marker></defs>
+            <text x="32" y="38" class="title">ARCHITECTURE CONFORMANCE GATE</text><text x="1168" y="38" text-anchor="end" class="small mono">all six contracts are conjunctive</text>
+            <polygon points="486,290 600,225 714,290 714,420 600,485 486,420" class="node bad"/><text x="600" y="327" text-anchor="middle" class="label red">SHIP GATE</text><text x="600" y="356" text-anchor="middle" class="metric red">6 / 6</text><text x="600" y="383" text-anchor="middle" class="small">全部契约通过</text><text x="600" y="405" text-anchor="middle" class="small">内容才可发布</text><text x="600" y="441" text-anchor="middle" class="tiny">任一失败 → compile/load/CI 阻断</text>
+
+            <rect x="42" y="94" width="352" height="154" rx="8" class="node bad"/><text x="62" y="122" class="label red">01 · Deterministic Timing + Queue</text><text x="62" y="149" class="small">已观察：fixed tick · seeded digest</text><text x="62" y="175" class="small">必须补齐：simultaneous-resolution phase</text><text x="62" y="196" class="small">snapshot candidates → ordered commit</text><text x="62" y="217" class="tiny mono">phase · priority · source · binding · sequence</text><text x="62" y="236" class="tiny">reentrancy：event callback 只能 enqueue，不得 inline 写状态</text>
+            <path d="M394 220L493 301" class="edge hot" marker-end="url(#a8)"/>
+
+            <rect x="42" y="286" width="352" height="154" rx="8" class="node bad"/><text x="62" y="314" class="label red">02 · Lifecycle / Subscription Cleanup</text><text x="62" y="341" class="small">每个 subscription 返回可追踪 handle</text><text x="62" y="367" class="small">owner dispose 必须幂等、可重复调用</text><text x="62" y="388" class="small">success / defeat / timeout / abort / exception 全覆盖</text><text x="62" y="410" class="tiny">测试：scope end 后 0 listener · 0 pending invocation · 0 live mutable instance</text><text x="62" y="428" class="tiny">共享 Resource 从不订阅 runtime bus</text>
+            <path d="M394 363H474" class="edge hot" marker-end="url(#a8)"/>
+
+            <rect x="42" y="478" width="352" height="154" rx="8" class="node bad"/><text x="62" y="506" class="label red">03 · Content Compile / Dependency Gate</text><text x="62" y="533" class="small">发布前解析完整 catalog dependency graph</text><text x="62" y="559" class="small">missing ref · category/type mismatch · cycle</text><text x="62" y="580" class="small">trigger/target/effect compatibility · stable id collision</text><text x="62" y="602" class="tiny">失败时定位 authored path + binding index；不发布半有效 registry</text><text x="62" y="620" class="tiny">内容样本数量不是合法性契约</text>
+            <path d="M394 510L493 409" class="edge hot" marker-end="url(#a8)"/>
+
+            <rect x="806" y="94" width="352" height="154" rx="8" class="node bad"/><text x="826" y="122" class="label red">04 · Schema / Save Migration</text><text x="826" y="149" class="small">stable id + versioned DTO + explicit defaults</text><text x="826" y="175" class="small">load：N → N+1 → current → validate → publish</text><text x="826" y="196" class="small">失败：丢弃不兼容 active run，不擦除有效 meta</text><text x="826" y="217" class="tiny">每个新 mutable field 都要 owner、default、round-trip、migration case</text><text x="826" y="236" class="tiny">禁止序列化 live Node / shared Resource</text>
+            <path d="M806 220L707 301" class="edge hot" marker-end="url(#a8)"/>
+
+            <rect x="806" y="286" width="352" height="154" rx="8" class="node bad"/><text x="826" y="314" class="label red">05 · Causal Observability</text><text x="826" y="341" class="small">每次 invocation / effect / event 都带：</text><text x="826" y="367" class="small mono">chain · source · owner · depth · sequence</text><text x="826" y="388" class="small">成功值、目标集、跳过/中断 typed reason</text><text x="826" y="410" class="tiny">战报、debug、digest 共用已结算事实；presentation cue 不当规则</text><text x="826" y="428" class="tiny">预算 / rate / repeated-edge 命中也必须留下证据</text>
+            <path d="M806 363H726" class="edge hot" marker-end="url(#a8)"/>
+
+            <rect x="806" y="478" width="352" height="154" rx="8" class="node bad"/><text x="826" y="506" class="label red">06 · Architecture Conformance Tests</text><text x="826" y="533" class="small">deterministic digest · simultaneous order · reentrancy</text><text x="826" y="559" class="small">dependency graph · lifecycle leak · save migration</text><text x="826" y="580" class="small">scope bridge exactly-once · immutable definition fingerprint</text><text x="826" y="602" class="tiny">source guard：concrete-id branch / global discovery / direct save write</text><text x="826" y="620" class="tiny">扩展成本 fixture：组合旧原语中心代码改动 = 0</text>
+            <path d="M806 510L707 409" class="edge hot" marker-end="url(#a8)"/>
+
+            <rect x="42" y="658" width="1116" height="44" rx="5" class="node nongoal"/><text x="600" y="686" text-anchor="middle" class="label violet">非目标不进入门禁：网络同步 · 通用 DSL · ECS/DI 重写；未来需求改变时另立契约。</text>
+          </svg>
+        </div>
+        <figcaption><b>硬契约必须可执行、可失败、可定位。</b><span>当前已有部分测试基础，但六道门禁尚未同时形成。</span></figcaption>
+      </figure>
+      <div class="review-strip" data-review-id="contracts"><div class="review-line"><strong>决策 · 架构硬契约</strong><div class="review-actions" role="group" aria-label="架构硬契约决策"></div></div><div class="review-notes"><label for="notes-contracts">备注</label><textarea id="notes-contracts" data-review-notes placeholder="记录 timing、cleanup、compile、migration、trace 或 tests 门禁调整"></textarea></div></div>
+    </section>
+
+    <section id="migration" aria-labelledby="migration-title">
+      <div class="section-head"><div><div class="eyebrow">07 · Dependency-aware migration</div><h2 id="migration-title">迁移依赖：先解锁，再建内核，最后提速创作</h2></div><p>每阶段可退出、可回归；现有存档和确定性战斗始终受保护。</p></div>
+      <figure>
+        <div class="diagram-shell" tabindex="0" role="group" aria-label="迁移依赖图，可横向滚动">
+          <svg class="diagram" viewBox="0 0 1200 610" role="img" aria-labelledby="d5-title d5-desc">
+            <title id="d5-title">六阶段架构迁移依赖图</title><desc id="d5-desc">阶段零解除数量阻断，阶段一建立效果内核，阶段二能力与状态，阶段三遗物生命周期，阶段四内容池和遭遇，阶段五创作规模验证；每阶段有退出门槛。</desc>
+            <defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#71878a"/></marker></defs>
+            <text x="32" y="40" class="title">MIGRATION DEPENDENCY MAP</text><text x="1168" y="40" text-anchor="end" class="small mono">no big-bang rewrite</text>
+            <line x1="88" y1="170" x2="1110" y2="170" class="edge target"/>
+            <g><circle cx="110" cy="170" r="30" class="status-bad"/><text x="110" y="177" text-anchor="middle" class="ink metric">0</text><text x="110" y="225" text-anchor="middle" class="label">解数量阻断</text><text x="110" y="246" text-anchor="middle" class="tiny">建立 digest / save 基线</text></g>
+            <g><circle cx="304" cy="170" r="30" class="status-target"/><text x="304" y="177" text-anchor="middle" class="ink metric">1</text><text x="304" y="225" text-anchor="middle" class="label">Typed Effect</text><text x="304" y="246" text-anchor="middle" class="tiny">request / result / event / queue</text></g>
+            <g><circle cx="500" cy="170" r="30" class="status-target"/><text x="500" y="177" text-anchor="middle" class="ink metric">2</text><text x="500" y="225" text-anchor="middle" class="label">Ability + Status</text><text x="500" y="246" text-anchor="middle" class="tiny">trigger / target / upgrade base</text></g>
+            <g><circle cx="696" cy="170" r="30" class="status-warn"/><text x="696" y="177" text-anchor="middle" class="ink metric">3</text><text x="696" y="225" text-anchor="middle" class="label">Relic Lifecycle</text><text x="696" y="246" text-anchor="middle" class="tiny">scope bridge / instance save</text></g>
+            <g><circle cx="892" cy="170" r="30" class="status-warn"/><text x="892" y="177" text-anchor="middle" class="ink metric">4</text><text x="892" y="225" text-anchor="middle" class="label">Pools + Encounter</text><text x="892" y="246" text-anchor="middle" class="tiny">boss phase / campaign tables</text></g>
+            <g><circle cx="1086" cy="170" r="30" class="status-good"/><text x="1086" y="177" text-anchor="middle" class="ink metric">5</text><text x="1086" y="225" text-anchor="middle" class="label">Scale Authoring</text><text x="1086" y="246" text-anchor="middle" class="tiny">templates / batch validation</text></g>
+            <path d="M140 170H274M334 170H470M530 170H666M726 170H862M922 170H1056" class="edge target" marker-end="url(#a5)"/>
+            <path d="M304 140C380 75 620 75 696 140" class="edge dashed" marker-end="url(#a5)"/><text x="500" y="88" text-anchor="middle" class="tiny">Relic 依赖 effect + ability/status 基础</text>
+            <path d="M500 200C600 294 795 294 892 200" class="edge dashed" marker-end="url(#a5)"/><text x="696" y="294" text-anchor="middle" class="tiny">Encounter 复用 ability / status / relic / effect</text>
+            <rect x="48" y="334" width="174" height="162" rx="6" class="node bad"/><text x="135" y="361" text-anchor="middle" class="label">EXIT 0</text><text x="68" y="389" class="small">新增测试内容</text><text x="68" y="410" class="small">不因固定数量失败</text><text x="68" y="440" class="tiny">目录 / 肖像 / 引用</text><text x="68" y="458" class="tiny">仍严格校验</text>
+            <rect x="238" y="334" width="174" height="162" rx="6" class="node target"/><text x="325" y="361" text-anchor="middle" class="label">EXIT 1</text><text x="258" y="389" class="small">现有行为经兼容层</text><text x="258" y="410" class="small">稳定运行</text><text x="258" y="440" class="tiny">无 presenter digest</text><text x="258" y="458" class="tiny">typed interruption</text>
+            <rect x="428" y="334" width="174" height="162" rx="6" class="node target"/><text x="515" y="361" text-anchor="middle" class="label">EXIT 2</text><text x="448" y="389" class="small">高复用命令与单位</text><text x="448" y="410" class="small">改为组合原语</text><text x="448" y="440" class="tiny">描述 = 执行规格</text><text x="448" y="458" class="tiny">无 concrete-id switch</text>
+            <rect x="618" y="334" width="174" height="162" rx="6" class="node warn"/><text x="705" y="361" text-anchor="middle" class="label">EXIT 3</text><text x="638" y="389" class="small">12 件遗物保持</text><text x="638" y="410" class="small">当前效果</text><text x="638" y="440" class="tiny">instance round-trip</text><text x="638" y="458" class="tiny">battle 不直写 run</text>
+            <rect x="808" y="334" width="174" height="162" rx="6" class="node warn"/><text x="895" y="361" text-anchor="middle" class="label">EXIT 4</text><text x="828" y="389" class="small">新区域 / 遭遇 / Boss</text><text x="828" y="410" class="small">不加中心分支</text><text x="828" y="440" class="tiny">预览 / 奖励 / 装载</text><text x="828" y="458" class="tiny">引用一致</text>
+            <rect x="998" y="334" width="174" height="162" rx="6" class="node good"/><text x="1085" y="361" text-anchor="middle" class="label">EXIT 5</text><text x="1018" y="389" class="small">新增英雄 / 士兵 / 遗物</text><text x="1018" y="410" class="small">楼层 / Boss 阶段</text><text x="1018" y="440" class="tiny">已有原语组合</text><text x="1018" y="458" class="tiny">中心代码改动 = 0</text>
+            <rect x="48" y="526" width="1124" height="52" class="band"/><text x="70" y="557" class="small">全程守护：固定 seed / deterministic order / v3 stable ids / incremental migration / three validated build paths</text><text x="1148" y="557" text-anchor="end" class="small mono">P0: 0–2 · P1: 3–4 · P2: 5</text>
+          </svg>
+        </div>
+        <figcaption><b>每阶段都有独立退出标准。</b><span>没有第二个真实用例的抽象不提前建设；独特机制保留 typed extension point。</span></figcaption>
+      </figure>
+      <div class="review-strip" data-review-id="migration"><div class="review-line"><strong>决策 · 迁移顺序与退出门槛</strong><div class="review-actions" role="group" aria-label="迁移路线决策"></div></div><div class="review-notes"><label for="notes-migration">备注</label><textarea id="notes-migration" data-review-notes placeholder="记录阶段依赖、风险或退出标准调整"></textarea></div></div>
+    </section>
+
+    <section id="decisions" aria-labelledby="decisions-title">
+      <div class="section-head"><div><div class="eyebrow">08 · Product decisions</div><h2 id="decisions-title">架构留接口，产品做选择</h2></div><p>以下规则未确认；本页不把它们变成实现事实。</p></div>
+      <div class="decision-grid">
+        <article class="decision-group"><h3>能力 / 升级</h3><ul><li>能力槽是否固定？</li><li>命令是否可替换？</li><li>升级节奏与变更形状？</li><li>当前首批 3 mana / 1 cost，或权威特例？</li></ul></article>
+        <article class="decision-group"><h3>遗物生命周期</h3><ul><li>栏位上限？</li><li>重复、唯一、叠层？</li><li>稀有度曲线与保底？</li><li>charges 属于战斗还是 run？</li></ul></article>
+        <article class="decision-group"><h3>状态 / 资源 / 召唤</h3><ul><li>是否引入尸体等资源？</li><li>状态叠层与抗性？</li><li>召唤是否计人口/触发？</li><li>控制递减规则？</li></ul></article>
+        <article class="decision-group"><h3>内容池 / 高塔</h3><ul><li>meta 解锁如何进入池？</li><li>标签动态过滤？</li><li>手工遭遇还是种子池？</li><li>Boss 与楼层规则优先级？</li></ul></article>
+      </div>
+      <div class="review-strip" data-review-id="decisions"><div class="review-line"><strong>决策 · 产品待定清单</strong><div class="review-actions" role="group" aria-label="产品待定清单决策"></div></div><div class="review-notes"><label for="notes-decisions">回答 / 备注</label><textarea id="notes-decisions" data-review-notes placeholder="可逐条回答；导出 JSON 后进入下一轮讨论"></textarea></div></div>
+    </section>
+
+    <section id="appendix" aria-labelledby="appendix-title">
+      <div class="appendix-intro"><div><div class="eyebrow">Appendix · pressure-test evidence</div><h2 id="appendix-title">证据附录</h2></div><p class="muted">默认收起；具体内容只验证扩展压力，不参与架构成熟度结论。</p></div>
+
+      <details><summary>系统地图 · 23 个系统的现状、目标、风险与优先级</summary><div class="detail-body">
+        <div class="filters"><label for="system-state-filter">状态</label><select id="system-state-filter"><option value="all">全部</option><option value="foundation">已有基础</option><option value="partial">局部实现</option><option value="missing">尚未成系统</option></select><label for="system-priority-filter">优先级</label><select id="system-priority-filter"><option value="all">全部</option><option>P0</option><option>P1</option><option>P2</option></select><span id="system-count" aria-live="polite"></span></div>
+        <div class="scroll-x"><table id="systems-table"><thead><tr><th>系统</th><th>当前</th><th>目标所有权</th><th>扩张风险</th><th>优先</th></tr></thead><tbody>
+          <tr data-state="foundation" data-priority="P0"><td>内容目录 / 身份</td><td>独立场景、定义、稳定 id</td><td>分类目录、查询、内容池</td><td>固定数量拒绝新增</td><td class="p0">P0</td></tr>
+          <tr data-state="partial" data-priority="P0"><td>单位 / 装载</td><td>stats + 行为快照</td><td>身份 + 能力装载 + 实例状态</td><td>字段继续增长</td><td class="p0">P0</td></tr>
+          <tr data-state="partial" data-priority="P0"><td>英雄规则</td><td>军团/空位/击杀/召唤字段袋</td><td>ArmyRule + passive + command</td><td>新英雄跨中心文件</td><td class="p0">P0</td></tr>
+          <tr data-state="partial" data-priority="P0"><td>能力</td><td>8 命令场景 + 多个专用 runtime</td><td>独立产品系统 + effect bindings</td><td>敌兵/被动/升级难复用</td><td class="p0">P0</td></tr>
+          <tr data-state="partial" data-priority="P0"><td>遗物</td><td>12 个静态 modifier bundle</td><td>获取/唯一/堆叠/充能/跨域</td><td>不是完整 lifecycle</td><td class="p0">P0</td></tr>
+          <tr data-state="missing" data-priority="P0"><td>效果内核</td><td>效果散落多处</td><td>typed request/processor/result</td><td>重复实现且不可组合</td><td class="p0">P0</td></tr>
+          <tr data-state="missing" data-priority="P0"><td>触发 / 条件 / 目标</td><td>if 分支与偏好字段</td><td>typed specs + deterministic query</td><td>连锁无法安全表达</td><td class="p0">P0</td></tr>
+          <tr data-state="missing" data-priority="P1"><td>状态</td><td>直接改减速/禁用/护盾字段</td><td>定义、实例、叠层、持续、驱散</td><td>显示与叠加不统一</td><td class="p1">P1</td></tr>
+          <tr data-state="missing" data-priority="P1"><td>战斗资源</td><td>固定 mana + 金币桥</td><td>类型、上限、生产/消费、归属</td><td>新资源不安全</td><td class="p1">P1</td></tr>
+          <tr data-state="partial" data-priority="P1"><td>召唤 / 尸体</td><td>临时单位；死亡直召；无尸体</td><td>profile/落点/上限/归属；尸体可选</td><td>来源与位置竞争</td><td class="p1">P1</td></tr>
+          <tr data-state="foundation" data-priority="P1"><td>标签 / 协同</td><td>多标签 + 单标签增益</td><td>typed query / threshold / display</td><td>查询不足回到分支</td><td class="p1">P1</td></tr>
+          <tr data-state="missing" data-priority="P1"><td>能力升级</td><td>rank 字段，无完整模型</td><td>升级图 + binding 替换/追加</td><td>机制升级需硬编码</td><td class="p1">P1</td></tr>
+          <tr data-state="partial" data-priority="P1"><td>AI / 目标</td><td>导航 + 背排/首领偏好</td><td>目标策略与能力查询分离</td><td>规则挤入 simulation</td><td class="p1">P1</td></tr>
+          <tr data-state="partial" data-priority="P1"><td>Boss / 遭遇</td><td>区域池 + 固定生成公式</td><td>遭遇、波次、阶段、时间线</td><td>多阶段难表达</td><td class="p1">P1</td></tr>
+          <tr data-state="partial" data-priority="P1"><td>楼层规则</td><td>5 独立场景 + 窄接口</td><td>产品独立，内部复用 effect</td><td>每条规则专用 runtime</td><td class="p1">P1</td></tr>
+          <tr data-state="partial" data-priority="P1"><td>高塔 / Run</td><td>3 区、15 层、轮换节点</td><td>campaign / region / node tables</td><td>新模式压入中心类</td><td class="p1">P1</td></tr>
+          <tr data-state="partial" data-priority="P1"><td>奖励 / 经济</td><td>目录随机三选</td><td>loot/recruit tables + context</td><td>解锁/稀有度难入池</td><td class="p1">P1</td></tr>
+          <tr data-state="foundation" data-priority="P1"><td>保存 / 进度</td><td>v3 DTO + stable ids + migration</td><td>实例状态 DTO + scope bridge</td><td>缺迁移会破坏存档</td><td class="p1">P1</td></tr>
+          <tr data-state="foundation" data-priority="P0"><td>战斗模拟</td><td>fixed tick / seed / digest</td><td>权威状态 + effect queue</td><td>具体分支扩大回归面</td><td class="p0">P0</td></tr>
+          <tr data-state="foundation" data-priority="P2"><td>表现 / UI</td><td>场景化 UI + Presenter 分离</td><td>消费 typed description/event</td><td>文案解析导致反耦合</td><td class="p2">P2</td></tr>
+          <tr data-state="partial" data-priority="P1"><td>报告 / 事件</td><td>统计强，raw type/cue</td><td>typed event + cue metadata</td><td>开放词汇难验证</td><td class="p1">P1</td></tr>
+          <tr data-state="foundation" data-priority="P0"><td>验证 / 测试</td><td>隔离、指纹、digest、guard、烟测</td><td>spec/processor/renderer contracts</td><td>测试固化当前数量</td><td class="p0">P0</td></tr>
+          <tr data-state="partial" data-priority="P1"><td>创作工作流</td><td>复制内容并扩字段/runtime</td><td>模板 + 组合 + 自动校验</td><td>复杂内容需改中心代码</td><td class="p1">P1</td></tr>
+        </tbody></table></div>
+      </div></details>
+
+      <details><summary>压力测试证据 · 8 位英雄的规则、命令与目标原语</summary><div class="detail-body"><div class="scroll-x"><table><thead><tr><th>英雄</th><th>军团 / 自动规则</th><th>当前命令</th><th>目标原语</th></tr></thead><tbody>
+        <tr><td>曜旗元帅</td><td>士兵生命 ×1.25、伤害 ×1.12；相邻护甲 +3、伤害 +8%</td><td>全军盾 22；攻击等待最多 2 tick</td><td><span class="tag">ArmyModifier</span><span class="tag">Adjacent</span><span class="tag">Shield</span><span class="tag">Cooldown</span></td></tr>
+        <tr><td>骸骨摄政</td><td>非英雄、非临时友军死亡时召深渊爬兽</td><td>召 2 个；生命 ×0.75、伤害 ×0.8</td><td><span class="tag">OnDeath/Summon</span><span class="tag">SpawnLimit</span></td></tr>
+        <tr><td>原兽母皇</td><td>士兵伤害 ×1.25；野兽生命 ×1.2、伤害 ×1.25；击杀成长 3%</td><td>野兽友军伤害 ×1.12</td><td><span class="tag">TagQuery</span><span class="tag">OnKill</span></td></tr>
+        <tr><td>猩红伯爵</td><td>每空位伤害 +12%、减伤 4%、开场盾 4%；吸血 +10%；征募转 4 金</td><td>恢复 28%、伤害 ×1.08、清攻击等待</td><td><span class="tag">EmptySlotScale</span><span class="tag">LifeSteal</span><span class="tag">Transition</span></td></tr>
+        <tr><td>无尽剑圣</td><td>每空位伤害 +18%、减伤 12.5%、开场盾 10%；偏首领；征募转 6 金</td><td>最大生命 35% 护盾、清攻击等待</td><td><span class="tag">SoloContract</span><span class="tag">TargetPolicy</span></td></tr>
+        <tr><td>齿轮总师</td><td>每战加入临时虚空机兵</td><td>全体攻击与移动等待清零</td><td><span class="tag">BattleStart</span><span class="tag">Summon</span><span class="tag">Cooldown</span></td></tr>
+        <tr><td>鎏金商主</td><td>每战胜利 +5 金</td><td>另付 5 金召曜盾卫；生命 ×1.15</td><td><span class="tag">Transition</span><span class="tag">Spend</span><span class="tag">Summon</span></td></tr>
+        <tr><td>时序仲裁者</td><td>无额外军团规则</td><td>敌军禁用 18 tick；友军攻击等待 ÷2</td><td><span class="tag">Status</span><span class="tag">EnemyQuery</span><span class="tag">Cooldown</span></td></tr>
+      </tbody></table></div><p>当前命令场景是可复用基础，但多数命令各有专用 C# runtime，因此不能视为完整能力系统。</p></div></details>
+
+      <details><summary>压力测试证据 · 12 件遗物候选的行为与生命周期</summary><div class="detail-body"><div class="scroll-x"><table><thead><tr><th>物品 / 项目稀有度</th><th>当前行为</th><th>候选类型</th><th>仍缺</th></tr></thead><tbody>
+        <tr><td>远征口粮 / 普通</td><td>士兵生命 ×1.12</td><td>军团 modifier</td><td>重复/上限/来源</td></tr><tr><td>行军战鼓 / 普通</td><td>士兵伤害 ×1.10</td><td>军团 modifier</td><td>重复/上限/来源</td></tr>
+        <tr><td>引魂灯 / 优良</td><td>士兵生命与伤害 ×1.06</td><td>复合 modifier</td><td>组合描述/叠层展示</td></tr><tr><td>壁垒军旗 / 优良</td><td>战斗开始全军盾 +15</td><td>BattleStart trigger</td><td>次数/归因/反馈</td></tr><tr><td>鎏金军契 / 优良</td><td>每场胜利 +3 金</td><td>战后 transition</td><td>时机/失败/报告</td></tr>
+        <tr><td>猩红战衣 / 稀有</td><td>英雄生命 ×1.30</td><td>英雄 modifier</td><td>叠层/唯一未定</td></tr><tr><td>决斗印玺 / 稀有</td><td>英雄伤害 ×1.25</td><td>英雄 modifier</td><td>叠层/唯一未定</td></tr><tr><td>鲜血圣杯 / 稀有</td><td>英雄吸血 +15%</td><td>属性 modifier</td><td>来源/上限/过量治疗联动</td></tr><tr><td>孤王之冠 / 稀有</td><td>每空位英雄伤害 +8%</td><td>条件 modifier</td><td>快照/重算/描述</td></tr><tr><td>统帅阵图 / 稀有</td><td>相邻时护甲 +4、伤害 ×1.08</td><td>空间 modifier</td><td>移动重算/可视化</td></tr><tr><td>构装机芯 / 稀有</td><td>每战召临时虚空机兵</td><td>BattleStart summon</td><td>落点/上限/归属</td></tr>
+        <tr><td>最后军旗 / 传奇</td><td>士兵生命与伤害 ×1.15</td><td>高阶 modifier</td><td>唯一/内容池/升级</td></tr>
+      </tbody></table></div><p>DTO 已有 stacks / charges / roll；目前运行主要消费 stacks。字段存在不等于生命周期存在。</p></div></details>
+
+      <details><summary>压力测试证据 · 单位、敌军与 5 种楼层原语</summary><div class="detail-body"><div class="evidence-grid">
+        <div class="evidence-cell"><h3>士兵 · 8 个特殊 / 16 个基础</h3><p>死亡爆炸：深渊爬兽。相邻护甲：曜盾卫、青鳞重装。命中减速：冰咬鹰手、窃术者。贯穿：日铸枪兵。斩杀阈值：迅刃客。低血增伤：灵魂收割者。其余 16 个主要由 role、stats、range、heal、splash 与 tags 表达。</p></div>
+        <div class="evidence-cell"><h3>敌军 · 13</h3><p>减速：冻原鹰手。斩杀：沙路割喉者。贯穿：欺诈机神。周期盾：北境重装。周期召唤 + 背排偏好：暗影领主。其余主要为数值、角色与标签变化。</p></div>
+        <div class="evidence-cell"><h3>楼层 · 5</h3><p>常规；狭路中央四格阻挡；灼热每 4 秒标记格伤害 16；信标每 3 秒治疗控制方 18；结界使首领受伤 ×0.2，控制信标后解除并每 3 秒治疗 20。</p></div>
+      </div><p style="margin-top:12px">完整士兵：深渊爬兽、曜盾卫、艾玛拉医师、迅刃客、血爵侍从、晶甲虫、暗棘射手、幼龙卓贡、沙丘术士、沙海旋兵、烈焰吐息兽、焰羽射手、霜原自由刃、冰咬鹰手、寒霜修女、铁砂旋卫、灯狐、长弓手、青鳞重装、窃术者、灵魂收割者、日铸枪兵、曦光修女、虚空机兵。</p></div></details>
+
+      <details><summary>职责词典 · Ability / Relic / Trigger / Effect / Status 等边界</summary><div class="detail-body"><div class="scroll-x"><table><thead><tr><th>概念</th><th>独占责任</th><th>不负责</th><th>形状</th></tr></thead><tbody>
+        <tr><td>Ability</td><td>入口、成本、冷却、装载、升级引用</td><td>不直接改生命/金币</td><td>AbilityDefinition + bindings</td></tr><tr><td>Relic</td><td>获取、稀有、唯一/重复、charges/counters/roll、scope</td><td>不自己实现伤害/召唤</td><td>独立 item scene + RelicDefinition</td></tr><tr><td>Trigger</td><td>事实→invocation；频率/次数/递归</td><td>不决定数值/目标</td><td>TriggerSpec</td></tr><tr><td>Condition</td><td>只读判断上下文/标签/空间/阈值</td><td>不改状态</td><td>ConditionSpec 子类</td></tr><tr><td>Target Query</td><td>候选、排序、数量、合法性</td><td>不执行效果</td><td>TargetQuerySpec 子类</td></tr><tr><td>Effect</td><td>明确状态变更请求</td><td>不监听全局事件/自递归</td><td>EffectSpec + processor</td></tr><tr><td>Status</td><td>持续、叠层、来源、驱散、周期</td><td>不拥有能力/遗物</td><td>StatusDefinition + instance</td></tr><tr><td>Combat Resource</td><td>类型、当前/上限、生产/消费、归属</td><td>不解析 UI 文案</td><td>ResourceDefinition + ledger</td></tr><tr><td>Summon / Corpse</td><td>profile、归属、落点、占位、上限；尸体可选</td><td>不决定触发时机</td><td>具体 scene + summon spec</td></tr><tr><td>Upgrade</td><td>前置、选择、替换/追加 bindings</td><td>不复制 runtime</td><td>UpgradeDefinition</td></tr><tr><td>Presentation</td><td>名称、图标、cue、描述、报告标签</td><td>不决定规则</td><td>PresentationProfile</td></tr>
+      </tbody></table></div></div></details>
+
+      <details><summary>新增内容工作流与验收门槛</summary><div class="detail-body"><div class="scroll-x"><table><thead><tr><th>内容</th><th>主要动作</th><th>必须通过</th><th>中心代码</th></tr></thead><tbody>
+        <tr><td>英雄</td><td>独立场景 + 军团规则/被动/命令</td><td>隔离、描述、solo/army、当前首批 3 mana / 1 cost 或权威特例、流程</td><td>已有原语 0</td></tr><tr><td>士兵</td><td>独立场景 + stats/tags/role/少量能力</td><td>AI/目标/动画/双实例隔离/组合</td><td>已有原语 0</td></tr><tr><td>遗物</td><td>独立场景 + lifecycle + scope bindings</td><td>获取/重复/保存/触发/跨域</td><td>已有原语 0</td></tr><tr><td>能力</td><td>成本/冷却/trigger/target/effects/limits</td><td>描述一致、失败不消费、digest</td><td>已有原语 0</td></tr><tr><td>状态</td><td>持续/叠层/驱散/表现</td><td>叠层矩阵、过期顺序、归因</td><td>普通语义 0</td></tr><tr><td>楼层</td><td>独立场景 + bindings；独特空间规则扩展</td><td>预览一致、固定 seed、清理</td><td>普通效果 0</td></tr><tr><td>遭遇</td><td>阵容/规则/波次/奖励表</td><td>引用、预算、种子、结算</td><td>0</td></tr><tr><td>Boss</td><td>独立场景 + phase/timeline</td><td>阶段一次、上限、竞争顺序</td><td>已有原语 0</td></tr>
+      </tbody></table></div></div></details>
+
+      <details><summary>源码证据、当前硬编码与验证边界</summary><div class="detail-body"><div class="evidence-grid">
+        <div class="evidence-cell"><h3>字段袋</h3><p><code>UnitBehaviorComponent</code><br><code>HeroRuleComponent</code><br><code>RunModifierProviderComponent</code></p></div>
+        <div class="evidence-cell"><h3>中心压力点</h3><p><code>BattleSimulation.cs</code><br><code>RunApplication.cs</code><br><code>TowerGenerator.cs</code><br><code>GameRoot.cs</code></p></div>
+        <div class="evidence-cell"><h3>基础契约</h3><p><code>ContentValidator.cs</code><br><code>ContentContractSmoke.cs</code><br><code>RunModels.cs</code><br><code>SaveService.cs</code></p></div>
+        <div class="evidence-cell"><h3>固定数量</h3><p>英雄恰好 8、士兵 24、敌军 13、肖像 45；应改为分类完整性、引用一致性和产品最低要求。</p></div>
+        <div class="evidence-cell"><h3>GameRoot 路径</h3><p><code>alpha_catalog.tres</code>、3 region、3 card scenes、13 screen/node paths、页面文案与容器路径。</p></div>
+        <div class="evidence-cell"><h3>Run 常量</h3><p>15 层 / 3 区 / 每区 5 层；部署 6 + 后备 3；三选；事件、休整、奖励、解锁和通关公式。</p></div>
+      </div><p style="margin-top:12px">权威入口：<code>gameplay-design/tower-autobattler-core.md</code>、<code>system-design/tower-autobattler-architecture.md</code>。本页只是审查工件；目标架构未经最终确认不构成运行时权威。</p></div></details>
+    </section>
+
+    <div class="actionbar" aria-label="评审操作"><span class="save-state" id="save-state" aria-live="polite">评审状态保存在本机浏览器</span><button class="action-btn" id="reset-review" type="button">安全重置</button><button class="action-btn primary" id="export-review" type="button">导出评审 JSON</button></div>
+    <footer>高塔军团 · 内容系统架构视觉审查 · 本地离线单页 · 观察日期 2026-08-30。评审控件不修改项目权威或仓库文件。</footer>
+  </main>
+
+  <dialog id="reset-dialog" aria-labelledby="reset-title"><form method="dialog"><h2 id="reset-title">重置全部评审状态？</h2><p class="muted">将清除选择与备注。请先导出 JSON 留档；不会修改项目文件。</p><menu><button class="action-btn" value="cancel">取消</button><button class="action-btn primary" id="confirm-reset" value="confirm">确认重置</button></menu></form></dialog>
+
+  <script>
+    (()=>{'use strict';
+      const KEY='tower-autobattler:content-architecture-review:v2';
+      const LEGACY_KEY='tower-autobattler:content-architecture-review:v1';
+      const state={version:2,updatedAt:null,decisions:{},notes:{}};
+      const boxes=[...document.querySelectorAll('[data-review-id]')];
+      const label=document.getElementById('save-state');let timer;
+      function load(){try{const current=JSON.parse(localStorage.getItem(KEY)||'null');const legacy=current?null:JSON.parse(localStorage.getItem(LEGACY_KEY)||'null');const p=current||legacy;if(p&&(p.version===2||p.version===1)){state.updatedAt=p.updatedAt||null;state.decisions=p.decisions||{};state.notes=p.notes||{};if(legacy)localStorage.setItem(KEY,JSON.stringify(state))}}catch(_){label.textContent='浏览器存储不可用；仍可导出 JSON'}}
+      function save(){state.updatedAt=new Date().toISOString();try{localStorage.setItem(KEY,JSON.stringify(state));label.textContent='已自动保存 · '+new Date(state.updatedAt).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}catch(_){label.textContent='自动保存不可用；请导出 JSON'}}
+      function queueSave(){clearTimeout(timer);timer=setTimeout(save,180)}
+      function render(box,value){box.querySelectorAll('.decision-btn').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.value===value)))}
+      load();boxes.forEach(box=>{const id=box.dataset.reviewId;const group=box.querySelector('.review-actions');['认可','需调整','暂缓'].forEach(value=>{const b=document.createElement('button');b.type='button';b.className='decision-btn';b.dataset.value=value;b.textContent=value;b.setAttribute('aria-pressed','false');b.addEventListener('click',()=>{state.decisions[id]=state.decisions[id]===value?'':value;render(box,state.decisions[id]);queueSave()});group.appendChild(b)});render(box,state.decisions[id]||'');const notes=box.querySelector('[data-review-notes]');notes.value=state.notes[id]||'';notes.addEventListener('input',()=>{state.notes[id]=notes.value;queueSave()})});
+      const sf=document.getElementById('system-state-filter'),pf=document.getElementById('system-priority-filter'),rows=[...document.querySelectorAll('#systems-table tbody tr')];
+      function filter(){let n=0;rows.forEach(r=>{const show=(sf.value==='all'||r.dataset.state===sf.value)&&(pf.value==='all'||r.dataset.priority===pf.value);r.hidden=!show;if(show)n++});document.getElementById('system-count').textContent=`显示 ${n} / ${rows.length}`}
+      sf.addEventListener('change',filter);pf.addEventListener('change',filter);filter();
+      document.getElementById('export-review').addEventListener('click',()=>{save();const payload={artifact:'content-systems-architecture-review',artifactVersion:2,exportedAt:new Date().toISOString(),source:'local-visual-review',...state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`content-architecture-review-${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),0);label.textContent='评审 JSON 已导出'});
+      const dialog=document.getElementById('reset-dialog');document.getElementById('reset-review').addEventListener('click',()=>{if(typeof dialog.showModal==='function')dialog.showModal();else if(window.confirm('重置全部评审选择和备注？'))reset()});document.getElementById('confirm-reset').addEventListener('click',reset);
+      function reset(){state.updatedAt=null;state.decisions={};state.notes={};try{localStorage.removeItem(KEY)}catch(_){}boxes.forEach(box=>{render(box,'');box.querySelector('[data-review-notes]').value=''});label.textContent='评审状态已重置'}
+    })();
+  </script>
+</body>
+</html>

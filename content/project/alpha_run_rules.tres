@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="RunRulesDefinition" format=3 uid="uid://cqethsk26wyes"]
+
+[ext_resource type="Script" uid="uid://dtrnws1f6vqww" path="res://src/Project/RunRulesDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_rally.tres" id="2"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_time_stop.tres" id="3"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_beast_roar.tres" id="4"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_blood_rush.tres" id="5"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_duel_focus.tres" id="6"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_overclock.tres" id="7"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_paid_reinforcement.tres" id="8"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_raise_dead.tres" id="9"]
+[ext_resource type="Script" uid="uid://b4hwru4k53qyr" path="res://src/Project/LegacyHeroTacticalCommandMapping.cs" id="10"]
+
+[sub_resource type="Resource" id="MappingBannerMarshal"]
+script = ExtResource("10")
+HeroContentId = "hero_banner_marshal"
+Command = ExtResource("2")
+
+[sub_resource type="Resource" id="MappingHourArbiter"]
+script = ExtResource("10")
+HeroContentId = "hero_hour_arbiter"
+Command = ExtResource("3")
+
+[sub_resource type="Resource" id="MappingBroodMatriarch"]
+script = ExtResource("10")
+HeroContentId = "hero_brood_matriarch"
+Command = ExtResource("4")
+
+[sub_resource type="Resource" id="MappingCrimsonCount"]
+script = ExtResource("10")
+HeroContentId = "hero_crimson_count"
+Command = ExtResource("5")
+
+[sub_resource type="Resource" id="MappingEdgeAscetic"]
+script = ExtResource("10")
+HeroContentId = "hero_edge_ascetic"
+Command = ExtResource("6")
+
+[sub_resource type="Resource" id="MappingGearArchitect"]
+script = ExtResource("10")
+HeroContentId = "hero_gear_architect"
+Command = ExtResource("7")
+
+[sub_resource type="Resource" id="MappingGildedFactor"]
+script = ExtResource("10")
+HeroContentId = "hero_gilded_factor"
+Command = ExtResource("8")
+
+[sub_resource type="Resource" id="MappingBoneRegent"]
+script = ExtResource("10")
+HeroContentId = "hero_bone_regent"
+Command = ExtResource("9")
+
+[resource]
+script = ExtResource("1")
+StarterTacticalCommands = [ExtResource("2"), ExtResource("3")]
+LegacyHeroTacticalCommandMappings = [SubResource("MappingBannerMarshal"), SubResource("MappingHourArbiter"), SubResource("MappingBroodMatriarch"), SubResource("MappingCrimsonCount"), SubResource("MappingEdgeAscetic"), SubResource("MappingGearArchitect"), SubResource("MappingGildedFactor"), SubResource("MappingBoneRegent")]
+VictoryHeroRecovery = 0.12
+VictorySoldierRecovery = 0.15
+MinimumVictoryHeroHealth = 0.15
+MinimumLivingSoldierHealth = 0.1
+RiskyEventSuccessChance = 0.65
+RestHeroHealing = 0.35
+RestSoldierHealing = 0.45

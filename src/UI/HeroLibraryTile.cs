@@ -6,7 +6,7 @@ namespace TowerAutobattler.UI;
 
 public partial class HeroLibraryTile : Button
 {
-    [Signal] public delegate void PreviewRequestedEventHandler(string stableId);
+    [Signal] public delegate void SelectionRequestedEventHandler(string stableId);
     [Export] public PackedScene TraitBadgeScene { get; set; } = null!;
 
     private UnitPortrait _portrait = null!;
@@ -20,16 +20,12 @@ public partial class HeroLibraryTile : Button
     public override void _Ready()
     {
         CacheNodes();
-        FocusEntered += RequestPreview;
-        MouseEntered += RequestPreview;
-        Pressed += RequestPreview;
+        Pressed += RequestSelection;
     }
 
     public override void _ExitTree()
     {
-        FocusEntered -= RequestPreview;
-        MouseEntered -= RequestPreview;
-        Pressed -= RequestPreview;
+        Pressed -= RequestSelection;
     }
 
     public void Bind(HeroSelectionViewModel model)
@@ -47,7 +43,7 @@ public partial class HeroLibraryTile : Button
 
     public void SetPreviewed(bool previewed)
     {
-        ThemeTypeVariation = previewed ? "HeroTileSelected" : new StringName();
+        ThemeTypeVariation = previewed ? "SelectedButton" : "CompactButton";
         _state.Text = previewed ? (Unlocked ? "◆ 当前预览" : "◆ 未解锁") : (Unlocked ? "可出征" : "未解锁");
         _state.ThemeTypeVariation = previewed ? "HeroIdentity" : Unlocked ? "SecondaryLabel" : "DangerValue";
     }
@@ -69,7 +65,7 @@ public partial class HeroLibraryTile : Button
         }
     }
 
-    private void RequestPreview() => EmitSignal(SignalName.PreviewRequested, StableId);
+    private void RequestSelection() => EmitSignal(SignalName.SelectionRequested, StableId);
 
     private void CacheNodes()
     {

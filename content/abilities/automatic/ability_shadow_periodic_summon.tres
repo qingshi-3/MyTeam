@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3 uid="uid://u1aanrpgj6qt"]
+
+[ext_resource type="Script" uid="uid://wsmn7xt2uqi6" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://dhdal340s7cm7" path="res://src/Abilities/Authoring/SummonAbilityOperationSpec.cs" id="3"]
+
+[sub_resource type="Resource" id="Summon"]
+script = ExtResource("3")
+Profile = 4
+HealthMultiplier = 0.65
+DamageMultiplier = 0.7
+MaximumLivingTemporaryUnits = 4
+RequireAtLeastOne = false
+SummonContentId = "enemy_carrion"
+
+[resource]
+script = ExtResource("1")
+StableId = "ability_shadow_periodic_summon"
+DisplayName = "暗影呼唤"
+ActivationKind = 1
+Trigger = 2
+IntervalTicks = 60
+Operations = [SubResource("Summon")]

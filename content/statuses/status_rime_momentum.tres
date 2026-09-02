@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="StatusDefinition" format=3 uid="uid://8h7jg07h1vko"]
+
+[ext_resource type="Script" uid="uid://b6dbhxwbif5my" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://cf3uh6nr88y1b" path="res://src/Statuses/Authoring/StatusPresentationSpec.cs" id="2"]
+[ext_resource type="Script" uid="uid://bhmtlg415q8xm" path="res://src/Attributes/AttributeModifierSpec.cs" id="3"]
+[ext_resource type="Script" uid="uid://7y5lnha1o3xm" path="res://src/Statuses/Authoring/StatusCombatReactiveBindingSpec.cs" id="3_2721q"]
+[ext_resource type="Script" uid="uid://dlwvs7u5gu5oo" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="4"]
+[ext_resource type="Script" uid="uid://ditm8ibt6py1p" path="res://src/Statuses/Authoring/StatusLifecycleBindingSpec.cs" id="4_58qdl"]
+
+[sub_resource type="Resource" id="MomentumMagnitude"]
+script = ExtResource("4")
+Value = 0.08
+
+[sub_resource type="Resource" id="MomentumModifier"]
+script = ExtResource("3")
+Attribute = 3
+Magnitude = SubResource("MomentumMagnitude")
+SlotId = "rime_momentum_attack_speed"
+
+[sub_resource type="Resource" id="Presentation_momentum"]
+script = ExtResource("2")
+SemanticIcon = &"status.attack_speed"
+ExecutedCue = &"status.rime_momentum.executed"
+OnActiveCue = &"status.rime_momentum.active"
+WhileActiveCue = &"status.rime_momentum.while_active"
+RemovedCue = &"status.rime_momentum.removed"
+ReportLabel = "霜势"
+
+[resource]
+script = ExtResource("1")
+StableId = "status_rime_momentum"
+DisplayName = "霜势"
+Behavior = 2
+Disposition = 1
+StackLimit = 5
+GrantedTags = Array[StringName]([&"status.attack_speed"])
+AttributeModifiers = Array[Resource]([SubResource("MomentumModifier")])
+Presentation = SubResource("Presentation_momentum")

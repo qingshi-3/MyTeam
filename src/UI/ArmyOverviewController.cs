@@ -5,6 +5,7 @@ namespace TowerAutobattler.UI;
 public partial class ArmyOverviewController : Control
 {
     private Button _summary = null!;
+    private ArmyResourceStrip _resourceStrip = null!;
     private Button _close = null!;
     private Button _backdrop = null!;
     private PanelContainer _drawer = null!;
@@ -22,6 +23,7 @@ public partial class ArmyOverviewController : Control
     public override void _Ready()
     {
         _summary = GetNode<Button>("%SummaryButton");
+        _resourceStrip = GetNode<ArmyResourceStrip>("%ResourceStrip");
         _close = GetNode<Button>("%CloseButton");
         _backdrop = GetNode<Button>("%Backdrop");
         _drawer = GetNode<PanelContainer>("%Drawer");
@@ -47,13 +49,16 @@ public partial class ArmyOverviewController : Control
 
     public void Bind(ArmyOverviewViewModel model)
     {
-        _summary.Text = model.Summary + "　[军团详情]";
+        _summary.Text = string.Empty;
+        _summary.TooltipText = "打开军团详情";
+        _resourceStrip.Bind(model);
         ClearRows();
-        AddSection("英雄");
-        AddRow(model.Hero);
-        AddSection("士兵");
-        if (model.Soldiers.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无士兵", "", ""));
-        else foreach (var soldier in model.Soldiers) AddRow(soldier);
+        AddSection("英雄名册");
+        if (model.RosterHeroes.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无英雄", "", ""));
+        else foreach (var hero in model.RosterHeroes) AddRow(hero);
+        AddSection("战术指令");
+        if (model.TacticalCommands.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无战术指令", "", ""));
+        else foreach (var command in model.TacticalCommands) AddRow(command);
         AddSection("物品");
         if (model.Items.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无物品", "", ""));
         else foreach (var item in model.Items) AddRow(item);

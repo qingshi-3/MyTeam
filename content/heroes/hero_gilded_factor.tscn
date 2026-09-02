@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
 
@@ -9,7 +9,6 @@
 [ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/components/HeroRuleComponent.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/components/hero_commands/PaidReinforcementCommand.tscn" id="8"]
 
 [node name="hero_gilded_factor" type="Node2D"]
 script = ExtResource("1")
@@ -27,8 +26,7 @@ Frames = ExtResource("3")
 [node name="UnitBehaviorComponent" parent="." instance=ExtResource("6")]
 [node name="HeroRuleComponent" parent="." instance=ExtResource("7")]
 RuleTitle = "战争红利"
-RuleDescription = "每场胜利额外获得5金币，指令可雇佣临时援军。"
-MaxMana = 3
+RuleDescription = "每场胜利额外获得5金币。"
 SoldierHealthMultiplier = 1
 SoldierDamageMultiplier = 1
 HeroDamageMultiplier = 1.0
@@ -45,5 +43,3 @@ AddBattleConstruct = false
 BattleGoldBonus = 5
 RecruitConversionGold = 0
 SummonContentId = "soldier_aegis_guard"
-
-[node name="HeroCommandContentRoot" parent="." instance=ExtResource("8")]

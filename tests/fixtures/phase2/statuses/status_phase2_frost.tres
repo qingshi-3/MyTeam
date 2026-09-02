@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="StatusDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusPresentationSpec.cs" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase2/statuses/status_phase2_freeze.tres" id="3"]
+
+[sub_resource type="Resource" id="Presentation_frost"]
+script = ExtResource("2")
+SemanticIcon = &"status_frost"
+ExecutedCue = &"frost_executed"
+OnActiveCue = &"frost_active"
+WhileActiveCue = &"frost_while"
+RemovedCue = &"frost_removed"
+ReportLabel = "寒霜"
+
+[resource]
+script = ExtResource("1")
+StableId = "status_phase2_frost"
+DisplayName = "寒霜"
+Behavior = 2
+Disposition = 2
+DurationKind = 1
+DurationTicks = 4
+AggregationPolicy = 1
+StackLimit = 3
+OverflowPolicy = 2
+OverflowStatus = ExtResource("3")
+OverflowConsumeStacks = 0
+DurationRefreshPolicy = 1
+PeriodicResetPolicy = 0
+DispelCategory = 1
+DeathPolicy = 0
+ControlDurationRule = 0
+GrantedTags = Array[StringName]([&"status.frost"])
+AttributeModifiers = Array[Resource]([])
+Magnitude = 1.0
+PeriodicIntervalTicks = 0
+Presentation = SubResource("Presentation_frost")

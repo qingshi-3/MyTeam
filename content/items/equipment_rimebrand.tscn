@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemContentRoot.cs" id="1"]
+[ext_resource type="Resource" path="res://content/definitions/items/equipment_rimebrand.tres" id="2"]
+[ext_resource type="Resource" path="res://content/equipment/definitions/equipment_rimebrand.tres" id="3"]
+
+[node name="equipment_rimebrand" type="Node"]
+script = ExtResource("1")
+Definition = ExtResource("2")
+Equipment = ExtResource("3")

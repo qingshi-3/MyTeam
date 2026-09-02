@@ -16,6 +16,12 @@ public partial class ResourceCostBadge : PanelContainer
     public override void _Ready() => CacheNodes();
 
     public void BindMana(int amount) => Bind(SemanticIconKeys.Mana, amount, "MP", "ManaValue", "ManaCostSurface");
+    public void BindTacticalPoint(int amount) => Bind(
+        SemanticIconKeys.TacticalPoint,
+        amount,
+        "战术点",
+        "TacticalPointValue",
+        "TacticalPointCostSurface");
     public void BindGold(int amount) => Bind(SemanticIconKeys.Gold, amount, "金币", "GoldValue", "GoldCostSurface");
 
     public void Bind(StringName semanticKey, int amount, string unit, StringName valueVariation, StringName surfaceVariation)

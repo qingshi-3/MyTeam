@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CampaignDefinition" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/Project/CampaignDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/tower/region_ember_foundry.tres" id="2"]
+[ext_resource type="Resource" path="res://content/tower/region_gloam_crypt.tres" id="3"]
+[ext_resource type="Resource" path="res://content/tower/region_crown_engine.tres" id="4"]
+[ext_resource type="Resource" path="res://content/project/tower_node_table.tres" id="5"]
+[ext_resource type="Resource" path="res://content/project/pools/pool_all_soldiers.tres" id="6"]
+[ext_resource type="Resource" path="res://content/project/pools/pool_all_items.tres" id="7"]
+
+[resource]
+script = ExtResource("1")
+StableId = "campaign_alpha_tower"
+FloorsPerRegion = 5
+Regions = Array[TowerRegionDefinition]([ExtResource("2"), ExtResource("3"), ExtResource("4")])
+NodeTable = ExtResource("5")
+StarterPool = ExtResource("6")
+RecruitmentPool = ExtResource("6")
+ItemRewardPool = ExtResource("7")
+ShopPool = ExtResource("7")

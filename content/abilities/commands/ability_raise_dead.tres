@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3 uid="uid://c6y4ox0xt8cda"]
+
+[ext_resource type="Script" uid="uid://wsmn7xt2uqi6" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://dhdal340s7cm7" path="res://src/Abilities/Authoring/SummonAbilityOperationSpec.cs" id="3"]
+
+[sub_resource type="Resource" id="Summon"]
+script = ExtResource("3")
+Count = 2
+HealthMultiplier = 0.75
+DamageMultiplier = 0.8
+SummonContentId = "soldier_abyss_crawler"
+
+[resource]
+script = ExtResource("1")
+StableId = "ability_raise_dead"
+DisplayName = "死者起身"
+ManaCost = 1
+Operations = [SubResource("Summon")]

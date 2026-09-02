@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/portraits/enemy_phase5_fixture.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_phase5_fixture"
+DisplayName = "扩展测试层主"
+Description = "验证 Encounter 与 Boss Timeline 的资源化组合。"
+Role = 7
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 180.0
+AttackDamage = 8.0
+AttackRange = 1.5
+AttackCooldown = 1.4
+MoveInterval = 0.5
+Armor = 0.0
+Tags = Array[StringName]([&"enemy", &"phase5"])

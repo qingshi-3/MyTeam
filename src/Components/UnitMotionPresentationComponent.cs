@@ -78,6 +78,24 @@ public partial class UnitMotionPresentationComponent : Node
         TightenCatchUpBudget();
     }
 
+    public void RemapCoordinates(Vector2 oldOrigin, Vector2 oldPitch, Vector2 newOrigin, Vector2 newPitch)
+    {
+        if (_target is null || !_hasPlacement || oldPitch.X <= 0f || oldPitch.Y <= 0f || newPitch.X <= 0f || newPitch.Y <= 0f) return;
+        Vector2 Remap(Vector2 position)
+        {
+            var logical = new Vector2((position.X - oldOrigin.X) / oldPitch.X, (position.Y - oldOrigin.Y) / oldPitch.Y);
+            return newOrigin + new Vector2(logical.X * newPitch.X, logical.Y * newPitch.Y);
+        }
+
+        _target.Position = Remap(_target.Position);
+        _segmentStart = Remap(_segmentStart);
+        _segmentTarget = Remap(_segmentTarget);
+        var queued = _waypoints.Select(Remap).ToArray();
+        _waypoints.Clear();
+        foreach (var waypoint in queued) _waypoints.Enqueue(waypoint);
+        EmitSignal(SignalName.SegmentProgressChanged, SegmentProgress());
+    }
+
     public void SetPaused(bool paused)
     {
         if (_paused == paused) return;

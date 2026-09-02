@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="BattleLabPresetCatalog" format=3 uid="uid://bsalpjndwnr25"]
+
+[ext_resource type="Script" uid="uid://cor4kb65i8om3" path="res://src/BattleLab/BattleLabPresetCatalog.cs" id="1"]
+[ext_resource type="Script" uid="uid://bnt3ei3p2h01b" path="res://src/BattleLab/BattleLabBuiltInPreset.cs" id="2"]
+
+[sub_resource type="Resource" id="DefaultPreset"]
+script = ExtResource("2")
+DisplayName = "默认配置"
+PresetJson = "{
+  \"SchemaVersion\": 1,
+  \"Mode\": 0,
+  \"CurrentPopulation\": 2,
+  \"Seed\": 20260901,
+  \"FloorRuleId\": \"rule_clear\",
+  \"PrimaryHeroInstanceId\": \"lab-unit-1\",
+  \"Units\": [
+    { \"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_banner_marshal\", \"Side\": 0, \"X\": 0, \"Y\": 2, \"Equipment\": [] },
+    { \"InstanceId\": \"lab-unit-2\", \"ContentId\": \"enemy_rust_guard\", \"Side\": 1, \"X\": 9, \"Y\": 2, \"Equipment\": [] }
+  ],
+  \"Relics\": []
+}"
+
+[sub_resource type="Resource" id="FrostPreset"]
+script = ExtResource("2")
+DisplayName = "冰霜体系验证"
+PresetJson = "{
+  \"SchemaVersion\": 1,
+  \"Mode\": 0,
+  \"CurrentPopulation\": 2,
+  \"Seed\": 97031,
+  \"FloorRuleId\": \"rule_clear\",
+  \"PrimaryHeroInstanceId\": \"lab-unit-1\",
+  \"Units\": [
+    { \"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_banner_marshal\", \"Side\": 0, \"X\": 0, \"Y\": 2, \"Equipment\": [{ \"InstanceId\": \"lab-equipment-3\", \"ContentId\": \"equipment_rimebrand\", \"SlotIndex\": 0 }] },
+    { \"InstanceId\": \"lab-unit-2\", \"ContentId\": \"hero_gear_architect\", \"Side\": 0, \"X\": 0, \"Y\": 3, \"Equipment\": [{ \"InstanceId\": \"lab-equipment-4\", \"ContentId\": \"equipment_rimebrand\", \"SlotIndex\": 0 }] },
+    { \"InstanceId\": \"lab-unit-5\", \"ContentId\": \"enemy_scale_brute\", \"Side\": 1, \"X\": 9, \"Y\": 2, \"Equipment\": [] },
+    { \"InstanceId\": \"lab-unit-6\", \"ContentId\": \"enemy_resistance_dummy\", \"Side\": 1, \"X\": 9, \"Y\": 5, \"Equipment\": [] }
+  ],
+  \"Relics\": []
+}"
+
+[resource]
+script = ExtResource("1")
+DefaultPresetName = "默认配置"
+Presets = Array[ExtResource("2")]([SubResource("DefaultPreset"), SubResource("FrostPreset")])

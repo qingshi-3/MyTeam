@@ -1,0 +1,72 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/UI/TacticalCommandSlot.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/ResourceCostBadge.tscn" id="2"]
+
+[node name="TacticalCommandSlot" type="Button"]
+theme_type_variation = &"CompactButton"
+custom_minimum_size = Vector2(250, 102)
+focus_mode = 2
+script = ExtResource("1")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 6.0
+offset_right = -8.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="Header" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 5
+
+[node name="CommandName" type="Label" parent="Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_type_variation = &"HeroIdentity"
+theme_override_font_sizes/font_size = 15
+text = "1. 战术指令"
+
+[node name="Costs" type="HFlowContainer" parent="Layout/Header"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 4
+
+[node name="TacticalPointCostBadge" parent="Layout/Header/Costs" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+
+[node name="GoldCostBadge" parent="Layout/Header/Costs" instance=ExtResource("2")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CommandEffect" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_font_sizes/font_size = 13
+text = "战术指令效果"
+autowrap_mode = 2
+max_lines_visible = 2
+
+[node name="CommandState" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"HealingValue"
+theme_override_font_sizes/font_size = 12
+text = "可尝试"

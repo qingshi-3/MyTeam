@@ -1,0 +1,69 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/UI/TacticalCommandHud.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/TacticalCommandSlot.tscn" id="2"]
+
+[node name="TacticalCommandHud" type="PanelContainer"]
+theme_type_variation = &"ContextSidebarPanel"
+custom_minimum_size = Vector2(520, 132)
+script = ExtResource("1")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Resource" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TacticalPointsText" type="Label" parent="Layout/Resource"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TacticalPointValue"
+theme_override_font_sizes/font_size = 14
+text = "战术点 3/3"
+
+[node name="Segments" type="HBoxContainer" parent="Layout/Resource"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="TacticalPointSegment0" type="ColorRect" parent="Layout/Resource/Segments"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(28, 8)
+layout_mode = 2
+color = Color(0.235, 0.553, 1, 1)
+
+[node name="TacticalPointSegment1" type="ColorRect" parent="Layout/Resource/Segments"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(28, 8)
+layout_mode = 2
+color = Color(0.235, 0.553, 1, 1)
+
+[node name="TacticalPointSegment2" type="ColorRect" parent="Layout/Resource/Segments"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(28, 8)
+layout_mode = 2
+color = Color(0.235, 0.553, 1, 1)
+
+[node name="Slots" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TacticalCommandSlot0" parent="Layout/Slots" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TacticalCommandSlot1" parent="Layout/Slots" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FailureReason" type="Label" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"FeedbackFailure"
+theme_override_font_sizes/font_size = 12
+text = "失败原因"

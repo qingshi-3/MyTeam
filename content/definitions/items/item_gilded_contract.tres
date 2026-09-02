@@ -1,12 +1,14 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/gold.svg" id="2"]
 
 [resource]
 script = ExtResource("1")
 Id = "item_gilded_contract"
 DisplayName = "鎏金军契"
 Description = "每场胜利额外获得3金币。"
+Icon = ExtResource("2")
 Rarity = 1
 Price = 16
 Tags = Array[StringName]([&"item"])

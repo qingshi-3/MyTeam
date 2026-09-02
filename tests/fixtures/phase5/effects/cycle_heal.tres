@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="EffectBindingSpec" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="1"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/HealEffectSpec.cs" id="4"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="5"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectConditionSpec.cs" id="6"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectStepSpec.cs" id="7"]
+
+[sub_resource type="Resource" id="Trigger"]
+script = ExtResource("2")
+Kind = 1
+EventKind = 2
+
+[sub_resource type="Resource" id="Owner"]
+script = ExtResource("3")
+
+[sub_resource type="Resource" id="Heal"]
+script = ExtResource("4")
+AmountSource = 0
+Amount = 1.0
+
+[sub_resource type="Resource" id="Limits"]
+script = ExtResource("5")
+MaxDepth = 4
+MaxRepeatedEdges = 2
+
+[resource]
+script = ExtResource("1")
+StableId = "effect_phase5_cycle_heal"
+Trigger = SubResource("Trigger")
+Conditions = Array[ExtResource("6")]([])
+TargetQuery = SubResource("Owner")
+Effects = Array[ExtResource("7")]([SubResource("Heal")])
+Limits = SubResource("Limits")

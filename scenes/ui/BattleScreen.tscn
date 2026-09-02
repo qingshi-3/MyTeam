@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/Presentation/BattleScreenController.cs" id="1"]
 [ext_resource type="Script" path="res://src/Presentation/BattleBoard.cs" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/HeroCommandHud.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/TacticalCommandHud.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/SelectedUnitPanel.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleStatusStrip.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleFloatingCue.tscn" id="6"]
 
 [node name="BattleScreen" type="Control"]
 layout_mode = 3
@@ -13,6 +15,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+FloatingCueScene = ExtResource("6")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -41,53 +44,102 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "楼层规则"
 
-[node name="BattleBoard" type="Control" parent="Margin/Layout"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(980, 430)
+[node name="BattleArea" type="HBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="BattleBoard" type="Control" parent="Margin/Layout/BattleArea"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(840, 410)
+layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 0
 script = ExtResource("2")
 
-[node name="UnitsRoot" type="Node2D" parent="Margin/Layout/BattleBoard"]
+[node name="UnitsRoot" type="Node2D" parent="Margin/Layout/BattleArea/BattleBoard"]
 unique_name_in_owner = true
 
-[node name="SelectedUnitPanel" parent="Margin/Layout/BattleBoard" instance=ExtResource("4")]
+[node name="FloatingCueOverlay" type="Control" parent="Margin/Layout/BattleArea/BattleBoard"]
+unique_name_in_owner = true
+z_index = 30
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
+anchors_preset = 15
 anchor_right = 1.0
-offset_left = -270.0
-offset_top = 14.0
-offset_right = -14.0
-offset_bottom = 110.0
-grow_horizontal = 0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
-[node name="Hud" type="HBoxContainer" parent="Margin/Layout"]
+[node name="InspectorRegion" type="VBoxContainer" parent="Margin/Layout/BattleArea"]
+custom_minimum_size = Vector2(292, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SelectedUnitPanel" parent="Margin/Layout/BattleArea/InspectorRegion" instance=ExtResource("4")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Hud" type="VBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PrimaryRow" type="HBoxContainer" parent="Margin/Layout/Hud"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="BattleStatus" type="Label" parent="Margin/Layout/Hud"]
+[node name="BattleStatus" parent="Margin/Layout/Hud/PrimaryRow" instance=ExtResource("5")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "准备战斗"
 
-[node name="PauseButton" type="Button" parent="Margin/Layout/Hud"]
+[node name="PauseButton" type="Button" parent="Margin/Layout/Hud/PrimaryRow"]
+theme_type_variation = &"SecondaryButton"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 48)
 layout_mode = 2
 text = "暂停"
 
-[node name="SpeedButton" type="Button" parent="Margin/Layout/Hud"]
+[node name="SpeedButton" type="Button" parent="Margin/Layout/Hud/PrimaryRow"]
+theme_type_variation = &"SecondaryButton"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 48)
 layout_mode = 2
 text = "速度 x1"
 
-[node name="HeroCommandHud" parent="Margin/Layout/Hud" instance=ExtResource("3")]
+[node name="ControlRow" type="HBoxContainer" parent="Margin/Layout/Hud"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="StepButton" type="Button" parent="Margin/Layout/Hud/ControlRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(112, 48)
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "单步 1 tick"
+
+[node name="ResetBattleButton" type="Button" parent="Margin/Layout/Hud/ControlRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(92, 48)
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "重置"
+
+[node name="ReturnConfigurationButton" type="Button" parent="Margin/Layout/Hud/ControlRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(128, 48)
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "返回配置"
+
+[node name="TacticalCommandHud" parent="Margin/Layout/Hud/ControlRow" instance=ExtResource("3")]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="EndFadeOverlay" type="ColorRect" parent="."]
 unique_name_in_owner = true

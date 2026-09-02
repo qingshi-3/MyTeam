@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3 uid="uid://dpn5oxsphes8f"]
+
+[ext_resource type="Script" uid="uid://wsmn7xt2uqi6" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="1_ability"]
+[ext_resource type="Script" uid="uid://cdun7tpnl026k" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="3_binding"]
+[ext_resource type="Script" uid="uid://cwdf0vp61fd4e" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="4_trigger"]
+[ext_resource type="Script" uid="uid://btce0dmnb2pyl" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="5_owner"]
+[ext_resource type="Script" uid="uid://cjvcpbwdlokkb" path="res://src/Effects/Authoring/HealEffectSpec.cs" id="6_heal"]
+[ext_resource type="Script" uid="uid://dgkrqjbfxnpnu" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="7_limits"]
+[ext_resource type="Script" uid="uid://dk2ql37wqhrju" path="res://src/Effects/Authoring/EffectConditionSpec.cs" id="8_condition"]
+[ext_resource type="Resource" uid="uid://8vq7oxt4d7j2" path="res://content/statuses/status_blood_rush_damage.tres" id="10_status"]
+[ext_resource type="Script" uid="uid://bkqgx5lyspiiv" path="res://src/Abilities/Authoring/EffectAbilityOperationSpec.cs" id="11_effect_operation"]
+[ext_resource type="Script" uid="uid://dstwvaqblh34y" path="res://src/Abilities/Authoring/CooldownAbilityOperationSpec.cs" id="12_cooldown_operation"]
+[ext_resource type="Script" uid="uid://b3y7m2oitrg71" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="13_status_operation"]
+
+[sub_resource type="Resource" id="Heal"]
+script = ExtResource("6_heal")
+AmountSource = 1
+
+[sub_resource type="Resource" id="Limits"]
+script = ExtResource("7_limits")
+
+[sub_resource type="Resource" id="Owner"]
+script = ExtResource("5_owner")
+
+[sub_resource type="Resource" id="Trigger"]
+script = ExtResource("4_trigger")
+
+[sub_resource type="Resource" id="Binding"]
+script = ExtResource("3_binding")
+StableId = "ability_blood_rush_heal"
+Trigger = SubResource("Trigger")
+TargetQuery = SubResource("Owner")
+Effects = [SubResource("Heal")]
+Limits = SubResource("Limits")
+
+[sub_resource type="Resource" id="HealOperation"]
+script = ExtResource("11_effect_operation")
+Binding = SubResource("Binding")
+InvocationValueSource = 1
+InvocationValueScale = 0.28
+
+[sub_resource type="Resource" id="CooldownOperation"]
+script = ExtResource("12_cooldown_operation")
+TargetQuery = SubResource("Owner")
+AttackAdjustment = 1
+
+[sub_resource type="Resource" id="StatusOperation"]
+script = ExtResource("13_status_operation")
+Status = ExtResource("10_status")
+TargetQuery = SubResource("Owner")
+
+[resource]
+script = ExtResource("1_ability")
+StableId = "ability_blood_rush"
+DisplayName = "血潮暴走"
+ManaCost = 1
+Operations = [SubResource("HealOperation"), SubResource("CooldownOperation"), SubResource("StatusOperation")]

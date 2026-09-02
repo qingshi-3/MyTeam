@@ -46,6 +46,7 @@ size_flags_vertical = 3
 theme_override_constants/separation = 14
 
 [node name="RosterPanel" type="PanelContainer" parent="Margin/Layout/Columns"]
+theme_type_variation = &"ContextSidebarPanel"
 custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
 size_flags_vertical = 3
@@ -75,7 +76,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
-text = "拖放单位，或先选单位再选部署锚点。"
+text = ""
 
 [node name="Actions" type="HBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
@@ -83,18 +84,21 @@ alignment = 2
 theme_override_constants/separation = 12
 
 [node name="WithdrawButton" type="Button" parent="Margin/Layout/Actions"]
+theme_type_variation = &"SecondaryButton"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 46)
 layout_mode = 2
 text = "撤回候命"
 
 [node name="BackButton" type="Button" parent="Margin/Layout/Actions"]
+theme_type_variation = &"SecondaryButton"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 46)
 layout_mode = 2
 text = "返回路线"
 
 [node name="StartBattleButton" type="Button" parent="Margin/Layout/Actions"]
+theme_type_variation = &"PrimaryButton"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 46)
 layout_mode = 2

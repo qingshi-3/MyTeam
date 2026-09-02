@@ -1,6 +1,6 @@
-[gd_resource type="SpriteFrames" load_steps=107 format=3 uid="uid://c7evksnioc73e"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://c7evksnioc73e"]
 
-[ext_resource type="Texture2D" path="res://assets/donor-units/boss_vampire/boss_vampire.png" id="1_texture"]
+[ext_resource type="Texture2D" uid="uid://duep03yilac8g" path="res://assets/donor-units/boss_vampire/boss_vampire.png" id="1_texture"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_000"]
 atlas = ExtResource("1_texture")
@@ -542,7 +542,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_038")
 }],
-"loop": false,
+"loop": 0,
 "name": &"attack",
 "speed": 10.0
 }, {
@@ -589,7 +589,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_052")
 }],
-"loop": true,
+"loop": 1,
 "name": &"breathing",
 "speed": 5.0
 }, {
@@ -642,7 +642,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_068")
 }],
-"loop": false,
+"loop": 0,
 "name": &"death",
 "speed": 6.0
 }, {
@@ -695,7 +695,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_068")
 }],
-"loop": false,
+"loop": 0,
 "name": &"defeated",
 "speed": 6.0
 }, {
@@ -709,7 +709,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_071")
 }],
-"loop": false,
+"loop": 0,
 "name": &"hit",
 "speed": 10.0
 }, {
@@ -780,7 +780,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_093")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle",
 "speed": 5.0
 }, {
@@ -809,7 +809,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_104")
 }],
-"loop": true,
+"loop": 1,
 "name": &"move",
 "speed": 8.0
 }, {
@@ -823,7 +823,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_096")
 }],
-"loop": false,
+"loop": 0,
 "name": &"projectile",
 "speed": 10.0
 }, {
@@ -852,7 +852,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_104")
 }],
-"loop": true,
+"loop": 1,
 "name": &"run",
 "speed": 8.0
 }]

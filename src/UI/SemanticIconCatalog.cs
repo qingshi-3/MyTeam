@@ -61,4 +61,7 @@ public static class SemanticIcons
     private static SemanticIconCatalog? _catalog;
 
     public static SemanticIconCatalog Catalog => _catalog ??= GD.Load<SemanticIconCatalog>(CatalogPath);
+
+    public static void Configure(SemanticIconCatalog catalog) =>
+        _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
 }

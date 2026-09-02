@@ -3,7 +3,7 @@ using System;
 namespace TowerAutobattler.Content;
 
 public enum SemanticBattleEventType { Selected, Activated, Deactivated }
-public enum BattleCommandType { UseHeroCommand }
+public enum BattleCommandType { UseTacticalCommand }
 public enum ContentLifecycleState { Unbound, Bound, Active }
 
 public sealed record SemanticBattleEvent(SemanticBattleEventType Type, string SourceRuntimeId, string TargetRuntimeId, float Value);
@@ -12,15 +12,19 @@ public sealed record BattleCommandRequest(BattleCommandType Type, string SourceR
 public interface IDeterministicRandom { int NextInt(int minimumInclusive, int maximumExclusive); float NextFloat(); }
 public interface ISemanticBattleEventSink { void Publish(SemanticBattleEvent battleEvent); }
 public interface IBattleCommandGateway { bool Submit(BattleCommandRequest command); }
-public interface IRunModifierRegistry { IDisposable Register(string itemInstanceId, Components.RunModifierProviderComponent provider); }
-
 public sealed record UnitBindingContext(IDeterministicRandom Random, ISemanticBattleEventSink Events, IBattleCommandGateway Commands);
-public sealed record ItemBindingContext(IRunModifierRegistry Modifiers);
-
-public sealed class ItemInstanceState
+public sealed class ItemBindingContext
 {
-    public string InstanceId { get; init; } = string.Empty;
-    public int Stacks { get; set; } = 1;
-    public int Charges { get; set; }
-    public int Roll { get; set; }
+    public ItemBindingContext(
+        Relics.RelicRunScope relics,
+        Relics.CompiledRelicDefinition definition)
+    {
+        Relics = relics ?? throw new ArgumentNullException(nameof(relics));
+        Definition = definition ?? throw new ArgumentNullException(nameof(definition));
+    }
+
+    public Relics.RelicRunScope Relics { get; }
+    public Relics.CompiledRelicDefinition Definition { get; }
 }
+
+public sealed class ItemInstanceState : Relics.RelicRunInstanceState;

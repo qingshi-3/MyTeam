@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="StatusDefinition" format=3 uid="uid://8vq7oxt4d7j2"]
+
+[ext_resource type="Script" uid="uid://b6dbhxwbif5my" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://bhmtlg415q8xm" path="res://src/Attributes/AttributeModifierSpec.cs" id="2"]
+[ext_resource type="Script" uid="uid://dlwvs7u5gu5oo" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="3"]
+[ext_resource type="Script" uid="uid://7y5lnha1o3xm" path="res://src/Statuses/Authoring/StatusCombatReactiveBindingSpec.cs" id="3_xbk4k"]
+[ext_resource type="Script" uid="uid://ditm8ibt6py1p" path="res://src/Statuses/Authoring/StatusLifecycleBindingSpec.cs" id="4_53bh1"]
+
+[sub_resource type="Resource" id="ConstantMagnitude_blood"]
+script = ExtResource("3")
+Value = 1.08
+
+[sub_resource type="Resource" id="DamageModifier_blood"]
+script = ExtResource("2")
+Attribute = 1
+Operation = 1
+Magnitude = SubResource("ConstantMagnitude_blood")
+SlotId = "damage_multiplier"
+
+[resource]
+script = ExtResource("1")
+StableId = "status_blood_rush_damage"
+DisplayName = "血潮暴走"
+Behavior = 1
+Disposition = 1
+StackLimit = 0
+AttributeModifiers = [SubResource("DamageModifier_blood")]
+Magnitude = 1.08

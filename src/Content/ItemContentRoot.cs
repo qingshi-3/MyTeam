@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
-using TowerAutobattler.Components;
+using TowerAutobattler.Equipment;
+using TowerAutobattler.Relics;
 
 namespace TowerAutobattler.Content;
 
@@ -10,8 +10,8 @@ namespace TowerAutobattler.Content;
 public partial class ItemContentRoot : Node
 {
     [Export] public ItemDefinition Definition { get; set; } = null!;
-    public IReadOnlyList<RunModifierProviderComponent> ModifierProviders => GetChildren().OfType<RunModifierProviderComponent>().ToArray();
-    public RunModifierProviderComponent? ModifierProvider => ModifierProviders.FirstOrDefault();
+    [Export] public RelicDefinition? Relic { get; set; }
+    [Export] public EquipmentDefinition? Equipment { get; set; }
     public ItemInstanceState? InstanceState { get; private set; }
     public ContentLifecycleState LifecycleState { get; private set; }
 
@@ -22,7 +22,22 @@ public partial class ItemContentRoot : Node
         var report = new ValidationReport();
         if (Definition is null) report.Error($"{SceneFilePath}: missing ItemDefinition");
         else if (string.IsNullOrWhiteSpace(Definition.Id)) report.Error($"{SceneFilePath}: empty stable id");
-        if (ModifierProviders.Count == 0) report.Error($"{SceneFilePath}: missing modifier provider");
+        if (Definition is not null && !Enum.IsDefined(Definition.ProductKind))
+            report.Error($"{SceneFilePath}: invalid item product classification");
+        if (Definition?.ProductKind == ItemProductKind.Relic)
+        {
+            if (Relic is null) report.Error($"{SceneFilePath}: missing relic definition");
+            if (Equipment is not null) report.Error($"{SceneFilePath}: relic item cannot reference Equipment");
+            if (Relic is not null && Relic.StableId != Definition.Id)
+                report.Error($"{SceneFilePath}: relic stable id does not match item definition id");
+        }
+        else if (Definition?.ProductKind == ItemProductKind.Equipment)
+        {
+            if (Equipment is null) report.Error($"{SceneFilePath}: missing Equipment definition");
+            if (Relic is not null) report.Error($"{SceneFilePath}: Equipment item cannot reference a Relic");
+            if (Equipment is not null && Equipment.StableId != Definition.Id)
+                report.Error($"{SceneFilePath}: Equipment stable id does not match item definition id");
+        }
         return report;
     }
 
@@ -31,6 +46,7 @@ public partial class ItemContentRoot : Node
         if (LifecycleState == ContentLifecycleState.Active) throw new InvalidOperationException("Active item cannot be rebound.");
         if (state is null) throw new ArgumentNullException(nameof(state));
         if (string.IsNullOrWhiteSpace(state.InstanceId)) throw new ArgumentException("Item instance id is required.", nameof(state));
+        if (string.IsNullOrWhiteSpace(state.ContentId) && Definition is not null) state.ContentId = Definition.Id;
         InstanceState = state;
         LifecycleState = ContentLifecycleState.Bound;
     }
@@ -41,8 +57,11 @@ public partial class ItemContentRoot : Node
             throw new InvalidOperationException("Item must be bound before activation.");
         try
         {
-            foreach (var provider in ModifierProviders)
-                _registrations.Add(context.Modifiers.Register(InstanceState.InstanceId, provider));
+            if (Definition is null || Definition.ProductKind != ItemProductKind.Relic || Relic is null ||
+                context.Definition.StableId != Definition.Id ||
+                context.Definition.StableId != Relic.StableId)
+                throw new InvalidOperationException("Published relic definition does not match the item scene identity.");
+            _registrations.Add(context.Relics.Activate(context.Definition, InstanceState));
             LifecycleState = ContentLifecycleState.Active;
         }
         catch

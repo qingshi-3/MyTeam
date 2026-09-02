@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
 
@@ -9,7 +9,6 @@
 [ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/components/HeroRuleComponent.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/components/hero_commands/BeastRoarCommand.tscn" id="8"]
 
 [node name="hero_brood_matriarch" type="Node2D"]
 script = ExtResource("1")
@@ -28,7 +27,6 @@ Frames = ExtResource("3")
 [node name="HeroRuleComponent" parent="." instance=ExtResource("7")]
 RuleTitle = "群落进化"
 RuleDescription = "士兵伤害提高25%，野兽更适合密集冲锋。"
-MaxMana = 3
 SoldierHealthMultiplier = 1
 SoldierDamageMultiplier = 1.25
 HeroDamageMultiplier = 1.0
@@ -45,5 +43,3 @@ AddBattleConstruct = false
 BattleGoldBonus = 0
 RecruitConversionGold = 0
 SummonContentId = ""
-
-[node name="HeroCommandContentRoot" parent="." instance=ExtResource("8")]

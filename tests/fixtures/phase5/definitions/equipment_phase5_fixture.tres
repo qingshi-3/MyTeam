@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/shield.svg" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = "equipment_phase5_fixture"
+DisplayName = "扩展测试装备"
+Description = "仅用于验证英雄装备的独立内容发布。"
+Icon = ExtResource("2")
+Rarity = 0
+ProductKind = 1
+Price = 1
+Tags = Array[StringName]([&"item", &"equipment", &"phase5"])

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="TraitDefinition" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitCountingPolicySpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitBreakpointSpec.cs" id="3"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="4"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="5"]
+
+[sub_resource type="Resource" id="CountingPolicy"]
+script = ExtResource("2")
+DeploymentPolicy = 1
+TemporaryUnitPolicy = 0
+DuplicateContentPolicy = 0
+CountEquipment = true
+CountExplicitExtra = false
+
+[sub_resource type="Resource" id="AttackSpeedMagnitude"]
+script = ExtResource("5")
+Value = 0.15
+
+[sub_resource type="Resource" id="AttackSpeedModifier"]
+script = ExtResource("4")
+Attribute = 3
+Operation = 0
+Magnitude = SubResource("AttackSpeedMagnitude")
+Priority = 10
+SlotId = "winterbound_attack_speed"
+
+[sub_resource type="Resource" id="WinterboundTier"]
+script = ExtResource("3")
+MinValue = 2
+MaxValue = 18
+DisplayStyle = "TraitTierOne"
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("AttackSpeedModifier")])
+
+[resource]
+script = ExtResource("1")
+StableId = "trait_winterbound"
+DisplayName = "凛冬盟约"
+SemanticIconKey = "faction.frost"
+CountingPolicy = SubResource("CountingPolicy")
+Breakpoints = Array[TraitBreakpointSpec]([SubResource("WinterboundTier")])

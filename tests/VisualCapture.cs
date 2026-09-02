@@ -50,7 +50,7 @@ public partial class VisualCapture : Node
             await CaptureRealProductionHitch();
             await CaptureVictory();
             await CaptureDefeat();
-            GD.Print("VISUAL_CAPTURE_OK screens=12 extras=15 movement_frames=29 flows=report,reward,recruitment,shop,victory,defeat states=attack,defeated,hitch,grid-march information=selected-unit,zero-mana,semantic-icons path=res://.godot/qa");
+            GD.Print("VISUAL_CAPTURE_OK screens=12 extras=19 movement_frames=29 flows=report,reward,recruitment,shop,victory,defeat states=attack,defeated,hitch,grid-march information=selected-unit,zero-tactical-points,semantic-icons,statistical-report path=res://.godot/qa");
             return 0;
         }
         catch (Exception exception)
@@ -80,7 +80,7 @@ public partial class VisualCapture : Node
                 await CaptureCurrent("HeroSelectLocked.png");
             }
             heroScreen.Preview(CommanderId);
-            StartCommanderRun(root, 1100, floor: 0, strong: true);
+            var application = StartCommanderRun(root, 1100, floor: 0, strong: true);
             await RenderFrame();
             await CaptureScreen(root, "TowerScreen");
             Press(root, "ArmyOverview/SummaryButton");
@@ -88,12 +88,38 @@ public partial class VisualCapture : Node
             Press(root, "ArmyOverview/Drawer/Layout/Header/CloseButton");
             PressChoice(root, "Screens/TowerScreen/Margin/Layout/Choices", TowerNodeType.Combat.ToString());
             await RenderFrame();
+            var deploymentBoard = root.GetNode<DeploymentBoard>("Screens/DeploymentScreen/Margin/Layout/Columns/BoardPanel/DeploymentBoard");
+            var deploymentCells = deploymentBoard.GetChildren().OfType<DeploymentCell>().ToArray();
+            await CaptureCurrent("DeploymentDefault.png");
+            var startingInstanceId = application.ActiveRun!.Roster[0].InstanceId;
+            var heroCell = deploymentCells.Single(cell => cell.PieceId == startingInstanceId);
+            heroCell.EmitSignal(BaseButton.SignalName.Pressed);
+            await RenderFrame();
+            await CaptureCurrent("DeploymentSelectedLegalSwap.png");
+            var focusTarget = deploymentCells.First(cell => string.IsNullOrEmpty(cell.PieceId) && cell.IsLegalTarget);
+            focusTarget.GrabFocus();
+            await RenderFrame();
+            await CaptureCurrent("DeploymentFocus.png");
+            var swapTarget = deploymentCells.First(cell =>
+                !string.IsNullOrEmpty(cell.PieceId) && cell.PieceId != startingInstanceId);
+            await BeginDrag(heroCell, swapTarget);
+            await CaptureCurrent("DeploymentDragSwap.png");
+            await EndDrag(swapTarget);
+            deploymentCells = deploymentBoard.GetChildren().OfType<DeploymentCell>().ToArray();
+            deploymentCells.Single(cell => cell.Cell == new Vector2I(2, 5)).EmitSignal(BaseButton.SignalName.Pressed);
+            await RenderFrame();
+            if (BattlefieldLayout.PlayerDeploymentCells[application.ActiveRun!.Deployment.IndexOf(startingInstanceId)] !=
+                new Vector2I(2, 5))
+                throw new InvalidOperationException("visual capture failed to move the hero through authored deployment input");
             await CaptureScreen(root, "DeploymentScreen");
+            deploymentCells.Single(cell => cell.Cell == new Vector2I(2, 4)).FlashResult(false);
+            await CaptureCurrent("DeploymentFailure.png");
             Press(root, "Screens/DeploymentScreen/Margin/Layout/Actions/StartBattleButton");
             await RenderFrame();
             var battle = root.GetNode<BattleScreenController>("Screens/BattleScreen");
-            var board = root.GetNode<BattleBoard>("Screens/BattleScreen/Margin/Layout/BattleBoard");
-            var heroClick = board.GlobalPosition + board.CellToLocal(BattlefieldLayout.HeroCell);
+            var board = root.GetNode<BattleBoard>("Screens/BattleScreen/Margin/Layout/BattleArea/BattleBoard");
+            var heroClick = board.GlobalPosition + board.CellToLocal(
+                BattlefieldLayout.PlayerDeploymentCells[application.ActiveRun!.Deployment.IndexOf(startingInstanceId)]);
             GetViewport().PushInput(new InputEventMouseButton
             {
                 ButtonIndex = MouseButton.Left,
@@ -102,31 +128,50 @@ public partial class VisualCapture : Node
                 GlobalPosition = heroClick
             }, true);
             await RenderFrame();
-            var selectedPanel = root.GetNode<Control>("Screens/BattleScreen/Margin/Layout/BattleBoard/SelectedUnitPanel");
+            var selectedPanel = root.GetNode<Control>("Screens/BattleScreen/Margin/Layout/BattleArea/InspectorRegion/SelectedUnitPanel");
             if (!selectedPanel.Visible)
                 throw new InvalidOperationException("production BattleBoard mouse input did not open selected-unit details");
             await CaptureCurrent("SelectedUnitDetails.png");
             battle._Process(1.0);
             await CaptureScreen(root, "BattleScreen");
-            const string commandPath = "Screens/BattleScreen/Margin/Layout/Hud/HeroCommandHud/Layout/Mana/CommandButton";
+            const string commandPath = "Screens/BattleScreen/Margin/Layout/Hud/ControlRow/TacticalCommandHud/Layout/Slots/TacticalCommandSlot0";
             Press(root, commandPath);
-            if (battle.CurrentMana != 2)
-                throw new InvalidOperationException("first command did not leave the battle at 2/3 mana");
-            await CaptureCurrent("BattleCommandMana.png");
+            if (battle.TacticalPoints != 2)
+                throw new InvalidOperationException("first command did not leave the battle at 2/3 tactical points");
+            await CaptureCurrent("BattleTacticalPoints.png");
             Press(root, commandPath);
             Press(root, commandPath);
-            if (battle.CurrentMana != 0)
-                throw new InvalidOperationException("three successful commands did not exhaust battle mana");
+            if (battle.TacticalPoints != 0)
+                throw new InvalidOperationException("three successful commands did not exhaust battle tactical points");
             Press(root, commandPath);
-            if (!battle.CommandFeedback.Contains("法力不足", StringComparison.Ordinal))
-                throw new InvalidOperationException("zero-mana command attempt did not expose the authored failure reason");
-            await CaptureCurrent("BattleCommandManaEmpty.png");
+            if (!battle.CommandFeedback.Contains("战术点不足", StringComparison.Ordinal))
+                throw new InvalidOperationException("zero-point command attempt did not expose the authored failure reason");
+            await CaptureCurrent("BattleTacticalPointsEmpty.png");
             ResolveBattle(root, useCommands: true);
             await RenderFrame();
             RequireVisible(root, "BattleReportScreen");
             await CaptureCurrent("BattleReportPlayer.png");
-            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Tabs/EnemyTab");
+            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Controls/DimensionTabs/OffenseTab");
+            await CaptureCurrent("BattleReportPlayerOutput.png");
+            var leaderboard = root.GetNode<Container>("Screens/BattleReportScreen/Margin/Panel/Layout/ReportContentScroll/ReportContent/LeaderboardPage/LeaderboardBody/LeaderboardPanel/LeaderboardList");
+            if (leaderboard.GetChildCount() > 1)
+            {
+                leaderboard.GetChild<Button>(1).EmitSignal(BaseButton.SignalName.Pressed);
+                await CaptureCurrent("BattleReportPlayerOutputDetail.png");
+            }
+            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Controls/DimensionTabs/SurvivalTab");
+            await CaptureCurrent("BattleReportPlayerSurvival.png");
+            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Controls/DimensionTabs/HealingTab");
+            await CaptureCurrent("BattleReportPlayerHealing.png");
+            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Controls/DimensionTabs/OverviewTab");
+            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Controls/AllegianceTabs/EnemyTab");
             await CaptureCurrent("BattleReportEnemy.png");
+            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Controls/DimensionTabs/OffenseTab");
+            await CaptureCurrent("BattleReportEnemyOutput.png");
+            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Controls/DimensionTabs/SurvivalTab");
+            await CaptureCurrent("BattleReportEnemySurvival.png");
+            Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/Controls/DimensionTabs/HealingTab");
+            await CaptureCurrent("BattleReportEnemyHealing.png");
             Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/ReportContinue");
             RequireVisible(root, "RewardScreen");
             if (root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/ChoiceScroll/Choices").GetChildCount() == 0)
@@ -235,7 +280,7 @@ public partial class VisualCapture : Node
                 false,
                 false);
             var battle = root.GetNode<BattleScreenController>("Screens/BattleScreen");
-            InvokePrivate(root, "Show", battle);
+            root.Flow.Show(AppScreenId.Battle);
             battle.StartBattle(app.Content, app.BuildBattleConfig(encounter), encounter.Title);
             battle._Process(1.0);
             await RenderFrame();
@@ -254,7 +299,7 @@ public partial class VisualCapture : Node
             var run = app.ActiveRun ?? throw new InvalidOperationException("animation capture run missing");
             var encounter = app.Tower.Encounter(run, TowerNodeType.Combat);
             var battle = root.GetNode<BattleScreenController>("Screens/BattleScreen");
-            InvokePrivate(root, "Show", battle);
+            root.Flow.Show(AppScreenId.Battle);
             battle.StartBattle(app.Content, app.BuildBattleConfig(encounter), "攻击与败退状态");
             await RenderFrame();
 
@@ -283,7 +328,7 @@ public partial class VisualCapture : Node
             var run = app.ActiveRun ?? throw new InvalidOperationException("movement capture run missing");
             var encounter = app.Tower.Encounter(run, TowerNodeType.Combat);
             var battle = root.GetNode<BattleScreenController>("Screens/BattleScreen");
-            InvokePrivate(root, "Show", battle);
+            root.Flow.Show(AppScreenId.Battle);
 
             foreach (var speed in new[] { 1f, 2f, 4f })
             {
@@ -373,7 +418,7 @@ public partial class VisualCapture : Node
             StartNewRunFromMenu(root);
             var app = StartCommanderRun(root, 7711, floor: 0, strong: false);
             var battle = root.GetNode<BattleScreenController>("Screens/BattleScreen");
-            InvokePrivate(root, "Show", battle);
+            root.Flow.Show(AppScreenId.Battle);
             var heroEntry = app.Content.Catalog.Heroes.Single(entry => entry.StableId == CommanderId);
             var enemyEntry = app.Content.Catalog.Enemies[0];
             var heroAuthoring = heroEntry.Scene.Instantiate<UnitContentRoot>();
@@ -396,7 +441,7 @@ public partial class VisualCapture : Node
                     AttackTicks = 1000,
                     MoveTicks = 1000
                 };
-                heroRule = BattleSetupFactory.Snapshot(heroAuthoring.HeroRule!, heroAuthoring.HeroCommand!);
+                heroRule = BattleSetupFactory.Snapshot(heroAuthoring.HeroRule!);
             }
             finally
             {
@@ -519,10 +564,10 @@ public partial class VisualCapture : Node
         {
             StartNewRunFromMenu(root);
             var app = StartCommanderRun(root, 1100, floor: 0, strong: false);
-            app.ActiveRun!.HeroHealthRatio = .01f;
-            foreach (var unit in app.ActiveRun.Roster) unit.HealthRatio = .01f;
-            for (var slot = 0; slot < 6; slot++) app.ClearDeploymentSlot(slot);
-            InvokePrivate(root, "ShowTower");
+            var activeRun = app.ActiveRun ?? throw new InvalidOperationException("defeat capture run missing");
+            foreach (var unit in activeRun.Roster) unit.HealthRatio = .01f;
+            for (var slot = 0; slot < app.Rules.PhysicalDeploymentCeiling; slot++) app.ClearDeploymentSlot(slot);
+            root.Flow.ShowTower();
             await RenderFrame();
             PressChoice(root, "Screens/TowerScreen/Margin/Layout/Choices", TowerNodeType.Combat.ToString());
             Press(root, "Screens/DeploymentScreen/Margin/Layout/Actions/StartBattleButton");
@@ -544,8 +589,10 @@ public partial class VisualCapture : Node
 
     private async Task<GameRoot> CreateRoot(string suffix)
     {
+        var saveNamespace = "tests/visual-capture-" + suffix;
+        new SaveService(saveNamespace).DeleteActiveRun();
         var root = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
-        root.SaveNamespace = "tests/visual-capture-" + suffix;
+        root.SaveNamespace = saveNamespace;
         AddChild(root);
         for (var frame = 0; frame < 10 && root.Content is null; frame++) await RenderFrame();
         if (root.Content is null) throw new InvalidOperationException("GameRoot content gate did not finish");
@@ -561,7 +608,7 @@ public partial class VisualCapture : Node
     {
         var app = GetApplication(root);
         if (!app.Meta.UnlockedHeroIds.Contains(CommanderId)) app.Meta.UnlockedHeroIds.Add(CommanderId);
-        InvokePrivate(root, "ShowHeroSelection");
+        root.Flow.ShowHeroSelection();
         var heroScreen = root.GetNode<HeroSelectScreen>("Screens/HeroSelectScreen");
         heroScreen.Preview(CommanderId);
         Press(root, "Screens/HeroSelectScreen/Margin/Layout/Content/HeroDetailPanel/Layout/DeployButton");
@@ -569,7 +616,7 @@ public partial class VisualCapture : Node
         run.Seed = seed;
         run.FloorIndex = floor;
         run.PendingNode = false;
-        run.HeroHealthRatio = 1f;
+        foreach (var hero in run.Roster) hero.HealthRatio = 1f;
         if (strong)
         {
             foreach (var soldier in app.Content.Catalog.Soldiers.Select(entry => entry.StableId))
@@ -585,14 +632,14 @@ public partial class VisualCapture : Node
             var deployed = run.Roster.OrderByDescending(unit => unit.HealthRatio).Take(6).ToArray();
             for (var slot = 0; slot < deployed.Length; slot++) app.EquipDeployment(deployed[slot].InstanceId, slot);
         }
-        InvokePrivate(root, "ShowTower");
+        root.Flow.ShowTower();
         return app;
     }
 
     private static void ResolveBattle(GameRoot root, bool useCommands)
     {
         var battle = root.GetNode<BattleScreenController>("Screens/BattleScreen");
-        var command = root.GetNode<Button>("Screens/BattleScreen/Margin/Layout/Hud/HeroCommandHud/Layout/Mana/CommandButton");
+        var command = root.GetNode<Button>("Screens/BattleScreen/Margin/Layout/Hud/ControlRow/TacticalCommandHud/Layout/Slots/TacticalCommandSlot0");
         for (var iteration = 0; !battle.IsEnding && iteration < 2000; iteration++)
         {
             if (useCommands && iteration is 0 or 21 or 42) command.EmitSignal(BaseButton.SignalName.Pressed);
@@ -628,6 +675,38 @@ public partial class VisualCapture : Node
     {
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+    }
+
+    private async Task BeginDrag(Control source, Control target)
+    {
+        var start = source.GetGlobalRect().GetCenter();
+        var end = target.GetGlobalRect().GetCenter();
+        GetViewport().PushInput(new InputEventMouseMotion { Position = start, GlobalPosition = start }, true);
+        GetViewport().PushInput(new InputEventMouseButton
+        {
+            ButtonIndex = MouseButton.Left, Pressed = true, Position = start, GlobalPosition = start
+        }, true);
+        await RenderFrame();
+        for (var step = 1; step <= 3; step++)
+        {
+            var point = start.Lerp(end, step / 3f);
+            GetViewport().PushInput(new InputEventMouseMotion
+            {
+                Position = point, GlobalPosition = point, Relative = (end - start) / 3f,
+                ButtonMask = MouseButtonMask.Left
+            }, true);
+            await RenderFrame();
+        }
+    }
+
+    private async Task EndDrag(Control target)
+    {
+        var end = target.GetGlobalRect().GetCenter();
+        GetViewport().PushInput(new InputEventMouseButton
+        {
+            ButtonIndex = MouseButton.Left, Pressed = false, Position = end, GlobalPosition = end
+        }, true);
+        await RenderFrame();
     }
 
     private async Task DisposeRoot(GameRoot root)

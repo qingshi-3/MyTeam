@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="GameProjectDefinition" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/Project/GameProjectDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/fixture_catalog.tres" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/campaign_phase5_fixture.tres" id="3"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/run_rules_phase5_fixture.tres" id="4"]
+[ext_resource type="Resource" path="res://content/project/alpha_presentation.tres" id="5"]
+
+[resource]
+script = ExtResource("1")
+StableId = "project_phase5_fixture"
+Content = ExtResource("2")
+Campaign = ExtResource("3")
+RunRules = ExtResource("4")
+Presentation = ExtResource("5")

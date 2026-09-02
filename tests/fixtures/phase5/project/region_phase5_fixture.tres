@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TowerRegionDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/Project/TowerRegionDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/encounter_phase5_combat.tres" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/encounter_phase5_elite.tres" id="3"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/encounter_phase5_boss.tres" id="4"]
+
+[resource]
+script = ExtResource("1")
+Id = "region_phase5_fixture"
+DisplayName = "扩展测试区域"
+Description = "验证独立区域、遭遇与内容池组合。"
+AccentColor = Color(0.35, 0.65, 0.9, 1)
+Encounters = Array[EncounterDefinition]([ExtResource("2"), ExtResource("3"), ExtResource("4")])

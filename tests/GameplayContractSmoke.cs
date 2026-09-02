@@ -1,19 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Godot;
+using TowerAutobattler.Abilities;
+using TowerAutobattler.Attributes;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Components;
 using TowerAutobattler.Content;
+using TowerAutobattler.Effects;
 using TowerAutobattler.Presentation;
+using TowerAutobattler.Project;
 using TowerAutobattler.Run;
+using TowerAutobattler.TacticalCommands;
 using TowerAutobattler.UI;
 
 public partial class GameplayContractSmoke : Node
 {
+    private static readonly MovementFixtureAttributeOwner MovementAttributes = new();
+
     public override async void _Ready()
     {
         var code = await RunAsync();
@@ -26,8 +34,8 @@ public partial class GameplayContractSmoke : Node
         try
         {
             var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ?? throw new InvalidOperationException("catalog load");
-            var gate = await ContentRegistry.CreateReadyAsync(this, catalog);
-            var registry = gate.Registry ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
+            var gate = await TestProjectFixture.PublishAsync(this);
+            var registry = gate.Package?.Content ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
 
             TeamScopedModifiersAndAuras();
             KillGrowthAndDeathOrdering();
@@ -49,24 +57,30 @@ public partial class GameplayContractSmoke : Node
             ActualTimeArbiterEngagement(registry);
             SelectedUnitActionStateText();
             PresentationCueArbitration();
-            ReadabilityAndAuthoredMana(registry);
+            ReadabilityAndIndependentTactics(registry);
             await AnimationLifecycleAsync(registry);
-            HeroCommandSceneParameters();
-            HeroCommandEconomy();
+            TacticalCommandSceneParameters(registry);
+            TacticalCommandEconomy();
             BossContracts();
+            ProductionAbilityCompatibility(registry);
             FloorLifecycleExactlyOnce();
+            EffectKernelCompatibilityAndLifecycle();
             await DefaultBattleSpeedAsync(registry);
             BattleResultSnapshotAndStatistics();
+            BattleReportDerivationContracts();
             RunConversionAndSettings(registry);
-            DeploymentTransactions(registry);
 
-            GD.Print("GAMEPLAY_CONTRACT_OK combat=team-aura,growth,death,hazard,navigation,two-phase,scarcity,request-order,detour,retarget,fairness,follow-chains,cycle-rejection,reservations,waiting,healing,los-range2,death-cleanup,death-terminal,dead-cell-reuse,time-arbiter,bosses report=immutable,effective-damage,shield,healing,command-healing,kills pace=0.8-1.6-3.2,end-hold-fade-fast-forward presentation=cue-priority,full-frames,cast-fallback commands=scene-parameters,mana,transactional-economy lifecycle=exactly-once run=conversion,deployment,rollback,settings");
+            GD.Print("GAMEPLAY_CONTRACT_OK combat=team-aura,growth,death,hazard,navigation,two-phase,scarcity,request-order,detour,retarget,fairness,follow-chains,cycle-rejection,reservations,waiting,healing,los-range2,death-cleanup,death-terminal,dead-cell-reuse,time-arbiter,bosses effects=typed-determinism,lifecycle-zero abilities=8-command-determinism,2-boss-equivalence report=immutable,effective-damage,shield,healing,command-healing,kills,join-defeat,actions,events,rates,shares,awards,environment pace=0.8-1.6-3.2,end-hold-fade-fast-forward presentation=cue-priority,full-frames,cast-fallback commands=independent-scenes,tactical-points,transactional-economy lifecycle=exactly-once run=conversion,settings");
             return 0;
         }
         catch (Exception exception)
         {
             GD.PrintErr($"GAMEPLAY_CONTRACT_FAILED: {exception}");
             return 1;
+        }
+        finally
+        {
+            MovementAttributes.Dispose();
         }
     }
 
@@ -689,13 +703,18 @@ public partial class GameplayContractSmoke : Node
                 throw new InvalidOperationException("BattleRuleContext.Heal revived a unit killed earlier in the same floor-rule tick");
         }
 
-        var deadHero = State(Hero("dead-blood-rush"), "dead-blood-rush");
+        using var deadCommandBattle = new BattleSimulation(Config(
+        [
+            Spawn(Hero("dead-blood-rush"), 0, 0, 2, "dead-blood-rush"),
+            Spawn(Unit("dead-command-enemy", health: 1000, damage: 0, moveTicks: 1000), 1, 9, 2, "dead-command-enemy")
+        ], tacticalCommand: LoadTacticalCommand("TacticalBloodRush")));
+        var deadHero = deadCommandBattle.Units.Single(unit => unit.RuntimeId == "dead-blood-rush");
         deadHero.Health = 0;
         deadHero.Mode = BattleUnitMode.Defeated;
-        var commandProbe = new CommandProbe();
-        if (new BloodRushCommandRuntime(.5f, 2f).TryExecute(commandProbe.Context(deadHero, [deadHero], [], new SummonProfiles())) ||
+        var pointsBefore = deadCommandBattle.TacticalPoints;
+        if (deadCommandBattle.TryUseTacticalCommand(0).Succeeded || deadCommandBattle.TacticalPoints != pointsBefore ||
             deadHero.Health != 0 || deadHero.Alive)
-            throw new InvalidOperationException("Blood Rush revived a defeated hero outside the authoritative command gate");
+            throw new InvalidOperationException("Blood Rush revived a defeated hero or bypassed the authoritative typed command gate");
     }
 
     private static void ActualTimeArbiterEngagement(ContentRegistry registry)
@@ -707,7 +726,7 @@ public partial class GameplayContractSmoke : Node
         {
             var hero = BattleSetupFactory.Snapshot(heroEntry);
             var enemy = BattleSetupFactory.Snapshot(enemyEntry) with { Damage = 0, MoveTicks = 1000 };
-            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!, heroRoot.HeroCommand!);
+            var rule = BattleSetupFactory.Snapshot(heroRoot.HeroRule!);
             using var simulation = new BattleSimulation(Config(
             [
                 Spawn(hero, 0, 0, 2, "time-arbiter"),
@@ -766,45 +785,44 @@ public partial class GameplayContractSmoke : Node
             throw new InvalidOperationException("selected-unit cooldown text did not distinguish attack/heal in player-facing seconds");
     }
 
-    private static void HeroCommandEconomy()
+    private static void TacticalCommandEconomy()
     {
         var mercenary = Unit("mercenary", health: 50);
-        var paid = LoadCommand<PaidReinforcementCommandContent>("PaidReinforcementCommand");
-        try
-        {
+        var paid = LoadTacticalCommand("TacticalPaidReinforcement");
+        var summonProfiles = TacticalSummons(("soldier_aegis_guard", mercenary));
             using var funded = new BattleSimulation(Config(
             [
                 Spawn(Hero("merchant"), 0, 0, 0, "merchant"),
                 Spawn(Unit("enemy", health: 1000), 1, 9, 5, "enemy")
-            ], rule: Rule(command: paid.CreateRuntime(), commandGoldCost: paid.GoldCost), summons: new SummonProfiles(Mercenary: mercenary), startingGold: 5));
-            if (!funded.UseHeroCommand() || funded.GoldSpent != 5 || funded.CommandCharges != 2 || funded.Units.Count(unit => unit.IsTemporary) != 1)
+            ], tacticalCommand: paid, tacticalSummons: summonProfiles, startingGold: 5));
+            if (!funded.TryUseTacticalCommand(0).Succeeded || funded.GoldSpent != 5 || funded.TacticalPoints != 2 || funded.Units.Count(unit => unit.IsTemporary) != 1)
                 throw new InvalidOperationException("funded merchant command contract");
 
             using var poor = new BattleSimulation(Config(
             [
                 Spawn(Hero("merchant"), 0, 0, 0, "merchant"),
                 Spawn(Unit("enemy", health: 1000), 1, 9, 5, "enemy")
-            ], rule: Rule(command: paid.CreateRuntime(), commandGoldCost: paid.GoldCost), summons: new SummonProfiles(Mercenary: mercenary), startingGold: 4));
-            if (poor.UseHeroCommand() || poor.GoldSpent != 0 || poor.CommandCharges != 3 || poor.Units.Any(unit => unit.IsTemporary))
+            ], tacticalCommand: paid, tacticalSummons: summonProfiles, startingGold: 4));
+            if (poor.TryUseTacticalCommand(0).Succeeded || poor.GoldSpent != 0 || poor.TacticalPoints != 3 || poor.Units.Any(unit => unit.IsTemporary))
                 throw new InvalidOperationException("insufficient merchant command consumed resources");
 
             using var missingSummon = new BattleSimulation(Config(
             [
                 Spawn(Hero("merchant"), 0, 0, 0, "merchant"),
                 Spawn(Unit("enemy", health: 1000), 1, 9, 5, "enemy")
-            ], rule: Rule(command: paid.CreateRuntime(), commandGoldCost: paid.GoldCost), summons: new SummonProfiles(), startingGold: 10));
-            if (missingSummon.UseHeroCommand() || missingSummon.GoldSpent != 0 || missingSummon.CurrentMana != 3)
+            ], tacticalCommand: paid, startingGold: 10));
+            if (missingSummon.TryUseTacticalCommand(0).Succeeded || missingSummon.GoldSpent != 0 || missingSummon.TacticalPoints != 3)
                 throw new InvalidOperationException("missing summon consumed transactional command resources");
 
-            using var mana = new BattleSimulation(Config(BasicSpawns()));
-            if (!mana.UseHeroCommand() || mana.CurrentMana != 2 || !mana.UseHeroCommand() || mana.CurrentMana != 1 ||
-                !mana.UseHeroCommand() || mana.CurrentMana != 0 || mana.UseHeroCommand() || mana.CurrentMana != 0)
-                throw new InvalidOperationException("three-mana command lifecycle");
-            using var nextBattle = new BattleSimulation(Config(BasicSpawns()));
-            if (nextBattle.CurrentMana != 3 || nextBattle.MaxMana != 3)
-                throw new InvalidOperationException("new battle did not restore authored mana");
-        }
-        finally { paid.Free(); }
+            using var points = new BattleSimulation(Config(BasicSpawns(), tacticalCommand: LoadTacticalCommand("TacticalRally")));
+            if (!points.TryUseTacticalCommand(0).Succeeded || points.TacticalPoints != 2 ||
+                !points.TryUseTacticalCommand(0).Succeeded || points.TacticalPoints != 1 ||
+                !points.TryUseTacticalCommand(0).Succeeded || points.TacticalPoints != 0 ||
+                points.TryUseTacticalCommand(0).Succeeded || points.TacticalPoints != 0)
+                throw new InvalidOperationException("three-point tactical-command lifecycle");
+            using var nextBattle = new BattleSimulation(Config(BasicSpawns(), tacticalCommand: LoadTacticalCommand("TacticalRally")));
+            if (nextBattle.TacticalPoints != 3 || nextBattle.MaximumTacticalPoints != 3)
+                throw new InvalidOperationException("new battle did not restore tactical points");
     }
 
     private static void EngagementReservationsAndWaiting()
@@ -856,7 +874,7 @@ public partial class GameplayContractSmoke : Node
             throw new InvalidOperationException("unit did not prefer another enemy with an available engagement position");
     }
 
-    private static void ReadabilityAndAuthoredMana(ContentRegistry registry)
+    private static void ReadabilityAndIndependentTactics(ContentRegistry registry)
     {
         var brood = (UnitDefinition)registry.Catalog.Heroes.Single(entry => entry.StableId == "hero_brood_matriarch").Definition;
         var bone = (UnitDefinition)registry.Catalog.Heroes.Single(entry => entry.StableId == "hero_bone_regent").Definition;
@@ -871,11 +889,14 @@ public partial class GameplayContractSmoke : Node
             var root = entry.Scene.Instantiate<UnitContentRoot>();
             try
             {
-                if (root.HeroRule?.MaxMana != 3 || root.HeroCommand?.ManaCost != 1)
-                    throw new InvalidOperationException(entry.StableId + " did not explicitly author 3/1 mana");
+                if (root.HeroRule is null || root.GetNodeOrNull<Node>("HeroCommand") is not null)
+                    throw new InvalidOperationException(entry.StableId + " still owns a tactical command or lacks its hero rule");
             }
             finally { root.Free(); }
         }
+        if (registry.Graph.TacticalCommands.Length != 8 ||
+            registry.Graph.TacticalCommands.Any(command => command.TacticalPointCost != 1))
+            throw new InvalidOperationException("independent tactical-command publication or authored point costs changed");
     }
 
     private async Task AnimationLifecycleAsync(ContentRegistry registry)
@@ -961,7 +982,7 @@ public partial class GameplayContractSmoke : Node
         [
             new(2, "attack", "a", "b", 1, Vector2I.Zero, "attack"),
             new(2, "defeated", "b", "a", 1, Vector2I.Zero, "defeated"),
-            new(2, "hero_command", "a", "", 0, Vector2I.Zero, "skill_cast")
+            new(2, "tactical_command", "a", "", 0, Vector2I.Zero, "skill_cast")
         ];
         if (BattlePresentationCueArbiter.Select(lethal)["a"] != "defeated")
             throw new InvalidOperationException("terminal cue did not win presentation arbitration");
@@ -977,139 +998,32 @@ public partial class GameplayContractSmoke : Node
         if (animation.ActiveAuthoredSeconds > animation.ActivePlaybackSeconds + .001f) adjustedCount++;
     }
 
-    private static void HeroCommandSceneParameters()
+    private static void TacticalCommandSceneParameters(ContentRegistry registry)
     {
-        var rally = LoadCommand<RallyCommandContent>("RallyCommand");
-        try
+        var fixtures = new (string Scene, string Label, string[] DescriptionFacts)[]
         {
-            rally.ShieldAmount = 37;
-            rally.AttackCooldownCapTicks = 4;
-            ValidateCommand(rally, "rally", "37", "0.4");
-            var hero = State(Hero("rally-hero"), "rally-hero");
-            var ally = State(Unit("rally-ally"), "rally-ally");
-            ally.AttackCooldown = 11;
-            rally.CreateRuntime().TryExecute(new CommandProbe().Context(hero, [hero, ally], [], new SummonProfiles()));
-            Near(ally.Shield, 37, .001f, "rally scene shield parameter");
-            if (ally.AttackCooldown != 4) throw new InvalidOperationException("rally scene cooldown parameter");
-            rally.DisplayName = string.Empty; rally.ShieldAmount = 0; rally.AttackCooldownCapTicks = 0;
-            ExpectInvalid(rally, "rally");
-        }
-        finally { rally.Free(); }
-
-        var raise = LoadCommand<RaiseDeadCommandContent>("RaiseDeadCommand");
-        try
+            ("TacticalRally", "rally", ["22", "0.2"]),
+            ("TacticalRaiseDead", "raise dead", ["2", "75%", "80%"]),
+            ("TacticalBeastRoar", "beast roar", ["12%"]),
+            ("TacticalOverclock", "overclock", ["攻击与移动等待"]),
+            ("TacticalBloodRush", "blood rush", ["28%", "8%"]),
+            ("TacticalDuelFocus", "duel focus", ["35%"]),
+            ("TacticalTimeStop", "time stop", ["1.8", "1/2"]),
+            ("TacticalPaidReinforcement", "paid reinforcement", ["115%", "100%"])
+        };
+        var abilityIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var fixture in fixtures)
         {
-            raise.SummonCount = 3;
-            raise.HealthMultiplier = .61f;
-            raise.DamageMultiplier = .72f;
-            ValidateCommand(raise, "raise dead", "3", "61%", "72%");
-            var probe = new CommandProbe();
-            var hero = State(Hero("raise-hero"), "raise-hero");
-            if (!raise.CreateRuntime().TryExecute(probe.Context(hero, [hero], [], new SummonProfiles(DeathSummon: Unit("skeleton")))))
-                throw new InvalidOperationException("raise-dead scene runtime did not execute");
-            if (probe.Spawns.Count != 3 || probe.Spawns.Any(spawn => Math.Abs(spawn.HealthMultiplier - .61f) > .001f || Math.Abs(spawn.DamageMultiplier - .72f) > .001f))
-                throw new InvalidOperationException("raise-dead scene summon parameters");
-            raise.SummonCount = 0; raise.HealthMultiplier = 0; raise.DamageMultiplier = 0;
-            ExpectInvalid(raise, "raise dead");
+            var command = LoadTacticalCommandRoot(fixture.Scene);
+            try
+            {
+                ValidateTacticalCommand(command, registry, fixture.Label, fixture.DescriptionFacts);
+                var compiled = command.Resolve(registry.Graph);
+                if (!abilityIds.Add(compiled.Ability.StableId) || command.Definition.AbilityLoadout.Abilities.Count != 1)
+                    throw new InvalidOperationException(fixture.Label + " scene does not expose one immutable primary Ability");
+            }
+            finally { command.Free(); }
         }
-        finally { raise.Free(); }
-
-        var roar = LoadCommand<BeastRoarCommandContent>("BeastRoarCommand");
-        try
-        {
-            roar.SynergyTag = "machine";
-            roar.DamageMultiplier = 1.37f;
-            ValidateCommand(roar, "beast roar", "机械", "37%");
-            var hero = State(Hero("roar-hero"), "roar-hero");
-            var tagged = State(Unit("tagged", damage: 10, tags: ["machine"]), "tagged");
-            var untagged = State(Unit("untagged", damage: 10, tags: ["beast"]), "untagged");
-            roar.CreateRuntime().TryExecute(new CommandProbe().Context(hero, [tagged, untagged], [], new SummonProfiles()));
-            Near(tagged.Damage, 13.7f, .001f, "beast-roar scene tag/multiplier");
-            Near(untagged.Damage, 10, .001f, "beast-roar scene affected wrong tag");
-            roar.SynergyTag = new StringName(); roar.DamageMultiplier = 0;
-            ExpectInvalid(roar, "beast roar");
-        }
-        finally { roar.Free(); }
-
-        var overclock = LoadCommand<OverclockCommandContent>("OverclockCommand");
-        try
-        {
-            ValidateCommand(overclock, "overclock", "攻击与移动等待");
-            var hero = State(Hero("overclock-hero"), "overclock-hero");
-            hero.AttackCooldown = 9;
-            hero.MoveCooldown = 8;
-            overclock.CreateRuntime().TryExecute(new CommandProbe().Context(hero, [hero], [], new SummonProfiles()));
-            if (hero.AttackCooldown != 0 || hero.MoveCooldown != 0) throw new InvalidOperationException("overclock algorithm");
-            overclock.DisplayName = string.Empty;
-            ExpectInvalid(overclock, "overclock");
-        }
-        finally { overclock.Free(); }
-
-        var blood = LoadCommand<BloodRushCommandContent>("BloodRushCommand");
-        try
-        {
-            blood.HealRatio = .31f;
-            blood.DamageMultiplier = 1.19f;
-            ValidateCommand(blood, "blood rush", "31%", "19%");
-            var hero = State(Hero("blood-hero", health: 200, damage: 10), "blood-hero", health: 50);
-            hero.AttackCooldown = 7;
-            blood.CreateRuntime().TryExecute(new CommandProbe().Context(hero, [hero], [], new SummonProfiles()));
-            Near(hero.Health, 112, .001f, "blood-rush scene heal ratio");
-            Near(hero.Damage, 11.9f, .001f, "blood-rush scene damage multiplier");
-            if (hero.AttackCooldown != 0) throw new InvalidOperationException("blood-rush attack reset");
-            blood.HealRatio = 0; blood.DamageMultiplier = 0;
-            ExpectInvalid(blood, "blood rush");
-        }
-        finally { blood.Free(); }
-
-        var duel = LoadCommand<DuelFocusCommandContent>("DuelFocusCommand");
-        try
-        {
-            duel.ShieldRatio = .42f;
-            ValidateCommand(duel, "duel focus", "42%");
-            var hero = State(Hero("duel-hero", health: 200), "duel-hero");
-            hero.AttackCooldown = 6;
-            duel.CreateRuntime().TryExecute(new CommandProbe().Context(hero, [hero], [], new SummonProfiles()));
-            Near(hero.Shield, 84, .001f, "duel-focus scene shield ratio");
-            if (hero.AttackCooldown != 0) throw new InvalidOperationException("duel-focus attack reset");
-            duel.ShieldRatio = 0;
-            ExpectInvalid(duel, "duel focus");
-        }
-        finally { duel.Free(); }
-
-        var time = LoadCommand<TimeStopCommandContent>("TimeStopCommand");
-        try
-        {
-            time.DisableTicks = 23;
-            time.AllyCooldownDivisor = 3;
-            ValidateCommand(time, "time stop", "2.3", "1/3");
-            var hero = State(Hero("time-hero"), "time-hero");
-            hero.AttackCooldown = 12;
-            var enemy = State(Unit("time-enemy"), "time-enemy", team: 1);
-            time.CreateRuntime().TryExecute(new CommandProbe().Context(hero, [hero], [enemy], new SummonProfiles()));
-            if (enemy.DisabledTicks != 23 || hero.AttackCooldown != 4) throw new InvalidOperationException("time-stop scene parameters");
-            time.DisableTicks = 0; time.AllyCooldownDivisor = 0;
-            ExpectInvalid(time, "time stop");
-        }
-        finally { time.Free(); }
-
-        var paid = LoadCommand<PaidReinforcementCommandContent>("PaidReinforcementCommand");
-        try
-        {
-            paid.GoldCost = 7;
-            paid.HealthMultiplier = 1.23f;
-            paid.DamageMultiplier = .91f;
-            ValidateCommand(paid, "paid reinforcement", "123%", "91%");
-            var probe = new CommandProbe();
-            var hero = State(Hero("paid-hero"), "paid-hero");
-            if (!paid.CreateRuntime().TryExecute(probe.Context(hero, [hero], [], new SummonProfiles(Mercenary: Unit("mercenary-sentinel")))))
-                throw new InvalidOperationException("paid-reinforcement scene runtime did not execute");
-            if (probe.GoldSpent != 7 || probe.Spawns.Count != 1 || Math.Abs(probe.Spawns[0].HealthMultiplier - 1.23f) > .001f || Math.Abs(probe.Spawns[0].DamageMultiplier - .91f) > .001f)
-                throw new InvalidOperationException("paid-reinforcement scene cost/summon parameters");
-            paid.GoldCost = 0; paid.HealthMultiplier = 0; paid.DamageMultiplier = 0;
-            ExpectInvalid(paid, "paid reinforcement");
-        }
-        finally { paid.Free(); }
     }
 
     private static void BossContracts()
@@ -1147,6 +1061,186 @@ public partial class GameplayContractSmoke : Node
         if (controlled < warded * 4.9f)
             throw new InvalidOperationException($"final boss ward was not weakened by beacon control: {warded} -> {controlled}");
     }
+
+    private static void ProductionAbilityCompatibility(ContentRegistry registry)
+    {
+        if (!registry.TryGet("soldier_abyss_crawler", out var skeletonEntry) ||
+            !registry.TryGet("soldier_aegis_guard", out var mercenaryEntry))
+            throw new InvalidOperationException("production tactical summon dependencies are missing");
+        var tacticalSummons = TacticalSummons(
+            (skeletonEntry.StableId, BattleSetupFactory.Snapshot(skeletonEntry, registry)),
+            (mercenaryEntry.StableId, BattleSetupFactory.Snapshot(mercenaryEntry, registry)));
+        foreach (var command in registry.Graph.TacticalCommands.OrderBy(command => command.StableId, StringComparer.Ordinal))
+        {
+                var ability = command.Ability;
+                if (ability.DisplayName != command.DisplayName || ability.Description != command.Description ||
+                    ability.GoldCost != command.GoldCost)
+                    throw new InvalidOperationException($"{command.StableId}: production tactical command projection diverged");
+                var hero = Hero("compat-hero", health: 400, damage: 20, range: 2);
+                var ally = Unit("compat-beast", health: 240, damage: 17, range: 3, attackTicks: 30,
+                    moveTicks: 30, tags: ["soldier", "beast"]);
+                var enemyA = Unit("compat-enemy-a", health: 1000, damage: 0, range: .5f, attackTicks: 1000, moveTicks: 1000);
+                var enemyB = Unit("compat-enemy-b", health: 1000, damage: 0, range: .5f, attackTicks: 1000, moveTicks: 1000);
+                var spawns = new[]
+                {
+                    Spawn(hero, 0, 0, 2, "hero"),
+                    Spawn(ally, 0, 1, 2, "ally"),
+                    Spawn(enemyA, 1, 9, 1, "enemy-a"),
+                    Spawn(enemyB, 1, 9, 4, "enemy-b")
+                };
+                using var first = new BattleSimulation(Config(spawns, tacticalCommand: command,
+                    tacticalSummons: tacticalSummons, startingGold: 20));
+                using var second = new BattleSimulation(Config(spawns, tacticalCommand: command,
+                    tacticalSummons: tacticalSummons, startingGold: 20));
+                first.DrainEvents();
+                second.DrainEvents();
+                PrepareCommandCompatibilityState(first);
+                PrepareCommandCompatibilityState(second);
+                var before = first.Units.Select(AbilityCompatibilitySnapshot).ToArray();
+
+                var firstUse = first.TryUseTacticalCommand(0);
+                var secondUse = second.TryUseTacticalCommand(0);
+                if (!firstUse.Succeeded || !secondUse.Succeeded)
+                    throw new InvalidOperationException($"{command.StableId}: authored command did not execute deterministically: {firstUse.FailureReason} | {secondUse.FailureReason}");
+                if (first.TacticalPoints != BattleTacticalCommandScope.MaximumTacticalPoints - command.TacticalPointCost ||
+                    first.GoldSpent != command.GoldCost || first.SuccessfulTacticalCommandUses != 1 ||
+                    before.SequenceEqual(first.Units.Select(AbilityCompatibilitySnapshot)))
+                    throw new InvalidOperationException($"{command.StableId}: authored command did not commit its declared resources and world effect");
+                AssertAbilityCompatibility(first, second, command.StableId);
+                if (!first.EffectTrace.SequenceEqual(second.EffectTrace))
+                    throw new InvalidOperationException($"{command.StableId}: authored command effect trace is not deterministic");
+        }
+
+        ProductionBorealAbilityCompatibility(registry);
+        ProductionShadowAbilityCompatibility(registry);
+    }
+
+    private static void PrepareCommandCompatibilityState(BattleSimulation simulation)
+    {
+        foreach (var unit in simulation.Units)
+        {
+            unit.AttackCooldown = 12;
+            unit.MoveCooldown = 9;
+        }
+        var hero = simulation.Units.Single(unit => unit.RuntimeId == "hero");
+        hero.Health = hero.MaxHealth * .4f;
+    }
+
+    private static void ProductionBorealAbilityCompatibility(ContentRegistry registry)
+    {
+        if (!registry.TryGet("enemy_boreal_boss", out var entry))
+            throw new InvalidOperationException("boreal boss entry missing");
+        var production = BattleSetupFactory.Snapshot(entry, registry) with { Damage = 0, Range = .5f, MoveTicks = 1000 };
+        var legacy = production with
+        {
+            AbilityLoadout = null,
+            Behavior = production.Behavior with { PeriodicShieldTicks = 50, PeriodicShieldAmount = 55 }
+        };
+        using var typedBattle = new BattleSimulation(Config(
+        [
+            Spawn(Hero("boreal-target", health: 100000, damage: 0, range: .5f, moveTicks: 1000), 0, 0, 2, "player"),
+            Spawn(production, 1, 9, 2, "boss")
+        ]));
+        using var legacyBattle = new BattleSimulation(Config(
+        [
+            Spawn(Hero("boreal-target", health: 100000, damage: 0, range: .5f, moveTicks: 1000), 0, 0, 2, "player"),
+            Spawn(legacy, 1, 9, 2, "boss")
+        ]));
+        typedBattle.DrainEvents();
+        legacyBattle.DrainEvents();
+        for (var tick = 1; tick <= 50; tick++)
+        {
+            typedBattle.Step();
+            legacyBattle.Step();
+            var typedEvents = typedBattle.DrainEvents();
+            var legacyEvents = legacyBattle.DrainEvents();
+            if (!typedEvents.SequenceEqual(legacyEvents))
+                throw new InvalidOperationException($"boreal ability event order changed at tick {tick}");
+            if (tick == 49 && typedBattle.Units.Single(unit => unit.RuntimeId == "boss").Shield != 0)
+                throw new InvalidOperationException("boreal ability triggered before tick 50");
+        }
+        AssertAbilityCompatibility(typedBattle, legacyBattle, "enemy_boreal_boss");
+        Near(typedBattle.Units.Single(unit => unit.RuntimeId == "boss").Shield, 55, .001f,
+            "boreal typed shield value");
+    }
+
+    private static void ProductionShadowAbilityCompatibility(ContentRegistry registry)
+    {
+        if (!registry.TryGet("enemy_shadow_boss", out var entry) || !registry.TryGet("enemy_carrion", out var summonEntry))
+            throw new InvalidOperationException("shadow boss dependency entry missing");
+        var summon = BattleSetupFactory.Snapshot(summonEntry, registry);
+        var production = BattleSetupFactory.Snapshot(entry, registry) with { Damage = 0, Range = .5f, MoveTicks = 1000 };
+        var legacy = production with
+        {
+            AbilityLoadout = null,
+            Behavior = production.Behavior with { PeriodicSummonTicks = 60, PeriodicSummonLimit = 4 }
+        };
+        using var typedBattle = new BattleSimulation(Config(
+        [
+            Spawn(Hero("shadow-target", health: 100000, damage: 0, range: .5f, moveTicks: 1000), 0, 0, 2, "player"),
+            Spawn(production, 1, 9, 2, "boss", summon)
+        ]));
+        using var legacyBattle = new BattleSimulation(Config(
+        [
+            Spawn(Hero("shadow-target", health: 100000, damage: 0, range: .5f, moveTicks: 1000), 0, 0, 2, "player"),
+            Spawn(legacy, 1, 9, 2, "boss", summon)
+        ]));
+        typedBattle.DrainEvents();
+        legacyBattle.DrainEvents();
+        for (var tick = 1; tick <= 300; tick++)
+        {
+            typedBattle.Step();
+            legacyBattle.Step();
+            var typedEvents = typedBattle.DrainEvents();
+            var legacyEvents = legacyBattle.DrainEvents();
+            if (!typedEvents.SequenceEqual(legacyEvents))
+                throw new InvalidOperationException($"shadow ability event order changed at tick {tick}");
+            if (tick == 59 && typedBattle.Units.Any(unit => unit.IsTemporary))
+                throw new InvalidOperationException("shadow ability triggered before tick 60");
+        }
+        AssertAbilityCompatibility(typedBattle, legacyBattle, "enemy_shadow_boss");
+        if (typedBattle.Units.Count(unit => unit.Team == 1 && unit.IsTemporary && unit.Alive) != 4)
+            throw new InvalidOperationException("shadow ability did not preserve interval or living summon limit");
+    }
+
+    private static void AssertAbilityCompatibility(BattleSimulation typed, BattleSimulation legacy, string label)
+    {
+        if (typed.TacticalPoints != legacy.TacticalPoints || typed.GoldSpent != legacy.GoldSpent ||
+            typed.SuccessfulTacticalCommandUses != legacy.SuccessfulTacticalCommandUses ||
+            typed.CreateResult().Digest != legacy.CreateResult().Digest)
+            throw new InvalidOperationException($"{label}: ability resource counters or digest diverged between equivalent executions");
+        var typedEvents = typed.DrainEvents();
+        var legacyEvents = legacy.DrainEvents();
+        if (!typedEvents.SequenceEqual(legacyEvents))
+            throw new InvalidOperationException($"{label}: ability resource event order diverged between equivalent executions");
+        var typedUnits = typed.Units.Select(AbilityCompatibilitySnapshot).ToArray();
+        var legacyUnits = legacy.Units.Select(AbilityCompatibilitySnapshot).ToArray();
+        if (!typedUnits.SequenceEqual(legacyUnits))
+            throw new InvalidOperationException($"{label}: ability execution changed complete gameplay unit state nondeterministically");
+    }
+
+    private static object AbilityCompatibilitySnapshot(BattleUnitState unit) => new
+    {
+        unit.RuntimeId,
+        unit.SourceInstanceId,
+        unit.Definition.ContentId,
+        unit.Team,
+        unit.Cell,
+        unit.Health,
+        unit.MaxHealth,
+        unit.Damage,
+        unit.LifeSteal,
+        unit.Shield,
+        unit.AttackCooldown,
+        unit.MoveCooldown,
+        unit.DisabledTicks,
+        unit.WaitingTicks,
+        unit.IsTemporary,
+        unit.Mode,
+        unit.LastActionKind,
+        unit.ActionTargetRuntimeId,
+        unit.ActionTargetName
+    };
 
     private static float WardDamage(Vector2I heroCell)
     {
@@ -1187,6 +1281,93 @@ public partial class GameplayContractSmoke : Node
             throw new InvalidOperationException("normal completion plus abort ended floor more than once");
     }
 
+    private static void EffectKernelCompatibilityAndLifecycle()
+    {
+        static BattleConfig CompatibilityConfig() => Config(
+        [
+            new BattleSpawn(Hero("compat-player", health: 200, damage: 100, range: 3), 0,
+                new Vector2I(0, 2), "a-compat-player", .5f),
+            Spawn(Unit("compat-enemy", health: 60, damage: 0, range: 1, moveTicks: 1000), 1,
+                2, 2, "z-compat-enemy")
+        ], floor: new DamageAndHealEveryTickRule(5, 2),
+            tacticalCommand: LoadTacticalCommand("TacticalBloodRush"));
+
+        using var first = new BattleSimulation(CompatibilityConfig());
+        using var second = new BattleSimulation(CompatibilityConfig());
+        if (!first.TryUseTacticalCommand(0).Succeeded || !second.TryUseTacticalCommand(0).Succeeded)
+            throw new InvalidOperationException("typed effect determinism command setup failed");
+        var firstResult = first.RunToEnd();
+        var secondResult = second.RunToEnd();
+        if (firstResult.Outcome != secondResult.Outcome || firstResult.Ticks != secondResult.Ticks ||
+            firstResult.Digest != secondResult.Digest || firstResult.GoldSpent != secondResult.GoldSpent ||
+            firstResult.SuccessfulTacticalCommandUses != secondResult.SuccessfulTacticalCommandUses ||
+            !firstResult.Units.SequenceEqual(secondResult.Units) || !first.EffectTrace.SequenceEqual(second.EffectTrace))
+            throw new InvalidOperationException("typed effect execution changed outcome, ticks, digest, trace, or unit snapshots between equivalent runs");
+        var compatibilityBindings = first.EffectTrace.Select(entry => entry.BindingId).ToHashSet(StringComparer.Ordinal);
+        if (!compatibilityBindings.SetEquals(["ability_blood_rush_heal", "compat_floor_damage", "compat_floor_heal"]))
+            throw new InvalidOperationException("representative floor/command mechanics did not pass through the typed effect boundary");
+        ExpectValidTransition(first, BattleScopeCompletionReason.PlayerVictory, "typed deterministic victory A");
+        ExpectValidTransition(second, BattleScopeCompletionReason.PlayerVictory, "typed deterministic victory B");
+
+        var defeat = new BattleSimulation(Config(
+        [
+            Spawn(Hero("defeated", health: 10, damage: 0, range: 3), 0, 0, 2, "z-defeated"),
+            Spawn(Unit("killer", damage: 100, range: 3), 1, 2, 2, "a-killer")
+        ]));
+        defeat.Step();
+        ExpectValidTransition(defeat, BattleScopeCompletionReason.PlayerDefeat, "natural defeat");
+        defeat.Dispose();
+
+        var timeout = new BattleSimulation(Config(
+        [
+            Spawn(Hero("timeout-player", health: 10000, damage: 0, range: 10), 0, 0, 2, "timeout-player"),
+            Spawn(Unit("timeout-enemy", health: 10000, damage: 0, range: 10, attackTicks: int.MaxValue), 1,
+                2, 2, "timeout-enemy")
+        ]));
+        timeout.RunToEnd();
+        ExpectValidTransition(timeout, BattleScopeCompletionReason.Timeout, "natural timeout");
+        timeout.Dispose();
+
+        var aborted = new BattleSimulation(Config(BasicSpawns()));
+        aborted.Abort();
+        ExpectValidTransition(aborted, BattleScopeCompletionReason.Abort, "explicit abort");
+        aborted.Dispose();
+
+        var replaced = new BattleSimulation(Config(BasicSpawns()));
+        replaced.Replace();
+        ExpectValidTransition(replaced, BattleScopeCompletionReason.Replacement, "battle replacement");
+        replaced.Dispose();
+
+        var disposed = new BattleSimulation(Config(BasicSpawns()));
+        disposed.Dispose();
+        ExpectValidTransition(disposed, BattleScopeCompletionReason.Disposal, "direct disposal");
+
+        var throwingTick = new BattleSimulation(Config(BasicSpawns(), floor: new ThrowingTickRule()));
+        ExpectThrows(() => throwingTick.Step(), "effect-scope tick exception");
+        ExpectValidTransition(throwingTick, BattleScopeCompletionReason.Exception, "tick exception");
+        throwingTick.Dispose();
+
+        var throwingEndRule = new TrackingFloorRule { ThrowOnEnd = true };
+        var throwingEnd = new BattleSimulation(Config(BasicSpawns(), floor: throwingEndRule));
+        ExpectThrows(() => throwingEnd.Dispose(), "effect-scope end callback exception");
+        ExpectValidTransition(throwingEnd, BattleScopeCompletionReason.Exception, "end callback exception");
+        if (throwingEndRule.Ended != 1)
+            throw new InvalidOperationException("throwing floor end callback was invoked more than once");
+    }
+
+    private static void ExpectValidTransition(
+        BattleSimulation simulation,
+        BattleScopeCompletionReason reason,
+        string label)
+    {
+        var transition = simulation.EffectTransition ??
+            throw new InvalidOperationException(label + " omitted effect transition");
+        if (transition.Reason != reason || !transition.Validate().IsValid ||
+            transition.RemainingSubscriptions != 0 || transition.RemainingInvocations != 0 ||
+            transition.RemainingRuntimeInstances != 0)
+            throw new InvalidOperationException(label + " retained effect-scope state");
+    }
+
     private static void RunConversionAndSettings(ContentRegistry registry)
     {
         var save = new SaveService("tests/gameplay-contract");
@@ -1194,7 +1375,7 @@ public partial class GameplayContractSmoke : Node
         save.SaveMeta(new MetaProgressDto { UnlockedHeroIds = registry.Catalog.Heroes.Select(entry => entry.StableId).ToList() });
         save.SaveSettings(new SettingsDto { MasterVolume = .37f, DefaultBattleSpeed = 4f });
         var regions = Regions();
-        var app = new RunApplication(registry, save, regions);
+        var app = new RunApplication(registry, save, TestProjectFixture.Load(registry));
         var master = AudioServer.GetBusIndex("Master");
         if (master >= 0) Near(AudioServer.GetBusVolumeDb(master), Mathf.LinearToDb(.37f), .01f, "saved master volume not applied at startup");
 
@@ -1314,6 +1495,9 @@ public partial class GameplayContractSmoke : Node
         Near(ResultNumber(target, "DamageTaken"), 80, .01f, "damage dealt/taken authority diverged");
         Near(ResultNumber(target, "ShieldAbsorbed"), 30, .01f, "shield absorption report fact");
         Near(ResultNumber(attacker, "Kills"), 1, .01f, "concrete lethal source kill credit");
+        Near(ResultNumber(attacker, "JoinTick"), 0, .01f, "initial unit join tick");
+        Near(ResultNumber(attacker, "AttackActions"), 1, .01f, "one attack action authority");
+        Near(ResultNumber(target, "DefeatTick"), 1, .01f, "terminal defeat tick authority");
         liveTarget.Health = 999;
         Near(ResultNumber(target, "FinalHealth"), 0, .01f, "result snapshot changed after live battle mutation");
 
@@ -1328,6 +1512,7 @@ public partial class GameplayContractSmoke : Node
         var healingRows = ((IEnumerable)healing.CreateResult().GetType().GetProperty("Units")!.GetValue(healing.CreateResult())!).Cast<object>().ToArray();
         var healer = healingRows.Single(row => ResultString(row, "RuntimeId") == "report-healer");
         Near(ResultNumber(healer, "HealingDone"), 50, .01f, "effective healing counted overheal or lost source credit");
+        Near(ResultNumber(healer, "EffectiveHealingEvents"), 1, .01f, "positive effective heal event authority");
 
         using var commandHealing = new BattleSimulation(Config(
         [
@@ -1335,27 +1520,29 @@ public partial class GameplayContractSmoke : Node
                 new Vector2I(0, 2), "report-blood-rush-full", .5f),
             Spawn(Unit("report-blood-rush-enemy", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 9, 5,
                 "report-blood-rush-enemy")
-        ], rule: Rule(new BloodRushCommandRuntime(.25f, 1.5f))));
+        ], tacticalCommand: LoadTacticalCommand("TacticalBloodRush")));
         var commandHero = commandHealing.Units.Single(unit => unit.RuntimeId == "report-blood-rush-full");
         commandHero.AttackCooldown = 7;
         var commandBefore = commandHealing.CreateResult();
-        if (!commandHealing.TryUseHeroCommand().Succeeded || commandHealing.CurrentMana != 2 || commandHealing.GoldSpent != 0)
+        if (!commandHealing.TryUseTacticalCommand(0).Succeeded || commandHealing.TacticalPoints != 2 || commandHealing.GoldSpent != 0)
             throw new InvalidOperationException("blood-rush full-heal command changed transaction semantics");
-        Near(commandHero.Health, 150, .01f, "blood-rush full effective healing changed final health");
-        Near(commandHero.Damage, 15, .01f, "blood-rush command changed damage multiplier behavior");
+        Near(commandHero.Health, 156, .01f, "blood-rush authored 28% healing changed final health");
+        Near(commandHero.Damage, 10.8f, .01f, "blood-rush authored 8% damage multiplier changed behavior");
         if (commandHero.AttackCooldown != 0)
             throw new InvalidOperationException("blood-rush command stopped resetting attack cooldown");
         var commandAfter = commandHealing.CreateResult();
-        Near(commandAfter.Units.Single(unit => unit.RuntimeId == "report-blood-rush-full").HealingDone, 50, .01f,
-            "blood-rush full effective healing was not attributed to the hero");
+        if (commandAfter.SuccessfulTacticalCommandUses != 1)
+            throw new InvalidOperationException("successful command use count did not increment at commit");
+        Near(commandAfter.Units.Single(unit => unit.RuntimeId == "report-blood-rush-full").HealingDone, 56, .01f,
+            "blood-rush authored effective healing was not attributed to the hero");
         using var commandDigestControl = new BattleSimulation(Config(
         [
             new BattleSpawn(Hero("report-blood-rush-full", health: 200, damage: 10), 0,
                 new Vector2I(0, 2), "report-blood-rush-full", .5f),
             Spawn(Unit("report-blood-rush-enemy", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 9, 5,
                 "report-blood-rush-enemy")
-        ], rule: Rule(new RallyCommandRuntime(0, int.MaxValue))));
-        if (!commandDigestControl.TryUseHeroCommand().Succeeded || commandAfter.Ticks != commandBefore.Ticks ||
+        ], tacticalCommand: LoadTacticalCommand("TacticalRally")));
+        if (!commandDigestControl.TryUseTacticalCommand(0).Succeeded || commandAfter.Ticks != commandBefore.Ticks ||
             commandAfter.Digest != commandDigestControl.CreateResult().Digest)
             throw new InvalidOperationException("blood-rush healing statistics changed tick or command-event digest authority");
 
@@ -1365,12 +1552,14 @@ public partial class GameplayContractSmoke : Node
                 new Vector2I(0, 2), "report-blood-rush-overheal", .95f),
             Spawn(Unit("report-blood-rush-overheal-enemy", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 9, 5,
                 "report-blood-rush-overheal-enemy")
-        ], rule: Rule(new BloodRushCommandRuntime(.25f, 1f))));
-        if (!commandOverheal.TryUseHeroCommand().Succeeded)
+        ], tacticalCommand: LoadTacticalCommand("TacticalBloodRush")));
+        if (!commandOverheal.TryUseTacticalCommand(0).Succeeded)
             throw new InvalidOperationException("blood-rush overheal command unexpectedly failed");
         var overhealHero = commandOverheal.CreateResult().Units.Single(unit => unit.RuntimeId == "report-blood-rush-overheal");
         Near(overhealHero.FinalHealth, 200, .01f, "blood-rush overheal changed final-health cap");
         Near(overhealHero.HealingDone, 10, .01f, "blood-rush report counted overhealing instead of effective healing");
+        if (overhealHero.EffectiveHealingEvents != 1)
+            throw new InvalidOperationException("partially effective command heal did not count exactly one event");
 
         using var lifesteal = new BattleSimulation(Config(
         [
@@ -1394,6 +1583,8 @@ public partial class GameplayContractSmoke : Node
         var areaResult = area.CreateResult();
         Near(areaResult.Units.Single(unit => unit.RuntimeId == "report-area").DamageDealt, 180, .01f,
             "splash and pierce effective damage aggregation");
+        if (areaResult.Units.Single(unit => unit.RuntimeId == "report-area").AttackActions != 1)
+            throw new InvalidOperationException("splash and pierce multiplied one attack action");
         Near(areaResult.Units.Single(unit => unit.RuntimeId == "b-report-behind").DamageTaken, 80, .01f,
             "splash and pierce target aggregation");
 
@@ -1426,8 +1617,60 @@ public partial class GameplayContractSmoke : Node
             rule: Rule() with { AddBattleConstruct = true },
             summons: new SummonProfiles(HeroConstruct: construct)));
         var summonRow = summons.CreateResult().Units.Single(unit => unit.IsTemporary);
-        if (summonRow.ContentId != construct.ContentId || summonRow.DamageDealt != 0 || summonRow.HealingDone != 0)
+        if (summonRow.ContentId != construct.ContentId || summonRow.DamageDealt != 0 || summonRow.HealingDone != 0 || summonRow.JoinTick != 0)
             throw new InvalidOperationException("temporary summon did not receive an independent zero-initialized statistics row");
+
+        using var lateSummon = new BattleSimulation(Config(BasicSpawns(),
+            tacticalCommand: LoadTacticalCommand("TacticalPaidReinforcement"),
+            tacticalSummons: TacticalSummons(("soldier_aegis_guard", construct)),
+            startingGold: 20));
+        lateSummon.Step();
+        if (!lateSummon.TryUseTacticalCommand(0).Succeeded)
+            throw new InvalidOperationException("late summon command fixture failed");
+        var lateRow = lateSummon.CreateResult().Units.Single(unit => unit.IsTemporary);
+        if (lateRow.JoinTick != 1 || lateSummon.CreateResult().SuccessfulTacticalCommandUses != 1)
+            throw new InvalidOperationException("late summon join tick or successful command count");
+        lateSummon.TryUseTacticalCommand(0);
+        lateSummon.TryUseTacticalCommand(0);
+        if (lateSummon.TryUseTacticalCommand(0).Succeeded || lateSummon.CreateResult().SuccessfulTacticalCommandUses != 3)
+            throw new InvalidOperationException("failed command changed successful command count");
+    }
+
+    private static void BattleReportDerivationContracts()
+    {
+        var units = new[]
+        {
+            new BattleUnitReportSnapshot("a", "a", "a", "甲", UnitRole.Fighter, 0, true, false, true,
+                Vector2I.Zero, 100, 100, 0, 10, 100, 20, 0, 40, 1, 0, null, 2, 1),
+            new BattleUnitReportSnapshot("b", "b", "b", "乙", UnitRole.Support, 0, false, true, false,
+                Vector2I.One, 0, 100, 0, 10, 100, 80, 0, 40, 0, 5, 15, 1, 1),
+            new BattleUnitReportSnapshot("z", "z", "z", "敌", UnitRole.Boss, 1, false, false, true,
+                new Vector2I(2, 2), 200, 300, 0, 10, 50, 230, 0, 0, 0)
+        }.ToImmutableArray();
+        var result = new BattleResult(BattleOutcome.PlayerVictory, 20, new string('b', 64), units, 0, 2);
+
+        var offense = BattleReportViewModels.Build(result, 0, BattleReportDimension.Offense);
+        if (offense.Units.Select(unit => unit.Unit.RuntimeId).SequenceEqual(new[] { "a", "b" }) is false ||
+            Math.Abs(offense.Units[0].DamageShare - .5f) > .001f ||
+            Math.Abs(offense.Units[1].ActiveLifetimeSeconds - 1f) > .001f ||
+            Math.Abs(offense.Units[1].DamagePerSecond - 100f) > .001f)
+            throw new InvalidOperationException("offense ranking/share/active-lifetime rate derivation");
+        if (offense.Units.Any(unit => !unit.Awards.HasFlag(BattleReportAwards.DamageLeader) ||
+                                     !unit.Awards.HasFlag(BattleReportAwards.HealingLeader)) ||
+            offense.Units[0].Awards.HasFlag(BattleReportAwards.DamageTakenLeader) ||
+            !offense.Units[1].Awards.HasFlag(BattleReportAwards.DamageTakenLeader))
+            throw new InvalidOperationException("positive tied or unique report awards");
+        if (Math.Abs(offense.EnemyTeam.EnvironmentDamage - 30f) > .001f)
+            throw new InvalidOperationException("positive environment damage reconciliation");
+
+        var survival = BattleReportViewModels.Build(result, 0, BattleReportDimension.Survival);
+        if (survival.Units[0].Unit.RuntimeId != "b")
+            throw new InvalidOperationException("survival ranking");
+        var enemyHealing = BattleReportViewModels.Build(result, 1, BattleReportDimension.Healing);
+        if (!enemyHealing.ShowHealingEmptyState || enemyHealing.Units[0].HealingShare != 0 ||
+            enemyHealing.Units[0].HealingPerSecond != 0 ||
+            enemyHealing.Units[0].Awards.HasFlag(BattleReportAwards.HealingLeader))
+            throw new InvalidOperationException("zero-safe healing state or zero-category award");
     }
 
     private static string ResultString(object row, string property) =>
@@ -1456,7 +1699,7 @@ public partial class GameplayContractSmoke : Node
         var save = new SaveService("tests/deployment-transactions");
         save.DeleteActiveRun();
         save.SaveMeta(new MetaProgressDto { UnlockedHeroIds = registry.Catalog.Heroes.Select(entry => entry.StableId).ToList() });
-        var app = new RunApplication(registry, save, Regions());
+        var app = new RunApplication(registry, save, TestProjectFixture.Load(registry));
         if (!app.StartNewRun("hero_banner_marshal", 707)) throw new InvalidOperationException("deployment run start");
         var run = app.ActiveRun!;
         var first = run.Deployment[0];
@@ -1478,7 +1721,7 @@ public partial class GameplayContractSmoke : Node
         if (app.MoveDeploymentUnit(reserve, 0) || string.Join("|", run.Deployment) != snapshot)
             throw new InvalidOperationException("invalid deployment changed formation");
 
-        var reloaded = new RunApplication(registry, save, Regions());
+        var reloaded = new RunApplication(registry, save, TestProjectFixture.Load(registry));
         if (reloaded.ActiveRun is null || string.Join("|", reloaded.ActiveRun.Deployment) != snapshot)
             throw new InvalidOperationException("deployment did not persist through existing save contract");
         save.DeleteActiveRun();
@@ -1489,7 +1732,7 @@ public partial class GameplayContractSmoke : Node
     private static void DeploymentRollbackAndReserveCapacity(ContentRegistry registry)
     {
         var failingSave = new FailingRunSaveService(registry.Catalog.Heroes.Select(entry => entry.StableId));
-        var app = new RunApplication(registry, failingSave, Regions());
+        var app = new RunApplication(registry, failingSave, TestProjectFixture.Load(registry));
         if (!app.StartNewRun("hero_banner_marshal", 808)) throw new InvalidOperationException("rollback deployment run start");
         var run = app.ActiveRun!;
         var first = run.Deployment[0];
@@ -1552,7 +1795,9 @@ public partial class GameplayContractSmoke : Node
         HeroRuleSnapshot? rule = null,
         ModifierSnapshot? modifiers = null,
         SummonProfiles? summons = null,
-        int startingGold = 0) => new()
+        int startingGold = 0,
+        CompiledTacticalCommandDefinition? tacticalCommand = null,
+        IReadOnlyDictionary<string, UnitSnapshot>? tacticalSummons = null) => new()
         {
             Seed = 17,
             FloorRule = floor ?? new ClearFloorRuleRuntime("clear", "常规", "test"),
@@ -1560,7 +1805,9 @@ public partial class GameplayContractSmoke : Node
             HeroRule = rule ?? Rule(),
             Modifiers = modifiers ?? new ModifierSnapshot(),
             Summons = summons ?? new SummonProfiles(),
-            StartingGold = startingGold
+            StartingGold = startingGold,
+            TacticalCommands = tacticalCommand is null ? null : TacticalPreparation(tacticalCommand),
+            TacticalSummons = tacticalSummons ?? ImmutableDictionary<string, UnitSnapshot>.Empty
         };
 
     private static List<BattleSpawn> BasicSpawns() =>
@@ -1594,46 +1841,123 @@ public partial class GameplayContractSmoke : Node
             armor, heal, splash, lifeSteal, tags ?? Array.Empty<string>(), behavior ?? new UnitBehaviorSnapshot());
 
     private static HeroRuleSnapshot Rule(
-        IHeroCommandRuntime? command = null,
         float formationArmor = 0,
         float formationDamage = 0,
         float killGrowth = 0,
         string requiredTag = "",
-        bool summonOnDeath = false,
-        int commandGoldCost = 0) =>
-        new("测试指令", "测试效果", 3, 1, commandGoldCost, command ?? new RallyCommandRuntime(22, 2), 1, 1, 1, 0, 0, 0, false,
-            requiredTag, 1, 1, formationArmor, formationDamage, killGrowth, 0, summonOnDeath, false, 0, 0, "");
+        bool summonOnDeath = false)
+    {
+        return new HeroRuleSnapshot(
+            1, 1, 1, 0, 0, 0, false,
+            requiredTag, 1, 1, formationArmor, formationDamage, killGrowth, 0,
+            summonOnDeath, false, 0, 0, string.Empty);
+    }
 
-    private static T LoadCommand<T>(string sceneName) where T : HeroCommandContentRoot =>
-        GD.Load<PackedScene>($"res://scenes/components/hero_commands/{sceneName}.tscn").Instantiate<T>();
+    private static TacticalCommandContentRoot LoadTacticalCommandRoot(string sceneName) =>
+        GD.Load<PackedScene>($"res://content/tactical-commands/commands/{sceneName}.tscn")
+            .Instantiate<TacticalCommandContentRoot>();
 
-    private static void ValidateCommand(HeroCommandContentRoot command, string label, params string[] descriptionValues)
+    private static CompiledTacticalCommandDefinition LoadTacticalCommand(string sceneName)
+    {
+        var command = LoadTacticalCommandRoot(sceneName);
+        try
+        {
+            var authoredLoadout = command.Definition.AbilityLoadout;
+            var abilityCompilation = AbilityDefinitionCompiler.CompileLoadout(authoredLoadout);
+            var loadout = abilityCompilation.Loadout ?? throw new InvalidOperationException(
+                $"{sceneName} ability compile: {string.Join("; ", abilityCompilation.Report.CoreErrors)}");
+            var result = TacticalCommandDefinitionCompiler.Compile(
+                command.Definition,
+                authored => ReferenceEquals(authored, authoredLoadout) ? loadout : null);
+            return result.Definition ?? throw new InvalidOperationException(
+                $"{sceneName} tactical compile: {string.Join("; ", result.Report.CoreErrors)}");
+        }
+        finally { command.Free(); }
+    }
+
+    private static void ValidateTacticalCommand(
+        TacticalCommandContentRoot command,
+        ContentRegistry registry,
+        string label,
+        params string[] descriptionValues)
     {
         var report = command.ValidateAuthoring();
-        if (command.ManaCost != 1) throw new InvalidOperationException(label + " mana cost is not scene-authored as one");
         if (report.HasCoreErrors) throw new InvalidOperationException($"{label} sentinel authoring: {string.Join("; ", report.CoreErrors)}");
+        var compiled = command.Resolve(registry.Graph);
+        if (compiled.TacticalPointCost != 1)
+            throw new InvalidOperationException(label + " tactical-point cost is not scene-authored as one");
         foreach (var value in descriptionValues)
-            if (!command.Description.Contains(value, StringComparison.Ordinal))
-                throw new InvalidOperationException($"{label} generated description omitted sentinel {value}: {command.Description}");
+            if (!compiled.Description.Contains(value, StringComparison.Ordinal))
+                throw new InvalidOperationException($"{label} generated description omitted sentinel {value}: {compiled.Description}");
     }
 
-    private static void ExpectInvalid(HeroCommandContentRoot command, string label)
+    private static TacticalCommandBattlePreparation TacticalPreparation(
+        CompiledTacticalCommandDefinition primary)
     {
-        if (!command.ValidateAuthoring().HasCoreErrors)
-            throw new InvalidOperationException(label + " authoring validation accepted invalid values");
+        var secondary = LoadTacticalCommand(primary.StableId == "tactical_rally"
+            ? "TacticalTimeStop"
+            : "TacticalRally");
+        var commands = ImmutableArray.Create(primary, secondary);
+        return new TacticalCommandBattlePreparation(
+            TacticalCommandBattlePreparationBuilder.Fingerprint(commands),
+            commands);
     }
+
+    private static IReadOnlyDictionary<string, UnitSnapshot> TacticalSummons(
+        params (string StableId, UnitSnapshot Unit)[] entries) =>
+        entries.ToImmutableDictionary(entry => entry.StableId, entry => entry.Unit, StringComparer.Ordinal);
 
     private static BattleUnitState State(UnitSnapshot definition, string runtimeId, float? health = null, int team = 0) => new()
     {
         RuntimeId = runtimeId,
         SourceInstanceId = runtimeId,
         Definition = definition,
+        Attributes = MovementAttributes.Create(definition, runtimeId),
         Team = team,
         Cell = new Vector2I(team == 0 ? 0 : 9, 2),
-        MaxHealth = definition.MaxHealth,
-        Health = health ?? definition.MaxHealth,
-        Damage = definition.Damage
+        Health = health ?? definition.MaxHealth
     };
+
+    private sealed class MovementFixtureAttributeOwner : IDisposable
+    {
+        private readonly List<BattleAttributeScope> _scopes = [];
+        private int _sequence;
+
+        public BattleAttributeSet Create(UnitSnapshot definition, string runtimeId)
+        {
+            var scope = new BattleAttributeScope($"gameplay_movement_fixture_{++_sequence}");
+            _scopes.Add(scope);
+            var compiled = definition.AttributeDefinition ?? AttributeDefinitionCompiler.Legacy(
+                new Dictionary<CombatAttribute, float>
+                {
+                    [CombatAttribute.MaxHealth] = definition.MaxHealth,
+                    [CombatAttribute.AttackDamage] = definition.Damage,
+                    [CombatAttribute.Armor] = definition.Armor,
+                    [CombatAttribute.AttackRange] = definition.Range,
+                    [CombatAttribute.HealingPower] = definition.HealPower,
+                    [CombatAttribute.LifeSteal] = definition.LifeSteal
+                });
+            var projection = AttributeDefinitionCompiler.WithBaseValues(
+                compiled,
+                new Dictionary<CombatAttribute, float>
+                {
+                    [CombatAttribute.MaxHealth] = definition.MaxHealth,
+                    [CombatAttribute.AttackDamage] = definition.Damage,
+                    [CombatAttribute.Armor] = definition.Armor,
+                    [CombatAttribute.AttackRange] = definition.Range,
+                    [CombatAttribute.HealingPower] = definition.HealPower,
+                    [CombatAttribute.LifeSteal] = definition.LifeSteal
+                });
+            return scope.CreateSet(runtimeId, projection);
+        }
+
+        public void Dispose()
+        {
+            foreach (var scope in _scopes)
+                scope.Complete(AttributeScopeCompletionReason.Disposal, 0);
+            _scopes.Clear();
+        }
+    }
 
     private static void Near(float actual, float expected, float tolerance, string message)
     {
@@ -1646,32 +1970,6 @@ public partial class GameplayContractSmoke : Node
         try { action(); }
         catch (Exception) { return; }
         throw new InvalidOperationException("expected exception: " + message);
-    }
-
-    private sealed class CommandProbe
-    {
-        public List<CommandSpawn> Spawns { get; } = [];
-        public int GoldSpent { get; private set; }
-
-        public BattleCommandContext Context(
-            BattleUnitState hero, IReadOnlyList<BattleUnitState> allies, IReadOnlyList<BattleUnitState> enemies,
-            SummonProfiles summons) => new(
-                hero, allies, enemies, summons,
-                (_, target, amount) =>
-                {
-                    if (!target.Alive || amount <= 0) return 0;
-                    var before = target.Health;
-                    target.Health = Math.Min(target.MaxHealth, target.Health + amount);
-                    return target.Health - before;
-                },
-                (profile, _, healthMultiplier, damageMultiplier) =>
-                {
-                    if (profile is null) return false;
-                    Spawns.Add(new CommandSpawn(profile, healthMultiplier, damageMultiplier));
-                    return true;
-                },
-                amount => { GoldSpent += amount; return true; },
-                _ => { });
     }
 
     private sealed class FailingRunSaveService(IEnumerable<string> unlockedHeroIds) : IRunSaveService
@@ -1696,8 +1994,6 @@ public partial class GameplayContractSmoke : Node
         }
         public void DeleteActiveRun() => _run = null;
     }
-
-    private sealed record CommandSpawn(UnitSnapshot Profile, float HealthMultiplier, float DamageMultiplier);
 
     private sealed class DamageEveryTickRule(float amount) : ClearFloorRuleRuntime("damage", "伤害", "test")
     {
@@ -1747,6 +2043,7 @@ public partial class GameplayContractSmoke : Node
         public int Started { get; private set; }
         public int Ended { get; private set; }
         public bool ThrowOnStart { get; init; }
+        public bool ThrowOnEnd { get; init; }
 
         public TrackingFloorRule() : base("tracking", "追踪", "test") { }
         public override void OnBattleStarted(BattleRuleContext context)
@@ -1754,6 +2051,16 @@ public partial class GameplayContractSmoke : Node
             Started++;
             if (ThrowOnStart) throw new InvalidOperationException("expected start failure");
         }
-        public override void OnBattleEnded(BattleRuleContext context, BattleOutcome outcome) => Ended++;
+        public override void OnBattleEnded(BattleRuleContext context, BattleOutcome outcome)
+        {
+            Ended++;
+            if (ThrowOnEnd) throw new InvalidOperationException("expected end failure");
+        }
+    }
+
+    private sealed class ThrowingTickRule() : ClearFloorRuleRuntime("throwing-tick", "异常", "test")
+    {
+        public override void OnTick(BattleRuleContext context) =>
+            throw new InvalidOperationException("expected tick failure");
     }
 }

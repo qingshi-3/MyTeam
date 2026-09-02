@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
 
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAbilityLoadoutComponent.tscn" id="7"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_boreal_boss.tres" id="8"]
 [node name="enemy_boreal_boss" type="Node2D"]
 script = ExtResource("1")
 Definition = ExtResource("2")
@@ -28,8 +30,11 @@ ExecuteHealthThreshold = 0
 LowHealthDamageBonus = 0
 OnDeathDamage = 0
 PiercingLine = false
-PeriodicShieldTicks = 50
-PeriodicShieldAmount = 55
+PeriodicShieldTicks = 0
+PeriodicShieldAmount = 0
 PeriodicSummonTicks = 0
 PreferBacklineTargets = false
 SummonContentId = ""
+
+[node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("7")]
+Loadout = ExtResource("8")

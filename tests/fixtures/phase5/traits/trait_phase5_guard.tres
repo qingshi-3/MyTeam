@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="TraitDefinition" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitCountingPolicySpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitBreakpointSpec.cs" id="3"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="4"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="5"]
+
+[sub_resource type="Resource" id="CountingPolicy"]
+script = ExtResource("2")
+DeploymentPolicy = 1
+TemporaryUnitPolicy = 1
+DuplicateContentPolicy = 0
+CountEquipment = true
+CountExplicitExtra = true
+
+[sub_resource type="Resource" id="TierOneMagnitude"]
+script = ExtResource("5")
+Value = 5.0
+
+[sub_resource type="Resource" id="TierOneModifier"]
+script = ExtResource("4")
+Attribute = 1
+Operation = 0
+Magnitude = SubResource("TierOneMagnitude")
+Priority = 1
+SlotId = "phase5_trait_attack"
+
+[sub_resource type="Resource" id="TierOne"]
+script = ExtResource("3")
+MinValue = 2
+MaxValue = 3
+DisplayStyle = "TraitTierOne"
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("TierOneModifier")])
+
+[sub_resource type="Resource" id="TierTwoMagnitude"]
+script = ExtResource("5")
+Value = 10.0
+
+[sub_resource type="Resource" id="TierTwoModifier"]
+script = ExtResource("4")
+Attribute = 1
+Operation = 0
+Magnitude = SubResource("TierTwoMagnitude")
+Priority = 2
+SlotId = "phase5_trait_attack"
+
+[sub_resource type="Resource" id="TierTwo"]
+script = ExtResource("3")
+MinValue = 5
+MaxValue = 8
+DisplayStyle = "TraitTierTwo"
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("TierTwoModifier")])
+
+[resource]
+script = ExtResource("1")
+StableId = "trait_phase5_guard"
+DisplayName = "测试守势"
+SemanticIconKey = "trait.phase5.guard"
+CountingPolicy = SubResource("CountingPolicy")
+Breakpoints = Array[TraitBreakpointSpec]([SubResource("TierOne"), SubResource("TierTwo")])

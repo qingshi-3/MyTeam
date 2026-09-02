@@ -5,6 +5,7 @@ using System.Linq;
 using Godot;
 using TowerAutobattler.Content;
 using TowerAutobattler.Run;
+using TowerAutobattler.Traits;
 
 namespace TowerAutobattler.UI;
 
@@ -17,6 +18,7 @@ public static class SemanticIconKeys
     public static readonly StringName Shield = "shield";
     public static readonly StringName Healing = "healing";
     public static readonly StringName Mana = "mana";
+    public static readonly StringName TacticalPoint = "tactical_point";
     public static readonly StringName Gold = "gold";
     public static readonly StringName Time = "time";
     public static readonly StringName Kills = "kills";
@@ -30,7 +32,7 @@ public static class SemanticIconKeys
 
     public static IReadOnlyList<StringName> Required { get; } = new StringName[]
         {
-            Health, Damage, Shield, Healing, Mana, Gold, Time, Kills, Deaths, Hero, Melee, Ranged, Risk, Loot, Reach
+            Health, Damage, Shield, Healing, Mana, TacticalPoint, Gold, Time, Kills, Deaths, Hero, Melee, Ranged, Risk, Loot, Reach
         }
         .Concat(Enum.GetValues<UnitRole>().Select(Responsibility))
         .Concat(Enum.GetValues<UnitFaction>().Select(Faction))
@@ -80,4 +82,18 @@ public static class UnitSemanticFacts
             ? $"{UnitRangeClassifier.Describe(value)} · 距离 {value.ToString("0.#", CultureInfo.InvariantCulture)}"
             : $"{UnitRangeClassifier.Describe(value)} {value.ToString("0.#", CultureInfo.InvariantCulture)}",
         "RangeValue");
+}
+
+public static class TraitSemanticFacts
+{
+    public static SemanticFact From(TraitPresentationSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        if (string.IsNullOrWhiteSpace(snapshot.SemanticIconKey) || string.IsNullOrWhiteSpace(snapshot.Text))
+            throw new ArgumentException("Trait presentation snapshot is invalid.", nameof(snapshot));
+        return new SemanticFact(
+            new StringName(snapshot.SemanticIconKey),
+            snapshot.Text,
+            new StringName(snapshot.DisplayStyle));
+    }
 }

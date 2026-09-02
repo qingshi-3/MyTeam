@@ -1,6 +1,6 @@
 # Project Agent Rules
 
-This project is a Godot 4.7 .NET single-player tower-climbing army autobattler.
+This project is a Godot 4.7 .NET single-player tower-climbing hero-roster autobattler with independent tactical commands.
 
 ## Authority And Routing
 
@@ -22,4 +22,3 @@ Before state-changing work, read the relevant authority documents and the active
 - Prefer authored `.tscn`, `.tres`, `Theme`, and shader resources. Runtime code loads and binds them; it does not construct whole UI or content trees ad hoc.
 - Player-visible text defaults to Chinese. Stable ids, class names, field names, and enum values remain ASCII/English.
 - Use low-concurrency .NET builds (`-maxcpucount:2 -v:minimal`) and avoid unnecessary editor launches or repeated imports.
-

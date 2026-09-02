@@ -1,0 +1,87 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/UI/BattleReportLeaderboardHeader.cs" id="1"]
+
+[node name="BattleReportLeaderboardHeader" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 34)
+size_flags_horizontal = 3
+theme_type_variation = &"ReportPrimaryMetricSurface"
+script = ExtResource("1")
+
+[node name="Columns" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 7
+theme_override_constants/h_separation = 6
+
+[node name="RankColumn" type="CenterContainer" parent="Columns"]
+custom_minimum_size = Vector2(42, 0)
+layout_mode = 2
+
+[node name="RankHeader" type="Label" parent="Columns/RankColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "排名"
+
+[node name="UnitColumn" type="MarginContainer" parent="Columns"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="UnitHeader" type="Label" parent="Columns/UnitColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "单位"
+vertical_alignment = 1
+
+[node name="PrimaryColumn" type="CenterContainer" parent="Columns"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="PrimaryHeader" type="Label" parent="Columns/PrimaryColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "核心指标"
+
+[node name="SecondaryColumn1" type="CenterContainer" parent="Columns"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="SecondaryHeader1" type="Label" parent="Columns/SecondaryColumn1"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "数据一"
+
+[node name="SecondaryColumn2" type="CenterContainer" parent="Columns"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="SecondaryHeader2" type="Label" parent="Columns/SecondaryColumn2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "数据二"
+
+[node name="SecondaryColumn3" type="CenterContainer" parent="Columns"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+
+[node name="SecondaryHeader3" type="Label" parent="Columns/SecondaryColumn3"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "数据三"
+
+[node name="SecondaryColumn4" type="CenterContainer" parent="Columns"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+
+[node name="SecondaryHeader4" type="Label" parent="Columns/SecondaryColumn4"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "数据四"

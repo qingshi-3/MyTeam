@@ -2,16 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using TowerAutobattler.Components;
+using TowerAutobattler.Content;
+using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
 
 public partial class HeroSelectScreen : Control
 {
     [Signal] public delegate void HeroChosenEventHandler(string stableId);
+    public event Action? BackRequested;
     [Export] public PackedScene HeroLibraryTileScene { get; set; } = null!;
 
     private GridContainer _library = null!;
     private HeroDetailPanel _detail = null!;
+    private Button _back = null!;
     private readonly Dictionary<string, HeroSelectionViewModel> _models = new(StringComparer.Ordinal);
     private readonly Dictionary<string, HeroLibraryTile> _tiles = new(StringComparer.Ordinal);
     private string _previewId = string.Empty;
@@ -23,6 +28,7 @@ public partial class HeroSelectScreen : Control
         CacheNodes();
         Resized += UpdateResponsiveColumns;
         _detail.DeployRequested += OnDeployRequested;
+        _back.Pressed += OnBack;
         UpdateResponsiveColumns();
     }
 
@@ -30,6 +36,29 @@ public partial class HeroSelectScreen : Control
     {
         Resized -= UpdateResponsiveColumns;
         _detail.DeployRequested -= OnDeployRequested;
+        _back.Pressed -= OnBack;
+    }
+
+    public void Bind(ContentRegistry content, MetaProgressDto meta)
+    {
+        var heroes = new List<HeroSelectionViewModel>();
+        foreach (var entry in content.Catalog.Heroes)
+        {
+            var definition = (UnitDefinition)entry.Definition;
+            var root = entry.Scene.Instantiate<UnitContentRoot>();
+            try
+            {
+                var rule = root.HeroRule;
+                heroes.Add(new HeroSelectionViewModel(
+                    entry.StableId,
+                    definition,
+                    meta.UnlockedHeroIds.Contains(entry.StableId),
+                    rule?.RuleTitle ?? "军团规则",
+                    rule?.RuleDescription ?? definition.Description));
+            }
+            finally { root.Free(); }
+        }
+        Bind(heroes);
     }
 
     public void Bind(IEnumerable<HeroSelectionViewModel> heroes)
@@ -37,6 +66,7 @@ public partial class HeroSelectScreen : Control
         CacheNodes();
         foreach (var child in _library.GetChildren())
         {
+            if (child is HeroLibraryTile existing) existing.SelectionRequested -= Preview;
             _library.RemoveChild(child);
             child.Free();
         }
@@ -49,7 +79,7 @@ public partial class HeroSelectScreen : Control
             var tile = HeroLibraryTileScene.Instantiate<HeroLibraryTile>();
             _library.AddChild(tile);
             tile.Bind(model);
-            tile.PreviewRequested += Preview;
+            tile.SelectionRequested += Preview;
             _tiles.Add(model.StableId, tile);
         }
         var initial = _models.Values.FirstOrDefault(model => model.Unlocked) ?? _models.Values.FirstOrDefault();
@@ -74,6 +104,8 @@ public partial class HeroSelectScreen : Control
             EmitSignal(SignalName.HeroChosen, stableId);
     }
 
+    private void OnBack() => BackRequested?.Invoke();
+
     private void UpdateResponsiveColumns()
     {
         if (_library is not null) _library.Columns = Size.X < 1400f ? 2 : 3;
@@ -83,5 +115,6 @@ public partial class HeroSelectScreen : Control
     {
         _library ??= GetNode<GridContainer>("%HeroLibrary");
         _detail ??= GetNode<HeroDetailPanel>("%HeroDetailPanel");
+        _back ??= GetNode<Button>("Margin/Layout/BackButton");
     }
 }

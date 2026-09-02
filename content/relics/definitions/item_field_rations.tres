@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3 uid="uid://dtciju6w5qip3"]
+
+[ext_resource type="Script" uid="uid://biml5ugp0nie8" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://kqhmcm2s6y16" path="res://src/Relics/Authoring/RelicAttributeBindingSpec.cs" id="2"]
+[ext_resource type="Script" uid="uid://bhmtlg415q8xm" path="res://src/Attributes/AttributeModifierSpec.cs" id="3"]
+[ext_resource type="Script" uid="uid://dlwvs7u5gu5oo" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="4"]
+[ext_resource type="Script" uid="uid://de6a75ypf2l7e" path="res://src/Relics/Authoring/RelicPlayerArmyTargetSpec.cs" id="5"]
+
+[sub_resource type="Resource" id="HealthMagnitude"]
+script = ExtResource("4")
+Value = 1.12
+
+[sub_resource type="Resource" id="HealthModifier"]
+script = ExtResource("3")
+Operation = 1
+Magnitude = SubResource("HealthMagnitude")
+SlotId = "field_rations_health"
+
+[sub_resource type="Resource" id="ArmyTarget"]
+script = ExtResource("5")
+
+[sub_resource type="Resource" id="HealthBinding"]
+script = ExtResource("2")
+BindingId = "army_health"
+Target = SubResource("ArmyTarget")
+Modifier = SubResource("HealthModifier")
+
+[resource]
+script = ExtResource("1")
+StableId = "item_field_rations"
+AttributeBindings = [SubResource("HealthBinding")]

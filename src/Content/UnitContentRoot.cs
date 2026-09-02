@@ -16,7 +16,7 @@ public partial class UnitContentRoot : Node2D
     public ContentLifecycleState LifecycleState { get; private set; }
     public HeroRuleComponent? HeroRule => GetNodeOrNull<HeroRuleComponent>("HeroRuleComponent");
     public UnitBehaviorComponent? Behavior => GetNodeOrNull<UnitBehaviorComponent>("UnitBehaviorComponent");
-    public Battle.HeroCommandContentRoot? HeroCommand => GetNodeOrNull<Battle.HeroCommandContentRoot>("HeroCommandContentRoot");
+    public UnitAbilityLoadoutComponent? AbilityLoadout => GetNodeOrNull<UnitAbilityLoadoutComponent>("UnitAbilityLoadoutComponent");
 
     private UnitAnimationComponent? _animation;
     private UnitMotionPresentationComponent? _motion;
@@ -54,16 +54,9 @@ public partial class UnitContentRoot : Node2D
         if (GetNodeOrNull<HealthViewComponent>("HealthViewComponent") is null)
             report.Error($"{SceneFilePath}: missing health view component");
         if (Behavior is null) report.Error($"{SceneFilePath}: missing unit behavior component");
+        if (AbilityLoadout is not null) report.Merge(AbilityLoadout.ValidateAuthoring());
         if (Definition?.IsHero == true && HeroRule is null)
             report.Error($"{SceneFilePath}: hero missing rule component");
-        if (Definition?.IsHero == true && HeroCommand is null)
-            report.Error($"{SceneFilePath}: hero missing command component");
-        if (Definition?.IsHero == true && HeroCommand is { } command)
-            report.Merge(command.ValidateAuthoring());
-        if (Definition?.IsHero == true && HeroRule is { MaxMana: <= 0 })
-            report.Error($"{SceneFilePath}: hero maximum mana must be positive");
-        if (Definition?.IsHero == true && HeroRule is { } manaRule && HeroCommand is { } manaCommand && manaCommand.ManaCost > manaRule.MaxMana)
-            report.Error($"{SceneFilePath}: hero command mana cost exceeds maximum mana");
         return report;
     }
 
@@ -133,6 +126,9 @@ public partial class UnitContentRoot : Node2D
     }
 
     public void QueueMovement(Vector2 worldPosition) => _motion?.QueueWaypoint(worldPosition);
+
+    public void RemapPresentationCoordinates(Vector2 oldOrigin, Vector2 oldPitch, Vector2 newOrigin, Vector2 newPitch) =>
+        _motion?.RemapCoordinates(oldOrigin, oldPitch, newOrigin, newPitch);
 
     public void FaceToward(Vector2 worldPosition) => _animation?.FaceHorizontal(worldPosition.X - Position.X);
 

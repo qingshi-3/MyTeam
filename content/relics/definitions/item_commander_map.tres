@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3 uid="uid://c3glm41yci8fr"]
+
+[ext_resource type="Script" uid="uid://biml5ugp0nie8" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://kqhmcm2s6y16" path="res://src/Relics/Authoring/RelicAttributeBindingSpec.cs" id="2"]
+[ext_resource type="Script" uid="uid://bhmtlg415q8xm" path="res://src/Attributes/AttributeModifierSpec.cs" id="3"]
+[ext_resource type="Script" uid="uid://dlwvs7u5gu5oo" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="4"]
+[ext_resource type="Script" uid="uid://bebfbh7nhuekc" path="res://src/Relics/Authoring/RelicPlayerFormationAdjacentTargetSpec.cs" id="5"]
+
+[sub_resource type="Resource" id="ArmorMagnitude"]
+script = ExtResource("4")
+Value = 4.0
+
+[sub_resource type="Resource" id="ArmorModifier"]
+script = ExtResource("3")
+Attribute = 4
+Magnitude = SubResource("ArmorMagnitude")
+SlotId = "commander_map_armor"
+
+[sub_resource type="Resource" id="AdjacentTarget"]
+script = ExtResource("5")
+
+[sub_resource type="Resource" id="ArmorBinding"]
+script = ExtResource("2")
+BindingId = "adjacent_armor"
+Target = SubResource("AdjacentTarget")
+Modifier = SubResource("ArmorModifier")
+
+[sub_resource type="Resource" id="DamageMagnitude"]
+script = ExtResource("4")
+Value = 1.08
+
+[sub_resource type="Resource" id="DamageModifier"]
+script = ExtResource("3")
+Attribute = 1
+Operation = 1
+Magnitude = SubResource("DamageMagnitude")
+SlotId = "commander_map_damage"
+
+[sub_resource type="Resource" id="DamageBinding"]
+script = ExtResource("2")
+BindingId = "adjacent_damage"
+Target = SubResource("AdjacentTarget")
+Modifier = SubResource("DamageModifier")
+
+[resource]
+script = ExtResource("1")
+StableId = "item_commander_map"
+AttributeBindings = [SubResource("ArmorBinding"), SubResource("DamageBinding")]

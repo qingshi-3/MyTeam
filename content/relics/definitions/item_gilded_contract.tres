@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3 uid="uid://8n2w4qw7bx0o"]
+
+[ext_resource type="Script" uid="uid://biml5ugp0nie8" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://dbyl8tj6m5hau" path="res://src/Relics/Authoring/RelicRunOutcomeSpec.cs" id="2"]
+
+[sub_resource type="Resource" id="Gold"]
+script = ExtResource("2")
+Amount = 3
+
+[resource]
+script = ExtResource("1")
+StableId = "item_gilded_contract"
+VictoryOutcomes = [SubResource("Gold")]

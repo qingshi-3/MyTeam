@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityOperationSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/CooldownAbilityOperationSpec.cs" id="3"]
+
+[sub_resource type="Resource" id="InvalidOperation"]
+script = ExtResource("3")
+AttackAdjustment = 1
+AttackValue = 0
+MoveAdjustment = 0
+MoveValue = 0
+
+[resource]
+script = ExtResource("1")
+StableId = "ability_phase5_invalid"
+DisplayName = "无效扩展能力"
+ActivationKind = 0
+Trigger = 0
+ManaCost = 1
+Operations = Array[ExtResource("2")]([SubResource("InvalidOperation")])

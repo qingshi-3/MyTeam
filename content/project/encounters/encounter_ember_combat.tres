@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EncounterDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Project/EncounterDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/project/pools/pool_ember_enemies.tres" id="2"]
+[ext_resource type="Resource" path="res://content/project/pools/pool_ember_floor_rules.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+StableId = "encounter_ember_combat"
+NodeType = 0
+TitlePattern = "{region}遭遇战"
+EnemyPool = ExtResource("2")
+FloorRulePool = ExtResource("3")
+BaseEnemyCount = 4

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "pool_ember_enemies"
+Kind = 2
+ContentIds = PackedStringArray("enemy_rust_guard", "enemy_crossbow", "enemy_cutpurse")

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampaignDefinition" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/Project/CampaignDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/region_phase5_fixture.tres" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/node_table_phase5_fixture.tres" id="3"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/pool_phase5_soldiers.tres" id="4"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/pool_phase5_items.tres" id="5"]
+
+[resource]
+script = ExtResource("1")
+StableId = "campaign_phase5_fixture"
+FloorsPerRegion = 1
+Regions = Array[TowerRegionDefinition]([ExtResource("2")])
+NodeTable = ExtResource("3")
+StarterPool = ExtResource("4")
+RecruitmentPool = ExtResource("4")
+ItemRewardPool = ExtResource("5")
+ShopPool = ExtResource("5")

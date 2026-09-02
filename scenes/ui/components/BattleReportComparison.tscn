@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/UI/BattleReportComparison.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleReportCoreMatchupRow.tscn" id="2"]
+
+[node name="BattleReportComparison" type="PanelContainer"]
+size_flags_horizontal = 3
+theme_type_variation = &"ReportUnitCardSurface"
+script = ExtResource("1")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Title" type="Label" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"SectionTitleLabel"
+text = "双方核心对位"
+
+[node name="CoreMatchups" type="VBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="OutputCoreMatchup" parent="Layout/CoreMatchups" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SurvivalCoreMatchup" parent="Layout/CoreMatchups" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HealingCoreMatchup" parent="Layout/CoreMatchups" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EnvironmentDamage" type="Label" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"RiskValue"
+text = "环境承伤为队伍级事实，不归属任何单位"
+horizontal_alignment = 1
+text_overrun_behavior = 3

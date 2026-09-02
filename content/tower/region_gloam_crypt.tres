@@ -1,6 +1,9 @@
-[gd_resource type="Resource" script_class="TowerRegionDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="TowerRegionDefinition" load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://src/Run/TowerRegionDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Project/TowerRegionDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/project/encounters/encounter_gloam_combat.tres" id="2"]
+[ext_resource type="Resource" path="res://content/project/encounters/encounter_gloam_elite.tres" id="3"]
+[ext_resource type="Resource" path="res://content/project/encounters/encounter_gloam_boss.tres" id="4"]
 
 [resource]
 script = ExtResource("1")
@@ -8,7 +11,4 @@ Id = "region_gloam_crypt"
 DisplayName = "幽暮墓层"
 Description = "危险脉冲穿过墓室，亡者争夺生命信标。"
 AccentColor = Color(0.58, 0.3, 0.75, 1)
-EnemyPool = PackedStringArray("enemy_hexer", "enemy_carrion", "enemy_blood_reaver")
-BossId = "enemy_shadow_boss"
-BossFloorRuleId = "rule_hazard_pulse"
-FloorRulePool = PackedStringArray("rule_hazard_pulse", "rule_healing_beacon")
+Encounters = Array[EncounterDefinition]([ExtResource("2"), ExtResource("3"), ExtResource("4")])

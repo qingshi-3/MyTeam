@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="RunRulesDefinition" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/Project/RunRulesDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/tactical/tactical_phase5_focus.tres" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/tactical/tactical_phase5_reserve.tres" id="3"]
+[ext_resource type="Script" path="res://src/Project/LegacyHeroTacticalCommandMapping.cs" id="4"]
+[ext_resource type="Script" path="res://src/TacticalCommands/Authoring/TacticalCommandDefinition.cs" id="5"]
+
+[sub_resource type="Resource" id="MappingPhase5Hero"]
+script = ExtResource("4")
+HeroContentId = "hero_phase5_fixture"
+Command = ExtResource("2")
+
+[resource]
+script = ExtResource("1")
+DeploymentCapacity = 6
+ReserveCapacity = 3
+StarterSoldierCount = 1
+OrdinaryPopulationCap = 10
+PhysicalDeploymentCeiling = 18
+StarterRosterHeroCount = 1
+InitialPopulation = 2
+EquipmentSlotCapacity = 3
+StarterTacticalCommands = Array[ExtResource("5")]([ExtResource("2"), ExtResource("3")])
+LegacyHeroTacticalCommandMappings = Array[ExtResource("4")]([SubResource("MappingPhase5Hero")])
+RecruitmentChoiceCount = 1
+ItemChoiceCount = 1
+StartingGold = 5
+NormalBattleGold = 1
+EliteBattleGold = 2
+BossBattleGold = 3
+VictoryHeroRecovery = 0.1
+VictorySoldierRecovery = 0.1
+MinimumVictoryHeroHealth = 0.1
+MinimumLivingSoldierHealth = 0.1
+DefeatedSoldierHealth = 0.25
+RiskyEventSuccessGold = 1
+RiskyEventSuccessChance = 0.5
+RiskyEventHealthLoss = 0.1
+RiskyEventMinimumHealth = 0.1
+SafeEventGold = 1
+RestHeroHealing = 0.1
+RestSoldierHealing = 0.1
+RestGold = 1
+InitialUnlockedHeroCount = 1

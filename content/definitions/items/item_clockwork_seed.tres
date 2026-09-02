@@ -1,12 +1,14 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/faction-machine.svg" id="2"]
 
 [resource]
 script = ExtResource("1")
 Id = "item_clockwork_seed"
 DisplayName = "构装机芯"
 Description = "每场战斗获得一个临时构造体。"
+Icon = ExtResource("2")
 Rarity = 2
 Price = 24
 Tags = Array[StringName]([&"item"])

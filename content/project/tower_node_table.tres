@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="TowerNodeTableDefinition" format=3 uid="uid://dm727g7dowqi"]
+
+[ext_resource type="Script" uid="uid://dtaglxekntgfg" path="res://src/Project/TowerNodeTableDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://b3i3la1c7ihc3" path="res://src/Project/TowerNodeDefinition.cs" id="2"]
+
+[sub_resource type="Resource" id="Combat"]
+script = ExtResource("2")
+TitlePattern = "守军"
+DescriptionPattern = "与{region}守军交战，获得金币和战利品。"
+Risk = 1
+
+[sub_resource type="Resource" id="Elite"]
+script = ExtResource("2")
+Type = 1
+TitlePattern = "精英"
+DescriptionPattern = "更危险的敌阵，胜利后获得更多金币和战利品。"
+Risk = 3
+
+[sub_resource type="Resource" id="Recruitment"]
+script = ExtResource("2")
+Type = 2
+TitlePattern = "征募营"
+DescriptionPattern = "从三名候选士兵中招募一名。"
+
+[sub_resource type="Resource" id="Shop"]
+script = ExtResource("2")
+Type = 3
+TitlePattern = "行商"
+DescriptionPattern = "花费金币购买物品。"
+
+[sub_resource type="Resource" id="Event"]
+script = ExtResource("2")
+Type = 4
+TitlePattern = "塔内异象"
+DescriptionPattern = "做出带有风险与收益的选择。"
+Risk = 1
+
+[sub_resource type="Resource" id="Rest"]
+script = ExtResource("2")
+Type = 5
+TitlePattern = "营火"
+DescriptionPattern = "恢复英雄与士兵，或领取少量军费。"
+
+[sub_resource type="Resource" id="Boss"]
+script = ExtResource("2")
+Type = 6
+TitlePattern = "挑战：{region}层主"
+DescriptionPattern = "击败层主才能进入下一段高塔。"
+Risk = 3
+
+[resource]
+script = ExtResource("1")
+Nodes = [SubResource("Combat"), SubResource("Elite"), SubResource("Recruitment"), SubResource("Shop"), SubResource("Event"), SubResource("Rest"), SubResource("Boss")]
+Rotation = [SubResource("Combat"), SubResource("Recruitment"), SubResource("Event"), SubResource("Elite"), SubResource("Shop"), SubResource("Rest")]

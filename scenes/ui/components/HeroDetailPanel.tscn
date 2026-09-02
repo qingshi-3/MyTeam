@@ -1,12 +1,12 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/UI/HeroDetailPanel.cs" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/StatBlock.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/TraitBadge.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/HeroAbilityPanel.tscn" id="5"]
 
 [node name="HeroDetailPanel" type="PanelContainer"]
+theme_type_variation = &"ModalPanel"
 custom_minimum_size = Vector2(540, 0)
 size_flags_vertical = 3
 script = ExtResource("1")
@@ -105,10 +105,6 @@ text = "军团规则说明"
 autowrap_mode = 2
 max_lines_visible = 3
 
-[node name="HeroAbilityPanel" parent="Layout/DetailScroll/Content" instance=ExtResource("5")]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="Availability" type="Label" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -117,8 +113,8 @@ text = "已解锁 · 可以出征"
 horizontal_alignment = 1
 
 [node name="DeployButton" type="Button" parent="Layout"]
+theme_type_variation = &"PrimaryButton"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 text = "以该英雄出征"
-

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" format=3 uid="uid://bduhwm6expn38"]
+
+[ext_resource type="Script" uid="uid://ckoa4heom3v8n" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://c8k2m5oaq1r4t" path="res://src/Equipment/Authoring/EquipmentReactiveStatusBindingSpec.cs" id="2"]
+[ext_resource type="Resource" uid="uid://8h7jg07h1vko" path="res://content/statuses/status_rime_momentum.tres" id="3"]
+[ext_resource type="Resource" uid="uid://0wwwplvcb30j" path="res://content/statuses/status_frost.tres" id="4"]
+[ext_resource type="Script" uid="uid://cot8gdmmbnsjp" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="5"]
+
+[sub_resource type="Resource" id="OwnerMomentum"]
+script = ExtResource("2")
+EventKind = 3
+Priority = 10
+Status = ExtResource("3")
+
+[sub_resource type="Resource" id="TargetFrost"]
+script = ExtResource("2")
+EventKind = 3
+Target = 1
+Priority = 20
+Status = ExtResource("4")
+
+[sub_resource type="Resource" id="WinterboundContribution"]
+script = ExtResource("5")
+TraitId = "trait_winterbound"
+
+[resource]
+script = ExtResource("1")
+StableId = "equipment_rimebrand"
+ReactiveStatusBindings = [SubResource("OwnerMomentum"), SubResource("TargetFrost")]
+TraitContributions = [SubResource("WinterboundContribution")]

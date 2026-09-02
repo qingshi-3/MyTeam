@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/shield.svg" id="2"]
+
+[resource]
+script = ExtResource("1")
+Id = "item_phase5_reactive_fixture"
+DisplayName = "计数结算测试遗物"
+Description = "仅用于验证 Run 计数的结算、回滚与重载。"
+Icon = ExtResource("2")
+Rarity = 0
+Price = 1
+Tags = Array[StringName]([&"item", &"phase5", &"reactive"])

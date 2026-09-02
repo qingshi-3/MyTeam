@@ -17,7 +17,6 @@ public partial class HeroDetailPanel : PanelContainer
     private Label _description = null!;
     private Label _ruleName = null!;
     private Label _ruleCopy = null!;
-    private HeroAbilityPanel _ability = null!;
     private Label _availability = null!;
     private Button _deploy = null!;
     private string _stableId = string.Empty;
@@ -42,7 +41,6 @@ public partial class HeroDetailPanel : PanelContainer
         _reach.Bind(SemanticIconKeys.Reach, model.Definition.AttackRange.ToString("0.#"), "攻击距离", "RangeValue");
         _ruleName.Text = string.IsNullOrWhiteSpace(model.RuleTitle) ? "军团规则" : model.RuleTitle;
         _ruleCopy.Text = model.RuleDescription;
-        _ability.Bind(model.CommandName, model.CommandDescription, model.ManaCost, model.GoldCost);
         _availability.Text = model.Unlocked ? "已解锁 · 可以出征" : "未解锁 · 仅可预览";
         _availability.ThemeTypeVariation = model.Unlocked ? "HealingValue" : "DangerValue";
         _deploy.Disabled = !model.Unlocked;
@@ -86,7 +84,6 @@ public partial class HeroDetailPanel : PanelContainer
         _description ??= GetNode<Label>("%HeroDescription");
         _ruleName ??= GetNode<Label>("%RuleName");
         _ruleCopy ??= GetNode<Label>("%RuleCopy");
-        _ability ??= GetNode<HeroAbilityPanel>("%HeroAbilityPanel");
         _availability ??= GetNode<Label>("%Availability");
         _deploy ??= GetNode<Button>("%DeployButton");
     }

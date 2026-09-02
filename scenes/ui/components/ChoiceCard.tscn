@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/SemanticChip.tscn" id="2"]
 
 [node name="ChoiceCard" type="Button"]
+theme_type_variation = &"SecondaryButton"
 custom_minimum_size = Vector2(250, 112)
 size_flags_horizontal = 3
 focus_mode = 2

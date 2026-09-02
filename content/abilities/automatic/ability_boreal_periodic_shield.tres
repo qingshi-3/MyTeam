@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3 uid="uid://cha3iyir8y03y"]
+
+[ext_resource type="Script" uid="uid://wsmn7xt2uqi6" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="1_ability"]
+[ext_resource type="Script" uid="uid://cdun7tpnl026k" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="3_binding"]
+[ext_resource type="Script" uid="uid://cwdf0vp61fd4e" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="4_trigger"]
+[ext_resource type="Script" uid="uid://btce0dmnb2pyl" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="5_owner"]
+[ext_resource type="Script" uid="uid://cwo5jn4t7qd0o" path="res://src/Effects/Authoring/ShieldEffectSpec.cs" id="6_shield"]
+[ext_resource type="Script" uid="uid://dgkrqjbfxnpnu" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="7_limits"]
+[ext_resource type="Script" uid="uid://dk2ql37wqhrju" path="res://src/Effects/Authoring/EffectConditionSpec.cs" id="8_condition"]
+[ext_resource type="Script" uid="uid://bkqgx5lyspiiv" path="res://src/Abilities/Authoring/EffectAbilityOperationSpec.cs" id="10_effect_operation"]
+
+[sub_resource type="Resource" id="Shield"]
+script = ExtResource("6_shield")
+Amount = 55.0
+
+[sub_resource type="Resource" id="Limits"]
+script = ExtResource("7_limits")
+
+[sub_resource type="Resource" id="Owner"]
+script = ExtResource("5_owner")
+
+[sub_resource type="Resource" id="Trigger"]
+script = ExtResource("4_trigger")
+
+[sub_resource type="Resource" id="Binding"]
+script = ExtResource("3_binding")
+StableId = "ability_boreal_periodic_shield_effect"
+Trigger = SubResource("Trigger")
+TargetQuery = SubResource("Owner")
+Effects = [SubResource("Shield")]
+Limits = SubResource("Limits")
+
+[sub_resource type="Resource" id="Operation"]
+script = ExtResource("10_effect_operation")
+Binding = SubResource("Binding")
+
+[resource]
+script = ExtResource("1_ability")
+StableId = "ability_boreal_periodic_shield"
+DisplayName = "寒甲再生"
+ActivationKind = 1
+Trigger = 2
+IntervalTicks = 50
+Operations = [SubResource("Operation")]

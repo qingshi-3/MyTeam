@@ -1,4 +1,6 @@
-[gd_scene format=3]
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/UI/SettingsScreenController.cs" id="1"]
 
 [node name="SettingsScreen" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1")
 [node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -15,6 +18,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 [node name="Panel" type="PanelContainer" parent="Center"]
+theme_type_variation = &"ModalPanel"
 custom_minimum_size = Vector2(720, 520)
 layout_mode = 2
 [node name="Layout" type="VBoxContainer" parent="Center/Panel"]
@@ -48,6 +52,7 @@ popup/item_1/id = 1
 popup/item_2/text = "x4"
 popup/item_2/id = 2
 [node name="SaveButton" type="Button" parent="Center/Panel/Layout"]
+theme_type_variation = &"PrimaryButton"
 custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
 text = "保存并返回"

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "pool_all_items"
+Kind = 1
+ContentIds = PackedStringArray("item_war_drum", "item_field_rations", "item_gilded_contract", "item_aegis_standard", "item_blood_chalice", "item_duelist_seal", "item_lone_crown", "item_clockwork_seed", "item_soul_lantern", "item_commander_map", "item_crimson_mail", "item_last_banner")

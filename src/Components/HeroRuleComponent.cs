@@ -7,7 +7,6 @@ public partial class HeroRuleComponent : Node
 {
     [Export] public string RuleTitle { get; set; } = string.Empty;
     [Export(PropertyHint.MultilineText)] public string RuleDescription { get; set; } = string.Empty;
-    [Export] public int MaxMana { get; set; } = 3;
     [Export] public float SoldierHealthMultiplier { get; set; } = 1f;
     [Export] public float SoldierDamageMultiplier { get; set; } = 1f;
     [Export] public float HeroDamageMultiplier { get; set; } = 1f;

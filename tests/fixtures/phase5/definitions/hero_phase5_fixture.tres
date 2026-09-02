@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/portraits/hero_phase5_fixture.tres" id="portrait"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="trait_contribution"]
+
+[sub_resource type="Resource" id="FixtureTraitContribution"]
+script = ExtResource("trait_contribution")
+TraitId = "trait_phase5_guard"
+Value = 1
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "hero_phase5_fixture"
+DisplayName = "扩展测试英雄"
+Description = "验证组合式英雄内容无需修改中心代码。"
+Role = 1
+Faction = 0
+IsHero = true
+IsEnemy = false
+RecruitCost = 0
+MaxHealth = 420.0
+AttackDamage = 72.0
+AttackRange = 2.0
+AttackCooldown = 0.8
+MoveInterval = 0.35
+Armor = 4.0
+TraitContributions = Array[TraitContributionSpec]([SubResource("FixtureTraitContribution")])
+Tags = Array[StringName]([&"hero", &"order", &"phase5"])

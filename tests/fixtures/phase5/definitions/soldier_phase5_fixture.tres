@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/portraits/soldier_phase5_fixture.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "soldier_phase5_fixture"
+DisplayName = "扩展测试士兵"
+Description = "验证普通士兵通过场景与资源组合加入内容池。"
+Role = 2
+Faction = 0
+IsHero = false
+IsEnemy = false
+RecruitCost = 1
+MaxHealth = 260.0
+AttackDamage = 48.0
+AttackRange = 4.0
+AttackCooldown = 0.9
+MoveInterval = 0.4
+Armor = 2.0
+Tags = Array[StringName]([&"soldier", &"order", &"phase5"])

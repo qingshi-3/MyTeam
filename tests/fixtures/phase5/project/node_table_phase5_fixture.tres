@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="TowerNodeTableDefinition" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://src/Project/TowerNodeTableDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Project/TowerNodeDefinition.cs" id="2"]
+
+[sub_resource type="Resource" id="Combat"]
+script = ExtResource("2")
+Type = 0
+TitlePattern = "扩展战斗"
+DescriptionPattern = "验证{region}的资源化遭遇。"
+Risk = 1
+
+[sub_resource type="Resource" id="Elite"]
+script = ExtResource("2")
+Type = 1
+TitlePattern = "扩展精英"
+DescriptionPattern = "验证{region}的精英遭遇。"
+Risk = 2
+
+[sub_resource type="Resource" id="Recruitment"]
+script = ExtResource("2")
+Type = 2
+TitlePattern = "扩展征募"
+DescriptionPattern = "验证征募内容池。"
+Risk = 0
+
+[sub_resource type="Resource" id="Shop"]
+script = ExtResource("2")
+Type = 3
+TitlePattern = "扩展商店"
+DescriptionPattern = "验证物品内容池。"
+Risk = 0
+
+[sub_resource type="Resource" id="Event"]
+script = ExtResource("2")
+Type = 4
+TitlePattern = "扩展事件"
+DescriptionPattern = "验证事件节点。"
+Risk = 0
+
+[sub_resource type="Resource" id="Rest"]
+script = ExtResource("2")
+Type = 5
+TitlePattern = "扩展休整"
+DescriptionPattern = "验证休整节点。"
+Risk = 0
+
+[sub_resource type="Resource" id="Boss"]
+script = ExtResource("2")
+Type = 6
+TitlePattern = "扩展层主"
+DescriptionPattern = "验证{region}的 Boss Timeline。"
+Risk = 3
+
+[resource]
+script = ExtResource("1")
+Nodes = Array[TowerNodeDefinition]([SubResource("Combat"), SubResource("Elite"), SubResource("Recruitment"), SubResource("Shop"), SubResource("Event"), SubResource("Rest"), SubResource("Boss")])
+Rotation = Array[TowerNodeDefinition]([SubResource("Combat")])
+BossLocalFloor = 0
+RegularOptionCount = 1
+RotationStride = 1
+FloorSeedStride = 1

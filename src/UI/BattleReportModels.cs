@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using TowerAutobattler.Battle;
+using TowerAutobattler.Domain;
+using TowerAutobattler.Content;
 
 namespace TowerAutobattler.UI;
 
@@ -54,7 +57,26 @@ public sealed record BattleReportViewModel(
     BattleReportTeamViewModel PlayerTeam,
     BattleReportTeamViewModel EnemyTeam,
     IReadOnlyList<BattleReportUnitViewModel> Units,
+    IReadOnlyList<BattleReportUnitViewModel> OutputLeaders,
+    IReadOnlyList<BattleReportUnitViewModel> DamageTakenLeaders,
+    IReadOnlyList<BattleReportUnitViewModel> HealingLeaders,
+    IReadOnlyList<BattleUnitReportSnapshot> PlayerRoster,
+    IReadOnlyList<BattleUnitReportSnapshot> EnemyRoster,
+    float PrimaryMaximum,
     bool ShowHealingEmptyState);
+
+public sealed record BattleReportRosterPortraitModel(
+    BattleUnitReportSnapshot Unit,
+    UnitPortraitDefinition? Portrait,
+    Texture2D Fallback);
+
+public sealed record BattleReportCoreMatchupViewModel(
+    BattleReportDimension Dimension,
+    IReadOnlyList<BattleReportUnitViewModel> PlayerLeaders,
+    IReadOnlyList<BattleReportUnitViewModel> EnemyLeaders)
+{
+    public bool BothSidesZero => PlayerLeaders.Count == 0 && EnemyLeaders.Count == 0;
+}
 
 public static class BattleReportViewModels
 {
@@ -76,7 +98,7 @@ public static class BattleReportViewModels
         var units = selected.Select(unit =>
         {
             var activeTicks = Math.Max(1, (unit.DefeatTick ?? result.Ticks) - unit.JoinTick);
-            var activeSeconds = activeTicks * BattleSimulation.TickSeconds;
+            var activeSeconds = activeTicks * BattleTiming.TickSeconds;
             var awards = BattleReportAwards.None;
             if (maxDamage > Epsilon && NearlyEqual(unit.DamageDealt, maxDamage)) awards |= BattleReportAwards.DamageLeader;
             if (maxTaken > Epsilon && NearlyEqual(unit.DamageTaken, maxTaken)) awards |= BattleReportAwards.DamageTakenLeader;
@@ -93,17 +115,26 @@ public static class BattleReportViewModels
                 awards);
         });
 
+        var unitModels = units.ToArray();
         var ordered = dimension switch
         {
-            BattleReportDimension.Offense => units.OrderByDescending(model => model.Unit.DamageDealt)
+            BattleReportDimension.Offense => unitModels.OrderByDescending(model => model.Unit.DamageDealt)
                 .ThenBy(model => model.Unit.RuntimeId, StringComparer.Ordinal),
-            BattleReportDimension.Survival => units.OrderByDescending(model => model.Unit.DamageTaken)
+            BattleReportDimension.Survival => unitModels.OrderByDescending(model => model.Unit.DamageTaken)
                 .ThenBy(model => model.Unit.RuntimeId, StringComparer.Ordinal),
-            BattleReportDimension.Healing => units.OrderByDescending(model => model.Unit.HealingDone)
+            BattleReportDimension.Healing => unitModels.OrderByDescending(model => model.Unit.HealingDone)
                 .ThenBy(model => model.Unit.RuntimeId, StringComparer.Ordinal),
-            _ => units.OrderByDescending(model => model.Unit.IsHero)
+            _ => unitModels.OrderByDescending(model => model.Unit.IsHero)
                 .ThenBy(model => model.Unit.IsTemporary)
                 .ThenBy(model => model.Unit.RuntimeId, StringComparer.Ordinal)
+        };
+
+        var primaryMaximum = dimension switch
+        {
+            BattleReportDimension.Offense => maxDamage,
+            BattleReportDimension.Survival => maxTaken,
+            BattleReportDimension.Healing => maxHealing,
+            _ => selected.Select(unit => unit.MaxHealth).DefaultIfEmpty().Max()
         };
 
         return new BattleReportViewModel(
@@ -112,8 +143,52 @@ public static class BattleReportViewModels
             Team(result, 0),
             Team(result, 1),
             ordered.ToArray(),
+            Leaders(unitModels, model => model.Unit.DamageDealt, maxDamage),
+            Leaders(unitModels, model => model.Unit.DamageTaken, maxTaken),
+            Leaders(unitModels, model => model.Unit.HealingDone, maxHealing),
+            Roster(result, 0),
+            Roster(result, 1),
+            primaryMaximum,
             dimension == BattleReportDimension.Healing && totalHealing <= Epsilon);
     }
+
+    public static IReadOnlyList<BattleReportCoreMatchupViewModel> BuildCoreMatchups(BattleResult result)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        var player = Build(result, 0, BattleReportDimension.Overview);
+        var enemy = Build(result, 1, BattleReportDimension.Overview);
+        return
+        [
+            new BattleReportCoreMatchupViewModel(
+                BattleReportDimension.Offense,
+                player.OutputLeaders,
+                enemy.OutputLeaders),
+            new BattleReportCoreMatchupViewModel(
+                BattleReportDimension.Survival,
+                player.DamageTakenLeaders,
+                enemy.DamageTakenLeaders),
+            new BattleReportCoreMatchupViewModel(
+                BattleReportDimension.Healing,
+                player.HealingLeaders,
+                enemy.HealingLeaders)
+        ];
+    }
+
+    private static BattleReportUnitViewModel[] Leaders(
+        IEnumerable<BattleReportUnitViewModel> units,
+        Func<BattleReportUnitViewModel, float> value,
+        float maximum) => maximum <= Epsilon
+        ? []
+        : units.Where(unit => NearlyEqual(value(unit), maximum))
+            .OrderBy(unit => unit.Unit.RuntimeId, StringComparer.Ordinal)
+            .ToArray();
+
+    private static BattleUnitReportSnapshot[] Roster(BattleResult result, int team) => result.Units
+        .Where(unit => unit.Team == team)
+        .OrderByDescending(unit => unit.IsHero)
+        .ThenBy(unit => unit.IsTemporary)
+        .ThenBy(unit => unit.RuntimeId, StringComparer.Ordinal)
+        .ToArray();
 
     private static BattleReportTeamViewModel Team(BattleResult result, int team)
     {

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="StatusDefinition" format=3 uid="uid://0wwwplvcb30j"]
+
+[ext_resource type="Script" uid="uid://b6dbhxwbif5my" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://bhmtlg415q8xm" path="res://src/Attributes/AttributeModifierSpec.cs" id="1_h4w0l"]
+[ext_resource type="Script" uid="uid://cf3uh6nr88y1b" path="res://src/Statuses/Authoring/StatusPresentationSpec.cs" id="2"]
+[ext_resource type="Script" uid="uid://7y5lnha1o3xm" path="res://src/Statuses/Authoring/StatusCombatReactiveBindingSpec.cs" id="2_g3gcd"]
+[ext_resource type="Resource" uid="uid://bilmuwk0b7yni" path="res://content/statuses/status_freeze.tres" id="3"]
+[ext_resource type="Script" uid="uid://ditm8ibt6py1p" path="res://src/Statuses/Authoring/StatusLifecycleBindingSpec.cs" id="3_trfe5"]
+
+[sub_resource type="Resource" id="Presentation_frost"]
+script = ExtResource("2")
+SemanticIcon = &"status.frost"
+ExecutedCue = &"status.frost.executed"
+OnActiveCue = &"status.frost.active"
+WhileActiveCue = &"status.frost.while_active"
+RemovedCue = &"status.frost.removed"
+ReportLabel = "寒霜"
+
+[resource]
+script = ExtResource("1")
+StableId = "status_frost"
+DisplayName = "寒霜"
+Behavior = 2
+Disposition = 2
+DurationKind = 1
+DurationTicks = 8
+AggregationPolicy = 1
+StackLimit = 3
+OverflowPolicy = 2
+OverflowStatus = ExtResource("3")
+DurationRefreshPolicy = 1
+DispelCategory = 1
+GrantedTags = Array[StringName]([&"status.frost"])
+Presentation = SubResource("Presentation_frost")

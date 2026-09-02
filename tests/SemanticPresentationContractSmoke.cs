@@ -29,7 +29,7 @@ public partial class SemanticPresentationContractSmoke : Node
             return;
         }
 
-        GD.Print("SEMANTIC_PRESENTATION_CONTRACT_OK catalog=38 chips=authored routes=7 portraits=independent-idle");
+        GD.Print("SEMANTIC_PRESENTATION_CONTRACT_OK catalog=39 chips=authored routes=7 portraits=independent-idle tactical-points=distinct");
         GetTree().Quit();
     }
 
@@ -72,12 +72,13 @@ public partial class SemanticPresentationContractSmoke : Node
 
     private static void VerifyBindingBoundaries(List<string> failures)
     {
-        var root = Read("res://src/App/GameRoot.cs");
-        if (!root.Contains("SemanticIconCatalog", StringComparison.Ordinal) || !root.Contains("TowerNodeSemantic", StringComparison.Ordinal))
-            failures.Add("GameRoot does not bind route-node semantics through the shared catalog");
-        if (root.Contains("icon: _riskIcon", StringComparison.Ordinal))
+        var tower = Read("res://src/UI/TowerScreenController.cs");
+        if (!tower.Contains("SemanticIconCatalog", StringComparison.Ordinal) || !tower.Contains("TowerNodeSemantic", StringComparison.Ordinal))
+            failures.Add("Tower screen controller does not bind route-node semantics through the shared catalog");
+        if (tower.Contains("icon: _riskIcon", StringComparison.Ordinal))
             failures.Add("tower node identity still uses risk.svg as its primary icon");
-        if (root.Contains("? $\"生命 {definition.MaxHealth", StringComparison.Ordinal))
+        var heroes = Read("res://src/UI/HeroSelectScreen.cs");
+        if (heroes.Contains("? $\"生命 {definition.MaxHealth", StringComparison.Ordinal))
             failures.Add("hero selection footer still duplicates health and damage");
         var portrait = Read("res://src/UI/UnitPortrait.cs");
         if (!portrait.Contains("AnimatedSprite2D", StringComparison.Ordinal) || !portrait.Contains("IsVisibleInTree", StringComparison.Ordinal))
@@ -88,8 +89,11 @@ public partial class SemanticPresentationContractSmoke : Node
     {
         var catalog = GD.Load<SemanticIconCatalog>(SemanticIcons.CatalogPath);
         var report = catalog.Validate();
-        if (report.HasCoreErrors || catalog.Entries.Count != 38)
+        if (report.HasCoreErrors || catalog.Entries.Count != 39)
             failures.Add($"semantic catalog validation/count failed: entries={catalog.Entries.Count}, errors={string.Join(',', report.CoreErrors)}");
+        if (!catalog.TryResolve(SemanticIconKeys.TacticalPoint, out var tacticalPoint) ||
+            tacticalPoint.Icon is null || tacticalPoint.PresentationRole != "TacticalPointValue")
+            failures.Add("tactical points do not own a distinct semantic icon and presentation role");
         VerifyCategory(catalog, "role", new[] { "vanguard", "fighter", "ranged", "support", "assassin", "summoner", "artillery", "boss" }, failures);
         VerifyCategory(catalog, "faction", new[] { "order", "desert", "undead", "beast", "machine", "frost", "neutral", "enemy" }, failures);
         VerifyCategory(catalog, "tower", new[] { "combat", "elite", "recruitment", "shop", "event", "rest", "boss" }, failures);
@@ -110,7 +114,7 @@ public partial class SemanticPresentationContractSmoke : Node
             failures.Add("catalog validation accepts a missing confirmed semantic");
 
         var unitCard = GD.Load<PackedScene>("res://scenes/ui/components/UnitChoiceCard.tscn").Instantiate<UnitChoiceCard>();
-        unitCard.Theme = GD.Load<Theme>("res://content/ui/game_theme.tres");
+        unitCard.Theme = GD.Load<Theme>("res://content/ui/RealmTheme.tres");
         AddChild(unitCard);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         var abyss = GD.Load<UnitDefinition>("res://content/definitions/soldiers/soldier_abyss_crawler.tres");
@@ -145,7 +149,8 @@ public partial class SemanticPresentationContractSmoke : Node
                      "res://scenes/ui/components/ChoiceCard.tscn",
                      "res://scenes/ui/components/DeploymentUnitCard.tscn",
                      "res://scenes/ui/components/ArmyDrawerRow.tscn",
-                     "res://scenes/ui/components/BattleReportUnitRow.tscn",
+                     "res://scenes/ui/components/BattleReportLeaderboardRow.tscn",
+                     "res://scenes/ui/components/BattleReportUnitDetail.tscn",
                      "res://scenes/ui/components/SelectedUnitPanel.tscn"
                  })
         {

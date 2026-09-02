@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3 uid="uid://dgai6x7an1xii"]
+
+[ext_resource type="Script" uid="uid://wsmn7xt2uqi6" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://c1hinyu21fiye" path="res://src/Effects/Authoring/RelativeTeamTargetQuerySpec.cs" id="3"]
+[ext_resource type="Script" uid="uid://dstwvaqblh34y" path="res://src/Abilities/Authoring/CooldownAbilityOperationSpec.cs" id="4"]
+
+[sub_resource type="Resource" id="Allies"]
+script = ExtResource("3")
+
+[sub_resource type="Resource" id="Cooldown"]
+script = ExtResource("4")
+TargetQuery = SubResource("Allies")
+AttackAdjustment = 1
+MoveAdjustment = 1
+
+[resource]
+script = ExtResource("1")
+StableId = "ability_overclock"
+DisplayName = "极限过载"
+ManaCost = 1
+Operations = [SubResource("Cooldown")]

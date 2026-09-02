@@ -8,22 +8,24 @@ public partial class ArmyDrawerRow : PanelContainer
     [Export] public PackedScene SemanticChipScene { get; set; } = null!;
 
     private UnitPortrait _portrait = null!;
+    private TextureRect _icon = null!;
     private Label _title = null!;
     private Label _details = null!;
     private HFlowContainer _facts = null!;
     private HFlowContainer _costs = null!;
-    private ResourceCostBadge _manaCost = null!;
+    private ResourceCostBadge _tacticalPointCost = null!;
     private ResourceCostBadge _goldCost = null!;
     private Label _footer = null!;
 
     public override void _Ready()
     {
         _portrait = GetNode<UnitPortrait>("%UnitPortrait");
+        _icon = GetNode<TextureRect>("%ItemIcon");
         _title = GetNode<Label>("%RowTitle");
         _details = GetNode<Label>("%RowDetails");
         _facts = GetNode<HFlowContainer>("%RowFacts");
         _costs = GetNode<HFlowContainer>("%RowCosts");
-        _manaCost = GetNode<ResourceCostBadge>("%ManaCostBadge");
+        _tacticalPointCost = GetNode<ResourceCostBadge>("%TacticalPointCostBadge");
         _goldCost = GetNode<ResourceCostBadge>("%GoldCostBadge");
         _footer = GetNode<Label>("%RowFooter");
     }
@@ -33,12 +35,14 @@ public partial class ArmyDrawerRow : PanelContainer
         _portrait.Visible = model.Portrait is not null;
         if (model.Portrait is not null)
             _portrait.Bind(model.Portrait, Fallback(model.Role, model.IsHero));
+        _icon.Texture = model.Icon;
+        _icon.Visible = model.Icon is not null;
         _title.Text = model.Title;
         _details.Text = model.Details;
         BindFacts(model.Facts ?? []);
-        _manaCost.BindMana(model.ManaCost);
+        _tacticalPointCost.BindTacticalPoint(model.TacticalPointCost);
         _goldCost.BindGold(model.GoldCost);
-        _costs.Visible = model.ManaCost > 0 || model.GoldCost > 0;
+        _costs.Visible = model.TacticalPointCost > 0 || model.GoldCost > 0;
         _footer.Text = model.Footer;
         _footer.Visible = !string.IsNullOrWhiteSpace(model.Footer);
     }

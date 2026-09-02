@@ -12,3 +12,4 @@ Portrait = ExtResource("2")
 IsHero = false
 MaxHealth = 100.0
 AttackDamage = 10.0
+Tags = Array[StringName]([&"soldier"])

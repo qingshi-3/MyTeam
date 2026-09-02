@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "pool_phase5_items"
+Kind = 1
+ContentIds = PackedStringArray("item_phase5_fixture")

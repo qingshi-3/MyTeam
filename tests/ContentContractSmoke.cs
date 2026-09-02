@@ -7,6 +7,7 @@ using Godot;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Components;
 using TowerAutobattler.Content;
+using TowerAutobattler.Relics;
 using TowerAutobattler.Run;
 
 public partial class ContentContractSmoke : Node
@@ -26,9 +27,10 @@ public partial class ContentContractSmoke : Node
         try
         {
             var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ?? throw new InvalidOperationException("catalog load");
-            var gate = await ContentRegistry.CreateReadyAsync(this, catalog);
-            var registry = gate.Registry ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
+            var gate = await TestProjectFixture.PublishAsync(this);
+            var registry = gate.Package?.Content ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
             VerifyPortraitCoverage(catalog);
+            VerifyExpansionConformance(catalog);
             VerifyPortraitFingerprintSource();
             await RunStructuralGateFailureContract(catalog);
             await RunReadyGateFailureContracts(catalog);
@@ -37,7 +39,6 @@ public partial class ContentContractSmoke : Node
             var events = new FakeEventSink();
             var commands = new FakeCommandGateway();
             var unitContext = new UnitBindingContext(new DeterministicRandom(71), events, commands);
-            var modifierRegistry = new FakeModifierRegistry();
 
             foreach (var entry in catalog.AllEntries())
             {
@@ -52,17 +53,33 @@ public partial class ContentContractSmoke : Node
                 }
                 else if (node is ItemContentRoot item)
                 {
-                    item.Bind(new ItemInstanceState { InstanceId = "smoke-" + entry.StableId, Stacks = 2, Charges = 1, Roll = 9 });
-                    item.Activate(new ItemBindingContext(modifierRegistry));
+                    if (item.Definition.ProductKind == ItemProductKind.Equipment)
+                    {
+                        if (item.Relic is not null || item.Equipment is null ||
+                            registry.Graph.ResolveEquipment(entry.StableId).StableId != entry.StableId)
+                            throw new InvalidOperationException("Equipment item publication lifecycle");
+                        node.Free();
+                        continue;
+                    }
+                    using var relics = new RelicRunScope(new RelicRunKey(71, catalog.Heroes[0].StableId, 0, 0));
+                    item.Bind(new ItemInstanceState
+                    {
+                        InstanceId = "smoke-" + entry.StableId,
+                        ContentId = entry.StableId,
+                        Stacks = 2,
+                        Charges = 1,
+                        Roll = 9
+                    });
+                    item.Activate(new ItemBindingContext(relics, registry.Graph.ResolveRelic(entry.StableId)));
                     ExpectThrows(() => item.Bind(new ItemInstanceState()), "active item rebind");
                     item.Deactivate();
-                    if (modifierRegistry.Active != 0 || item.LifecycleState != ContentLifecycleState.Bound) throw new InvalidOperationException("item lifecycle");
+                    if (relics.LiveRunInstanceCount != 0 || item.LifecycleState != ContentLifecycleState.Bound) throw new InvalidOperationException("item lifecycle");
                 }
                 node.Free();
             }
-            RunLifecycleRollbackContracts(catalog);
+            RunLifecycleRollbackContracts(registry);
             if (!events.Events.Any(e => e.Type == SemanticBattleEventType.Activated) ||
-                !commands.Submit(new BattleCommandRequest(BattleCommandType.UseHeroCommand, "smoke-command")))
+                !commands.Submit(new BattleCommandRequest(BattleCommandType.UseTacticalCommand, "smoke-command")))
                 throw new InvalidOperationException("typed binding communication");
 
             foreach (var scene in catalog.FloorRules)
@@ -72,7 +89,7 @@ public partial class ContentContractSmoke : Node
                 floor.Free();
             }
 
-            RunPresenterFreeBattle(catalog);
+            RunPresenterFreeBattle(registry);
             RunSaveRoundTrip(registry);
             RunSourceGuard();
 
@@ -80,7 +97,8 @@ public partial class ContentContractSmoke : Node
                 if (before[entry.StableId] != DefinitionFingerprint.Compute(entry.Definition))
                     throw new InvalidOperationException("definition mutated: " + entry.StableId);
 
-            GD.Print($"CONTENT_CONTRACT_OK entries={catalog.AllEntries().Count} floors={catalog.FloorRules.Count} events={events.Events.Count} portraits=45(8,24,13)");
+            var unitCount = catalog.Heroes.Count + catalog.Soldiers.Count + catalog.Enemies.Count;
+            GD.Print($"CONTENT_CONTRACT_OK entries={catalog.AllEntries().Count} floors={catalog.FloorRules.Count} events={events.Events.Count} portraits={unitCount}({catalog.Heroes.Count},{catalog.Soldiers.Count},{catalog.Enemies.Count}) expansion=extra-valid,invalid-identity-reference-category source-guard={ProductionSourceGuard.GuardedConcreteIdFamilies.Length}-families-data-driven");
             return 0;
         }
         catch (Exception exception)
@@ -92,16 +110,14 @@ public partial class ContentContractSmoke : Node
 
     private static void VerifyPortraitCoverage(ContentCatalog catalog)
     {
-        if (catalog.Heroes.Count != 8 || catalog.Soldiers.Count != 24 || catalog.Enemies.Count != 13)
-            throw new InvalidOperationException("portrait coverage catalog counts changed");
         var units = catalog.Heroes.Concat(catalog.Soldiers).Concat(catalog.Enemies).ToArray();
         var portraits = units.Select(entry => ((UnitDefinition)entry.Definition).Portrait).ToArray();
-        if (portraits.Length != 45 || portraits.Any(portrait => portrait is null ||
+        if (portraits.Length != units.Length || portraits.Any(portrait => portrait is null ||
                 string.IsNullOrWhiteSpace(portrait.ResourcePath) || portrait.ResolveTexture() is null ||
                 portrait.Zoom is < .5f or > 4f || Math.Abs(portrait.OffsetRatio.X) > 1 || Math.Abs(portrait.OffsetRatio.Y) > 1))
-            throw new InvalidOperationException("production portrait validation did not resolve 45 authored crops");
-        if (portraits.Select(portrait => portrait!.ResourcePath).Distinct(StringComparer.Ordinal).Count() != 45 ||
-            portraits.Select(portrait => portrait!.StableId).Distinct(StringComparer.Ordinal).Count() != 45)
+            throw new InvalidOperationException("production portrait validation did not resolve one authored crop per cataloged unit");
+        if (portraits.Select(portrait => portrait!.ResourcePath).Distinct(StringComparer.Ordinal).Count() != units.Length ||
+            portraits.Select(portrait => portrait!.StableId).Distinct(StringComparer.Ordinal).Count() != units.Length)
             throw new InvalidOperationException("production units do not own independent portrait resources");
         foreach (var entry in units)
         {
@@ -109,6 +125,58 @@ public partial class ContentContractSmoke : Node
             if (!string.Equals(portrait.StableId, entry.StableId, StringComparison.Ordinal) || portrait.Validate(entry.StableId).HasCoreErrors)
                 throw new InvalidOperationException("invalid portrait binding: " + entry.StableId);
         }
+    }
+
+    private static void VerifyExpansionConformance(ContentCatalog production)
+    {
+        var fixture = GD.Load<CatalogEntry>("res://tests/fixtures/fixture_unit_entry.tres")
+            ?? throw new InvalidOperationException("expansion fixture load");
+
+        var expanded = CloneCatalog(production);
+        expanded.Soldiers.Add(fixture);
+        var expandedReport = ContentValidator.ValidateAuthoredEntries(expanded);
+        if (expandedReport.HasCoreErrors)
+            throw new InvalidOperationException("additional valid content was rejected: " + string.Join("; ", expandedReport.CoreErrors));
+
+        var duplicateIdentity = CloneCatalog(expanded);
+        duplicateIdentity.Soldiers.Add(fixture);
+        ExpectDiagnostic(
+            ContentValidator.ValidateAuthoredEntries(duplicateIdentity),
+            "Duplicate content id: fixture_unit", "duplicate identity");
+
+        var invalidReference = CloneCatalog(production);
+        invalidReference.Soldiers.Add(new CatalogEntry
+        {
+            Scene = fixture.Scene,
+            Definition = GD.Load<ItemDefinition>("res://tests/fixtures/fixture_item.tres")
+                ?? throw new InvalidOperationException("invalid-reference fixture load")
+        });
+        ExpectDiagnostic(
+            ContentValidator.ValidateAuthoredEntries(invalidReference),
+            "scene root and catalog do not reference the same definition", "definition reference");
+
+        var invalidCategory = CloneCatalog(production);
+        invalidCategory.Heroes.Add(fixture);
+        ExpectDiagnostic(
+            ContentValidator.ValidateAuthoredEntries(invalidCategory),
+            "category flags do not match Hero", "category");
+    }
+
+    private static ContentCatalog CloneCatalog(ContentCatalog source)
+    {
+        var clone = new ContentCatalog();
+        foreach (var entry in source.Heroes) clone.Heroes.Add(entry);
+        foreach (var entry in source.Soldiers) clone.Soldiers.Add(entry);
+        foreach (var entry in source.Enemies) clone.Enemies.Add(entry);
+        foreach (var entry in source.Items) clone.Items.Add(entry);
+        foreach (var floorRule in source.FloorRules) clone.FloorRules.Add(floorRule);
+        return clone;
+    }
+
+    private static void ExpectDiagnostic(ValidationReport report, string expected, string label)
+    {
+        if (!report.HasCoreErrors || !report.CoreErrors.Any(error => error.Contains(expected, StringComparison.Ordinal)))
+            throw new InvalidOperationException($"authored-entry validator missed {label}: {string.Join("; ", report.CoreErrors)}");
     }
 
     private static void VerifyPortraitFingerprintSource()
@@ -125,8 +193,9 @@ public partial class ContentContractSmoke : Node
             throw new InvalidOperationException("portrait SpriteFrames source path is absent from definition fingerprint");
     }
 
-    private static void RunPresenterFreeBattle(ContentCatalog catalog)
+    private static void RunPresenterFreeBattle(ContentRegistry registry)
     {
+        var catalog = registry.Catalog;
         var heroEntry = catalog.Heroes[0];
         var soldierEntry = catalog.Soldiers[0];
         var enemyEntry = catalog.Enemies[0];
@@ -138,7 +207,7 @@ public partial class ContentContractSmoke : Node
         {
             Seed = 12345,
             FloorRule = floor.CreateRuntime(),
-            HeroRule = BattleSetupFactory.Snapshot(hero.HeroRule!, hero.HeroCommand!),
+            HeroRule = BattleSetupFactory.Snapshot(hero.HeroRule!),
             Spawns =
             [
                 new BattleSpawn(BattleSetupFactory.Snapshot((UnitDefinition)heroEntry.Definition, hero.Behavior), 0, new Vector2I(1, 2), "hero"),
@@ -171,35 +240,49 @@ public partial class ContentContractSmoke : Node
         var run = new ActiveRunDto
         {
             Seed = 87,
-            HeroId = catalog.Heroes[0].StableId,
+            Roster = [new RosterHeroInstanceDto
+            {
+                InstanceId = "player-hero",
+                ContentId = catalog.Heroes[0].StableId
+            }],
+            CurrentPopulation = 1,
             Items = [new ItemInstanceDto { InstanceId = "item-1", ContentId = catalog.Items[0].StableId, Stacks = 2, Charges = 3, Roll = 4 }]
         };
+        var project = TestProjectFixture.Load(registry);
+        ActiveRunFormationSchema.InitializeVersion4(run, project.RunRules);
+        run.Deployment[BattlefieldLayout.PlayerDeploymentSlot(BattlefieldLayout.Version2HeroCell)] = "player-hero";
         var service = new SaveService("tests/content-contract");
         var restored = service.Deserialize<ActiveRunDto>(service.Serialize(run)) ?? throw new InvalidOperationException("save deserialize");
-        if (restored.Version != 2 || restored.Items.Count != 1 || restored.Items[0].ContentId != run.Items[0].ContentId || restored.Items[0].Stacks != 2)
+        var restoredItem = restored.Items.SingleOrDefault();
+        if (restored.Version != 4 || restored.Roster.Single().InstanceId != "player-hero" ||
+            restored.Deployment.Count != 18 ||
+            restoredItem is null || restoredItem.InstanceId != "item-1" || restoredItem.ContentId != run.Items[0].ContentId ||
+            restoredItem.Stacks != 2 || restoredItem.Charges != 3 || restoredItem.Roll != 4)
             throw new InvalidOperationException("save round-trip");
         if (!service.SaveActiveRun(run)) throw new InvalidOperationException("save write");
         var diskRestored = service.LoadActiveRun();
-        if (diskRestored?.Items.SingleOrDefault()?.Roll != 4) throw new InvalidOperationException("disk save round-trip");
+        var diskItem = diskRestored?.Items.SingleOrDefault();
+        if (diskItem?.InstanceId != "item-1" || diskItem.ContentId != run.Items[0].ContentId ||
+            diskItem.Stacks != 2 || diskItem.Charges != 3 || diskItem.Roll != 4)
+            throw new InvalidOperationException("disk save round-trip");
 
-        var regions = new[]
-        {
-            GD.Load<TowerRegionDefinition>("res://content/tower/region_ember_foundry.tres"),
-            GD.Load<TowerRegionDefinition>("res://content/tower/region_gloam_crypt.tres"),
-            GD.Load<TowerRegionDefinition>("res://content/tower/region_crown_engine.tres")
-        };
-        if (new RunApplication(registry, service, regions).ActiveRun is null)
+        if (new RunApplication(registry, service, project).ActiveRun is null)
             throw new InvalidOperationException("valid active run rejected");
 
-        run.Roster.Add(new UnitInstanceDto { InstanceId = "", ContentId = catalog.Soldiers[0].StableId });
+        run.Roster.Add(new RosterHeroInstanceDto { InstanceId = "", ContentId = catalog.Soldiers[0].StableId });
         service.SaveActiveRun(run);
-        if (new RunApplication(registry, service, regions).ActiveRun is not null)
+        if (new RunApplication(registry, service, project).ActiveRun is not null)
             throw new InvalidOperationException("blank unit instance id accepted");
-        run.Roster.Clear();
+        run.Roster.RemoveAt(run.Roster.Count - 1);
         run.Items[0].InstanceId = " ";
         service.SaveActiveRun(run);
-        if (new RunApplication(registry, service, regions).ActiveRun is not null)
+        if (new RunApplication(registry, service, project).ActiveRun is not null)
             throw new InvalidOperationException("blank item instance id accepted");
+        run.Items[0].InstanceId = "item-1";
+        run.Items[0].Charges = -1;
+        service.SaveActiveRun(run);
+        if (new RunApplication(registry, service, project).ActiveRun is not null)
+            throw new InvalidOperationException("negative relic charges accepted");
         service.DeleteActiveRun();
     }
 
@@ -210,27 +293,93 @@ public partial class ContentContractSmoke : Node
         {
             var source = File.ReadAllText(path);
             var relative = Path.GetRelativePath(sourceRoot, path);
-            var guardedBoundary = relative.StartsWith("Content" + Path.DirectorySeparatorChar, StringComparison.Ordinal) ||
-                                  relative.StartsWith("Battle" + Path.DirectorySeparatorChar, StringComparison.Ordinal) ||
-                                  relative.StartsWith("Components" + Path.DirectorySeparatorChar, StringComparison.Ordinal);
-            var issues = ProductionSourceGuard.FindIssues(source, guardedBoundary);
+            var strictTreeBoundary = relative.StartsWith("Content" + Path.DirectorySeparatorChar, StringComparison.Ordinal) ||
+                                     relative.StartsWith("Battle" + Path.DirectorySeparatorChar, StringComparison.Ordinal) ||
+                                     relative.StartsWith("Components" + Path.DirectorySeparatorChar, StringComparison.Ordinal);
+            var issues = ProductionSourceGuard.FindIssues(source, true, strictTreeBoundary);
             if (issues.Count > 0) throw new InvalidOperationException($"production source guard in {path}: {string.Join("; ", issues)}");
         }
 
-        ExpectGuardIssue("\"item_sword\"", false, "single-segment concrete id");
+        var families = ProductionSourceGuard.GuardedConcreteIdFamilies;
+        var requiredFamilies = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "hero", "soldier", "enemy", "item", "rule", "effect", "ability", "status", "relic", "equipment",
+            "tactical", "trait", "encounter", "campaign", "project", "pool", "phase", "timeline", "region",
+            "reward", "loadout"
+        };
+        var duplicateFamilies = families
+            .GroupBy(family => family, StringComparer.Ordinal)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .OrderBy(family => family, StringComparer.Ordinal)
+            .ToArray();
+        if (duplicateFamilies.Length > 0)
+            throw new InvalidOperationException("source guard contains duplicate concrete-id families: " + string.Join(", ", duplicateFamilies));
+        var missingFamilies = requiredFamilies
+            .Except(families, StringComparer.Ordinal)
+            .OrderBy(family => family, StringComparer.Ordinal)
+            .ToArray();
+        if (missingFamilies.Length > 0)
+            throw new InvalidOperationException("source guard is missing required concrete-id families: " + string.Join(", ", missingFamilies));
+
+        foreach (var family in families)
+        {
+            var probeId = family + "_guard_probe";
+            ExpectExactGuardIssue($"\"{probeId}\"", false, $"concrete id '{probeId}'", family + " concrete id");
+            ExpectNoGuardIssue($"\"{family}\"", false, family + " prefix-only near miss");
+            ExpectNoGuardIssue($"\"{family}_\"", false, family + " incomplete concrete-id near miss");
+        }
+        ExpectExactGuardIssue(
+            "\"trait_guard_probe\"",
+            false,
+            "concrete id 'trait_guard_probe'",
+            "Trait concrete id");
+        ExpectNoGuardIssue("\"trait\"", false, "Trait prefix-only near miss");
+        ExpectNoGuardIssue("\"trait_\"", false, "Trait incomplete concrete-id near miss");
+        ExpectNoGuardIssue("\"tactical_command\"", false, "tactical command semantic allowlist");
+        ExpectNoGuardIssue("\"tactical_point\"", false, "tactical point semantic allowlist");
+        ExpectGuardIssue("\"D:\\\\godot\\\\rpg\\\\content.tres\"", false, "escaped donor absolute path");
+        ExpectGuardIssue("\"D:/godot/rpg/content.tres\"", false, "slash donor absolute path");
         ExpectGuardIssue("GetNode(\"/" + "root/App\")", true, "root path");
         ExpectGuardIssue("GetTree().Current" + "Scene", true, "current scene");
         ExpectGuardIssue("GetTree().Get" + "Root()", true, "root getter");
         ExpectGuardIssue("GetNodesIn" + "Group(\"units\")", true, "group discovery");
         ExpectGuardIssue("Call" + "Group(\"units\", \"Wake\")", true, "group call");
-        ExpectGuardIssue("Get" + "Parent()", true, "parent traversal");
-        ExpectGuardIssue("new NodePath(\"" + "../Battle\")", true, "cross-root node path");
+        ExpectGuardIssue("Get" + "Parent()", true, "parent traversal", true);
+        ExpectGuardIssue("new NodePath(\"" + "../Battle\")", true, "cross-root node path", true);
     }
 
-    private static void ExpectGuardIssue(string source, bool checkDiscovery, string label)
+    private static void ExpectGuardIssue(
+        string source,
+        bool checkDiscovery,
+        string label,
+        bool checkLocalTreeTraversal = false)
     {
-        if (ProductionSourceGuard.FindIssues(source, checkDiscovery).Count == 0)
+        if (ProductionSourceGuard.FindIssues(source, checkDiscovery, checkLocalTreeTraversal).Count == 0)
             throw new InvalidOperationException("source guard missed " + label);
+    }
+
+    private static void ExpectExactGuardIssue(
+        string source,
+        bool checkDiscovery,
+        string expectedIssue,
+        string label,
+        bool checkLocalTreeTraversal = false)
+    {
+        var issues = ProductionSourceGuard.FindIssues(source, checkDiscovery, checkLocalTreeTraversal);
+        if (issues.Count != 1 || !string.Equals(issues[0], expectedIssue, StringComparison.Ordinal))
+            throw new InvalidOperationException($"source guard returned unexpected evidence for {label}: [{string.Join("; ", issues)}]");
+    }
+
+    private static void ExpectNoGuardIssue(
+        string source,
+        bool checkDiscovery,
+        string label,
+        bool checkLocalTreeTraversal = false)
+    {
+        var issues = ProductionSourceGuard.FindIssues(source, checkDiscovery, checkLocalTreeTraversal);
+        if (issues.Count > 0)
+            throw new InvalidOperationException($"source guard false positive for {label}: [{string.Join("; ", issues)}]");
     }
 
     private async Task RunReadyGateFailureContracts(ContentCatalog catalog)
@@ -246,23 +395,24 @@ public partial class ContentContractSmoke : Node
         const string marker = "CONTENT_GATE_STRUCTURAL_INSTANTIATE_FAILURE";
         var scene = GD.Load<PackedScene>("res://tests/fixtures/content_structural_instantiate_failure.tscn")
             ?? throw new InvalidOperationException("structural failure fixture load");
-        var gate = await ContentRegistry.CreateReadyAsync(
-            this, catalog, additionalStructuralValidationScenes: [scene]);
+        var gate = await TestProjectFixture.PublishAsync(
+            this, additionalStructuralValidationScenes: [scene]);
         var matches = gate.Report.CoreErrors.Count(error => error.Contains(marker, StringComparison.Ordinal));
-        if (gate.Registry is not null || matches != 1)
+        if (gate.Package is not null || matches != 1)
             throw new InvalidOperationException($"structural gate did not capture the one-shot first-pass failure exactly once: {matches}");
     }
 
     private async Task ExpectReadyGateFailure(ContentCatalog catalog, string scenePath, string marker)
     {
         var scene = GD.Load<PackedScene>(scenePath) ?? throw new InvalidOperationException("failure fixture load: " + scenePath);
-        var gate = await ContentRegistry.CreateReadyAsync(this, catalog, [scene]);
-        if (gate.Registry is not null || !gate.Report.CoreErrors.Any(error => error.Contains(marker, StringComparison.Ordinal)))
+        var gate = await TestProjectFixture.PublishAsync(this, [scene]);
+        if (gate.Package is not null || !gate.Report.CoreErrors.Any(error => error.Contains(marker, StringComparison.Ordinal)))
             throw new InvalidOperationException("ready-frame gate did not reject lifecycle failure: " + marker);
     }
 
-    private static void RunLifecycleRollbackContracts(ContentCatalog catalog)
+    private static void RunLifecycleRollbackContracts(ContentRegistry registry)
     {
+        var catalog = registry.Catalog;
         var unit = catalog.Heroes[0].Scene.Instantiate<UnitContentRoot>();
         try
         {
@@ -287,9 +437,12 @@ public partial class ContentContractSmoke : Node
         try
         {
             ExpectThrows(() => item.Bind(new ItemInstanceState { InstanceId = " " }), "blank item instance id");
-            item.Bind(new ItemInstanceState { InstanceId = "rollback-item" });
-            ExpectThrows(() => item.Activate(new ItemBindingContext(new ThrowingModifierRegistry())), "item activation rollback");
-            if (item.LifecycleState != ContentLifecycleState.Bound)
+            item.Bind(new ItemInstanceState { InstanceId = "rollback-item", ContentId = "wrong_content" });
+            using var relics = new RelicRunScope(new RelicRunKey(1, catalog.Heroes[0].StableId, 0, 0));
+            ExpectThrows(
+                () => item.Activate(new ItemBindingContext(relics, registry.Graph.ResolveRelic(item.Definition.Id))),
+                "item activation rollback");
+            if (item.LifecycleState != ContentLifecycleState.Bound || relics.LiveRunInstanceCount != 0)
                 throw new InvalidOperationException("item activation rollback state");
         }
         finally { item.Free(); }
@@ -318,28 +471,7 @@ public partial class ContentContractSmoke : Node
 
     private sealed class FakeCommandGateway : IBattleCommandGateway
     {
-        public bool Submit(BattleCommandRequest command) => command.Type == BattleCommandType.UseHeroCommand && !string.IsNullOrWhiteSpace(command.SourceRuntimeId);
+        public bool Submit(BattleCommandRequest command) => command.Type == BattleCommandType.UseTacticalCommand && !string.IsNullOrWhiteSpace(command.SourceRuntimeId);
     }
 
-    private sealed class FakeModifierRegistry : IRunModifierRegistry
-    {
-        public int Active { get; private set; }
-        public IDisposable Register(string itemInstanceId, RunModifierProviderComponent provider)
-        {
-            Active++;
-            return new Registration(() => Active--);
-        }
-    }
-
-    private sealed class ThrowingModifierRegistry : IRunModifierRegistry
-    {
-        public IDisposable Register(string itemInstanceId, RunModifierProviderComponent provider) =>
-            throw new InvalidOperationException("expected registration failure");
-    }
-
-    private sealed class Registration(Action dispose) : IDisposable
-    {
-        private Action? _dispose = dispose;
-        public void Dispose() { _dispose?.Invoke(); _dispose = null; }
-    }
 }

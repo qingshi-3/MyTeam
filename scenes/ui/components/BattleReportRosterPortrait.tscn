@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/UI/BattleReportRosterPortrait.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
+
+[node name="BattleReportRosterPortrait" type="VBoxContainer"]
+custom_minimum_size = Vector2(46, 56)
+mouse_filter = 1
+theme_override_constants/separation = 0
+script = ExtResource("1")
+
+[node name="UnitPortrait" parent="." instance=ExtResource("2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+
+[node name="UnitStatus" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HealthValue"
+text = "●"
+horizontal_alignment = 1

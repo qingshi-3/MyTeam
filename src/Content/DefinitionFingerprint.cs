@@ -17,13 +17,18 @@ public static class DefinitionFingerprint
                 unit.Id, unit.DisplayName, unit.Description, unit.Role, unit.Faction, unit.IsHero, unit.IsEnemy,
                 unit.RecruitCost, F(unit.MaxHealth), F(unit.AttackDamage), F(unit.AttackRange), F(unit.AttackCooldown),
                 F(unit.MoveInterval), F(unit.Armor), F(unit.HealPower), F(unit.SplashRadius), F(unit.LifeSteal),
+                F(unit.BaseControlResistance),
                 unit.Portrait?.ResourcePath ?? string.Empty, unit.Portrait?.StableId ?? string.Empty,
                 unit.Portrait?.Frames?.ResourcePath ?? string.Empty,
                 unit.Portrait?.AnimationName.ToString() ?? string.Empty, unit.Portrait?.FrameIndex ?? -1,
                 unit.Portrait is null ? string.Empty : F(unit.Portrait.Zoom),
                 unit.Portrait?.OffsetRatio.ToString() ?? string.Empty, unit.Portrait?.FlipHorizontal ?? false,
+                string.Join(",", (unit.TraitContributions ?? []).Where(contribution => contribution is not null)
+                    .Select(contribution => $"{contribution.TraitId}:{contribution.Value}")
+                    .OrderBy(value => value, StringComparer.Ordinal)),
                 string.Join(",", unit.Tags.Select(tag => tag.ToString()).OrderBy(tag => tag, StringComparer.Ordinal))),
-            ItemDefinition item => string.Join("|", item.Id, item.DisplayName, item.Description, item.Rarity, item.Price,
+            ItemDefinition item => string.Join("|", item.Id, item.DisplayName, item.Description, item.Rarity,
+                item.ProductKind, item.Price,
                 string.Join(",", item.Tags.Select(tag => tag.ToString()).OrderBy(tag => tag, StringComparer.Ordinal))),
             _ => throw new ArgumentException($"Unsupported definition type: {definition.GetType().Name}", nameof(definition))
         };

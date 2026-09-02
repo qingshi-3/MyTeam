@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3]
-[ext_resource type="Script" path="res://src/Battle/Commands/PaidReinforcementCommandContent.cs" id="1"]
-[node name="HeroCommandContentRoot" type="Node"]
-script = ExtResource("1")
-DisplayName = "加急雇佣"
-ManaCost = 1
-GoldCost = 5
-HealthMultiplier = 1.15
-DamageMultiplier = 1.0

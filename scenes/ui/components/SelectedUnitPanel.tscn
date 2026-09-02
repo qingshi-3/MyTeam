@@ -4,8 +4,9 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/SemanticChip.tscn" id="2"]
 
 [node name="SelectedUnitPanel" type="PanelContainer"]
+theme_type_variation = &"ContextSidebarPanel"
 visible = false
-custom_minimum_size = Vector2(280, 112)
+custom_minimum_size = Vector2(280, 232)
 mouse_filter = 2
 script = ExtResource("1")
 
@@ -36,9 +37,46 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="UnitIdentity" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.76, 0.88, 1)
+theme_override_font_sizes/font_size = 13
+text = "内容：—\n来源：— · 运行：—"
+
+[node name="UnitStats" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "伤害 — · 攻速 — · 射程 — · 控抗 —"
+autowrap_mode = 2
+
+[node name="UnitEquipment" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "装备：无"
+autowrap_mode = 2
+
+[node name="UnitTraits" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "单位特质：无\n团队层级：无激活层级"
+autowrap_mode = 2
+
 [node name="UnitAction" type="Label" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.86, 1, 1)
 theme_override_font_sizes/font_size = 15
 text = "行动：正在判断战况"
+autowrap_mode = 2
+
+[node name="UnitStatuses" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.86, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "状态：无"
+autowrap_mode = 2

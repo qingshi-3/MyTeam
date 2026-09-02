@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EncounterDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Project/EncounterDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/pool_phase5_enemies.tres" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/project/pool_phase5_rules.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+StableId = "encounter_phase5_elite"
+NodeType = 1
+TitlePattern = "{region}扩展精英"
+EnemyPool = ExtResource("2")
+FloorRulePool = ExtResource("3")
+BaseEnemyCount = 1
+AddRegionIndexToCount = false
+SeedSalt = 17

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "pool_all_soldiers"
+Kind = 0
+ContentIds = PackedStringArray("soldier_aegis_guard", "soldier_longbow", "soldier_sun_sister", "soldier_sun_lancer", "soldier_blade_runner", "soldier_fire_slinger", "soldier_spell_thief", "soldier_lantern_fox", "soldier_dune_dervish", "soldier_dune_caster", "soldier_aymara_mender", "soldier_iron_dervish", "soldier_abyss_crawler", "soldier_blood_baroness", "soldier_dark_spine", "soldier_void_mech", "soldier_scale_tank", "soldier_spirit_harvester", "soldier_drogon", "soldier_fire_breather", "soldier_frost_freeblade", "soldier_frost_hawker", "soldier_frost_sister", "soldier_crystal_beetle")

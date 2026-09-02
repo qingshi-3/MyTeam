@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="EffectBindingSpec" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="1_binding"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="2_trigger"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="3_target"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/DamageEffectSpec.cs" id="4_damage"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="5_limits"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectConditionSpec.cs" id="6_condition"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectStepSpec.cs" id="7_step"]
+
+[sub_resource type="Resource" id="Trigger"]
+script = ExtResource("2_trigger")
+Kind = 0
+EventKind = 0
+
+[sub_resource type="Resource" id="Target"]
+script = ExtResource("3_target")
+
+[sub_resource type="Resource" id="Damage"]
+script = ExtResource("4_damage")
+AmountSource = 0
+Amount = 10.0
+
+[sub_resource type="Resource" id="Limits"]
+script = ExtResource("5_limits")
+MaxUses = 0
+MinimumIntervalTicks = 0
+MaxDepth = 0
+MaxRepeatedEdges = 0
+
+[resource]
+script = ExtResource("1_binding")
+StableId = "phase1_damage"
+Priority = 10
+Trigger = SubResource("Trigger")
+Conditions = Array[ExtResource("6_condition")]([])
+TargetQuery = SubResource("Target")
+Effects = Array[ExtResource("7_step")]([SubResource("Damage")])
+Limits = SubResource("Limits")

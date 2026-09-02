@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3 uid="uid://cn6vbko3623ud"]
+
+[ext_resource type="Script" uid="uid://biml5ugp0nie8" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://kqhmcm2s6y16" path="res://src/Relics/Authoring/RelicAttributeBindingSpec.cs" id="2"]
+[ext_resource type="Script" uid="uid://bhmtlg415q8xm" path="res://src/Attributes/AttributeModifierSpec.cs" id="3"]
+[ext_resource type="Script" uid="uid://dlwvs7u5gu5oo" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="4"]
+[ext_resource type="Script" uid="uid://dvsi83tuy0p85" path="res://src/Relics/Authoring/RelicPlayerHeroesTargetSpec.cs" id="5"]
+
+[sub_resource type="Resource" id="LifeStealMagnitude"]
+script = ExtResource("4")
+Value = 0.15
+
+[sub_resource type="Resource" id="LifeStealModifier"]
+script = ExtResource("3")
+Attribute = 13
+Magnitude = SubResource("LifeStealMagnitude")
+SlotId = "blood_chalice_lifesteal"
+
+[sub_resource type="Resource" id="HeroTarget"]
+script = ExtResource("5")
+
+[sub_resource type="Resource" id="LifeStealBinding"]
+script = ExtResource("2")
+BindingId = "hero_lifesteal"
+Target = SubResource("HeroTarget")
+Modifier = SubResource("LifeStealModifier")
+
+[resource]
+script = ExtResource("1")
+StableId = "item_blood_chalice"
+AttributeBindings = [SubResource("LifeStealBinding")]

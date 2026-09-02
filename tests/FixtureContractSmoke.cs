@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Godot;
 using TowerAutobattler.Content;
-using TowerAutobattler.Components;
+using TowerAutobattler.Relics;
 
 public partial class FixtureContractSmoke : Node
 {
@@ -29,22 +29,39 @@ public partial class FixtureContractSmoke : Node
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             if (unit.ValidateAuthoring().HasCoreErrors || item.ValidateAuthoring().HasCoreErrors) throw new InvalidOperationException("authoring validation");
             if (!ReferenceEquals(unit.Definition, unitEntry.Definition) || !ReferenceEquals(item.Definition, itemEntry.Definition)) throw new InvalidOperationException("definition identity");
+            var relicCompilation = RelicDefinitionCompiler.Compile(item.Relic);
+            var relicDefinition = relicCompilation.Definition ?? throw new InvalidOperationException(
+                "fixture relic compile: " + string.Join("; ", relicCompilation.Report.CoreErrors));
 
-            var registry = new FixtureModifierRegistry();
-            item.Bind(new ItemInstanceState { InstanceId = "fixture-item-instance", Charges = 2 });
-            item.Activate(new ItemBindingContext(registry));
-            if (registry.Active != 2) throw new InvalidOperationException("multi-provider registration");
+            using var relics = new RelicRunScope(new RelicRunKey(7UL, "fixture_hero", 0, 0));
+            item.Bind(new ItemInstanceState
+            {
+                InstanceId = "fixture-item-instance",
+                ContentId = "fixture_item",
+                Stacks = 2,
+                Charges = 2
+            });
+            item.Activate(new ItemBindingContext(relics, relicDefinition));
+            if (relics.LiveRunInstanceCount != 1) throw new InvalidOperationException("relic registration");
+            var preparation = relics.PrepareBattle();
+            if (Math.Abs(preparation.Modifiers.ArmyDamageMultiplier - 1.21f) > .001f ||
+                preparation.Modifiers.StartBattleShield != 10)
+                throw new InvalidOperationException("stacked authored relic projection");
             try { item.Bind(new ItemInstanceState { InstanceId = "illegal-rebind" }); throw new InvalidOperationException("active rebind accepted"); }
             catch (InvalidOperationException exception) when (exception.Message != "active rebind accepted") { }
             item.Deactivate();
-            if (registry.Active != 0) throw new InvalidOperationException("item unregistration");
-            item.Bind(new ItemInstanceState { InstanceId = "rollback-instance" });
-            var throwing = new ThrowingModifierRegistry();
-            try { item.Activate(new ItemBindingContext(throwing)); throw new InvalidOperationException("partial registration accepted"); }
-            catch (InvalidOperationException exception) when (exception.Message != "partial registration accepted") { }
-            if (throwing.Active != 0 || item.LifecycleState != ContentLifecycleState.Bound)
-                throw new InvalidOperationException("partial registration rollback");
-            GD.Print("FIXTURE_CONTRACT_OK");
+            if (relics.LiveRunInstanceCount != 0) throw new InvalidOperationException("item unregistration");
+            using var rollbackRelics = new RelicRunScope(new RelicRunKey(8UL, "fixture_hero", 0, 0));
+            item.Bind(new ItemInstanceState
+            {
+                InstanceId = "rollback-instance",
+                ContentId = "wrong_content"
+            });
+            try { item.Activate(new ItemBindingContext(rollbackRelics, relicDefinition)); throw new InvalidOperationException("invalid relic state accepted"); }
+            catch (ArgumentException exception) when (exception.Message != "invalid relic state accepted") { }
+            if (rollbackRelics.LiveRunInstanceCount != 0 || item.LifecycleState != ContentLifecycleState.Bound)
+                throw new InvalidOperationException("relic activation rollback");
+            GD.Print("FIXTURE_CONTRACT_OK relic=typed,lifecycle-zero");
             return 0;
         }
         catch (Exception exception)
@@ -54,31 +71,4 @@ public partial class FixtureContractSmoke : Node
         }
     }
 
-    private sealed class FixtureModifierRegistry : IRunModifierRegistry
-    {
-        public int Active { get; private set; }
-        public IDisposable Register(string itemInstanceId, RunModifierProviderComponent provider)
-        {
-            Active++;
-            return new Registration(() => Active--);
-        }
-    }
-
-    private sealed class Registration(Action dispose) : IDisposable
-    {
-        private Action? _dispose = dispose;
-        public void Dispose() { _dispose?.Invoke(); _dispose = null; }
-    }
-
-    private sealed class ThrowingModifierRegistry : IRunModifierRegistry
-    {
-        public int Active { get; private set; }
-        private int _calls;
-        public IDisposable Register(string itemInstanceId, RunModifierProviderComponent provider)
-        {
-            if (++_calls == 2) throw new InvalidOperationException("intentional second-provider failure");
-            Active++;
-            return new Registration(() => Active--);
-        }
-    }
 }

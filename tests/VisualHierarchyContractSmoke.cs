@@ -34,28 +34,30 @@ public partial class VisualHierarchyContractSmoke : Node
         Require(heroScreen, "HeroDetailPanel", "hero selection lacks an authored detail panel", failures);
         Require(heroScreen, "HeroLibraryTile.tscn", "hero selection does not author a library-tile template", failures);
 
-        var gameRoot = Read("res://src/App/GameRoot.cs");
-        Require(gameRoot, "HeroSelectionViewModel", "hero selection is not bound through a typed view model", failures);
-        if (gameRoot.Contains("_heroUnitChoiceCard", StringComparison.Ordinal))
+        var heroController = Read("res://src/UI/HeroSelectScreen.cs");
+        Require(heroController, "HeroSelectionViewModel", "hero selection is not bound through a typed view model", failures);
+        if (heroController.Contains("_heroUnitChoiceCard", StringComparison.Ordinal))
             failures.Add("hero selection still routes through verbose HeroUnitChoiceCard rows");
-        if (gameRoot.Contains("command.Description}", StringComparison.Ordinal) && gameRoot.Contains(" MP", StringComparison.Ordinal))
-            failures.Add("GameRoot still embeds structured command cost in hero prose");
+        if (heroController.Contains("command.Description}", StringComparison.Ordinal) && heroController.Contains(" MP", StringComparison.Ordinal))
+            failures.Add("hero screen still embeds structured command cost in hero prose");
 
         var unitCard = Read("res://scenes/ui/components/UnitChoiceCard.tscn");
         Require(unitCard, "TraitBadge.tscn", "recruitment lacks authored trait badges", failures);
         Require(unitCard, "StatBlock.tscn", "recruitment lacks authored stat blocks", failures);
 
-        var hud = Read("res://scenes/ui/components/HeroCommandHud.tscn");
+        var hud = Read("res://scenes/ui/components/TacticalCommandHud.tscn") +
+                  Read("res://scenes/ui/components/TacticalCommandSlot.tscn");
         Require(hud, "ResourceCostBadge.tscn", "command HUD lacks structured resource cost badges", failures);
         if (hud.Contains("name=\"CommandCost\" type=\"Label\"", StringComparison.Ordinal))
             failures.Add("command HUD still owns a prose cost label");
         var armyRow = Read("res://scenes/ui/components/ArmyDrawerRow.tscn");
         Require(armyRow, "ResourceCostBadge.tscn", "Army hero detail lacks structured resource cost badges", failures);
         var armyModels = Read("res://src/UI/ArmyOverviewModels.cs");
-        if (armyModels.Contains("消耗 {command.ManaCost} MP", StringComparison.Ordinal))
-            failures.Add("Army hero command cost remains embedded in prose");
+        if (!armyModels.Contains("TacticalCommands", StringComparison.Ordinal) ||
+            armyModels.Contains("消耗 {command.ManaCost} MP", StringComparison.Ordinal))
+            failures.Add("Army overview lacks an independent tactical-command section");
 
-        var theme = Read("res://content/ui/game_theme.tres");
+        var theme = Read("res://content/ui/RealmTheme.tres");
         foreach (var variation in new[]
                  {
                      "HealthValue", "DamageValue", "ManaValue", "ShieldValue", "HealingValue",
@@ -63,7 +65,7 @@ public partial class VisualHierarchyContractSmoke : Node
                  })
             Require(theme, variation, $"shared Theme lacks semantic variation {variation}", failures);
 
-        var allPresentationSources = gameRoot + Read("res://src/UI/HeroAbilityPanel.cs") + Read("res://src/UI/HeroCommandHud.cs");
+        var allPresentationSources = heroController + Read("res://src/UI/TacticalCommandHud.cs") + Read("res://src/UI/TacticalCommandSlot.cs");
         if (allPresentationSources.Contains("Regex", StringComparison.Ordinal) || allPresentationSources.Contains("hero_\"", StringComparison.Ordinal))
             failures.Add("presentation introduces prose parsing or concrete hero-id dispatch");
 
@@ -95,15 +97,15 @@ public partial class VisualHierarchyContractSmoke : Node
     private async Task VerifyRuntimeAsync(List<string> failures)
     {
         var screen = GD.Load<PackedScene>("res://scenes/ui/HeroSelectScreen.tscn").Instantiate<HeroSelectScreen>();
-        screen.Theme = GD.Load<Theme>("res://content/ui/game_theme.tres");
+        screen.Theme = GD.Load<Theme>("res://content/ui/RealmTheme.tres");
         AddChild(screen);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         var commander = GD.Load<UnitDefinition>("res://content/definitions/heroes/hero_banner_marshal.tres");
         var regent = GD.Load<UnitDefinition>("res://content/definitions/heroes/hero_bone_regent.tres");
         var models = new[]
         {
-            new HeroSelectionViewModel(commander.Id, commander, true, "军团规则甲", "规则正文甲", "指令甲", "中性效果正文甲", 1, 0),
-            new HeroSelectionViewModel(regent.Id, regent, false, "军团规则乙", "规则正文乙", "指令乙", "中性效果正文乙", 1, 5)
+            new HeroSelectionViewModel(commander.Id, commander, true, "军团规则甲", "规则正文甲"),
+            new HeroSelectionViewModel(regent.Id, regent, false, "军团规则乙", "规则正文乙")
         };
         var chosenCount = 0;
         var chosenId = string.Empty;
@@ -124,13 +126,9 @@ public partial class VisualHierarchyContractSmoke : Node
         deploy.EmitSignal(BaseButton.SignalName.Pressed);
         if (chosenCount != 1 || chosenId != commander.Id)
             failures.Add("detail primary action did not emit the previewed stable id exactly once");
-        var mana = screen.GetNode<ResourceCostBadge>("Margin/Layout/Content/HeroDetailPanel/Layout/DetailScroll/Content/HeroAbilityPanel/Layout/Header/Costs/ManaCostBadge");
-        var gold = screen.GetNode<ResourceCostBadge>("Margin/Layout/Content/HeroDetailPanel/Layout/DetailScroll/Content/HeroAbilityPanel/Layout/Header/Costs/GoldCostBadge");
-        if (mana.DisplayText != "1 MP" || gold.Visible)
-            failures.Add("hero detail command costs are not structured typed badges");
+        if (screen.GetNodeOrNull<Control>("Margin/Layout/Content/HeroDetailPanel/Layout/DetailScroll/Content/HeroAbilityPanel") is not null)
+            failures.Add("hero detail still presents a hero-owned tactical command");
         screen.Preview(regent.Id);
-        if (!gold.Visible || gold.DisplayText != "5 金币")
-            failures.Add("hero detail optional gold cost did not bind as a separate badge");
         screen.Size = new Vector2(1280, 720);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         if (grid.Columns != 2) failures.Add("hero library did not reduce columns at 1280 width");

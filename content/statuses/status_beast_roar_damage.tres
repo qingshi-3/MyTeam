@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="StatusDefinition" format=3 uid="uid://4gd716pm21ie"]
+
+[ext_resource type="Script" uid="uid://b6dbhxwbif5my" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://bhmtlg415q8xm" path="res://src/Attributes/AttributeModifierSpec.cs" id="2"]
+[ext_resource type="Script" uid="uid://dlwvs7u5gu5oo" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="3"]
+[ext_resource type="Script" uid="uid://7y5lnha1o3xm" path="res://src/Statuses/Authoring/StatusCombatReactiveBindingSpec.cs" id="3_acn3i"]
+[ext_resource type="Script" uid="uid://ditm8ibt6py1p" path="res://src/Statuses/Authoring/StatusLifecycleBindingSpec.cs" id="4_mtbqe"]
+
+[sub_resource type="Resource" id="ConstantMagnitude_beast"]
+script = ExtResource("3")
+Value = 1.12
+
+[sub_resource type="Resource" id="DamageModifier_beast"]
+script = ExtResource("2")
+Attribute = 1
+Operation = 1
+Magnitude = SubResource("ConstantMagnitude_beast")
+SlotId = "damage_multiplier"
+
+[resource]
+script = ExtResource("1")
+StableId = "status_beast_roar_damage"
+DisplayName = "万兽咆哮"
+Behavior = 1
+Disposition = 1
+StackLimit = 0
+AttributeModifiers = [SubResource("DamageModifier_beast")]
+Magnitude = 1.12

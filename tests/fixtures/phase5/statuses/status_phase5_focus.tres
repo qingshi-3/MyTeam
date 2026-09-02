@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="StatusDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="3"]
+
+[sub_resource type="Resource" id="ConstantMagnitude_focus"]
+script = ExtResource("3")
+Value = 1.1
+
+[sub_resource type="Resource" id="DamageModifier_focus"]
+script = ExtResource("2")
+Attribute = 1
+Operation = 1
+Magnitude = SubResource("ConstantMagnitude_focus")
+Priority = 0
+SlotId = "damage_multiplier"
+
+[resource]
+script = ExtResource("1")
+StableId = "status_phase5_focus"
+DisplayName = "扩展专注"
+Behavior = 1
+DurationKind = 0
+DurationTicks = 0
+AggregationPolicy = 0
+StackLimit = 1
+OverflowPolicy = 0
+DurationRefreshPolicy = 0
+PeriodicResetPolicy = 0
+DispelCategory = 0
+DeathPolicy = 0
+ControlDurationRule = 0
+GrantedTags = Array[StringName]([])
+AttributeModifiers = Array[ExtResource("2")]([SubResource("DamageModifier_focus")])
+Magnitude = 1.1
+PeriodicIntervalTicks = 0

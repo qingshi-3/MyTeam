@@ -1,4 +1,5 @@
 using Godot;
+using TowerAutobattler.Traits;
 
 namespace TowerAutobattler.Content;
 
@@ -27,5 +28,7 @@ public partial class UnitDefinition : Resource
     [Export] public float HealPower { get; set; }
     [Export] public float SplashRadius { get; set; }
     [Export] public float LifeSteal { get; set; }
+    [Export(PropertyHint.Range, "0,1,0.01")] public float BaseControlResistance { get; set; }
+    [Export] public TraitContributionSpec[] TraitContributions { get; set; } = [];
     [Export] public Godot.Collections.Array<StringName> Tags { get; set; } = [];
 }

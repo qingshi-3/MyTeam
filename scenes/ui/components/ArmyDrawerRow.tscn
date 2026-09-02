@@ -19,6 +19,15 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(68, 68)
 layout_mode = 2
 
+[node name="ItemIcon" type="TextureRect" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
 [node name="Copy" type="VBoxContainer" parent="Layout"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -50,7 +59,7 @@ visible = false
 layout_mode = 2
 theme_override_constants/h_separation = 6
 
-[node name="ManaCostBadge" parent="Layout/Copy/RowCosts" instance=ExtResource("4")]
+[node name="TacticalPointCostBadge" parent="Layout/Copy/RowCosts" instance=ExtResource("4")]
 unique_name_in_owner = true
 layout_mode = 2
 

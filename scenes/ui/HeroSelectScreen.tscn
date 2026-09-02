@@ -35,16 +35,13 @@ layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "选择本次征程的英雄"
 
-[node name="Hint" type="Label" parent="Margin/Layout"]
-layout_mode = 2
-text = "英雄决定军团规则与战场指令；士兵则承担阵型、阻挡和功能职责。"
-
 [node name="Content" type="HBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 16
 
 [node name="LibraryPanel" type="PanelContainer" parent="Margin/Layout/Content"]
+theme_type_variation = &"ContextSidebarPanel"
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -56,7 +53,7 @@ theme_override_constants/separation = 7
 [node name="LibraryTitle" type="Label" parent="Margin/Layout/Content/LibraryPanel/LibraryLayout"]
 layout_mode = 2
 theme_type_variation = &"HeroIdentity"
-text = "英雄名录 · 聚焦以预览"
+text = "英雄名录"
 
 [node name="LibraryScroll" type="ScrollContainer" parent="Margin/Layout/Content/LibraryPanel/LibraryLayout"]
 layout_mode = 2
@@ -76,6 +73,7 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="BackButton" type="Button" parent="Margin/Layout"]
+theme_type_variation = &"SecondaryButton"
 custom_minimum_size = Vector2(160, 50)
 layout_mode = 2
 size_flags_horizontal = 4

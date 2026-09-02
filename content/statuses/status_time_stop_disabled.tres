@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="StatusDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "status_time_stop_disabled"
+DisplayName = "停摆"
+Behavior = 0
+Disposition = 2
+DurationKind = 1
+DurationTicks = 18
+AggregationPolicy = 0
+StackLimit = 1
+OverflowPolicy = 0
+DurationRefreshPolicy = 2
+PeriodicResetPolicy = 0
+DispelCategory = 0
+DeathPolicy = 0
+ControlDurationRule = 1
+GrantedTags = Array[StringName]([&"state.action_disabled"])
+AttributeModifiers = Array[Resource]([])
+Magnitude = 1.0
+PeriodicIntervalTicks = 0

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3 uid="uid://dpe1ljeyiuwrd"]
+
+[ext_resource type="Script" uid="uid://biml5ugp0nie8" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://b88yes5q2s0ga" path="res://src/Relics/Authoring/RelicBattleStartSummonSpec.cs" id="2"]
+
+[sub_resource type="Resource" id="StartSummon"]
+script = ExtResource("2")
+ContentId = "soldier_void_mech"
+HealthMultiplier = 0.85
+DamageMultiplier = 0.9
+BindingId = "clockwork_start_summon"
+RepeatPolicy = 1
+
+[resource]
+script = ExtResource("1")
+StableId = "item_clockwork_seed"
+BattleStartEffects = [SubResource("StartSummon")]

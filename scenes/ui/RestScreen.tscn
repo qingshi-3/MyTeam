@@ -1,4 +1,7 @@
-[gd_scene format=3]
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OutcomeActionButton.tscn" id="1"]
+[ext_resource type="Script" path="res://src/UI/RestScreenController.cs" id="2"]
 
 [node name="RestScreen" type="Control"]
 layout_mode = 3
@@ -7,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2")
 [node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -15,6 +19,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 [node name="Panel" type="PanelContainer" parent="Center"]
+theme_type_variation = &"ModalPanel"
 custom_minimum_size = Vector2(720, 440)
 layout_mode = 2
 [node name="Layout" type="VBoxContainer" parent="Center/Panel"]
@@ -28,12 +33,8 @@ text = "高塔营火"
 layout_mode = 2
 size_flags_vertical = 3
 autowrap_mode = 2
-text = "短暂的安全让军团能够疗伤，或整理可换取军费的战利品。"
-[node name="RecoverButton" type="Button" parent="Center/Panel/Layout"]
-custom_minimum_size = Vector2(0, 58)
+text = "营火提供一次整备机会。"
+[node name="RecoverButton" parent="Center/Panel/Layout" instance=ExtResource("1")]
 layout_mode = 2
-text = "全军休整"
-[node name="GoldButton" type="Button" parent="Center/Panel/Layout"]
-custom_minimum_size = Vector2(0, 58)
+[node name="GoldButton" parent="Center/Panel/Layout" instance=ExtResource("1")]
 layout_mode = 2
-text = "整理战利品：+8 金币"

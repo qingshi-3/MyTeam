@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RelicDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicBattleModifierSpec.cs" id="2"]
+
+[sub_resource type="Resource" id="Damage"]
+script = ExtResource("2")
+Kind = 1
+Amount = 1.1
+
+[sub_resource type="Resource" id="Shield"]
+script = ExtResource("2")
+Kind = 6
+Amount = 5.0
+
+[resource]
+script = ExtResource("1")
+StableId = "fixture_item"
+BattleModifiers = Array[RelicBattleModifierSpec]([SubResource("Damage"), SubResource("Shield")])
+VictoryOutcomes = Array[RelicRunOutcomeSpec]([])

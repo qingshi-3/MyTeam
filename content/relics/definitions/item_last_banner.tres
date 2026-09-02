@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3 uid="uid://dl0j3fgh1b6l8"]
+
+[ext_resource type="Script" uid="uid://biml5ugp0nie8" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://kqhmcm2s6y16" path="res://src/Relics/Authoring/RelicAttributeBindingSpec.cs" id="2"]
+[ext_resource type="Script" uid="uid://bhmtlg415q8xm" path="res://src/Attributes/AttributeModifierSpec.cs" id="3"]
+[ext_resource type="Script" uid="uid://dlwvs7u5gu5oo" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="4"]
+[ext_resource type="Script" uid="uid://de6a75ypf2l7e" path="res://src/Relics/Authoring/RelicPlayerArmyTargetSpec.cs" id="5"]
+
+[sub_resource type="Resource" id="HealthMagnitude"]
+script = ExtResource("4")
+Value = 1.15
+
+[sub_resource type="Resource" id="HealthModifier"]
+script = ExtResource("3")
+Operation = 1
+Magnitude = SubResource("HealthMagnitude")
+SlotId = "last_banner_health"
+
+[sub_resource type="Resource" id="ArmyTarget"]
+script = ExtResource("5")
+
+[sub_resource type="Resource" id="HealthBinding"]
+script = ExtResource("2")
+BindingId = "army_health"
+Target = SubResource("ArmyTarget")
+Modifier = SubResource("HealthModifier")
+
+[sub_resource type="Resource" id="DamageMagnitude"]
+script = ExtResource("4")
+Value = 1.15
+
+[sub_resource type="Resource" id="DamageModifier"]
+script = ExtResource("3")
+Attribute = 1
+Operation = 1
+Magnitude = SubResource("DamageMagnitude")
+SlotId = "last_banner_damage"
+
+[sub_resource type="Resource" id="DamageBinding"]
+script = ExtResource("2")
+BindingId = "army_damage"
+Target = SubResource("ArmyTarget")
+Modifier = SubResource("DamageModifier")
+
+[resource]
+script = ExtResource("1")
+StableId = "item_last_banner"
+AttributeBindings = [SubResource("HealthBinding"), SubResource("DamageBinding")]

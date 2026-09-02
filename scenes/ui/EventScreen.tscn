@@ -1,4 +1,7 @@
-[gd_scene format=3]
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OutcomeActionButton.tscn" id="1"]
+[ext_resource type="Script" path="res://src/UI/EventScreenController.cs" id="2"]
 
 [node name="EventScreen" type="Control"]
 layout_mode = 3
@@ -7,6 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2")
 [node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -15,6 +19,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 [node name="Panel" type="PanelContainer" parent="Center"]
+theme_type_variation = &"ModalPanel"
 custom_minimum_size = Vector2(760, 500)
 layout_mode = 2
 [node name="Layout" type="VBoxContainer" parent="Center/Panel"]
@@ -28,12 +33,8 @@ text = "塔内异象"
 layout_mode = 2
 size_flags_vertical = 3
 autowrap_mode = 2
-text = "一扇渗出金光的门挡住去路。冒险开启可能获得丰厚军费，也可能让英雄受伤。"
-[node name="RiskButton" type="Button" parent="Center/Panel/Layout"]
-custom_minimum_size = Vector2(0, 58)
+text = "一扇渗出金光的门挡住去路。"
+[node name="RiskButton" parent="Center/Panel/Layout" instance=ExtResource("1")]
 layout_mode = 2
-text = "冒险开启：高收益或受伤"
-[node name="SafeButton" type="Button" parent="Center/Panel/Layout"]
-custom_minimum_size = Vector2(0, 58)
+[node name="SafeButton" parent="Center/Panel/Layout" instance=ExtResource("1")]
 layout_mode = 2
-text = "谨慎绕行：获得少量金币"

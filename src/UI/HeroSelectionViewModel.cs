@@ -7,8 +7,4 @@ public sealed record HeroSelectionViewModel(
     UnitDefinition Definition,
     bool Unlocked,
     string RuleTitle,
-    string RuleDescription,
-    string CommandName,
-    string CommandDescription,
-    int ManaCost,
-    int GoldCost);
+    string RuleDescription);

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="BossTimelineDefinition" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/Project/BossTimelineDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Project/BossPhaseDefinition.cs" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/abilities/loadout_phase5_boss.tres" id="3"]
+[ext_resource type="Resource" path="res://tests/fixtures/phase5/abilities/loadout_phase5_boss_second.tres" id="4"]
+
+[sub_resource type="Resource" id="Opening"]
+script = ExtResource("2")
+StableId = "phase_phase5_opening"
+DisplayName = "扩展开场"
+StartHealthRatio = 1.0
+AbilityLoadout = ExtResource("3")
+
+[sub_resource type="Resource" id="Second"]
+script = ExtResource("2")
+StableId = "phase_phase5_second"
+DisplayName = "扩展坚壁"
+StartHealthRatio = 0.5
+AbilityLoadout = ExtResource("4")
+
+[resource]
+script = ExtResource("1")
+StableId = "timeline_phase5_boss"
+BossContentId = "enemy_phase5_fixture"
+Phases = Array[BossPhaseDefinition]([SubResource("Opening"), SubResource("Second")])

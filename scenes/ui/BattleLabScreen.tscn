@@ -1,0 +1,408 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/UI/BattleLabScreenController.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleLabLibraryCard.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleLabBoardCell.tscn" id="3"]
+[ext_resource type="Resource" path="res://content/battle-lab/battle_lab_presets.tres" id="4"]
+
+[node name="BattleLabScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+LibraryCardScene = ExtResource("2")
+BoardCellScene = ExtResource("3")
+PresetCatalog = ExtResource("4")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = -24.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Root" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="Margin/Root/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "返回主菜单"
+
+[node name="Title" type="Label" parent="Margin/Root/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+text = "战斗实验室"
+horizontal_alignment = 1
+
+[node name="Mode" type="OptionButton" parent="Margin/Root/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 44)
+layout_mode = 2
+
+[node name="ModeToggleButton" type="Button" parent="Margin/Root/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "切换模式"
+
+[node name="PopulationLabel" type="Label" parent="Margin/Root/Header"]
+layout_mode = 2
+text = "人口"
+vertical_alignment = 1
+
+[node name="Population" type="SpinBox" parent="Margin/Root/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(92, 44)
+layout_mode = 2
+
+[node name="SeedLabel" type="Label" parent="Margin/Root/Header"]
+layout_mode = 2
+text = "种子"
+vertical_alignment = 1
+
+[node name="Seed" type="LineEdit" parent="Margin/Root/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 44)
+layout_mode = 2
+text = "20260901"
+
+[node name="ContentScroll" type="ScrollContainer" parent="Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ScrollableContent" type="VBoxContainer" parent="Margin/Root/ContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="PresetBar" type="HBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="PresetLabel" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/PresetBar"]
+layout_mode = 2
+text = "实验预设"
+vertical_alignment = 1
+
+[node name="PresetChoice" type="OptionButton" parent="Margin/Root/ContentScroll/ScrollableContent/PresetBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+
+[node name="LoadPresetButton" type="Button" parent="Margin/Root/ContentScroll/ScrollableContent/PresetBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "载入"
+
+[node name="PresetName" type="LineEdit" parent="Margin/Root/ContentScroll/ScrollableContent/PresetBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+placeholder_text = "输入用户预设名称"
+
+[node name="SavePresetButton" type="Button" parent="Margin/Root/ContentScroll/ScrollableContent/PresetBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "保存当前"
+
+[node name="RestoreDefaultButton" type="Button" parent="Margin/Root/ContentScroll/ScrollableContent/PresetBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "恢复默认"
+
+[node name="ModeBanner" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_type_variation = &"WarningLabel"
+text = "◆ 正式规则：我方左侧 3×6 / 敌方右侧 3×6"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Body" type="HBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent"]
+custom_minimum_size = Vector2(0, 320)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="PlayerPanel" type="PanelContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_type_variation = &"ContextSidebarPanel"
+
+[node name="PlayerBox" type="VBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/PlayerPanel"]
+layout_mode = 2
+
+[node name="PlayerTitle" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/Body/PlayerPanel/PlayerBox"]
+layout_mode = 2
+theme_type_variation = &"SectionTitleLabel"
+text = "◆ 我方英雄库"
+
+[node name="PlayerSearch" type="LineEdit" parent="Margin/Root/ContentScroll/ScrollableContent/Body/PlayerPanel/PlayerBox"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "搜索英雄或 stable id"
+
+[node name="PlayerScroll" type="ScrollContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/PlayerPanel/PlayerBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerLibrary" type="VBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/PlayerPanel/PlayerBox/PlayerScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="CenterPanel" type="PanelContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CenterBox" type="VBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/CenterPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="BoardTitle" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/Body/CenterPanel/CenterBox"]
+layout_mode = 2
+theme_type_variation = &"SectionTitleLabel"
+text = "10×6 物理战场"
+horizontal_alignment = 1
+
+[node name="BoardCenter" type="CenterContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/CenterPanel/CenterBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Battlefield" type="GridContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/CenterPanel/CenterBox/BoardCenter"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 10
+theme_override_constants/h_separation = 3
+theme_override_constants/v_separation = 3
+
+[node name="Facts" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/Body/CenterPanel/CenterBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+text = "我方 0/7　敌方 0　装备 0　遗物 0　种子 20260901"
+horizontal_alignment = 1
+
+[node name="EnemyPanel" type="PanelContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_type_variation = &"ContextSidebarPanel"
+
+[node name="EnemyBox" type="VBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/EnemyPanel"]
+layout_mode = 2
+
+[node name="EnemyTitle" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/Body/EnemyPanel/EnemyBox"]
+layout_mode = 2
+theme_type_variation = &"SectionTitleLabel"
+text = "⚔ PvE 单位库"
+
+[node name="EnemySearch" type="LineEdit" parent="Margin/Root/ContentScroll/ScrollableContent/Body/EnemyPanel/EnemyBox"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "搜索敌人、精英、首领或召唤"
+
+[node name="EnemyFilter" type="OptionButton" parent="Margin/Root/ContentScroll/ScrollableContent/Body/EnemyPanel/EnemyBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EnemyScroll" type="ScrollContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/EnemyPanel/EnemyBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EnemyLibrary" type="VBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/Body/EnemyPanel/EnemyBox/EnemyScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="BuildPanel" type="PanelContainer" parent="Margin/Root/ContentScroll/ScrollableContent"]
+layout_mode = 2
+
+[node name="BuildColumns" type="GridContainer" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 8
+
+[node name="Inspector" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "选择一个已放置单位以查看实例、属性、装备与 Trait。"
+autowrap_mode = 2
+
+[node name="EquipmentBox" type="VBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="EquipmentTitle" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/EquipmentBox"]
+layout_mode = 2
+theme_type_variation = &"SectionTitleLabel"
+text = "英雄实例装备"
+
+[node name="EquipmentRow" type="HBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/EquipmentBox"]
+layout_mode = 2
+
+[node name="EquipmentSlot" type="OptionButton" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/EquipmentBox/EquipmentRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 38)
+layout_mode = 2
+
+[node name="EquipmentChoice" type="OptionButton" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/EquipmentBox/EquipmentRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EquipmentActions" type="HBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/EquipmentBox"]
+layout_mode = 2
+
+[node name="EquipButton" type="Button" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/EquipmentBox/EquipmentActions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "装入/替换"
+
+[node name="RemoveEquipmentButton" type="Button" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/EquipmentBox/EquipmentActions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "移除槽位"
+
+[node name="EquipmentNotApplicable" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(300, 76)
+layout_mode = 2
+theme_type_variation = &"WarningLabel"
+text = "装备：不适用（PvE）\n敌方单位不开放玩家装备编辑。"
+vertical_alignment = 1
+
+[node name="RelicBox" type="VBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+
+[node name="RelicTitle" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/RelicBox"]
+layout_mode = 2
+theme_type_variation = &"SectionTitleLabel"
+text = "玩家团队遗物"
+
+[node name="RelicAddRow" type="HBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/RelicBox"]
+layout_mode = 2
+
+[node name="RelicChoice" type="OptionButton" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/RelicBox/RelicAddRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RelicStacks" type="SpinBox" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/RelicBox/RelicAddRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 38)
+layout_mode = 2
+
+[node name="SetRelicButton" type="Button" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/RelicBox/RelicAddRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "设置"
+
+[node name="RelicRemoveRow" type="HBoxContainer" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/RelicBox"]
+layout_mode = 2
+
+[node name="ExistingRelicChoice" type="OptionButton" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/RelicBox/RelicRemoveRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RemoveRelicButton" type="Button" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns/RelicBox/RelicRemoveRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "移除"
+
+[node name="Readiness" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent/BuildPanel/BuildColumns"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "× 尚不可开战"
+autowrap_mode = 2
+
+[node name="Status" type="Label" parent="Margin/Root/ContentScroll/ScrollableContent"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+text = "配置尚未载入。"
+horizontal_alignment = 1
+
+[node name="Actions" type="HBoxContainer" parent="Margin/Root"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="ClearPlayerButton" type="Button" parent="Margin/Root/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+text = "清空我方"
+
+[node name="ClearEnemyButton" type="Button" parent="Margin/Root/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+text = "清空敌方"
+
+[node name="ClearAllButton" type="Button" parent="Margin/Root/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DangerButton"
+text = "清空全部"
+
+[node name="DeleteSelectedButton" type="Button" parent="Margin/Root/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "删除选中"
+
+[node name="SetPrimaryButton" type="Button" parent="Margin/Root/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "设为主英雄"
+
+[node name="StartButton" type="Button" parent="Margin/Root/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 48)
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "以此配置开战"

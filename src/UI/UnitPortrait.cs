@@ -6,6 +6,7 @@ namespace TowerAutobattler.UI;
 public partial class UnitPortrait : Control
 {
     [Export(PropertyHint.Range, "0.1,1.5,0.05")] public float UiPlaybackScale { get; set; } = .75f;
+    [Export] public bool ContextMirrorHorizontal { get; set; }
 
     private AnimatedSprite2D _sprite = null!;
     private TextureRect _fallback = null!;
@@ -43,13 +44,14 @@ public partial class UnitPortrait : Control
         _sprite.Stop();
         _sprite.Visible = _hasPlayablePortrait;
         _fallback.Texture = _hasPlayablePortrait ? null : fallback;
-        _fallback.FlipH = definition?.FlipHorizontal ?? false;
+        var effectiveFlipHorizontal = (definition?.FlipHorizontal ?? false) ^ ContextMirrorHorizontal;
+        _fallback.FlipH = effectiveFlipHorizontal;
         _fallback.Visible = _fallback.Texture is not null;
         if (_hasPlayablePortrait)
         {
             _sprite.SpriteFrames = definition!.Frames;
             _sprite.Animation = definition.AnimationName;
-            _sprite.FlipH = definition.FlipHorizontal;
+            _sprite.FlipH = effectiveFlipHorizontal;
             _sprite.SpeedScale = UiPlaybackScale;
             _sprite.Play(definition.AnimationName);
             _sprite.Frame = definition.FrameIndex;

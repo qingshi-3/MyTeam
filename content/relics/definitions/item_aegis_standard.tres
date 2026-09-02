@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3 uid="uid://d4n70jjp0gpw"]
+
+[ext_resource type="Script" uid="uid://biml5ugp0nie8" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" uid="uid://djjugoki1c42d" path="res://src/Relics/Authoring/RelicBattleStartShieldSpec.cs" id="2"]
+
+[sub_resource type="Resource" id="StartShield"]
+script = ExtResource("2")
+Amount = 15
+BindingId = "aegis_start_shield"
+
+[resource]
+script = ExtResource("1")
+StableId = "item_aegis_standard"
+BattleStartEffects = [SubResource("StartShield")]

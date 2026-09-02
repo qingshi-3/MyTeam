@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="StatusDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusPresentationSpec.cs" id="2"]
+
+[sub_resource type="Resource" id="Presentation_freeze"]
+script = ExtResource("2")
+SemanticIcon = &"status_freeze"
+ExecutedCue = &"freeze_executed"
+OnActiveCue = &"freeze_active"
+WhileActiveCue = &"freeze_while"
+RemovedCue = &"freeze_removed"
+ReportLabel = "冻结"
+
+[resource]
+script = ExtResource("1")
+StableId = "status_phase2_freeze"
+DisplayName = "冻结"
+Behavior = 0
+Disposition = 2
+DurationKind = 1
+DurationTicks = 6
+AggregationPolicy = 1
+StackLimit = 1
+OverflowPolicy = 0
+DurationRefreshPolicy = 2
+PeriodicResetPolicy = 0
+DispelCategory = 2
+DeathPolicy = 0
+ControlDurationRule = 1
+GrantedTags = Array[StringName]([&"state.action_disabled", &"state.frozen"])
+AttributeModifiers = Array[Resource]([])
+Magnitude = 1.0
+PeriodicIntervalTicks = 0
+Presentation = SubResource("Presentation_freeze")

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_resistance_dummy.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_resistance_dummy"
+DisplayName = "抗性验证傀儡"
+Description = "仅供开发者验证控制时长与多来源状态的高生命目标；不进入征程遭遇池。"
+Role = 0
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 1800
+AttackDamage = 2
+AttackRange = 1.0
+AttackCooldown = 2.0
+MoveInterval = 0.8
+Armor = 4
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+BaseControlResistance = 0.5
+Tags = Array[StringName]([&"enemy", &"development", &"control_resistant"])

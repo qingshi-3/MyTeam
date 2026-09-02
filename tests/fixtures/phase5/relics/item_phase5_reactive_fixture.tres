@@ -1,0 +1,65 @@
+[gd_resource type="Resource" script_class="RelicDefinition" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicReactiveCounterSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="4"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="5"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ShieldEffectSpec.cs" id="6"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="7"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectConditionSpec.cs" id="8"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectStepSpec.cs" id="9"]
+
+[sub_resource type="Resource" id="Trigger"]
+script = ExtResource("4")
+Kind = 0
+EventKind = 0
+
+[sub_resource type="Resource" id="Target"]
+script = ExtResource("5")
+
+[sub_resource type="Resource" id="Shield"]
+script = ExtResource("6")
+AmountSource = 0
+Amount = 1.0
+
+[sub_resource type="Resource" id="Limits"]
+script = ExtResource("7")
+MaxUses = 0
+MinimumIntervalTicks = 0
+MaxDepth = 0
+MaxRepeatedEdges = 0
+
+[sub_resource type="Resource" id="ThresholdEffect"]
+script = ExtResource("3")
+StableId = "phase5_reactive_threshold"
+Priority = 0
+Trigger = SubResource("Trigger")
+Conditions = Array[ExtResource("8")]([])
+TargetQuery = SubResource("Target")
+Effects = Array[ExtResource("9")]([SubResource("Shield")])
+Limits = SubResource("Limits")
+
+[sub_resource type="Resource" id="AliveCounter"]
+script = ExtResource("2")
+CounterId = "allies_alive"
+Scope = 1
+ResetPolicy = 1
+Source = 1
+Team = 0
+IncludeTemporary = false
+Threshold = 999
+Consumption = 999
+Priority = 0
+Target = 2
+TargetTeam = 0
+ThresholdEffect = SubResource("ThresholdEffect")
+
+[resource]
+script = ExtResource("1")
+StableId = "item_phase5_reactive_fixture"
+AttributeBindings = Array[RelicAttributeBindingSpec]([])
+BattleStartEffects = Array[RelicBattleStartEffectSpec]([])
+BattleModifiers = Array[RelicBattleModifierSpec]([])
+ReactiveCounters = Array[RelicReactiveCounterSpec]([SubResource("AliveCounter")])
+VictoryOutcomes = Array[RelicRunOutcomeSpec]([])
