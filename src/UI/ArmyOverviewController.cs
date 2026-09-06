@@ -1,9 +1,11 @@
 using Godot;
+using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
 
 public partial class ArmyOverviewController : Control
 {
+    public event System.Action? EquipmentChanged;
     private Button _summary = null!;
     private ArmyResourceStrip _resourceStrip = null!;
     private Button _close = null!;
@@ -17,6 +19,8 @@ public partial class ArmyOverviewController : Control
     private FocusBehaviorRecursiveEnum _previousScopeBehavior;
     private FocusModeEnum _previousSummaryFocusMode;
     private bool _isOpen;
+    private EquipmentLoadoutPanel _equipmentPanel = null!;
+    private RunApplication? _application;
 
     public bool IsOpen => _isOpen;
 
@@ -30,6 +34,8 @@ public partial class ArmyOverviewController : Control
         _rows = GetNode<VBoxContainer>("%Rows");
         _rowScene = GD.Load<PackedScene>("res://scenes/ui/components/ArmyDrawerRow.tscn");
         _sectionScene = GD.Load<PackedScene>("res://scenes/ui/components/ArmyDrawerSection.tscn");
+        _equipmentPanel = GetNode<EquipmentLoadoutPanel>("%ArmyEquipmentPanel");
+        _equipmentPanel.EquipmentChanged += OnEquipmentChanged;
         _summary.Pressed += Open;
         _close.Pressed += Close;
         _backdrop.Pressed += Close;
@@ -39,6 +45,7 @@ public partial class ArmyOverviewController : Control
 
     public override void _ExitTree()
     {
+        _equipmentPanel.EquipmentChanged -= OnEquipmentChanged;
         RestoreModalFocus();
         _summary.Pressed -= Open;
         _close.Pressed -= Close;
@@ -46,6 +53,19 @@ public partial class ArmyOverviewController : Control
     }
 
     public void BindModalFocusScope(Control focusScope) => _focusScope = focusScope;
+
+    public void BindEquipmentManagement(RunApplication app)
+    {
+        _application = app;
+        _equipmentPanel.Bind(app);
+    }
+
+    private void OnEquipmentChanged()
+    {
+        if (_application?.ActiveRun is not { } run) return;
+        Bind(ArmyOverviewFactory.Build(run, _application.Content, _application.Rules));
+        EquipmentChanged?.Invoke();
+    }
 
     public void Bind(ArmyOverviewViewModel model)
     {
@@ -59,7 +79,7 @@ public partial class ArmyOverviewController : Control
         AddSection("战术指令");
         if (model.TacticalCommands.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无战术指令", "", ""));
         else foreach (var command in model.TacticalCommands) AddRow(command);
-        AddSection("物品");
+        AddSection("遗物与备用装备");
         if (model.Items.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无物品", "", ""));
         else foreach (var item in model.Items) AddRow(item);
     }
@@ -77,6 +97,11 @@ public partial class ArmyOverviewController : Control
     private void Open()
     {
         if (_isOpen) return;
+        if (_application?.ActiveRun is { } run)
+        {
+            _equipmentPanel.Bind(_application);
+            Bind(ArmyOverviewFactory.Build(run, _application.Content, _application.Rules));
+        }
         _previousFocus = GetViewport().GuiGetFocusOwner();
         _previousSummaryFocusMode = _summary.FocusMode;
         _summary.FocusMode = FocusModeEnum.None;

@@ -26,10 +26,10 @@ A central content failure to avoid is pretending every hero is a build core. If 
 - Every persistent hero consumes exactly `1` population, regardless of hero tier or rarity.
 - Hero tier or rarity controls availability stage, role and mechanic complexity, and expected build responsibility. It never changes population cost.
 - `10` is the conventional ordinary endgame formation ceiling. It is a growth destination, not the starting formation size and not a guaranteed body count in every run.
-- The existing eighteen legal player candidate cells are the physical full-deployment ceiling. One living unit still occupies one legal cell.
+- The existing eighteen legal player candidate cells are the physical full-deployment ceiling. Deployment keeps one unit per legal cell; battle converts those cells to continuous starting positions and then enforces circular body occupancy.
 - Explicit heroes, abilities, equipment, or relics may spend real build opportunity to raise effective persistent population above the ordinary `10` ceiling. A high-roll population build may approach or fill all `18` legal cells.
 - A reserve may exist as a roster state, but its exact capacity, interaction with current population, and relationship to recruitment flow remain unresolved; no current rule fixes a reserve number or population exception.
-- Temporary units come only from explicit authored sources, occupy actual free legal cells, and do not consume persistent roster or reserve population. They cannot exceed physical occupancy, stack units, or keep battle alive after all persistent roster heroes are defeated.
+- Temporary units come only from explicit authored sources, require actual legal nonoverlapping battle positions, and do not consume persistent roster or reserve population. They cannot exceed the authored temporary-unit capacity, overlap bodies, or keep battle alive after all persistent roster heroes are defeated.
 
 ## Hero Role Hierarchy
 

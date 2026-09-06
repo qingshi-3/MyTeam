@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_iron_dervish"
+MaxMana = 80.0
+StartingMana = 20.0
 DisplayName = "铁砂旋卫"
 Description = "兼具护甲和范围压制。"
 Role = 0

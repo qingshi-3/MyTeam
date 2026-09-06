@@ -53,12 +53,14 @@ public sealed class RunRewardEconomyService
         {
             var instance = AddRosterHero(run, starters[index].StableId);
             if (instance is null) return null;
-            Place(run, instance.InstanceId, BattlefieldLayout.Version2SoldierCells[index]);
+            var starterCells = BattlefieldLayout.Version2SoldierCells.Concat(BattlefieldLayout.PlayerDeploymentCells)
+                .Where(cell => cell != BattlefieldLayout.Version2HeroCell).Distinct().ToArray();
+            Place(run, instance.InstanceId, starterCells[index]);
         }
         // Population is authored independently from the number of heroes granted
         // at run start; production keeps the legacy hero-plus-six deployment capacity.
         run.CurrentPopulation = _rules.InitialPopulation;
-        return _persistence.SaveActiveRun(run) ? run : null;
+        return _persistence.ValidateRun(run) && _persistence.SaveActiveRun(run) ? run : null;
     }
 
     public IReadOnlyList<CatalogEntry> PickEntries(
@@ -123,69 +125,46 @@ public sealed class RunRewardEconomyService
 
     public int ConvertRecruitToGold(ActiveRunDto? run)
     {
-        if (run is null || run.Roster.Count == 0 || !_content.TryGet(run.Roster[0].ContentId, out var heroEntry))
-            return 0;
-        var root = heroEntry.Scene.Instantiate<UnitContentRoot>();
-        int amount;
-        try { amount = root.HeroRule?.RecruitConversionGold ?? 0; }
-        finally { root.Free(); }
-        if (amount <= 0) return 0;
-        run.Gold += amount;
-        _persistence.SaveActiveRun(run);
-        return amount;
+        if (run?.PendingOffer is not { Kind: RunOfferKind.Recruitment } offer || run.Roster.Count == 0) return 0;
+        var before = run.Gold;
+        var result = new RunDecisionService(_content, _project, _persistence).Resolve(run, offer.OfferId, "conversion_" + run.Roster[0].ContentId);
+        return result.Succeeded ? run.Gold - before : 0;
     }
 
     public bool BuyItem(ActiveRunDto? run, string itemId)
     {
-        if (run is null || !_content.TryGet(itemId, out var entry) ||
-            entry.Definition is not ItemDefinition { ProductKind: ItemProductKind.Relic } definition ||
+        if (run is null || !_persistence.ValidateRun(run) || !_content.TryGet(itemId, out var entry) ||
+            entry.Definition is not ItemDefinition definition || definition.Price < 0 ||
             run.Gold < definition.Price)
             return false;
-        if (!TryNextInstanceSequence(run, out var sequence)) return false;
-        run.Gold -= definition.Price;
-        AddItem(run, itemId, sequence);
-        return _persistence.SaveActiveRun(run);
+        var working = _persistence.CloneRun(run);
+        if (!TryNextInstanceSequence(working, out var sequence)) return false;
+        working.Gold -= definition.Price;
+        if (!AddItem(working, itemId, definition.ProductKind, sequence)) return false;
+        return _persistence.ValidateRun(working) && _persistence.TryPublish(working, run);
     }
 
     public bool GrantItem(ActiveRunDto? run, string itemId)
     {
-        if (run is null || !_content.TryGet(itemId, out var entry) ||
-            entry.Definition is not ItemDefinition { ProductKind: ItemProductKind.Relic })
+        if (run is null || !_persistence.ValidateRun(run) || !_content.TryGet(itemId, out var entry) ||
+            entry.Definition is not ItemDefinition definition)
             return false;
-        if (!TryNextInstanceSequence(run, out var sequence)) return false;
-        AddItem(run, itemId, sequence);
-        return _persistence.SaveActiveRun(run);
+        var working = _persistence.CloneRun(run);
+        if (!TryNextInstanceSequence(working, out var sequence) ||
+            !AddItem(working, itemId, definition.ProductKind, sequence)) return false;
+        return _persistence.ValidateRun(working) && _persistence.TryPublish(working, run);
     }
 
     public void Rest(ActiveRunDto? run, bool takeGold)
     {
-        if (run is null) return;
-        if (takeGold) run.Gold += _rules.RestGold;
-        else
-        {
-            foreach (var unit in run.Roster)
-                unit.HealthRatio = Math.Min(1, unit.HealthRatio + LegacyRecovery(
-                    unit,
-                    _rules.RestHeroHealing,
-                    _rules.RestSoldierHealing));
-        }
-        _persistence.SaveActiveRun(run);
+        if (run?.PendingOffer is { Kind: RunOfferKind.Rest } offer)
+            new RunDecisionService(_content, _project, _persistence).Resolve(run, offer.OfferId, takeGold ? "gold" : "recover");
     }
 
     public void ResolveEvent(ActiveRunDto? run, bool risky)
     {
-        if (run is null) return;
-        var random = new DeterministicRandom(run.Seed ^ (ulong)(run.FloorIndex + 23));
-        if (risky && random.NextFloat() > 1f - _rules.RiskyEventSuccessChance)
-            run.Gold += _rules.RiskyEventSuccessGold;
-        else if (risky)
-            foreach (var unit in run.Roster)
-                unit.HealthRatio = Math.Max(
-                    _rules.RiskyEventMinimumHealth,
-                    unit.HealthRatio - _rules.RiskyEventHealthLoss);
-        else
-            run.Gold += _rules.SafeEventGold;
-        _persistence.SaveActiveRun(run);
+        if (run?.PendingOffer is { Kind: RunOfferKind.Event } offer)
+            new RunDecisionService(_content, _project, _persistence).Resolve(run, offer.OfferId, risky ? "risky" : "safe");
     }
 
     public void ApplyBattleVictory(
@@ -222,12 +201,8 @@ public sealed class RunRewardEconomyService
         run.Gold += encounter.IsBoss
             ? _rules.BossBattleGold
             : encounter.IsElite ? _rules.EliteBattleGold : _rules.NormalBattleGold;
-        if (run.Roster.Count > 0 && _content.TryGet(run.Roster[0].ContentId, out var heroEntry))
-        {
-            var hero = heroEntry.Scene.Instantiate<UnitContentRoot>();
-            try { run.Gold += hero.HeroRule?.BattleGoldBonus ?? 0; }
-            finally { hero.Free(); }
-        }
+        if (run.Roster.Count > 0 && _rules.StartingHeroEconomy.TryGetValue(run.Roster[0].ContentId, out var economy))
+            run.Gold = checked(run.Gold + economy.BattleGoldBonus);
         run.Gold += relicGoldDelta;
     }
 
@@ -247,8 +222,19 @@ public sealed class RunRewardEconomyService
         return instance;
     }
 
-    private void AddItem(ActiveRunDto run, string itemId, int sequence)
+    private bool AddItem(ActiveRunDto run, string itemId, ItemProductKind kind, int sequence)
     {
+        if (kind == ItemProductKind.Equipment)
+        {
+            if (!_content.Graph.TryGetEquipment(itemId, out _)) return false;
+            run.EquipmentInventory.Add(new EquipmentInstanceState
+            {
+                InstanceId = $"equipment-{sequence}", ContentId = itemId,
+                OwnerHeroInstanceId = string.Empty, SlotIndex = -1
+            });
+            return true;
+        }
+        if (kind != ItemProductKind.Relic || !_content.Graph.TryGetRelic(itemId, out _)) return false;
         var definition = _content.Graph.ResolveRelic(itemId);
         run.Items.Add(new ItemInstanceDto
         {
@@ -262,6 +248,7 @@ public sealed class RunRewardEconomyService
                     Value = counter.Value
                 }).ToList()
         });
+        return true;
     }
 
     private CatalogEntry Required(string id) => _content.TryGet(id, out var entry)
@@ -271,11 +258,13 @@ public sealed class RunRewardEconomyService
     private static bool TryNextInstanceSequence(ActiveRunDto run, out int sequence)
     {
         sequence = 0;
-        if (run.Roster is null || run.Items is null || run.Roster.Any(hero => hero?.Equipment is null) ||
+        if (run.Roster is null || run.Items is null || run.EquipmentInventory is null ||
+            run.EquipmentInventory.Any(item => item is null) || run.Roster.Any(hero => hero?.Equipment is null) ||
             run.Items.Any(item => item is null) || run.Roster.SelectMany(hero => hero.Equipment).Any(item => item is null))
             return false;
         var maximum = run.Roster.Select(hero => hero.InstanceId)
             .Concat(run.Items.Select(item => item.InstanceId))
+            .Concat(run.EquipmentInventory.Select(item => item.InstanceId))
             .Concat(run.Roster.SelectMany(hero => hero.Equipment).Select(item => item.InstanceId))
             .Select(ParseInstanceSuffix)
             .DefaultIfEmpty(0)

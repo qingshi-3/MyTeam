@@ -1,5 +1,7 @@
 using Godot;
 using TowerAutobattler.Components;
+using System.Collections.Immutable;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.Content;
 
@@ -34,7 +36,7 @@ public partial class UnitContentRoot : Node2D
         {
             _motion.MotionStateChanged += OnMotionStateChanged;
             _motion.HorizontalSegmentStarted += OnHorizontalSegmentStarted;
-            _motion.SegmentProgressChanged += OnSegmentProgressChanged;
+            _motion.TravelWeightChanged += OnTravelWeightChanged;
             _motion.BindTarget(this);
         }
         _animation?.PlayCue("idle");
@@ -127,6 +129,8 @@ public partial class UnitContentRoot : Node2D
 
     public void QueueMovement(Vector2 worldPosition) => _motion?.QueueWaypoint(worldPosition);
 
+    public void SnapSpatialPresentation(Vector2 worldPosition) => _motion?.SnapTo(worldPosition);
+
     public void RemapPresentationCoordinates(Vector2 oldOrigin, Vector2 oldPitch, Vector2 newOrigin, Vector2 newPitch) =>
         _motion?.RemapCoordinates(oldOrigin, oldPitch, newOrigin, newPitch);
 
@@ -144,10 +148,17 @@ public partial class UnitContentRoot : Node2D
     {
         _motion?.SetPaused(paused);
         _animation?.SetPaused(paused);
+        _healthView?.SetPaused(paused);
         if (_defeatTween is null) return;
         if (paused) _defeatTween.Pause();
         else _defeatTween.Play();
     }
+
+    public void RefreshCombatResources(float mana, float maximumMana, float shield,
+        ImmutableArray<StatusRuntimeSnapshot> statuses, bool alive) =>
+        _healthView?.SetCombatResources(mana, maximumMana, shield, statuses, alive);
+
+    public void PresentAbility(string name) => _healthView?.PresentAbility(name);
 
     public void SetPresentationSpeed(float speedScale) => _motion?.SetSpeedScale(speedScale);
 
@@ -164,8 +175,8 @@ public partial class UnitContentRoot : Node2D
 
     private void OnHorizontalSegmentStarted(float horizontalDelta) => _animation?.FaceHorizontal(horizontalDelta);
 
-    private void OnSegmentProgressChanged(float normalizedProgress) =>
-        _animation?.SetMovementProgress(normalizedProgress);
+    private void OnTravelWeightChanged(float normalizedWeight) =>
+        _animation?.SetMovementWeight(normalizedWeight);
 
     private void OnDefeatFadeRequested(float duration)
     {
@@ -185,7 +196,7 @@ public partial class UnitContentRoot : Node2D
             {
                 _motion.MotionStateChanged -= OnMotionStateChanged;
                 _motion.HorizontalSegmentStarted -= OnHorizontalSegmentStarted;
-                _motion.SegmentProgressChanged -= OnSegmentProgressChanged;
+                _motion.TravelWeightChanged -= OnTravelWeightChanged;
                 _motion.ResetMotion();
             }
             _animation?.ResetMovementPresentation();

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ExperienceSliceDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Experience/ExperienceSliceDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "reward_loop"
+Revision = 1
+Seed = 9052026
+StartingHeroId = "hero_banner_marshal"
+StartingCompanions = PackedStringArray("soldier_aegis_guard", "soldier_longbow", "soldier_sun_sister")
+RecruitIds = PackedStringArray("soldier_fire_slinger", "soldier_fire_breather", "soldier_aymara_mender")
+RelicIds = PackedStringArray("item_war_drum", "item_field_rations", "item_blood_chalice")
+EquipmentIds = PackedStringArray("equipment_vanguard_insignia", "equipment_rimebrand", "equipment_field_focus")
+StartingEquipmentId = "equipment_vanguard_insignia"
+EnemyFrontId = "enemy_rust_guard"
+EnemySupportId = "enemy_crossbow"
+FloorRuleId = "rule_clear"
+FirstEnemyCount = 4
+SecondEnemyCount = 6

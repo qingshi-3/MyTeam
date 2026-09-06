@@ -16,7 +16,7 @@ namespace TowerAutobattler.Battle;
 
 public enum BattleOutcome { Running, PlayerVictory, PlayerDefeat, Timeout }
 public enum BattleUnitMode { Seeking, Moving, Waiting, Attacking, Casting, Recovering, Disabled, Defeated }
-public enum BattleActionKind { None, Attack, Heal }
+public enum BattleActionKind { None, Attack, Heal, Ability }
 
 public sealed record UnitSnapshot(
     string ContentId, string DisplayName, UnitRole Role, bool IsHero, bool IsBoss,
@@ -25,7 +25,10 @@ public sealed record UnitSnapshot(
     IReadOnlyList<string> Tags, UnitBehaviorSnapshot Behavior,
     CompiledAbilityLoadout? AbilityLoadout = null,
     CompiledAttributeSetDefinition? AttributeDefinition = null,
-    ImmutableArray<CompiledTraitContribution> TraitContributions = default);
+    ImmutableArray<CompiledTraitContribution> TraitContributions = default,
+    float BodyRadius = BattlefieldSpace.DefaultBodyRadius,
+    AttackDelivery AttackDelivery = AttackDelivery.Melee,
+    float ProjectileSpeed = 8f, float ProjectileRadius = .07f, float ProjectileLifetime = 3f);
 
 public sealed record UnitBehaviorSnapshot(
     int SlowOnHitTicks = 0, float AdjacentArmorAura = 0, float AdjacentDamageAura = 0,
@@ -102,17 +105,37 @@ public sealed class BattleConfig
 
 public sealed record BattleEvent(
     int Tick, string Type, string SourceRuntimeId, string TargetRuntimeId,
-    float Value, Vector2I Cell, string Cue);
+    float Value, Vector2I Cell, string Cue, Vector2 Position = default,
+    int EntityId = 0, Vector2 Origin = default);
 
 public sealed class BattleUnitState
 {
+    private Vector2 _position;
+
     public required string RuntimeId { get; init; }
     public required string SourceInstanceId { get; init; }
     public required UnitSnapshot Definition { get; init; }
     public required BattleAttributeSet Attributes { get; init; }
     public required int Team { get; init; }
-    public required Vector2I Cell { get; set; }
+    public required Vector2I Cell
+    {
+        get => BattlefieldSpace.PositionToCell(_position);
+        set => _position = BattlefieldSpace.CellCenter(value);
+    }
+    public Vector2 Position
+    {
+        get => _position;
+        set => _position = value;
+    }
+    public float BodyRadius => Mathf.Clamp(Definition.BodyRadius, BattlefieldSpace.MinimumBodyRadius,
+        BattlefieldSpace.MaximumBodyRadius);
     public float Health { get; set; }
+    public float CurrentMana { get; set; }
+    public float MaxMana => HasManaSkill ? Attributes.GetValue(CombatAttribute.MaxMana) : 0;
+    public bool HasManaSkill => !IsTemporary && Definition.AbilityLoadout is { } loadout &&
+        System.Linq.Enumerable.Any(loadout.Abilities, ability => ability.Trigger == AbilityTriggerKind.ManaFull);
+    public int ManaLockedUntilTick { get; set; }
+    public string LastAbilityName { get; set; } = string.Empty;
     public float MaxHealth
     {
         get => Attributes.GetValue(CombatAttribute.MaxHealth);
@@ -175,7 +198,8 @@ public sealed record BattleUnitReportSnapshot(
     int JoinTick = 0,
     int? DefeatTick = null,
     int AttackActions = 0,
-    int EffectiveHealingEvents = 0);
+    int EffectiveHealingEvents = 0,
+    Vector2 FinalPosition = default);
 
 public sealed record BattleResult(
     BattleOutcome Outcome,

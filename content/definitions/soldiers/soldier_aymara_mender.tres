@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_aymara_mender"
+MaxMana = 80.0
+StartingMana = 25.0
 DisplayName = "艾玛拉医师"
 Description = "高效治疗但自身脆弱。"
 Role = 3
@@ -17,6 +19,7 @@ RecruitCost = 8
 MaxHealth = 84
 AttackDamage = 8
 AttackRange = 4.8
+AttackDelivery = 2
 AttackCooldown = 1.5
 MoveInterval = 0.52
 Armor = 0

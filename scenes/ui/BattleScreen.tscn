@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://src/Presentation/BattleScreenController.cs" id="1"]
 [ext_resource type="Script" path="res://src/Presentation/BattleBoard.cs" id="2"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/SelectedUnitPanel.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/BattleStatusStrip.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/BattleFloatingCue.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/effects/RangedAttackLayer.tscn" id="7"]
 
 [node name="BattleScreen" type="Control"]
 layout_mode = 3
@@ -60,6 +61,10 @@ script = ExtResource("2")
 
 [node name="UnitsRoot" type="Node2D" parent="Margin/Layout/BattleArea/BattleBoard"]
 unique_name_in_owner = true
+
+[node name="RangedAttackLayer" parent="Margin/Layout/BattleArea/BattleBoard" instance=ExtResource("7")]
+unique_name_in_owner = true
+z_index = 20
 
 [node name="FloatingCueOverlay" type="Control" parent="Margin/Layout/BattleArea/BattleBoard"]
 unique_name_in_owner = true

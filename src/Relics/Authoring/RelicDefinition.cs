@@ -31,4 +31,5 @@ public partial class RelicDefinition : Resource
     [Export] public RelicBattleModifierSpec[] BattleModifiers { get; set; } = [];
     [Export] public RelicReactiveCounterSpec[] ReactiveCounters { get; set; } = [];
     [Export] public RelicRunOutcomeSpec[] VictoryOutcomes { get; set; } = [];
+    [Export] public RelicStatusGrantSpec[] StatusGrants { get; set; } = [];
 }

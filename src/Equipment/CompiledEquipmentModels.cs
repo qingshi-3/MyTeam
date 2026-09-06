@@ -12,14 +12,16 @@ public sealed record CompiledEquipmentDefinition(
     ImmutableArray<CompiledAttributeModifier> AttributeModifiers,
     ImmutableArray<CompiledEquipmentReactiveStatusBinding> ReactiveStatusBindings,
     ImmutableArray<CompiledTraitContribution> TraitContributions,
-    string Fingerprint);
+    string Fingerprint,
+    ImmutableArray<CompiledStatusDefinition> GrantedStatuses = default);
 
 public sealed record CompiledEquipmentReactiveStatusBinding(
     BattleCombatEventKind EventKind,
     EquipmentReactiveStatusTarget Target,
     EquipmentReactiveStatusSource Source,
     int Priority,
-    CompiledStatusDefinition Status);
+    CompiledStatusDefinition Status,
+    StatusReactiveOwnerRole OwnerRole = StatusReactiveOwnerRole.OwnerIsSource);
 
 public sealed class EquipmentInstanceState
 {

@@ -45,12 +45,13 @@ public partial class VisualCapture : Node
             await CaptureRecruitment();
             await CaptureSettings();
             await CaptureHazardBattle();
+            await CaptureContinuousSpaceBattle();
             await CaptureAnimationStates();
             await CaptureMovementSequences();
             await CaptureRealProductionHitch();
             await CaptureVictory();
             await CaptureDefeat();
-            GD.Print("VISUAL_CAPTURE_OK screens=12 extras=19 movement_frames=29 flows=report,reward,recruitment,shop,victory,defeat states=attack,defeated,hitch,grid-march information=selected-unit,zero-tactical-points,semantic-icons,statistical-report path=res://.godot/qa");
+            GD.Print("VISUAL_CAPTURE_OK screens=12 extras=20 movement_frames=29 flows=report,reward,recruitment,shop,victory,defeat states=attack,defeated,hitch,continuous-travel,surround information=selected-unit,zero-tactical-points,semantic-icons,statistical-report path=res://.godot/qa");
             return 0;
         }
         catch (Exception exception)
@@ -273,12 +274,12 @@ public partial class VisualCapture : Node
         {
             StartNewRunFromMenu(root);
             var app = StartCommanderRun(root, 4400, floor: 5, strong: true);
-            var encounter = new EncounterPlan(
-                "熔炉脉冲实战",
-                "rule_hazard_pulse",
-                ["enemy_rust_guard", "enemy_crossbow", "enemy_cutpurse", "enemy_rust_guard"],
-                false,
-                false);
+            var encounter = app.Tower.Encounter(app.ActiveRun!, TowerNodeType.Combat) with
+            {
+                Title = "熔炉脉冲实战",
+                FloorRuleId = "rule_hazard_pulse",
+                EnemyIds = ["enemy_rust_guard", "enemy_crossbow", "enemy_cutpurse", "enemy_rust_guard"]
+            };
             var battle = root.GetNode<BattleScreenController>("Screens/BattleScreen");
             root.Flow.Show(AppScreenId.Battle);
             battle.StartBattle(app.Content, app.BuildBattleConfig(encounter), encounter.Title);
@@ -318,6 +319,92 @@ public partial class VisualCapture : Node
         finally { await DisposeRoot(root); }
     }
 
+    private async Task CaptureContinuousSpaceBattle()
+    {
+        var root = await CreateRoot("continuous-space");
+        try
+        {
+            StartNewRunFromMenu(root);
+            var app = StartCommanderRun(root, 7721, floor: 0, strong: false);
+            var heroEntry = app.Content.Catalog.Heroes.Single(entry => entry.StableId == CommanderId);
+            var enemyEntry = app.Content.Catalog.Enemies.First();
+            var heroAuthoring = heroEntry.Scene.Instantiate<UnitContentRoot>();
+            var enemyAuthoring = enemyEntry.Scene.Instantiate<UnitContentRoot>();
+            UnitSnapshot attacker;
+            UnitSnapshot target;
+            HeroRuleSnapshot heroRule;
+            try
+            {
+                attacker = BattleSetupFactory.Snapshot((UnitDefinition)heroEntry.Definition, heroAuthoring.Behavior) with
+                {
+                    MaxHealth = 1_000,
+                    Damage = 0,
+                    Range = .5f,
+                    AttackTicks = 1000,
+                    MoveTicks = 1
+                };
+                target = BattleSetupFactory.Snapshot((UnitDefinition)enemyEntry.Definition, enemyAuthoring.Behavior) with
+                {
+                    MaxHealth = 10_000,
+                    Damage = 0,
+                    Range = 20,
+                    AttackTicks = 1000,
+                    MoveTicks = 1000
+                };
+                heroRule = BattleSetupFactory.Snapshot(heroAuthoring.HeroRule!);
+            }
+            finally
+            {
+                heroAuthoring.Free();
+                enemyAuthoring.Free();
+            }
+
+            var battle = root.GetNode<BattleScreenController>("Screens/BattleScreen");
+            root.Flow.Show(AppScreenId.Battle);
+            battle.StartBattle(app.Content, new BattleConfig
+            {
+                Seed = 7721,
+                FloorRule = new ClearFloorRuleRuntime("visual-continuous-space", "常规", "连续站位与多人围攻"),
+                HeroRule = heroRule,
+                Spawns =
+                [
+                    new BattleSpawn(attacker, 0, new Vector2I(0, 1), "visual-surround-a", IsPersistentRosterHero: true),
+                    new BattleSpawn(attacker, 0, new Vector2I(0, 3), "visual-surround-b", IsPersistentRosterHero: true),
+                    new BattleSpawn(attacker, 0, new Vector2I(0, 5), "visual-surround-c", IsPersistentRosterHero: true),
+                    new BattleSpawn(target, 1, new Vector2I(6, 3), "visual-surround-target")
+                ]
+            }, "连续站位与多人围攻");
+            battle.SetPaused(true);
+
+            BattleScreenRuntimeUnitSnapshot[] attackers = [];
+            BattleScreenRuntimeUnitSnapshot? targetState = null;
+            for (var tick = 0; tick < 120; tick++)
+            {
+                if (!battle.StepOneTick())
+                    throw new InvalidOperationException("continuous-space visual battle stopped before surround formed");
+                var states = battle.ReadRuntimeUnits();
+                attackers = states.Where(unit => unit.Team == 0).ToArray();
+                targetState = states.Single(unit => unit.RuntimeId == "visual-surround-target");
+                if (attackers.Length == 3 && attackers.All(unit =>
+                        unit.Mode is BattleUnitMode.Attacking or BattleUnitMode.Recovering))
+                    break;
+            }
+
+            if (targetState is null || attackers.Length != 3 || attackers.Any(unit =>
+                    unit.Mode is not (BattleUnitMode.Attacking or BattleUnitMode.Recovering)))
+                throw new InvalidOperationException("continuous-space visual battle did not form a three-attacker surround");
+            if (attackers.Select(unit => unit.Position).Distinct().Count() != attackers.Length)
+                throw new InvalidOperationException("continuous-space surround reused an attacker position");
+            if (attackers.All(unit => unit.Position.IsEqualApprox(BattlefieldSpace.CellCenter(unit.Cell))))
+                throw new InvalidOperationException("continuous-space surround remained entirely on cell centers");
+
+            InvokePrivate(battle, "ClearFloatingCues");
+            battle.GetNode<Control>("%FloatingCueOverlay").Visible = false;
+            await CaptureCurrent("BattleContinuousSpaceSurround.png");
+        }
+        finally { await DisposeRoot(root); }
+    }
+
     private async Task CaptureMovementSequences()
     {
         var root = await CreateRoot("movement-sequences");
@@ -332,33 +419,33 @@ public partial class VisualCapture : Node
 
             foreach (var speed in new[] { 1f, 2f, 4f })
             {
-                var probe = PrepareMovementProbe(app, encounter, battle, speed, $"{speed:0}x 单格移动");
-                await CaptureMovementFrame($"{speed:0}x_OneCell", 0);
+                var probe = PrepareMovementProbe(app, encounter, battle, speed, $"{speed:0}x 连续移动采样");
+                await CaptureMovementFrame($"{speed:0}x_ContinuousSample", 0);
                 probe.Unit.QueueMovement(probe.Right);
                 probe.Motion._Process(.30);
                 probe.Motion._Process(speed switch { 1f => .05, 2f => .045, _ => .03 });
-                await CaptureMovementFrame($"{speed:0}x_OneCell", 1);
+                await CaptureMovementFrame($"{speed:0}x_ContinuousSample", 1);
                 AdvanceMotionFrames(probe.Motion, 4, .05);
-                await CaptureMovementFrame($"{speed:0}x_OneCell", 2);
+                await CaptureMovementFrame($"{speed:0}x_ContinuousSample", 2);
             }
 
             {
-                var probe = PrepareMovementProbe(app, encounter, battle, 1f, "格点行军转向");
-                await CaptureMovementFrame("1x_GridMarchTurns", 0);
+                var probe = PrepareMovementProbe(app, encounter, battle, 1f, "连续路径转向");
+                await CaptureMovementFrame("1x_ContinuousTurns", 0);
                 probe.Unit.QueueMovement(probe.Right);
                 probe.Unit.QueueMovement(probe.Corner);
                 probe.Unit.QueueMovement(probe.LeftCorner);
                 probe.Motion._Process(.30);
                 probe.Motion._Process(.05);
-                await CaptureMovementFrame("1x_GridMarchTurns", 1);
+                await CaptureMovementFrame("1x_ContinuousTurns", 1);
                 probe.Motion._Process(.05);
-                await CaptureMovementFrame("1x_GridMarchTurns", 2);
+                await CaptureMovementFrame("1x_ContinuousTurns", 2);
                 probe.Motion._Process(.05);
-                await CaptureMovementFrame("1x_GridMarchTurns", 3);
+                await CaptureMovementFrame("1x_ContinuousTurns", 3);
                 probe.Motion._Process(.05);
-                await CaptureMovementFrame("1x_GridMarchTurns", 4);
+                await CaptureMovementFrame("1x_ContinuousTurns", 4);
                 probe.Motion._Process(.05);
-                await CaptureMovementFrame("1x_GridMarchTurns", 5);
+                await CaptureMovementFrame("1x_ContinuousTurns", 5);
             }
 
             {

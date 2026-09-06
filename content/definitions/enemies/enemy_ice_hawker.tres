@@ -17,6 +17,7 @@ RecruitCost = 0
 MaxHealth = 82
 AttackDamage = 20
 AttackRange = 4.8
+AttackDelivery = 1
 AttackCooldown = 1.05
 MoveInterval = 0.44
 Armor = 1

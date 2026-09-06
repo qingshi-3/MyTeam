@@ -15,7 +15,8 @@ public interface IEffectProcessor
         float requestedAmount,
         EffectOrderingKey ordering,
         EffectWorldSnapshot snapshot,
-        IEffectRuntimeWorld world);
+        IEffectRuntimeWorld world,
+        EffectDamageType damageType = EffectDamageType.Physical);
 }
 
 public sealed class EffectProcessorRegistry
@@ -55,7 +56,8 @@ public abstract class EffectProcessorBase(EffectKind kind) : IEffectProcessor
         float requestedAmount,
         EffectOrderingKey ordering,
         EffectWorldSnapshot snapshot,
-        IEffectRuntimeWorld world)
+        IEffectRuntimeWorld world,
+        EffectDamageType damageType = EffectDamageType.Physical)
     {
         if (!float.IsFinite(requestedAmount) || requestedAmount < 0)
             throw new InvalidOperationException($"Effect amount for {bindingId}[{stepIndex}] is invalid.");
@@ -65,7 +67,8 @@ public abstract class EffectProcessorBase(EffectKind kind) : IEffectProcessor
             stepIndex,
             Kind,
             targetId,
-            requestedAmount);
+            requestedAmount,
+            damageType);
         var resolved = world.ResolveModifiers(request, snapshot);
         if (!float.IsFinite(resolved.ResolvedAmount) || resolved.ResolvedAmount < 0)
             throw new InvalidOperationException($"Resolved effect amount for {bindingId}[{stepIndex}] is invalid.");
@@ -76,4 +79,3 @@ public abstract class EffectProcessorBase(EffectKind kind) : IEffectProcessor
 public sealed class DamageEffectProcessor() : EffectProcessorBase(EffectKind.Damage);
 public sealed class HealEffectProcessor() : EffectProcessorBase(EffectKind.Heal);
 public sealed class ShieldEffectProcessor() : EffectProcessorBase(EffectKind.Shield);
-

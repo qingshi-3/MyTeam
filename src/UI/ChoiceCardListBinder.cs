@@ -18,7 +18,8 @@ public sealed record ChoiceCardViewModel(
     StringName? FooterSemanticKey = null,
     PackedScene? Template = null,
     ItemRarity? ItemRarity = null,
-    bool ShopItem = false);
+    bool ShopItem = false,
+    ItemProductKind? ProductKind = null);
 
 public sealed record UnitChoiceCardViewModel(
     string Id,
@@ -32,6 +33,25 @@ public sealed record UnitChoiceCardViewModel(
 
 public static class ChoiceCardListBinder
 {
+    public static void SyncMixed(
+        Container parent,
+        IReadOnlyList<ChoiceCardViewModel> choices,
+        IReadOnlyList<UnitChoiceCardViewModel> units,
+        IReadOnlyList<string> order,
+        PackedScene choiceTemplate,
+        PackedScene unitTemplate,
+        SemanticIconCatalog icons,
+        Action<string> chosen)
+    {
+        SyncChoices(parent, choices, choiceTemplate, chosen);
+        SyncUnits(parent, units, unitTemplate, icons, chosen);
+        var cards = parent.GetChildren().Where(node => !node.IsQueuedForDeletion())
+            .Where(node => node is ChoiceCard or UnitChoiceCard)
+            .ToDictionary(node => node is ChoiceCard choice ? choice.StableId : ((UnitChoiceCard)node).StableId,
+                StringComparer.Ordinal);
+        for (var index = 0; index < order.Count; index++) parent.MoveChild(cards[order[index]], index);
+    }
+
     public static void SyncChoices(
         Container parent,
         IReadOnlyList<ChoiceCardViewModel> models,
@@ -53,7 +73,7 @@ public static class ChoiceCardListBinder
             card.Bind(model.Id, model.Title, model.Description, model.Footer, model.Icon,
                 model.TitleVariation, model.FooterVariation, model.FooterSemanticKey);
             if (card is ItemChoiceCard itemCard && model.ItemRarity is { } rarity)
-                itemCard.BindItem(rarity, model.ShopItem);
+                itemCard.BindItem(rarity, model.ShopItem, model.ProductKind);
             card.Disabled = model.Disabled;
             card.Visible = true;
             card.FocusMode = Control.FocusModeEnum.All;

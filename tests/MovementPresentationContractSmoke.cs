@@ -34,12 +34,13 @@ public partial class MovementPresentationContractSmoke : Node
             await ProductionActionFacingRouteAsync(registry);
             await SharedProductionFrameHitchContractAsync(registry);
             await TemporalMotionContractAsync();
+            await SustainedSampleCadenceContractAsync();
             await LifecycleContractAsync();
             await ProductionMoveRouteAsync(registry);
             await SummonSnapAsync(registry);
             PresenterFreeDeterminism(registry);
 
-            GD.Print("MOVEMENT_PRESENTATION_CONTRACT_OK timing=grid-march-0.24-0.14-0.09,eased-first-mid-final,ordered-centers,lag,hitch-0.125-0.25-0.375,one-segment-per-frame pause=speed-lift-continuity,no-wall-debt actions=move-base,phase-continuity facing=team-defaults,authored-left,segment-timing,vertical-retention,production-attack-heal,mutual-attack,defeat-lock,sprite-only lifecycle=snap,defeat,rebind,deactivate,exit,replacement-planning route=production-move,selection,summon simulation=unchanged");
+            GD.Print("MOVEMENT_PRESENTATION_CONTRACT_OK timing=sample-cadence-linear,ordered-polyline,lag,hitch-0.125-0.25-0.375,multi-segment-frame,x1-x2-x4-30fps-throughput pause=speed-lift-continuity,single-step-authority-snap actions=move-base,phase-continuity facing=team-defaults,authored-left,segment-timing,vertical-retention,production-attack-heal,mutual-attack,defeat-lock,sprite-only lifecycle=snap,defeat,rebind,deactivate,exit,replacement-planning route=continuous-production-move,real-pointer-selection,summon-position simulation=unchanged");
             return 0;
         }
         catch (Exception exception)
@@ -82,10 +83,9 @@ public partial class MovementPresentationContractSmoke : Node
             var source = Vector2.Zero;
             var destination = new Vector2(88, 0);
 
-            Near(motion.OneTimesCellSeconds, .24f, .0001f, "reusable scene did not author the 1x grid-march duration");
-            Near(motion.TwoTimesCellSeconds, .14f, .0001f, "reusable scene did not author the 2x grid-march duration");
-            Near(motion.FourTimesCellSeconds, .09f, .0001f, "reusable scene did not author the 4x grid-march duration");
-            Near(animation.StepLiftPixels, 3f, .0001f, "reusable animation scene did not author restrained step lift");
+            Near(motion.AuthoritySampleSecondsAtOneTimes, .125f, .0001f,
+                "reusable scene did not match the 10 Hz simulation sample cadence at the authored x1 rate");
+            Near(animation.StepLiftPixels, 3f, .0001f, "reusable animation scene did not author restrained travel lift");
 
             var spriteRest = sprite.Position;
             var readabilityRest = readability.Position;
@@ -95,27 +95,31 @@ public partial class MovementPresentationContractSmoke : Node
             unit.SnapPresentation(source, 100, 100);
             unit.QueueMovement(new Vector2(100, 0));
             motion._Process(.30);
-            motion._Process(.06);
-            Near(unit.Position.X, 15.625f, .02f, "quarter-step did not apply bounded smooth ease-in progress");
+            motion._Process(.03125);
+            Near(unit.Position.X, 25f, .02f, "quarter sample did not advance linearly");
             var quarterPosition = unit.Position;
             var quarterLift = spriteRest.Y - sprite.Position.Y;
             if (sprite.Position.Y >= spriteRest.Y || sprite.Position.Y < spriteRest.Y - animation.StepLiftPixels - .01f)
-                throw new InvalidOperationException("character-only lift was absent or exceeded its authored bound");
-            Equal(readability.Position, readabilityRest, "step lift moved readability markers");
-            Equal(health.Position, healthRest, "step lift moved the health bar");
-            motion._Process(.06);
-            Near(unit.Position.X, 50f, .02f, "mid-step eased progress did not remain centered");
-            Near(sprite.Position.Y, spriteRest.Y - animation.StepLiftPixels, .02f, "character-only lift did not peak near mid-step");
+                throw new InvalidOperationException("character-only travel lift was absent or exceeded its authored bound");
+            Equal(readability.Position, readabilityRest, "travel lift moved readability markers");
+            Equal(health.Position, healthRest, "travel lift moved the health bar");
+            motion._Process(.03125);
+            Near(unit.Position.X, 50f, .02f, "half sample did not remain on the linear timeline");
+            Near(sprite.Position.Y, spriteRest.Y - animation.StepLiftPixels, .02f, "character-only travel lift did not reach its sustained weight");
             var midpointPosition = unit.Position;
             var midpointLift = spriteRest.Y - sprite.Position.Y;
-            motion._Process(.06);
-            Near(unit.Position.X, 84.375f, .02f, "three-quarter step did not apply bounded smooth ease-out progress");
-            motion._Process(.06);
-            Near(unit.Position, new Vector2(100, 0), .01f, "eased step missed its exact destination center");
-            Equal(sprite.Position, spriteRest, "completed step retained decorative lift");
-            Equal(readability.Position, readabilityRest, "completed step displaced readability markers");
-            Equal(health.Position, healthRest, "completed step displaced the health bar");
-            GD.Print($"GRID_MARCH_TEMPORAL_EVIDENCE one-cell=0,{quarterPosition.X:0.###},{midpointPosition.X:0.###},84.375,100 lift=0,{quarterLift:0.###},{midpointLift:0.###},{quarterLift:0.###},0 duration=0.24 easing=smoothstep markers=stable");
+            motion._Process(.03125);
+            Near(unit.Position.X, 75f, .02f, "three-quarter sample did not advance linearly");
+            motion._Process(.03125);
+            Near(unit.Position, new Vector2(100, 0), .01f, "linear sample missed its exact continuous destination");
+            Near(sprite.Position.Y, spriteRest.Y - animation.StepLiftPixels, .02f,
+                "reaching one sample endpoint restarted or dropped the sustained travel lift");
+            motion._Process(.0625);
+            motion._Process(.0625);
+            Equal(sprite.Position, spriteRest, "settled travel retained decorative lift");
+            Equal(readability.Position, readabilityRest, "completed travel displaced readability markers");
+            Equal(health.Position, healthRest, "completed travel displaced the health bar");
+            GD.Print($"CONTINUOUS_SEGMENT_TEMPORAL_EVIDENCE segment=0,{quarterPosition.X:0.###},{midpointPosition.X:0.###},75,100 lift={quarterLift:0.###},{midpointLift:0.###},3,3,0 sample_seconds=0.125 interpolation=linear markers=stable");
             motion.MaximumFrameDeltaSeconds = .05f;
             motion.MaximumVisualLagSeconds = .25f;
 
@@ -146,15 +150,19 @@ public partial class MovementPresentationContractSmoke : Node
             unit.QueueMovement(returnLeft);
             motion._Process(.30);
             Equal(unit.Position, source, "ordered path consumed its enqueue-frame hitch delta");
-            AdvanceFrames(motion, 2, .05);
-            Near(unit.Position, destination, .02f, "ordered path did not visit the first adjacent waypoint");
+            motion._Process(.05);
+            Near(unit.Position.Y, destination.Y, .02f, "ordered path left its first horizontal segment early");
+            StrictlyBetween(unit.Position.X, source.X, destination.X, "ordered path did not interpolate its first segment");
             motion._Process(.05);
             Near(unit.Position.X, destination.X, .02f, "ordered path drew a diagonal shortcut after its first waypoint");
             StrictlyBetween(unit.Position.Y, destination.Y, corner.Y, "ordered path did not interpolate its second segment");
             motion._Process(.05);
-            Near(unit.Position, corner, .02f, "ordered path did not visit the second cell center");
+            Near(unit.Position.X, corner.X, .02f, "ordered path left its vertical segment early");
+            StrictlyBetween(unit.Position.Y, destination.Y, corner.Y, "ordered path stopped advancing its second segment");
             motion._Process(.05);
             Near(unit.Position.Y, corner.Y, .02f, "ordered path rounded the down-to-left corner");
+            StrictlyBetween(unit.Position.X, returnLeft.X, corner.X, "ordered path did not continue along its final segment");
+            motion._Process(.05);
             Near(unit.Position, returnLeft, .02f, "ordered path did not finish at its left destination center");
 
             Rebind(unit, "motion-burst");
@@ -163,13 +171,11 @@ public partial class MovementPresentationContractSmoke : Node
             var previous = unit.Position;
             motion._Process(.30);
             Equal(unit.Position, source, "catch-up burst consumed its enqueue-frame hitch delta");
-            for (var sample = 0; sample < 15; sample++)
+            for (var sample = 0; sample < 16; sample++)
             {
                 motion._Process(1.0 / 60.0);
                 if (unit.Position.X + .001f < previous.X)
                     throw new InvalidOperationException("catch-up burst moved backward");
-                if (unit.Position.DistanceTo(previous) > 10.01f)
-                    throw new InvalidOperationException("catch-up burst teleported across an accepted waypoint");
                 previous = unit.Position;
             }
             Near(unit.Position, new Vector2(120, 0), .02f, "catch-up burst exceeded the configured visual-lag budget");
@@ -178,7 +184,7 @@ public partial class MovementPresentationContractSmoke : Node
             unit.SnapPresentation(source, 100, 100);
             for (var index = 1; index <= 15; index++) unit.QueueMovement(new Vector2(index * 10, 0));
             if (motion.PendingWaypointCount > motion.MaximumQueuedWaypoints)
-                throw new InvalidOperationException("overflow exceeded the authored waypoint bound");
+                throw new InvalidOperationException("straight overflow failed to coalesce redundant continuous samples");
             motion._Process(.26);
             Equal(unit.Position, source, "bounded overflow consumed its enqueue-frame hitch delta");
             AdvanceFrames(motion, 16, 1.0 / 60.0);
@@ -207,23 +213,17 @@ public partial class MovementPresentationContractSmoke : Node
             var beforeSpeedChange = unit.Position;
             unit.SetPresentationSpeed(2f);
             Equal(unit.Position, beforeSpeedChange, "1x to 2x speed change snapped the active segment");
-            motion._Process(.30);
-            Equal(unit.Position, beforeSpeedChange, "2x switch frame consumed pre-switch hitch credit");
             motion._Process(.02);
             var afterTwoTimes = unit.Position;
             if (afterTwoTimes.X <= beforeSpeedChange.X) throw new InvalidOperationException("2x speed change did not continue forward");
             unit.SetPresentationSpeed(4f);
             Equal(unit.Position, afterTwoTimes, "2x to 4x speed change restarted or snapped the active segment");
-            motion._Process(.30);
-            Equal(unit.Position, afterTwoTimes, "4x switch frame consumed pre-switch hitch credit");
-            motion._Process(.015);
+            motion._Process(.01);
             var afterFourTimes = unit.Position;
             if (afterFourTimes.X <= afterTwoTimes.X || unit.Position == destination)
                 throw new InvalidOperationException("speed change reversed or prematurely completed movement");
             unit.SetPresentationSpeed(1f);
             Equal(unit.Position, afterFourTimes, "4x to 1x speed change restarted or snapped the active segment");
-            motion._Process(.30);
-            Equal(unit.Position, afterFourTimes, "1x switch frame consumed pre-switch hitch credit");
             AdvanceFrames(motion, 4, .05);
             Near(unit.Position, destination, .02f, "1x to 2x to 4x to 1x retiming did not complete continuously");
 
@@ -282,9 +282,89 @@ public partial class MovementPresentationContractSmoke : Node
                 AdvanceFrames(motion, 5, .05);
                 unit.QueueMovement(new Vector2(176, 0));
                 if (sprite.Frame == 0 && sprite.FrameProgress <= .001f)
-                    throw new InvalidOperationException("repeated grid step flashed the move clip opening pose");
+                    throw new InvalidOperationException("continued travel flashed the move clip opening pose");
                 if (animation.RetainedMovePhase <= .001f)
-                    throw new InvalidOperationException("repeated grid step did not retain bounded presentation-only move phase");
+                    throw new InvalidOperationException("continued travel did not retain bounded presentation-only move phase");
+            }
+        }
+        finally { DetachAndFree(unit); }
+    }
+
+    private async Task SustainedSampleCadenceContractAsync()
+    {
+        var unit = await AttachCommanderAsync();
+        try
+        {
+            var motion = Motion(unit);
+            var sprite = unit.GetNode<AnimatedSprite2D>("VisualRoot/UnitAnimationComponent/AnimatedSprite2D");
+            const double frameSeconds = 1.0 / 30.0;
+            const int sampleCount = 96;
+            const float sampleDistance = 2f;
+
+            foreach (var speed in new[] { 1f, 2f, 4f })
+            {
+                Rebind(unit, $"sustained-{speed:0}x");
+                unit.SnapPresentation(Vector2.Zero, 100, 100);
+                unit.SetPresentationSpeed(speed);
+                var stateChanges = new List<bool>();
+                void CaptureState(bool moving) => stateChanges.Add(moving);
+                motion.MotionStateChanged += CaptureState;
+                try
+                {
+                    var interval = motion.AuthoritySampleSecondsAtOneTimes / speed;
+                    var elapsed = 0d;
+                    var nextSampleAt = 0d;
+                    var emitted = 0;
+                    var maximumQueue = 0;
+                    var maximumAuthorityLead = 0f;
+                    var minimumSustainedLift = float.PositiveInfinity;
+                    var spriteRestY = sprite.Position.Y;
+
+                    while (emitted < sampleCount)
+                    {
+                        elapsed += frameSeconds;
+                        while (emitted < sampleCount && nextSampleAt <= elapsed + .0000001)
+                        {
+                            emitted++;
+                            unit.QueueMovement(new Vector2(emitted * sampleDistance, 0));
+                            nextSampleAt += interval;
+                        }
+                        motion._Process(frameSeconds);
+                        maximumQueue = Math.Max(maximumQueue, motion.PendingWaypointCount);
+                        maximumAuthorityLead = Math.Max(maximumAuthorityLead, emitted * sampleDistance - unit.Position.X);
+                        if (emitted >= 3 && emitted < sampleCount)
+                            minimumSustainedLift = Math.Min(minimumSustainedLift, spriteRestY - sprite.Position.Y);
+                        if (motion.PendingPlaybackSeconds > motion.MaximumVisualLagSeconds + .001f)
+                            throw new InvalidOperationException($"{speed:0}x presentation backlog exceeded its lag budget");
+                    }
+
+                    var inputStoppedAt = elapsed;
+                    while (motion.IsMoving && elapsed - inputStoppedAt <= motion.MaximumVisualLagSeconds + frameSeconds * 3)
+                    {
+                        elapsed += frameSeconds;
+                        motion._Process(frameSeconds);
+                    }
+                    Near(unit.Position, new Vector2(sampleCount * sampleDistance, 0), .02f,
+                        $"{speed:0}x sustained sampling did not reach the latest authority position");
+                    if (motion.IsMoving)
+                        throw new InvalidOperationException($"{speed:0}x sustained sampling did not settle within bounded lag");
+                    if (maximumQueue > 4)
+                        throw new InvalidOperationException($"{speed:0}x at 30 FPS accumulated {maximumQueue} queued samples");
+                    if (maximumAuthorityLead > sampleDistance * 4.01f)
+                        throw new InvalidOperationException($"{speed:0}x visible travel lagged authority by {maximumAuthorityLead:0.###} pixels");
+                    if (minimumSustainedLift < Animation(unit).StepLiftPixels - .05f)
+                        throw new InvalidOperationException($"{speed:0}x authority samples restarted the sustained travel lift");
+                    if (!stateChanges.SequenceEqual([true, false]))
+                        throw new InvalidOperationException($"{speed:0}x authority samples restarted motion state: {string.Join(',', stateChanges)}");
+
+                    GD.Print($"CONTINUOUS_TRAVEL_{speed:0}X_30FPS samples={sampleCount} queue_max={maximumQueue} " +
+                             $"authority_lead_max={maximumAuthorityLead:0.###} input_seconds={inputStoppedAt:0.###} " +
+                             $"settle_seconds={elapsed - inputStoppedAt:0.###}");
+                }
+                finally
+                {
+                    motion.MotionStateChanged -= CaptureState;
+                }
             }
         }
         finally { DetachAndFree(unit); }
@@ -315,10 +395,10 @@ public partial class MovementPresentationContractSmoke : Node
             if (!animation.FacingRight)
                 throw new InvalidOperationException("queued future left segment changed facing before its segment began");
             motion._Process(.30);
-            AdvanceFrames(motion, 5, .05);
+            AdvanceFrames(motion, 4, .05);
             if (!animation.FacingRight)
                 throw new InvalidOperationException("vertical segment failed to retain right-facing direction");
-            AdvanceFrames(motion, 5, .05);
+            motion._Process(.05);
             if (animation.FacingRight)
                 throw new InvalidOperationException("left segment did not face left when the segment began");
 
@@ -575,6 +655,29 @@ public partial class MovementPresentationContractSmoke : Node
             AdvanceFrames(motion, 4, .2);
             Near(presenter.Position, destination, .02f, "production presenter did not finish its routed move destination");
 
+            pause.EmitSignal(BaseButton.SignalName.Pressed);
+            if (!screen.StepOneTick())
+                throw new InvalidOperationException("paused Lab single-step was rejected during a running battle");
+            var steppedState = screen.ReadRuntimeUnits().Single(unit => unit.RuntimeId == "z-mover");
+            var steppedPosition = board.LogicalToLocal(steppedState.Position);
+            Equal(presenter.Position, steppedPosition,
+                "paused Lab single-step did not snap the visible presenter to authoritative continuous position");
+            if (motion.IsMoving)
+                throw new InvalidOperationException("paused Lab single-step left stale interpolation queued after authority snap");
+            screen.GetNode<Control>("%SelectedUnitPanel").Visible = false;
+            clickPosition = board.GlobalPosition + presenter.Position;
+            GetViewport().PushInput(new InputEventMouseButton
+            {
+                ButtonIndex = MouseButton.Left,
+                Pressed = true,
+                Position = clickPosition,
+                GlobalPosition = clickPosition
+            }, true);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            if (!screen.GetNode<Control>("%SelectedUnitPanel").Visible)
+                throw new InvalidOperationException("real pointer selection did not follow the paused stepped position");
+            pause.EmitSignal(BaseButton.SignalName.Pressed);
+
             var replacedMotion = motion;
             var replacedSimulation = Simulation(screen);
             var replacedPlanning = Movement(replacedSimulation);
@@ -712,8 +815,9 @@ public partial class MovementPresentationContractSmoke : Node
                 .EmitSignal(BaseButton.SignalName.Pressed);
             var summoned = screen.GetNode<Node2D>("%UnitsRoot").GetChildren().OfType<UnitContentRoot>()
                 .Single(unit => unit.RuntimeId.StartsWith("s-", StringComparison.Ordinal));
-            var expected = screen.GetNode<BattleBoard>("%BattleBoard").CellToLocal(new Vector2I(0, 3));
-            Equal(summoned.Position, expected, "summoned presenter slid in instead of snapping to its spawn cell");
+            var summonState = screen.ReadRuntimeUnits().Single(unit => unit.RuntimeId == summoned.RuntimeId);
+            var expected = screen.GetNode<BattleBoard>("%BattleBoard").LogicalToLocal(summonState.Position);
+            Equal(summoned.Position, expected, "summoned presenter slid in instead of snapping to its continuous spawn position");
             if (Motion(summoned).IsMoving) throw new InvalidOperationException("summoned presenter retained synthetic movement");
         }
         finally
@@ -762,13 +866,13 @@ public partial class MovementPresentationContractSmoke : Node
             {
                 first.Step();
                 firstMoves.AddRange(first.DrainEvents().Where(entry => entry.Type == "move")
-                    .Select(entry => $"{entry.Tick}:{entry.SourceRuntimeId}:{entry.Cell.X},{entry.Cell.Y}"));
+                    .Select(entry => $"{entry.Tick}:{entry.SourceRuntimeId}:{entry.Position.X:R},{entry.Position.Y:R}"));
             }
             while (second.Outcome == BattleOutcome.Running)
             {
                 second.Step();
                 secondMoves.AddRange(second.DrainEvents().Where(entry => entry.Type == "move")
-                    .Select(entry => $"{entry.Tick}:{entry.SourceRuntimeId}:{entry.Cell.X},{entry.Cell.Y}"));
+                    .Select(entry => $"{entry.Tick}:{entry.SourceRuntimeId}:{entry.Position.X:R},{entry.Position.Y:R}"));
             }
             var firstResult = first.CreateResult();
             var secondResult = second.CreateResult();
@@ -806,8 +910,8 @@ public partial class MovementPresentationContractSmoke : Node
             .GetField("_simulation", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(screen)
             ?? throw new InvalidOperationException("production battle simulation unavailable"));
 
-    private static DeterministicGridMovementService Movement(BattleSimulation simulation) =>
-        (DeterministicGridMovementService)(typeof(BattleSimulation)
+    private static DeterministicContinuousMovementService Movement(BattleSimulation simulation) =>
+        (DeterministicContinuousMovementService)(typeof(BattleSimulation)
             .GetField("_movement", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(simulation)
             ?? throw new InvalidOperationException("production movement service unavailable"));
 

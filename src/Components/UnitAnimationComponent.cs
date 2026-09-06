@@ -91,15 +91,12 @@ public partial class UnitAnimationComponent : Node2D
         else if (_state != PlaybackState.Hidden) _sprite.Play();
     }
 
-    public void SetMovementProgress(float normalizedProgress)
+    public void SetMovementWeight(float normalizedWeight)
     {
         if (_sprite is null) return;
-        var progress = Mathf.Clamp(normalizedProgress, 0f, 1f);
-        // Decorative weight belongs only to the character sprite. The unit root and sibling
-        // readability components remain stable for path geometry, markers, and pointer input.
-        var lift = progress <= .0001f || progress >= .9999f
-            ? 0f
-            : Math.Max(0f, StepLiftPixels) * Mathf.Sin(Mathf.Pi * progress);
+        // This is one sustained travel weight, not per-sample progress. It prevents every 10 Hz
+        // authority sample from restarting a decorative hop while the root follows its polyline.
+        var lift = Math.Max(0f, StepLiftPixels) * Mathf.Clamp(normalizedWeight, 0f, 1f);
         _sprite.Position = _authoredSpritePosition + Vector2.Up * lift;
     }
 
@@ -260,7 +257,7 @@ public partial class UnitAnimationComponent : Node2D
         string[] candidates = cue switch
         {
             "defeated" => ["defeated", "death", "hit", "idle"],
-            "skill_cast" => ["skill_cast", "cast", "breathing", "attack", "idle"],
+            "skill_cast" => ["skill_cast", "cast", "attack", "idle"],
             "move" => ["move", "run", "idle"],
             _ => [cue, "idle", "breathing"]
         };

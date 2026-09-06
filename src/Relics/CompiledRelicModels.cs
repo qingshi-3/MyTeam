@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using TowerAutobattler.Attributes;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Effects;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.Relics;
 
@@ -66,7 +67,10 @@ public sealed record CompiledRelicDefinition(
     ImmutableArray<CompiledRelicBattleModifier> BattleModifiers,
     ImmutableArray<CompiledRelicReactiveCounter> ReactiveCounters,
     ImmutableArray<CompiledRelicRunOutcome> VictoryOutcomes,
-    string Fingerprint);
+    string Fingerprint,
+    ImmutableArray<CompiledRelicStatusGrant> StatusGrants = default);
+
+public sealed record CompiledRelicStatusGrant(string BindingId, CompiledRelicUnitTarget Target, CompiledStatusDefinition Status);
 
 public sealed record RelicCounterStateSnapshot(string CounterId, int Value);
 

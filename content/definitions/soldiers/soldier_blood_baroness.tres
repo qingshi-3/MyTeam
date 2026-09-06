@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_blood_baroness"
+MaxMana = 70.0
+StartingMana = 10.0
 DisplayName = "血爵侍从"
 Description = "通过吸血维持前线。"
 Role = 1

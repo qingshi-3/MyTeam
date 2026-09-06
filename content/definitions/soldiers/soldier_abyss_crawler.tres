@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_abyss_crawler"
+MaxMana = 60.0
+StartingMana = 0.0
 DisplayName = "深渊爬兽"
 Description = "廉价、快速、适合牺牲。"
 Role = 1

@@ -1,4 +1,7 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAbilityLoadoutComponent.tscn" id="mana_component"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_mana_soldier_spell_thief.tres" id="mana_loadout"]
 
 [ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
 
@@ -13,6 +16,9 @@ script = ExtResource("1")
 Definition = ExtResource("2")
 
 [node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
+
+[node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("mana_component")]
+Loadout = ExtResource("mana_loadout")
 
 [node name="VisualRoot" type="Node2D" parent="."]
 

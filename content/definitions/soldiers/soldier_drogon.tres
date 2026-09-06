@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_drogon"
+MaxMana = 80.0
+StartingMana = 10.0
 DisplayName = "幼龙卓贡"
 Description = "快速喷吐并波及邻格。"
 Role = 2
@@ -17,6 +19,7 @@ RecruitCost = 8
 MaxHealth = 125
 AttackDamage = 24
 AttackRange = 3.5
+AttackDelivery = 1
 AttackCooldown = 1.15
 MoveInterval = 0.35
 Armor = 2

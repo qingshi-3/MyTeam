@@ -30,6 +30,10 @@ public partial class DeploymentScreenController : Control
     private BattleConfig? _config;
     private string _selectedId = string.Empty;
     private int _reserveCapacity;
+    private EquipmentLoadoutPanel _equipmentPanel = null!;
+    private RunApplication? _application;
+    private EncounterPlan? _encounterPlan;
+    private bool _equipmentEditing = true;
 
     public string SelectedPieceId => _selectedId;
     public IBattleFloorRuleRuntime? FloorRule => _config?.FloorRule;
@@ -45,6 +49,9 @@ public partial class DeploymentScreenController : Control
         _back = GetNode<Button>("%BackButton");
         _start = GetNode<Button>("%StartBattleButton");
         _cardScene = GD.Load<PackedScene>("res://scenes/ui/components/DeploymentUnitCard.tscn");
+        _equipmentPanel = GetNode<EquipmentLoadoutPanel>("%EquipmentLoadoutPanel");
+        _equipmentPanel.EquipmentChanged += OnEquipmentChanged;
+        _equipmentPanel.HeroSelected += OnEquipmentHeroSelected;
         _board.CellSelected += OnCellSelected;
         _board.PieceDropped += OnPieceDropped;
         _withdraw.Pressed += OnWithdraw;
@@ -54,6 +61,8 @@ public partial class DeploymentScreenController : Control
 
     public override void _ExitTree()
     {
+        _equipmentPanel.EquipmentChanged -= OnEquipmentChanged;
+        _equipmentPanel.HeroSelected -= OnEquipmentHeroSelected;
         foreach (var card in _cards.Values)
             if (IsInstanceValid(card)) card.UnitSelected -= OnPieceSelected;
         _cards.Clear();
@@ -72,6 +81,9 @@ public partial class DeploymentScreenController : Control
         IReadOnlyList<EnemyDeploymentViewModel>? enemies,
         int reserveCapacity)
     {
+        _application = null;
+        _encounterPlan = null;
+        _equipmentPanel.Visible = false;
         _title.Text = title;
         _encounter.Text = encounter;
         _config = config;
@@ -84,7 +96,7 @@ public partial class DeploymentScreenController : Control
         _status.ThemeTypeVariation = "SecondaryLabel";
     }
 
-    public void Bind(RunApplication app, EncounterPlan encounter)
+    public void Bind(RunApplication app, EncounterPlan encounter, bool equipmentEditing = true)
     {
         var run = app.ActiveRun ?? throw new InvalidOperationException("No active run for deployment.");
         var config = app.BuildBattleConfig(encounter, false);
@@ -104,6 +116,12 @@ public partial class DeploymentScreenController : Control
                 definition.Role, definition.AttackRange, spawn.Unit.IsBoss, definition.Portrait);
         }).ToArray();
         Bind(encounter.Title, DescribeEncounter(app, encounter), config, pieces, enemies, app.Rules.ReserveCapacity);
+        _application = app;
+        _encounterPlan = encounter;
+        _equipmentEditing = equipmentEditing;
+        _equipmentPanel.Bind(app, _selectedId);
+        _equipmentPanel.Visible = equipmentEditing;
+        RefreshEquipmentCards();
     }
 
     public void ShowMessage(string message, bool error)
@@ -113,6 +131,10 @@ public partial class DeploymentScreenController : Control
     }
 
     public void ShowCellResult(Vector2I cell, bool success) => _board.FlashCell(cell, success);
+    public void RefreshEquipment()
+    {
+        if (IsVisibleInTree()) OnEquipmentChanged();
+    }
 
     private void Refresh()
     {
@@ -151,12 +173,33 @@ public partial class DeploymentScreenController : Control
                 : "将已部署英雄撤回后备。";
         _start.Disabled = _config is null || _pieces.Any(piece => piece.Cell is { } cell && !_config.FloorRule.CanOccupy(cell));
         _start.TooltipText = _start.Disabled ? "有单位位于当前楼层禁止格，必须先调整阵型。" : "以当前预览阵型进入战斗。";
+        if (_application is not null && _equipmentEditing) _equipmentPanel.Bind(_application, _selectedId);
     }
 
     private void OnPieceSelected(string pieceId)
     {
         _selectedId = _selectedId == pieceId ? string.Empty : pieceId;
         Refresh();
+    }
+
+    private void OnEquipmentHeroSelected(string heroId)
+    {
+        _selectedId = heroId;
+        Refresh();
+    }
+
+    private void OnEquipmentChanged()
+    {
+        if (_application is { } app && _encounterPlan is { } encounter) Bind(app, encounter, _equipmentEditing);
+    }
+
+    private void RefreshEquipmentCards()
+    {
+        if (_application?.ActiveRun is not { } run) return;
+        foreach (var hero in run.Roster)
+            if (_cards.TryGetValue(hero.InstanceId, out var card))
+                card.BindEquipment(hero.Equipment.Select(item =>
+                    (item.SlotIndex, (ItemDefinition)Required(_application, item.ContentId).Definition)).ToArray());
     }
 
     private void OnCellSelected(Vector2I cell, string occupantId)

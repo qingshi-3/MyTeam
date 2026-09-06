@@ -13,6 +13,7 @@ public partial class ChoiceCard : Button
     public string BodyText => _body?.Text ?? string.Empty;
     public string FooterText => _footer?.Text ?? string.Empty;
     private ChosenEventHandler? _chosenHandler;
+    private Action<string>? _inspectionHandler;
     private TextureRect _icon = null!;
     private Label _title = null!;
     private Label _body = null!;
@@ -23,10 +24,15 @@ public partial class ChoiceCard : Button
     {
         CacheNodes();
         Pressed += OnPressed;
+        MouseEntered += OnInspect;
+        FocusEntered += OnInspect;
     }
     public override void _ExitTree()
     {
         Pressed -= OnPressed;
+        MouseEntered -= OnInspect;
+        FocusEntered -= OnInspect;
+        _inspectionHandler = null;
         if (_chosenHandler is not null) Chosen -= _chosenHandler;
         _chosenHandler = null;
     }
@@ -67,6 +73,8 @@ public partial class ChoiceCard : Button
     }
 
     private void OnPressed() => EmitSignal(SignalName.Chosen, StableId);
+    public void ConnectInspected(Action<string> handler) => _inspectionHandler = handler;
+    private void OnInspect() => _inspectionHandler?.Invoke(StableId);
 
     private void CacheNodes()
     {

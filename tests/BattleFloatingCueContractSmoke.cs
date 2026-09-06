@@ -77,8 +77,11 @@ public partial class BattleFloatingCueContractSmoke : Node
                 CueMetric(screen, "ActiveFloatingTweenCount") != overlay.GetChildCount())
                 throw new InvalidOperationException("floating cue node/Tween ownership is unbounded or inconsistent");
 
-            var board = screen.GetNode<BattleBoard>("%BattleBoard");
-            var targetPosition = board.GlobalPosition + board.CellToLocal(new Vector2I(3, 2));
+            var presenters = typeof(BattleScreenController)
+                .GetField("_presenters", BindingFlags.Instance | BindingFlags.NonPublic)?
+                .GetValue(screen) as Dictionary<string, UnitContentRoot>
+                ?? throw new InvalidOperationException("Battle presenters unavailable for real selection input");
+            var targetPosition = presenters["z_cue_target"].GlobalPosition;
             GetViewport().PushInput(new InputEventMouseButton
             {
                 ButtonIndex = MouseButton.Left,
@@ -88,11 +91,14 @@ public partial class BattleFloatingCueContractSmoke : Node
             }, true);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             var selected = screen.GetNode<Control>("%SelectedUnitPanel");
-            var selectedText = selected.GetNode<Label>("Layout/UnitAction").Text;
-            if (!selected.Visible || !selectedText.Contains("冻结", StringComparison.Ordinal) ||
-                !selectedText.Contains("秒", StringComparison.Ordinal))
+            var selectedAction = selected.GetNode<Label>("Layout/UnitAction").Text;
+            var selectedStatuses = selected.GetNode<Label>("Layout/UnitStatuses").Text;
+            if (!selected.Visible || !selectedAction.Contains("秒", StringComparison.Ordinal) ||
+                !selectedStatuses.Contains("冻结", StringComparison.Ordinal) ||
+                !selectedStatuses.Contains("秒", StringComparison.Ordinal))
                 throw new InvalidOperationException(
-                    "floating-cue overlay blocked real selection or replaced exact selected-unit Status details");
+                    "floating-cue overlay blocked real selection or replaced exact selected-unit Status details: " +
+                    $"visible={selected.Visible}, action={selectedAction}, statuses={selectedStatuses}");
 
             screen.StartBattle(content, DensityCueConfig(content), "密度提示上限");
             screen.SetProcess(false);

@@ -16,6 +16,8 @@ public partial class ArmyDrawerRow : PanelContainer
     private ResourceCostBadge _tacticalPointCost = null!;
     private ResourceCostBadge _goldCost = null!;
     private Label _footer = null!;
+    private HBoxContainer _equipmentSlots = null!;
+    private PackedScene _equipmentTile = null!;
 
     public override void _Ready()
     {
@@ -28,6 +30,8 @@ public partial class ArmyDrawerRow : PanelContainer
         _tacticalPointCost = GetNode<ResourceCostBadge>("%TacticalPointCostBadge");
         _goldCost = GetNode<ResourceCostBadge>("%GoldCostBadge");
         _footer = GetNode<Label>("%RowFooter");
+        _equipmentSlots = GetNode<HBoxContainer>("%RowEquipment");
+        _equipmentTile = GD.Load<PackedScene>("res://scenes/ui/components/EquipmentSlotButton.tscn");
     }
 
     public void Bind(ArmyOverviewRowViewModel model)
@@ -45,6 +49,19 @@ public partial class ArmyDrawerRow : PanelContainer
         _costs.Visible = model.TacticalPointCost > 0 || model.GoldCost > 0;
         _footer.Text = model.Footer;
         _footer.Visible = !string.IsNullOrWhiteSpace(model.Footer);
+        foreach (var child in _equipmentSlots.GetChildren())
+        {
+            _equipmentSlots.RemoveChild(child);
+            child.Free();
+        }
+        _equipmentSlots.Visible = model.EquipmentSlots is not null;
+        if (model.EquipmentSlots is { } slots)
+            for (var index = 0; index < slots.Count; index++)
+            {
+                var tile = _equipmentTile.Instantiate<EquipmentSlotButton>();
+                _equipmentSlots.AddChild(tile);
+                tile.Bind(string.Empty, index, slots[index], false, false);
+            }
     }
 
     private void BindFacts(System.Collections.Generic.IEnumerable<SemanticFact> facts)

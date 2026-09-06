@@ -1,82 +1,147 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/UI/SelectedUnitPanel.cs" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/SemanticChip.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/CombatFactTile.tscn" id="3"]
+
+[sub_resource type="StyleBoxFlat" id="mana_fill"]
+bg_color = Color(0.25, 0.57, 1, 1)
 
 [node name="SelectedUnitPanel" type="PanelContainer"]
 theme_type_variation = &"ContextSidebarPanel"
 visible = false
-custom_minimum_size = Vector2(280, 232)
-mouse_filter = 2
+custom_minimum_size = Vector2(280, 0)
+size_flags_vertical = 3
 script = ExtResource("1")
+FactTileScene = ExtResource("3")
 
-[node name="Layout" type="VBoxContainer" parent="."]
+[node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 3
+horizontal_scroll_mode = 0
 
-[node name="UnitTitle" type="Label" parent="Layout"]
+[node name="Layout" type="VBoxContainer" parent="Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="UnitTitle" type="Label" parent="Scroll/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.82, 0.4, 1)
 text = "单位"
 
-[node name="UnitFacts" type="HFlowContainer" parent="Layout"]
+[node name="UnitFacts" type="HFlowContainer" parent="Scroll/Layout"]
 layout_mode = 2
 theme_override_constants/h_separation = 9
 theme_override_constants/v_separation = 2
 
-[node name="UnitRoleFact" parent="Layout/UnitFacts" instance=ExtResource("2")]
+[node name="UnitRoleFact" parent="Scroll/Layout/UnitFacts" instance=ExtResource("2")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="UnitReachFact" parent="Layout/UnitFacts" instance=ExtResource("2")]
+[node name="UnitReachFact" parent="Scroll/Layout/UnitFacts" instance=ExtResource("2")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="UnitHealthFact" parent="Layout/UnitFacts" instance=ExtResource("2")]
+[node name="UnitHealthFact" parent="Scroll/Layout/UnitFacts" instance=ExtResource("2")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="UnitIdentity" type="Label" parent="Layout"]
+[node name="UnitShieldFact" parent="Scroll/Layout/UnitFacts" instance=ExtResource("2")]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.68, 0.76, 0.88, 1)
-theme_override_font_sizes/font_size = 13
-text = "内容：—\n来源：— · 运行：—"
 
-[node name="UnitStats" type="Label" parent="Layout"]
+[node name="UnitIdentity" type="Label" parent="Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.68, 0.76, 0.86, 1)
+
+[node name="UnitStats" type="Label" parent="Scroll/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "伤害 — · 攻速 — · 射程 — · 控抗 —"
 autowrap_mode = 2
 
-[node name="UnitEquipment" type="Label" parent="Layout"]
+[node name="UnitAbility" type="Button" parent="Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+theme_override_font_sizes/font_size = 13
+text = "英雄技能 · 满蓝自动释放"
+text_overrun_behavior = 3
+
+[node name="ManaBar" type="ProgressBar" parent="Scroll/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 7)
+layout_mode = 2
+mouse_filter = 2
+show_percentage = false
+step = 0.0
+theme_override_styles/fill = SubResource("mana_fill")
+
+[node name="ManaText" type="Label" parent="Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.57, 0.77, 1, 1)
+text = "法力 — · 自动积蓄"
+autowrap_mode = 2
+
+[node name="UnitEquipment" type="Label" parent="Scroll/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
-text = "装备：无"
-autowrap_mode = 2
+text = "装备"
 
-[node name="UnitTraits" type="Label" parent="Layout"]
+[node name="EquipmentSlots" type="HBoxContainer" parent="Scroll/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SlotOne" parent="Scroll/Layout/EquipmentSlots" instance=ExtResource("3")]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "单位特质：无\n团队层级：无激活层级"
+
+[node name="SlotTwo" parent="Scroll/Layout/EquipmentSlots" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SlotThree" parent="Scroll/Layout/EquipmentSlots" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="UnitTraits" type="Label" parent="Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
 autowrap_mode = 2
 
-[node name="UnitAction" type="Label" parent="Layout"]
+[node name="UnitAction" type="Label" parent="Scroll/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.86, 1, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 13
 text = "行动：正在判断战况"
 autowrap_mode = 2
 
-[node name="UnitStatuses" type="Label" parent="Layout"]
+[node name="UnitStatuses" type="Label" parent="Scroll/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.72, 0.86, 1, 1)
 theme_override_font_sizes/font_size = 13
-text = "状态：无"
+text = "暂无状态"
+
+[node name="StatusTiles" type="GridContainer" parent="Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 3
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+
+[node name="FactDetail" type="Label" parent="Scroll/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.76, 0.8, 0.86, 1)
+text = "点选装备或状态查看效果"
 autowrap_mode = 2

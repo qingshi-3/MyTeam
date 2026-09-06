@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityPresentationSpec.cs" id="presentation"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="Explicit"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="binding"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="trigger"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="limits"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/EffectAbilityOperationSpec.cs" id="effect_operation"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/DamageEffectSpec.cs" id="Damage"]
+
+[sub_resource type="Resource" id="Explicit"]
+script = ExtResource("Explicit")
+
+[sub_resource type="Resource" id="Trigger"]
+script = ExtResource("trigger")
+
+[sub_resource type="Resource" id="Limits"]
+script = ExtResource("limits")
+
+[sub_resource type="Resource" id="Effect_0"]
+script = ExtResource("Damage")
+Amount = 70.0
+
+[sub_resource type="Resource" id="Binding_0"]
+script = ExtResource("binding")
+StableId = "ability_mana_soldier_drogon_damage_0"
+Trigger = SubResource("Trigger")
+TargetQuery = SubResource("Explicit")
+Effects = [SubResource("Effect_0")]
+Limits = SubResource("Limits")
+
+[sub_resource type="Resource" id="Operation_0"]
+script = ExtResource("effect_operation")
+Binding = SubResource("Binding_0")
+
+[sub_resource type="Resource" id="Presentation"]
+script = ExtResource("presentation")
+SemanticIcon = &"damage"
+Cue = &"skill_cast"
+ReportLabel = "灼热吐息"
+
+[resource]
+script = ExtResource("ability")
+StableId = "ability_mana_soldier_drogon"
+DisplayName = "灼热吐息"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 80
+CooldownTicks = 10
+Operations = [SubResource("Operation_0")]
+Presentation = SubResource("Presentation")
+

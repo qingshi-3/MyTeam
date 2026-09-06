@@ -44,15 +44,20 @@ public sealed class ActiveRunDto
     public List<PopulationCapSourceDto> PopulationCapSources { get; set; } = [];
     public List<string> Deployment { get; set; } = ActiveRunFormationSchema.EmptyDeployment();
     public List<ItemInstanceDto> Items { get; set; } = [];
+    // Unequipped instances retain their identity; only roster-owned instances project into battle.
+    public List<EquipmentInstanceState> EquipmentInventory { get; set; } = [];
     public List<string> EquippedTacticalCommandIds { get; set; } = [];
     public int Gold { get; set; } = 16;
     public int FloorIndex { get; set; }
     public int BattleNumber { get; set; }
     public bool PendingNode { get; set; }
     public TowerNodeType SelectedNode { get; set; }
+    public PendingRunOffer? PendingOffer { get; set; }
+    public string TerminalCompletionId { get; set; } = string.Empty;
+    public bool TerminalVictory { get; set; }
 
     // Schema-v3 compatibility input only. A successful migration clears these
-    // fields so schema-v4 saves publish only the unified roster/formation model.
+    // fields so current saves publish only the unified roster/formation model.
     [JsonPropertyName("HeroId")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? LegacyHeroId { get; set; }
@@ -76,6 +81,7 @@ public sealed class MetaProgressDto
     public List<string> UnlockedHeroIds { get; set; } = [];
     public int Victories { get; set; }
     public int HighestRegion { get; set; }
+    public List<string> AppliedRunCompletionIds { get; set; } = [];
 }
 
 public sealed class SettingsDto
@@ -88,6 +94,7 @@ public sealed class SettingsDto
 
 public enum ActiveRunLoadFailureKind
 {
+    ReadFailed,
     MigrationRejected,
     ValidationRejected,
     MigrationPublicationFailed

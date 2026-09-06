@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "hero_brood_matriarch"
+MaxMana = 80.0
+StartingMana = 10.0
 DisplayName = "原兽母皇"
 Description = "野兽军团以更高的伤害和战斗进化压倒敌人。"
 Role = 5

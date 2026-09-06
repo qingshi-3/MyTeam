@@ -11471,3 +11471,1581 @@ Steam App `2520490` 于 2025-08-12 正式发行；以下官方补丁跨越 2024-
 - 精确标题、App、开发者、单位、物品、攻略、wiki、build、review、gameplay 路由查过 Yahoo/Bing、Brave、Google、DuckDuckGo、GitHub、SteamDB、Metacritic、Kotaku、IGDB/RAWG/Playin 类聚合、GAZ、TrueSteamAchievements、cheat/walkthrough 索引与 itch。Brave/Google 后续 429、DuckDuckGo 空页 / challenge、SteamDB/TrueSteamAchievements/Cheats.co 403、GAZ 自动菜单回首页；均未绕过。聚合页只重复商店资料，TrueSteamAchievements 搜索摘要明确 walkthrough 尚在编写，未计来源。
 - YouTube 精确搜索定位三段目标 gameplay：2024-01-23 `ZCiKbYupBFM`（1588 秒）、2024-08-21 `faRVwkJIdLg`（2294 秒）、2025-09-06 `QfMGXnq4Zj4`（1391 秒）。中间一段提供自动英文字幕并以 `src-mt-video-demo7-gameplay` 登记；另两段没有可读字幕，未用标题、description、缩略图或画面反推规则。`8Xuo6MP-YGA` 是同名音乐。没有下载 / 运行客户端，也没有绕过字幕 token、登录或反机器人边界。
 - 检索停止时，正式版仍没有完整官方 unit/item database、玩家 Guide 或当前 patch-level build。新增可读视频转录闭合了一条 Demo 7-era shop / sold-growth / counter-pivot run，并补充五 Priestess death-stack；继续搜索只重复 Steam 小型语料、元数据镜像、不可访问页面或另外两段无字幕视频，不再改变 owner、counter、economy 或 lifecycle 理解。
+
+## Auto Brawl Chess
+
+以下九篇 Help Center 页面当前显示 2026-05-07 Zendesk wrapper，但正文与旧 article id / Wayback 版本比对后统一标记为 `2022-origin / republished-or-migrated-2026 / historical`。这个标签不代表 2026 现行规则。
+
+### `src-abc-help-gameplay-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Auto Brawl Chess Gameplay
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395680306834-Auto-Brawl-Chess-Gameplay
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7336920650258`，Wayback `20240522050243` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-preparation-battle-loop`, `abc-scout-shop-refresh-lock-population-merge`, `abc-historical-gameplay-rules`
+- 限制：2026 Zendesk 时间不是 2026 规则日期；合成最高星级、利息、人口、牌池和价格不能由其他时期材料补成当前公式。
+
+### `src-abc-help-factions-classes-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Factions and Classes
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395723520658-Factions-and-Classes
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7337458184338`，Wayback `20240522064932` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-faction-class-dual-axis`, `abc-historical-faction-names`, `abc-synergy-threshold-ownership`
+- 限制：只建立历史双轴规则；Plant / Elemental 不与 Primal / Darkspawn 建立改名关系，旧门槛和数值不作当前规则。
+
+### `src-abc-help-warlords-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Warlords
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395693206674-Warlords
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7339708704914`，Wayback `20240522055946` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-warlord-account-power`, `abc-teamwide-prebattle-bonus-layer`
+- 限制：Warlord 是局外全队加成层，不是棋盘单位；旧加成和获取路径不映射到当前客户端。
+
+### `src-abc-help-equipment-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Equipment
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395685719186-Equipment
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7337129991058`，Wayback `20240522065051` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-permanent-equipment`, `abc-equipment-holder-rarity-enhancement`, `abc-magic-items-equipment-type`, `abc-account-power-equipment`
+- 限制：建立装备 holder / 稀有度 / 强化层，并把 Magic items 列为 Equipment 类型；不证明当前 Forge 公式、批量卸装、自动装备、匹配权重，也不解析 Magic Item 与普通 Equipment 的 inventory / slot / persistence 关系。
+
+### `src-abc-help-armor-mr-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：How does Armor/Magic Resistance work?
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395686071570-How-does-Armor-Magic-Resistance-work
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7337393207954`，Wayback `20240522051046` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-historical-armor-mr`, `abc-defense-mitigation-owner`
+- 限制：公式只属于历史规则，不能当前化；Armor / Magic Resistance 不自动转化为伤害。
+
+### `src-abc-help-journey-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Journey Mode
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395680440978-Journey-Mode
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7322075776914`，Wayback `20240715214536` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-journey-limited-factions`, `abc-journey-boss-preview`, `abc-three-win-retry-loop`
+- 限制：不建立 Journey 2-35 当前数值、普遍难度或账户门槛；固定 Boss 结构需与单关玩家报告分栏。
+
+### `src-abc-help-dungeon-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Dungeon
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395685153426-Dungeon
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7615340789778`，Wayback `20240522043606` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-dungeon-four-faction-pool`, `abc-dungeon-life-stones`, `abc-three-choice-stackable-artifact`
+- 限制：Dungeon Artifact 可与英雄绑定的 Time Rift Magic Item 区分；Equipment 页同时把 Magic items 列为一种 Equipment，故 Magic Item 可能是特殊 Equipment 子类，精确 inventory / slot / persistence 关系未解析。Warlord 仍是另一账户加成层。
+
+### `src-abc-help-time-rift-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Time Rift
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395672509330-Time-Rift
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7614811938962`，Wayback earliest located snapshot `20231205222309` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-time-rift-magic-item`, `abc-hero-active-passive-layer`, `abc-magic-item-heroes-page`, `abc-rune-enhancement`, `abc-time-rift-memory-shards-enchanted-ore-runes-gems`
+- 限制：Wayback 最早快照不等于正文起源日期；Dungeon Artifact 可与英雄绑定的 Magic Item 区分，但 Equipment 页把 Magic items 列为一种 Equipment，故 Magic Item 可能是特殊 Equipment 子类，精确 inventory / slot / persistence 关系未解析。
+
+### `src-abc-help-chess-pass-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Chess Pass
+- URL：https://support.auto-brawl-chess.com/hc/en-us/articles/35395723184530-Chess-Pass
+- 作者 / 发布者：Panoramik Games / Auto Brawl Chess Help Center；正文起源：2022；当前 wrapper：2026-05-07；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：当前正文可读；旧 article id `7321698270994`，Wayback `20240522054132` 可用于迁移比对。
+- 版本范围：`2022-origin / republished-or-migrated-2026 / historical`；`supports_claims`: `abc-premium-pve-autofight-2022`, `abc-chess-pass-historical`
+- 限制：只支持 2022 Premium / PvE-only Autofight；不能与 2024 免费 PvE / PvP Autofight 写成同时规则。
+
+### `src-abc-patch-seasonal-pvp-2024`
+
+- `title_id`: `auto-brawl-chess`；标题：Seasonal PvP, Auto mode in PvP, and more!
+- URL：https://steamcommunity.com/games/951480/announcements/detail/4355629296418500283
+- 作者 / 发布者：Panoramik Games LTD；发布：2024-08-08；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam announcement 正文完整可读。
+- 版本范围：2024-08 Seasonal PvP update；`supports_claims`: `abc-seasonal-six-factions`, `abc-fourteen-day-rotation`, `abc-standard-ranked-retained`, `abc-pvp-autofight`, `abc-free-pve-autofight`
+- 限制：最后可确认的新玩法节点不等于当前 meta；不证明子池解决了搜牌问题，也不建立具体概率或由某条评论触发的因果。
+
+### `src-abc-guide-gamer-empire-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Auto Brawl Chess Game Guide – Tips, Tricks, And Strategy
+- URL：https://gamerempire.net/auto-brawl-chess-game-guide-tips-tricks-and-strategy/
+- 作者 / 发布者：Tim Stadel Clausen / Gamer Empire；发布：2020-08-21；更新：2022-10-31；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整历史攻略正文可读。
+- 版本范围：2020-origin、2022-updated mobile historical guide；`supports_claims`: `abc-economy-and-positioning-guide`, `abc-faction-class-guide`, `abc-historical-synergy-values`
+- 限制：当前正文晚于部分视频且多项数值冲突；不能假装与视频独立收敛或作为当前规则表。
+
+### `src-abc-guide-pocket-gamer-strategy-2020`
+
+- `title_id`: `auto-brawl-chess`；标题：Essential strategies to win every game in Auto Brawl Chess: Battle Royale
+- URL：https://www.pocketgamer.com/auto-brawl-chess/essential-strategies-to-win-every-game-in-auto-brawl-chess-battle-royale/
+- 作者 / 发布者：Dave Aubrey / Pocket Gamer；发布：2020-09-23；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整正文可读。
+- 版本范围：2020 mobile launch-era；`supports_claims`: `abc-early-economy`, `abc-population-and-positioning`, `abc-opponent-scouting`, `abc-shop-opportunity-cost`
+- 限制：上线早期实践，不证明当前价格、利息、人口、牌池、站位算法或“每局获胜”的标题承诺。
+
+### `src-abc-video-mage-gamble-2021`
+
+- `title_id`: `auto-brawl-chess`；标题：Magical Synergy Gamble
+- URL：https://www.youtube.com/watch?v=FcPFAI2f3ME
+- 作者 / 发布者：Agile Otter / YouTube；发布：2021-03-28；时长：15:09；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频与字幕 / 可核验画面完整读取。
+- 版本范围：2021 mobile historical；`supports_claims`: `abc-mage-loss-streak-gamble`, `abc-round-eight-roll-down`, `abc-imar-zeus-search-failure`
+- 限制：一局高风险实践，不证明 Round 8 是通用最优；10 HP、单位分类和结果不映射当前版本。
+
+### `src-abc-video-drifter-elemental-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Drifters & Elementals
+- URL：https://www.youtube.com/watch?v=b0g749nKE4c
+- 作者 / 发布者：jinnyphe / YouTube；发布：2022-09-22；时长：21:20；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频与可读字幕 / 画面完整核验。
+- 版本范围：2022 mobile historical；`supports_claims`: `abc-drifter-elemental-wide-build`, `abc-three-elemental-golem`, `abc-summon-space`, `abc-cross-faction-support`
+- 限制：不建立当前 Elemental 名称、数值或 meta；Elemental 是召唤门槛，不是 Shield 或元素反应。
+
+### `src-abc-video-elemental-threshold-2021`
+
+- `title_id`: `auto-brawl-chess`；标题：Is Elemental Build underpowered?
+- URL：https://www.youtube.com/watch?v=BKX8VPQdRDU
+- 作者 / 发布者：Agile Otter / YouTube；发布：2021-03-21 PDT / 2021-03-22 Beijing；时长：13:34；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频与字幕 / 可核验画面完整读取。
+- 版本范围：2021 mobile historical；`supports_claims`: `abc-elemental-two-of-three-failure`, `abc-elemental-abandonment-pivot`, `abc-second-place-nonclosure`
+- 限制：长期停在 2/3、后退至 1/3 并最终第二是一个实践样本；不能证明 Elemental 普遍弱或形成成功闭环。
+
+### `src-abc-video-mage-insane-two-runs-2021`
+
+- `title_id`: `auto-brawl-chess`；标题：Trying out Mage Synergy In Insane Mode
+- URL：https://www.youtube.com/watch?v=AqUqFTyP1Lw
+- 作者 / 发布者：Agile Otter / YouTube；发布：2021-03-28；时长：17:13；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：两次 run 的视频 / 字幕与结果可读。
+- 版本范围：2021 mobile Insane Mode historical；`supports_claims`: `abc-mage-two-run-variance`, `abc-mage-survival-output-owners`, `abc-mage-roll-down-risk`
+- 限制：两次尝试不构成胜率或 current meta；旧英雄、模式、回合与数值不能当前化。
+
+### `src-abc-video-demon-lifesteal-2021`
+
+- `title_id`: `auto-brawl-chess`；标题：Demon Life Stealing Is Op
+- URL：https://www.youtube.com/watch?v=FGJYI1rSkpU
+- 作者 / 发布者：Agile Otter / YouTube；发布：2021-03-25；时长：13:42；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频 / 字幕与历史阵容可读。
+- 版本范围：2021 mobile historical；`supports_claims`: `abc-four-demon-fifty-five-lifesteal`, `abc-demon-distributed-attack-sustain`, `abc-guardian-demon-shell`
+- 限制：标题的 `OP` 是作者评价；55% 只属于该历史版本，不能与 Mary 治疗或 Guardian Armor 合并为同一 owner。
+
+### `src-abc-video-artifact-offer-2023`
+
+- `title_id`: `auto-brawl-chess`；标题：Just 6 sec.! vs. 6 Beasts 2 Priests
+- URL：https://www.youtube.com/watch?v=8I5nfPxhhek
+- 作者 / 发布者：jinnyphe / YouTube；发布：2023-03-08 Beijing；时长：21:42；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：最终可见阵容与三件 Artifact offer 画面可核验。
+- 版本范围：2023 mobile historical；`supports_claims`: `abc-artifact-three-choice-offer`, `abc-yin-yang-sorcerers-ring-ice-armor-candidates`
+- 限制：只证明三件候选，不证明最终选择、胜利或 Ice Armor 的完整规则；不得称其为元素盾构筑。
+
+### `src-abc-video-beginner-2024`
+
+- `title_id`: `auto-brawl-chess`；标题：Gameplay After 1 Week & Beginners guide
+- URL：https://www.youtube.com/watch?v=WozJkkrWf2M
+- 作者 / 发布者：Idle Games Tv / YouTube；发布：2024-07-22；时长：9:41；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频与可读解说 / 画面核验。
+- 版本范围：2024 beginner snapshot；`supports_claims`: `abc-newer-shop-loop`, `abc-summoner-two-cells-behind`, `abc-summon-space-reservation`
+- 限制：作者只玩一周，不定义高端 meta；身后两格只限一次新手观察，不推广到所有召唤物、方向或版本。
+
+### `src-abc-video-player-guide-101-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Auto Battle Player Guide 101
+- URL：https://www.youtube.com/watch?v=LMscHZ8Wkgo
+- 作者 / 发布者：The Average Gamer Cave / YouTube；发布：2022-04-19 PDT / 2022-04-20 Beijing；时长：9:49；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：英文自动字幕和局外界面可读。
+- 版本范围：2022 Easter / Spring Festival historical economy snapshot；`supports_claims`: `abc-forge-summon-account-economy`, `abc-chess-pass-practice`, `abc-multi-currency-progression`
+- 限制：不是战斗构筑源；`F2P friendly`、活动频率、Pass 速度与礼包价值是个人判断，不作长期规则。
+
+### `src-abc-video-guardian-defense-2021`
+
+- `title_id`: `auto-brawl-chess`；标题：Unbreakable Guardian Defense
+- URL：https://www.youtube.com/watch?v=9CH_eBSjEgo
+- 作者 / 发布者：Agile Otter / YouTube；发布：2021-03-27；时长：15:56；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：字幕、阵容、站位、对局与最终第一可核验。
+- 版本范围：2021 mobile historical；`supports_claims`: `abc-four-guardian-armor`, `abc-maximus-hanzo-output`, `abc-shaman-amplifier`, `abc-guardian-counter-pressure`
+- 限制：最终第一只闭合一次实践；Jaxy 是条件桥接 / 计划，不能写成完成核心；闪避、治疗和双坦克只作该局 counter。
+
+### `src-abc-video-faction-breakdown-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Ultimate Faction Breakdown [Autobrawl Chess]
+- URL：https://www.youtube.com/watch?v=YkbpaDePGOo
+- 作者 / 发布者：The Average Gamer Cave / YouTube；发布：2022-04-26；时长：14:44；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：英文自动字幕与 Faction UI 完整核验。
+- 版本范围：2022-04 mobile historical；`supports_claims`: `abc-faction-ui-values`, `abc-account-level-item-conditions`, `abc-reptile-shield`, `abc-elemental-golem`, `abc-thanatos-copy-cap`
+- 限制：作者账号伤害 / 治疗、`best/sucks/must-have` 和 ASR 不清物品不登记；与 Gamer Empire 的数值冲突只作版本漂移。
+
+### `src-abc-video-class-breakdown-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：Quick Class Breakdown [Autobrawl Chess]
+- URL：https://www.youtube.com/watch?v=eZ-B4Z8nkdc
+- 作者 / 发布者：The Average Gamer Cave / YouTube；发布：2022-05-01 PDT / 2022-05-02 Beijing；时长：7:39；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：英文自动字幕与 Class UI / 换人建议完整核验。
+- 版本范围：2022-05 mobile historical；`supports_claims`: `abc-class-ui-values`, `abc-opening-to-endgame-replacements`, `abc-mage-sadako-zeus-pivot`, `abc-guardian-carry-roles`
+- 限制：未讲解 Warrior / Slayer / Thief / Guardian 全部 payoff；Maze bug 是玩家当时遭遇，旧数值与后改攻略冲突。
+
+### `src-abc-video-ranked-six-match-log-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：AutoBrawl Chess uninterrupted Ranked PvP (Epic Beats)
+- URL：https://www.youtube.com/watch?v=vitT8CLUD70
+- 作者 / 发布者：The Average Gamer Cave / YouTube；发布：2022-06-03 PDT / 2022-06-04 UTC；时长：53:12；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：无字幕、纯音乐；六局由人工时间戳与画面动作日志核验。
+- 版本范围：2022 Ranked PvP historical；`supports_claims`: `abc-six-match-results-6-2-4-4-4-1`, `abc-low-population-resource-accumulation`, `abc-nine-unit-transition`
+- 限制：只记录可见动作与结算；不推断作者意图、最优策略、current meta 或 description 未定义的 recent changes。
+
+### `src-abc-discussion-unequip-all-2023`
+
+- `title_id`: `auto-brawl-chess`；标题：Unequip all equipment button suggestion
+- URL：https://steamcommunity.com/app/951480/discussions/0/3837675385322039638/
+- 作者 / 发布者：Steam Community player；发布：2023-05-26；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题正文可读。
+- 版本范围：2023 Steam player observation；`supports_claims`: `abc-unequip-all-request`, `abc-equipment-transition-friction`, `abc-forge-manual-unequip`
+- 限制：单帖建议，只证明该玩家换阵容 / Forge 前逐件卸装的摩擦；不代表普遍性、开发者确认、修复或所有版本。
+
+### `src-abc-discussion-journey-2-35-2023`
+
+- `title_id`: `auto-brawl-chess`；标题：Journey 2-35 just stupid
+- URL：https://steamcommunity.com/app/951480/discussions/0/3879348064927537159/
+- 作者 / 发布者：Steam Community player；发布：2023-10-30；唯一回复：2025-05；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题与唯一回复可读。
+- 版本范围：Journey 2-35 single-stage observation；`supports_claims`: `abc-journey-2-35-fixed-enemy`, `abc-three-second-immunity-stealth-report`, `abc-rat-conrad-norris-attempts`
+- 限制：只是一关与少量玩家尝试；不证明 Journey 整体难度、当前数值、最佳 counter 或总体账户门槛。
+
+### `src-abc-ios-review-feed-page-5-2022`
+
+- `title_id`: `auto-brawl-chess`；标题：iOS review feed page 5
+- URL：https://itunes.apple.com/us/rss/customerreviews/page=5/id=1495162677/sortby=mostrecent/json
+- 作者 / 发布者：Apple iTunes customer-review feed；历史捕获的精确 id/version 映射为 `8753906646` → `23.0.3`、`8735535885` → `23.0.2`、`8724083952` → `23.0.0`、`8711852090` → `22.0.1`、`8644307545` → `22.0.0`；访问：2026-09-04。
+- `published_or_updated`: 原 RSS 捕获中的 `-07:00` 日期范围为 2022-05-06–2022-06-08；换算北京时间后边界为 2022-05-07–2022-06-08。Apple 当前 recovery API 返回 UTC 日期，不能用它恢复缺失的 version 字段。
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：原 RSS 捕获包含所选 review 的正文、id、version 与 `-07:00` 日期；当前登记 RSS URL 仍返回 HTTP 200，但 feed/entries 已为空，不能把会话缓存当作唯一证据。
+- 当前可复核 recovery route：`https://apps.apple.com/api/apps/v1/catalog/us/apps/1495162677/reviews?platform=iphone&limit=10&l=en-US&sort=recent&offset={offset}`。`offset=200` 命中 `8753906646` / `8735535885`，`offset=210` 命中 `8724083952` / `8711852090`，`offset=220` 命中 `8644307545`；该 route 可交叉核验 5/5 正文、id 与 UTC 日期，但不返回 version。
+- 版本范围：2022 iOS v22.0.0–23.0.3 reviews；`supports_claims`: `abc-locked-unowned-low-stat-offers`, `abc-deck-filter-suggestion`, `abc-power-essence-elixir-coin-bottleneck`, `abc-journey-random-pool-friction`
+- 限制：固定到上述 id/version 对、日期边界与访问日；recovery API 不能替代原 RSS 的 version 证据；不建立总体评价、当前概率、P2W 定论或每种货币独立失败案例。
+
+### `src-abc-steam-review-matchmaking-176383868`
+
+- `title_id`: `auto-brawl-chess`；标题：Steam Review 176383868
+- URL：https://steamcommunity.com/profiles/76561198100905056/recommended/951480/
+- 作者 / 发布者：♡Sherrie♡ / Steam Community；发布：2024-10-05；访问：2026-09-04；发评时 2,439 分钟
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam review 正文与 playtime-at-review 可读。
+- 版本范围：2024 Steam player experience；`supports_claims`: `abc-account-power-matchmaking-confound`, `abc-level-equipment-warlord-opponent-gap`
+- 限制：单一玩家的账户战力 / 匹配观察，不证明总体 P2W、匹配算法、发生率或跨平台现状。
+
+### Auto Brawl Chess route audit
+
+- Steam App `951480` 当前确认 Panoramik Games LTD 开发 / 发行、Windows 正式版 2023-04-07；商店仅用于身份。iOS feed 使用 App id `1495162677`，不同平台 / 时期不静默合并。
+- 九篇 Help 页面逐字核对旧 article id 与 Wayback；统一登记为 `2022-origin / republished-or-migrated-2026 / historical`。另外六页 Hero Attributes、Ranked、Currency、Battles with clones、Equipment and Hero Summon、Forge 已读但功能重复，只留 route audit。
+- Gamer Empire 与 Pocket Gamer 全文读取；Zathong 和 Pocket Gamer 英雄表不登记。重复段落不冒充独立共识，Gamer Empire 当前文章的 2022 修改日也不能证明早期视频参考关系。
+- 十二段视频的 metadata、字幕或人工时间戳完整核对。`JB1jeMairy4` 最终是 Shaman / Beast 宽羁绊且第二，排除为 Elemental 构筑；`8I5nfPxhhek` 只登记可见 Artifact 候选；`WozJkkrWf2M` 只作新手规则旁证；`vitT8CLUD70` 无字幕，只使用六局名次和可见操作。
+- Google Play 官方 listing `https://play.google.com/store/apps/details?id=com.panoramik.autochess&hl=en` 的 app-level structured data 可直接复核 `versionName 39.0.7`，页面显示 `Updated on 2026-02-26`，What's New 重复 2024 Seasonal / Autofight 文案。它只提供 listing/update metadata，不提供 `versionCode`、binary artifact 或 hash，也不证明 2026 新玩法、当前数值或 meta。2023-04-17 账户不可迁移只限当时，不写成当前跨平台状态。
+- 2024 后检索主要收敛为旧视频、重复攻略、商店资料与泛化商业化抱怨；没有 current hero/equipment/synergy database、完整高端 meta 或代表性统计。继续来源不再改变 owner、counter、economy、version 或 failure 理解，故以 retained、非 anchor 停止。
+
+## Neon Auto Party
+
+以下来源只支撑 2024 Playtest 至 2025 Demo / 开发版历史机制。Steam main App `2679840`、Demo App `3394090` 与 Playtest App `2755360` 的商店 / App Details 仅用于身份，不进入 deep source。itch first-party `0.4.4` devlog 与 Steam Playtest `0.4.3` 大量同文，只留 route audit，不登记第二来源，也不证明 binary 相同。
+
+### `src-nap-playtest-update-1`
+
+- `title_id`: `neon-auto-party`；标题：Playtest Update 1
+- URL：https://store.steampowered.com/news/app/2755360/view/4552667757461204501
+- 个人作者：mail2ajr；开发 / 发行主体：Pew Times Three；发布 / 更新：2024-10-14 23:34:55Z；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文完整可读。
+- 版本范围：2024 Playtest Update 1；`supports_claims`: `nap-units-needed-per-upgrade-cap-three`, `nap-item-expertise`, `nap-actual-output-tooltip`, `nap-skill-tree-level-up-feedback`, `nap-ui-readability-interaction`, `nap-effect-resolution-liveness`
+- 限制：只建立早期 Playtest 的 Rank、item Expertise、逐单位 end-turn、tooltip 与修复节点；不能映射 Demo 精确 binary、当前数值或当前 meta。
+
+### `src-nap-playtest-0-2-0-offerings`
+
+- `title_id`: `neon-auto-party`；标题：Playtest Update 0.2.0
+- URL：https://store.steampowered.com/news/app/2755360/view/6491470391966433512
+- 个人作者：mail2ajr；开发 / 发行主体：Pew Times Three；发布 / 更新：2024-11-18 22:57:48Z；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文完整可读。
+- 版本范围：Playtest 0.2.0；`supports_claims`: `nap-offering-sale-economy`, `nap-offering-one-wave-counter`, `nap-stress-rework-origin`, `nap-fate-memory-viewer`
+- 限制：Offering、Fate viewer 与 Stress 边界只属于 0.2.0；后续 Rank 缩放、预览和 Stress 重做必须按各自版本记录。
+
+### `src-nap-playtest-small-fixes`
+
+- `title_id`: `neon-auto-party`；标题：Small fixes
+- URL：https://store.steampowered.com/news/app/2755360/view/4465977003046076417
+- 个人作者：mail2ajr；开发 / 发行主体：Pew Times Three；发布 / 更新：2024-11-20 01:12:46Z；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文完整可读。
+- 版本范围：0.2.0 后、0.3.1 前的 small-fixes 节点；`supports_claims`: `nap-buff-tooltip-fate-save`, `nap-ui-readability-interaction`
+- 限制：只确认 buff tooltip 与 Fate 保存修复，不证明 Fate 盲选问题已经闭合或后续版本没有回归。
+
+### `src-nap-playtest-0-3-1-tutorial`
+
+- `title_id`: `neon-auto-party`；标题：Update 0.3.1
+- URL：https://store.steampowered.com/news/app/2755360/view/521951078763200515
+- 个人作者：mail2ajr；开发 / 发行主体：Pew Times Three；发布 / 更新：2024-12-06 00:06:15Z；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文完整可读。
+- 版本范围：Playtest 0.3.1；`supports_claims`: `nap-one-time-tutorial-performance`, `nap-ui-readability-interaction`
+- 限制：一次性 tutorial 和 performance 改动属于一般教学 / 稳定性节点，不单独计为负面案例，也不建立完整当前 onboarding。
+
+### `src-nap-playtest-0-4-1-stress-machinist`
+
+- `title_id`: `neon-auto-party`；标题：Playtest Update 0.4.1
+- URL：https://store.steampowered.com/news/app/2755360/view/511823505908564833
+- 个人作者：mail2ajr；开发 / 发行主体：Pew Times Three；发布 / 更新：2025-02-08 00:03:09Z；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文完整可读。
+- 版本范围：Playtest 0.4.1；`supports_claims`: `nap-machinist-arm-sacrifice-companion-effect`, `nap-stress-rework`, `nap-actual-output-tooltip`
+- 限制：公告只证明 Machinist 在战斗中牺牲自己的 arm、提供一个以未说明方式帮助队伍的 companion，以及 Stress / actual damage-heal tooltip 改动；不证明 companion 的表示形态、动作所有权、目标、占位、持续或后续专项修复，也不支持具体 Pyromaniac / Zealot / Medic 构筑链。
+
+### `src-nap-playtest-0-4-2-merging-balance`
+
+- `title_id`: `neon-auto-party`；标题：Playtest Update 0.4.2
+- URL：https://store.steampowered.com/news/app/2755360/view/524209673376628795
+- 个人作者：mail2ajr；开发 / 发行主体：Pew Times Three；发布 / 更新：2025-02-20 00:33:50Z；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文完整可读。
+- 版本范围：Playtest 0.4.2；`supports_claims`: `nap-rank-merge-economy`, `nap-offering-rank-scaling`, `nap-artifact-holder-upgrade`, `nap-artifact-combine-transfer`, `nap-early-wave-tuning`, `nap-speed-concede-controls`, `nap-effect-resolution-liveness`
+- 限制：只证明一个带 Artifact 的 unit 被 combined into 另一个没有 Artifact 的 target unit 时，Artifact 会转给 target；target 已有 Artifact 时原 Artifact 去向未知。公告不支持 ranged-backline failure；Stun lock、6x / concede 与平衡改动不自动成为额外负面案例。
+
+### `src-nap-playtest-0-4-3-demo-bridge`
+
+- `title_id`: `neon-auto-party`；标题：Playtest update 0.4.3
+- URL：https://store.steampowered.com/news/app/2755360/view/511827488716882045
+- 个人作者：mail2ajr；开发 / 发行主体：Pew Times Three；发布 / 更新：2025-03-21 22:41:22Z；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文完整可读。
+- 版本范围：Playtest 0.4.3 immediately before Demo；`supports_claims`: `nap-playtest-demo-bridge`, `nap-second-level-stress-levels-unlock-fix`, `nap-fate-contrast`, `nap-ui-readability-interaction`
+- 限制：Stress 项只证明 second level 的 Stress levels 不会 unlock 已被修复；其他 display 变化属于独立 UI cluster。官方只说下周 Demo 基本同当时 Playtest，不证明二者 binary 相同；itch 0.4.4 同文也不作为第二独立来源。
+
+### `src-nap-main-0-5-2`
+
+- `title_id`: `neon-auto-party`；标题：Demo/Playtest Update 0.5.2
+- URL：https://store.steampowered.com/news/app/2679840/view/516339785321677393
+- 个人作者：mail2ajr；开发 / 发行主体：Pew Times Three；发布 / 更新：2025-06-27 21:55:38Z；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam main-App 官方公告正文完整可读。
+- 版本范围：2025 development version 0.5.2, after public Demo footage；`supports_claims`: `nap-fate-effects-preview`, `nap-skill-trees-complete`, `nap-wave-difficulty-tuning`, `nap-xp-scaling-first-run-next-runs-expectation`
+- 限制：早期难度项是 Rat / Rat King / Rat Catcher offensive stats、Cleave scaling、Rend 的 Bleed / hit damage 与 couple first-level waves；敌方 population 未记录为改动项。XP 项只证明 scaling 被调整，以及若首 run 能抵达一个 level 的 latter third，带入的 units 预计获得 level up 并帮助 next few runs；run-end 时点、逐 cleared wave、参战单位和 failed-run 结算语义来自 2025-06-24 反馈帖开发者回复，不由 0.5.2 建立。没有 post-0.5.2 practical source；全单位 skill trees 完整不是 Machinist 专项修复，公告也不证明 Fate / XP 调整效果、skill refund report 已修复、完整 main release 规则或 current meta。Community alias `516339785321677394` 正文相同，但本索引使用页面声明的 canonical URL。
+
+### `src-nap-video-demo-clear-2025`
+
+- `title_id`: `neon-auto-party`；标题：Can You Beat The Forsaken Sewers? | Neon Auto Party
+- URL：https://www.youtube.com/watch?v=sLsHRSXSmB8
+- 作者 / 发布者：Kilamonjaroo / YouTube；发布 / 更新：2025-04-03；时长：45:41；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：完整视频、可读解说 / 界面与人工时间戳动作日志均已核验。
+- 版本范围：2025-04-03 Demo after public Demo launch and before 0.5.2；exact binary unknown；`supports_claims`: `nap-demo-five-unit-capacity-run`, `nap-auto-battle-observation`, `nap-rank-card-threshold-practice`, `nap-general-economy-context`, `nap-artifact-holder-practice`, `nap-pyromaniac-shard-burn`, `nap-zealot-dodge-conversion`, `nap-medic-personal-barrier`, `nap-tactician-enchanted-blades-snapshot`, `nap-celestial-strength-next-two-reorder-snapshot`, `nap-chariot-empress-fate-snapshots`
+- 限制：一次通关不代表胜率或 meta；50 Gold 扩格、Artifact 数值、Boss 快照、Enchanted Blades、Celestial Strength 与 The Chariot / The Empress 都只是同一历史 Demo 快照，不能当前化或证明最优。Tactician 最终卡表、Enchanted Blades 完整作用和 Celestial Strength 的 ASR 施放者仍未闭合。
+
+### `src-nap-video-first-playtest-failure-2024`
+
+- `title_id`: `neon-auto-party`；标题：Neon Auto Party - Playtest
+- URL：https://www.youtube.com/watch?v=STJJQfUQ--U
+- 作者 / 发布者：Playful Playtests / YouTube；游玩：2024-10-19；发布：2024-10-24；时长：56:14；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：完整视频、可读解说 / 界面与人工时间戳动作日志均已核验。
+- 版本范围：first Playtest historical snapshot, exact build unknown；`supports_claims`: `nap-auto-battle-observation-boundary`, `nap-rank-card-threshold-practice`, `nap-fate-library-swap`, `nap-ranged-backline-auto-failure`, `nap-same-run-life-retry`, `nap-healing-first-position-observation`, `nap-actual-output-information-burden`
+- 限制：一次远程绕前排打后排、玩家报告无可用 focus option 且重试仍败只是一条 bounded failure；治疗倾向第一位置也不是同一 Nano Medic build 或通用 priority。录像未观察到的战中操作不能升级为 categorical unavailability，也不证明当前 targeting、普遍难度或任何单位长期强弱。
+
+### `src-nap-discussion-playtest-feedback-2024-2025`
+
+- `title_id`: `neon-auto-party`；标题：Playtest Feedback
+- URL：https://steamcommunity.com/app/2679840/discussions/0/4700161008283598723/
+- 作者 / 发布者：mail2ajr 发帖，Johnny Thunder、megazver 与开发者回复 / Steam Community；发帖：2024-10-15 23:10Z；6 replies through 2025-06-24 23:05Z；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题与全部六条回复可读；只有两名独立玩家加开发者，不能按回复数冒充六个样本。
+- 版本范围：2024 Playtest through 2025-06-24, entirely before 0.5.2；`supports_claims`: `nap-machinist-missing-skill-report`, `nap-skill-tree-zero-value-refund-report`, `nap-sighted-display-report`, `nap-lowest-difficulty-failures`, `nap-fate-blind-choice-critique`, `nap-failed-run-cleared-wave-xp-feedback`
+- 限制：对于 refund exploit、Machinist 与 Sighted 报告，开发者只说调查，不证明问题已修复；同帖 2025-06-24 的开发者回复另行建立 run end 按 cleared waves 给参战单位 XP、包括 failed run 的结算语义，但不证明三天后的 0.5.2 scaling 调整效果。也不把一名玩家重装后到 12/12 的路线称为最优或完整 build。
+
+### Neon Auto Party route audit
+
+- 身份只由 Steam 商店 / App Details 建立：main App `2679840` 为 Pew Times Three、Coming Soon / 2026；Demo App `3394090` 日期为 2025-03-25；Playtest App `2755360` 日期为 2024-08-29。商店页不进入 deep evidence。
+- itch first-party `0.4.4` devlog dated 2025-04-02 与 Steam Playtest `0.4.3` 大量同文；它只证明另一条官方发布路线，不登记为独立 source、不配成双源，也不证明 exact binary 相同。
+- Steam main / Demo / Playtest 的 Reviews 均为 0；General Discussions 共三帖，只有上述一帖包含 gameplay feedback，另两帖是 Steam Deck 技术问题；Guides、Curators、用户媒体和 itch comments 均为 0。
+- 十段目标视频逐一审核，只登记两段拥有足够可读解说 / 界面和完整时间戳动作链的长视频；其余过短、无字幕或版本无法约束，不用标题、缩略图和不可读画面凑双源。
+- 未进入 Discord，也未绕过 Reddit 或其他访问限制。继续路线已收敛为官方版本节点、两段历史实战和同一反馈主题，无法补出 post-0.5.2 practice、完整 current card database、main release rules 或代表性统计，故以 retained、非 anchor 停止。
+
+## Siralim Ultimate
+
+以下来源只研究《Siralim Ultimate》。Siralim 1/2/3 仅作谱系背景，Trial of the Gods CCG 排除。2.0 stable family 是主规则 / 实践面；3.0 只登记为 announced evidence gap。
+
+### `src-su-official-patch-0-4`
+
+- `title_id`: `siralim-ultimate`；标题：(Test Branch) Patch 0.4.0
+- URL：https://store.steampowered.com/news/app/1289810/view/3715990047698622723
+- 作者 / 发布者：Thylacine Studios；发布：2020-09-25；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：Ultimate 0.4 历史系统节点；`supports_claims`: `su-early-system-lifecycle`, `su-macro-artifact-spell-history`
+- 限制：只作 lifecycle，不把测试分支规则或数值 currentize 到 2.0。
+
+### `src-su-official-patch-0-6`
+
+- `title_id`: `siralim-ultimate`；标题：Patch 0.6.0
+- URL：https://store.steampowered.com/news/app/1289810/view/4090922416510250041
+- 作者 / 发布者：Thylacine Studios；发布：2020-12-21；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：Ultimate 0.6 历史节点；`supports_claims`: `su-realm-progression-lifecycle`, `su-combat-rule-iteration`
+- 限制：不与 2.0 同时表示为一套规则。
+
+### `src-su-official-patch-0-9`
+
+- `title_id`: `siralim-ultimate`；标题：Patch 0.9.0 (Test Branch)
+- URL：https://store.steampowered.com/news/app/1289810/view/4074045244008017181
+- 作者 / 发布者：Thylacine Studios；发布：2021-04-23；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：Ultimate 0.9 平衡 / endgame 历史节点；`supports_claims`: `su-damage-reduction-lifecycle`, `su-endgame-layer-lifecycle`
+- 限制：历史测试分支；不证明 2.0 当前数值或 meta。
+
+### `src-su-official-patch-0-10`
+
+- `title_id`: `siralim-ultimate`；标题：Patch 0.10.X
+- URL：https://store.steampowered.com/news/app/1289810/view/4032392655082730117
+- 作者 / 发布者：Thylacine Studios；发布：2021-06-29；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：完整长篇 Steam 公告可读。
+- 版本 / 作用：Ultimate 0.10 系统、平衡与修复节点；`supports_claims`: `su-action-trigger-lifecycle`, `su-macro-ui-lifecycle`
+- 限制：旧值只支持重做史，不覆盖后续 1.x / 2.0。
+
+### `src-su-official-patch-0-11`
+
+- `title_id`: `siralim-ultimate`；标题：Patch 0.11.0 (Test Branch)
+- URL：https://store.steampowered.com/news/app/1289810/view/4022264629326578185
+- 作者 / 发布者：Thylacine Studios；发布：2021-08-23；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：完整 Steam 公告可读。
+- 版本 / 作用：Ultimate 0.11 系统 / combat history 生命周期；`supports_claims`: `su-combat-log-lifecycle`, `su-trigger-guard-history`
+- 限制：测试分支历史；不能用来覆盖 2.0 fixed behavior。
+
+### `src-su-official-patch-0-12`
+
+- `title_id`: `siralim-ultimate`；标题：Patch 0.12.0 (Test Branch)
+- URL：https://store.steampowered.com/news/app/1289810/view/4971406207533868107
+- 作者 / 发布者：Thylacine Studios；发布：2021-11-15；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：完整 Steam 公告可读。
+- 版本 / 作用：Ultimate 0.12 endgame / Reliquary / Relic 历史节点；`supports_claims`: `su-relic-reliquary-lifecycle`, `su-piety-attunement-history`
+- 限制：只解释系统形成，不把旧 rank / effect 当 2.0 当前表。
+
+### `src-su-official-patch-1-1-1`
+
+- `title_id`: `siralim-ultimate`；标题：Patch 1.1.1
+- URL：https://store.steampowered.com/news/app/1289810/view/4587497456680615380
+- 作者 / 发布者：Thylacine Studios；发布：2022-07-28；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：1.1.1 稳定历史锚；`supports_claims`: `su-1-1-1-version-boundary`, `su-cleric-historical-context`
+- 限制：只与 1.1.1 Cleric 指南互证历史结构，不 currentize。
+
+### `src-su-official-development-resumed`
+
+- `title_id`: `siralim-ultimate`；标题：Siralim Ultimate has resumed development!
+- URL：https://store.steampowered.com/news/app/1289810/view/5759616966661462464
+- 作者 / 发布者：Thylacine Studios；发布：2024-04-24；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方开发公告正文可读。
+- 版本 / 作用：恢复开发与 2.0 前 ideas phase；`supports_claims`: `su-development-resumed`, `su-calm-mode-proposal-history`, `su-cross-platform-beta-rationale`
+- 限制：公告明确若干模式仍是 ideas phase；只有 2.0 notes / live 能证明落地。
+
+### `src-su-official-patch-2-0-notes`
+
+- `title_id`: `siralim-ultimate`；标题：Siralim Ultimate 2.0 Patch Notes
+- URL：https://www.thylacinestudios.com/blog/siralim-ultimate-2-0-patch-notes
+- 作者 / 发布者：Thylacine Studios；发布：2025-04-22；2.0 stable 交付：2025-08-25；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：官方博客全文可读。
+- 版本 / 作用：2.0 主规则锚；`supports_claims`: `su-calm-action-limits`, `su-extra-actions-third-effect`, `su-macro-all-manual-spells`, `su-ultra-speed`, `su-damage-reduction-per-effect-cap-80`, `su-stronger-barrier-failed-overwrite-fix`, `su-relic-origin-count-exemption`, `su-pending-resurrection-battle-end-fix`
+- 限制：Barrier 项只证明“更强的新 Barrier 有时未能覆盖较弱旧 Barrier”的缺陷被修复，不证明弱 Barrier 曾覆盖强 Barrier。Relic 项完整列出由 Relic 产生的 buff / debuff / minion、stat gain/loss、damage taken 与 healing received 不计入 creature 对应的每回合额度；attack / cast 不在列表。长 changelog 不证明 build 采用率；单项规则仍需 practice / maintained rule 互证。
+
+### `src-su-official-patch-2-0-live`
+
+- `title_id`: `siralim-ultimate`；标题：Siralim Ultimate 2.0 — Our Biggest Update Ever — Is Live!
+- URL：https://store.steampowered.com/news/app/1289810/view/1808601382579088
+- 作者 / 发布者：Thylacine Studios；发布：2025-08-25；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方上线公告可读。
+- 版本 / 作用：确认 2.0 已在 Steam Windows / Mac / Linux 上线并指向 full notes；`supports_claims`: `su-2-0-stable-live`, `su-2-0-feature-family`
+- 限制：摘要不能替代 full notes，也不证明所有平台 exact binary 或当前 meta。
+
+### `src-su-official-patch-3-0-announcement`
+
+- `title_id`: `siralim-ultimate`；标题：Patch 3.0 Announcement and Backer Shop Closure
+- URL：https://store.steampowered.com/news/app/1289810/view/1822556746161951
+- 作者 / 发布者：Thylacine Studios；发布：2026-01-23；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方公告可读。
+- 版本 / 作用：官方决定跳过 2.1、转做 3.0，并给出当时六月末 beta 目标；`supports_claims`: `su-2-1-skipped`, `su-3-0-announced-gap`
+- 限制：没有公开 release / beta delivery 证据；不能推断内部状态、3.0 规则或数值。
+
+### `src-su-wiki-combat`
+
+- `title_id`: `siralim-ultimate`；标题：Combat — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Combat&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：MediaWiki API 正文已读取；当前可能受 Cloudflare / 429 / 403 波动。
+- 版本 / 作用：2.0-era maintained rules；`supports_claims`: `su-action-cap-15`, `su-resurrection-cap-10`, `su-fixed-start-order`, `su-manual-action-set`, `su-damage-reduction-multiplicative`, `su-damage-reduction-per-effect-cap-80`
+- 限制：社区维护规则已列出上述常态计数类别与上限，并明确每个 `take less damage` effect 单独封顶 80%、不同来源按剩余伤害乘算（两个 80% 来源为 overall 96%）；这不是 overall 80% 全局上限。内部 resolver、事件归因和后续平台 / 版本连续性未闭合。
+
+### `src-su-wiki-buffs`
+
+- `title_id`: `siralim-ultimate`；标题：Buffs — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Buffs&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：2.0-era buff rules；`supports_claims`: `su-barrier-cap-200-highest-stat`, `su-barrier-stronger-only`, `su-barrier-not-health-damage`
+- 限制：不建立所有具体 spell / trait 的 ordering。
+
+### `src-su-wiki-creatures`
+
+- `title_id`: `siralim-ultimate`；标题：Creatures — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Creatures&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：fusion / creature ownership；`supports_claims`: `su-fusion-two-traits`, `su-primary-parent-race-personality-body`, `su-secondary-parent-class`, `su-base-stat-average`
+- 限制：不穷举 creature catalog 或 fusion 特例。
+
+### `src-su-wiki-artifacts`
+
+- `title_id`: `siralim-ultimate`；标题：Artifacts — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Artifacts&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：artifact holder、stat / property / trait / spell slots；`supports_claims`: `su-artifact-holder-layer`, `su-artifact-slot-opportunity-cost`
+- 限制：不提供当前完整物品表或最优配置。
+
+### `src-su-wiki-spell-gems`
+
+- `title_id`: `siralim-ultimate`；标题：Spell Gems — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Spell%20Gems&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：creature-bound spell action / charge / property layer；`supports_claims`: `su-spell-gem-holder`, `su-spell-charge-legality`, `su-macro-manual-permission`
+- 限制：不证明 Booze macro report 或所有 spell legality edge cases。
+
+### `src-su-wiki-realms`
+
+- `title_id`: `siralim-ultimate`；标题：Realms — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Realms&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：realm loop、God / object / encounter context；`supports_claims`: `su-realm-run-loop`, `su-favor-progression-context`
+- 限制：不证明 current reward rates 或 optimal route。
+
+### `src-su-wiki-realm-depth`
+
+- `title_id`: `siralim-ultimate`；标题：Realm Depth — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Realm%20Depth&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：Depth、Instability 与 Fortune 的不同推进轴；`supports_claims`: `su-depth-instability-fortune-separation`, `su-enemy-scaling-risk`
+- 限制：不提供代表性玩家分布、掉率或 build success rate。
+
+### `src-su-wiki-reliquary`
+
+- `title_id`: `siralim-ultimate`；标题：Reliquary — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Reliquary&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：Relic、Piety、attunement、rank / upgrade owner；`supports_claims`: `su-relic-holder-layer`, `su-piety-relic-commitment`, `su-antiquarian-relic-context`
+- 限制：不证明 Antiquarian / Relic meta 或最优 rank 路线。该维护页正文写 `Hanti & Jiti`，但图片文件名写 Jihi；与 2.0 视频 UI 的 `Hanti & Jihi` 并列保留，不能静默统一拼写。
+
+### `src-su-wiki-specializations`
+
+- `title_id`: `siralim-ultimate`；标题：Specializations — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Specializations&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：specialization / perk / unlock / switch ownership；`supports_claims`: `su-specialization-player-layer`, `su-perk-anointment-context`
+- 限制：不替代 2.0.37 guide 的实际注释，也不证明强度排序。
+
+### `src-su-wiki-projects`
+
+- `title_id`: `siralim-ultimate`；标题：Projects — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Projects&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：project、favor 与 unlock opportunity cost；`supports_claims`: `su-project-progression-budget`, `su-specialization-unlock-route`
+- 限制：不提供 current grind time 或最优 project 顺序。
+
+### `src-su-wiki-minions`
+
+- `title_id`: `siralim-ultimate`；标题：Minions — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Minions&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：master-bound minion type / stack / effect ownership；`supports_claims`: `su-minion-master-ledger`, `su-minion-not-board-population`
+- 限制：不穷举 minion catalog、stack cap 或全部 trigger order。
+
+### `src-su-wiki-debuffs`
+
+- `title_id`: `siralim-ultimate`；标题：Debuffs — Siralim Ultimate Wiki API
+- URL：https://siralimultimate.wiki.gg/api.php?action=parse&page=Debuffs&prop=wikitext&format=json
+- 作者 / 发布者：Siralim Ultimate Wiki contributors；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API 正文已读取；可能波动。
+- 版本 / 作用：Blighted 与 debuff / immunity / cleanse 边界；`supports_claims`: `su-blighted-state`, `su-debuff-immunity-counter`
+- 限制：不把所有 debuff 合成元素反应，也不证明 Shadowbringer build rate。
+
+### `src-su-compendium-2-0`
+
+- `title_id`: `siralim-ultimate`；标题：Siralim Ultimate Community Compendium (CSV export)
+- URL：https://docs.google.com/spreadsheets/d/1qvWwf1fNB5jN8bJ8dFGAVzC7scgDCoBO-hglwjTT4iY/export?format=csv&gid=0
+- 作者 / 发布者：Siralim Ultimate community maintainers；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：维护表 CSV 可读取。
+- 版本 / 作用：2.0-era 名称、trait / spell / perk / relic owner 交叉检查；`supports_claims`: `su-maintained-owner-crosscheck`, `su-2-0-content-reference`
+- 限制：不是官方规则，不作为采用率 / 强度 / 完整 catalog 副本；仅核对本 dossier 已选切片。
+
+### `src-su-guide-bargain-bin-2-0`
+
+- `title_id`: `siralim-ultimate`；标题：Bargain Bin Builds
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=3354461962
+- 作者 / 发布者：Drazhya / Steam Community；发布：2024-10-25；更新：2025-08-30；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整指南正文 / build sections 可读。
+- 版本 / 作用：明确以 2.0、RI2、约两倍 enemy level 与低资源为边界；`supports_claims`: `su-graveborn-build`, `su-necromancer-build`, `su-paladin-build`, `su-shadowbringer-build`, `su-specific-counter-packages`
+- 限制：一名作者的经济构筑集，不是 tier statistics；具体名称 / 数值不迁移。
+
+### `src-su-guide-hellknight-story-lategame`
+
+- `title_id`: `siralim-ultimate`；标题：Hellknight Autowin Story to Lategame
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=3173780803
+- 作者 / 发布者：mr.kitty / Steam Community；发布：2024-03-05；更新：2026-03-21；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整指南正文可读。
+- 版本 / 作用：story→postgame 的招募、fusion、artifact、spell 与 boss-counter replacement path；`supports_claims`: `su-hellknight-progression-build`, `su-recruitment-replacement-path`
+- 限制：跨版本更新的单作者路线；不把标题“Autowin”当保证、胜率或 2.0 唯一解。
+
+### `src-su-guide-cleric-ri5-1-1-1`
+
+- `title_id`: `siralim-ultimate`；标题：Post-story RI5 Cleric guide - From Mendicant to Cardinal [1.1.1.]
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2811963801
+- 作者 / 发布者：Firlefanz / Steam Community；发布：2022-05-25；更新：2024-03-23；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整指南正文可读。
+- 版本 / 作用：1.1.1 historical actual-healing → Abnegation build，maximum Health 只作恢复 headroom；`supports_claims`: `su-cleric-historical-build`, `su-action-cap-indirect-damage-failure`
+- 限制：只作生命周期参考，不覆盖 2.0 当前数值、counter 或 meta。
+
+### `src-su-guide-specializations-2-0-37`
+
+- `title_id`: `siralim-ultimate`；标题：Character Specialization Guide
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2190265173
+- 作者 / 发布者：gay moth aunt 与 Zack（协作者）/ Steam Community；发布：2020-08-08；更新：2025-09-16；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整指南可读；正文声明 current as of 2.0.37。
+- 版本 / 作用：specialization、perk、Anointment 及 Cleric / Graveborn / Hellknight / Antiquarian 等规则 / notes；`supports_claims`: `su-specialization-2-0-37`, `su-anointment-lifecycle`, `su-current-cleric-structure`, `su-antiquarian-relic-structure`
+- 限制：维护型社区指南，不是官方数值库或强度统计。
+
+### `src-su-video-cleric-beginner-2-0`
+
+- `title_id`: `siralim-ultimate`；标题：Beginner-Friendly Cleric - Siralim Ultimate
+- URL：https://www.youtube.com/watch?v=yBRRtknrGiM
+- 作者 / 发布者：Most Insane Builds / YouTube；发布：2025-09-12；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频页面与可读字幕 / 解说已核验。
+- 版本 / 作用：2.0 launch-era beginner-accessible Cleric recipe；`supports_claims`: `su-current-cleric-accessible-recipe`, `su-actual-recovery-abnegation`, `su-dreams-ice-defense-parallel`, `su-low-anointment-nether-stone-entry`
+- 限制：Abnegation 读取 actual Health recovered，并让随机敌人承受恢复量 50% 的伤害；Dreams of Ice 的 heal → Defense 是并行生存支路，maximum Health 只扩大可恢复上限。视频几乎无 Anointment / Nether Stone 且实测普通战，但不是 fresh-account / 正常前期独立复现：画面有 Tier 50 boots、约 1.86–1.95M Health 与 artifact trait grind。RI5 仅 `might be possible`，少量未优化测试 `wonky`；Boss / False God 只有适配建议、未实测。它与 2.0.38 Undying 帖是不同队伍，不能合并为同一导出或 current meta。
+
+### `src-su-video-warlord-antiquarian-2-0`
+
+- `title_id`: `siralim-ultimate`；标题：Warlord Antiqurian - Siralim Ultimate
+- URL：https://www.youtube.com/watch?v=yq-4aAvtc3M
+- 作者 / 发布者：Most Insane Builds / YouTube；发布：2025-10-03；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频页面与可读字幕 / 解说已核验。
+- 版本 / 作用：2.0-era Warlord Antiquarian / Relic-heavy Gate 实战；`supports_claims`: `su-warlord-antiquarian-build`, `su-hanti-jihi-last-ancients-relic-copy`, `su-provoke-enemy-attack-relic-loop`, `su-relic-max-health-heal-damage-readers`, `su-muse-tune-gate-counter`
+- 限制：视频 2.0 UI 写 `Hanti & Jihi`，maintained wiki 正文写 `Hanti & Jiti`、图片文件名又写 Jihi；实战按 UI 记 Jihi并保留拼写冲突。Last of the Ancients 让其余五只 creature 各装备该 Relic 的一个副本，不是复制 trait / effect。作者口述可打 RI5，实际录制 Gate；Muse / Tune 分别在 Gate 中被判不可行，长战有剪辑，`100% Gate win rate` 只是作者回忆。Rank 70 是 bearer 承受的 attack damage 降低 50%，不覆盖 spell / indirect damage。大量 Reliquary 高 rank 投入混杂，不能隔离正常养成 ROI、Antiquarian 单层贡献、使用率或最优 Relic。
+
+### `src-su-video-shadowbringer-setup-2-0`
+
+- `title_id`: `siralim-ultimate`；标题：Shadowbringer Setup - Siralim Ultimate Gameplay Stream
+- URL：https://www.youtube.com/watch?v=9lwRCTsipE8
+- 作者 / 发布者：Ic0n Gaming / YouTube；发布：2025-09-01；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频页面与可读字幕 / 解说已核验。
+- 版本 / 作用：2.0 launch-era RD493 / maximum 593 / RI0 gentle test；`supports_claims`: `su-shadowbringer-attack-heal-blighted-build`, `su-shadowbringer-same-setting-robustness`, `su-shadowbringer-weapon-spell-proc-instability`, `su-shadowbringer-respawn-stall`
+- 限制：视频始终使用同一设定；前几个 encounter 可用，后续不同敌包 / 长战暴露低输出、特定武器 spell-slot proc 不稳与 respawn 拖延，不是进入更深层的 scaling test，也不证明全部 Blighted trigger 不稳。作者只要求 stats / damage 持续增长；resurrection-safe finisher 是项目侧待验证推论。不得与 realm-rule 讨论拼成同一队伍或用后者的错误因果替视频解释。
+
+### `src-su-video-extreme-stat-gain-2-0`
+
+- `title_id`: `siralim-ultimate`；标题：Extreme Stat Gainings - Siralim Ultimate
+- URL：https://www.youtube.com/watch?v=Z2SrV0U4ZAM
+- 作者 / 发布者：Most Insane Builds / YouTube；发布：2026-02-04；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：视频页面与可读字幕 / 解说已核验。
+- 版本 / 作用：公开 stable 仍为 2.0 family 时的 5740-NG / Rank 100 Relic / stat-share 压力测试；`supports_claims`: `su-rank-100-relic-stat-share-high-gain`, `su-scientific-notation-range-risk`, `su-relic-suspected-bug-observation`, `su-seed-potentiality-anti-retrigger-guard`
+- 限制：画面只证明爆炸式、exponential-looking 增长至科学计数法；作者随后说 gain 变 flat，未建立数学指数公式。`suspected buggy` 是 7:49 / 8:12 的口述怀疑，没有官方诊断、复现、公式或修复；`1e205` 和多数战 one-shot 只是作者回忆 / 经验，不是当前画面或统计。Seed of Potentiality 明示其产生的 stats 不再触发 on-stat-gain effects，故不能声称已证实自反馈或无界递归。
+
+### `src-su-discussion-necromancer-2-0`
+
+- `title_id`: `siralim-ultimate`；标题：Necromancer issues.
+- URL：https://steamcommunity.com/app/1289810/discussions/0/679608596889082014/
+- 作者 / 发布者：ashensizzlor、blizzcarsten 等 / Steam Community；发布：2025-11-19；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：OP 与回复正文可读。
+- 版本 / 作用：2.0-era Necromancer 实践与第二作者方案；`supports_claims`: `su-necromancer-minion-failure`, `su-speed-dodge-gap`, `su-minion-overinvestment-pivot`
+- 限制：两个玩家方案不形成共识；外链 Planner 只作导出载体，不登记为来源。
+
+### `src-su-discussion-shadowbringer-realm-rules`
+
+- `title_id`: `siralim-ultimate`；标题：I think I found a bug with the realm rules?
+- URL：https://steamcommunity.com/app/1289810/discussions/0/605296111014822021/
+- 作者 / 发布者：OP 与 HeraldOfOpera / Steam Community；发布：2025-10-19；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：完整短帖与回答可读。
+- 版本 / 作用：Shadowbringer / Blighted realm-rule 独立失败归因；`supports_claims`: `su-shadowbringer-false-causality`, `su-enemy-stat-scaling-reader`
+- 限制：一局观察；不证明 healing modifier bug、伤害公式、普遍强度或采用率。
+
+### `src-su-discussion-macros-question`
+
+- `title_id`: `siralim-ultimate`；标题：macros question
+- URL：https://steamcommunity.com/app/1289810/discussions/0/3274688023496201083/
+- 作者 / 发布者：Steam Community participants；发布：2022-04-10；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：OP 与回答可读。
+- 版本 / 作用：macro spell legality / no-valid-line 实践；`supports_claims`: `su-macro-spell-legality`, `su-macro-no-valid-line`
+- 限制：1.x-era 社区回答；不覆盖 2.0 UI 或所有 ethereal-spell edge cases。
+
+### `src-su-discussion-macro-priority`
+
+- `title_id`: `siralim-ultimate`；标题：how does the macro system work?
+- URL：https://steamcommunity.com/app/1289810/discussions/0/3196988242386085605/
+- 作者 / 发布者：Steam Community participants；发布：2021-11-22；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：OP 与规则回答可读。
+- 版本 / 作用：top-to-bottom、first-valid 与 catch-all fallback；`supports_claims`: `su-macro-top-down`, `su-macro-fallback`
+- 限制：社区解释，原帖作者也说不记得精确布局；不是官方 macro specification。
+
+### `src-su-discussion-ultra-input`
+
+- `title_id`: `siralim-ultimate`；标题：Auto press/hold E during battle ? Don't want to develop Carpal Tunnel
+- URL：https://steamcommunity.com/app/1289810/discussions/0/801215627149984262/
+- 作者 / 发布者：Premium、Zack 等 / Steam Community；发布：2026-03-10；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：完整主题与解决方式可读。
+- 版本 / 作用：2.0-era Ultra / Macro 仍需选择动作，控制器重绑 / 外部按键脚本是 workaround；`supports_claims`: `su-not-native-hands-off`, `su-ultra-input-boundary`
+- 限制：个人可访问性体验；不证明所有平台控制方案或官方拒绝原因。
+
+### `src-su-discussion-macro-export`
+
+- `title_id`: `siralim-ultimate`；标题：Macros
+- URL：https://steamcommunity.com/app/1289810/discussions/0/598535948591126621/
+- 作者 / 发布者：Steam Community OP；发布：2025-08-26；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：OP 正文可读。
+- 版本 / 作用：2.0 launch-era 跨存档 import / export 需求；`supports_claims`: `su-macro-portability-gap`
+- 限制：无回答的需求帖；不证明文件位置、格式或功能不存在于后续 build。
+
+### `src-su-discussion-booze-macro`
+
+- `title_id`: `siralim-ultimate`；标题：Booze Spell and Macros
+- URL：https://steamcommunity.com/app/1289810/discussions/0/563661399292819548/
+- 作者 / 发布者：Steam Community OP；发布：2026-07-05；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：OP 正文可读。
+- 版本 / 作用：Brewmaster 能手动施放但 macro list 未见 Booze 的回归观察；`supports_claims`: `su-booze-macro-missing-report`
+- 限制：单用户、无复现 / 回答 / exact binary；与 2.0 official rule 冲突时只保留 unresolved observation。
+
+### `src-su-discussion-barrier-removal`
+
+- `title_id`: `siralim-ultimate`；标题：starter necromancer tips?
+- URL：https://steamcommunity.com/app/1289810/discussions/0/601915153920898677/
+- 作者 / 发布者：ashensizzlor、HeraldOfOpera 等 / Steam Community；发布：2025-09-10；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：完整讨论可读。
+- 版本 / 作用：Holy Blast → maximum Barrier → Warp Reality removal / conversion，以及 postgame access boundary；`supports_claims`: `su-explicit-barrier-removal-damage-chain`, `su-barrier-counter-access`
+- 限制：社区给出的具体解法，不推广为所有 Barrier 或当前唯一 counter。
+
+### `src-su-discussion-barrier-health-damage`
+
+- `title_id`: `siralim-ultimate`；标题：On The Rocks not triggering Hunter's Season?
+- URL：https://steamcommunity.com/app/1289810/discussions/0/598536819815023319/
+- 作者 / 发布者：full stamina gaming、blizzcarsten、leqesai 等 / Steam Community；发布：2025-09-03；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：OP、sandbox retest 与回答可读。
+- 版本 / 作用：Barrier damage / zero damage 与 Health-damage / on-attack reader 分离；`supports_claims`: `su-barrier-not-health-trigger`, `su-battle-history-export-debug`
+- 限制：社区测试；具体 trait 组合不代表通用 build 或官方 ordering。
+
+### `src-su-discussion-undying-loop`
+
+- `title_id`: `siralim-ultimate`；标题：Undying nemesis enemies dead but battle isn't ending?
+- URL：https://steamcommunity.com/app/1289810/discussions/0/837249163025469598/
+- 作者 / 发布者：Danny ! 与回复者 / Steam Community；发布：2026-04-29；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：2.0.38 导出队伍、OP 与回复可读。
+- 版本 / 作用：heal / maximum-Health / timeline / Abnegation 长循环与 Undying 表面全死不结束共现；`supports_claims`: `su-current-cleric-loop`, `su-undying-battle-end-wait`, `su-current-cleric-second-author`
+- 限制：一支 2.0.38 队伍；回复称 heal loop 可 softlock，但无官方 / 内部 queue 诊断证明 exact blocker 或 pending-resurrection 因果，也不证明普遍性或所有 Undying 时序。
+
+### `src-su-discussion-failure-attribution`
+
+- `title_id`: `siralim-ultimate`；标题：Adjacency (and other ambiguities)
+- URL：https://steamcommunity.com/app/1289810/discussions/0/598536531263719892/
+- 作者 / 发布者：Anonymous Bosch、HeraldOfOpera、blizzcarsten / Steam Community；发布：2025-08-31；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：完整讨论可读。
+- 版本 / 作用：adjacent=左右、不 wrap，以及 combat sheet / history 缺少计算后 modifier 的归因负担；`supports_claims`: `su-adjacency-left-right`, `su-calculated-modifier-visibility-gap`, `su-battle-history-attribution-gap`
+- 限制：社区说明与体验；不建立伤害代数或完整 UI specification。
+
+### `src-su-review-hidden-caps-2026`
+
+- `title_id`: `siralim-ultimate`；标题：Steam Review 226282641
+- URL：https://steamcommunity.com/profiles/76561198024594636/recommended/1289810/
+- 作者 / 发布者：Steam user 76561198024594636；发布：2026-05-24；更新：2026-05-25；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / 固定 profile review 正文可读；记录时约 256 小时。
+- 版本 / 作用：复活、stat gain、damage event 等 caps 在投入后才被玩家发现的抱怨；`supports_claims`: `su-hidden-action-cap-complaint`, `su-build-investment-readability`
+- 限制：一篇负评；官方 / Wiki 只互证 cap 存在，不互证情绪、普遍性或所有 cap 清单。
+
+### `src-su-review-attribution-2025`
+
+- `title_id`: `siralim-ultimate`；标题：Steam Review 203377777
+- URL：https://steamcommunity.com/profiles/76561198020728468/recommended/1289810/
+- 作者 / 发布者：Steam user 76561198020728468；发布：2025-09-02；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / 固定 profile review 正文可读；记录时约 395 小时。
+- 版本 / 作用：明确反对把游戏称为无输入 autobattler，同时记录 sudden wipe 与读完 battle history 仍难定位 owner / modifier；`supports_claims`: `su-programmable-not-hands-off`, `su-battle-history-overload`, `su-failure-attribution-gap`
+- 限制：一篇高时长正评仍是个人经验；不代表全部玩家或测量日志事件量。
+
+### Siralim Ultimate route audit
+
+- Steam App `1289810` 与官方 News 仅用于产品身份和版本路由；EA announcement、1.0 release、商店、iOS / 主机页面没有新增机制功能，未登记。
+- Siralim 1/2/3 只进入 lineage map；它们的 rules / values 不进入 Ultimate。Trial of the Gods 是独立 CCG，排除。
+- Wiki.gg API 的 12 个 `api.php?action=parse...` 页面在研究时已读取；访问可能出现 Cloudflare / 429 / 403 波动，未绕过。Google CSV compendium 只作 2.0 owner / 名称交叉检查，不复制完整 catalog。
+- 四篇 Steam Guides 全文读取；`Bargain Bin` 提供 2.0 Graveborn / Necromancer / Paladin / Shadowbringer，Hellknight 提供 story→postgame replacement path，Cleric 固定为 1.1.1 历史，Specialization Guide 明示 current as of 2.0.37 并覆盖 current Cleric / Antiquarian。Planner 不登记。
+- 四段有可导出 ASR 的视频登记为 `video-transcript`：高阶存档上的 beginner-accessible Cleric recipe、实际录制 Gate 的 Warlord Antiquarian / Relic、固定 RD493 / maximum 593 / RI0 的 Shadowbringer robustness test，以及 5740-NG / Rank 100 stat-share 压力测试。每段只支持自己的版本、投入和实测对象。`Death Horde` 当前 `captionTracks=0`，且没有人工听读 / 画面时间戳日志；页面只保留为未登记 route，不能证明实战胜负或构筑闭环。Siegemaster 本轮也未取得足以新增独立 `Spell Gems Copy` counter 的可读字幕证据；弱 Paladin episode、其他无字幕视频与只有标题的路线仍不登记。
+- 社区包保留 11 个功能不同主题：Necro 第二作者、Shadow 独立归因、macro priority / legality / input / portability / Booze、Barrier conversion / Health-damage、Undying loop 与 attribution。帖子内导出数据只用于其论点，不把整套 build catalog 入库。
+- 3.0 转帖与社区猜测排除，只保留 2026-01-23 官方 announcement。公告曾以六月末 beta 为目标，但没有公开 delivery 证据，故主版本仍是 2.0 stable family。
+- 新增视频改变了 current 2.0 实践作者多样性，并把 Antiquarian 从系统 overlay 升级为具名 Warlord / Relic-heavy 闭环，但不能关闭 macro target binding、3.0 release、内部 resolver order、正常 Reliquary 养成 ROI 或代表性统计缺口，故停止于 45 个实质来源和 `anchor-retained`。
+
+## Backpack Hero
+
+以下资料严格区分 Early Access、1.0、2024 change list、2026 平台观察与 2023-09 historical ModDocs。游戏是手动回合制 inventory-grid roguelike；这些资料不证明自动战斗权限。
+
+### `src-bh-official-1-0-changes`
+
+- `title_id`: `backpack-hero`；标题：1.0: The Biggest Changes From Early Access
+- URL：https://store.steampowered.com/news/app/1970580/view/3889483182495755068
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-11-21；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：1.0 与 Early Access 的模式 / 内容边界；`supports_claims`: `bh-1-0-boundary`, `bh-character-system-overview`
+- 限制：不作为当前 item 数值、掉率或 meta 证明。
+
+### `src-bh-official-1-0-release`
+
+- `title_id`: `backpack-hero`；标题：Backpack Hero 1.0 OUT NOW!
+- URL：https://store.steampowered.com/news/app/1970580/view/3807291311740084328
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-11-14；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：1.0 public release 与 Story / Quick Game 边界；`supports_claims`: `bh-1-0-release`, `bh-mode-boundary`
+- 限制：发布日期不等于后续平台拥有相同 build。
+
+### `src-bh-official-enemy-rework`
+
+- `title_id`: `backpack-hero`；标题：New enemies, all encounters rebalanced, more player agency!
+- URL：https://store.steampowered.com/news/app/1970580/view/5561438382465842605
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-09-16；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：enemy intent、encounter counter 与 Curse 从敌方攻击移除；`supports_claims`: `bh-enemy-intent-rework`, `bh-curse-player-risk`
+- 限制：公告目标不证明所有玩家在 1.0 后都认为敌人可读或多样。
+
+### `src-bh-official-cr8-overheat`
+
+- `title_id`: `backpack-hero`；标题：Backpack Hero Mod Support and CR8 Update!
+- URL：https://store.steampowered.com/news/app/1970580/view/3648533079217030980
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-09-05；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：CR-8 Gear / Overheat 与 complex-combo guard；`supports_claims`: `bh-cr8-overheat`, `bh-simple-infinite-guard`
+- 限制：不证明消灭所有循环或当前组件表。
+
+### `src-bh-official-relic-redesign`
+
+- `title_id`: `backpack-hero`；标题：Ghostly items, redesigned relics, new events and more
+- URL：https://store.steampowered.com/news/app/1970580/view/3681181639282455807
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-08-11；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：Relic effects 全面重做；`supports_claims`: `bh-relic-redesign`
+- 限制：公告本身不证明 build-specific trade-off、reward opportunity cost、玩家接受度或官方动机；这些需社区实践另证。
+
+### `src-bh-official-relic-hotfix`
+
+- `title_id`: `backpack-hero`；标题：Relic Update Hotfix!
+- URL：https://steamcommunity.com/games/1970580/announcements/detail/6016298772062723549
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-08-14；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：save、CR-8 blank energy、Coral item creation、alignment，以及大量物品造成的 delay / performance 等 bugfix；`supports_claims`: `bh-relic-update-hotfix`, `bh-cr8-coral-alignment-fixes`, `bh-many-item-delay-performance`
+- 限制：它不证明旧 relic 因反馈回归；后者由 2023-09-16 enemy/relic restoration 公告支持。
+
+### `src-bh-official-magic-testing`
+
+- `title_id`: `backpack-hero`；标题：Magical Update on the Testing Branch!
+- URL：https://steamcommunity.com/games/1970580/announcements/detail/3727333390845264028
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-04-11；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方 Testing Branch 公告正文可读。
+- 版本 / 作用：Mana network 与 magic-system 历史；`supports_claims`: `bh-mana-connected-network`, `bh-magic-testing-branch`
+- 限制：Testing Branch 数值不 currentize。
+
+### `src-bh-official-curse-redesign`
+
+- `title_id`: `backpack-hero`；标题：Curse Update on the Testing Branch!
+- URL：https://steamcommunity.com/games/1970580/announcements/detail/3692431219059903215
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-04-24；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方 Testing Branch 公告正文可读。
+- 版本 / 作用：Curse 全面重做；`supports_claims`: `bh-curse-redesign`, `bh-curse-risk-lifecycle`
+- 限制：不把测试分支规则合并到 1.0。
+
+### `src-bh-official-cursed-shiv-hotfix`
+
+- `title_id`: `backpack-hero`；标题：Curse Hotfix 1
+- URL：https://steamcommunity.com/games/1970580/announcements/detail/3692431219061835220
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-04-24；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方 hotfix 正文可读。
+- 版本 / 作用：Cursed Shiv 从无限使用修为每回合一次；`supports_claims`: `bh-cursed-shiv-rate-limit`, `bh-recursion-guard`
+- 限制：只证明这一历史 guard，不代表所有 curse item。
+
+### `src-bh-official-charm-hotfix-2`
+
+- `title_id`: `backpack-hero`；标题：Curse Hotfix 2
+- URL：https://store.steampowered.com/news/app/1970580/view/5133583099814343525
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-04-25；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方 hotfix 正文可读。
+- 版本 / 作用：明确 Charmed enemies 不再产生 hazards / curse，且总在未 Charmed enemies 前行动；`supports_claims`: `bh-charm-byproduct-owner`, `bh-charm-action-order`
+- 限制：测试期历史规则 / 修复，不证明 1.0 或 2026 当前实现、Charm 胜率或完整敌方队列。
+
+### `src-bh-official-tote-rework`
+
+- `title_id`: `backpack-hero`；标题：Tote's rework. Part 2...
+- URL：https://store.steampowered.com/news/app/1970580/view/3646264166721195180
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-02-25；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：Tote carving / draw / discard 重做历史；`supports_claims`: `bh-tote-rework`, `bh-carving-deck-ownership`
+- 限制：不覆盖 patch 1161 完整数值或当前牌池。
+
+### `src-bh-official-tote-hotfix`
+
+- `title_id`: `backpack-hero`；标题：Tote Re-design Hotfix
+- URL：https://steamcommunity.com/games/1970580/announcements/detail/3646264166723223652
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-02-23；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方 hotfix 正文可读。
+- 版本 / 作用：Tote attribution / discard / double-count 修复簇；`supports_claims`: `bh-tote-effect-attribution`, `bh-tote-resolver-fixes`
+- 限制：只作历史 lifecycle，不枚举所有修复。
+
+### `src-bh-official-pochette-rework`
+
+- `title_id`: `backpack-hero`；标题：Pochette's Rework is here!
+- URL：https://store.steampowered.com/news/app/1970580/view/3672161126002007884
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-03-10；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：Pochette 从多 inventory 向 pet pouch / Treat 重做；`supports_claims`: `bh-pochette-pet-pouch`, `bh-treat-ownership`
+- 限制：不证明当前所有宠物规则。
+
+### `src-bh-official-pochette-hotfix-1`
+
+- `title_id`: `backpack-hero`；标题：Pochette Re-design Hotfix
+- URL：https://steamcommunity.com/games/1970580/announcements/detail/3672161126003740525
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-03-10；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方 hotfix 正文可读。
+- 版本 / 作用：pet recall / sell / pouch interaction 修复；`supports_claims`: `bh-pochette-recall-fix`, `bh-pet-transaction-lifecycle`
+- 限制：与同日 rework 同源，不能当独立实践验证。
+
+### `src-bh-official-pochette-hotfix-2`
+
+- `title_id`: `backpack-hero`；标题：Pochette Re-design Hotfix 2
+- URL：https://steamcommunity.com/games/1970580/announcements/detail/3672161126007246878
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-03-11；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方 hotfix 正文可读。
+- 版本 / 作用：Pochette healing / pouch / pet follow-up fixes；`supports_claims`: `bh-pochette-heal-fix`, `bh-pet-owner-lifecycle`
+- 限制：不把多项修复拆成多个独立 negative family。
+
+### `src-bh-official-summer-burn-shield`
+
+- `title_id`: `backpack-hero`；标题：The Summer Event is here!
+- URL：https://steamcommunity.com/games/1970580/announcements/detail/4222769301365712300
+- 作者 / 发布者：Jaspel / Different Tales；发布：2024-06-27；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：Burn 在敌人失去 Shield 前结算的时序变更；`supports_claims`: `bh-burn-shield-order`, `bh-status-resolution-lifecycle`
+- 限制：不建立完整状态顺序或元素反应表。
+
+### `src-bh-official-hero-purse`
+
+- `title_id`: `backpack-hero`；标题：Meet The Heroes #1 - Purse
+- URL：https://store.steampowered.com/news/app/1970580/view/3693561465139000004
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-06-13；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：Steam 官方 News 正文可读。
+- 版本 / 作用：Purse 教学 / 基础 backpack 角色；`supports_claims`: `bh-purse-baseline`, `bh-standard-inventory-loop`
+- 限制：角色介绍不证明当前最优 build。
+
+### `src-bh-official-hero-satchel`
+
+- `title_id`: `backpack-hero`；标题：Meet The Heroes #2 - Satchel
+- URL：https://store.steampowered.com/news/app/1970580/view/3691310299714928537
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-06-20；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：Steam 官方 News 正文可读。
+- 版本 / 作用：instruments、Charm / pacifist 与四次角色原型重做历史；`supports_claims`: `bh-satchel-charm`, `bh-satchel-prototype-history`
+- 限制：该页不直接证明 Tetris / disconnected Pocket 规则；详细规则由 Wiki.gg 角色页支持。
+
+### `src-bh-official-hero-tote`
+
+- `title_id`: `backpack-hero`；标题：Meet The Heroes #3 - Tote
+- URL：https://store.steampowered.com/news/app/1970580/view/3685681434322559982
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-06-27；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：Steam 官方 News 正文可读。
+- 版本 / 作用：Carvings、角色专属小池与历史迭代；`supports_claims`: `bh-tote-character-rule`, `bh-tote-exclusive-pool`
+- 限制：该页不直接证明 hand / discard / banish；详细时序由 Wiki.gg 与 patch 1161 实战支持。
+
+### `src-bh-official-hero-cr8`
+
+- `title_id`: `backpack-hero`；标题：Meet The Heroes #4 - CR-8
+- URL：https://store.steampowered.com/news/app/1970580/view/3685682069208031769
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-07-04；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：Steam 官方 News 正文可读。
+- 版本 / 作用：Core beam 沿路径激活物品及 auto-battler aspiration；`supports_claims`: `bh-cr8-character-rule`, `bh-core-path-activation`
+- 限制：该页不证明完整 directional component 规则、后续 Overheat 或全部组件。
+
+### `src-bh-official-hero-pochette`
+
+- `title_id`: `backpack-hero`；标题：Meet The Heroes #5 - Pochette
+- URL：https://store.steampowered.com/news/app/1970580/view/3685682069218017851
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-07-11；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：Steam 官方 News 正文可读。
+- 版本 / 作用：Pets 是带各自 backpack / gimmick 的独立角色及 Treat 历史；`supports_claims`: `bh-pochette-character-rule`, `bh-pet-independent-owner`
+- 限制：该页不直接证明 recall 细节或 current Pet Bed build。
+
+### `src-bh-official-december-2024`
+
+- `title_id`: `backpack-hero`；标题：December Check-In!
+- URL：https://store.steampowered.com/news/app/1970580/view/533210077826385961
+- 作者 / 发布者：Jaspel / Different Tales；发布：2024-12-20；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方 News 正文可读。
+- 版本 / 作用：列出 Acorn Sap 10→12、42 项 rebalance 与 31 个新 Tote items 的 change list；`supports_claims`: `bh-december-change-list`, `bh-delivery-state-unresolved`
+- 限制：公告明确是 testing branch、未进 main；未证明其后来在何平台 / branch / build 交付，不得称 main 已落地。
+
+### `src-bh-official-tote-redesign-goal`
+
+- `title_id`: `backpack-hero`；标题：Major character reworks coming in February!
+- URL：https://store.steampowered.com/news/app/1970580/view/3650765858487150301
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-02-07；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方开发公告正文可读。
+- 版本 / 作用：移除 illusory spaces、提高 carving 出现 / 使用频率与按 carving / discard 读取；`supports_claims`: `bh-tote-redesign-goal`, `bh-carving-cadence`
+- 限制：早期 redesign 目标，不替代主分支 / patch 1161 实践。
+
+### `src-bh-official-pochette-main`
+
+- `title_id`: `backpack-hero`；标题：Pochette's Update moves to the main branch!
+- URL：https://store.steampowered.com/news/app/1970580/view/3711568253848870447
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-03-15；访问：2026-09-04
+- `source_type`: `official-patch`；`quality`: `A-primary`；可访问性：Steam 官方 main-branch 公告正文可读。
+- 版本 / 作用：Pochette pet-pouch / Treat rework 进入 main；`supports_claims`: `bh-pochette-main-delivery`, `bh-pet-rework-formal`
+- 限制：不证明后续 current 数值或所有 pet interaction。
+
+### `src-bh-official-december-dev-reply`
+
+- `title_id`: `backpack-hero`；标题：December Check-In developer branch reply
+- URL：https://steamcommunity.com/app/1970580/eventcomments/597387624656715349/?ctp=2#c597387765908265712
+- 作者 / 发布者：Gang$Robin `[developer]` / Steam Community；发布：2024-12-21；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：带 `[developer]` 标识的回复正文可读。
+- 版本 / 作用：明确 testing update 当时 PC-only，未完成 bugfix 不移 main；`supports_claims`: `bh-december-testing-only`, `bh-main-delivery-unproven`
+- 限制：不证明后来永远不进 main；截至检索未找到后续官方 delivery 公告。
+
+### `src-bh-official-cr8-dev-heat`
+
+- `title_id`: `backpack-hero`；标题：CR-8 Update developer Overheat reply
+- URL：https://steamcommunity.com/app/1970580/eventcomments/3818544339817946540/?ctp=1#c3818544339820507409
+- 作者 / 发布者：Gang$Robin `[developer]` / Steam Community；发布：2023-09-06 PDT；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：官方公告评论中的开发者回复可读。
+- 版本 / 作用：说明 infinite 未被删除而是变难，component traversal 增加 heat；`supports_claims`: `bh-overheat-design-intent`, `bh-component-heat`
+- 限制：不建立完整当前热量公式或所有组件例外。
+
+### `src-bh-official-cr8-dev-capacitor`
+
+- `title_id`: `backpack-hero`；标题：CR-8 Update developer capacitor reply
+- URL：https://steamcommunity.com/app/1970580/eventcomments/3818544339817946540/?ctp=1#c3818544693871766160
+- 作者 / 发布者：Gang$Robin `[developer]` / Steam Community；发布：2023-09-07 PDT；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：官方公告评论中的开发者回复可读。
+- 版本 / 作用：解释 capacitor 三次经过后触发攻击的历史示例；`supports_claims`: `bh-capacitor-three-pass`, `bh-complex-loop-retained`
+- 限制：2023 示例不 currentize 到 2026 live 数值。
+
+### `src-bh-guide-advanced-ordering`
+
+- `title_id`: `backpack-hero`；标题：(Advanced) - The inner workings of Backpack Hero
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2941982865
+- 作者 / 发布者：Lumios / Steam Community；发布：2023-03-04；更新：2023-09-17；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：trigger / item evaluation / execution ordering、King Cleaver 四邻接与同一 source-target 不重复激活 guard；`supports_claims`: `bh-trigger-ordering`, `bh-item-resolution-ownership`, `bh-king-cleaver-adjacency`, `bh-source-target-reactivation-guard`
+- 限制：Early Access 历史规则，不 currentize exact order / values。
+
+### `src-bh-guide-tote-win`
+
+- `title_id`: `backpack-hero`；标题：How to win as Tote
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=3044171715
+- 作者 / 发布者：Lumios / Steam Community；发布：2023-10-01；更新：2024-01-05；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：Tote 物品优先级、薄牌、删牌与商店路线；`supports_claims`: `bh-tote-item-priority`, `bh-tote-thin-deck`, `bh-tote-shop-removal`
+- 限制：正文仅一次提到 Wiz Buckler 物品名，不支持 Manastone network、Spiral Lance 或两者间转换；单作者跨 1.0 的实践也不是当前最优或掉率统计。
+
+### `src-bh-guide-robot-infinity`
+
+- `title_id`: `backpack-hero`；标题：Robot Infinity Guide机器人无限能量
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2856619146
+- 作者 / 发布者：Nekomancer / Steam Community；发布 / 更新：2022-08-31；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：历史 CR-8 infinite route；`supports_claims`: `bh-cr8-historical-infinite`, `bh-charge-loop-lifecycle`
+- 限制：早于 Overheat，不作 current recipe。
+
+### `src-bh-guide-curses-historical`
+
+- `title_id`: `backpack-hero`；标题：Curses: What They Are and How to Deal With Them
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2972002874
+- 作者 / 发布者：Gang$Robin / Steam Community；发布 / 更新：2023-05-06 UTC（当地页面可显示 2023-05-05）；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：2023 Curse 风险 / 处理实践；`supports_claims`: `bh-curse-historical-practice`, `bh-curse-version-drift`
+- 限制：后续从敌人攻击移除 Curse，不能 currentize。
+
+### `src-bh-guide-good-items`
+
+- `title_id`: `backpack-hero`；标题：General Guide to Good Items
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2949710513
+- 作者 / 发布者：chuckeroo777 / Steam Community；发布 / 更新：2023-03-20；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：Armor / block / damage item 的 practical comparison；`supports_claims`: `bh-shield-item-context`, `bh-space-opportunity-cost`
+- 限制：历史 item recommendations，不代表 current strength。
+
+### `src-bh-guide-first-run`
+
+- `title_id`: `backpack-hero`；标题：Your First Run
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2839909771
+- 作者 / 发布者：Lumios / Steam Community；发布：2022-07-24；更新：2023-12-01；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：Purse 基础循环、敌人 intent / counter 与资源优先级；`supports_claims`: `bh-purse-practice`, `bh-enemy-counter-practice`
+- 限制：跨版本维护，个别数值需版本化。
+
+### `src-bh-guide-disorder`
+
+- `title_id`: `backpack-hero`；标题：The Final Boss: Disorder
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=3130511146
+- 作者 / 发布者：Hailspork / Steam Community；发布：2024-01-03；更新：2024-06-10；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：Boss package 与 adaptation / anti-single-loop pressure；`supports_claims`: `bh-disorder-counter-package`, `bh-boss-adaptation-window`
+- 限制：一名作者的应对，不是胜率或完整 boss AI specification。
+
+### `src-bh-guide-cr8-mage`
+
+- `title_id`: `backpack-hero`；标题：CR-8 mage build
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2856253899
+- 作者 / 发布者：Illienna / Steam Community；发布 / 更新：2022-08-30；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：Core / Battery → Mana → Metallic Wand 历史 build；`supports_claims`: `bh-cr8-mage-build`, `bh-mana-conversion-owner`
+- 限制：早于 1.0 与 Overheat；只作 historical construction。
+
+### `src-bh-guide-cr8-components`
+
+- `title_id`: `backpack-hero`；标题：Cr-8 charge/component mechanics explained
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=2864740795
+- 作者 / 发布者：Macaco / Steam Community；发布 / 更新：2022-09-19；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：charge、component、direction / rotation / lifetime；`supports_claims`: `bh-cr8-component-rules`, `bh-directional-network`
+- 限制：历史实践，不证明当前所有 component。
+
+### `src-bh-guide-tote-softlock`
+
+- `title_id`: `backpack-hero`；标题：How to get softlocked as Tote
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=3372917016
+- 作者 / 发布者：Treforce；后续评论 Tai Gambol（comment `592890835473867708`）/ Steam Community；发布 / 更新：2024-11-28 UTC（当地页面可显示 2024-11-27）；后续评论：2025-03-06 04:51:58 UTC（PST 页面显示 2025-03-05 20:51:58）；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：2024 Guide 正文记录 Tote + Pocket Trader 无合法目标且没有可见 cancel 路径的历史 softlock observation；同页 2025-03-06 UTC 评论称 Pocket Trader 已可交易、因而不再 softlock，构成 later community counter-observation / version drift；`supports_claims`: `bh-trade-empty-target-softlock`, `bh-no-cancel-observation`, `bh-pocket-trader-later-trade-counterobservation`
+- 限制：历史正文与后续评论均是单页社区证据；评论不是官方修复说明，未给 exact build，也不能单独证明所有当前平台 / build。发生频率、内部根因与正式修复仍未知；preflight / rollback 是项目推论，不是原作已登记规则。
+
+### `src-bh-guide-serious-builds`
+
+- `title_id`: `backpack-hero`；标题：A completely serious guide to winning Backpack Hero
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=3285097067
+- 作者 / 发布者：A_Person / Steam Community；发布 / 更新：2024-07-08；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：generic Cleaver chain、zero-cost loops 与 four-long Bow / Arrow 空间构筑；`supports_claims`: `bh-generic-cleaver-chain`, `bh-four-long-bow-build`
+- 限制：标题语气和单作者 build 不构成 meta / adoption 证明。
+
+### `src-bh-guide-infinite-1187`
+
+- `title_id`: `backpack-hero`；标题：Tips, tricks and why not, infinite damage builds
+- URL：https://steamcommunity.com/sharedfiles/filedetails/?id=3416338722
+- 作者 / 发布者：Tantatals / Steam Community；发布 / 更新：2025-01-30；访问：2026-09-04
+- `source_type`: `strategy-guide`；`quality`: `C-practical`；可访问性：完整 Guide 正文可读。
+- 版本 / 作用：明确 `v1.0.1187.0`，多数构筑限定 Endless Dream；书面支持 Happy Buckler + Spiky Crown + Belt、CR-8 Belt / Coal / Spring Gem 与 Tote loops；`supports_claims`: `bh-infinite-builds-1187`, `bh-shield-belt-build`, `bh-cr8-written-loop`
+- 限制：单作者、主要 Endless Dream；不证明 2026 current、Quick Play 强度、掉率或无限执行的内部数学。
+
+### `src-bh-discussion-satchel-pockets`
+
+- `title_id`: `backpack-hero`；标题：Tip for Satchel runs
+- URL：https://steamcommunity.com/app/1970580/discussions/0/597398551725665723/
+- 作者 / 发布者：GoatMunchy 与回复者 / Steam Community；发布：2025-04-19 PDT；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题与回复正文可读。
+- 版本 / 作用：Feather Shiv、Coral、unique pockets、Charm / Block 生存路线；`supports_claims`: `bh-satchel-shiv-build`, `bh-pocket-count-payoff`
+- 限制：少量玩家实践，不是掉率、胜率或 exhaustive recipe。
+
+### `src-bh-discussion-tote-hard-mode`
+
+- `title_id`: `backpack-hero`；标题：Hard Mode 5 even possible as Tote?
+- URL：https://steamcommunity.com/app/1970580/discussions/0/597410286607274127/
+- 作者 / 发布者：Nathaniel Prime 与回复者 / Steam Community；发布：2025-08-30；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题与回复正文可读。
+- 版本 / 作用：Tote draw variance、deck dilution 与 Hard Mode failure；`supports_claims`: `bh-tote-hard-mode-friction`, `bh-draw-variance`
+- 限制：个体难度观察，不证明整体 balance。
+
+### `src-bh-discussion-tote-story-clear`
+
+- `title_id`: `backpack-hero`；标题：Tote clear for story (How i did it)
+- URL：https://steamcommunity.com/app/1970580/discussions/0/4038101970206078208/
+- 作者 / 发布者：TGCId 与回复者 / Steam Community；发布：2023-11-21 PDT；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题与回复正文可读。
+- 版本 / 作用：2023-11 thread 直接记录 Tote clear 中的 Manastones→Wiz Buckler Block、Token / Violet Energy→Energy，以及独立造成 5 AOE、由 Piggy Bank / Gold forging 增强的 Spiral Lance 模块；`supports_claims`: `bh-tote-clear-practice`, `bh-tote-pivot`, `bh-manastone-wiz-buckler-block`, `bh-token-violet-energy`, `bh-spiral-lance-five-aoe`, `bh-piggy-bank-gold-forging`
+- 限制：一次 clear 不是胜率或唯一路线；不证明跨版本数值不变、当前强度、模块掉率，或 Spiral Lance 读取 Mana / Block。
+
+### `src-bh-discussion-cr8-live-loop`
+
+- `title_id`: `backpack-hero`；标题：Super easy Infinite Cr-8
+- URL：https://steamcommunity.com/app/1970580/discussions/0/599640944183131255/
+- 作者 / 发布者：geminimourning 与回复者 / Steam Community；首帖：2025-01-05 11:41:09 pm PST（按页面时区标记）；相关 Quick Play / Story 回复：2025-01-26/27；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题与回复正文可读。
+- 版本 / 作用：2025 then-live / post-Overheat 条件化 charge loop，回复补 Quick Play / Story 可工作观察；`supports_claims`: `bh-cr8-post-overheat-loop`, `bh-overheat-not-universal`
+- 限制：一条 2025 社区路线，不证明 2026 current、无限数学、效率或 meta。
+
+### `src-bh-discussion-curse-criticism`
+
+- `title_id`: `backpack-hero`；标题：Im just not a fan of the new curse system.
+- URL：https://steamcommunity.com/app/1970580/discussions/0/6348431004275071430/
+- 作者 / 发布者：SimplyGnome 与回复者 / Steam Community；发布：2023-05-12；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题与回复正文可读。
+- 版本 / 作用：Curse 旧设计的 friction / agency 观察；`supports_claims`: `bh-curse-community-friction`, `bh-curse-agency`
+- 限制：不证明官方 rework 因果或 1.0 后意见。
+
+### `src-bh-discussion-cursed-shiv`
+
+- `title_id`: `backpack-hero`；标题：Cursed Shiv needs nerfed asap
+- URL：https://steamcommunity.com/app/1970580/discussions/0/3824161508156172881/
+- 作者 / 发布者：chuckeroo777 与回复者 / Steam Community；发布：2023-04-24；相关限额后回复：2023-04-27，comment `c3824162050996545810`；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：主题与回复正文可读。
+- 版本 / 作用：OP 在 hotfix 前要求限制；2023-04-27 follow-up 才对 once-per-turn limit 提出两次使用建议；`supports_claims`: `bh-cursed-shiv-limit-practice`, `bh-rate-limit-disclosure`
+- 限制：严格区分 hotfix 前 OP 与限额后回复；不以抱怨推断强度、采用率或实现错误。
+
+### `src-bh-discussion-platform-acorn`
+
+- `title_id`: `backpack-hero`；标题：What is current version number?
+- URL：https://steamcommunity.com/app/1970580/discussions/0/570415324159214773/
+- 作者 / 发布者：Berserk 与回复者 / Steam Community；发布：2026-06-18；关键 Epic / Steam 回复：2026-06-28/29；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：OP / comments 正文与版本号可读。
+- 版本 / 作用：Epic `1.0.1212`、Steam `1.0.1187.0` 均观察 Acorn Sap 10 Block；`supports_claims`: `bh-platform-version-observation`, `bh-december-delivery-conflict`
+- 限制：beta-branch 对应仅为第三人的推测；不证明公告承诺、branch 等价或根因。
+
+### `src-bh-video-tote-1161`
+
+- `title_id`: `backpack-hero`；标题：Understanding Tote | Backpack Hero - Character Study (Tote Guide) Part 1
+- URL：https://www.youtube.com/watch?v=oaDvf38H1Qk
+- 作者 / 发布者：Shlomi Arbeitman / YouTube；发布：2024-11-15 UTC（microformat 为 2024-11-16 +08）；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：本轮通过 CUA 导出英文 auto-ASR，486 秒逐时码全文已读；公开索引仍指向 YouTube 页面。
+- 版本 / 作用：draw 5、discard、banish、fixed items、Toss / reorganize、删牌价格；`supports_claims`: `bh-tote-1161-rules`, `bh-thin-deck-economy`
+- 限制：只绑定 patch 1161 与作者实战，不外推 current meta。
+
+### `src-bh-video-builds-live-2026`
+
+- `title_id`: `backpack-hero`；标题：Going Infinite! Infinity-Build Guide for Backpack Hero
+- URL：https://www.youtube.com/watch?v=67SyPtrQ69A
+- 作者 / 发布者：Shlomi Arbeitman / YouTube；发布：2026-01-17 UTC（microformat 为 2026-01-18 +08）；访问：2026-09-04
+- `source_type`: `video-transcript`；`quality`: `C-practical`；可访问性：本轮通过 CUA 导出英文 auto-ASR，878 秒逐时码全文已读；公开索引仍指向 YouTube 页面。
+- 版本 / 作用：2026 live patch、testing branch explicitly excluded；视频直接展示当前战斗中的 manual item use / action ordering，并展示 Shield→damage、CR-8 loops、Pochette Pet Bed 等；`supports_claims`: `bh-manual-item-use`, `bh-action-ordering`, `bh-shield-damage-build`, `bh-cr8-live-builds`, `bh-pochette-pet-bed`
+- 限制：少量展示构筑，不证明掉率、胜率、testing build 或全部 counter。
+
+### `src-bh-modd-trigger-677`
+
+- `title_id`: `backpack-hero`；标题：Trigger.schema.json — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/schemas/Trigger.schema.json
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit 官方 schema 可读。
+- 版本 / 作用：trigger、condition、effect、target 的历史容器关系；`supports_claims`: `bh-trigger-schema`, `bh-owner-target-separation`
+- 限制：README 明示 WIP / incomplete / incorrect；只作 changeset 677 snapshot。
+
+### `src-bh-modd-trigger-types-677`
+
+- `title_id`: `backpack-hero`；标题：TriggerType.schema.json — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/schemas/Enum/TriggerType.schema.json
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit 官方 schema 可读。
+- 版本 / 作用：onDiscard / onSummonPet / onReorganize / Overheat 等事件分离；`supports_claims`: `bh-trigger-type-taxonomy`, `bh-event-budget-separation`
+- 限制：不证明 1.0.1187 / 1.0.1212 完整 current enum。
+
+### `src-bh-modd-area-677`
+
+- `title_id`: `backpack-hero`；标题：Area.schema.json — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/schemas/Enum/Area.schema.json
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit 官方 schema 可读。
+- 版本 / 作用：adjacent / diagonal / row / column / connected / pocket 等谓词；`supports_claims`: `bh-area-taxonomy`, `bh-pocket-not-adjacency`
+- 限制：historical schema，不证明 current UI / resolver order。
+
+### `src-bh-modd-value-source-677`
+
+- `title_id`: `backpack-hero`；标题：ValueSource.schema.json — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/schemas/Enum/ValueSource.schema.json
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit 官方 schema 可读。
+- 版本 / 作用：Block / HP / Mana / pet / carving / pocket 等数值来源分账；`supports_claims`: `bh-value-source-taxonomy`, `bh-block-reader-ownership`
+- 限制：snapshot 不等于 current formula 或完整 source list。
+
+### `src-bh-modd-effect-target-677`
+
+- `title_id`: `backpack-hero`；标题：EffectTarget.schema.json — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/schemas/Enum/EffectTarget.schema.json
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit 官方 schema 可读。
+- 版本 / 作用：player / enemy / all enemies / frontmost / backmost 等 recipient；`supports_claims`: `bh-effect-target-taxonomy`, `bh-recipient-separation`
+- 限制：不证明 current targeting AI 或全部 target enum。
+
+### `src-bh-modd-modifier-677`
+
+- `title_id`: `backpack-hero`；标题：Modifier.schema.json — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/schemas/Modifier.schema.json
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit 官方 schema 可读。
+- 版本 / 作用：modifier、area、distance、length、stackable 分离；`supports_claims`: `bh-modifier-not-output-owner`, `bh-modifier-scope`
+- 限制：historical schema，不证明 current internal implementation。
+
+### `src-bh-modd-value-changer-677`
+
+- `title_id`: `backpack-hero`；标题：ValueChanger.schema.json — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/schemas/ValueChanger.schema.json
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit 官方 schema 可读。
+- 版本 / 作用：source × multiplier + base 的链式读取；`supports_claims`: `bh-value-reader-chain`, `bh-explicit-conversion`
+- 限制：不外推当前数值或项目公式。
+
+### `src-bh-modd-item-schema-677`
+
+- `title_id`: `backpack-hero`；标题：item.schema.json — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/schemas/item.schema.json
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit 官方 schema 可读。
+- 版本 / 作用：`type[]`、`group[]`、`combat_effects[]`、`supported_characters[]` 正交数组与同 group 掉落偏置；`supports_claims`: `bh-item-orthogonal-taxonomy`, `bh-group-drop-bias`
+- 限制：README 明示 WIP / incomplete / incorrect；只作 pre-1.0 capability snapshot。
+
+### `src-bh-modd-base-exports-v3-677`
+
+- `title_id`: `backpack-hero`；标题：BaseGameExports Version 3 — ModDocs changeset 677
+- URL：https://github.com/BackpackHero/ModDocs/blob/69558c4826e8cff651a157d443c992ba53982e5b/docs/assets/BaseGameExports_Version3.zip
+- 作者 / 发布者：BackpackHero/ModDocs；commit author：BinaryCounter；提交：2023-09-04（`Update BaseGameExports to changeset 677`）；访问：2026-09-04
+- `source_type`: `official-rules`；`quality`: `A-primary`；可访问性：固定 commit ZIP 可列出并读取 JSON；未执行任何二进制。
+- 版本 / 作用：Swamp / Wiz / Tower Shield、Spiked Scale、Rapier、Bashing Shield 等真实正交样本；`supports_claims`: `bh-shield-cross-group-examples`, `bh-block-conversion-snapshot`
+- 限制：changeset 677 历史导出，不证明 1.0 / 2026 名称、数值或可获得性。
+
+### `src-bh-wikigg-relics`
+
+- `title_id`: `backpack-hero`；标题：Relics — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Relics&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 7079，2024-07-06；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Relic category / boss reward owner maintained cross-check；`supports_claims`: `bh-relic-category`, `bh-relic-build-binding`
+- 限制：维护页不是官方 patch authority，不证明 current exact effects 或 reward frequency。
+
+### `src-bh-wikigg-manastone`
+
+- `title_id`: `backpack-hero`；标题：Manastone — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Manastone&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 6803，2023-12-05；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Manastone connection / Mana network maintained cross-check；`supports_claims`: `bh-mana-stone-network`, `bh-mana-source-owner`
+- 限制：不证明 2026 current binary、build strength 或完整公式。
+
+### `src-bh-wikigg-purse`
+
+- `title_id`: `backpack-hero`；标题：Purse — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Purse&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 7141，2026-03-17；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Purse 当前维护型角色规则；`supports_claims`: `bh-purse-maintained`, `bh-standard-energy-backpack`
+- 限制：维护站不是官方 patch authority，数值仍需版本化。
+
+### `src-bh-wikigg-satchel`
+
+- `title_id`: `backpack-hero`；标题：Satchel — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Satchel&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 6342，2023-08-15；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Satchel pockets / shapes / Charm 当前维护型说明；`supports_claims`: `bh-satchel-maintained`, `bh-pocket-current-boundary`
+- 限制：不证明 Feather Shiv build rate 或最优性。
+
+### `src-bh-wikigg-tote`
+
+- `title_id`: `backpack-hero`；标题：Tote — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Tote&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 7143，2026-04-01；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Tote carving / deck / zone maintained rules；`supports_claims`: `bh-tote-maintained`, `bh-carving-zone-current-boundary`
+- 限制：与 patch 1161 视频版本不可无条件合并。
+
+### `src-bh-wikigg-cr8`
+
+- `title_id`: `backpack-hero`；标题：CR-8 — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=CR-8&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 7085，2024-09-16；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：CR-8 Core / charge / component maintained boundary；`supports_claims`: `bh-cr8-maintained`, `bh-cr8-not-normal-energy`
+- 限制：不替代 live-patch build evidence 或 internal resolver。
+
+### `src-bh-wikigg-pochette`
+
+- `title_id`: `backpack-hero`；标题：Pochette — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Pochette&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 6364，2023-08-19；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：pet / pouch / Treat / recall maintained boundary；`supports_claims`: `bh-pochette-maintained`, `bh-pet-owner-current-boundary`
+- 限制：不证明 Pet Bed route 的胜率或全部 pet catalog。
+
+### `src-bh-wikigg-armor`
+
+- `title_id`: `backpack-hero`；标题：Armor — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Armor&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 7076，2024-07-06；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Happy Buckler 与 Bashing Shield 的 maintained rule cross-check；`supports_claims`: `bh-happy-buckler-maintained`, `bh-bashing-shield-maintained`
+- 限制：维护页不是官方 patch notes；不证明 2026 binary 或 build strength。
+
+### `src-bh-wikigg-cursed-items`
+
+- `title_id`: `backpack-hero`；标题：Cursed Items — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Cursed_Items&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 7114，2025-07-05；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Spiky Crown 邻接触发、Spikes 与 self-damage cross-check；`supports_claims`: `bh-spiky-crown-maintained`, `bh-shield-loop-cost`
+- 限制：不证明掉率、最优布局或 testing-branch rules。
+
+### `src-bh-wikigg-accessories`
+
+- `title_id`: `backpack-hero`；标题：Accessories — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Accessories&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 7126，2025-08-18；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Pet Bed summon Sleep 与 Grapple 后排位移 cross-check；`supports_claims`: `bh-pet-bed-maintained`, `bh-grapple-maintained`
+- 限制：不证明 2026 exact binary、控制概率或完整 accessory pool。
+
+### `src-bh-wikigg-bestiary`
+
+- `title_id`: `backpack-hero`；标题：Bestiary — Backpack Hero Wiki.gg API
+- URL：https://backpackhero.wiki.gg/api.php?action=parse&page=Bestiary&prop=wikitext&format=json
+- 作者 / 发布者：Backpack Hero Wiki.gg contributors；修订：rev 7267，2026-08-15；访问：2026-09-04
+- `source_type`: `maintained-wiki`；`quality`: `B-maintained`；可访问性：API wikitext 可读。
+- 版本 / 作用：Defender 使其后方敌人不可选的 maintained counter；`supports_claims`: `bh-defender-target-protection`, `bh-pet-bed-counter`
+- 限制：维护页可能晚于视频并随编辑变化；不提供出现率或完整 AI 顺序。
+
+### `src-bh-review-relic-downside-2022`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 121551146
+- URL：https://steamcommunity.com/profiles/76561197986849246/recommended/1970580/
+- 作者 / 发布者：Steam user 76561197986849246；发布：2022-09-01；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读。
+- 版本 / 作用：Early Access relic downside、reward skip 与 backpack commitment 观察；`supports_claims`: `bh-relic-skip-community`, `bh-early-pivot-lock`
+- 限制：个人历史意见；analytics / developer motive 说法未由一手官方证实。
+
+### `src-bh-review-repeat-actions-2022`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 124626887
+- URL：https://steamcommunity.com/profiles/76561198015502624/recommended/1970580/
+- 作者 / 发布者：Steam user 76561198015502624；发布：2022-10-30；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读。
+- 版本 / 作用：build lock、repeat turn、enemy variety 与 space-cost observation；`supports_claims`: `bh-repeat-action-friction`, `bh-pivot-space-cost`, `bh-enemy-variety-historical`
+- 限制：一名 Early Access 玩家，不证明 1.0 结果或普遍性。
+
+### `src-bh-review-repeat-button-2022`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 129192906
+- URL：https://steamcommunity.com/profiles/76561197992107729/recommended/1970580/
+- 作者 / 发布者：Steam user 76561197992107729；发布：2022-12-24；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读。
+- 版本 / 作用：成形后重复点击与 repeat-last-turn 请求；`supports_claims`: `bh-manual-click-fatigue`, `bh-repeat-last-turn-request`
+- 限制：设计建议不是原作规则或已交付功能。
+
+### `src-bh-review-pivot-lock-2023`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 131392160
+- URL：https://steamcommunity.com/profiles/76561198012175855/recommended/1970580/
+- 作者 / 发布者：Steam user 76561198012175855；发布：2023-01-23；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读。
+- 版本 / 作用：backpack architecture lock 与敌人不能迫使适配的历史观察；`supports_claims`: `bh-pivot-lock-community`, `bh-enemy-adaptation-gap`
+- 限制：不能证明官方 enemy rework 的因果或后续效果。
+
+### `src-bh-review-controller-ui-2024`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 158814160
+- URL：https://steamcommunity.com/profiles/76561198080639461/recommended/1970580/
+- 作者 / 发布者：Steam user 76561198080639461；发布：2024-02-20；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读。
+- 版本 / 作用：controller UI overlap / misclick / reward loss 与 save complaint；`supports_claims`: `bh-controller-ui-integrity`, `bh-reward-loss-observation`
+- 限制：个体报告，无复现矩阵、根因或修复版本。
+
+### `src-bh-review-runtime-state-2024`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 171321707
+- URL：https://steamcommunity.com/profiles/76561198233963420/recommended/1970580/
+- 作者 / 发布者：Steam user 76561198233963420；发布：2024-08-02；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读；后续扩写。
+- 版本 / 作用：CR-8 / Satchel fragment misalignment、post-battle overlay、trade / reload / reward-state observation；`supports_claims`: `bh-runtime-state-integrity`, `bh-fragment-alignment-observation`
+- 限制：一名玩家的 bug 清单；不拆成大量 family，不采信猜测根因或他人 Discord 报告。
+
+### `src-bh-review-relic-specificity-2025a`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 187042045
+- URL：https://steamcommunity.com/profiles/76561198011444220/recommended/1970580/
+- 作者 / 发布者：Steam user 76561198011444220；发布：2025-02-03；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读。
+- 版本 / 作用：item bloat 与 build-specific boss relic skip；`supports_claims`: `bh-item-dilution-community`, `bh-relic-skip-community`
+- 限制：与另一 2025 review 同 family；不另计 negative 或推断全体玩家。
+
+### `src-bh-review-specificity-2025b`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 189485882
+- URL：https://steamcommunity.com/profiles/76561198043763719/recommended/1970580/
+- 作者 / 发布者：Steam user 76561198043763719；发布：2025-03-06；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读；记录时约 227 小时。
+- 版本 / 作用：后期 item specificity、build dilution、wizard-bag historical contrast 与 relic skip；`supports_claims`: `bh-late-item-specificity`, `bh-relic-build-binding`, `bh-mana-build-history`
+- 限制：个人跨时期记忆；不证明具体 patch 因果、current pool 或旧版更优。
+
+### `src-bh-review-reload-softlock-2025`
+
+- `title_id`: `backpack-hero`；标题：Steam recommendation 198072704
+- URL：https://steamcommunity.com/profiles/76561198033715772/recommended/1970580/
+- 作者 / 发布者：Steam user 76561198033715772；发布：2025-06-24；访问：2026-09-04
+- `source_type`: `detailed-review`；`quality`: `D-community`；可访问性：Steam Reviews API / fixed profile review 正文可读；记录时约 90 小时。
+- 版本 / 作用：reload softlock 与 achievement clarity observation；`supports_claims`: `bh-reload-softlock-community`, `bh-objective-readability`
+- 限制：无独立复现、版本号、根因或修复状态。
+
+### `src-bh-official-relic-survey`
+
+- `title_id`: `backpack-hero`；标题：Community Feedback
+- URL：https://store.steampowered.com/news/app/1970580/view/3648533079195009816
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-08-31；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：明确询问近期更新是否走错并承诺调整；`supports_claims`: `bh-relic-feedback-survey`, `bh-update-direction-review`
+- 限制：问卷不提供结果比例、代表性或具体改动因果。
+
+### `src-bh-community-relic-redesign-critique`
+
+- `title_id`: `backpack-hero`；标题：Relic redesign detailed event-comment critique
+- URL：https://steamcommunity.com/app/1970580/eventcomments/6490302633981360322/?ctp=3#c3806157798536195922
+- 作者 / 发布者：Monoxide1337 / Steam Community；发布：2023-08-15 PDT；访问：2026-09-04
+- `source_type`: `community-analysis`；`quality`: `D-community`；可访问性：长回复正文可读。
+- 版本 / 作用：relic 同质化、限制与空间玩法破坏的具体批评；`supports_claims`: `bh-relic-redesign-friction`, `bh-space-rule-negation`
+- 限制：一名玩家意见；不能单独建立官方动机或全体反馈。
+
+### `src-bh-official-curse-optional-reply`
+
+- `title_id`: `backpack-hero`；标题：Enemy rework developer Curse reply
+- URL：https://steamcommunity.com/app/1970580/eventcomments/5992658048668702701/?ctp=2#c5992658048673626265
+- 作者 / 发布者：Gang$Robin `[developer]` / Steam Community；发布：2023-09-17 PDT；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：官方公告评论中的开发者回复可读。
+- 版本 / 作用：确认重做后 Curse entirely optional / avoidable；`supports_claims`: `bh-curse-optional`, `bh-player-chosen-risk`
+- 限制：不定义全部箱子 / NPC 风险收益或后续 current content。
+
+### `src-bh-official-tote-crossitems-reply`
+
+- `title_id`: `backpack-hero`；标题：December Check-In developer Tote direction reply
+- URL：https://steamcommunity.com/app/1970580/eventcomments/597387624656715349/?ctp=2#c597387873064334715
+- 作者 / 发布者：Gang$Robin `[developer]` / Steam Community；发布：2024-12-22 PST；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：带 `[developer]` 标识回复正文可读。
+- 版本 / 作用：计划继续增加与 Carving 协同的 normal items、无完整机械重做计划；`supports_claims`: `bh-tote-cross-item-direction`, `bh-no-full-tote-redesign-plan`
+- 限制：testing-era future direction，不证明后续 main delivery。
+
+### `src-bh-official-story-testing`
+
+- `title_id`: `backpack-hero`；标题：Open Story Mode playtest is live now!
+- URL：https://store.steampowered.com/news/app/1970580/view/7307711673903117900
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-10-17；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：Story Mode tasks / unlock ramp 与 Haversack Hill；`supports_claims`: `bh-story-onboarding`, `bh-complexity-ramp`
+- 限制：testing history，不把任务 / 数值 currentize。
+
+### `src-bh-official-town-economy`
+
+- `title_id`: `backpack-hero`；标题：Haversack Hill – The Basics #1
+- URL：https://store.steampowered.com/news/app/1970580/view/3734106545308839135
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-10-25；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：food / material / treasure 资源与 building placement / efficiency adjacency；`supports_claims`: `bh-story-meta-economy`, `bh-town-spatial-economy`
+- 限制：不复制 town 数值、建筑表或邻接公式；此 adjacency 不等于战斗 item-grid。
+
+### `src-bh-official-town-layout`
+
+- `title_id`: `backpack-hero`；标题：Haversack Hill – The Basics #3
+- URL：https://store.steampowered.com/news/app/1970580/view/3807291311722309635
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-11-08；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：selling、research / unlocks、quests 与 Town Hall；`supports_claims`: `bh-selling-research-unlocks`, `bh-story-mode-layer`
+- 限制：不是战斗 item-grid 规则，也不直接证明 building adjacency。
+
+### `src-bh-official-quick-game-naming`
+
+- `title_id`: `backpack-hero`；标题：The Dungeons are still here!
+- URL：https://store.steampowered.com/news/app/1970580/view/3889483908317894810
+- 作者 / 发布者：Jaspel / Different Tales；发布：2023-11-29；访问：2026-09-04
+- `source_type`: `official-dev`；`quality`: `A-primary`；可访问性：Steam 官方公告正文可读。
+- 版本 / 作用：玩家找不到 classic mode 后解释 Start Quick Game 并考虑改名；`supports_claims`: `bh-quick-game-entry`, `bh-mode-label-readability`
+- 限制：不证明改名最终交付或 Story 接受度。
+
+### Backpack Hero route audit
+
+- Steam News API 175 个标题全筛；最终来源包登记 34 个官方公告 / 角色页 / 带开发者身份回复，其中包含 2023-04-25 `Curse Hotfix 2`。2024-12 change list 明确属于 PC testing-only、当时尚未进 main。
+- 17 个英文 Guide listing 全筛，登记 12 篇完整正文，包括明确固定 `v1.0.1187.0`、多数构筑于 Endless Dream 开发 / 测试的 Tantatals Guide；Discussions 按 CR-8、Tote、Pochette、Satchel、curse、difficulty 与版本差异逐页检索，登记 8 个 discussion / comment threads。
+- Steam Reviews API 逐条读取并登记 9 个长评；helpful、playtime 与重复意见不当代表性统计，negative families 去重。
+- Backpack Hero Wiki.gg 五个角色页以及 Armor、Cursed Items、Accessories、Bestiary、Relics、Manastone 共 11 个 API 页面已读；旧 Fandom deep-source records 已由这些维护页与版本固定 Guide 完全替代。
+- 官方 ModDocs 固定 commit `69558c4826e8cff651a157d443c992ba53982e5b` 登记 9 个记录：7 个 effect-model schema、1 个 item schema 与 1 个 BaseGameExports ZIP。README 明示 WIP / incomplete / incorrect，仅用于 2023-09 changeset 677 historical data model。
+- 两段可读 ASR 视频分别固定 patch 1161 和 2026 live patch / testing branch excluded。2025-11-30 视频只转述不可访问 Discord 消息且没有具体规则，不登记。
+- RPS、PC Gamer、GamingOnLinux 实际文章已读，但主要重复 identity / high-level premise，低于现有规则 + strategy + practice 包的信息增益，不登记。
+- 当前 85-source package 已闭合五角色操作语法、五条主构筑、正交 item / group / effect / owner schema、经济 / counter / failure 与 12 个生命周期 family。继续路线主要增加同类构筑、无字幕视频、重复评论或无法映射的版本内容，故停止于 `anchor-retained`。

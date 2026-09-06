@@ -181,6 +181,9 @@ public static partial class StatusDefinitionCompiler
                 report.Warn($"{label}: attribute modifier[{index}]: {warning}");
             if (result.Modifier is not null)
             {
+                AttributeMagnitudeSupport.Validate(result.Modifier.Magnitude,
+                    AttributeContextCapabilities.SourceAttribute | AttributeContextCapabilities.TargetAttribute |
+                    AttributeContextCapabilities.TeamCount | AttributeContextCapabilities.TraitValue, report, $"{label}: modifier[{index}]");
                 var key = (result.Modifier.Attribute, result.Modifier.SlotId);
                 if (!modifierKeys.Add(key))
                     report.Error($"{label}: duplicate attribute modifier projection '{key.Attribute}:{key.SlotId}'.");
@@ -237,6 +240,11 @@ public static partial class StatusDefinitionCompiler
             }
             ValidateEnum(item.EventKind, label, $"combat reactive binding[{index}] event kind", report);
             ValidateEnum(item.OwnerRole, label, $"combat reactive binding[{index}] owner role", report);
+            ValidateEnum(item.SourceKind, label, $"combat reactive binding[{index}] source kind", report);
+            ValidateEnum(item.DamageType, label, $"combat reactive binding[{index}] damage type", report);
+            if (item.FilterDamageType && item.EventKind is not (BattleCombatEventKind.DamageResolved or
+                BattleCombatEventKind.UnitDefeated or BattleCombatEventKind.UnitKilled))
+                report.Error($"{label}: combat reactive binding[{index}] damage-type filtering requires a damage or lethal-damage event.");
             ValidateEnum(item.EffectSourcePolicy, label,
                 $"combat reactive binding[{index}] effect-source policy", report);
             if (!IsReactiveEventKind(item.EventKind))
@@ -252,7 +260,10 @@ public static partial class StatusDefinitionCompiler
                     item.OwnerRole,
                     item.EffectSourcePolicy,
                     item.Priority,
-                    result.Binding));
+                    result.Binding,
+                    item.SourceKind,
+                    item.FilterDamageType,
+                    item.DamageType));
             }
         }
         if (authored.DurationKind == StatusDurationKind.Instant && reactive.Count > 0)
@@ -268,11 +279,11 @@ public static partial class StatusDefinitionCompiler
                 authored.Presentation.WhileActiveCue.ToString(),
                 authored.Presentation.RemovedCue.ToString(),
                 authored.Presentation.ReportLabel);
-        return new CompiledStatusDefinition(
+        var definition = new CompiledStatusDefinition(
             authored.StableId,
             authored.ResourcePath,
             authored.DisplayName,
-            Describe(authored),
+            string.Empty,
             authored.Behavior,
             authored.Disposition,
             authored.DurationKind,
@@ -294,6 +305,7 @@ public static partial class StatusDefinitionCompiler
             reactive.ToImmutable(),
             overflowTarget is null ? null : new CompiledStatusTransition(overflowTarget, authored.OverflowConsumeStacks),
             presentation);
+        return definition with { Description = StatusModelText.Describe(definition) };
     }
 
     private static bool IsReactiveEventKind(BattleCombatEventKind kind) => kind is
@@ -305,15 +317,6 @@ public static partial class StatusDefinitionCompiler
         BattleCombatEventKind.ShieldResolved or
         BattleCombatEventKind.UnitDefeated or
         BattleCombatEventKind.UnitKilled;
-
-    private static string Describe(StatusDefinition definition) => definition.Behavior switch
-    {
-        StatusBehaviorKind.DisableActions when definition.DurationKind == StatusDurationKind.TimedTicks =>
-            $"无法行动，持续 {definition.DurationTicks * BattleTiming.TickSeconds:0.##} 秒。",
-        StatusBehaviorKind.DamageMultiplier =>
-            $"伤害提高 {(definition.Magnitude - 1f) * 100f:0.#}%{(definition.DurationKind == StatusDurationKind.Permanent ? "，持续至本场战斗结束。" : $"，持续 {definition.DurationTicks * BattleTiming.TickSeconds:0.##} 秒。")}",
-        _ => definition.DisplayName
-    };
 
     private static void ValidateEnum<T>(T value, string label, string name, ValidationReport report) where T : struct, Enum
     {

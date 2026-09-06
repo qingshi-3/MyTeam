@@ -71,7 +71,7 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.Deployment.MoveRequested += MoveDeploymentUnit;
         _screens.Deployment.WithdrawRequested += WithdrawDeploymentUnit;
         _screens.Reward.ChoiceRequested += ClaimItem;
-        _screens.Reward.ContinueRequested += ShowTower;
+        _screens.Reward.ContinueRequested += SkipRunOffer;
         _screens.Recruitment.ChoiceRequested += ClaimRecruit;
         _screens.Recruitment.ConvertRequested += ConvertRecruit;
         _screens.Recruitment.ContinueRequested += SkipRecruitment;
@@ -95,6 +95,7 @@ public sealed class GameFlowCoordinator : IDisposable
 
     public void Dispose()
     {
+        _application()?.SetEquipmentEditingLocked(false);
         if (!_connected) return;
         _screens.MainMenu.NewRunRequested -= ShowHeroSelection;
         _screens.MainMenu.ContinueRequested -= ContinueRun;
@@ -110,7 +111,7 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.Deployment.MoveRequested -= MoveDeploymentUnit;
         _screens.Deployment.WithdrawRequested -= WithdrawDeploymentUnit;
         _screens.Reward.ChoiceRequested -= ClaimItem;
-        _screens.Reward.ContinueRequested -= ShowTower;
+        _screens.Reward.ContinueRequested -= SkipRunOffer;
         _screens.Recruitment.ChoiceRequested -= ClaimRecruit;
         _screens.Recruitment.ConvertRequested -= ConvertRecruit;
         _screens.Recruitment.ContinueRequested -= SkipRecruitment;
@@ -243,12 +244,24 @@ public sealed class GameFlowCoordinator : IDisposable
     private void ContinueRun()
     {
         if (App.ActiveRun is null) { ShowHeroSelection(); return; }
-        if (App.ActiveRun.PendingNode) OpenSelectedNode(); else ShowTower();
+        ShowTower();
     }
 
     internal void ShowTower()
     {
         if (App.ActiveRun is not { } run) { ShowMainMenu(); return; }
+        if (!string.IsNullOrEmpty(run.TerminalCompletionId))
+        {
+            var victory = run.TerminalVictory;
+            if (App.ResumeTerminalCompletion()) ShowResult(victory ? "登塔成功" : "征程结束", "终局记录已安全保存。");
+            else
+            {
+                _screens.Reward.ShowTerminalFailure("终局记录尚未保存，原征程已保留；修复存储问题后可重试，不会重复发放胜利奖励。");
+                Show(AppScreenId.Reward);
+            }
+            return;
+        }
+        if (run.PendingOffer is not null) { ShowPendingOffer(); return; }
         if (run.PendingNode) { OpenSelectedNode(); return; }
         _screens.Tower.Bind(App, _presentation.ChoiceCard, _presentation.SemanticIcons);
         Show(AppScreenId.Tower);
@@ -262,6 +275,7 @@ public sealed class GameFlowCoordinator : IDisposable
     internal void OpenSelectedNode()
     {
         if (App.ActiveRun is not { } run) { ShowMainMenu(); return; }
+        if (run.PendingOffer is not null) { ShowPendingOffer(); return; }
         switch (run.SelectedNode)
         {
             case TowerNodeType.Combat or TowerNodeType.Elite or TowerNodeType.Boss:
@@ -288,6 +302,7 @@ public sealed class GameFlowCoordinator : IDisposable
     internal void ShowDeployment()
     {
         if (_encounter is null) return;
+        App.SetEquipmentEditingLocked(false);
         _screens.Deployment.Bind(App, _encounter);
         Show(AppScreenId.Deployment);
     }
@@ -331,8 +346,17 @@ public sealed class GameFlowCoordinator : IDisposable
         if (_encounter is null) return;
         ResetPendingBattleFlow();
         var config = App.BuildBattleConfig(_encounter);
-        Show(AppScreenId.Battle);
-        _screens.Battle.StartBattle(App.Content, config, _encounter.Title, App.Settings.DefaultBattleSpeed);
+        App.SetEquipmentEditingLocked(true);
+        try
+        {
+            Show(AppScreenId.Battle);
+            _screens.Battle.StartBattle(App.Content, config, _encounter.Title, App.Settings.DefaultBattleSpeed);
+        }
+        catch
+        {
+            App.SetEquipmentEditingLocked(false);
+            throw;
+        }
     }
 
     internal void AcceptBattleResult(BattleResult result)
@@ -367,6 +391,7 @@ public sealed class GameFlowCoordinator : IDisposable
         }
 
         _battleResolutionCommitted = true;
+        App.SetEquipmentEditingLocked(false);
         _pendingSettlementMessage = string.Empty;
         if (resolution.Outcome != BattleOutcome.PlayerVictory)
         {
@@ -420,13 +445,13 @@ public sealed class GameFlowCoordinator : IDisposable
 
     internal void ShowRecruitment()
     {
-        _screens.Recruitment.BindRecruitment(App, _presentation.UnitChoiceCard, _presentation.SemanticIcons);
+        _screens.Recruitment.BindOffer(App, _presentation.ChoiceCard, _presentation.ItemChoiceCard, _presentation.SemanticIcons);
         Show(AppScreenId.Recruitment);
     }
 
     internal void ShowCombatReward()
     {
-        _screens.Reward.BindCombatReward(
+        _screens.Reward.BindOffer(
             App,
             _presentation.ChoiceCard,
             _presentation.ItemChoiceCard,
@@ -436,14 +461,12 @@ public sealed class GameFlowCoordinator : IDisposable
 
     private void ClaimRecruit(string stableId)
     {
-        if (!App.Recruit(stableId)) return;
-        App.FinishNonCombatNode();
-        ShowTower();
+        ResolveRunChoice(stableId);
     }
 
     private void ClaimItem(string stableId)
     {
-        if (App.GrantItem(stableId)) ShowTower();
+        ResolveRunChoice(stableId);
     }
 
     private void ConvertRecruit()
@@ -455,8 +478,7 @@ public sealed class GameFlowCoordinator : IDisposable
 
     private void SkipRecruitment()
     {
-        App.FinishNonCombatNode();
-        ShowTower();
+        SkipRunOffer();
     }
 
     internal void ShowShop()
@@ -471,29 +493,58 @@ public sealed class GameFlowCoordinator : IDisposable
 
     private void BuyItem(string stableId)
     {
-        var success = App.BuyItem(stableId);
-        ShowShop();
-        _screens.Shop.ShowPurchaseResult(success);
+        if (App.PendingOffer is not { } offer) return;
+        var result = App.ResolveOffer(offer.OfferId, stableId);
+        if (App.PendingOffer is null) ShowTower(); else ShowShop();
+        _screens.Shop.ShowDecisionResult(result);
     }
 
     private void LeaveShop()
     {
-        App.FinishNonCombatNode();
-        ShowTower();
+        SkipRunOffer();
     }
 
     private void ResolveEvent(bool risky)
     {
-        App.ResolveEvent(risky);
-        App.FinishNonCombatNode();
-        ShowTower();
+        ResolveRunChoice(risky ? "risky" : "safe");
     }
 
     private void ResolveRest(bool takeGold)
     {
-        App.Rest(takeGold);
-        App.FinishNonCombatNode();
-        ShowTower();
+        ResolveRunChoice(takeGold ? "gold" : "recover");
+    }
+
+    private void ShowPendingOffer()
+    {
+        if (App.PendingOffer is not { } offer) return;
+        if (offer.Kind == RunOfferKind.Shop) { ShowShop(); return; }
+        if (offer.Kind == RunOfferKind.Recruitment) { ShowRecruitment(); return; }
+        ShowCombatReward();
+    }
+
+    private void ResolveRunChoice(string choiceId)
+    {
+        if (App.PendingOffer is not { } offer) return;
+        var choice = System.Linq.Enumerable.FirstOrDefault(offer.Choices, candidate => candidate.StableId == choiceId);
+        var result = App.ResolveOffer(offer.OfferId, choiceId);
+        if (!result.Succeeded)
+        {
+            if (offer.Kind == RunOfferKind.Recruitment) _screens.Recruitment.ShowDecisionMessage(result.Message);
+            else _screens.Reward.ShowDecisionMessage(result.Message);
+            return;
+        }
+        var screen = offer.Kind == RunOfferKind.Recruitment ? _screens.Recruitment : _screens.Reward;
+        screen.ShowResolved(App, choice?.DisplayName ?? "选择已完成", result);
+    }
+
+    private void SkipRunOffer()
+    {
+        if (App.PendingOffer is not { } offer) { ShowTower(); return; }
+        var result = App.ResolveOffer(offer.OfferId, null);
+        if (result.Succeeded) ShowTower();
+        else if (offer.Kind == RunOfferKind.Shop) _screens.Shop.ShowDecisionResult(result);
+        else if (offer.Kind == RunOfferKind.Recruitment) _screens.Recruitment.ShowDecisionMessage(result.Message);
+        else _screens.Reward.ShowDecisionMessage(result.Message);
     }
 
     private void AbandonRun()
@@ -522,8 +573,11 @@ public sealed class GameFlowCoordinator : IDisposable
         Show(AppScreenId.Result);
     }
 
-    internal void Show(AppScreenId id) =>
+    internal void Show(AppScreenId id)
+    {
+        _screens.BindEquipmentManagement(App);
         _screens.Show(id, App.ActiveRun, App.Content, App.Rules);
+    }
 
     internal void SetEncounterForTesting(EncounterPlan encounter) => _encounter = encounter;
 

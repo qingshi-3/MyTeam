@@ -254,7 +254,7 @@ public partial class ContentContractSmoke : Node
         var service = new SaveService("tests/content-contract");
         var restored = service.Deserialize<ActiveRunDto>(service.Serialize(run)) ?? throw new InvalidOperationException("save deserialize");
         var restoredItem = restored.Items.SingleOrDefault();
-        if (restored.Version != 4 || restored.Roster.Single().InstanceId != "player-hero" ||
+        if (restored.Version != ActiveRunFormationSchema.CurrentVersion || restored.Roster.Single().InstanceId != "player-hero" ||
             restored.Deployment.Count != 18 ||
             restoredItem is null || restoredItem.InstanceId != "item-1" || restoredItem.ContentId != run.Items[0].ContentId ||
             restoredItem.Stacks != 2 || restoredItem.Charges != 3 || restoredItem.Roll != 4)

@@ -81,7 +81,8 @@ public sealed record TraitBattlePreparation(
 public sealed record TraitOwnerBinding(
     string RuntimeId,
     int Team,
-    BattleAttributeSet Attributes);
+    BattleAttributeSet Attributes,
+    string SourceInstanceId = "");
 
 public enum TraitBattleCompletionReason
 {

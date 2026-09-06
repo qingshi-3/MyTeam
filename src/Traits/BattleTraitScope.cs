@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using TowerAutobattler.Attributes;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.Traits;
 
@@ -15,11 +16,14 @@ public sealed class BattleTraitScope : IDisposable
     private TraitSnapshot _snapshot;
     private TraitSnapshot? _projectionSnapshot;
     private TraitBattleTransitionResult? _transition;
+    private readonly StatusGrantRuntimeContext? _grantContext;
+    private HashSet<string> _grants = new(StringComparer.Ordinal);
 
     public BattleTraitScope(
         string scopeId,
         TraitBattlePreparation preparation,
-        IEnumerable<TraitOwnerBinding> owners)
+        IEnumerable<TraitOwnerBinding> owners,
+        StatusGrantRuntimeContext? statusGrants = null)
     {
         if (string.IsNullOrWhiteSpace(scopeId))
             throw new ArgumentException("Trait Battle scope id is required.", nameof(scopeId));
@@ -30,6 +34,9 @@ public sealed class BattleTraitScope : IDisposable
         ScopeId = scopeId;
         SourceFingerprint = preparation.SourceFingerprint;
         _definitions = preparation.Definitions;
+        _grantContext = statusGrants;
+        if (statusGrants is null && _definitions.Any(item => item.Breakpoints.Any(tier => !tier.GrantedStatuses.IsDefaultOrEmpty)))
+            throw new ArgumentException("Trait passive grants require a Status grant context.", nameof(statusGrants));
         _contributions = preparation.Contributions;
         _snapshot = TraitSnapshotBuilder.Build(_definitions, _contributions);
         foreach (var owner in owners.OrderBy(owner => owner.RuntimeId, StringComparer.Ordinal))
@@ -45,6 +52,7 @@ public sealed class BattleTraitScope : IDisposable
     public string ScopeId { get; }
     public string SourceFingerprint { get; }
     public TraitSnapshot Snapshot => _snapshot;
+    public TraitSnapshot MagnitudeSnapshot => _projectionSnapshot ?? _snapshot;
     public bool IsCompleted => _transition is not null;
     public int LiveTierCount => _activeTiers.Count;
     public int LiveModifierHandleCount => _activeTiers.Values.Sum(state =>
@@ -161,7 +169,19 @@ public sealed class BattleTraitScope : IDisposable
                     current = new ActiveTierState(definition, nextBreakpoint);
                     _activeTiers.Add(key, current);
                 }
-                foreach (var owner in _owners.Values.Where(owner => owner.Team == key.Team)
+                var eligible = _owners.Values.Where(owner => owner.Team == key.Team &&
+                    (current.Breakpoint.TargetPolicy == TraitTargetPolicy.AllTeam ||
+                     nextValue!.Contributions.Any(input => input.OwnerRuntimeId == owner.RuntimeId ||
+                         (!string.IsNullOrWhiteSpace(owner.SourceInstanceId) && input.OwnerRuntimeId == owner.SourceInstanceId))))
+                    .OrderBy(owner => owner.RuntimeId, StringComparer.Ordinal).ToArray();
+                var eligibleIds = eligible.Select(owner => owner.RuntimeId).ToHashSet(StringComparer.Ordinal);
+                foreach (var stale in current.Handles.Keys.Where(id => !eligibleIds.Contains(id)).ToArray())
+                {
+                    foreach (var handle in current.Handles[stale]) current.Owners[stale].Attributes.Remove(handle);
+                    current.Handles.Remove(stale);
+                    current.Owners.Remove(stale);
+                }
+                foreach (var owner in eligible
                              .OrderBy(owner => owner.RuntimeId, StringComparer.Ordinal))
                 {
                     current.Owners[owner.RuntimeId] = owner;
@@ -169,6 +189,7 @@ public sealed class BattleTraitScope : IDisposable
                         current.Handles.Add(owner.RuntimeId, Apply(current, owner));
                 }
             }
+            RefreshGrants();
         }
         finally { _projectionSnapshot = null; }
     }
@@ -218,12 +239,36 @@ public sealed class BattleTraitScope : IDisposable
     private void RemoveAll(bool bestEffort)
     {
         Exception? failure = null;
+        try { if (_grants.Count > 0) _grantContext!.Replace(_grants.ToImmutableArray(), []); }
+        catch (Exception exception) { failure = exception; }
+        _grants.Clear();
         foreach (var state in _activeTiers.OrderByDescending(pair => pair.Key.Team)
                      .ThenByDescending(pair => pair.Key.TraitId, StringComparer.Ordinal).Select(pair => pair.Value))
             try { Remove(state, bestEffort); }
             catch (Exception exception) { failure ??= exception; }
         _activeTiers.Clear();
         if (!bestEffort && failure is not null) throw failure;
+    }
+
+    private void RefreshGrants()
+    {
+        if (_grantContext is null) return;
+        var desired = ImmutableArray.CreateBuilder<StatusApplicationRequest>();
+        foreach (var tier in _activeTiers.Values)
+        {
+            if (tier.Breakpoint.GrantedStatuses.IsDefaultOrEmpty) continue;
+            foreach (var id in tier.Handles.Keys.OrderBy(id => id, StringComparer.Ordinal))
+            {
+                if (!_grantContext.CanReceive(id)) continue;
+                foreach (var status in tier.Breakpoint.GrantedStatuses)
+                    desired.Add(new StatusApplicationRequest(status, id, id, _grantContext.Tick(),
+                        $"trait:{ScopeId}:{tier.Definition.StableId}:{tier.Breakpoint.Index}:{id}:{status.StableId}"));
+            }
+        }
+        var wanted = desired.Select(item => item.GrantId).ToHashSet(StringComparer.Ordinal);
+        _grantContext.Replace(_grants.Where(id => !wanted.Contains(id)).ToImmutableArray(),
+            desired.Where(item => !_grants.Contains(item.GrantId)).ToImmutableArray());
+        _grants = wanted;
     }
 
     private void ValidateAndAddOwner(TraitOwnerBinding owner)
@@ -261,12 +306,14 @@ public sealed class BattleTraitScope : IDisposable
         private readonly ImmutableArray<TraitContributionInput> _contributions;
         private readonly Dictionary<string, TraitOwnerBinding> _owners;
         private readonly Dictionary<TierKey, ActiveTierCheckpoint> _tiers;
+        private readonly HashSet<string> _grants;
 
         internal TraitStateCheckpoint(BattleTraitScope owner)
         {
             _scopeId = owner.ScopeId;
             _snapshot = owner._snapshot;
             _contributions = owner._contributions;
+            _grants = new HashSet<string>(owner._grants, StringComparer.Ordinal);
             _owners = new Dictionary<string, TraitOwnerBinding>(owner._owners, StringComparer.Ordinal);
             _tiers = owner._activeTiers.ToDictionary(
                 pair => pair.Key,
@@ -289,6 +336,7 @@ public sealed class BattleTraitScope : IDisposable
                 throw new InvalidOperationException("Trait checkpoint belongs to another or completed scope.");
             owner._snapshot = _snapshot;
             owner._contributions = _contributions;
+            owner._grants = new HashSet<string>(_grants, StringComparer.Ordinal);
             owner._owners.Clear();
             foreach (var pair in _owners) owner._owners.Add(pair.Key, pair.Value);
             owner._activeTiers.Clear();

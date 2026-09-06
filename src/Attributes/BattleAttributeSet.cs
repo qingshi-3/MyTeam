@@ -225,23 +225,7 @@ public sealed class BattleAttributeSet
 
     private static float EvaluateMagnitudeCore(
         CompiledAttributeMagnitude magnitude,
-        BattleAttributeMagnitudeContext context)
-    {
-        var value = magnitude switch
-        {
-            CompiledConstantMagnitude constant => constant.Value,
-            CompiledSourceAttributeMagnitude source => context.Source?.GetValue(source.Attribute) ??
-                throw new InvalidOperationException("Source-attribute magnitude has no source AttributeSet."),
-            CompiledTargetAttributeMagnitude target => context.Target?.GetValue(target.Attribute) ??
-                throw new InvalidOperationException("Target-attribute magnitude has no target AttributeSet."),
-            CompiledContextValueMagnitude invocation => context.ContextValue(invocation.Key),
-            CompiledTeamCountMagnitude count => context.TeamCount(count.CountKind, count.Team),
-            CompiledTraitValueMagnitude trait => context.TraitValue(trait.TraitId, trait.Team),
-            _ => throw new InvalidOperationException($"Unsupported compiled magnitude: {magnitude.GetType().Name}.")
-        };
-        if (!float.IsFinite(value)) throw new InvalidOperationException("Attribute magnitude resolved to a non-finite value.");
-        return value;
-    }
+        BattleAttributeMagnitudeContext context) => AttributeMagnitudeSupport.Evaluate(magnitude, context);
 
     private void EnsureSameScope(BattleAttributeSet? other)
     {

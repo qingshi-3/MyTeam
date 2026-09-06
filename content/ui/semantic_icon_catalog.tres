@@ -275,6 +275,24 @@ Key = &"tower.boss"
 Icon = ExtResource("40")
 PresentationRole = &"EnemyLabel"
 
+[sub_resource type="Resource" id="status_frost"]
+script = ExtResource("1")
+Key = &"status.frost"
+Icon = ExtResource("31")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="status_freeze"]
+script = ExtResource("1")
+Key = &"status.freeze"
+Icon = ExtResource("31")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="status_attack_speed"]
+script = ExtResource("1")
+Key = &"status.attack_speed"
+Icon = ExtResource("4")
+PresentationRole = &"DamageLabel"
+
 [resource]
 script = ExtResource("2")
-Entries = [SubResource("health"), SubResource("damage"), SubResource("shield"), SubResource("healing"), SubResource("mana"), SubResource("tactical_point"), SubResource("gold"), SubResource("time"), SubResource("kills"), SubResource("deaths"), SubResource("hero"), SubResource("melee"), SubResource("ranged"), SubResource("risk"), SubResource("loot"), SubResource("reach"), SubResource("role_vanguard"), SubResource("role_fighter"), SubResource("role_ranged"), SubResource("role_support"), SubResource("role_assassin"), SubResource("role_summoner"), SubResource("role_artillery"), SubResource("role_boss"), SubResource("faction_order"), SubResource("faction_desert"), SubResource("faction_undead"), SubResource("faction_beast"), SubResource("faction_machine"), SubResource("faction_frost"), SubResource("faction_neutral"), SubResource("faction_enemy"), SubResource("tower_combat"), SubResource("tower_elite"), SubResource("tower_recruitment"), SubResource("tower_shop"), SubResource("tower_event"), SubResource("tower_rest"), SubResource("tower_boss")]
+Entries = [SubResource("health"), SubResource("damage"), SubResource("shield"), SubResource("healing"), SubResource("mana"), SubResource("tactical_point"), SubResource("gold"), SubResource("time"), SubResource("kills"), SubResource("deaths"), SubResource("hero"), SubResource("melee"), SubResource("ranged"), SubResource("risk"), SubResource("loot"), SubResource("reach"), SubResource("role_vanguard"), SubResource("role_fighter"), SubResource("role_ranged"), SubResource("role_support"), SubResource("role_assassin"), SubResource("role_summoner"), SubResource("role_artillery"), SubResource("role_boss"), SubResource("faction_order"), SubResource("faction_desert"), SubResource("faction_undead"), SubResource("faction_beast"), SubResource("faction_machine"), SubResource("faction_frost"), SubResource("faction_neutral"), SubResource("faction_enemy"), SubResource("tower_combat"), SubResource("tower_elite"), SubResource("tower_recruitment"), SubResource("tower_shop"), SubResource("tower_event"), SubResource("tower_rest"), SubResource("tower_boss"), SubResource("status_frost"), SubResource("status_freeze"), SubResource("status_attack_speed")]

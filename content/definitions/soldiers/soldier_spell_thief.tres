@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_spell_thief"
+MaxMana = 90.0
+StartingMana = 20.0
 DisplayName = "窃术者"
 Description = "命中会短暂延缓敌人行动。"
 Role = 4

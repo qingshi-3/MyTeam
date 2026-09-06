@@ -5,4 +5,5 @@ namespace TowerAutobattler.Effects;
 [GlobalClass]
 public partial class DamageEffectSpec : EffectStepSpec
 {
+    [Export] public EffectDamageType DamageType { get; set; }
 }

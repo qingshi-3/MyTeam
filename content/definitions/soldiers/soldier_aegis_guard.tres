@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_aegis_guard"
+MaxMana = 80.0
+StartingMana = 20.0
 DisplayName = "曜盾卫"
 Description = "阻挡前线的重甲护卫。"
 Role = 0

@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_fire_breather"
+MaxMana = 90.0
+StartingMana = 10.0
 DisplayName = "烈焰吐息兽"
 Description = "缓慢但强力的范围火力。"
 Role = 6
@@ -17,6 +19,7 @@ RecruitCost = 10
 MaxHealth = 150
 AttackDamage = 36
 AttackRange = 4.2
+AttackDelivery = 2
 AttackCooldown = 2
 MoveInterval = 0.58
 Armor = 3

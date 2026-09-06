@@ -1389,7 +1389,7 @@ public partial class RelicContractSmoke : Node
             if (violation is not null)
                 throw new InvalidOperationException($"Battle scope directly references Run/Save authority in {path}: {violation}");
         }
-        Equal(ActiveRunFormationSchema.CurrentVersion, 4, "active-run schema version");
+        Equal(ActiveRunFormationSchema.CurrentVersion, 6, "active-run schema version");
     }
 
     private static RelicDefinition Authored(

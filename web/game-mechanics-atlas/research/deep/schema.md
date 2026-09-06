@@ -44,7 +44,7 @@ URL 必须唯一。搜索结果页不进入索引。视频只有在可读取字�
 
 ## Validation gates
 
-- 所有 65 个 roster id 有且仅有一个 dossier 文件。
+- 所有 66 个 roster id 有且仅有一个 dossier 文件。
 - retained 的来源功能类型满足门槛；anchor 的数量和来源类型满足锚点门槛。
 - 每个 anchor 至少有一套来源可核验的具名版本构筑；宏观经济线不冒充具体构筑。
 - evidence 的每个 source id 可解析且不属于 store/product/search。

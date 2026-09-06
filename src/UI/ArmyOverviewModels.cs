@@ -31,7 +31,8 @@ public sealed record ArmyOverviewRowViewModel(
     bool IsHero = false,
     IReadOnlyList<SemanticFact>? Facts = null,
     int TacticalPointCost = 0,
-    int GoldCost = 0);
+    int GoldCost = 0,
+    IReadOnlyList<ItemDefinition?>? EquipmentSlots = null);
 
 public static class ArmyOverviewFactory
 {
@@ -65,7 +66,12 @@ public static class ArmyOverviewFactory
                 definition.Portrait, Role: definition.Role, IsHero: true,
                 Facts: [UnitSemanticFacts.Health(instance.HealthRatio.ToString("P0")),
                     UnitSemanticFacts.Responsibility(definition.Role, includeLabel: false),
-                    UnitSemanticFacts.Reach(definition.AttackRange, includeLabel: false)]);
+                    UnitSemanticFacts.Reach(definition.AttackRange, includeLabel: false)],
+                EquipmentSlots: Enumerable.Range(0, rules.EquipmentSlotCapacity).Select(slotIndex =>
+                {
+                    var item = instance.Equipment.SingleOrDefault(item => item.SlotIndex == slotIndex);
+                    return item is null ? null : (ItemDefinition)Required(content, item.ContentId).Definition;
+                }).ToArray());
         }).ToArray();
 
         var items = run.Items.Select(instance =>
@@ -74,7 +80,12 @@ public static class ArmyOverviewFactory
             return new ArmyOverviewRowViewModel(definition.DisplayName, definition.Description,
                 $"{PlayerFacingText.DescribeItemRarity(definition.Rarity)} · 数量 {Math.Max(1, instance.Stacks)}",
                 Icon: definition.Icon ?? SemanticIcons.Catalog.ResolveIcon(SemanticIconKeys.Loot));
-        }).ToArray();
+        }).Concat(run.EquipmentInventory.Select(instance =>
+        {
+            var definition = (ItemDefinition)Required(content, instance.ContentId).Definition;
+            return new ArmyOverviewRowViewModel(definition.DisplayName, definition.Description,
+                "装备背包 · 尚未穿戴", Icon: definition.Icon);
+        })).ToArray();
 
         var tacticalCommands = run.EquippedTacticalCommandIds.Select((id, index) =>
         {
@@ -98,7 +109,8 @@ public static class ArmyOverviewFactory
         var population = RunPopulationPolicy.Evaluate(run, rules);
         var averageHealth = run.Roster.Count == 0 ? 0 : run.Roster.Average(hero => hero.HealthRatio);
         return new ArmyOverviewViewModel(averageHealth, deployed, population.CurrentPopulation,
-            population.EffectivePopulationCap, reserve, run.Items.Count, run.Gold,
+            population.EffectivePopulationCap, reserve, run.Items.Count + run.EquipmentInventory.Count +
+                run.Roster.Sum(hero => hero.Equipment.Count), run.Gold,
             rosterHeroes, items, tacticalCommands);
     }
 

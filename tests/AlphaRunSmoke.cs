@@ -9,6 +9,18 @@ using TowerAutobattler.Run;
 
 public partial class AlphaRunSmoke : Node
 {
+    private static readonly Vector2I[] DeploymentPriority =
+    [
+        new(2, 3), new(2, 2), new(2, 4),
+        new(1, 3), new(1, 2), new(1, 4),
+        new(0, 3), new(0, 2), new(0, 4),
+        new(2, 1), new(1, 1), new(0, 1),
+        new(2, 5), new(1, 5), new(0, 5),
+        new(2, 0), new(1, 0), new(0, 0)
+    ];
+    private static readonly IBattleFloorRuleRuntime DeploymentRule =
+        new ClearFloorRuleRuntime("alpha-auto-deploy", "自动部署", "中心优先的合法测试阵型");
+
     private ContentRegistry _content = null!;
     private CompiledGameProject _project = null!;
 
@@ -116,9 +128,29 @@ public partial class AlphaRunSmoke : Node
 
     private static void AutoDeploy(RunApplication app, int count)
     {
-        for (var slot = 0; slot < app.Rules.PhysicalDeploymentCeiling; slot++) app.ClearDeploymentSlot(slot);
         if (app.ActiveRun is null) return;
         var units = app.ActiveRun.Roster.OrderByDescending(unit => unit.HealthRatio).Take(count).ToArray();
-        for (var slot = 0; slot < units.Length; slot++) app.EquipDeployment(units[slot].InstanceId, slot);
+        // Continuous combat makes pre-combat placement materially affect objective control. Keep this
+        // end-to-end path intentional and centered instead of inheriting row-major top-edge test slots.
+        for (var index = 0; index < units.Length; index++)
+        {
+            var targetCell = DeploymentPriority[index];
+            var targetSlot = BattlefieldLayout.PlayerDeploymentSlot(targetCell);
+            if (app.ActiveRun.Deployment[targetSlot] == units[index].InstanceId) continue;
+            var command = FormationMoveCommand.RosterHero(units[index].InstanceId, targetCell);
+            var evaluation = app.EvaluateFormationCommand(command, DeploymentRule);
+            if (!evaluation.IsValid || !app.ApplyFormationCommand(command, DeploymentRule))
+                throw new InvalidOperationException($"alpha auto-deploy rejected {units[index].InstanceId}: {evaluation.RejectionReason}");
+        }
+        var retainedSlots = DeploymentPriority.Take(units.Length)
+            .Select(BattlefieldLayout.PlayerDeploymentSlot)
+            .ToHashSet();
+        for (var slot = 0; slot < app.ActiveRun.Deployment.Count; slot++)
+        {
+            var instanceId = app.ActiveRun.Deployment[slot];
+            if (retainedSlots.Contains(slot) || string.IsNullOrEmpty(instanceId)) continue;
+            // Reserve capacity may legally keep additional healthy heroes deployed.
+            app.WithdrawDeploymentUnit(instanceId);
+        }
     }
 }

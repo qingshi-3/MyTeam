@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
 using Godot;
-using TowerAutobattler.Content;
 using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
@@ -36,28 +34,19 @@ public partial class ShopScreenController : Control
         var run = app.ActiveRun ?? throw new InvalidOperationException("No active run for shop screen.");
         _gold.Bind(SemanticIconKeys.Gold, run.Gold.ToString(), "GoldValue");
         _status.Text = string.Empty;
-        var models = app.ShopChoices(91).Select(entry =>
-        {
-            var definition = (ItemDefinition)entry.Definition;
-            return new ChoiceCardViewModel(
-                entry.StableId,
-                definition.DisplayName,
-                definition.Description,
-                $"售价 {definition.Price}",
-                Icon: definition.Icon ?? icons.ResolveIcon(SemanticIconKeys.Loot),
-                FooterVariation: "HeroLabel",
-                FooterSemanticKey: SemanticIconKeys.Gold,
-                Template: itemTemplate,
-                ItemRarity: definition.Rarity,
-                ShopItem: true);
-        }).ToArray();
-        ChoiceCardListBinder.SyncChoices(_choices, models, choiceTemplate, OnPurchase);
+        RunOfferCardBinder.Sync(_choices, app, choiceTemplate, itemTemplate, icons, OnPurchase, shop: true,
+            inspected: text => { _status.Text = text; _status.ThemeTypeVariation = "ChoiceBody"; });
     }
 
     public void ShowPurchaseResult(bool success)
     {
-        _status.Text = success ? "购买成功。" : "金币不足。";
+        _status.Text = success ? "已收入军团 · 装备可在队伍整备或战前部署时穿戴。" : "未能购买：金币不足或保存失败，原物品与金币保持不变。";
         _status.ThemeTypeVariation = success ? "FeedbackSuccess" : "FeedbackFailure";
+    }
+    public void ShowDecisionResult(RunDecisionResult result)
+    {
+        _status.Text = result.Message;
+        _status.ThemeTypeVariation = result.Succeeded ? "FeedbackSuccess" : "FeedbackFailure";
     }
 
     private void OnPurchase(string stableId) => PurchaseRequested?.Invoke(stableId);

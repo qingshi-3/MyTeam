@@ -49,7 +49,8 @@ public sealed record CompiledAbilityDefinition(
     int MaxUses,
     int IntervalTicks,
     ImmutableArray<CompiledAbilityOperation> Operations,
-    CompiledAbilityPresentation? Presentation);
+    CompiledAbilityPresentation? Presentation,
+    AbilityAutomaticTargetKind AutomaticTarget = AbilityAutomaticTargetKind.CurrentEnemy);
 
 public sealed record CompiledAbilityLoadout(
     ImmutableArray<CompiledAbilityDefinition> Abilities)
@@ -88,8 +89,8 @@ public sealed record AbilitySummonReservation(
     int OperationIndex,
     AbilitySummonProfile Profile,
     int Sequence,
-    int CellX,
-    int CellY,
+    float PositionX,
+    float PositionY,
     float HealthMultiplier,
     float DamageMultiplier);
 
@@ -103,7 +104,8 @@ public sealed record AbilityCommitResult(
     bool Succeeded,
     AbilityActivationFailure Failure,
     string FailureReason,
-    ImmutableArray<string> ResolvedFacts);
+    ImmutableArray<string> ResolvedFacts,
+    float OwnerManaSpent = 0);
 
 public enum AbilityActivationFailure
 {
@@ -125,7 +127,7 @@ public sealed record AbilityActivationResult(
     AbilityActivationFailure Failure,
     string FailureReason,
     string AbilityId,
-    int ManaSpent,
+    float ManaSpent,
     int GoldSpent,
     ImmutableArray<string> ResolvedFacts);
 

@@ -29,6 +29,7 @@ public sealed class RunNodeResolutionService
     private readonly RunProgressionPersistenceService _persistence;
     private readonly RunBattlePreparationService _battlePreparation;
     private readonly RunRewardEconomyService _rewards;
+    private readonly RunDecisionService _decisions;
     private readonly HashSet<string> _appliedRelicTransitions = new(StringComparer.Ordinal);
 
     public RunNodeResolutionService(
@@ -36,13 +37,15 @@ public sealed class RunNodeResolutionService
         TowerGenerator tower,
         RunProgressionPersistenceService persistence,
         RunBattlePreparationService battlePreparation,
-        RunRewardEconomyService rewards)
+        RunRewardEconomyService rewards,
+        RunDecisionService decisions)
     {
         _project = project ?? throw new ArgumentNullException(nameof(project));
         _tower = tower ?? throw new ArgumentNullException(nameof(tower));
         _persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
         _battlePreparation = battlePreparation ?? throw new ArgumentNullException(nameof(battlePreparation));
         _rewards = rewards ?? throw new ArgumentNullException(nameof(rewards));
+        _decisions = decisions;
     }
 
     public IReadOnlyList<TowerNodeOption> CurrentOptions(ActiveRunDto? run) =>
@@ -54,16 +57,19 @@ public sealed class RunNodeResolutionService
 
     public bool SelectNode(ActiveRunDto? run, TowerNodeType type)
     {
-        if (run is null || run.PendingNode || !_tower.Options(run).Any(option => option.Type == type))
+        if (run is null || run.PendingNode || run.PendingOffer is not null || !string.IsNullOrEmpty(run.TerminalCompletionId) ||
+            !_persistence.ValidateRun(run) || !_tower.Options(run).Any(option => option.Type == type))
             return false;
-        run.SelectedNode = type;
-        run.PendingNode = true;
-        return _persistence.SaveActiveRun(run);
+        var working = _persistence.CloneRun(run);
+        working.SelectedNode = type;
+        working.PendingNode = true;
+        if (RunDecisionService.KindFor(type) is { } kind) working.PendingOffer = _decisions.CreateOffer(working, kind);
+        return _persistence.ValidateRun(working) && _persistence.TryPublish(working, run);
     }
 
     public void FinishNonCombatNode(ActiveRunDto? run)
     {
-        if (run is not null) _persistence.AdvanceFloor(run);
+        if (run?.PendingOffer is { } offer) _decisions.Resolve(run, offer.OfferId, null);
     }
 
     public void ResetRunLifecycle() => _appliedRelicTransitions.Clear();
@@ -73,6 +79,10 @@ public sealed class RunNodeResolutionService
         BattleResult result,
         EncounterPlan encounter)
     {
+        if (active is not null && !string.IsNullOrEmpty(active.TerminalCompletionId))
+            return _persistence.TryCompleteTerminal(active)
+                ? new(true, active.TerminalVictory, null, active.TerminalVictory ? BattleOutcome.PlayerVictory : result.Outcome, RunBattleResolutionFailure.None)
+                : new(false, false, active, result.Outcome, RunBattleResolutionFailure.PersistenceFailed);
         if (active is null || !active.PendingNode || !EncounterMatchesCurrent(active, encounter) ||
             !BattleIdentityMatches(active, result, encounter) || result.Outcome == BattleOutcome.Running ||
             result.RelicTransition is not { } transition ||
@@ -96,8 +106,11 @@ public sealed class RunNodeResolutionService
         // Battle→Run transition have been authenticated in full.
         if (result.Outcome != BattleOutcome.PlayerVictory)
         {
+            var terminal = _persistence.CloneRun(active);
+            terminal.TerminalCompletionId = Guid.NewGuid().ToString("N");
+            if (!_persistence.TryPublish(terminal, active) || !_persistence.TryCompleteTerminal(active))
+                return new(false, false, active, result.Outcome, RunBattleResolutionFailure.PersistenceFailed);
             ResetRunLifecycle();
-            _persistence.EndRun();
             return new RunBattleResolution(
                 true, false, null, result.Outcome, RunBattleResolutionFailure.None);
         }
@@ -124,7 +137,10 @@ public sealed class RunNodeResolutionService
         var finalVictory = working.FloorIndex == _project.Campaign.TotalFloors - 1 && encounter.IsBoss;
         if (finalVictory)
         {
-            _persistence.CompleteFinalVictory();
+            working.TerminalCompletionId = Guid.NewGuid().ToString("N");
+            working.TerminalVictory = true;
+            if (!_persistence.TryPublish(working, active) || !_persistence.TryCompleteTerminal(active))
+                return new(false, false, active, result.Outcome, RunBattleResolutionFailure.PersistenceFailed);
             ResetRunLifecycle();
             return new RunBattleResolution(
                 true, true, null, result.Outcome, RunBattleResolutionFailure.None);
@@ -132,6 +148,7 @@ public sealed class RunNodeResolutionService
 
         working.FloorIndex++;
         working.PendingNode = false;
+        working.PendingOffer = _decisions.CreateOffer(working, Project.RunOfferKind.CombatReward);
         if (!_persistence.TryPublish(working, active))
             return new RunBattleResolution(
                 false, false, active, result.Outcome, RunBattleResolutionFailure.PersistenceFailed);

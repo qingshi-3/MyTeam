@@ -4,9 +4,8 @@
 
 [node name="UnitMotionPresentationComponent" type="Node"]
 script = ExtResource("1")
-OneTimesCellSeconds = 0.24
-TwoTimesCellSeconds = 0.14
-FourTimesCellSeconds = 0.09
+AuthoritySampleSecondsAtOneTimes = 0.125
 MaximumVisualLagSeconds = 0.25
 MaximumFrameDeltaSeconds = 0.05
 MaximumQueuedWaypoints = 12
+MaximumSegmentsPerFrame = 16

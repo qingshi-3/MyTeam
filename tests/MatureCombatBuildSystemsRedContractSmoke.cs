@@ -2454,6 +2454,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
             authoritative.PopulationCapSources = copy.PopulationCapSources;
             authoritative.Deployment = copy.Deployment;
             authoritative.Items = copy.Items;
+            authoritative.EquipmentInventory = copy.EquipmentInventory;
             authoritative.Gold = copy.Gold;
             authoritative.FloorIndex = copy.FloorIndex;
             authoritative.BattleNumber = copy.BattleNumber;
@@ -2471,8 +2472,8 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
     {
         var currentVersion = (int)(typeof(ActiveRunFormationSchema)
             .GetField(nameof(ActiveRunFormationSchema.CurrentVersion))?.GetRawConstantValue() ?? 0);
-        if (currentVersion != 4)
-            throw new InvalidOperationException("active-run schema did not advance incrementally from v3 to v4");
+        if (currentVersion != ActiveRunFormationSchema.CurrentVersion)
+            throw new InvalidOperationException("active-run schema version mismatch");
 
         var rosterProperty = typeof(ActiveRunDto).GetProperty(nameof(ActiveRunDto.Roster)) ??
             throw new InvalidOperationException("active run has no persistent roster");
@@ -2509,7 +2510,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
             LegacyHeroCell = FormationCellDto.FromCell(new Vector2I(2, 5)),
             LegacyDeploymentCells = ActiveRunFormationSchema.CloneCells(BattlefieldLayout.Version2SoldierCells)
         };
-        if (!ActiveRunFormationSchema.TryMigrateToCurrent(legacy, compiledRules) || legacy.Version != 4 ||
+        if (!ActiveRunFormationSchema.TryMigrateToCurrent(legacy, compiledRules) || legacy.Version != ActiveRunFormationSchema.CurrentVersion ||
             legacy.Roster.Count != 2 || legacy.Roster[0].ContentId != "hero_banner_marshal" ||
             legacy.Roster[0].HealthRatio != .65f || legacy.CurrentPopulation != 7 ||
             legacy.Deployment.Count != 18 ||

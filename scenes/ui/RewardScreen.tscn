@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/UI/RewardScreenController.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/EquipmentLoadoutPanel.tscn" id="2"]
 
 [node name="RewardScreen" type="Control"]
 layout_mode = 3
@@ -46,6 +47,12 @@ theme_type_variation = &"SecondaryButton"
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 text = "转为金币"
+[node name="RewardEquipmentPanel" parent="Center/Panel/Layout" instance=ExtResource("2")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
 [node name="ContinueButton" type="Button" parent="Center/Panel/Layout"]
 theme_type_variation = &"PrimaryButton"
 custom_minimum_size = Vector2(0, 52)

@@ -64,6 +64,8 @@ public static partial class AbilityDefinitionCompiler
             abilities.Add(ability);
         }
         if (abilities.Count == 0) report.Error("Ability loadout must contain at least one ability.");
+        if (abilities.Count(ability => ability.Trigger == AbilityTriggerKind.ManaFull) > 1)
+            report.Error("Ability loadout may contain only one mana-full skill.");
         return new AbilityLoadoutCompilationResult(
             report.HasCoreErrors
                 ? null
@@ -136,6 +138,8 @@ public static partial class AbilityDefinitionCompiler
 
             if (loadoutAbilities.Count == 0)
                 loadoutReport.Error("Ability loadout must contain at least one ability.");
+            if (loadoutAbilities.Count(ability => ability.Trigger == AbilityTriggerKind.ManaFull) > 1)
+                loadoutReport.Error("Ability loadout may contain only one mana-full skill.");
             if (!loadoutReport.HasCoreErrors)
                 loadouts.Add(new CompiledAbilityLoadoutPublication(
                     loadout,
@@ -176,6 +180,8 @@ public static partial class AbilityDefinitionCompiler
             report.Error($"{label}: activation kind is invalid.");
         if (!Enum.IsDefined(authored.Trigger))
             report.Error($"{label}: trigger kind is invalid.");
+        if (!Enum.IsDefined(authored.AutomaticTarget))
+            report.Error($"{label}: automatic target kind is invalid.");
         if (authored.ManaCost < 0 || authored.GoldCost < 0 || authored.CooldownTicks < 0 || authored.MaxUses < 0)
             report.Error($"{label}: costs, cooldown, and maximum uses cannot be negative.");
         ValidateEntryContract(authored, label, report);
@@ -191,6 +197,12 @@ public static partial class AbilityDefinitionCompiler
                 if (operation is not null) operations.Add(operation);
             }
         ValidateAtomicOperationShape(operations, label, report);
+        if (authored.ActivationKind == AbilityActivationKind.Passive)
+        {
+            foreach (var operation in operations)
+                if (operation is not CompiledApplyStatusAbilityOperation passive || !StatusGrantCompiler.IsSupported(passive.Status))
+                    report.Error($"{label}: passive abilities grant permanent, single-stack, source-isolated, non-dispellable statuses without overflow; one-shot effects use BattleStarted.");
+        }
 
         if (report.HasCoreErrors) return null;
         var presentation = authored.Presentation is null
@@ -211,7 +223,8 @@ public static partial class AbilityDefinitionCompiler
             authored.MaxUses,
             authored.IntervalTicks,
             operations.ToImmutable(),
-            presentation);
+            presentation,
+            authored.AutomaticTarget);
         return provisional with { Description = AbilityDescriptionRenderer.Describe(provisional) };
     }
 
@@ -228,8 +241,14 @@ public static partial class AbilityDefinitionCompiler
                     report.Error($"{label}: manual ability cannot declare an interval.");
                 break;
             case AbilityActivationKind.Automatic:
+                if (authored.Trigger == AbilityTriggerKind.ManaFull)
+                {
+                    if (authored.ManaCost <= 0 || authored.GoldCost != 0 || authored.IntervalTicks != 0)
+                        report.Error($"{label}: mana-full skill requires positive mana, zero gold and no periodic interval.");
+                    break;
+                }
                 if (authored.Trigger is not (AbilityTriggerKind.BattleStarted or AbilityTriggerKind.PeriodicTick))
-                    report.Error($"{label}: automatic ability requires battle-start or periodic trigger.");
+                    report.Error($"{label}: automatic ability requires battle-start, periodic or mana-full trigger.");
                 if (authored.Trigger == AbilityTriggerKind.PeriodicTick && authored.IntervalTicks <= 0)
                     report.Error($"{label}: periodic automatic ability requires a positive interval.");
                 if (authored.Trigger == AbilityTriggerKind.BattleStarted && authored.IntervalTicks != 0)
@@ -237,7 +256,7 @@ public static partial class AbilityDefinitionCompiler
                 RejectNonManualCosts(authored, label, report);
                 break;
             case AbilityActivationKind.Triggered:
-                if (authored.Trigger is AbilityTriggerKind.None or AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.BattleStarted)
+                if (authored.Trigger is AbilityTriggerKind.None or AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.BattleStarted or AbilityTriggerKind.ManaFull)
                     report.Error($"{label}: triggered ability requires a supported domain trigger.");
                 if (authored.IntervalTicks != 0)
                     report.Error($"{label}: triggered ability cannot declare an interval.");
@@ -246,6 +265,8 @@ public static partial class AbilityDefinitionCompiler
             case AbilityActivationKind.Passive:
                 if (authored.Trigger != AbilityTriggerKind.None || authored.IntervalTicks != 0)
                     report.Error($"{label}: passive ability cannot declare a trigger or interval.");
+                if (authored.CooldownTicks != 0 || authored.MaxUses != 0)
+                    report.Error($"{label}: passive grants cannot declare cooldown or usage limits.");
                 RejectNonManualCosts(authored, label, report);
                 break;
         }
@@ -262,20 +283,12 @@ public static partial class AbilityDefinitionCompiler
         string label,
         ValidationReport report)
     {
-        var effects = operations.Select((operation, index) => (operation, index))
-            .Where(item => item.operation is CompiledEffectAbilityOperation)
-            .ToArray();
-        if (effects.Length > 1)
-            report.Error($"{label}: one activation cannot contain multiple effect-kernel operations until batch commit is transactional.");
-        if (effects.FirstOrDefault().operation is CompiledEffectAbilityOperation effect)
-        {
-            if (effects[0].index != 0)
-                report.Error($"{label}: the effect-kernel operation must be first so all fallible work is resolved before other mutations.");
+        // Ability commits now enclose every operation and its death/reaction chain in one
+        // BattleWorldStateCheckpoint. Keep one kernel step per binding so target eligibility
+        // can be re-evaluated between authored operations after an earlier lethal effect.
+        foreach (var effect in operations.OfType<CompiledEffectAbilityOperation>())
             if (effect.Binding.Effects.Length != 1)
                 report.Error($"{label}: an ability effect binding must contain exactly one atomic effect step.");
-            else if (effect.Binding.Effects[0].Kind == EffectKind.Damage)
-                report.Error($"{label}: damage effects cannot enter an atomic ability transaction until death-chain rollback is authoritative.");
-        }
     }
 
     private static CompiledAbilityOperation? CompileOperation(
@@ -386,23 +399,7 @@ public static partial class AbilityDefinitionCompiler
     internal static CompiledEffectTargetQuery? CompileTarget(
         EffectTargetQuerySpec? authored,
         string label,
-        ValidationReport report) => authored switch
-    {
-        ExplicitTargetQuerySpec => new CompiledExplicitTargetQuery(),
-        SourceTargetQuerySpec => new CompiledSourceTargetQuery(),
-        OwnerTargetQuerySpec => new CompiledOwnerTargetQuery(),
-        RelativeTeamTargetQuerySpec relative when Enum.IsDefined(relative.Team) =>
-            new CompiledRelativeTeamTargetQuery(relative.Team, relative.IncludeDefeated, relative.RequiredTag.ToString()),
-        RelativeTeamTargetQuerySpec => InvalidTarget(label, "relative-team target has an invalid team relation", report),
-        null => InvalidTarget(label, "target query is required", report),
-        _ => InvalidTarget(label, $"unsupported target query '{authored.GetType().Name}'", report)
-    };
-
-    private static CompiledEffectTargetQuery? InvalidTarget(string label, string message, ValidationReport report)
-    {
-        report.Error($"{label}: {message}.");
-        return null;
-    }
+        ValidationReport report) => EffectBindingCompiler.CompileTarget(authored, label, report);
 
     [GeneratedRegex("^[a-z0-9]+(?:_[a-z0-9]+)*$", RegexOptions.CultureInvariant)]
     private static partial Regex StableIdRegex();
@@ -416,13 +413,13 @@ public static class AbilityDescriptionRenderer
         if (operations.Length == 1 && operations[0] is CompiledSummonAbilityOperation summon)
             return DescribeSummon(summon);
         if (operations.Length == 1 && operations[0] is CompiledEffectAbilityOperation effect)
-            return DescribeEffect(effect);
+            return DescribeEffect(effect, ability.AutomaticTarget);
         if (operations.Length == 1 && operations[0] is CompiledCooldownAbilityOperation cooldown)
             return DescribeCooldown(cooldown);
 
         var parts = operations.Select(operation => operation switch
         {
-            CompiledEffectAbilityOperation effect => DescribeEffect(effect).TrimEnd('。'),
+            CompiledEffectAbilityOperation effect => DescribeEffect(effect, ability.AutomaticTarget).TrimEnd('。'),
             CompiledCooldownAbilityOperation cooldown => DescribeCooldown(cooldown).TrimEnd('。'),
             CompiledApplyStatusAbilityOperation status => DescribeStatus(status).TrimEnd('。'),
             CompiledSummonAbilityOperation summon => DescribeSummon(summon).TrimEnd('。'),
@@ -431,23 +428,36 @@ public static class AbilityDescriptionRenderer
         return parts.Length == 0 ? ability.DisplayName : string.Join("，", parts) + "。";
     }
 
-    private static string DescribeEffect(CompiledEffectAbilityOperation operation)
+    private static string DescribeEffect(CompiledEffectAbilityOperation operation, AbilityAutomaticTargetKind automaticTarget)
     {
-        var step = operation.Binding.Effects.First();
-        var target = operation.Binding.TargetQuery;
-        var amount = step.Amount;
-        if (operation.InvocationValueSource == AbilityInvocationValueSource.OwnerMaxHealth)
-            amount *= operation.InvocationValueScale;
-        return (step.Kind, target, operation.InvocationValueSource) switch
+        if (operation.Binding.TargetQuery is CompiledFilteredTargetQuery ||
+            operation.Binding.Conditions.Length > 0 || operation.Binding.Effects.Any(step =>
+                step.Magnitude is not null || step.DamageType != EffectDamageType.Physical))
+            return EffectModelText.DescribeBinding(operation.Binding);
+        var target = operation.Binding.TargetQuery switch
         {
-            (EffectKind.Shield, CompiledRelativeTeamTargetQuery { Team: EffectRelativeTeam.Allies }, _) =>
-                $"全体友军获得 {amount:0.##} 点护盾。",
-            (EffectKind.Heal, CompiledOwnerTargetQuery, AbilityInvocationValueSource.OwnerMaxHealth) =>
-                $"英雄恢复最大生命的 {amount * 100f:0.#}%。",
-            (EffectKind.Shield, CompiledOwnerTargetQuery, AbilityInvocationValueSource.OwnerMaxHealth) =>
-                $"英雄获得相当于最大生命 {amount * 100f:0.#}% 的护盾。",
-            _ => $"施放 {operation.Binding.Presentation?.DisplayName ?? operation.Binding.StableId}。"
+            CompiledOwnerTargetQuery or CompiledSourceTargetQuery => "自身",
+            CompiledExplicitTargetQuery when automaticTarget == AbilityAutomaticTargetKind.WoundedAlly => "范围内生命比例最低的受伤友军",
+            CompiledExplicitTargetQuery => "目标敌人",
+            CompiledRelativeTeamTargetQuery { Team: EffectRelativeTeam.Allies } relative => $"全体{DescribeTag(relative.RequiredTag)}友军",
+            CompiledRelativeTeamTargetQuery relative => $"全体{DescribeTag(relative.RequiredTag)}敌人",
+            _ => "目标"
         };
+        var facts = operation.Binding.Effects.Select(step =>
+        {
+            var invocation = step.AmountSource == EffectAmountSource.InvocationValue;
+            var percent = invocation && operation.InvocationValueSource == AbilityInvocationValueSource.OwnerMaxHealth;
+            var amount = invocation ? step.Amount * operation.InvocationValueScale : step.Amount;
+            var value = percent ? $"施法者最大生命的 {amount * 100:0.#}%" : $"{amount:0.##} 点";
+            return step.Kind switch
+            {
+                EffectKind.Damage => $"对{target}造成{value}伤害",
+                EffectKind.Heal => $"为{target}恢复{value}生命",
+                EffectKind.Shield => $"为{target}提供{value}护盾",
+                _ => $"对{target}施加效果"
+            };
+        });
+        return string.Join("，", facts) + "。";
     }
 
     private static string DescribeCooldown(CompiledCooldownAbilityOperation operation)
@@ -470,6 +480,13 @@ public static class AbilityDescriptionRenderer
 
     private static string DescribeStatus(CompiledApplyStatusAbilityOperation operation)
     {
+        if (operation.TargetQuery is CompiledFilteredTargetQuery)
+            return $"为{EffectModelText.DescribeTarget(operation.TargetQuery)}施加「{operation.Status.DisplayName}」。";
+        if (operation.TargetQuery is CompiledExplicitTargetQuery)
+            return $"对目标施加「{operation.Status.DisplayName}」" +
+                (operation.Status.DurationKind == StatusDurationKind.TimedTicks
+                    ? $" {operation.Status.DurationTicks * BattleTiming.TickSeconds:0.##} 秒" : string.Empty) +
+                (operation.Status.ControlDurationRule != StatusControlDurationRule.None ? "（受控制抗性影响）" : string.Empty) + "。";
         if (operation.Status.Behavior == StatusBehaviorKind.DisableActions &&
             operation.TargetQuery is CompiledRelativeTeamTargetQuery { Team: EffectRelativeTeam.Enemies })
             return $"敌军禁用 {operation.Status.DurationTicks * BattleTiming.TickSeconds:0.##} 秒。";

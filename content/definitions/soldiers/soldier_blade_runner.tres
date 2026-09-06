@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_blade_runner"
+MaxMana = 60.0
+StartingMana = 0.0
 DisplayName = "迅刃客"
 Description = "快速切入后排的轻装战士。"
 Role = 4

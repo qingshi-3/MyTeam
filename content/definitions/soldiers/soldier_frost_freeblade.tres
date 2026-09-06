@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_frost_freeblade"
+MaxMana = 80.0
+StartingMana = 10.0
 DisplayName = "霜原自由刃"
 Description = "可靠的中坚近战。"
 Role = 1

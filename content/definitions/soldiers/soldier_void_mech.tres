@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_void_mech"
+MaxMana = 90.0
+StartingMana = 20.0
 DisplayName = "虚空机兵"
 Description = "阵线中的坚固构造体。"
 Role = 0

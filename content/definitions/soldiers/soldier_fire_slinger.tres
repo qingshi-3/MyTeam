@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_fire_slinger"
+MaxMana = 80.0
+StartingMana = 0.0
 DisplayName = "焰羽射手"
 Description = "攻击较慢但伤害很高。"
 Role = 2
@@ -17,6 +19,7 @@ RecruitCost = 7
 MaxHealth = 82
 AttackDamage = 34
 AttackRange = 5
+AttackDelivery = 1
 AttackCooldown = 1.7
 MoveInterval = 0.48
 Armor = 0

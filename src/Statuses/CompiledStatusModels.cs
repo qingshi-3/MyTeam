@@ -23,7 +23,10 @@ public sealed record CompiledStatusCombatReactiveBinding(
     StatusReactiveOwnerRole OwnerRole,
     StatusReactiveEffectSourcePolicy EffectSourcePolicy,
     int Priority,
-    CompiledEffectBinding Binding);
+    CompiledEffectBinding Binding,
+    CombatSourceKind SourceKind = CombatSourceKind.None,
+    bool FilterDamageType = false,
+    EffectDamageType DamageType = EffectDamageType.Physical);
 
 public sealed record CompiledStatusTransition(
     CompiledStatusDefinition Target,
@@ -125,7 +128,8 @@ public sealed record StatusApplicationRequest(
     CompiledStatusDefinition Definition,
     string SourceId,
     string OwnerId,
-    int Tick);
+    int Tick,
+    string GrantId = "");
 
 public enum StatusEffectInvocationKind { Periodic, Applied, StackChanged, Removed, Reactive }
 
@@ -171,7 +175,8 @@ public enum StatusRemovalReason
     OverflowConsumed,
     OwnerDied,
     OwnerRemoved,
-    ScopeCompleted
+    ScopeCompleted,
+    GrantRevoked
 }
 
 public enum StatusDispelStrength { Ordinary, Strong }

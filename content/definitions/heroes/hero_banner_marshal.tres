@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "hero_banner_marshal"
+MaxMana = 80.0
+StartingMana = 20.0
 DisplayName = "曜旗元帅"
 Description = "阵线越完整，普通士兵越坚韧。适合六人军团。"
 Role = 0

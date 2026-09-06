@@ -10,6 +10,7 @@ using TowerAutobattler.Attributes;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
 using TowerAutobattler.Effects;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.Relics;
 
@@ -27,16 +28,18 @@ public static partial class RelicDefinitionCompiler
 
     public static RelicCompilationResult Compile(
         RelicDefinition? authored,
-        IReadOnlySet<string>? validContentIds = null)
+        IReadOnlySet<string>? validContentIds = null,
+        Func<StatusDefinition?, CompiledStatusDefinition?>? resolveStatus = null)
     {
         var report = new ValidationReport();
-        var definition = CompileInternal(authored, validContentIds, report, null);
+        var definition = CompileInternal(authored, validContentIds, report, null, resolveStatus);
         return new RelicCompilationResult(report.HasCoreErrors ? null : definition, report);
     }
 
     public static RelicBatchCompilationResult CompileBatch(
         IEnumerable<RelicDefinition?> authored,
-        IReadOnlySet<string>? validContentIds = null)
+        IReadOnlySet<string>? validContentIds = null,
+        Func<StatusDefinition?, CompiledStatusDefinition?>? resolveStatus = null)
     {
         ArgumentNullException.ThrowIfNull(authored);
         var report = new ValidationReport();
@@ -45,7 +48,7 @@ public static partial class RelicDefinitionCompiler
         var index = 0;
         foreach (var definition in authored)
         {
-            var compiled = CompileInternal(definition, validContentIds, report, index++);
+            var compiled = CompileInternal(definition, validContentIds, report, index++, resolveStatus);
             if (compiled is null) continue;
             if (!ids.Add(compiled.StableId))
                 report.Error($"Duplicate relic stable id: {compiled.StableId}");
@@ -62,7 +65,8 @@ public static partial class RelicDefinitionCompiler
         RelicDefinition? authored,
         IReadOnlySet<string>? validContentIds,
         ValidationReport report,
-        int? index)
+        int? index,
+        Func<StatusDefinition?, CompiledStatusDefinition?>? resolveStatus)
     {
         var label = authored is not null && !string.IsNullOrWhiteSpace(authored.ResourcePath)
             ? authored.ResourcePath
@@ -86,6 +90,18 @@ public static partial class RelicDefinitionCompiler
             label,
             report);
         var counters = CompileReactiveCounters(authored.ReactiveCounters, bindingIds, label, report);
+        var statusGrants = ImmutableArray.CreateBuilder<CompiledRelicStatusGrant>();
+        foreach (var grant in authored.StatusGrants ?? [])
+        {
+            if (grant is null) { report.Error($"{label}: missing Status grant."); continue; }
+            if (!StableIdPattern.IsMatch(grant.BindingId) || !bindingIds.Add(grant.BindingId))
+                report.Error($"{label}: invalid or duplicate Status grant binding id '{grant.BindingId}'.");
+            var target = CompileUnitTarget(grant.Target);
+            if (target is null) report.Error($"{label}: missing or unsupported Status grant target.");
+            var statuses = StatusGrantCompiler.Compile([grant.Status], resolveStatus, report, label);
+            if (target is not null && statuses.Length == 1)
+                statusGrants.Add(new CompiledRelicStatusGrant(grant.BindingId, target, statuses[0]));
+        }
         var battleModifiers = authored.BattleModifiers;
         if (battleModifiers is null)
         {
@@ -169,7 +185,7 @@ public static partial class RelicDefinitionCompiler
         }
 
         if (battleModifiers.Length == 0 && attributeBindings.Length == 0 &&
-            battleStartEffects.Length == 0 && counters.Length == 0 && victoryOutcomesAuthored.Length == 0)
+            battleStartEffects.Length == 0 && counters.Length == 0 && victoryOutcomesAuthored.Length == 0 && statusGrants.Count == 0)
             report.Error($"{label}: relic must declare at least one battle modifier or victory outcome.");
         if (report.HasCoreErrors) return null;
         var legacy = modifiers.ToImmutable();
@@ -182,7 +198,8 @@ public static partial class RelicDefinitionCompiler
             legacy,
             counters,
             victoryOutcomes,
-            Fingerprint(authored.StableId, attributeBindings, battleStartEffects, legacy, counters, victoryOutcomes));
+            Fingerprint(authored.StableId, attributeBindings, battleStartEffects, legacy, counters, victoryOutcomes,
+                statusGrants.ToImmutable()), statusGrants.ToImmutable());
     }
 
     private static ImmutableArray<CompiledRelicAttributeBinding> CompileAttributeBindings(
@@ -215,14 +232,7 @@ public static partial class RelicDefinitionCompiler
             if (!Enum.IsDefined(binding.StackPolicy))
                 report.Error($"{bindingLabel}: stack policy is invalid.");
 
-            var target = binding.Target switch
-            {
-                RelicPlayerArmyTargetSpec => (CompiledRelicUnitTarget)new CompiledRelicPlayerArmyTarget(),
-                RelicPlayerHeroesTargetSpec => new CompiledRelicPlayerHeroesTarget(),
-                RelicPlayerFormationAdjacentTargetSpec => new CompiledRelicPlayerFormationAdjacentTarget(),
-                RelicPlayerEmptySlotHeroesTargetSpec => new CompiledRelicPlayerEmptySlotHeroesTarget(),
-                _ => null
-            };
+            var target = CompileUnitTarget(binding.Target);
             if (target is null)
                 report.Error($"{bindingLabel}: unsupported or missing Relic unit target.");
 
@@ -231,6 +241,10 @@ public static partial class RelicDefinitionCompiler
                 report.Error($"{bindingLabel}: {error}");
             foreach (var warning in modifier.Report.Warnings)
                 report.Warn($"{bindingLabel}: {warning}");
+            if (modifier.Modifier is not null)
+                AttributeMagnitudeSupport.Validate(modifier.Modifier.Magnitude,
+                    AttributeContextCapabilities.SourceAttribute | AttributeContextCapabilities.TargetAttribute | AttributeContextCapabilities.TeamCount,
+                    report, bindingLabel);
             if (target is CompiledRelicPlayerEmptySlotHeroesTarget && modifier.Modifier is { } emptyModifier &&
                 (emptyModifier.Magnitude is not CompiledConstantMagnitude ||
                  emptyModifier.Operation == AttributeModifierOperation.Override))
@@ -369,6 +383,14 @@ public static partial class RelicDefinitionCompiler
                  thresholdEffect.TargetQuery is not CompiledExplicitTargetQuery))
                 report.Error($"{counterLabel}: threshold effect must be manual with an explicit target query.");
             if (binding.Binding is null) continue;
+            foreach (var step in binding.Binding.Effects)
+                if (step.Magnitude is not null && AttributeMagnitudeSupport.Leaves(step.Magnitude).Any(item => item is CompiledSourceAttributeMagnitude))
+                    report.Error($"{counterLabel}: Relic counters have no source AttributeSet; use target attributes or event magnitude.");
+            if (binding.Binding.Conditions.Any(condition => condition is
+                    CompiledEntityAliveCondition { Entity: EffectEntityReference.Source or EffectEntityReference.Owner } or
+                    CompiledHealthRatioCondition { Entity: EffectEntityReference.Source or EffectEntityReference.Owner } or
+                    CompiledEntityTagCondition { Entity: EffectEntityReference.Source or EffectEntityReference.Owner }))
+                report.Error($"{counterLabel}: Relic counter source/owner is not a combat entity; conditions must inspect the explicit target.");
             var eventKind = Enum.IsDefined(counter.Source)
                 ? EventKind(counter.Source)
                 : BattleCombatEventKind.BattleStarted;
@@ -414,9 +436,13 @@ public static partial class RelicDefinitionCompiler
         IEnumerable<CompiledRelicBattleStartEffect> starts,
         IEnumerable<CompiledRelicBattleModifier> legacy,
         IEnumerable<CompiledRelicReactiveCounter> counters,
-        IEnumerable<CompiledRelicRunOutcome> outcomes)
+        IEnumerable<CompiledRelicRunOutcome> outcomes,
+        ImmutableArray<CompiledRelicStatusGrant> grants)
     {
         var canonical = new StringBuilder(stableId);
+        foreach (var grant in grants)
+            canonical.Append("|grant:").Append(grant.BindingId).Append(':').Append(grant.Target.GetType().Name)
+                .Append(':').Append(StatusDefinitionFingerprint.Compute(grant.Status));
         foreach (var binding in attributes)
             canonical.Append("|attribute:").Append(binding.BindingId).Append(':')
                 .Append(binding.Target.GetType().Name).Append(':').Append(binding.StackPolicy).Append(':')
@@ -443,94 +469,23 @@ public static partial class RelicDefinitionCompiler
                 .Append(':').Append(counter.Team).Append(':').Append(counter.IncludeTemporary).Append(':')
                 .Append(counter.Threshold).Append(':').Append(counter.Consumption).Append(':').Append(counter.Priority)
                 .Append(':').Append(counter.Target).Append(':').Append(counter.TargetTeam).Append(':')
-                .Append(Effect(counter.ThresholdEffect));
+                .Append(EffectModelText.BindingFingerprint(counter.ThresholdEffect));
         foreach (var outcome in outcomes)
             canonical.Append("|outcome:").Append(outcome.Kind).Append(':').Append(outcome.Amount);
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical.ToString()))).ToLowerInvariant();
     }
 
-    private static string Magnitude(CompiledAttributeMagnitude magnitude) => magnitude switch
+    private static string Magnitude(CompiledAttributeMagnitude magnitude) => AttributeMagnitudeSupport.Fingerprint(magnitude);
+
+    private static CompiledRelicUnitTarget? CompileUnitTarget(RelicUnitTargetSpec? target) => target switch
     {
-        CompiledConstantMagnitude constant =>
-            $"constant:{constant.Value.ToString("R", CultureInfo.InvariantCulture)}:{constant.CaptureMode}",
-        CompiledSourceAttributeMagnitude source => $"source:{source.Attribute}:{source.CaptureMode}",
-        CompiledTargetAttributeMagnitude target => $"target:{target.Attribute}:{target.CaptureMode}",
-        CompiledContextValueMagnitude context => $"context:{context.Key}:{context.CaptureMode}",
-        CompiledTeamCountMagnitude count => $"count:{count.CountKind}:{count.Team}:{count.CaptureMode}",
-        CompiledTraitValueMagnitude trait => $"trait:{trait.TraitId}:{trait.Team}:{trait.CaptureMode}",
-        _ => throw new InvalidOperationException($"Unsupported Relic magnitude: {magnitude.GetType().Name}")
+        RelicPlayerArmyTargetSpec => new CompiledRelicPlayerArmyTarget(),
+        RelicPlayerHeroesTargetSpec => new CompiledRelicPlayerHeroesTarget(),
+        RelicPlayerFormationAdjacentTargetSpec => new CompiledRelicPlayerFormationAdjacentTarget(),
+        RelicPlayerEmptySlotHeroesTargetSpec => new CompiledRelicPlayerEmptySlotHeroesTarget(),
+        _ => null
     };
 
-    private static string Effect(CompiledEffectBinding binding)
-    {
-        ArgumentNullException.ThrowIfNull(binding);
-        if (binding.Trigger is null || binding.TargetQuery is null || binding.Limits is null ||
-            binding.Conditions.IsDefault || binding.Effects.IsDefault)
-            throw new InvalidOperationException("Relic Effect fingerprint received an incomplete compiled binding.");
-
-        var canonical = new StringBuilder();
-        AppendCanonical(canonical, "effect");
-        AppendCanonical(canonical, binding.StableId);
-        AppendCanonical(canonical, I(binding.Priority));
-        AppendCanonical(canonical, binding.Trigger.Kind.ToString());
-        AppendCanonical(canonical, binding.Trigger.EventKind.ToString());
-        AppendCanonical(canonical, I(binding.Conditions.Length));
-        foreach (var condition in binding.Conditions)
-            AppendCanonical(canonical, Condition(condition));
-        AppendCanonical(canonical, Target(binding.TargetQuery));
-        AppendCanonical(canonical, I(binding.Effects.Length));
-        foreach (var step in binding.Effects)
-        {
-            AppendCanonical(canonical, step.Kind.ToString());
-            AppendCanonical(canonical, step.AmountSource.ToString());
-            AppendCanonical(canonical, step.Amount.ToString("R", CultureInfo.InvariantCulture));
-        }
-        AppendCanonical(canonical, I(binding.Limits.MaxUses));
-        AppendCanonical(canonical, I(binding.Limits.MinimumIntervalTicks));
-        AppendCanonical(canonical, I(binding.Limits.MaxDepth));
-        AppendCanonical(canonical, I(binding.Limits.MaxRepeatedEdges));
-        if (binding.Presentation is null)
-        {
-            AppendCanonical(canonical, "presentation:none");
-        }
-        else
-        {
-            AppendCanonical(canonical, "presentation:value");
-            AppendCanonical(canonical, binding.Presentation.DisplayName);
-            AppendCanonical(canonical, binding.Presentation.ReportLabel);
-            AppendCanonical(canonical, binding.Presentation.Cue);
-        }
-        return canonical.ToString();
-    }
-
-    private static string Condition(CompiledEffectCondition condition) => condition switch
-    {
-        CompiledEntityAliveCondition alive =>
-            $"entity-alive:{alive.Entity}:{B(alive.ExpectedAlive)}",
-        _ => throw new InvalidOperationException(
-            $"Unsupported Relic Effect condition: {condition?.GetType().Name ?? "null"}")
-    };
-
-    private static string Target(CompiledEffectTargetQuery target) => target switch
-    {
-        CompiledExplicitTargetQuery => "explicit",
-        CompiledSourceTargetQuery => "source",
-        CompiledOwnerTargetQuery => "owner",
-        CompiledRelativeTeamTargetQuery relative =>
-            $"relative:{relative.Team}:{B(relative.IncludeDefeated)}:{CanonicalString(relative.RequiredTag)}",
-        _ => throw new InvalidOperationException(
-            $"Unsupported Relic Effect target query: {target?.GetType().Name ?? "null"}")
-    };
-
-    private static void AppendCanonical(StringBuilder target, string? value)
-    {
-        var canonical = CanonicalString(value);
-        target.Append(canonical.Length.ToString(CultureInfo.InvariantCulture)).Append(':').Append(canonical);
-    }
-
-    private static string CanonicalString(string? value) => value ?? "<null>";
-    private static string I(int value) => value.ToString(CultureInfo.InvariantCulture);
-    private static string B(bool value) => value ? "1" : "0";
 
     [GeneratedRegex("^[a-z0-9]+(?:_[a-z0-9]+)*$", RegexOptions.CultureInvariant)]
     private static partial Regex StableIdRegex();

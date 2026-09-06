@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://tests/RangedAttackVisualPreview.cs" id="1"]
+[ext_resource type="Script" path="res://src/Presentation/BattleBoard.cs" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/effects/RangedAttackLayer.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://content/soldiers/soldier_aymara_mender.tscn" id="4"]
+
+[node name="RangedAttackVisualPreview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+
+[node name="Board" type="Control" parent="."]
+offset_left = 60.0
+offset_top = 90.0
+offset_right = 1140.0
+offset_bottom = 780.0
+script = ExtResource("2")
+
+[node name="Effects" parent="Board" instance=ExtResource("3")]
+z_index = 20
+
+[node name="Healer" parent="Board" instance=ExtResource("4")]
+
+[node name="Title" type="Label" parent="."]
+offset_left = 60.0
+offset_top = 24.0
+offset_right = 1000.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 26
+text = "远程攻击独立预览 · 上：子弹 / 命中 · 下：即时光束"

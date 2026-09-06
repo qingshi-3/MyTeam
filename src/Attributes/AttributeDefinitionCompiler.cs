@@ -94,7 +94,14 @@ public static class AttributeDefinitionCompiler
         return new CompiledAttributeSetDefinition(attributes, Fingerprint(attributes));
     }
 
-    private static CompiledAttributeMagnitude? CompileMagnitude(AttributeMagnitudeSpec? authored, ValidationReport report)
+    public static CompiledAttributeMagnitude? CompileMagnitude(AttributeMagnitudeSpec? authored, ValidationReport report)
+    {
+        var remaining = 128;
+        return CompileMagnitude(authored, report, new HashSet<AttributeMagnitudeSpec>(ReferenceEqualityComparer.Instance), 0, ref remaining);
+    }
+
+    private static CompiledAttributeMagnitude? CompileMagnitude(AttributeMagnitudeSpec? authored, ValidationReport report,
+        HashSet<AttributeMagnitudeSpec> ancestors, int depth, ref int remaining)
     {
         if (authored is null)
         {
@@ -102,8 +109,29 @@ public static class AttributeDefinitionCompiler
             return null;
         }
         if (!Enum.IsDefined(authored.CaptureMode)) report.Error("Magnitude capture mode is invalid.");
+        if (--remaining < 0 || depth > 8 || ancestors.Contains(authored))
+        {
+            report.Error("Magnitude expression is cyclic or exceeds depth 8 / 128 nodes.");
+            return null;
+        }
         switch (authored)
         {
+            case CompositeAttributeMagnitudeSpec composite:
+                if (!Enum.IsDefined(composite.Operation) || composite.Operands is null || composite.Operands.Count is < 2 or > 8)
+                {
+                    report.Error("Composite magnitude requires a valid operation and 2–8 operands.");
+                    return null;
+                }
+                ancestors.Add(authored);
+                var children = ImmutableArray.CreateBuilder<CompiledAttributeMagnitude>();
+                foreach (var operand in composite.Operands)
+                {
+                    if (remaining <= 0) { report.Error("Magnitude expression exceeds 128 nodes."); break; }
+                    var child = CompileMagnitude(operand, report, ancestors, depth + 1, ref remaining);
+                    if (child is not null) children.Add(child);
+                }
+                ancestors.Remove(authored);
+                return report.HasCoreErrors ? null : new CompiledCompositeMagnitude(composite.Operation, children.ToImmutable(), composite.CaptureMode);
             case ConstantAttributeMagnitudeSpec constant when float.IsFinite(constant.Value):
                 return new CompiledConstantMagnitude(constant.Value, constant.CaptureMode);
             case ConstantAttributeMagnitudeSpec:
@@ -159,6 +187,8 @@ public static class AttributeDefinitionCompiler
         CombatAttribute.AttackSpeed or CombatAttribute.MoveSpeed => (.01f, 1000f),
         CombatAttribute.AttackRange => (0, 1000f),
         CombatAttribute.CriticalChance or CombatAttribute.LifeSteal or CombatAttribute.ControlResistance => (0, 1f),
+        CombatAttribute.MaxMana or CombatAttribute.StartingMana or CombatAttribute.ManaPerSecond or
+            CombatAttribute.ManaPerAttack or CombatAttribute.ManaPerDamageRatio or CombatAttribute.ManaPerHitCap => (0, 1_000_000f),
         _ => (-1_000_000_000f, 1_000_000_000f)
     };
 

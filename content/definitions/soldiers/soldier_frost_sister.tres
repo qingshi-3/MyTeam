@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_frost_sister"
+MaxMana = 80.0
+StartingMana = 25.0
 DisplayName = "寒霜修女"
 Description = "兼顾治疗和远程牵制。"
 Role = 3
@@ -17,6 +19,7 @@ RecruitCost = 7
 MaxHealth = 104
 AttackDamage = 12
 AttackRange = 4.4
+AttackDelivery = 2
 AttackCooldown = 1.45
 MoveInterval = 0.5
 Armor = 2

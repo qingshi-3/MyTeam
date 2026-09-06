@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "hero_crimson_count"
+MaxMana = 80.0
+StartingMana = 20.0
 DisplayName = "猩红伯爵"
 Description = "吸血Carry，可选择少带士兵换取个人战力。"
 Role = 4

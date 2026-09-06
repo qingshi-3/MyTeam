@@ -21,7 +21,11 @@ public enum CombatAttribute
     StartingMana,
     HealingPower,
     LifeSteal,
-    ControlResistance
+    ControlResistance,
+    ManaPerSecond,
+    ManaPerAttack,
+    ManaPerDamageRatio,
+    ManaPerHitCap
 }
 
 public enum AttributeModifierOperation { Add, Multiply, Override }
@@ -78,6 +82,11 @@ public sealed record CompiledAttributeDefinition(
     float Maximum);
 
 public abstract record CompiledAttributeMagnitude(AttributeCaptureMode CaptureMode);
+public enum AttributeMagnitudeOperation { Add, Multiply, Minimum, Maximum }
+public sealed record CompiledCompositeMagnitude(
+    AttributeMagnitudeOperation Operation,
+    ImmutableArray<CompiledAttributeMagnitude> Operands,
+    AttributeCaptureMode CaptureMode) : CompiledAttributeMagnitude(CaptureMode);
 public sealed record CompiledConstantMagnitude(float Value, AttributeCaptureMode CaptureMode = AttributeCaptureMode.Snapshot)
     : CompiledAttributeMagnitude(CaptureMode);
 public sealed record CompiledSourceAttributeMagnitude(CombatAttribute Attribute, AttributeCaptureMode CaptureMode)
@@ -112,23 +121,33 @@ public sealed class BattleAttributeMagnitudeContext
     private readonly Func<string, float> _contextValue;
     private readonly Func<AttributeTeamCountKind, int, float> _teamCount;
     private readonly Func<string, int, float> _traitValue;
+    private readonly Func<CombatAttribute, float>? _sourceValue;
+    private readonly Func<CombatAttribute, float>? _targetValue;
 
     public BattleAttributeMagnitudeContext(
         BattleAttributeSet? source = null,
         BattleAttributeSet? target = null,
         Func<string, float>? contextValue = null,
         Func<AttributeTeamCountKind, int, float>? teamCount = null,
-        Func<string, int, float>? traitValue = null)
+        Func<string, int, float>? traitValue = null,
+        Func<CombatAttribute, float>? sourceValue = null,
+        Func<CombatAttribute, float>? targetValue = null)
     {
         Source = source;
         Target = target;
-        _contextValue = contextValue ?? (_ => 0);
-        _teamCount = teamCount ?? ((_, _) => 0);
-        _traitValue = traitValue ?? ((_, _) => 0);
+        _contextValue = contextValue ?? (key => throw new InvalidOperationException($"Magnitude context '{key}' is unavailable."));
+        _teamCount = teamCount ?? ((kind, team) => throw new InvalidOperationException($"Team count '{kind}/{team}' is unavailable."));
+        _traitValue = traitValue ?? ((id, team) => throw new InvalidOperationException($"Trait value '{id}/{team}' is unavailable."));
+        _sourceValue = sourceValue;
+        _targetValue = targetValue;
     }
 
     public BattleAttributeSet? Source { get; }
     public BattleAttributeSet? Target { get; }
+    public float SourceValue(CombatAttribute attribute) => _sourceValue?.Invoke(attribute) ?? Source?.GetValue(attribute) ??
+        throw new InvalidOperationException("Source-attribute magnitude has no source AttributeSet.");
+    public float TargetValue(CombatAttribute attribute) => _targetValue?.Invoke(attribute) ?? Target?.GetValue(attribute) ??
+        throw new InvalidOperationException("Target-attribute magnitude has no target AttributeSet.");
     public float ContextValue(string key) => _contextValue(key);
     public float TeamCount(AttributeTeamCountKind kind, int team) => _teamCount(kind, team);
     public float TraitValue(string traitId, int team) => _traitValue(traitId, team);

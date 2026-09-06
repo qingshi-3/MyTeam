@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_sun_sister"
+MaxMana = 80.0
+StartingMana = 25.0
 DisplayName = "曦光修女"
 Description = "周期性治疗最虚弱的友军。"
 Role = 3
@@ -17,6 +19,7 @@ RecruitCost = 7
 MaxHealth = 105
 AttackDamage = 10
 AttackRange = 4.3
+AttackDelivery = 2
 AttackCooldown = 1.55
 MoveInterval = 0.52
 Armor = 1

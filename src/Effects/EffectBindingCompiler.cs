@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TowerAutobattler.Content;
+using TowerAutobattler.Attributes;
 
 namespace TowerAutobattler.Effects;
 
@@ -145,6 +146,19 @@ public static partial class EffectBindingCompiler
                 case EntityAliveConditionSpec:
                     report.Error($"{label}: condition[{index}] has an invalid entity reference.");
                     break;
+                case HealthRatioConditionSpec health when Enum.IsDefined(health.Entity) && Enum.IsDefined(health.Comparison) &&
+                    float.IsFinite(health.Ratio) && health.Ratio is >= 0 and <= 1:
+                    conditions.Add(new CompiledHealthRatioCondition(health.Entity, health.Comparison, health.Ratio));
+                    break;
+                case HealthRatioConditionSpec:
+                    report.Error($"{label}: condition[{index}] requires a valid entity/comparison and health ratio in [0,1].");
+                    break;
+                case EntityTagConditionSpec tag when Enum.IsDefined(tag.Entity) && !string.IsNullOrWhiteSpace(tag.Tag.ToString()):
+                    conditions.Add(new CompiledEntityTagCondition(tag.Entity, tag.Tag.ToString(), tag.ExpectedPresent));
+                    break;
+                case EntityTagConditionSpec:
+                    report.Error($"{label}: condition[{index}] requires a valid entity and nonempty tag.");
+                    break;
                 case null:
                     report.Error($"{label}: condition[{index}] is missing.");
                     break;
@@ -156,13 +170,20 @@ public static partial class EffectBindingCompiler
         return conditions.ToImmutable();
     }
 
-    private static CompiledEffectTargetQuery? CompileTarget(
+    public static CompiledEffectTargetQuery? CompileTarget(
         EffectTargetQuerySpec? authored,
         string label,
         ValidationReport report)
     {
         switch (authored)
         {
+            case FilteredTargetQuerySpec filter when Enum.IsDefined(filter.Team) && Enum.IsDefined(filter.Anchor) &&
+                Enum.IsDefined(filter.Order) && float.IsFinite(filter.Range) && (filter.Range == -1 || filter.Range >= 0) && filter.MaxTargets >= 0:
+                return new CompiledFilteredTargetQuery(filter.Team, filter.Anchor, filter.IncludeDefeated, filter.IncludeAnchor,
+                    filter.RequiredTag.ToString(), filter.Range, filter.MaxTargets, filter.Order);
+            case FilteredTargetQuerySpec:
+                report.Error($"{label}: filtered target requires valid relations/order, range -1 or >=0, and nonnegative target limit.");
+                return null;
             case ExplicitTargetQuerySpec:
                 return new CompiledExplicitTargetQuery();
             case SourceTargetQuerySpec:
@@ -228,7 +249,20 @@ public static partial class EffectBindingCompiler
             if (step.AmountSource == EffectAmountSource.EventEffectiveValue &&
                 trigger?.Kind != EffectTriggerKind.DomainEvent)
                 report.Error($"{label}: effect[{index}] reads event value from a non-event trigger.");
-            effects.Add(new CompiledEffectStep(kind.Value, step.AmountSource, step.Amount));
+            CompiledAttributeMagnitude? magnitude = null;
+            if (step.Magnitude is not null)
+            {
+                if (step.AmountSource != EffectAmountSource.Fixed || step.Amount != 1f)
+                    report.Error($"{label}: effect[{index}] formula replaces AmountSource/Amount; leave them Fixed/1.");
+                magnitude = AttributeDefinitionCompiler.CompileMagnitude(step.Magnitude, report);
+                if (magnitude is not null)
+                foreach (var leaf in AttributeMagnitudeSupport.Leaves(magnitude).OfType<CompiledContextValueMagnitude>())
+                    if (leaf.Key != "InvocationValue" && (leaf.Key != "EventEffectiveValue" || trigger?.Kind != EffectTriggerKind.DomainEvent))
+                        report.Error($"{label}: effect[{index}] context '{leaf.Key}' is not supplied by this trigger.");
+            }
+            var damageType = step is DamageEffectSpec damage ? damage.DamageType : EffectDamageType.Physical;
+            if (!Enum.IsDefined(damageType)) report.Error($"{label}: effect[{index}] has an invalid damage type.");
+            effects.Add(new CompiledEffectStep(kind.Value, step.AmountSource, step.Amount, magnitude, damageType));
         }
         return effects.ToImmutable();
     }

@@ -8,6 +8,7 @@ using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
 using TowerAutobattler.Domain;
 using TowerAutobattler.UI;
+using TowerAutobattler.Run;
 
 namespace TowerAutobattler.Project;
 
@@ -41,6 +42,12 @@ public static partial class GameProjectCompiler
         context.RegisterStableId(authored.StableId, authored);
         var campaign = CompileCampaign(authored.Campaign!, context);
         var rules = CompileRunRules(authored.RunRules!, authored.Content!, contentGraph, report);
+        if (campaign is not null && rules is not null)
+        {
+            if (campaign.StarterPool.ContentIds.Length < rules.StarterRosterHeroCount)
+                report.Error($"{source}: starter pool cannot supply the configured distinct initial roster count.");
+            campaign = RunOfferDefaults.WithDefaults(campaign, rules, id => context.Entry(id));
+        }
         var presentation = CompilePresentation(authored.Presentation!, report);
         if (report.HasCoreErrors || campaign is null || rules is null || presentation is null)
             return new GameProjectCompilationResult(null, report);
@@ -135,7 +142,7 @@ public static partial class GameProjectCompiler
             starter,
             recruitment,
             itemReward,
-            shop);
+            shop) { RunOffers = CompileRunOffers(authored, context) };
     }
 
     private static CompiledTowerNodeTable? CompileNodeTable(
@@ -386,7 +393,21 @@ public static partial class GameProjectCompiler
             authored.RestHeroHealing,
             authored.RestSoldierHealing,
             authored.RestGold,
-            authored.InitialUnlockedHeroCount);
+            authored.InitialUnlockedHeroCount)
+        {
+            StartingHeroEconomy = catalog.Heroes.ToImmutableDictionary(entry => entry.StableId, entry =>
+            {
+                var root = entry.Scene.Instantiate<UnitContentRoot>();
+                try
+                {
+                    var gold = root.HeroRule?.BattleGoldBonus ?? 0;
+                    var conversion = root.HeroRule?.RecruitConversionGold ?? 0;
+                    if (gold < 0 || conversion < 0) report.Error($"{entry.Scene.ResourcePath}: legacy starting economy must be nonnegative.");
+                    return new CompiledStartingHeroEconomy(gold, conversion);
+                }
+                finally { root.Free(); }
+            })
+        };
     }
 
     private static CompiledProjectPresentation? CompilePresentation(
@@ -495,6 +516,10 @@ public static partial class GameProjectCompiler
 
         public ValidationReport Report { get; }
         public ImmutableDictionary<string, Godot.PackedScene> FloorRules => _floorRules.ToImmutable();
+        public CatalogEntry Entry(string id) => _entries[id];
+        public bool HasContent(string id) => _entries.ContainsKey(id);
+        public bool IsRecruitable(string id) => _entries.TryGetValue(id, out var entry) && entry.Definition is UnitDefinition { IsEnemy: false };
+        public bool IsItem(string id) => _entries.TryGetValue(id, out var entry) && entry.Definition is ItemDefinition;
 
         public void RegisterStableId(string stableId, Godot.Resource owner)
         {
@@ -553,7 +578,7 @@ public static partial class GameProjectCompiler
             if (!_entries.TryGetValue(stableId, out var entry)) return false;
             return kind switch
             {
-                ContentPoolKind.Soldier => entry.Definition is UnitDefinition { IsHero: false, IsEnemy: false },
+                ContentPoolKind.Soldier => entry.Definition is UnitDefinition { IsEnemy: false },
                 ContentPoolKind.Item => entry.Definition is ItemDefinition,
                 ContentPoolKind.Enemy => entry.Definition is UnitDefinition { IsEnemy: true },
                 _ => false

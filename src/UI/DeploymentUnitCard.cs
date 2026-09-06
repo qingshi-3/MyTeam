@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using TowerAutobattler.Content;
 using TowerAutobattler.Run;
@@ -16,6 +18,7 @@ public partial class DeploymentUnitCard : Button
     private SemanticChip _role = null!;
     private SemanticChip _reach = null!;
     private Label _state = null!;
+    private HBoxContainer _equipment = null!;
 
     public override void _Ready()
     {
@@ -25,6 +28,7 @@ public partial class DeploymentUnitCard : Button
         _role = GetNode<SemanticChip>("%UnitRoleFact");
         _reach = GetNode<SemanticChip>("%UnitReachFact");
         _state = GetNode<Label>("%UnitState");
+        _equipment = GetNode<HBoxContainer>("%EquipmentIcons");
         Pressed += OnPressed;
     }
     public override void _ExitTree() => Pressed -= OnPressed;
@@ -46,6 +50,19 @@ public partial class DeploymentUnitCard : Button
                 : $"已部署 · 第 {cell.X + 1} 列 / 第 {cell.Y + 1} 行"
             : "候命";
         TooltipText = model.Description;
+    }
+
+    public void BindEquipment(IReadOnlyList<(int SlotIndex, ItemDefinition Definition)> items)
+    {
+        _equipment.Visible = true;
+        for (var index = 0; index < _equipment.GetChildCount(); index++)
+        {
+            var icon = _equipment.GetChild<TextureRect>(index);
+            var definition = items.FirstOrDefault(item => item.SlotIndex == index).Definition;
+            icon.Texture = definition?.Icon ?? SemanticIcons.Catalog.ResolveIcon(SemanticIconKeys.Loot);
+            icon.Modulate = definition is null ? new Color(1, 1, 1, .22f) : Colors.White;
+            icon.TooltipText = definition is null ? $"装备槽 {index + 1} · 空" : $"{definition.DisplayName}\n{definition.Description}";
+        }
     }
 
     public override Variant _GetDragData(Vector2 atPosition)

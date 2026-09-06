@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using TowerAutobattler.Attributes;
 using TowerAutobattler.Content;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.Traits;
 
@@ -15,14 +16,16 @@ public static partial class TraitDefinitionCompiler
 {
     private static readonly Regex StableIdPattern = StableIdRegex();
 
-    public static TraitCompilationResult Compile(TraitDefinition? authored)
+    public static TraitCompilationResult Compile(TraitDefinition? authored,
+        Func<StatusDefinition?, CompiledStatusDefinition?>? resolveStatus = null)
     {
         var report = new ValidationReport();
-        var definition = CompileInternal(authored, report, null);
+        var definition = CompileInternal(authored, report, null, resolveStatus);
         return new TraitCompilationResult(report.HasCoreErrors ? null : definition, report);
     }
 
-    public static TraitBatchCompilationResult CompileBatch(IEnumerable<TraitDefinition?> authored)
+    public static TraitBatchCompilationResult CompileBatch(IEnumerable<TraitDefinition?> authored,
+        Func<StatusDefinition?, CompiledStatusDefinition?>? resolveStatus = null)
     {
         ArgumentNullException.ThrowIfNull(authored);
         var report = new ValidationReport();
@@ -31,7 +34,7 @@ public static partial class TraitDefinitionCompiler
         var index = 0;
         foreach (var definition in authored)
         {
-            var compiled = CompileInternal(definition, report, index++);
+            var compiled = CompileInternal(definition, report, index++, resolveStatus);
             if (compiled is null) continue;
             if (!ids.Add(compiled.StableId))
                 report.Error($"Duplicate Trait stable id: {compiled.StableId}");
@@ -42,7 +45,7 @@ public static partial class TraitDefinitionCompiler
         var validIds = definitions.Select(definition => definition.StableId).ToHashSet(StringComparer.Ordinal);
         foreach (var definition in definitions)
         foreach (var breakpoint in definition.Breakpoints)
-        foreach (var dependency in breakpoint.AttributeModifiers.Select(modifier => modifier.Magnitude)
+        foreach (var dependency in breakpoint.AttributeModifiers.SelectMany(modifier => AttributeMagnitudeSupport.Leaves(modifier.Magnitude))
                      .OfType<CompiledTraitValueMagnitude>())
             if (!validIds.Contains(dependency.TraitId))
                 report.Error($"{definition.ResourcePathOrLabel()}: breakpoint[{breakpoint.Index}] references " +
@@ -105,7 +108,8 @@ public static partial class TraitDefinitionCompiler
     private static CompiledTraitDefinition? CompileInternal(
         TraitDefinition? authored,
         ValidationReport report,
-        int? index)
+        int? index,
+        Func<StatusDefinition?, CompiledStatusDefinition?>? resolveStatus)
     {
         var label = authored is not null && !string.IsNullOrWhiteSpace(authored.ResourcePath)
             ? authored.ResourcePath
@@ -157,12 +161,14 @@ public static partial class TraitDefinitionCompiler
             previousMax = Math.Max(previousMax, breakpoint.MaxValue);
             if (string.IsNullOrWhiteSpace(breakpoint.DisplayStyle))
                 report.Error($"{breakpointLabel} display style is required.");
+            if (!Enum.IsDefined(breakpoint.TargetPolicy)) report.Error($"{breakpointLabel}: invalid target policy.");
+            var grants = StatusGrantCompiler.Compile(breakpoint.GrantedStatuses ?? [], resolveStatus, report, breakpointLabel);
 
             var modifiers = ImmutableArray.CreateBuilder<CompiledAttributeModifier>();
             var slots = new HashSet<(CombatAttribute Attribute, string SlotId)>();
             var authoredModifiers = breakpoint.AttributeModifiers ?? [];
-            if (authoredModifiers.Length == 0)
-                report.Error($"{breakpointLabel} must declare at least one Attribute modifier.");
+            if (authoredModifiers.Length == 0 && grants.IsEmpty)
+                report.Error($"{breakpointLabel} must declare an Attribute modifier or passive Status grant.");
             for (var modifierIndex = 0; modifierIndex < authoredModifiers.Length; modifierIndex++)
             {
                 var result = AttributeDefinitionCompiler.Compile(authoredModifiers[modifierIndex]);
@@ -171,6 +177,9 @@ public static partial class TraitDefinitionCompiler
                 foreach (var warning in result.Report.Warnings)
                     report.Warn($"{breakpointLabel}: modifier[{modifierIndex}]: {warning}");
                 if (result.Modifier is null) continue;
+                AttributeMagnitudeSupport.Validate(result.Modifier.Magnitude,
+                    AttributeContextCapabilities.SourceAttribute | AttributeContextCapabilities.TargetAttribute | AttributeContextCapabilities.TraitValue,
+                    report, $"{breakpointLabel}: modifier[{modifierIndex}]");
                 if (!slots.Add((result.Modifier.Attribute, result.Modifier.SlotId)))
                     report.Error($"{breakpointLabel}: modifier[{modifierIndex}] duplicates " +
                                  $"({result.Modifier.Attribute}, {result.Modifier.SlotId}).");
@@ -188,7 +197,7 @@ public static partial class TraitDefinitionCompiler
                     breakpoint.MinValue,
                     breakpoint.MaxValue,
                     breakpoint.DisplayStyle,
-                    compiledModifiers)));
+                    compiledModifiers, breakpoint.TargetPolicy, grants), breakpoint.TargetPolicy, grants));
         }
 
         if (report.HasCoreErrors || authored.CountingPolicy is null) return null;
@@ -235,26 +244,20 @@ public static partial class TraitDefinitionCompiler
         int minValue,
         int maxValue,
         string displayStyle,
-        IEnumerable<CompiledAttributeModifier> modifiers) => Hash(string.Join("|",
+        IEnumerable<CompiledAttributeModifier> modifiers,
+        TraitTargetPolicy targetPolicy,
+        ImmutableArray<CompiledStatusDefinition> grants) => Hash(string.Join("|",
         index,
         minValue,
         maxValue,
         displayStyle,
+        targetPolicy,
+        string.Join(";", grants.Select(StatusDefinitionFingerprint.Compute)),
         string.Join(";", modifiers.Select(modifier =>
             $"{modifier.Attribute}:{modifier.Operation}:{Magnitude(modifier.Magnitude)}:" +
             $"{modifier.Priority}:{modifier.SlotId}"))));
 
-    private static string Magnitude(CompiledAttributeMagnitude magnitude) => magnitude switch
-    {
-        CompiledConstantMagnitude constant =>
-            $"constant:{constant.Value.ToString("R", CultureInfo.InvariantCulture)}:{constant.CaptureMode}",
-        CompiledSourceAttributeMagnitude source => $"source:{source.Attribute}:{source.CaptureMode}",
-        CompiledTargetAttributeMagnitude target => $"target:{target.Attribute}:{target.CaptureMode}",
-        CompiledContextValueMagnitude context => $"context:{context.Key}:{context.CaptureMode}",
-        CompiledTeamCountMagnitude count => $"count:{count.CountKind}:{count.Team}:{count.CaptureMode}",
-        CompiledTraitValueMagnitude trait => $"trait:{trait.TraitId}:{trait.Team}:{trait.CaptureMode}",
-        _ => throw new InvalidOperationException($"Unsupported Trait magnitude: {magnitude.GetType().Name}")
-    };
+    private static string Magnitude(CompiledAttributeMagnitude magnitude) => AttributeMagnitudeSupport.Fingerprint(magnitude);
 
     private static string Hash(string value) =>
         Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();

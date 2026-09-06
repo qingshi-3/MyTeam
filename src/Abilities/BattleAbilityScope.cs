@@ -75,6 +75,10 @@ public sealed class BattleAbilityScope : IDisposable
             ? instance.Definition
             : null;
 
+    internal bool HasTrigger(string ownerId, AbilityTriggerKind trigger) => _instances.Values.Any(instance =>
+        instance.OwnerId == ownerId && instance.Definition.ActivationKind == AbilityActivationKind.Triggered &&
+        instance.Definition.Trigger == trigger);
+
     public AbilityActivationResult TryActivateManual(
         string ownerId,
         string abilityId,
@@ -82,7 +86,7 @@ public sealed class BattleAbilityScope : IDisposable
         string explicitTargetId = "") =>
         TryActivate(ownerId, abilityId, AbilityActivationKind.ManualCommand, AbilityTriggerKind.None, tick, explicitTargetId);
 
-    public ImmutableArray<AbilityActivationResult> ActivateAutomatic(string ownerId, int tick)
+    public ImmutableArray<AbilityActivationResult> ActivateAutomatic(string ownerId, int tick, string explicitTargetId = "")
     {
         if (_transition is not null) return [];
         return _instances.Values
@@ -90,7 +94,8 @@ public sealed class BattleAbilityScope : IDisposable
                                instance.Definition.ActivationKind == AbilityActivationKind.Automatic &&
                                (instance.Definition.Trigger == AbilityTriggerKind.BattleStarted && tick == 0 ||
                                 instance.Definition.Trigger == AbilityTriggerKind.PeriodicTick && tick > 0 &&
-                                tick % instance.Definition.IntervalTicks == 0))
+                                tick % instance.Definition.IntervalTicks == 0 ||
+                                instance.Definition.Trigger == AbilityTriggerKind.ManaFull && tick > 0))
             .OrderBy(instance => instance.Definition.StableId, StringComparer.Ordinal)
             .Select(instance => TryActivate(
                 ownerId,
@@ -98,7 +103,7 @@ public sealed class BattleAbilityScope : IDisposable
                 AbilityActivationKind.Automatic,
                 instance.Definition.Trigger,
                 tick,
-                string.Empty))
+                explicitTargetId))
             .ToImmutableArray();
     }
 
@@ -108,7 +113,7 @@ public sealed class BattleAbilityScope : IDisposable
         int tick,
         string explicitTargetId = "")
     {
-        if (trigger is AbilityTriggerKind.None or AbilityTriggerKind.BattleStarted or AbilityTriggerKind.PeriodicTick)
+        if (trigger is AbilityTriggerKind.None or AbilityTriggerKind.BattleStarted or AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.ManaFull)
             throw new ArgumentOutOfRangeException(nameof(trigger));
         if (_transition is not null) return [];
         return _instances.Values
@@ -131,6 +136,18 @@ public sealed class BattleAbilityScope : IDisposable
         .OrderBy(instance => instance.Definition.StableId, StringComparer.Ordinal)
         .Select(instance => instance.Definition)
         .ToImmutableArray();
+
+    public ImmutableArray<AbilityActivationResult> ActivatePassives(string ownerId, int tick) => _instances.Values
+        .Where(instance => instance.OwnerId == ownerId &&
+            instance.Definition.ActivationKind == AbilityActivationKind.Passive && instance.Uses == 0)
+        .OrderBy(instance => instance.Definition.StableId, StringComparer.Ordinal)
+        .ToArray()
+        .Select(instance => TryActivate(ownerId, instance.Definition.StableId,
+            AbilityActivationKind.Passive, AbilityTriggerKind.None, tick, string.Empty)).ToImmutableArray();
+
+    internal ScopeStateCheckpoint CaptureState() => new(this);
+
+    internal void RestoreState(ScopeStateCheckpoint checkpoint) => checkpoint.Restore(this);
 
     public AbilityScopeTransitionResult Complete(AbilityScopeCompletionReason reason, int finalTick)
     {
@@ -204,7 +221,9 @@ public sealed class BattleAbilityScope : IDisposable
                     : committed.Failure,
                 string.IsNullOrWhiteSpace(committed.FailureReason) ? "能力提交失败。" : committed.FailureReason);
 
-        CurrentMana -= ability.ManaCost;
+        // Manual compatibility commands retain their own budget. Mana-full skills are paid
+        // by their concrete owner inside the world's atomic commit, never by this shared pool.
+        if (entryPoint == AbilityActivationKind.ManualCommand) CurrentMana -= ability.ManaCost;
         instance.Uses++;
         instance.ReadyTick = tick + ability.CooldownTicks;
         return new AbilityActivationResult(
@@ -212,7 +231,7 @@ public sealed class BattleAbilityScope : IDisposable
             AbilityActivationFailure.None,
             string.Empty,
             abilityId,
-            ability.ManaCost,
+            ability.Trigger == AbilityTriggerKind.ManaFull ? committed.OwnerManaSpent : ability.ManaCost,
             prepared.Plan.GoldCost,
             committed.ResolvedFacts);
     }
@@ -223,6 +242,35 @@ public sealed class BattleAbilityScope : IDisposable
         string reason) => new(false, failure, reason, abilityId, 0, 0, []);
 
     private readonly record struct RuntimeKey(string OwnerId, string AbilityId);
+
+    internal sealed class ScopeStateCheckpoint
+    {
+        private readonly BattleAbilityScope _owner;
+        private readonly (RuntimeKey Key, RuntimeInstance Instance, int Uses, int ReadyTick)[] _entries;
+        private readonly int _mana;
+        private readonly int _tick;
+        internal ScopeStateCheckpoint(BattleAbilityScope owner)
+        {
+            _owner = owner;
+            _entries = owner._instances.Select(pair =>
+                (pair.Key, pair.Value, pair.Value.Uses, pair.Value.ReadyTick)).ToArray();
+            _mana = owner.CurrentMana;
+            _tick = owner._lastTick;
+        }
+        internal void Restore(BattleAbilityScope owner)
+        {
+            if (!ReferenceEquals(owner, _owner)) throw new InvalidOperationException("Ability checkpoint owner mismatch.");
+            owner._instances.Clear();
+            foreach (var entry in _entries)
+            {
+                entry.Instance.Uses = entry.Uses;
+                entry.Instance.ReadyTick = entry.ReadyTick;
+                owner._instances.Add(entry.Key, entry.Instance);
+            }
+            owner.CurrentMana = _mana;
+            owner._lastTick = _tick;
+        }
+    }
 
     private sealed class RuntimeInstance(CompiledAbilityDefinition definition, string ownerId)
     {

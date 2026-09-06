@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using TowerAutobattler.Effects;
+using TowerAutobattler.Attributes;
 
 namespace TowerAutobattler.Battle;
 
 /// <summary>
 /// Narrow typed-effect boundary over BattleSimulation's existing mutation authority.
-/// Authored Ability/Status effects and floor damage/healing use this scope; the recursive
-/// attack/death chain intentionally remains outside it until that ordering contract migrates together.
+/// Authored Ability/Status effects and floor damage/healing use this scope. Basic attacks
+/// keep their existing mutation path; ability batches include that shared death-chain
+/// authority in their enclosing Battle world checkpoint.
 /// </summary>
 internal sealed class BattleEffectCompatibilityAdapter : IDisposable
 {
@@ -35,11 +37,11 @@ internal sealed class BattleEffectCompatibilityAdapter : IDisposable
     internal void RestoreState(BattleEffectScope.EffectStateCheckpoint checkpoint) =>
         _scope.RestoreState(checkpoint);
 
-    public float Damage(string sourceId, string targetId, float amount, int tick) =>
-        Execute(DamageBinding, NormalizeSource(sourceId, "floor"), targetId, amount, tick);
+    public float Damage(string sourceId, string targetId, float amount, int tick, CombatSourceRef origin = default) =>
+        Execute(DamageBinding, NormalizeSource(sourceId, "floor"), targetId, amount, tick, origin);
 
-    public float FloorHeal(string targetId, float amount, int tick) =>
-        Execute(FloorHealBinding, "floor", targetId, amount, tick);
+    public float FloorHeal(string targetId, float amount, int tick, CombatSourceRef origin = default) =>
+        Execute(FloorHealBinding, "floor", targetId, amount, tick, origin);
 
     public EffectQueueDrainResult ExecuteAuthored(
         CompiledEffectBinding binding,
@@ -47,8 +49,9 @@ internal sealed class BattleEffectCompatibilityAdapter : IDisposable
         string ownerId,
         string explicitTargetId,
         int tick,
-        float invocationValue) =>
-        _scope.ExecuteImmediate(binding, sourceId, ownerId, explicitTargetId, tick, invocationValue);
+        float invocationValue,
+        CombatSourceRef origin = default) =>
+        _scope.ExecuteImmediate(binding, sourceId, ownerId, explicitTargetId, tick, invocationValue, origin);
 
     public EffectPreflightResult PreflightAuthored(
         CompiledEffectBinding binding,
@@ -56,8 +59,9 @@ internal sealed class BattleEffectCompatibilityAdapter : IDisposable
         string ownerId,
         string explicitTargetId,
         int tick,
-        float invocationValue) =>
-        _scope.PreflightImmediate(binding, sourceId, ownerId, explicitTargetId, tick, invocationValue);
+        float invocationValue,
+        CombatSourceRef origin = default) =>
+        _scope.PreflightImmediate(binding, sourceId, ownerId, explicitTargetId, tick, invocationValue, origin);
 
     public BattleScopeTransitionResult Complete(BattleScopeCompletionReason reason, int tick) =>
         _scope.Complete(reason, tick);
@@ -69,9 +73,10 @@ internal sealed class BattleEffectCompatibilityAdapter : IDisposable
         string sourceId,
         string targetId,
         float amount,
-        int tick)
+        int tick,
+        CombatSourceRef origin)
     {
-        var result = _scope.ExecuteImmediate(binding, sourceId, sourceId, targetId, tick, amount);
+        var result = _scope.ExecuteImmediate(binding, sourceId, sourceId, targetId, tick, amount, origin);
         if (result.Status is EffectExecutionStatus.Failed or EffectExecutionStatus.Interrupted)
             throw new InvalidOperationException(
                 $"Battle effect compatibility execution failed for '{binding.StableId}': " +

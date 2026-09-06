@@ -28,6 +28,7 @@ public partial class BattleBoard : Control
     }
 
     public Vector2 CellToLocal(Vector2I cell) => _projection.CellToLocal(cell);
+    public Vector2 LogicalToLocal(Vector2 position) => _projection.LogicalToLocal(position);
 
     public override void _Draw()
     {

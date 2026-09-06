@@ -15,6 +15,13 @@ public readonly record struct BattlefieldProjection(Vector2 Origin, Vector2 Cell
     public Vector2 CellToLocal(Vector2I cell) =>
         Origin + new Vector2(cell.X * CellPitch.X, cell.Y * CellPitch.Y);
 
+    public Vector2 LogicalToLocal(Vector2 position) =>
+        Origin + new Vector2(position.X * CellPitch.X, position.Y * CellPitch.Y);
+
+    public Vector2 LocalToLogical(Vector2 position) => new(
+        (position.X - Origin.X) / CellPitch.X,
+        (position.Y - Origin.Y) / CellPitch.Y);
+
     public Rect2 CellRect(Vector2I cell)
     {
         var size = CellPitch * CellFill;

@@ -1,0 +1,228 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Experience/ExperienceSlicePanel.cs" id="1"]
+
+[node name="ExperiencePanel" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Step" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "玩法试验 01 · 正在准备"
+autowrap_mode = 3
+theme_type_variation = &"SecondaryLabel"
+
+[node name="Title" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "一段可以重来的小旅程"
+autowrap_mode = 3
+theme_type_variation = &"TitleLabel"
+
+[node name="Hint" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "只在内存中运行，不读取或修改正式征程。"
+autowrap_mode = 3
+
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Body" type="VBoxContainer" parent="Margin/Layout/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="Team" type="Label" parent="Margin/Layout/Scroll/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+autowrap_mode = 3
+
+
+[node name="ItemChoices" type="HBoxContainer" parent="Margin/Layout/Scroll/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="RecruitChoices" type="VBoxContainer" parent="Margin/Layout/Scroll/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+theme_override_constants/separation = 12
+
+[node name="Preview" type="Label" parent="Margin/Layout/Scroll/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+autowrap_mode = 3
+
+
+[node name="EquipmentControls" type="VBoxContainer" parent="Margin/Layout/Scroll/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+theme_override_constants/separation = 10
+
+[node name="EquipmentHint" type="Label" parent="Margin/Layout/Scroll/Body/EquipmentControls"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "选择装备 → 选择持有者 → 选择槽位 → 应用"
+autowrap_mode = 3
+
+
+[node name="EquipRow" type="HBoxContainer" parent="Margin/Layout/Scroll/Body/EquipmentControls"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ItemPicker" type="OptionButton" parent="Margin/Layout/Scroll/Body/EquipmentControls/EquipRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120, 48)
+tooltip_text = "装备"
+
+[node name="OwnerPicker" type="OptionButton" parent="Margin/Layout/Scroll/Body/EquipmentControls/EquipRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120, 48)
+tooltip_text = "持有者"
+
+[node name="SlotPicker" type="OptionButton" parent="Margin/Layout/Scroll/Body/EquipmentControls/EquipRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120, 48)
+tooltip_text = "槽位"
+
+[node name="Equip" type="Button" parent="Margin/Layout/Scroll/Body/EquipmentControls/EquipRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "装备／转移"
+theme_type_variation = &"SecondaryButton"
+
+
+[node name="Unequip" type="Button" parent="Margin/Layout/Scroll/Body/EquipmentControls/EquipRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "收回背包"
+theme_type_variation = &"SecondaryButton"
+
+
+[node name="Inventory" type="Label" parent="Margin/Layout/Scroll/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+autowrap_mode = 3
+visible = false
+
+[node name="HistoryFold" type="FoldableContainer" parent="Margin/Layout/Scroll/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+title = "查看本次与之前尝试的记录"
+folded = true
+
+[node name="History" type="Label" parent="Margin/Layout/Scroll/Body/HistoryFold"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+autowrap_mode = 3
+
+
+[node name="Feedback" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+autowrap_mode = 3
+theme_type_variation = &"PlayerLabel"
+
+[node name="Actions" type="HBoxContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Primary" type="Button" parent="Margin/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "等待内容就绪"
+theme_type_variation = &"SecondaryButton"
+disabled = true
+size_flags_horizontal = 3
+
+[node name="Skip" type="Button" parent="Margin/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "跳过招募"
+theme_type_variation = &"SecondaryButton"
+visible = false
+
+[node name="Tools" type="HBoxContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Retry" type="Button" parent="Margin/Layout/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "从最初换个选择"
+theme_type_variation = &"SecondaryButton"
+disabled = true
+
+[node name="RetryAfter" type="Button" parent="Margin/Layout/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "从第一战后重试"
+theme_type_variation = &"SecondaryButton"
+disabled = true
+
+[node name="MemoryNote" type="Label" parent="Margin/Layout/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "仅本次打开期间保留 · 不影响正式存档"
+autowrap_mode = 3
+size_flags_horizontal = 3
+theme_type_variation = &"SecondaryLabel"
+
+[node name="Exit" type="Button" parent="Margin/Layout/Tools"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "返回主菜单"
+theme_type_variation = &"SecondaryButton"
+
+

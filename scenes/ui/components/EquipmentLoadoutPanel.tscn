@@ -1,0 +1,95 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/UI/EquipmentLoadoutPanel.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
+
+[node name="EquipmentLoadoutPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(324, 0)
+theme_type_variation = &"ContextSidebarPanel"
+script = ExtResource("1")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Hero" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+
+[node name="EquipmentPreviousHero" type="Button" parent="Layout/Hero"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "‹"
+tooltip_text = "上一位英雄"
+
+[node name="EquipmentHeroPortrait" parent="Layout/Hero" instance=ExtResource("2")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(46, 46)
+layout_mode = 2
+
+[node name="EquipmentHeroName" type="Label" parent="Layout/Hero"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeroIdentity"
+theme_override_font_sizes/font_size = 18
+text = "英雄装备"
+
+[node name="EquipmentNextHero" type="Button" parent="Layout/Hero"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "›"
+tooltip_text = "下一位英雄"
+
+[node name="EquipmentSlots" type="HBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="EquipmentDetails" type="Label" parent="Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 2
+text = "拖装备到槽位，或先点装备再点槽位。"
+
+[node name="Actions" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+
+[node name="EquipmentRemove" type="Button" parent="Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+theme_override_font_sizes/font_size = 14
+text = "卸下回包"
+
+[node name="EquipmentCancel" type="Button" parent="Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+theme_override_font_sizes/font_size = 14
+text = "放下选择"
+
+[node name="EquipmentInventoryTitle" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "装备背包"
+
+[node name="InventoryScroll" type="ScrollContainer" parent="Layout"]
+custom_minimum_size = Vector2(0, 72)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="EquipmentInventory" type="HFlowContainer" parent="Layout/InventoryScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+
+[node name="EquipmentFeedback" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 2

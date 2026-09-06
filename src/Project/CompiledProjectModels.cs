@@ -4,6 +4,7 @@ using TowerAutobattler.Abilities;
 using TowerAutobattler.Content;
 using TowerAutobattler.Domain;
 using TowerAutobattler.UI;
+using TowerAutobattler.Run;
 
 namespace TowerAutobattler.Project;
 
@@ -74,6 +75,7 @@ public sealed record CompiledCampaign(
     CompiledContentPool ShopPool)
 {
     public int TotalFloors => FloorsPerRegion * Regions.Length;
+    public ImmutableDictionary<RunOfferKind, CompiledRunOffer> RunOffers { get; init; } = ImmutableDictionary<RunOfferKind, CompiledRunOffer>.Empty;
 }
 
 public sealed record CompiledRunRules(
@@ -105,7 +107,10 @@ public sealed record CompiledRunRules(
     float RestHeroHealing,
     float RestSoldierHealing,
     int RestGold,
-    int InitialUnlockedHeroCount);
+    int InitialUnlockedHeroCount)
+{
+    public ImmutableDictionary<string, CompiledStartingHeroEconomy> StartingHeroEconomy { get; init; } = ImmutableDictionary<string, CompiledStartingHeroEconomy>.Empty;
+}
 
 public sealed record CompiledProjectPresentation(
     SemanticIconCatalog SemanticIcons,

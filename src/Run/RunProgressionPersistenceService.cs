@@ -40,6 +40,11 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
     {
         LastActiveRunLoadDiagnostic = null;
         var stored = _save.LoadActiveRun();
+        if (_save.ActiveRunReadError is { } readError)
+        {
+            LastActiveRunLoadDiagnostic = new(ActiveRunLoadFailureKind.ReadFailed, readError);
+            return null;
+        }
         if (stored is null) return null;
         // Migration and validation always operate on a detached, shape-preserving
         // copy so rejected or unpublished migrations cannot alter the stored v2/v3 object.
@@ -54,6 +59,15 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
                 requiresPublication
                     ? "活动征程无法无损迁移，已拒绝载入；Meta 与设置保持不变。"
                     : "当前活动征程含旧 schema 残留或非法结构，已拒绝载入；Meta 与设置保持不变。");
+            return null;
+        }
+        if (requiresPublication && loaded.PendingNode && RunDecisionService.KindFor(loaded.SelectedNode) is not null)
+        {
+            // Before v6, applying a noncombat reward and consuming its node were
+            // separate saves. PendingNode cannot prove whether its reward was
+            // already granted; recreating an offer would guess that entitlement.
+            LastActiveRunLoadDiagnostic = new(ActiveRunLoadFailureKind.MigrationRejected,
+                "旧征程停在非战斗节点，旧格式无法证明收益是否已领取，不能安全重建选择资格；原存档已保留，未重复发奖或重置进度。");
             return null;
         }
         if (!ValidateRun(loaded))
@@ -104,19 +118,36 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
 
     public void AdvanceFloor(ActiveRunDto run)
     {
-        run.FloorIndex++;
-        run.PendingNode = false;
-        UpdateHighestRegion(run);
-        _save.SaveActiveRun(run);
+        var working = CloneRun(run);
+        working.FloorIndex++;
+        working.PendingNode = false;
+        if (ValidateRun(working)) TryPublish(working, run);
     }
 
-    public void CompleteFinalVictory()
+    public bool TryCompleteTerminal(ActiveRunDto run)
     {
-        Meta.Victories++;
-        Meta.HighestRegion = _project.Campaign.Regions.Length;
-        UnlockNextHero();
-        _save.SaveMeta(Meta);
-        _save.DeleteActiveRun();
+        if (string.IsNullOrWhiteSpace(run.TerminalCompletionId)) return false;
+        if (run.TerminalVictory && !Meta.AppliedRunCompletionIds.Contains(run.TerminalCompletionId))
+        {
+            if (Meta.Victories == int.MaxValue) return false;
+            var next = new MetaProgressDto
+            {
+                Version = Meta.Version, Victories = checked(Meta.Victories + 1),
+                HighestRegion = _project.Campaign.Regions.Length,
+                UnlockedHeroIds = [.. Meta.UnlockedHeroIds],
+                AppliedRunCompletionIds = [.. Meta.AppliedRunCompletionIds, run.TerminalCompletionId]
+            };
+            var locked = _content.Catalog.Heroes.FirstOrDefault(entry => !next.UnlockedHeroIds.Contains(entry.StableId));
+            if (locked is not null) next.UnlockedHeroIds.Add(locked.StableId);
+            try { if (!_save.SaveMeta(next)) return false; }
+            catch { return false; }
+            Meta.Victories = next.Victories;
+            Meta.HighestRegion = next.HighestRegion;
+            Meta.UnlockedHeroIds = next.UnlockedHeroIds;
+            Meta.AppliedRunCompletionIds = next.AppliedRunCompletionIds;
+        }
+        try { _save.DeleteActiveRun(); return true; }
+        catch { return false; }
     }
 
     public void EndRun() => _save.DeleteActiveRun();
@@ -129,6 +160,9 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
 
     private void EnsureMetaDefaults()
     {
+        if (Meta.UnlockedHeroIds is null || Meta.AppliedRunCompletionIds is null || Meta.Victories < 0 || Meta.HighestRegion < 0 ||
+            Meta.AppliedRunCompletionIds.Any(string.IsNullOrWhiteSpace) || Meta.AppliedRunCompletionIds.Distinct().Count() != Meta.AppliedRunCompletionIds.Count)
+            throw new InvalidOperationException("Meta 存档结构无效，拒绝写回以保护原文件。");
         Meta.UnlockedHeroIds.RemoveAll(id => !_content.TryGet(id, out var entry) ||
             entry.Definition is not UnitDefinition { IsHero: true });
         if (Meta.UnlockedHeroIds.Count == 0)
@@ -143,14 +177,10 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         Meta.HighestRegion = Math.Max(Meta.HighestRegion, Math.Min(
             _project.Campaign.Regions.Length,
             run.FloorIndex / _project.Campaign.FloorsPerRegion + 1));
-        _save.SaveMeta(Meta);
-    }
-
-    private void UnlockNextHero()
-    {
-        var locked = _content.Catalog.Heroes.FirstOrDefault(entry =>
-            !Meta.UnlockedHeroIds.Contains(entry.StableId));
-        if (locked is not null) Meta.UnlockedHeroIds.Add(locked.StableId);
+        // The authoritative Run has already committed. A secondary high-water
+        // mark must never turn that success into a reported transaction failure.
+        try { _save.SaveMeta(Meta); }
+        catch (Exception exception) { Godot.GD.PushWarning("征程已保存，历史最高区域暂未同步：" + exception.Message); }
     }
 
     private sealed record FormationSnapshot(List<string> Deployment)
@@ -199,6 +229,14 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
                     Amount = cap.Amount
                 }).ToList(),
         Deployment = source.Deployment is null ? null! : source.Deployment.ToList(),
+        EquipmentInventory = source.EquipmentInventory is null ? null! : source.EquipmentInventory
+            .Select(item => item is null ? null! : new EquipmentInstanceState
+            {
+                InstanceId = item.InstanceId,
+                ContentId = item.ContentId,
+                OwnerHeroInstanceId = item.OwnerHeroInstanceId,
+                SlotIndex = item.SlotIndex
+            }).ToList(),
         Items = source.Items is null
             ? null!
             : source.Items.Select(item => item is null
@@ -228,6 +266,9 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         BattleNumber = source.BattleNumber,
         PendingNode = source.PendingNode,
         SelectedNode = source.SelectedNode,
+        PendingOffer = source.PendingOffer,
+        TerminalCompletionId = source.TerminalCompletionId,
+        TerminalVictory = source.TerminalVictory,
         LegacyHeroId = source.LegacyHeroId,
         LegacyHeroHealthRatio = source.LegacyHeroHealthRatio,
         LegacyHeroCell = source.LegacyHeroCell?.Clone(),
@@ -246,12 +287,16 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         target.PopulationCapSources = copy.PopulationCapSources;
         target.Deployment = copy.Deployment;
         target.Items = copy.Items;
+        target.EquipmentInventory = copy.EquipmentInventory;
         target.EquippedTacticalCommandIds = copy.EquippedTacticalCommandIds;
         target.Gold = copy.Gold;
         target.FloorIndex = copy.FloorIndex;
         target.BattleNumber = copy.BattleNumber;
         target.PendingNode = copy.PendingNode;
         target.SelectedNode = copy.SelectedNode;
+        target.PendingOffer = copy.PendingOffer;
+        target.TerminalCompletionId = copy.TerminalCompletionId;
+        target.TerminalVictory = copy.TerminalVictory;
         target.LegacyHeroId = copy.LegacyHeroId;
         target.LegacyHeroHealthRatio = copy.LegacyHeroHealthRatio;
         target.LegacyHeroCell = copy.LegacyHeroCell;

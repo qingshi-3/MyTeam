@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using TowerAutobattler.Abilities;
 using TowerAutobattler.Content;
 using TowerAutobattler.Effects;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.TacticalCommands;
 
@@ -134,6 +135,7 @@ public static partial class TacticalCommandDefinitionCompiler
         ability.CooldownTicks,
         ability.MaxUses,
         ability.IntervalTicks,
+        ability.AutomaticTarget,
         string.Join("/", ability.Operations.Select(Operation)),
         ability.Presentation is null
             ? string.Empty
@@ -148,9 +150,7 @@ public static partial class TacticalCommandDefinitionCompiler
             $"cooldown:{Target(cooldown.TargetQuery)}:{cooldown.AttackAdjustment}:{cooldown.AttackValue}:" +
             $"{cooldown.MoveAdjustment}:{cooldown.MoveValue}",
         CompiledApplyStatusAbilityOperation status =>
-            $"status:{status.Status.StableId}:{status.Status.ResourcePath}:{status.Status.Description}:" +
-            $"{status.Status.DurationKind}:{status.Status.DurationTicks}:{status.Status.StackLimit}:" +
-            $"{status.Status.Magnitude.ToString("R", CultureInfo.InvariantCulture)}:{Target(status.TargetQuery)}",
+            $"status:{StatusDefinitionFingerprint.Compute(status.Status)}:{Target(status.TargetQuery)}",
         CompiledSummonAbilityOperation summon =>
             $"summon:{summon.Profile}:{summon.Count}:" +
             $"{summon.HealthMultiplier.ToString("R", CultureInfo.InvariantCulture)}:" +
@@ -160,31 +160,9 @@ public static partial class TacticalCommandDefinitionCompiler
             $"Unsupported tactical-command Ability operation: {operation.GetType().Name}")
     };
 
-    private static string Binding(CompiledEffectBinding binding) => string.Join(":",
-        binding.StableId,
-        binding.Priority,
-        binding.Trigger.Kind,
-        binding.Trigger.EventKind,
-        string.Join(",", binding.Conditions.Select(condition => condition.ToString())),
-        Target(binding.TargetQuery),
-        string.Join(",", binding.Effects.Select(effect =>
-            $"{effect.Kind}-{effect.AmountSource}-{effect.Amount.ToString("R", CultureInfo.InvariantCulture)}")),
-        binding.Limits.MaxUses,
-        binding.Limits.MinimumIntervalTicks,
-        binding.Limits.MaxDepth,
-        binding.Limits.MaxRepeatedEdges,
-        binding.Presentation?.ToString() ?? string.Empty);
+    private static string Binding(CompiledEffectBinding binding) => EffectModelText.BindingFingerprint(binding);
 
-    private static string Target(CompiledEffectTargetQuery query) => query switch
-    {
-        CompiledExplicitTargetQuery => "explicit",
-        CompiledSourceTargetQuery => "source",
-        CompiledOwnerTargetQuery => "owner",
-        CompiledRelativeTeamTargetQuery relative =>
-            $"relative:{relative.Team}:{relative.IncludeDefeated}:{relative.RequiredTag}",
-        _ => throw new InvalidOperationException(
-            $"Unsupported tactical-command target query: {query.GetType().Name}")
-    };
+    private static string Target(CompiledEffectTargetQuery query) => EffectModelText.Target(query);
 
     [GeneratedRegex("^[a-z0-9]+(?:_[a-z0-9]+)*$", RegexOptions.CultureInvariant)]
     private static partial Regex StableIdRegex();

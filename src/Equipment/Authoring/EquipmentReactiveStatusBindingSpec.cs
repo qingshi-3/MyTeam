@@ -7,7 +7,8 @@ namespace TowerAutobattler.Equipment;
 public enum EquipmentReactiveStatusTarget
 {
     Owner,
-    EventTarget
+    EventTarget,
+    EventSource
 }
 
 public enum EquipmentReactiveStatusSource
@@ -24,4 +25,5 @@ public partial class EquipmentReactiveStatusBindingSpec : Resource
     [Export] public EquipmentReactiveStatusSource Source { get; set; }
     [Export] public int Priority { get; set; }
     [Export] public StatusDefinition? Status { get; set; }
+    [Export] public StatusReactiveOwnerRole OwnerRole { get; set; }
 }

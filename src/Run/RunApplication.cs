@@ -22,6 +22,7 @@ public sealed class RunApplication
     private readonly RunFormationService _formation;
     private readonly RunBattlePreparationService _battlePreparation;
     private readonly RunNodeResolutionService _nodes;
+    private readonly RunDecisionService _decisions;
 
     public RunApplication(ContentRegistry content, IRunSaveService save, CompiledGameProject project)
     {
@@ -40,6 +41,7 @@ public sealed class RunApplication
         _persistence = new RunProgressionPersistenceService(content, save, project);
         ActiveRun = _persistence.LoadActiveRun();
         _rewards = new RunRewardEconomyService(content, project, _persistence, ActiveRun);
+        _decisions = new RunDecisionService(content, project, _persistence);
         _equipment = new RunEquipmentService(content.Graph, project.RunRules, _persistence);
         _formation = new RunFormationService(project.RunRules, _persistence);
         var relics = new RunRelicService(content);
@@ -49,7 +51,8 @@ public sealed class RunApplication
             _tower,
             _persistence,
             _battlePreparation,
-            _rewards);
+            _rewards,
+            _decisions);
         ApplyMasterVolume();
     }
 
@@ -68,6 +71,7 @@ public sealed class RunApplication
         if (run is null) return false;
         _nodes.ResetRunLifecycle();
         ActiveRun = run;
+        EquipmentEditingLocked = false;
         return true;
     }
 
@@ -75,6 +79,7 @@ public sealed class RunApplication
     {
         _nodes.ResetRunLifecycle();
         ActiveRun = null;
+        EquipmentEditingLocked = false;
         _persistence.DeleteActiveRun();
     }
 
@@ -83,6 +88,18 @@ public sealed class RunApplication
     public EncounterPlan CurrentEncounter() => _nodes.CurrentEncounter(ActiveRun);
 
     public bool SelectNode(TowerNodeType type) => _nodes.SelectNode(ActiveRun, type);
+    public PendingRunOffer? PendingOffer => ActiveRun?.PendingOffer;
+    public RunDecisionResult ResolveOffer(string offerId, string? choiceId) => EquipmentEditingLocked
+        ? RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "战斗尚未完成结算。")
+        : _decisions.Resolve(ActiveRun, offerId, choiceId);
+    public RunDecisionResult CheckOfferChoice(CompiledRunChoice choice) => ActiveRun is null
+        ? RunDecisionResult.Reject(RunDecisionFailure.NoOffer, "没有活动征程。") : _decisions.Check(ActiveRun, choice);
+    public bool ResumeTerminalCompletion()
+    {
+        if (ActiveRun is not { } run || string.IsNullOrEmpty(run.TerminalCompletionId) || !_persistence.TryCompleteTerminal(run)) return false;
+        ActiveRun = null;
+        return true;
+    }
 
     public void FinishNonCombatNode() => _nodes.FinishNonCombatNode(ActiveRun);
 
@@ -95,28 +112,42 @@ public sealed class RunApplication
     public IReadOnlyList<CatalogEntry> ShopChoices(int salt = 0) =>
         PickEntries(_project.Campaign.ShopPool, Rules.ItemChoiceCount, salt);
 
-    public bool Recruit(string rosterHeroId) => _rewards.Recruit(ActiveRun, rosterHeroId);
+    public bool Recruit(string rosterHeroId) => !EquipmentEditingLocked && _rewards.Recruit(ActiveRun, rosterHeroId);
 
     public RunPopulationFacts? Population => ActiveRun is null
         ? null
         : RunPopulationPolicy.Evaluate(ActiveRun, Rules);
 
-    public bool GrantPopulation(int amount) => _rewards.GrantPopulation(ActiveRun, amount);
+    public bool GrantPopulation(int amount) => !EquipmentEditingLocked && _rewards.GrantPopulation(ActiveRun, amount);
 
     public bool GrantPopulationFromSource(string sourceId, int populationAmount, int effectiveCapIncrease) =>
-        _rewards.GrantPopulationFromSource(ActiveRun, sourceId, populationAmount, effectiveCapIncrease);
+        !EquipmentEditingLocked && _rewards.GrantPopulationFromSource(ActiveRun, sourceId, populationAmount, effectiveCapIncrease);
 
     public int ConvertRecruitToGold() => _rewards.ConvertRecruitToGold(ActiveRun);
 
-    public bool BuyItem(string itemId) => _rewards.BuyItem(ActiveRun, itemId);
+    private bool _equipmentEditingLocked;
+    public bool EquipmentEditingLocked
+    {
+        get => _equipmentEditingLocked || !string.IsNullOrEmpty(ActiveRun?.TerminalCompletionId);
+        private set => _equipmentEditingLocked = value;
+    }
 
-    public bool GrantItem(string itemId) => _rewards.GrantItem(ActiveRun, itemId);
+    // The formal battle lifecycle holds this lock through settlement. A preview
+    // BuildBattleConfig is deliberately read-only and never locks the run.
+    public void SetEquipmentEditingLocked(bool locked) => EquipmentEditingLocked = locked;
+
+    public bool BuyItem(string itemId) => !EquipmentEditingLocked && _rewards.BuyItem(ActiveRun, itemId);
+
+    public bool GrantItem(string itemId) => !EquipmentEditingLocked && _rewards.GrantItem(ActiveRun, itemId);
 
     public bool EquipItem(string ownerHeroInstanceId, int slotIndex, string equipmentContentId) =>
-        _equipment.Equip(ActiveRun, ownerHeroInstanceId, slotIndex, equipmentContentId);
+        !EquipmentEditingLocked && _equipment.Equip(ActiveRun, ownerHeroInstanceId, slotIndex, equipmentContentId);
+
+    public bool EquipOwnedItem(string equipmentInstanceId, string ownerHeroInstanceId, int slotIndex) =>
+        !EquipmentEditingLocked && _equipment.EquipOwned(ActiveRun, equipmentInstanceId, ownerHeroInstanceId, slotIndex);
 
     public bool RemoveEquipment(string ownerHeroInstanceId, int slotIndex) =>
-        _equipment.Remove(ActiveRun, ownerHeroInstanceId, slotIndex);
+        !EquipmentEditingLocked && _equipment.Remove(ActiveRun, ownerHeroInstanceId, slotIndex);
 
     public bool EquipDeployment(string instanceId, int slot) => MoveDeploymentUnit(instanceId, slot);
 

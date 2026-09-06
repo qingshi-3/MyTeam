@@ -2,15 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using TowerAutobattler.Attributes;
 
 namespace TowerAutobattler.Effects;
 
 public enum EffectKind { Damage, Heal, Shield }
+public enum EffectDamageType { Physical, Magical, True }
 public enum EffectAmountSource { Fixed, InvocationValue, EventEffectiveValue }
 public enum EffectTriggerKind { Manual, DomainEvent }
 public enum EffectDomainEventKind { None, DamageResolved, HealingResolved, ShieldResolved }
 public enum EffectEntityReference { Source, Owner, ExplicitTarget }
 public enum EffectRelativeTeam { Allies, Enemies }
+public enum EffectTargetOrder { RuntimeId, Nearest, LowestHealthRatio, HighestHealthRatio }
+public enum EffectComparison { Less, LessOrEqual, Equal, GreaterOrEqual, Greater }
 public enum EffectExecutionStatus { Succeeded, Skipped, Failed, Interrupted }
 
 public enum EffectInterruptionReason
@@ -78,7 +82,8 @@ public sealed record EffectInvocationContext(
     string OwnerId,
     int Tick,
     int Depth,
-    long InvocationSequence);
+    long InvocationSequence,
+    CombatSourceRef Origin = default);
 
 public sealed record EffectExecutionLimits(
     int MaxInvocationsPerDrain = 256,
@@ -95,12 +100,20 @@ public sealed record EffectEntitySnapshot(
     float Health,
     float MaxHealth,
     float Shield,
-    ImmutableArray<string> Tags = default);
+    ImmutableArray<string> Tags = default,
+    ImmutableDictionary<CombatAttribute, float>? Attributes = null,
+    Godot.Vector2? Position = null,
+    bool IsTemporary = false);
 
 public sealed record EffectWorldSnapshot(
     int Tick,
     ImmutableDictionary<string, EffectEntitySnapshot> Entities)
 {
+    public ImmutableDictionary<(AttributeTeamCountKind Kind, int Team), float> TeamCounts { get; init; } =
+        ImmutableDictionary<(AttributeTeamCountKind, int), float>.Empty;
+    public ImmutableDictionary<(string TraitId, int Team), float> TraitValues { get; init; } =
+        ImmutableDictionary<(string, int), float>.Empty;
+
     public static EffectWorldSnapshot Create(int tick, IEnumerable<EffectEntitySnapshot> entities) =>
         new(tick, entities.ToImmutableDictionary(entity => entity.RuntimeId, StringComparer.Ordinal));
 }
@@ -111,7 +124,8 @@ public sealed record EffectModifierRequest(
     int StepIndex,
     EffectKind Kind,
     string TargetId,
-    float RequestedAmount);
+    float RequestedAmount,
+    EffectDamageType DamageType = EffectDamageType.Physical);
 
 public sealed record EffectModifierContribution(string StableId, float Before, float After);
 

@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_lantern_fox"
+MaxMana = 70.0
+StartingMana = 20.0
 DisplayName = "灯狐"
 Description = "灵活的远程支援兽。"
 Role = 3
@@ -17,6 +19,7 @@ RecruitCost = 7
 MaxHealth = 98
 AttackDamage = 18
 AttackRange = 4
+AttackDelivery = 1
 AttackCooldown = 1.2
 MoveInterval = 0.35
 Armor = 1

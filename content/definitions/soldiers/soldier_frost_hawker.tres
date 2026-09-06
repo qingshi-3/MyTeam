@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_frost_hawker"
+MaxMana = 80.0
+StartingMana = 10.0
 DisplayName = "冰咬鹰手"
 Description = "快速射击并拖慢目标。"
 Role = 2
@@ -17,6 +19,7 @@ RecruitCost = 7
 MaxHealth = 86
 AttackDamage = 20
 AttackRange = 5
+AttackDelivery = 1
 AttackCooldown = 1
 MoveInterval = 0.44
 Armor = 1

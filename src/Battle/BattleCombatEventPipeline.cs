@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using TowerAutobattler.Attributes;
+using TowerAutobattler.Effects;
 
 namespace TowerAutobattler.Battle;
 
@@ -20,24 +21,27 @@ public enum BattleCombatPublishRejection { None, PipelineCompleted, SynchronousR
 public enum BattleCombatCompletionReason { None, PlayerVictory, PlayerDefeat, Timeout, Abort, Replacement, Exception, Disposal }
 
 public readonly record struct CombatCell(int X, int Y);
+public readonly record struct CombatPoint(float X, float Y);
 
 public sealed record BattleCombatEventDraft(
     BattleCombatEventKind Kind, CombatSourceRef Source, string SourceRuntimeId, string TargetRuntimeId, int Tick,
     float RequestedValue = 0, float AppliedValue = 0, float EffectiveValue = 0, CombatCell Cell = default,
-    string SubjectStableId = "", int PreviousStacks = 0, int CurrentStacks = 0, string Reason = "");
+    string SubjectStableId = "", int PreviousStacks = 0, int CurrentStacks = 0, string Reason = "",
+    CombatPoint Position = default, EffectDamageType DamageType = EffectDamageType.Physical);
 
 public sealed record BattleCombatEvent(
     long Sequence, string ScopeId, BattleIdentity? Identity, string ChainId, int Depth, BattleCombatEventKind Kind,
     CombatSourceRef Source, string SourceRuntimeId, string TargetRuntimeId, int Tick,
     float RequestedValue, float AppliedValue, float EffectiveValue, CombatCell Cell,
-    string SubjectStableId, int PreviousStacks, int CurrentStacks, string Reason);
+    string SubjectStableId, int PreviousStacks, int CurrentStacks, string Reason, CombatPoint Position,
+    EffectDamageType DamageType = EffectDamageType.Physical);
 
 public sealed record BattleCombatPublishResult(
     bool Accepted, BattleCombatPublishRejection Rejection, BattleCombatEvent? Event, string Message);
 
 public sealed record BattleCombatCalculationRequest(
     BattleCombatCalculationKind Kind, CombatSourceRef Source, string SourceRuntimeId,
-    string TargetRuntimeId, int Tick, float RequestedAmount);
+    string TargetRuntimeId, int Tick, float RequestedAmount, EffectDamageType DamageType = EffectDamageType.Physical);
 
 public sealed record BattleCombatCalculationContribution(
     CombatSourceRef Source, int Priority, float Before, float After);
@@ -151,6 +155,8 @@ public sealed class BattleCombatEventPipeline : IDisposable
     private int _lastTick;
     private bool _insideSubscriber;
     private bool _isDraining;
+    private string? _continuationChainId;
+    private int _continuationDepth;
 
     public BattleCombatEventPipeline(
         string scopeId,
@@ -294,7 +300,35 @@ public sealed class BattleCombatEventPipeline : IDisposable
     {
         if (_insideSubscriber)
             return Rejected(BattleCombatPublishRejection.SynchronousReentry, "Combat listeners cannot synchronously publish.");
-        return PublishCore(draft, $"{ScopeId}:chain:{++_chainSequence}", 0, false);
+        return PublishCore(draft, _continuationChainId ?? $"{ScopeId}:chain:{++_chainSequence}",
+            _continuationChainId is null ? 0 : _continuationDepth, false);
+    }
+
+    internal IDisposable ContinueReaction(string chainId, int depth)
+    {
+        if (_insideSubscriber || _isDraining || string.IsNullOrWhiteSpace(chainId) || depth < 0 || depth > Limits.MaxDepth)
+            throw new InvalidOperationException("Invalid deferred reaction continuation.");
+        return new CausalContinuation(this, chainId, depth);
+    }
+
+    private sealed class CausalContinuation : IDisposable
+    {
+        private readonly BattleCombatEventPipeline _owner;
+        private readonly string? _previous;
+        private readonly int _depth;
+        internal CausalContinuation(BattleCombatEventPipeline owner, string chainId, int depth)
+        {
+            _owner = owner;
+            _previous = owner._continuationChainId;
+            _depth = owner._continuationDepth;
+            owner._continuationChainId = chainId;
+            owner._continuationDepth = depth;
+        }
+        public void Dispose()
+        {
+            _owner._continuationChainId = _previous;
+            _owner._continuationDepth = _depth;
+        }
     }
 
     public BattleCombatResolution BeginAuthoritativeResolution()
@@ -403,7 +437,7 @@ public sealed class BattleCombatEventPipeline : IDisposable
             ++_eventSequence, ScopeId, Identity, chainId, depth, draft.Kind, draft.Source,
             draft.SourceRuntimeId, draft.TargetRuntimeId, draft.Tick,
             draft.RequestedValue, draft.AppliedValue, draft.EffectiveValue, draft.Cell,
-            draft.SubjectStableId, draft.PreviousStacks, draft.CurrentStacks, draft.Reason);
+            draft.SubjectStableId, draft.PreviousStacks, draft.CurrentStacks, draft.Reason, draft.Position, draft.DamageType);
         _events.Add(combatEvent);
         AddTrace(chainId, depth, "event", draft.Source, draft.Kind.ToString());
         var listeners = _eventSnapshots.GetValueOrDefault(draft.Kind) ?? [];

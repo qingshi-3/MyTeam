@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using TowerAutobattler.Attributes;
 using TowerAutobattler.Content;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.Traits;
 
@@ -19,7 +20,9 @@ public sealed record CompiledTraitBreakpoint(
     int MaxValue,
     string DisplayStyle,
     ImmutableArray<CompiledAttributeModifier> AttributeModifiers,
-    string Fingerprint);
+    string Fingerprint,
+    TraitTargetPolicy TargetPolicy = TraitTargetPolicy.AllTeam,
+    ImmutableArray<CompiledStatusDefinition> GrantedStatuses = default);
 
 public sealed record CompiledTraitDefinition(
     string StableId,

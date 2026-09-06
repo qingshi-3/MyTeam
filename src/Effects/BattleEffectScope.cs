@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using TowerAutobattler.Attributes;
 
 namespace TowerAutobattler.Effects;
 
@@ -70,7 +71,8 @@ public sealed class BattleEffectScope : IDisposable
     public IDisposable ActivateReactiveBinding(
         CompiledEffectBinding binding,
         string sourceId,
-        string ownerId)
+        string ownerId,
+        CombatSourceRef origin = default)
     {
         ArgumentNullException.ThrowIfNull(binding);
         EnsureAttribution(sourceId, ownerId);
@@ -81,12 +83,12 @@ public sealed class BattleEffectScope : IDisposable
             throw new InvalidOperationException($"Binding '{binding.StableId}' is not reactive.");
         if (_registrations.Values.Any(registration => registration.Active &&
                 registration.Binding.StableId == binding.StableId &&
-                registration.SourceId == sourceId && registration.OwnerId == ownerId))
+                registration.SourceId == sourceId && registration.OwnerId == ownerId && registration.Origin == origin))
             throw new InvalidOperationException(
                 $"Reactive binding '{binding.StableId}' is already active for source '{sourceId}' and owner '{ownerId}'.");
 
         var sequence = ++_registrationSequence;
-        var registration = new ReactiveRegistration(sequence, binding, sourceId, ownerId);
+        var registration = new ReactiveRegistration(sequence, binding, sourceId, ownerId, origin);
         _registrations.Add(sequence, registration);
         if (!_subscriptions.TryGetValue(binding.Trigger.EventKind, out var listeners))
         {
@@ -94,7 +96,7 @@ public sealed class BattleEffectScope : IDisposable
             _subscriptions.Add(binding.Trigger.EventKind, listeners);
         }
         listeners.Add(registration);
-        _runtimeStates.TryAdd(new RuntimeKey(binding.StableId, sourceId, ownerId), new RuntimeState());
+        _runtimeStates.TryAdd(new RuntimeKey(binding.StableId, sourceId, ownerId, origin), new RuntimeState());
         var handle = new SubscriptionHandle(this, sequence);
         _subscriptionHandles.Add(sequence, handle);
         return handle;
@@ -106,7 +108,8 @@ public sealed class BattleEffectScope : IDisposable
         string ownerId,
         string explicitTargetId,
         int tick,
-        float invocationValue = 0)
+        float invocationValue = 0,
+        CombatSourceRef origin = default)
     {
         ArgumentNullException.ThrowIfNull(binding);
         EnsureAttribution(sourceId, ownerId);
@@ -124,7 +127,8 @@ public sealed class BattleEffectScope : IDisposable
             ownerId,
             tick,
             0,
-            sequence);
+            sequence,
+            origin);
         _pending.Add(new PendingInvocation(binding, context, explicitTargetId, invocationValue, 0, null, string.Empty));
         return new EffectEnqueueResult(true, sequence, EffectInterruptionReason.None, string.Empty);
     }
@@ -135,11 +139,12 @@ public sealed class BattleEffectScope : IDisposable
         string ownerId,
         string explicitTargetId,
         int tick,
-        float invocationValue = 0)
+        float invocationValue = 0,
+        CombatSourceRef origin = default)
     {
         if (_isDraining)
             return ReentrantDrainResult(binding, sourceId, ownerId, explicitTargetId, tick);
-        var enqueue = EnqueueRoot(binding, sourceId, ownerId, explicitTargetId, tick, invocationValue);
+        var enqueue = EnqueueRoot(binding, sourceId, ownerId, explicitTargetId, tick, invocationValue, origin);
         if (!enqueue.Accepted)
             return RejectedDrainResult(binding, sourceId, ownerId, explicitTargetId, tick, enqueue.Interruption, enqueue.Message);
         return Drain();
@@ -156,7 +161,8 @@ public sealed class BattleEffectScope : IDisposable
         string ownerId,
         string explicitTargetId,
         int tick,
-        float invocationValue = 0)
+        float invocationValue = 0,
+        CombatSourceRef origin = default)
     {
         ArgumentNullException.ThrowIfNull(binding);
         EnsureAttribution(sourceId, ownerId);
@@ -177,7 +183,8 @@ public sealed class BattleEffectScope : IDisposable
             ownerId,
             tick,
             0,
-            0);
+            0,
+            origin);
         var invocation = new PendingInvocation(
             binding,
             context,
@@ -200,7 +207,12 @@ public sealed class BattleEffectScope : IDisposable
         }
         if (!ConditionsPass(invocation, snapshot))
             return EffectPreflightResult.Rejected(EffectInterruptionReason.ConditionFailed, "Binding conditions were not met.");
-        var targets = ResolveTargets(invocation, snapshot);
+        string[] targets;
+        try { targets = ResolveTargets(invocation, snapshot); }
+        catch (Exception exception)
+        {
+            return EffectPreflightResult.Rejected(EffectInterruptionReason.ProcessorFailure, $"Target query failed: {exception.Message}");
+        }
         if (targets.Length == 0)
             return EffectPreflightResult.Rejected(EffectInterruptionReason.TargetUnavailable, "Target query produced no entities.");
         var runtimeReason = RuntimeInterruption(invocation);
@@ -226,10 +238,11 @@ public sealed class BattleEffectScope : IDisposable
                     binding.StableId,
                     stepIndex,
                     targetId,
-                    ResolveAmount(step, invocation),
+                    ResolveAmount(step, invocation, targetId, snapshot),
                     ordering,
                     snapshot,
-                    _world);
+                    _world,
+                    step.DamageType);
             }
             return EffectPreflightResult.Success(preparedCount);
         }
@@ -306,7 +319,14 @@ public sealed class BattleEffectScope : IDisposable
                             EffectInterruptionReason.ConditionFailed, "Binding conditions were not met."));
                         continue;
                     }
-                    var targets = ResolveTargets(invocation, snapshot);
+                    string[] targets;
+                    try { targets = ResolveTargets(invocation, snapshot); }
+                    catch (Exception exception)
+                    {
+                        work.Add(InvocationWork.Terminal(invocation, EffectExecutionStatus.Failed,
+                            EffectInterruptionReason.ProcessorFailure, $"Target query failed: {exception.Message}"));
+                        continue;
+                    }
                     if (targets.Length == 0)
                     {
                         work.Add(InvocationWork.Terminal(invocation, EffectExecutionStatus.Skipped,
@@ -337,7 +357,7 @@ public sealed class BattleEffectScope : IDisposable
                         }
                         try
                         {
-                            var amount = ResolveAmount(step, invocation);
+                            var amount = ResolveAmount(step, invocation, targetId, snapshot);
                             var ordering = InvocationOrdering(invocation) with { TargetId = targetId };
                             var mutation = _processors.Get(step.Kind).Prepare(
                                 invocation.Context,
@@ -347,7 +367,8 @@ public sealed class BattleEffectScope : IDisposable
                                 amount,
                                 ordering,
                                 snapshot,
-                                _world);
+                                _world,
+                                step.DamageType);
                             prepared.Add(new PreparedWork(invocationWork, stepIndex, targetId, step.Kind, mutation));
                         }
                         catch (Exception exception)
@@ -467,7 +488,7 @@ public sealed class BattleEffectScope : IDisposable
 
     private EffectInterruptionReason ReserveRuntime(PendingInvocation invocation)
     {
-        var key = new RuntimeKey(invocation.Binding.StableId, invocation.Context.SourceId, invocation.Context.OwnerId);
+        var key = new RuntimeKey(invocation.Binding.StableId, invocation.Context.SourceId, invocation.Context.OwnerId, invocation.Context.Origin);
         if (!_runtimeStates.TryGetValue(key, out var state))
         {
             state = new RuntimeState();
@@ -482,7 +503,7 @@ public sealed class BattleEffectScope : IDisposable
 
     private EffectInterruptionReason RuntimeInterruption(PendingInvocation invocation)
     {
-        var key = new RuntimeKey(invocation.Binding.StableId, invocation.Context.SourceId, invocation.Context.OwnerId);
+        var key = new RuntimeKey(invocation.Binding.StableId, invocation.Context.SourceId, invocation.Context.OwnerId, invocation.Context.Origin);
         return _runtimeStates.TryGetValue(key, out var state)
             ? RuntimeInterruption(invocation, state)
             : EffectInterruptionReason.None;
@@ -513,53 +534,40 @@ public sealed class BattleEffectScope : IDisposable
     {
         foreach (var condition in invocation.Binding.Conditions)
         {
-            if (condition is not CompiledEntityAliveCondition alive) return false;
-            var id = ResolveEntityReference(invocation, alive.Entity);
-            if (string.IsNullOrWhiteSpace(id) || !snapshot.Entities.TryGetValue(id, out var entity) ||
-                entity.Alive != alive.ExpectedAlive)
-                return false;
+            var reference = condition switch
+            {
+                CompiledEntityAliveCondition alive => alive.Entity,
+                CompiledHealthRatioCondition health => health.Entity,
+                CompiledEntityTagCondition tag => tag.Entity,
+                _ => (EffectEntityReference)(-1)
+            };
+            var id = ResolveEntityReference(invocation, reference);
+            if (string.IsNullOrWhiteSpace(id) || !snapshot.Entities.TryGetValue(id, out var entity)) return false;
+            var passes = condition switch
+            {
+                CompiledEntityAliveCondition alive => entity.Alive == alive.ExpectedAlive,
+                CompiledEntityTagCondition tag => EffectTargetResolver.HasTag(entity, tag.Tag) == tag.ExpectedPresent,
+                CompiledHealthRatioCondition health => Compare(EffectTargetResolver.HealthRatio(entity), health.Comparison, health.Ratio),
+                _ => false
+            };
+            if (!passes) return false;
         }
         return true;
     }
 
+    private static bool Compare(float actual, EffectComparison comparison, float expected) => comparison switch
+    {
+        EffectComparison.Less => actual < expected,
+        EffectComparison.LessOrEqual => actual <= expected,
+        EffectComparison.Equal => Math.Abs(actual - expected) <= .000001f,
+        EffectComparison.GreaterOrEqual => actual >= expected,
+        EffectComparison.Greater => actual > expected,
+        _ => false
+    };
+
     private static string[] ResolveTargets(PendingInvocation invocation, EffectWorldSnapshot snapshot)
-    {
-        IEnumerable<EffectEntitySnapshot> targets = invocation.Binding.TargetQuery switch
-        {
-            CompiledExplicitTargetQuery => Lookup(snapshot, invocation.ExplicitTargetId),
-            CompiledSourceTargetQuery => Lookup(snapshot, invocation.Context.SourceId),
-            CompiledOwnerTargetQuery => Lookup(snapshot, invocation.Context.OwnerId),
-            CompiledRelativeTeamTargetQuery relative => ResolveRelative(snapshot, invocation, relative),
-            _ => []
-        };
-        return targets.Select(entity => entity.RuntimeId)
-            .Distinct(StringComparer.Ordinal)
-            .OrderBy(id => id, StringComparer.Ordinal)
-            .ToArray();
-    }
-
-    private static IEnumerable<EffectEntitySnapshot> Lookup(EffectWorldSnapshot snapshot, string id)
-    {
-        if (!string.IsNullOrWhiteSpace(id) && snapshot.Entities.TryGetValue(id, out var entity))
-            yield return entity;
-    }
-
-    private static IEnumerable<EffectEntitySnapshot> ResolveRelative(
-        EffectWorldSnapshot snapshot,
-        PendingInvocation invocation,
-        CompiledRelativeTeamTargetQuery relative)
-    {
-        var anchorId = snapshot.Entities.ContainsKey(invocation.Context.OwnerId)
-            ? invocation.Context.OwnerId
-            : invocation.Context.SourceId;
-        if (!snapshot.Entities.TryGetValue(anchorId, out var anchor)) return [];
-        var targetTeam = relative.Team == EffectRelativeTeam.Allies ? anchor.Team : 1 - anchor.Team;
-        return snapshot.Entities.Values.Where(entity =>
-            entity.Team == targetTeam &&
-            (relative.IncludeDefeated || entity.Alive) &&
-            (string.IsNullOrWhiteSpace(relative.RequiredTag) ||
-             (!entity.Tags.IsDefault && entity.Tags.Contains(relative.RequiredTag, StringComparer.Ordinal))));
-    }
+        => EffectTargetResolver.Resolve(invocation.Binding.TargetQuery, snapshot, invocation.Context.SourceId,
+            invocation.Context.OwnerId, invocation.ExplicitTargetId).ToArray();
 
     private static string ResolveEntityReference(PendingInvocation invocation, EffectEntityReference reference) => reference switch
     {
@@ -569,13 +577,35 @@ public sealed class BattleEffectScope : IDisposable
         _ => string.Empty
     };
 
-    private static float ResolveAmount(CompiledEffectStep step, PendingInvocation invocation) => step.AmountSource switch
+    private static float ResolveAmount(CompiledEffectStep step, PendingInvocation invocation, string targetId, EffectWorldSnapshot snapshot)
     {
-        EffectAmountSource.Fixed => step.Amount,
-        EffectAmountSource.InvocationValue => invocation.InvocationValue * step.Amount,
-        EffectAmountSource.EventEffectiveValue => invocation.EventEffectiveValue * step.Amount,
-        _ => throw new InvalidOperationException("Unsupported effect amount source.")
-    };
+        if (step.Magnitude is null) return step.AmountSource switch
+        {
+            EffectAmountSource.Fixed => step.Amount,
+            EffectAmountSource.InvocationValue => invocation.InvocationValue * step.Amount,
+            EffectAmountSource.EventEffectiveValue => invocation.EventEffectiveValue * step.Amount,
+            _ => throw new InvalidOperationException("Unsupported effect amount source.")
+        };
+        float Attribute(string id, CombatAttribute attribute) => snapshot.Entities.TryGetValue(id, out var entity) &&
+            entity.Attributes is not null && entity.Attributes.TryGetValue(attribute, out var value) ? value :
+            throw new InvalidOperationException($"Attribute {attribute} is unavailable for '{id}'.");
+        var context = new BattleAttributeMagnitudeContext(
+            sourceValue: attribute => Attribute(invocation.Context.SourceId, attribute),
+            targetValue: attribute => Attribute(targetId, attribute),
+            contextValue: key => key switch
+            {
+                "InvocationValue" => invocation.InvocationValue,
+                "EventEffectiveValue" => invocation.EventEffectiveValue,
+                _ => throw new InvalidOperationException($"Unknown effect context '{key}'.")
+            },
+            teamCount: (kind, team) => snapshot.TeamCounts.TryGetValue((kind, team), out var count) ? count :
+                throw new InvalidOperationException($"Team count '{kind}/{team}' is unavailable."),
+            traitValue: (id, team) => snapshot.TraitValues.TryGetValue((id, team), out var value) ? value :
+                throw new InvalidOperationException($"Trait value '{id}/{team}' is unavailable."));
+        var amount = AttributeMagnitudeSupport.Evaluate(step.Magnitude, context);
+        if (amount < 0) throw new InvalidOperationException("Effect formula resolved to a negative amount; author an explicit minimum clamp.");
+        return amount;
+    }
 
     private void EnqueueReactive(EffectDomainEvent domainEvent)
     {
@@ -595,7 +625,8 @@ public sealed class BattleEffectScope : IDisposable
                 registration.OwnerId,
                 domainEvent.Context.Tick,
                 domainEvent.Context.Depth + 1,
-                sequence);
+                sequence,
+                registration.Origin);
             var reason = ValidateReactiveEdge(domainEvent, registration, context);
             _pending.Add(new PendingInvocation(
                 registration.Binding,
@@ -770,7 +801,7 @@ public sealed class BattleEffectScope : IDisposable
             listeners.Remove(registration);
             if (listeners.Count == 0) _subscriptions.Remove(registration.Binding.Trigger.EventKind);
         }
-        _runtimeStates.Remove(new RuntimeKey(registration.Binding.StableId, registration.SourceId, registration.OwnerId));
+        _runtimeStates.Remove(new RuntimeKey(registration.Binding.StableId, registration.SourceId, registration.OwnerId, registration.Origin));
     }
 
     private EffectQueueDrainResult ReentrantDrainResult(
@@ -924,12 +955,14 @@ public sealed class BattleEffectScope : IDisposable
         long sequence,
         CompiledEffectBinding binding,
         string sourceId,
-        string ownerId)
+        string ownerId,
+        CombatSourceRef origin)
     {
         public long Sequence { get; } = sequence;
         public CompiledEffectBinding Binding { get; } = binding;
         public string SourceId { get; } = sourceId;
         public string OwnerId { get; } = ownerId;
+        public CombatSourceRef Origin { get; } = origin;
         public bool Active { get; set; } = true;
     }
 
@@ -1065,7 +1098,7 @@ public sealed class BattleEffectScope : IDisposable
         }
     }
 
-    private readonly record struct RuntimeKey(string BindingId, string SourceId, string OwnerId);
+    private readonly record struct RuntimeKey(string BindingId, string SourceId, string OwnerId, CombatSourceRef Origin);
     private readonly record struct RepeatedEdgeKey(
         string ChainId,
         string ProducerBindingId,

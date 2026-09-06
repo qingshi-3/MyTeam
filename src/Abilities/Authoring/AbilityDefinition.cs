@@ -16,8 +16,11 @@ public enum AbilityTriggerKind
     BattleStarted,
     PeriodicTick,
     AttackHit,
-    OwnerDefeated
+    OwnerDefeated,
+    ManaFull
 }
+
+public enum AbilityAutomaticTargetKind { CurrentEnemy, WoundedAlly }
 
 [GlobalClass]
 public partial class AbilityDefinition : Resource
@@ -31,6 +34,7 @@ public partial class AbilityDefinition : Resource
     [Export] public int CooldownTicks { get; set; }
     [Export] public int MaxUses { get; set; }
     [Export] public int IntervalTicks { get; set; }
+    [Export] public AbilityAutomaticTargetKind AutomaticTarget { get; set; }
     [Export] public Godot.Collections.Array<AbilityOperationSpec> Operations { get; set; } = [];
     [Export] public AbilityPresentationSpec? Presentation { get; set; }
 }

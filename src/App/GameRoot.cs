@@ -40,13 +40,17 @@ public partial class GameRoot : Control
         _app = new RunApplication(registry, new SaveService(SaveNamespace), project);
         _flow = new GameFlowCoordinator(() => _app, _screens, project.Presentation, () => GetTree().Quit());
         _flow.Start();
+        _screens.MainMenu.ExperienceSliceRequested += OpenExperienceSlice;
     }
 
     public override void _ExitTree()
     {
+        if (_screens is not null) _screens.MainMenu.ExperienceSliceRequested -= OpenExperienceSlice;
         _flow?.Dispose();
         _flow = null;
     }
+
+    private void OpenExperienceSlice() => GetTree().ChangeSceneToFile("res://scenes/app/ExperienceSlice.tscn");
 
     private void ShowBootstrapFailure(string title, string summary)
     {

@@ -128,6 +128,10 @@ public sealed class BattleStatusScope : IDisposable
             ArgumentNullException.ThrowIfNull(request.Definition);
             EnsureAttribution(request.SourceId, request.OwnerId);
             if (request.Tick < 0) throw new ArgumentOutOfRangeException(nameof(requests));
+            if (request.GrantId is null || (request.GrantId.Length > 0 && string.IsNullOrWhiteSpace(request.GrantId)))
+                throw new ArgumentException("Grant id must be empty or nonblank.", nameof(requests));
+            if (!string.IsNullOrWhiteSpace(request.GrantId) && !StatusGrantCompiler.IsSupported(request.Definition))
+                throw new ArgumentException("Unsupported passive Status grant.", nameof(requests));
         }
         if (_transition is not null)
             return ordered.Select(_ => new StatusApplicationResult(
@@ -145,10 +149,58 @@ public sealed class BattleStatusScope : IDisposable
                     request.OwnerId,
                     request.Tick,
                     batch,
-                    0));
+                    0,
+                    request.GrantId));
             }
             return results.ToImmutable();
         });
+    }
+
+    public void ReplaceGrants(IEnumerable<string> revokeGrantIds, IEnumerable<StatusApplicationRequest> grants)
+    {
+        ArgumentNullException.ThrowIfNull(revokeGrantIds);
+        ArgumentNullException.ThrowIfNull(grants);
+        EnsureNotMutating();
+        var remove = revokeGrantIds.ToHashSet(StringComparer.Ordinal);
+        if (remove.Any(string.IsNullOrWhiteSpace))
+            throw new ArgumentException("Only nonblank grant ids can be revoked.", nameof(revokeGrantIds));
+        var requests = grants.ToArray();
+        foreach (var request in requests)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+            ArgumentNullException.ThrowIfNull(request.Definition);
+            EnsureAttribution(request.SourceId, request.OwnerId);
+            if (string.IsNullOrWhiteSpace(request.GrantId) || request.Tick < 0 || !StatusGrantCompiler.IsSupported(request.Definition))
+                throw new ArgumentException("Invalid passive Status grant.", nameof(grants));
+        }
+        if (remove.Count == 0 && requests.Length == 0) return;
+        if (_transition is not null)
+        {
+            if (requests.Length > 0) throw new InvalidOperationException("Status scope has completed.");
+            return;
+        }
+        ExecuteTransactional(batch =>
+        {
+            foreach (var pair in _instances.Where(pair => remove.Contains(pair.Value.GrantId)).ToArray())
+            {
+                batch.Owners.Add(pair.Value.OwnerId);
+                RemoveInstance(pair.Key, pair.Value, StatusRemovalReason.GrantRevoked, _lastTick, Snapshot(pair.Value), batch);
+            }
+            foreach (var request in requests)
+            {
+                _lastTick = Math.Max(_lastTick, request.Tick);
+                ApplyCore(request.Definition, request.SourceId, request.OwnerId, request.Tick, batch, 0, request.GrantId);
+            }
+            return true;
+        });
+    }
+
+    public bool RevokeGrant(string grantId)
+    {
+        if (string.IsNullOrWhiteSpace(grantId)) throw new ArgumentException("Grant id is required.", nameof(grantId));
+        var exists = _instances.Values.Any(instance => instance.GrantId == grantId);
+        ReplaceGrants([grantId], []);
+        return exists;
     }
 
     public bool HasTag(string ownerId, string tag)
@@ -410,7 +462,8 @@ public sealed class BattleStatusScope : IDisposable
         string ownerId,
         int tick,
         MutationBatch batch,
-        int depth)
+        int depth,
+        string grantId = "")
     {
         if (depth > 64) throw new InvalidOperationException("Status transition depth exceeded the compiled acyclic limit.");
         var applicationSequence = ++_applicationSequence;
@@ -430,11 +483,19 @@ public sealed class BattleStatusScope : IDisposable
             return new StatusApplicationResult(true, string.Empty, snapshot, 1);
         }
 
-        var key = Key(definition, sourceId, ownerId, applicationSequence);
+        var key = string.IsNullOrWhiteSpace(grantId)
+            ? Key(definition, sourceId, ownerId, applicationSequence)
+            : new StatusKey(definition.StableId, ownerId, "grant:" + grantId);
         var created = !_instances.TryGetValue(key, out var instance);
+        if (!created && !string.IsNullOrWhiteSpace(grantId))
+        {
+            if (PrimarySource(instance!) != sourceId || instance!.Definition != definition)
+                throw new InvalidOperationException("A grant cannot change source or definition without revocation.");
+            return new StatusApplicationResult(true, string.Empty, Snapshot(instance!), 0);
+        }
         if (created)
         {
-            instance = new RuntimeInstance(definition, ownerId, applicationSequence, tick, duration);
+            instance = new RuntimeInstance(definition, ownerId, applicationSequence, tick, duration) { GrantId = grantId };
             instance.Contributions.Add(CreateContribution(instance, sourceId, applicationSequence, tick));
             _instances.Add(key, instance);
         }
@@ -680,7 +741,7 @@ public sealed class BattleStatusScope : IDisposable
             {
                 var sourceAttributes = _attributeResolver(contribution.SourceId);
                 if (sourceAttributes is null && instance.Definition.AttributeModifiers.Any(modifier =>
-                        modifier.Magnitude is CompiledSourceAttributeMagnitude))
+                    AttributeMagnitudeSupport.Leaves(modifier.Magnitude).Any(item => item is CompiledSourceAttributeMagnitude)))
                     throw new InvalidOperationException(
                         $"Status '{instance.Definition.StableId}' requires source AttributeSet '{contribution.SourceId}'.");
                 sourceAttributes ??= target;
@@ -837,6 +898,8 @@ public sealed class BattleStatusScope : IDisposable
             _ => false
         };
         if (!matches) return;
+        if (binding.SourceKind != CombatSourceKind.None && combatEvent.Source.Kind != binding.SourceKind) return;
+        if (binding.FilterDamageType && combatEvent.DamageType != binding.DamageType) return;
         var sourceId = binding.EffectSourcePolicy switch
         {
             StatusReactiveEffectSourcePolicy.PrimaryContribution => PrimarySource(instance),
@@ -932,7 +995,7 @@ public sealed class BattleStatusScope : IDisposable
         var sourceAttributes = _attributeResolver(sourceId);
         if (sourceAttributes is null && instance.Definition.AttributeModifiers.Any(modifier =>
                 modifier.Magnitude.CaptureMode == AttributeCaptureMode.Snapshot &&
-                modifier.Magnitude is CompiledSourceAttributeMagnitude))
+                AttributeMagnitudeSupport.Leaves(modifier.Magnitude).Any(item => item is CompiledSourceAttributeMagnitude)))
             throw new InvalidOperationException(
                 $"Status '{instance.Definition.StableId}' requires source AttributeSet '{sourceId}'.");
         sourceAttributes ??= target;
@@ -1300,6 +1363,7 @@ public sealed class BattleStatusScope : IDisposable
         int durationTicks)
     {
         public CompiledStatusDefinition Definition { get; } = definition;
+        public string GrantId { get; init; } = "";
         public string OwnerId { get; } = ownerId;
         public string InstanceId { get; } = $"status:{definition.StableId}:{ownerId}:{applicationSequence}";
         public long ApplicationSequence { get; } = applicationSequence;
@@ -1316,6 +1380,7 @@ public sealed class BattleStatusScope : IDisposable
         {
             var clone = new RuntimeInstance(Definition, OwnerId, ApplicationSequence, AppliedTick, RemainingTicks)
             {
+                GrantId = GrantId,
                 LastAppliedTick = LastAppliedTick,
                 Stacks = Stacks,
                 RemainingTicks = RemainingTicks,

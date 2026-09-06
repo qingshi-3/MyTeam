@@ -36,6 +36,7 @@ public partial class AppScreenHost : Control
 
     private readonly Dictionary<AppScreenId, Control> _screens = [];
     private ScreenRouter _router = null!;
+    private ArmyOverviewController _armyOverview = null!;
 
     public MainMenuScreenController MainMenu { get; private set; } = null!;
     public HeroSelectScreen HeroSelection { get; private set; } = null!;
@@ -84,6 +85,8 @@ public partial class AppScreenHost : Control
         _screens.Add(AppScreenId.Settings, Settings);
 
         var armyOverview = GetNode<ArmyOverviewController>(ArmyOverviewPath);
+        _armyOverview = armyOverview;
+        _armyOverview.EquipmentChanged += RefreshEquipmentDisplay;
         armyOverview.BindModalFocusScope(this);
         _router = new ScreenRouter(
             _screens.Values.ToArray(),
@@ -94,6 +97,14 @@ public partial class AppScreenHost : Control
     public Control Screen(AppScreenId id) => _screens.TryGetValue(id, out var screen)
         ? screen
         : throw new ArgumentOutOfRangeException(nameof(id));
+
+    public override void _ExitTree()
+    {
+        if (_armyOverview is not null) _armyOverview.EquipmentChanged -= RefreshEquipmentDisplay;
+    }
+
+    public void BindEquipmentManagement(RunApplication app) => _armyOverview.BindEquipmentManagement(app);
+    private void RefreshEquipmentDisplay() => Deployment.RefreshEquipment();
 
     public void Show(
         AppScreenId id,

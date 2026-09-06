@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_scale_tank"
+MaxMana = 90.0
+StartingMana = 20.0
 DisplayName = "青鳞重装"
 Description = "野兽阵容的正面屏障。"
 Role = 0

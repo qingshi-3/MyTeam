@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "hero_gilded_factor"
+MaxMana = 80.0
+StartingMana = 20.0
 DisplayName = "鎏金商主"
 Description = "用经济购买强军，并从每场胜利中抽取军费。"
 Role = 3
@@ -17,6 +19,7 @@ RecruitCost = 0
 MaxHealth = 235
 AttackDamage = 25
 AttackRange = 3.8
+AttackDelivery = 1
 AttackCooldown = 1.15
 MoveInterval = 0.44
 Armor = 3

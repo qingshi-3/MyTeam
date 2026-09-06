@@ -10,25 +10,31 @@ public partial class UnitMotionPresentationComponent : Node
 {
     [Signal] public delegate void MotionStateChangedEventHandler(bool moving);
     [Signal] public delegate void HorizontalSegmentStartedEventHandler(float horizontalDelta);
-    [Signal] public delegate void SegmentProgressChangedEventHandler(float normalizedProgress);
+    [Signal] public delegate void TravelWeightChangedEventHandler(float normalizedWeight);
 
-    [Export] public float OneTimesCellSeconds { get; set; } = .24f;
-    [Export] public float TwoTimesCellSeconds { get; set; } = .14f;
-    [Export] public float FourTimesCellSeconds { get; set; } = .09f;
+    [Export(PropertyHint.Range, "0.01,0.5,0.005")] public float AuthoritySampleSecondsAtOneTimes { get; set; } = .125f;
     [Export] public float MaximumVisualLagSeconds { get; set; } = .25f;
     [Export(PropertyHint.Range, "0.001,0.1,0.001")] public float MaximumFrameDeltaSeconds { get; set; } = .05f;
-    [Export(PropertyHint.Range, "1,12,1")] public int MaximumQueuedWaypoints { get; set; } = 12;
+    [Export(PropertyHint.Range, "1,64,1")] public int MaximumQueuedWaypoints { get; set; } = 12;
+    [Export(PropertyHint.Range, "1,64,1")] public int MaximumSegmentsPerFrame { get; set; } = 16;
 
-    private readonly Queue<Vector2> _waypoints = [];
+    private readonly List<QueuedWaypoint> _waypoints = [];
     private Node2D? _target;
     private Vector2 _segmentStart;
     private Vector2 _segmentTarget;
     private float _segmentElapsed;
     private float _segmentDuration;
-    private float _catchUpDurationLimit = float.PositiveInfinity;
+    private float _settleElapsed;
+    private float _settleDuration;
+    private float _settleStartWeight;
+    private float _activityElapsed;
+    private float _travelWeight;
     private float _deltaCredit;
+    private bool _segmentActive;
+    private bool _settling;
     private bool _isMoving;
     private bool _deferFreshMotionDelta;
+    private bool _requiresIntermediateFrame;
     private bool _paused;
     private bool _terminal;
     private bool _hasPlacement;
@@ -39,6 +45,9 @@ public partial class UnitMotionPresentationComponent : Node
     public bool IsTerminal => _terminal;
     public bool HasPlacement => _hasPlacement;
     public int PendingWaypointCount => _waypoints.Count;
+    public float PendingPlaybackSeconds => RemainingSegmentSeconds() +
+                                           _waypoints.Sum(waypoint => waypoint.PlaybackSeconds) +
+                                           (_settling ? Math.Max(0f, _settleDuration - _settleElapsed) : 0f);
     public float SpeedScale => _speedScale;
 
     public override void _Ready() => SetProcess(false);
@@ -55,27 +64,31 @@ public partial class UnitMotionPresentationComponent : Node
         ClearActiveMotion();
         _target.Position = position;
         _hasPlacement = true;
-        EmitSignal(SignalName.SegmentProgressChanged, 0f);
     }
 
     public void QueueWaypoint(Vector2 destination)
     {
         if (_terminal || _target is null || !_hasPlacement) return;
-        if (_isMoving && _segmentTarget.IsEqualApprox(destination) && _waypoints.Count == 0) return;
-        if (_waypoints.Count > 0 && _waypoints.Last().IsEqualApprox(destination)) return;
-        if (!_isMoving)
+        if (_segmentActive && _segmentTarget.IsEqualApprox(destination) && _waypoints.Count == 0) return;
+        if (_waypoints.Count > 0 && _waypoints[^1].Position.IsEqualApprox(destination)) return;
+        if (!_segmentActive)
         {
-            BeginSegment(destination);
+            BeginSegment(destination, EffectiveSampleSeconds(), emitState: !_isMoving);
             return;
         }
-        if (_waypoints.Count >= Math.Clamp(MaximumQueuedWaypoints, 1, 12))
+
+        var playbackSeconds = EffectiveSampleSeconds();
+        var preferredLimit = Math.Clamp(MaximumQueuedWaypoints, 1, 64);
+        if (_waypoints.Count >= preferredLimit && TryCoalesceTail(destination, playbackSeconds))
         {
-            ReplaceQueuedTail(destination);
-            TightenCatchUpBudget();
+            EnforceLagBudget();
             return;
         }
-        _waypoints.Enqueue(destination);
-        TightenCatchUpBudget();
+        // A corner is gameplay-significant geometry. The queue limit is therefore a soft memory
+        // bound: under an exceptional render stall, retain an unmergeable corner instead of
+        // drawing a shortcut through blocked terrain.
+        _waypoints.Add(new QueuedWaypoint(destination, playbackSeconds));
+        EnforceLagBudget();
     }
 
     public void RemapCoordinates(Vector2 oldOrigin, Vector2 oldPitch, Vector2 newOrigin, Vector2 newPitch)
@@ -90,10 +103,8 @@ public partial class UnitMotionPresentationComponent : Node
         _target.Position = Remap(_target.Position);
         _segmentStart = Remap(_segmentStart);
         _segmentTarget = Remap(_segmentTarget);
-        var queued = _waypoints.Select(Remap).ToArray();
-        _waypoints.Clear();
-        foreach (var waypoint in queued) _waypoints.Enqueue(waypoint);
-        EmitSignal(SignalName.SegmentProgressChanged, SegmentProgress());
+        for (var index = 0; index < _waypoints.Count; index++)
+            _waypoints[index] = _waypoints[index] with { Position = Remap(_waypoints[index].Position) };
     }
 
     public void SetPaused(bool paused)
@@ -108,13 +119,21 @@ public partial class UnitMotionPresentationComponent : Node
     {
         var normalized = speedScale >= 4f ? 4f : speedScale >= 2f ? 2f : 1f;
         if (Mathf.IsEqualApprox(_speedScale, normalized)) return;
-        var progress = SegmentProgress();
+        var durationScale = _speedScale / normalized;
         _speedScale = normalized;
         if (!_isMoving) return;
-        _segmentDuration = EffectiveSegmentDuration();
-        _segmentElapsed = progress * _segmentDuration;
+
+        _segmentElapsed *= durationScale;
+        _segmentDuration *= durationScale;
+        _settleElapsed *= durationScale;
+        _settleDuration *= durationScale;
+        for (var index = 0; index < _waypoints.Count; index++)
+            _waypoints[index] = _waypoints[index] with
+            {
+                PlaybackSeconds = Math.Max(.001f, _waypoints[index].PlaybackSeconds * durationScale)
+            };
         _deltaCredit = 0f;
-        _deferFreshMotionDelta = true;
+        EnforceLagBudget();
     }
 
     public void CancelForDefeat()
@@ -145,24 +164,14 @@ public partial class UnitMotionPresentationComponent : Node
         var frameCap = Math.Max(.001f, MaximumFrameDeltaSeconds);
         var creditCap = Math.Max(frameCap, MaximumVisualLagSeconds);
         _deltaCredit = Math.Min(creditCap, _deltaCredit + Math.Min(frameCap, Math.Max(0f, (float)delta)));
-        var remainingSegment = Math.Max(0f, _segmentDuration - _segmentElapsed);
-        if (_deltaCredit + .000001f < remainingSegment)
+        var segmentLimit = Math.Clamp(MaximumSegmentsPerFrame, 1, 64);
+        var completedSegments = 0;
+        while (_segmentActive && _deltaCredit > .000001f && completedSegments < segmentLimit)
         {
-            _segmentElapsed += _deltaCredit;
-            _deltaCredit = 0f;
-            ApplyCurrentPosition();
-            return;
+            if (!AdvanceSegment()) break;
+            completedSegments++;
         }
-
-        _segmentElapsed = _segmentDuration;
-        ApplyCurrentPosition();
-        _deltaCredit = Math.Max(0f, _deltaCredit - remainingSegment);
-        if (_waypoints.Count > 0)
-        {
-            BeginSegment(_waypoints.Dequeue(), emitState: false);
-            return;
-        }
-        CompleteMotion();
+        if (_settling && _deltaCredit > .000001f) AdvanceSettlement();
     }
 
     public override void _ExitTree()
@@ -171,87 +180,180 @@ public partial class UnitMotionPresentationComponent : Node
         _target = null;
     }
 
-    private void BeginSegment(Vector2 destination, bool emitState = true)
+    private bool AdvanceSegment()
+    {
+        var remaining = RemainingSegmentSeconds();
+        if (_requiresIntermediateFrame && _deltaCredit + .000001f >= remaining)
+        {
+            _requiresIntermediateFrame = false;
+            var endpointGuard = Math.Min(.001f, Math.Max(.000001f, _segmentDuration * .01f));
+            var consumedBeforeEndpoint = Math.Max(0f, remaining - endpointGuard);
+            _segmentElapsed += consumedBeforeEndpoint;
+            _activityElapsed += consumedBeforeEndpoint;
+            _deltaCredit = 0f;
+            ApplyCurrentPosition();
+            ApplyTravelWeight(Mathf.Clamp(_activityElapsed / Math.Min(.06f, EffectiveSampleSeconds()), 0f, 1f));
+            return false;
+        }
+        _requiresIntermediateFrame = false;
+        var consumed = Math.Min(_deltaCredit, remaining);
+        _segmentElapsed += consumed;
+        _activityElapsed += consumed;
+        _deltaCredit = Math.Max(0f, _deltaCredit - consumed);
+        ApplyCurrentPosition();
+        ApplyTravelWeight(Mathf.Clamp(_activityElapsed / Math.Min(.06f, EffectiveSampleSeconds()), 0f, 1f));
+        if (_segmentElapsed + .000001f < _segmentDuration) return false;
+
+        _segmentElapsed = _segmentDuration;
+        ApplyCurrentPosition();
+        if (_waypoints.Count > 0)
+        {
+            var next = _waypoints[0];
+            _waypoints.RemoveAt(0);
+            BeginSegment(next.Position, next.PlaybackSeconds, emitState: false);
+            return true;
+        }
+        BeginSettlement();
+        return true;
+    }
+
+    private void AdvanceSettlement()
+    {
+        var remaining = Math.Max(0f, _settleDuration - _settleElapsed);
+        var consumed = Math.Min(_deltaCredit, remaining);
+        _settleElapsed += consumed;
+        _deltaCredit = Math.Max(0f, _deltaCredit - consumed);
+        var progress = _settleDuration <= 0f ? 1f : Mathf.Clamp(_settleElapsed / _settleDuration, 0f, 1f);
+        ApplyTravelWeight(_settleStartWeight * (1f - progress));
+        if (_settleElapsed + .000001f < _settleDuration) return;
+        CompleteMotion();
+    }
+
+    private void BeginSegment(Vector2 destination, float playbackSeconds, bool emitState)
     {
         if (_target is null) return;
+        _settling = false;
         _segmentStart = _target.Position;
         _segmentTarget = destination;
         _segmentElapsed = 0f;
-        _segmentDuration = EffectiveSegmentDuration();
-        EmitSignal(SignalName.SegmentProgressChanged, 0f);
+        _segmentDuration = Math.Max(.001f, playbackSeconds);
         if (_segmentStart.IsEqualApprox(_segmentTarget))
         {
-            if (_waypoints.Count > 0) BeginSegment(_waypoints.Dequeue(), emitState);
+            if (_waypoints.Count > 0)
+            {
+                var next = _waypoints[0];
+                _waypoints.RemoveAt(0);
+                BeginSegment(next.Position, next.PlaybackSeconds, emitState);
+            }
+            else if (_isMoving) BeginSettlement();
             return;
         }
+
         var changed = !_isMoving;
+        _segmentActive = true;
         _isMoving = true;
         if (changed)
         {
+            _activityElapsed = 0f;
+            _travelWeight = 0f;
             _deferFreshMotionDelta = true;
+            _requiresIntermediateFrame = true;
             _deltaCredit = 0f;
+            ApplyTravelWeight(0f);
         }
         SetProcess(true);
         var horizontalDelta = _segmentTarget.X - _segmentStart.X;
         if (Math.Abs(horizontalDelta) > .001f)
             EmitSignal(SignalName.HorizontalSegmentStarted, horizontalDelta);
         if (emitState && changed) EmitSignal(SignalName.MotionStateChanged, true);
+        EnforceLagBudget();
     }
 
-    private void TightenCatchUpBudget()
+    private void BeginSettlement()
     {
-        if (!_isMoving) return;
-        var remainingWeight = Math.Max(.001f, 1f - SegmentProgress()) + _waypoints.Count;
-        if (remainingWeight <= 1f) return;
-        var budget = Math.Max(.01f, MaximumVisualLagSeconds) / remainingWeight;
-        _catchUpDurationLimit = Math.Min(_catchUpDurationLimit, budget);
-        var progress = SegmentProgress();
-        _segmentDuration = EffectiveSegmentDuration();
-        _segmentElapsed = progress * _segmentDuration;
+        _segmentActive = false;
+        _settling = true;
+        _settleElapsed = 0f;
+        _settleDuration = EffectiveSampleSeconds();
+        _settleStartWeight = _travelWeight;
     }
 
-    private void ReplaceQueuedTail(Vector2 newestDestination)
+    private bool TryCoalesceTail(Vector2 newestDestination, float playbackSeconds)
     {
-        var retained = _waypoints.Take(Math.Max(0, _waypoints.Count - 1)).ToArray();
-        _waypoints.Clear();
-        foreach (var waypoint in retained) _waypoints.Enqueue(waypoint);
-        _waypoints.Enqueue(newestDestination);
+        var tail = _waypoints[^1];
+        var anchor = _waypoints.Count > 1 ? _waypoints[^2].Position : _segmentTarget;
+        var first = tail.Position - anchor;
+        var second = newestDestination - tail.Position;
+        if (first.LengthSquared() <= .000001f || second.LengthSquared() <= .000001f) return false;
+        var cross = Math.Abs(first.Cross(second));
+        var collinearTolerance = .001f * Math.Max(1f, first.Length() * second.Length());
+        if (cross > collinearTolerance || first.Dot(second) <= 0f) return false;
+        _waypoints[^1] = new QueuedWaypoint(newestDestination, tail.PlaybackSeconds + playbackSeconds);
+        return true;
     }
 
-    private float EffectiveSegmentDuration() => Math.Max(.005f, Math.Min(DurationForSpeed(), _catchUpDurationLimit));
-
-    private float DurationForSpeed() => _speedScale switch
+    private void EnforceLagBudget()
     {
-        >= 4f => Math.Max(.005f, FourTimesCellSeconds),
-        >= 2f => Math.Max(.005f, TwoTimesCellSeconds),
-        _ => Math.Max(.005f, OneTimesCellSeconds)
-    };
+        var currentRemaining = RemainingSegmentSeconds();
+        var queuedRemaining = _waypoints.Sum(waypoint => waypoint.PlaybackSeconds);
+        var totalRemaining = currentRemaining + queuedRemaining;
+        var budget = Math.Max(.01f, MaximumVisualLagSeconds);
+        if (totalRemaining <= budget + .000001f) return;
+        var scale = budget / totalRemaining;
 
-    private float SegmentProgress() => !_isMoving || _segmentDuration <= 0f
+        if (_segmentActive && currentRemaining > .000001f)
+        {
+            var progress = SegmentProgress();
+            var newRemaining = currentRemaining * scale;
+            _segmentDuration = progress >= .999999f
+                ? _segmentElapsed
+                : Math.Max(.001f, newRemaining / Math.Max(.000001f, 1f - progress));
+            _segmentElapsed = progress * _segmentDuration;
+        }
+        for (var index = 0; index < _waypoints.Count; index++)
+            _waypoints[index] = _waypoints[index] with
+            {
+                PlaybackSeconds = Math.Max(.001f, _waypoints[index].PlaybackSeconds * scale)
+            };
+    }
+
+    private float EffectiveSampleSeconds() => Math.Max(.005f, AuthoritySampleSecondsAtOneTimes / _speedScale);
+
+    private float RemainingSegmentSeconds() => _segmentActive
+        ? Math.Max(0f, _segmentDuration - _segmentElapsed)
+        : 0f;
+
+    private float SegmentProgress() => !_segmentActive || _segmentDuration <= 0f
         ? 0f
         : Mathf.Clamp(_segmentElapsed / _segmentDuration, 0f, 1f);
 
     private void ApplyCurrentPosition()
     {
         if (_target is null) return;
-        var progress = SegmentProgress();
-        // Smoothstep is monotonic and endpoint-exact, so authored grid segments gain weight
-        // without bounce, overshoot, or any departure from their axis-aligned path.
-        var easedProgress = progress * progress * (3f - 2f * progress);
-        _target.Position = _segmentStart.Lerp(_segmentTarget, easedProgress);
-        EmitSignal(SignalName.SegmentProgressChanged, progress);
+        _target.Position = _segmentStart.Lerp(_segmentTarget, SegmentProgress());
+    }
+
+    private void ApplyTravelWeight(float weight)
+    {
+        _travelWeight = Mathf.Clamp(weight, 0f, 1f);
+        EmitSignal(SignalName.TravelWeightChanged, _travelWeight);
     }
 
     private void CompleteMotion()
     {
+        _segmentActive = false;
+        _settling = false;
         _isMoving = false;
         _segmentElapsed = 0f;
         _segmentDuration = 0f;
-        _catchUpDurationLimit = float.PositiveInfinity;
+        _settleElapsed = 0f;
+        _settleDuration = 0f;
+        _activityElapsed = 0f;
         _deltaCredit = 0f;
         _deferFreshMotionDelta = false;
+        _requiresIntermediateFrame = false;
         SetProcess(false);
-        EmitSignal(SignalName.SegmentProgressChanged, 0f);
+        ApplyTravelWeight(0f);
         EmitSignal(SignalName.MotionStateChanged, false);
     }
 
@@ -259,14 +361,21 @@ public partial class UnitMotionPresentationComponent : Node
     {
         var changed = _isMoving;
         _waypoints.Clear();
+        _segmentActive = false;
+        _settling = false;
         _isMoving = false;
         _segmentElapsed = 0f;
         _segmentDuration = 0f;
-        _catchUpDurationLimit = float.PositiveInfinity;
+        _settleElapsed = 0f;
+        _settleDuration = 0f;
+        _activityElapsed = 0f;
         _deltaCredit = 0f;
         _deferFreshMotionDelta = false;
+        _requiresIntermediateFrame = false;
         SetProcess(false);
-        EmitSignal(SignalName.SegmentProgressChanged, 0f);
+        ApplyTravelWeight(0f);
         if (changed) EmitSignal(SignalName.MotionStateChanged, false);
     }
+
+    private readonly record struct QueuedWaypoint(Vector2 Position, float PlaybackSeconds);
 }

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/UI/ArmyOverviewController.cs" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/ArmyResourceStrip.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/EquipmentLoadoutPanel.tscn" id="3"]
 
 [node name="ArmyOverview" type="Control"]
 layout_mode = 3
@@ -96,7 +97,17 @@ layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="Rows" type="VBoxContainer" parent="Drawer/Layout/Scroll"]
+[node name="Content" type="VBoxContainer" parent="Drawer/Layout/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ArmyEquipmentPanel" parent="Drawer/Layout/Scroll/Content" instance=ExtResource("3")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Rows" type="VBoxContainer" parent="Drawer/Layout/Scroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

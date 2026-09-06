@@ -8,7 +8,7 @@ public partial class ItemChoiceCard : ChoiceCard
     private ColorRect _rarityRail = null!;
     private SemanticChip _category = null!;
 
-    public void BindItem(ItemRarity rarity, bool shop)
+    public void BindItem(ItemRarity rarity, bool shop, ItemProductKind? kind = null)
     {
         _rarityRail ??= GetNode<ColorRect>("%RarityRail");
         _category ??= GetNode<SemanticChip>("%ItemCategory");
@@ -20,7 +20,8 @@ public partial class ItemChoiceCard : ChoiceCard
             _ => new Color(.48f, .58f, .66f)
         };
         _category.Bind(shop ? SemanticIconKeys.Gold : SemanticIconKeys.Loot,
-            shop ? "商品" : PlayerFacingText.DescribeItemRarity(rarity),
+            kind == ItemProductKind.Equipment ? "英雄装备" : kind == ItemProductKind.Relic ? "军团遗物" :
+                shop ? "商品" : PlayerFacingText.DescribeItemRarity(rarity),
             shop ? "GoldValue" : rarity == ItemRarity.Legendary ? "HeroIdentity" : "TraitIdentity");
     }
 }

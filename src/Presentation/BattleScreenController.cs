@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Godot;
 using TowerAutobattler.Attributes;
+using TowerAutobattler.Abilities;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Components;
 using TowerAutobattler.Content;
@@ -39,12 +40,23 @@ public sealed record BattleScreenRuntimeUnitSnapshot(
     BattleActionKind LastActionKind,
     string ActionTargetName,
     int AttackCooldown,
-    int DisabledTicks);
+    int DisabledTicks,
+    Vector2 Position = default,
+    float CurrentMana = 0,
+    float MaxMana = 0,
+    float Shield = 0,
+    ImmutableArray<CompiledAbilityDefinition> Abilities = default,
+    string LastAbilityName = "",
+    bool IsPersistentRosterHero = false,
+    bool IsTemporary = false);
 
 public sealed record BattleScreenEquipmentSnapshot(
     string InstanceId,
     string ContentId,
-    int SlotIndex);
+    int SlotIndex,
+    string DisplayName = "",
+    string Description = "",
+    Texture2D? Icon = null);
 
 public partial class BattleScreenController : Control
 {
@@ -52,6 +64,7 @@ public partial class BattleScreenController : Control
     public event Action? EndTransitionFinished;
     public event Action? ResetRequested;
     public event Action? ReturnToConfigurationRequested;
+    public event Action<int, int, string, bool, string>? TacticalCommandAttempted;
 
     private const float NormalSimulationScale = .8f;
     private const double EndHoldSeconds = 1.1;
@@ -65,6 +78,7 @@ public partial class BattleScreenController : Control
 
     private BattleBoard _board = null!;
     private Node2D _unitsRoot = null!;
+    private RangedAttackLayer _rangedAttackLayer = null!;
     private Control _floatingCueOverlay = null!;
     private Label _title = null!;
     private Label _rule = null!;
@@ -117,6 +131,8 @@ public partial class BattleScreenController : Control
     {
         _board = GetNode<BattleBoard>("%BattleBoard");
         _unitsRoot = GetNode<Node2D>("%UnitsRoot");
+        _rangedAttackLayer = GetNode<RangedAttackLayer>("%RangedAttackLayer");
+        _rangedAttackLayer.Bind(_board);
         _floatingCueOverlay = GetNode<Control>("%FloatingCueOverlay");
         if (FloatingCueScene is null)
             throw new InvalidOperationException("BattleScreen requires an authored floating-cue scene.");
@@ -172,6 +188,7 @@ public partial class BattleScreenController : Control
             _accumulator = 0;
             _speedScale = NormalizeSpeed(defaultSpeed);
             _paused = false;
+            _rangedAttackLayer.SetClock(false, _speedScale * NormalSimulationScale);
             _reported = false;
             _ending = false;
             _terminalResult = null;
@@ -215,6 +232,7 @@ public partial class BattleScreenController : Control
         _pause.Text = _paused ? "继续" : "暂停";
         _step.Disabled = !_step.Visible || !_paused;
         foreach (var presenter in _presenters.Values) presenter.SetPresentationPaused(_paused);
+        _rangedAttackLayer.SetClock(_paused, _speedScale * NormalSimulationScale);
     }
 
     public void SetSpeed(float speed)
@@ -223,6 +241,7 @@ public partial class BattleScreenController : Control
         _speedScale = NormalizeSpeed(speed);
         _speed.Text = $"速度 x{_speedScale:0}";
         foreach (var presenter in _presenters.Values) presenter.SetPresentationSpeed(_speedScale);
+        _rangedAttackLayer.SetClock(_paused, _speedScale * NormalSimulationScale);
     }
 
     public bool StepOneTick()
@@ -233,6 +252,7 @@ public partial class BattleScreenController : Control
         {
             _simulation.Step();
             PresentEvents(_simulation.DrainEvents());
+            SnapPresentersToAuthority();
             PresentResolvedFacts();
             RefreshStatus();
             RefreshSelectedUnit();
@@ -292,21 +312,29 @@ public partial class BattleScreenController : Control
 
     private void PresentEvents(IReadOnlyList<BattleEvent> events)
     {
+        _rangedAttackLayer.Present(events, _paused);
         foreach (var battleEvent in events)
         {
             if (battleEvent.Type != "move" || string.IsNullOrWhiteSpace(battleEvent.SourceRuntimeId)) continue;
             EnsurePresenter(battleEvent.SourceRuntimeId);
             if (_presenters.TryGetValue(battleEvent.SourceRuntimeId, out var mover))
-                mover.QueueMovement(_board.CellToLocal(battleEvent.Cell));
+            {
+                var logicalPosition = battleEvent.Position != default
+                    ? battleEvent.Position
+                    : BattlefieldSpace.CellCenter(battleEvent.Cell);
+                mover.QueueMovement(_board.LogicalToLocal(logicalPosition));
+            }
         }
 
-        foreach (var battleEvent in events.Where(battleEvent => battleEvent.Type is "attack" or "heal"))
+        foreach (var battleEvent in events.Where(battleEvent => battleEvent.Type is "attack" or "heal" or "ability"))
         {
             EnsurePresenter(battleEvent.SourceRuntimeId);
             EnsurePresenter(battleEvent.TargetRuntimeId);
             if (_presenters.TryGetValue(battleEvent.SourceRuntimeId, out var source) &&
                 _presenters.TryGetValue(battleEvent.TargetRuntimeId, out var target))
                 source.FaceToward(target.Position);
+            if (battleEvent.Type == "ability" && _presenters.TryGetValue(battleEvent.SourceRuntimeId, out var caster))
+                caster.PresentAbility(FindState(battleEvent.SourceRuntimeId)?.LastAbilityName ?? "技能");
         }
 
         var presented = new HashSet<string>(StringComparer.Ordinal);
@@ -346,7 +374,7 @@ public partial class BattleScreenController : Control
                 group.Key.Kind,
                 group.Key.TargetRuntimeId,
                 Value = group.Sum(item => item.EffectiveValue),
-                Cell = group.OrderBy(item => item.Sequence).Last().Cell,
+                Position = group.OrderBy(item => item.Sequence).Last().Position,
                 Sequence = group.Min(item => item.Sequence)
             })
             .OrderBy(item => item.Tick)
@@ -364,7 +392,7 @@ public partial class BattleScreenController : Control
                 sign + FormatCueValue(fact.Value),
                 fact.TargetRuntimeId,
                 fact.Tick,
-                fact.Cell,
+                fact.Position,
                 lanes);
         }
 
@@ -417,7 +445,7 @@ public partial class BattleScreenController : Control
         string text,
         string targetRuntimeId,
         int tick,
-        CombatCell eventCell,
+        CombatPoint eventPosition,
         IDictionary<string, int> lanes)
     {
         if (FloatingCueScene is null || _floatingCueOverlay is null) return;
@@ -429,13 +457,15 @@ public partial class BattleScreenController : Control
         var lane = sequence % 4;
         var column = sequence / 4 % 3 - 1;
         var state = FindState(targetRuntimeId);
-        var cell = state?.Cell ?? new Vector2I(eventCell.X, eventCell.Y);
+        var logicalPosition = eventPosition != default
+            ? new Vector2(eventPosition.X, eventPosition.Y)
+            : state?.Position ?? Vector2.Zero;
         var cue = FloatingCueScene.Instantiate<BattleFloatingCue>();
         cue.Name = $"FloatingCue{++_floatingCueSequence}";
         cue.Finished += OnFloatingCueFinished;
         _floatingCueOverlay.AddChild(cue);
         _floatingCues.Add(cue);
-        cue.Play(kind, text, targetRuntimeId, tick, _board.CellToLocal(cell), lane, column);
+        cue.Play(kind, text, targetRuntimeId, tick, _board.LogicalToLocal(logicalPosition), lane, column);
     }
 
     private void OnFloatingCueFinished(BattleFloatingCue cue) =>
@@ -469,8 +499,11 @@ public partial class BattleScreenController : Control
         {
             EnsurePresenter(state.RuntimeId);
             if (_presenters.TryGetValue(state.RuntimeId, out var presenter))
+            {
                 presenter.RefreshPresentation(state.Alive && preserveCue?.Contains(state.RuntimeId) == true ? "" : state.Alive ? cue : "defeated",
                     state.Health, state.MaxHealth);
+                presenter.RefreshCombatResources(state.CurrentMana, state.MaxMana, state.Shield, state.Statuses, state.Alive);
+            }
         }
     }
 
@@ -493,7 +526,7 @@ public partial class BattleScreenController : Control
             presenter.SetPresentationSpeed(_speedScale);
             presenter.SetPresentationPaused(_paused);
             presenter.Scale = Vector2.One * _board.CurrentProjection.UnitScale;
-            presenter.SnapPresentation(_board.CellToLocal(state.Cell), state.Health, state.MaxHealth);
+            presenter.SnapPresentation(_board.LogicalToLocal(state.Position), state.Health, state.MaxHealth);
             _presenters.Add(runtimeId, presenter);
         }
         catch
@@ -531,6 +564,7 @@ public partial class BattleScreenController : Control
     {
         if (_ending || _simulation is null) return;
         var result = _simulation.TryUseTacticalCommand(slotIndex, _selectedRuntimeId);
+        TacticalCommandAttempted?.Invoke(_simulation.TickIndex, slotIndex, _selectedRuntimeId, result.Succeeded, result.FailureReason);
         if (result.Succeeded)
         {
             PresentEvents(_simulation.DrainEvents());
@@ -598,7 +632,13 @@ public partial class BattleScreenController : Control
         var equipment = _config?.Equipment.Instances
             .Where(item => item.OwnerHeroInstanceId == unit.SourceInstanceId)
             .OrderBy(item => item.SlotIndex)
-            .Select(item => new BattleScreenEquipmentSnapshot(item.InstanceId, item.ContentId, item.SlotIndex))
+            .Select(item =>
+            {
+                var definition = _content is not null && _content.TryGet(item.ContentId, out var entry)
+                    ? entry.Definition as ItemDefinition : null;
+                return new BattleScreenEquipmentSnapshot(item.InstanceId, item.ContentId, item.SlotIndex,
+                    definition?.DisplayName ?? "未知装备", definition?.Description ?? "", definition?.Icon);
+            })
             .ToImmutableArray() ?? [];
         var traitSnapshot = _simulation?.TraitSnapshot;
         var contributions = traitSnapshot?.Contributions
@@ -636,7 +676,26 @@ public partial class BattleScreenController : Control
             unit.LastActionKind,
             unit.ActionTargetName,
             unit.AttackCooldown,
-            unit.DisabledTicks);
+            unit.DisabledTicks,
+            unit.Position,
+            unit.CurrentMana,
+            unit.MaxMana,
+            unit.Shield,
+            unit.Definition.AbilityLoadout?.Abilities ?? [],
+            unit.LastAbilityName,
+            unit.IsPersistentRosterHero,
+            unit.IsTemporary);
+    }
+
+    private void SnapPresentersToAuthority()
+    {
+        if (_simulation is null) return;
+        foreach (var state in _simulation.Units)
+        {
+            EnsurePresenter(state.RuntimeId);
+            if (_presenters.TryGetValue(state.RuntimeId, out var presenter))
+                presenter.SnapSpatialPresentation(_board.LogicalToLocal(state.Position));
+        }
     }
 
     private void OnBoardProjectionChanged(BattlefieldProjection previous, BattlefieldProjection next)
@@ -650,6 +709,7 @@ public partial class BattleScreenController : Control
 
     private void ClearPresenters(bool replacement = false)
     {
+        _rangedAttackLayer?.Clear();
         if (replacement)
         {
             try { _simulation?.Replace(); }
@@ -688,6 +748,7 @@ public partial class BattleScreenController : Control
     {
         if (_ending || _reported || _simulation is null || _simulation.Outcome == BattleOutcome.Running) return;
         _ending = true;
+        _rangedAttackLayer.SetClock(false, _speedScale * NormalSimulationScale);
         _reported = true;
         _accumulator = 0;
         _terminalResult = _simulation.CreateResult();

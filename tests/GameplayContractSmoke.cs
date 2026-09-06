@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -40,16 +41,15 @@ public partial class GameplayContractSmoke : Node
             TeamScopedModifiersAndAuras();
             KillGrowthAndDeathOrdering();
             DeathSummonAndHazardShield();
-            NarrowLaneRoutingAndLineOfSight();
+            ContinuousSpaceGeometryAndMovement();
+            ContinuousSpatialEffectsAndObjectives();
+            ContinuousPlanningRecoveryContracts();
+            SymmetricContinuousTrafficRecovery();
+            ContinuousCooldownAndRollback();
             UniformShortRangeLineOfSight();
-            EngagementReservationsAndWaiting();
             HealerPursuesWoundedAlly();
             HealerWithoutLegalHealJoinsCombat();
-            NavigationPlanningRegressions();
-            GoalScarcityAndRequestOrder();
-            BoundedDetourAndRetarget();
             GoalReleaseOnAction();
-            FriendlyFollowChainsAndCycleRejection();
             HealingLegalityAndProtection();
             QueuedMoverDeathCleanup();
             SameTickDeathCellReuseAndLifecycleCleanup();
@@ -70,7 +70,7 @@ public partial class GameplayContractSmoke : Node
             BattleReportDerivationContracts();
             RunConversionAndSettings(registry);
 
-            GD.Print("GAMEPLAY_CONTRACT_OK combat=team-aura,growth,death,hazard,navigation,two-phase,scarcity,request-order,detour,retarget,fairness,follow-chains,cycle-rejection,reservations,waiting,healing,los-range2,death-cleanup,death-terminal,dead-cell-reuse,time-arbiter,bosses effects=typed-determinism,lifecycle-zero abilities=8-command-determinism,2-boss-equivalence report=immutable,effective-damage,shield,healing,command-healing,kills,join-defeat,actions,events,rates,shares,awards,environment pace=0.8-1.6-3.2,end-hold-fade-fast-forward presentation=cue-priority,full-frames,cast-fallback commands=independent-scenes,tactical-points,transactional-economy lifecycle=exactly-once run=conversion,settings");
+            GD.Print("GAMEPLAY_CONTRACT_OK combat=team-aura,growth,death,hazard,continuous-space,swept-terrain,swept-bodies,dense-traffic,symmetric-traffic,distinct-engagement,splash,pierce,live-aura,beacon,edge-los,move-cooldown,spatial-rollback,healing,los-range2,death-cleanup,death-terminal,summon-nonoverlap,time-arbiter,bosses effects=typed-determinism,lifecycle-zero abilities=8-command-determinism,2-boss-equivalence report=immutable,effective-damage,shield,healing,command-healing,kills,join-defeat,actions,events,rates,shares,awards,environment pace=0.8-1.6-3.2,continuous-position-digest,end-hold-fade-fast-forward presentation=cue-priority,full-frames,cast-fallback commands=independent-scenes,tactical-points,transactional-economy lifecycle=exactly-once run=conversion,settings");
             return 0;
         }
         catch (Exception exception)
@@ -172,28 +172,435 @@ public partial class GameplayContractSmoke : Node
             throw new InvalidOperationException("lethal floor hazard did not emit an attributed defeated event");
     }
 
-    private static void NarrowLaneRoutingAndLineOfSight()
+    private static void ContinuousSpaceGeometryAndMovement()
     {
-        using var simulation = new BattleSimulation(Config(
-        [
-            Spawn(Hero("ranged", damage: 30, range: 4), 0, 3, 2, "a-ranged"),
-            Spawn(Unit("enemy", health: 500, damage: 0, range: .5f, moveTicks: 1000), 1, 6, 2, "enemy")
-        ], floor: new NarrowLanesRuntime("narrow", "狭路", "test")));
-        simulation.Units.Single(unit => unit.RuntimeId == "enemy").MoveCooldown = 999;
-        simulation.Step();
-        var firstEvents = simulation.DrainEvents();
-        if (firstEvents.Any(e => e.Type == "attack" && e.SourceRuntimeId == "a-ranged"))
-            throw new InvalidOperationException("ranged attack ignored blocked line of sight");
-        var firstCell = simulation.Units.Single(unit => unit.RuntimeId == "a-ranged").Cell;
-        if (firstCell.X is 4 or 5 && firstCell.Y is 2 or 3)
-            throw new InvalidOperationException("narrow-lane path entered a blocked cell");
-        var attacked = false;
-        for (var i = 0; i < 40 && simulation.Outcome == BattleOutcome.Running; i++)
+        var wall = new Vector2I(2, 2);
+        bool Terrain(Vector2I cell) => cell != wall;
+        var horizontal = BattlefieldSpace.FirstTerrainHitFraction(
+            new Vector2(0, 2), new Vector2(5, 0), .2f, 10, 6, Terrain);
+        var vertical = BattlefieldSpace.FirstTerrainHitFraction(
+            new Vector2(2, 0), new Vector2(0, 5), .2f, 10, 6, Terrain);
+        var parallelOutside = BattlefieldSpace.FirstTerrainHitFraction(
+            new Vector2(0, 0), new Vector2(5, 0), .2f, 10, 6, Terrain);
+        if (horizontal is <= 0 or >= 1 || vertical is <= 0 or >= 1 ||
+            !Mathf.IsEqualApprox(parallelOutside, 1f))
+            throw new InvalidOperationException(
+                $"axis-aligned terrain sweeps were incorrect: horizontal={horizontal}, vertical={vertical}, parallel={parallelOutside}");
+
+        if (!BattlefieldSpace.TryMovingCircleTimeOfImpact(
+                Vector2.Zero, new Vector2(4, 0), .3f,
+                new Vector2(2, 0), Vector2.Zero, .3f,
+                out var stationaryContact) || stationaryContact is <= 0 or >= 1)
+            throw new InvalidOperationException("moving circle tunneled through a stationary circle");
+        if (!BattlefieldSpace.TryMovingCircleTimeOfImpact(
+                Vector2.Zero, new Vector2(2, 0), .3f,
+                new Vector2(2, 0), new Vector2(-2, 0), .3f,
+                out var movingContact) || movingContact is <= 0 or >= 1)
+            throw new InvalidOperationException("opposing moving circles had no deterministic contact time");
+
+        using (var duel = new BattleSimulation(Config(
+               [
+                   Spawn(Hero("continuous-hero", health: 1000, damage: 0, range: 1, moveTicks: 4), 0, 0, 2, "hero"),
+                   Spawn(Unit("continuous-enemy", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 5, 2, "enemy")
+               ])))
         {
-            simulation.Step();
-            attacked |= simulation.DrainEvents().Any(e => e.Type == "attack" && e.SourceRuntimeId == "a-ranged");
+            duel.Units.Single(unit => unit.RuntimeId == "enemy").MoveCooldown = 999;
+            duel.Step();
+            var hero = duel.Units.Single(unit => unit.RuntimeId == "hero");
+            var move = duel.DrainEvents().SingleOrDefault(battleEvent =>
+                battleEvent.Type == "move" && battleEvent.SourceRuntimeId == hero.RuntimeId);
+            if (move is null || move.Position.IsEqualApprox(BattlefieldSpace.CellCenter(hero.Cell)) ||
+                !move.Position.IsEqualApprox(hero.Position))
+                throw new InvalidOperationException("battle movement remained quantized to authored cell centers");
         }
-        if (!attacked) throw new InvalidOperationException("unit did not route around narrow-lane blockers");
+
+        using (var engagement = new BattleSimulation(Config(
+               [
+                   Spawn(Hero("engage-a", health: 1000, damage: 0, range: 1, moveTicks: 3), 0, 0, 1, "a"),
+                   Spawn(Unit("engage-b", health: 1000, damage: 0, range: 1, moveTicks: 3), 0, 0, 2, "b"),
+                   Spawn(Unit("engage-c", health: 1000, damage: 0, range: 1, moveTicks: 3), 0, 0, 3, "c"),
+                   Spawn(Unit("engage-target", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 5, 2, "target")
+               ])))
+        {
+            engagement.Units.Single(unit => unit.RuntimeId == "target").MoveCooldown = 999;
+            var attackersThatActed = new HashSet<string>(StringComparer.Ordinal);
+            for (var tick = 0; tick < 48 && engagement.Outcome == BattleOutcome.Running; tick++)
+            {
+                engagement.Step();
+                AssertNoLivingOverlaps(engagement.Units, "multi-attacker engagement");
+                foreach (var battleEvent in engagement.DrainEvents().Where(battleEvent =>
+                             battleEvent.Type == "attack" && battleEvent.SourceRuntimeId is "a" or "b" or "c"))
+                {
+                    var attacker = engagement.Units.Single(unit => unit.RuntimeId == battleEvent.SourceRuntimeId);
+                    var target = engagement.Units.Single(unit => unit.RuntimeId == "target");
+                    if (!BattlefieldSpace.IsWithinReach(attacker, target, attacker.AttackRange))
+                        throw new InvalidOperationException("multi-attacker event resolved outside continuous body-edge reach");
+                    attackersThatActed.Add(attacker.RuntimeId);
+                }
+            }
+            var attackers = engagement.Units.Where(unit => unit.Team == 0).Select(unit => unit.Position).ToArray();
+            if (attackersThatActed.Count != 3 || attackers.Distinct().Count() != attackers.Length ||
+                attackers.All(position => position.IsEqualApprox(BattlefieldSpace.CellCenter(BattlefieldSpace.PositionToCell(position)))))
+                throw new InvalidOperationException(
+                    $"multiple attackers did not reach distinct useful continuous engagement positions: acted={string.Join(',', attackersThatActed)}");
+        }
+
+        var denseSpawns = new List<BattleSpawn>();
+        for (var index = 0; index < 9; index++)
+        {
+            var x = index / 6;
+            var y = index % 6;
+            denseSpawns.Add(Spawn(index == 0 ? Hero("dense-hero", health: 2000, damage: 0, moveTicks: 5) :
+                Unit($"dense-player-{index}", health: 2000, damage: 0, moveTicks: 5), 0, x, y, $"p-{index:00}"));
+            denseSpawns.Add(Spawn(Unit($"dense-enemy-{index}", health: 2000, damage: 0, moveTicks: 5), 1,
+                9 - x, y, $"e-{index:00}"));
+        }
+        using var dense = new BattleSimulation(Config(
+            denseSpawns,
+            floor: new NarrowLanesRuntime("dense-narrow", "拥挤狭路", "continuous-space performance fixture")));
+        var denseStarts = dense.Units.ToDictionary(unit => unit.RuntimeId, unit => unit.Position, StringComparer.Ordinal);
+        var denseActions = 0;
+        var stopwatch = Stopwatch.StartNew();
+        for (var tick = 0; tick < 36 && dense.Outcome == BattleOutcome.Running; tick++)
+        {
+            dense.Step();
+            AssertNoLivingOverlaps(dense.Units, "dense opposing traffic");
+            denseActions += dense.DrainEvents().Count(battleEvent => battleEvent.Type is "move" or "attack");
+        }
+        stopwatch.Stop();
+        var playerProgress = dense.Units.Where(unit => unit.Team == 0)
+            .Max(unit => unit.Position.X - denseStarts[unit.RuntimeId].X);
+        var enemyProgress = dense.Units.Where(unit => unit.Team == 1)
+            .Max(unit => denseStarts[unit.RuntimeId].X - unit.Position.X);
+        GD.Print($"CONTINUOUS_SPACE_DENSE_9V9_36_TICKS_MS={stopwatch.ElapsedMilliseconds} actions={denseActions} progress={playerProgress:0.###}/{enemyProgress:0.###}");
+        if (stopwatch.ElapsedMilliseconds > 5000)
+            throw new InvalidOperationException($"dense continuous movement exceeded smoke budget: {stopwatch.ElapsedMilliseconds}ms");
+        if (denseActions < 18 || playerProgress < .5f || enemyProgress < .5f)
+            throw new InvalidOperationException(
+                $"dense opposing traffic made no useful congestion progress: actions={denseActions}, progress={playerProgress}/{enemyProgress}");
+    }
+
+    private static void AssertNoLivingOverlaps(IEnumerable<BattleUnitState> units, string context)
+    {
+        var living = units.Where(unit => unit.Alive).OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal).ToArray();
+        for (var first = 0; first < living.Length; first++)
+        for (var second = first + 1; second < living.Length; second++)
+            if (living[first].Position.DistanceTo(living[second].Position) + .0001f <
+                living[first].BodyRadius + living[second].BodyRadius + BattlefieldSpace.BodyClearance)
+                throw new InvalidOperationException(
+                    $"{context} overlapped {living[first].RuntimeId} and {living[second].RuntimeId}");
+    }
+
+    private static void ContinuousSpatialEffectsAndObjectives()
+    {
+        using (var splash = new BattleSimulation(Config(
+               [
+                   Spawn(Unit("splash-attacker", isHero: true, health: 1000, damage: 100, range: 10, splash: 2.2f), 0, 0, 1, "a-attacker"),
+                   Spawn(Unit("splash-primary", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 3, 1, "b-primary"),
+                   Spawn(Unit("splash-edge", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 5, 2, "c-splash-edge")
+               ])))
+        {
+            var attacker = splash.Units.Single(unit => unit.RuntimeId == "a-attacker");
+            var primary = splash.Units.Single(unit => unit.RuntimeId == "b-primary");
+            var edge = splash.Units.Single(unit => unit.RuntimeId == "c-splash-edge");
+            attacker.Position = new Vector2(.5f, 1f);
+            primary.Position = new Vector2(3f, 1f);
+            edge.Position = new Vector2(5.2f, 2f);
+            if (Math.Abs(primary.Cell.X - edge.Cell.X) + Math.Abs(primary.Cell.Y - edge.Cell.Y) <= attacker.Definition.SplashRadius)
+                throw new InvalidOperationException("splash edge fixture did not leave the old cell-distance radius");
+            splash.Step();
+            Near(primary.Health, 900f, .01f, "continuous splash primary damage");
+            Near(edge.Health, 955f, .01f, "continuous splash missed a body intersecting the radius edge");
+        }
+
+        using (var piercing = new BattleSimulation(Config(
+               [
+                   Spawn(Unit("piercing-attacker", isHero: true, health: 1000, damage: 100, range: 10,
+                       behavior: new UnitBehaviorSnapshot(PiercingLine: true)), 0, 0, 2, "a-attacker"),
+                   Spawn(Unit("piercing-primary", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 3, 2, "b-primary"),
+                   Spawn(Unit("piercing-capsule", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 5, 3, "c-capsule")
+               ])))
+        {
+            var attacker = piercing.Units.Single(unit => unit.RuntimeId == "a-attacker");
+            var primary = piercing.Units.Single(unit => unit.RuntimeId == "b-primary");
+            var capsule = piercing.Units.Single(unit => unit.RuntimeId == "c-capsule");
+            attacker.Position = new Vector2(.5f, 2.45f);
+            primary.Position = new Vector2(3f, 2.45f);
+            capsule.Position = new Vector2(5f, 2.55f);
+            if (primary.Cell.Y == capsule.Cell.Y)
+                throw new InvalidOperationException("piercing fixture did not cross a derived grid row");
+            piercing.Step();
+            Near(capsule.Health, 965f, .01f,
+                "continuous piercing capsule missed or applied duplicate damage to the behind target");
+        }
+
+        using (var aura = new BattleSimulation(Config(
+               [
+                   Spawn(Unit("live-aura-attacker", health: 1000, damage: 100, range: 10), 1, 1, 1, "a-attacker"),
+                   Spawn(Unit("live-damage-aura", health: 1000, damage: 0, range: 1, moveTicks: 1000,
+                       behavior: new UnitBehaviorSnapshot(AdjacentDamageAura: .5f)), 1, 3, 1, "z-damage-aura"),
+                   Spawn(Hero("live-aura-target", health: 1000, damage: 0, range: 1, moveTicks: 1000), 0, 7, 1, "b-target"),
+                   Spawn(Unit("live-armor-aura", health: 1000, damage: 0, range: 1, moveTicks: 1000,
+                       behavior: new UnitBehaviorSnapshot(AdjacentArmorAura: 10)), 0, 9, 1, "z-armor-aura")
+               ])))
+        {
+            var attacker = aura.Units.Single(unit => unit.RuntimeId == "a-attacker");
+            var damageAura = aura.Units.Single(unit => unit.RuntimeId == "z-damage-aura");
+            var target = aura.Units.Single(unit => unit.RuntimeId == "b-target");
+            var armorAura = aura.Units.Single(unit => unit.RuntimeId == "z-armor-aura");
+            attacker.Position = new Vector2(1f, 1f);
+            damageAura.Position = new Vector2(2.7f, 1f);
+            target.Position = new Vector2(7f, 1f);
+            armorAura.Position = new Vector2(8.7f, 1f);
+            if (Math.Abs(attacker.Cell.X - damageAura.Cell.X) <= 1 || Math.Abs(target.Cell.X - armorAura.Cell.X) <= 1)
+                throw new InvalidOperationException("live aura fixture remained adjacent in derived grid cells");
+            aura.Step();
+            Near(target.Health, 1000f - 150f * 100f / 170f, .02f,
+                "live damage/armor auras ignored continuous body-edge distance");
+        }
+
+        using (var beacon = new BattleSimulation(Config(
+               [
+                   new BattleSpawn(Hero("beacon-edge", health: 200, damage: 0, range: 1, moveTicks: 1000), 0,
+                       new Vector2I(7, 3), "beacon-edge", .5f),
+                   Spawn(Unit("beacon-enemy", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 9, 5, "beacon-enemy")
+               ], floor: new HealingBeaconRuntime("continuous-beacon", "信标", "连续半径", 1, 20))))
+        {
+            var hero = beacon.Units.Single(unit => unit.RuntimeId == "beacon-edge");
+            hero.Position = new Vector2(6.75f, 3f);
+            if (Math.Abs(hero.Cell.X - BattleSimulation.Width / 2) <= 1)
+                throw new InvalidOperationException("beacon fixture remained within the old adjacent-cell band");
+            beacon.Step();
+            Near(hero.Health, 120f, .01f, "beacon control ignored body-edge distance at a continuous position");
+        }
+
+        var wall = new Vector2I(7, 1);
+        using var edgeLos = new BattleSimulation(Config(
+        [
+            Spawn(Hero("edge-los-attacker", health: 1000, damage: 1, range: 2.2f, moveTicks: 3), 0, 0, 5, "attacker"),
+            Spawn(Unit("edge-los-target", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 9, 0, "target")
+        ], floor: new BlockedCellsRule([wall])));
+        var ranged = edgeLos.Units.Single(unit => unit.RuntimeId == "attacker");
+        var edgeTarget = edgeLos.Units.Single(unit => unit.RuntimeId == "target");
+        edgeTarget.MoveCooldown = 999;
+        if (BattlefieldSpace.IsSegmentTerrainClear(
+                ranged.Position, edgeTarget.Position, 0f, BattleSimulation.Width, BattleSimulation.Height,
+                cell => cell != wall))
+            throw new InvalidOperationException("edge LOS fixture did not begin behind blocked direct line access");
+        var attacked = false;
+        for (var tick = 0; tick < 120 && !attacked; tick++)
+        {
+            edgeLos.Step();
+            attacked = edgeLos.DrainEvents().Any(battleEvent =>
+                battleEvent.Type == "attack" && battleEvent.SourceRuntimeId == ranged.RuntimeId);
+            AssertNoLivingOverlaps(edgeLos.Units, "edge LOS engagement");
+        }
+        if (!attacked || !BattlefieldSpace.IsWithinReach(ranged, edgeTarget, ranged.AttackRange) ||
+            !BattlefieldSpace.IsSegmentTerrainClear(
+                ranged.Position, edgeTarget.Position, 0f, BattleSimulation.Width, BattleSimulation.Height,
+                cell => cell != wall) ||
+            !BattlefieldSpace.IsPositionTerrainClear(
+                ranged.Position, ranged.BodyRadius, BattleSimulation.Width, BattleSimulation.Height,
+                cell => cell != wall))
+            throw new InvalidOperationException(
+                $"ranged unit did not find a legal inner engagement point around the edge target: {ranged.Position}");
+    }
+
+    private static void SymmetricContinuousTrafficRecovery()
+    {
+        var leftGoal = State(Unit("left-goal", range: 1, moveTicks: 1000), "left-goal");
+        leftGoal.Position = new Vector2(0f, 1f);
+        var rightGoal = State(Unit("right-goal", range: 1, moveTicks: 1000), "right-goal", team: 1);
+        rightGoal.Position = new Vector2(9f, 1f);
+        var movingRight = State(Unit("moving-right", range: 1, moveTicks: 3), "moving-right");
+        movingRight.Position = new Vector2(2f, 1f);
+        var movingLeft = State(Unit("moving-left", range: 1, moveTicks: 3), "moving-left", team: 1);
+        movingLeft.Position = new Vector2(7f, 1f);
+        var units = new List<BattleUnitState> { leftGoal, rightGoal, movingRight, movingLeft };
+        using var movement = new DeterministicContinuousMovementService(10, 3, () => units, _ => true, (_, _) => true, 0x51DEUL);
+        for (var tick = 0; tick < 80; tick++)
+        {
+            movement.BeginTick();
+            if (!BattlefieldSpace.IsWithinReach(movingRight, rightGoal, movingRight.AttackRange))
+            {
+                movement.SelectTarget(movingRight, [rightGoal]);
+                movement.QueueMove(movingRight);
+            }
+            if (!BattlefieldSpace.IsWithinReach(movingLeft, leftGoal, movingLeft.AttackRange))
+            {
+                movement.SelectTarget(movingLeft, [leftGoal]);
+                movement.QueueMove(movingLeft);
+            }
+            movement.ResolveIntents((_, _) => { });
+            AssertNoLivingOverlaps(units, "symmetric opposing traffic");
+        }
+        if (!BattlefieldSpace.IsWithinReach(movingRight, rightGoal, movingRight.AttackRange) ||
+            !BattlefieldSpace.IsWithinReach(movingLeft, leftGoal, movingLeft.AttackRange) ||
+            movingRight.Position.X <= 5f || movingLeft.Position.X >= 4f)
+            throw new InvalidOperationException(
+                $"deterministic PairSide traffic did not clear the head-on encounter: right={movingRight.Position}, left={movingLeft.Position}");
+    }
+
+    private static void ContinuousCooldownAndRollback()
+    {
+        using (var slowed = new BattleSimulation(Config(
+               [
+                   Spawn(Unit("slow-attacker", isHero: true, health: 1000, damage: 1, range: 10, attackTicks: 1000,
+                       behavior: new UnitBehaviorSnapshot(SlowOnHitTicks: 4)), 0, 0, 2, "a-attacker"),
+                   Spawn(Unit("slow-target", health: 1000, damage: 0, range: 1, moveTicks: 2,
+                       behavior: new UnitBehaviorSnapshot()), 1, 4, 2, "z-target")
+               ])))
+        {
+            var target = slowed.Units.Single(unit => unit.RuntimeId == "z-target");
+            var start = target.Position;
+            var cooldowns = new List<int>();
+            for (var tick = 0; tick < 4; tick++)
+            {
+                slowed.Step();
+                slowed.DrainEvents();
+                cooldowns.Add(target.MoveCooldown);
+                if (tick < 3 && !target.Position.IsEqualApprox(start))
+                    throw new InvalidOperationException("MoveCooldown slow ended before its 0.1-second ticks elapsed");
+            }
+            if (!cooldowns.SequenceEqual([3, 2, 1, 0]) || target.Position.IsEqualApprox(start))
+                throw new InvalidOperationException(
+                    $"MoveCooldown did not retain fixed-tick semantics: {string.Join(',', cooldowns)} at {target.Position}");
+        }
+
+        using var rollback = new BattleSimulation(Config(
+        [
+            Spawn(Hero("rollback-mover", health: 1000, damage: 0, range: 1, moveTicks: 3), 0, 0, 2, "mover"),
+            Spawn(Unit("rollback-target", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 6, 2, "target")
+        ]));
+        var mover = rollback.Units.Single(unit => unit.RuntimeId == "mover");
+        var targetUnit = rollback.Units.Single(unit => unit.RuntimeId == "target");
+        var movement = Movement(rollback);
+        rollback.DrainEvents();
+        movement.BeginTick();
+        movement.SelectTarget(mover, [targetUnit]);
+        if (!movement.QueueMove(mover)) throw new InvalidOperationException("rollback fixture did not queue continuous movement");
+        var beforePosition = mover.Position;
+        var beforeDigest = rollback.CreateResult().Digest;
+        var planningBefore = movement.PlanningStateCount;
+        var checkpointType = typeof(BattleSimulation).GetNestedType("BattleWorldStateCheckpoint", BindingFlags.NonPublic)
+            ?? throw new InvalidOperationException("battle rollback checkpoint type missing");
+        var checkpoint = checkpointType.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+            .Single().Invoke([rollback]);
+        var emit = typeof(BattleSimulation).GetMethod(
+            "Emit", BindingFlags.Instance | BindingFlags.NonPublic, null,
+            [typeof(string), typeof(string), typeof(string), typeof(float), typeof(Vector2), typeof(string)], null)
+            ?? throw new InvalidOperationException("continuous event append method missing");
+        void ResolveWithEvent() => movement.ResolveIntents((unit, position) =>
+            emit.Invoke(rollback, ["move", unit.RuntimeId, "", 0f, position, "move"]));
+        ResolveWithEvent();
+        var attemptedPosition = mover.Position;
+        var attemptedDigest = rollback.CreateResult().Digest;
+        if (attemptedPosition.IsEqualApprox(beforePosition) || attemptedPosition.IsEqualApprox(BattlefieldSpace.CellCenter(mover.Cell)))
+            throw new InvalidOperationException("rollback fixture did not reach a non-cell-center attempted position");
+        checkpointType.GetMethod("Rollback", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)?.Invoke(checkpoint, null);
+        if (!mover.Position.IsEqualApprox(beforePosition) || rollback.CreateResult().Digest != beforeDigest ||
+            movement.PlanningStateCount != planningBefore || movement.PendingRequestCount != 1)
+            throw new InvalidOperationException("rollback did not restore continuous position, digest, and planning request state");
+        ResolveWithEvent();
+        if (!mover.Position.IsEqualApprox(attemptedPosition) || rollback.CreateResult().Digest != attemptedDigest ||
+            rollback.DrainEvents().Count(battleEvent => battleEvent.Type == "move") != 1)
+            throw new InvalidOperationException("continuous rollback retry changed position, digest, or event identity");
+    }
+
+    private static void ContinuousPlanningRecoveryContracts()
+    {
+        var forward = RunContinuousRequestOrder(false);
+        var reverse = RunContinuousRequestOrder(true);
+        if (!forward.SequenceEqual(reverse))
+            throw new InvalidOperationException("continuous movement depended on QueueMove enumeration order");
+
+        var mover = State(Unit("detour-mover", range: 1, moveTicks: 3), "mover");
+        mover.Cell = new Vector2I(0, 2);
+        var target = State(Unit("detour-target", range: 1, moveTicks: 1000), "target", team: 1);
+        target.Cell = new Vector2I(6, 2);
+        var detourUnits = new List<BattleUnitState> { mover, target };
+        var wall = new HashSet<Vector2I> { new(2, 1), new(2, 2), new(2, 3) };
+        using (var detour = new DeterministicContinuousMovementService(
+                   7, 5, () => detourUnits, cell => !wall.Contains(cell), (_, _) => true, 73))
+        {
+            var start = mover.Position;
+            for (var tick = 0; tick < 30 && !BattlefieldSpace.IsWithinReach(mover, target, mover.AttackRange); tick++)
+            {
+                detour.BeginTick();
+                if (detour.SelectTarget(mover, [target]) is null || !detour.QueueMove(mover))
+                    throw new InvalidOperationException("reachable detour lost its strategic target");
+                detour.ResolveIntents((_, _) => { });
+                if (!BattlefieldSpace.IsPositionTerrainClear(
+                        mover.Position, mover.BodyRadius, 7, 5, cell => !wall.Contains(cell)))
+                    throw new InvalidOperationException("continuous detour entered blocked terrain");
+            }
+            if (mover.Position.DistanceTo(start) < 1f || !BattlefieldSpace.IsWithinReach(mover, target, mover.AttackRange))
+                throw new InvalidOperationException("continuous detour did not recover through the reachable side lane");
+        }
+
+        var retargetMover = State(Unit("retarget-mover", range: 1), "retarget-mover");
+        retargetMover.Cell = new Vector2I(2, 2);
+        var unreachable = State(Unit("unreachable", range: 1), "unreachable", team: 1);
+        unreachable.Cell = new Vector2I(5, 2);
+        var reachable = State(Unit("reachable", range: 1), "reachable", team: 1);
+        reachable.Cell = new Vector2I(0, 2);
+        var retargetUnits = new List<BattleUnitState> { retargetMover, unreachable, reachable };
+        using (var retarget = new DeterministicContinuousMovementService(
+                   7, 5, () => retargetUnits, cell => cell.X != 3, (_, _) => true, 79))
+        {
+            retarget.BeginTick();
+            if (retarget.SelectTarget(retargetMover, [unreachable, reachable]) != reachable)
+                throw new InvalidOperationException("target selection retained a spatially unreachable first candidate");
+        }
+
+        var chain = Enumerable.Range(0, 6)
+            .Select(index =>
+            {
+                var unit = State(Unit($"chain-{index}", range: 1, moveTicks: 3), $"chain-{index}");
+                unit.Cell = new Vector2I(index, 1);
+                return unit;
+            })
+            .ToList();
+        var chainTarget = State(Unit("chain-target", range: 1, moveTicks: 1000), "chain-target", team: 1);
+        chainTarget.Cell = new Vector2I(9, 1);
+        var chainUnits = chain.Append(chainTarget).ToList();
+        using var chainService = new DeterministicContinuousMovementService(
+            10, 3, () => chainUnits, cell => cell.Y == 1, (_, _) => true, 83);
+        var rearStart = chain[0].Position;
+        for (var tick = 0; tick < 24; tick++)
+        {
+            chainService.BeginTick();
+            foreach (var unit in chain)
+            {
+                chainService.SelectTarget(unit, [chainTarget]);
+                if (!BattlefieldSpace.IsWithinReach(unit, chainTarget, unit.AttackRange))
+                    chainService.QueueMove(unit);
+            }
+            chainService.ResolveIntents((_, _) => { });
+            AssertNoLivingOverlaps(chainUnits, "six-unit follow chain");
+        }
+        if (chain[0].Position.X <= rearStart.X + .25f)
+            throw new InvalidOperationException("six-unit continuous follow chain remained permanently stuck");
+    }
+
+    private static Vector2[] RunContinuousRequestOrder(bool reverse)
+    {
+        var first = State(Unit("order-first", range: 1, moveTicks: 3), "first");
+        first.Cell = new Vector2I(0, 1);
+        var second = State(Unit("order-second", range: 1, moveTicks: 3), "second");
+        second.Cell = new Vector2I(0, 2);
+        var target = State(Unit("order-target", range: 1, moveTicks: 1000), "target", team: 1);
+        target.Cell = new Vector2I(5, 1);
+        var units = new List<BattleUnitState> { first, second, target };
+        using var service = new DeterministicContinuousMovementService(6, 4, () => units, _ => true, (_, _) => true, 67);
+        service.BeginTick();
+        foreach (var mover in reverse ? new[] { second, first } : new[] { first, second })
+        {
+            service.SelectTarget(mover, [target]);
+            service.QueueMove(mover);
+        }
+        service.ResolveIntents((_, _) => { });
+        return new[] { first.Position, second.Position };
     }
 
     private static void UniformShortRangeLineOfSight()
@@ -231,9 +638,11 @@ public partial class GameplayContractSmoke : Node
         ]));
         var healer = simulation.Units.Single(unit => unit.RuntimeId == "a-healer");
         healer.AttackCooldown = 10;
+        var start = healer.Position;
         simulation.Step();
-        if (healer.Cell != new Vector2I(0, 1))
-            throw new InvalidOperationException($"healer pursued enemy instead of distant wounded ally: {healer.Cell}");
+        if (healer.Position.Y <= start.Y || Math.Abs(healer.Position.X - start.X) > .15f ||
+            healer.ActionTargetRuntimeId != "wounded")
+            throw new InvalidOperationException($"healer pursued enemy instead of distant wounded ally: {healer.Position}");
     }
 
     private static void HealerWithoutLegalHealJoinsCombat()
@@ -265,185 +674,6 @@ public partial class GameplayContractSmoke : Node
             throw new InvalidOperationException("non-healer control unit did not engage from the same full-health setup");
     }
 
-    private static void NavigationPlanningRegressions()
-    {
-        using var melee = new BattleSimulation(Config(
-        [
-            Spawn(Hero("melee-a", health: 1000, range: 1), 0, 0, 2, "melee-a"),
-            Spawn(Unit("melee-b", health: 1000, range: 1), 1, 4, 2, "melee-b")
-        ]));
-        var positions = new List<Vector2I>();
-        var meleeTrace = new List<string>();
-        var attacked = false;
-        for (var tick = 0; tick < 20 && !attacked; tick++)
-        {
-            melee.Step();
-            positions.Add(melee.Units.Single(unit => unit.RuntimeId == "melee-a").Cell);
-            var tickEvents = melee.DrainEvents();
-            attacked = tickEvents.Any(battleEvent => battleEvent.Type == "attack");
-            meleeTrace.Add($"{tick}:{string.Join(',', melee.Units.Select(unit => $"{unit.RuntimeId}@{unit.Cell}/{unit.Mode}"))}:" +
-                           string.Join(',', tickEvents.Select(battleEvent => $"{battleEvent.Type}:{battleEvent.SourceRuntimeId}->{battleEvent.TargetRuntimeId}@{battleEvent.Cell}")));
-        }
-        if (!attacked) throw new InvalidOperationException($"two melee units did not eventually attack: " +
-            $"positions={string.Join(';', positions)} states={string.Join(';', melee.Units.Select(unit => $"{unit.RuntimeId}:{unit.Cell}:{unit.Mode}:{unit.ActionTargetRuntimeId}"))} " +
-            $"trace={string.Join('|', meleeTrace)}");
-        for (var index = 2; index < positions.Count; index++)
-            if (positions[index] == positions[index - 2] && positions[index] != positions[index - 1])
-                throw new InvalidOperationException("melee unit entered an A-B-A positional loop");
-
-        using var ranged = new BattleSimulation(Config(
-        [
-            Spawn(Hero("ranged", health: 1000, range: 4), 0, 0, 2, "ranged"),
-            Spawn(Unit("melee", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 6, 2, "melee")
-        ]));
-        ranged.Units.Single(unit => unit.RuntimeId == "melee").MoveCooldown = 999;
-        var rangedPositions = new List<Vector2I> { new(0, 2) };
-        var rangedAttacked = false;
-        for (var tick = 0; tick < 12 && !rangedAttacked; tick++)
-        {
-            ranged.Step();
-            rangedPositions.Add(ranged.Units.Single(unit => unit.RuntimeId == "ranged").Cell);
-            rangedAttacked = ranged.DrainEvents().Any(battleEvent => battleEvent.Type == "attack" && battleEvent.SourceRuntimeId == "ranged");
-        }
-        if (!rangedAttacked || rangedPositions.Any(cell => cell.Y != 2) || rangedPositions.Skip(1).Any(cell => cell == new Vector2I(0, 2)))
-            throw new InvalidOperationException("range-four unit stepped off-axis or returned to origin before attacking");
-
-        var crowdedSpawns = new List<BattleSpawn>();
-        for (var index = 0; index < 7; index++)
-            crowdedSpawns.Add(Spawn(index == 0 ? Hero($"player-{index}", health: 1000) :
-                    Unit($"player-{index}", health: 1000, range: index == 6 ? 4.5f : 1), 0,
-                index / 6, index % 6, $"a-player-{index}"));
-        for (var index = 0; index < 8; index++)
-            crowdedSpawns.Add(Spawn(Unit($"enemy-{index}", health: 1000, range: index == 7 ? 5f : 1), 1,
-                8 + index / 6, index % 6, $"z-enemy-{index}"));
-        using var crowded = new BattleSimulation(Config(crowdedSpawns));
-        var actedTeams = new HashSet<int>();
-        var unexplainedRangedWaits = 0;
-        for (var tick = 0; tick < 8; tick++)
-        {
-            crowded.Step();
-            foreach (var battleEvent in crowded.DrainEvents().Where(battleEvent => battleEvent.Type is "move" or "attack"))
-                actedTeams.Add(crowded.Units.First(unit => unit.RuntimeId == battleEvent.SourceRuntimeId).Team);
-            var rangedState = crowded.Units.Single(unit => unit.RuntimeId == "a-player-6");
-            unexplainedRangedWaits = rangedState.Mode == BattleUnitMode.Waiting &&
-                                      string.IsNullOrWhiteSpace(rangedState.ActionTargetRuntimeId)
-                ? unexplainedRangedWaits + 1
-                : 0;
-            if (unexplainedRangedWaits >= 2)
-                throw new InvalidOperationException("production-like 7v8 ranged unit remained target-none + Waiting for consecutive ticks");
-        }
-        if (!actedTeams.SetEquals([0, 1]))
-            throw new InvalidOperationException("production-like crowded opening gave legal action outcomes to only one team");
-
-        var mover = State(Unit("mover", range: 1), "mover"); mover.Cell = new Vector2I(0, 2);
-        var near = State(Unit("near", range: 1), "near", team: 1); near.Cell = new Vector2I(3, 2);
-        var farther = State(Unit("farther", range: 1), "farther", team: 1); farther.Cell = new Vector2I(0, 5);
-        var units = new List<BattleUnitState> { mover, near, farther };
-        var blocked = new HashSet<Vector2I> { new(1, 2), new(2, 2), new(1, 1), new(1, 3) };
-        using var service = new DeterministicGridMovementService(10, 6, () => units, cell => !blocked.Contains(cell), (_, _, _) => true);
-        service.BeginTick();
-        if (service.SelectTarget(mover, [near, farther]) != farther)
-            throw new InvalidOperationException("target selection preferred straight-line proximity over shorter legal path cost");
-        var newThreat = State(Unit("new-threat", range: 1), "new-threat", team: 1);
-        newThreat.Cell = new Vector2I(1, 2);
-        units.Add(newThreat);
-        blocked.Remove(new Vector2I(1, 2));
-        service.BeginTick();
-        if (service.SelectTarget(mover, [near, farther, newThreat]) != newThreat)
-            throw new InvalidOperationException("newly attackable threat did not interrupt distant pursuit");
-    }
-
-    private static void GoalScarcityAndRequestOrder()
-    {
-        var forward = RunScarcityProbe(reverseQueueOrder: false);
-        var reversed = RunScarcityProbe(reverseQueueOrder: true);
-        if (!forward.SequenceEqual(reversed, StringComparer.Ordinal))
-            throw new InvalidOperationException($"movement outcome depended on QueueMove enumeration order: " +
-                                                $"forward={string.Join(';', forward)} reversed={string.Join(';', reversed)}");
-        if (forward.Count != 2 || !forward.Contains("high:3,1", StringComparer.Ordinal) ||
-            !forward.Contains("low:1,1", StringComparer.Ordinal))
-            throw new InvalidOperationException($"joint scarcity allocation did not move both requests: {string.Join(';', forward)}");
-    }
-
-    private static IReadOnlyList<string> RunScarcityProbe(bool reverseQueueOrder)
-    {
-        var high = State(Unit("high", range: 1), "high"); high.Cell = new Vector2I(2, 1); high.WaitingTicks = 10;
-        var low = State(Unit("low", range: 1), "low"); low.Cell = new Vector2I(0, 1);
-        var target = State(Unit("scarce-target", range: 1), "target", team: 1); target.Cell = new Vector2I(4, 1);
-        var units = new List<BattleUnitState> { high, low, target };
-        using var service = new DeterministicGridMovementService(5, 3, () => units,
-            cell => cell.Y == 1 || cell is { X: 3, Y: 0 } or { X: 4, Y: 0 },
-            (cell, definition, _) => definition.ContentId == "high" || cell == new Vector2I(3, 1), seed: 71);
-        service.BeginTick();
-        foreach (var mover in (reverseQueueOrder ? new[] { low, high } : new[] { high, low }))
-        {
-            service.SelectTarget(mover, [target]);
-            service.QueueMove(mover);
-        }
-        var moved = new List<string>();
-        service.ResolveIntents((unit, cell) => moved.Add($"{unit.RuntimeId}:{cell.X},{cell.Y}"));
-        moved.Sort(StringComparer.Ordinal);
-        var commonGoal = new Vector2I(3, 1);
-        var alternateGoal = new Vector2I(4, 0);
-        if (service.ActiveGoalCount != 2 || !service.IsReserved(commonGoal) || !service.IsReserved(alternateGoal))
-            throw new InvalidOperationException($"scarce-goal arbitration did not assign the flexible request away from the constrained goal: " +
-                                                $"goals={service.ActiveGoalCount}, common={service.IsReserved(commonGoal)}, " +
-                                                $"alternate={service.IsReserved(alternateGoal)}, moves={string.Join(';', moved)}");
-        if (high.Cell != commonGoal)
-            throw new InvalidOperationException("another unit's future engagement goal acted as a path wall");
-        return moved;
-    }
-
-    private static void BoundedDetourAndRetarget()
-    {
-        var mover = State(Unit("detour", range: 1), "mover"); mover.Cell = new Vector2I(0, 1);
-        var blocker = State(Unit("blocker", range: 1), "blocker"); blocker.Cell = new Vector2I(1, 1);
-        var target = State(Unit("target", range: 1), "target", team: 1); target.Cell = new Vector2I(4, 1);
-        var units = new List<BattleUnitState> { mover, blocker, target };
-        using (var service = new DeterministicGridMovementService(5, 3, () => units, _ => true, (_, _, _) => true, seed: 17))
-        {
-            for (var tick = 0; tick < 4 && mover.Cell == new Vector2I(0, 1); tick++)
-            {
-                service.BeginTick();
-                service.SelectTarget(mover, [target]);
-                service.QueueMove(mover);
-                service.ResolveIntents((_, _) => { });
-            }
-            if (mover.Cell == new Vector2I(0, 1) || mover.Cell == blocker.Cell)
-                throw new InvalidOperationException("static friendly on the shortest first step prevented bounded side-route replanning");
-        }
-
-        if (DeterministicGridMovementService.GoalWaitLease < 2)
-            throw new InvalidOperationException("goal wait lease must preserve a target for multiple movement-ready decisions");
-        var retargetMover = State(Unit("retarget", range: 1), "retarget"); retargetMover.Cell = new Vector2I(3, 0);
-        var staticBlocker = State(Unit("static", range: 1), "static"); staticBlocker.Cell = new Vector2I(4, 0);
-        var blockedTarget = State(Unit("blocked-target", range: 1), "blocked-target", team: 1); blockedTarget.Cell = new Vector2I(6, 0);
-        var alternateTarget = State(Unit("alternate-target", range: 1), "alternate-target", team: 1); alternateTarget.Cell = new Vector2I(0, 0);
-        var retargetUnits = new List<BattleUnitState> { retargetMover, staticBlocker, blockedTarget, alternateTarget };
-        using var retargetService = new DeterministicGridMovementService(7, 1, () => retargetUnits,
-            cell => cell.Y == 0, (_, _, _) => true, seed: 19);
-        BattleUnitState? selected = null;
-        for (var decision = 1; decision <= DeterministicGridMovementService.GoalWaitLease; decision++)
-        {
-            retargetMover.MoveCooldown = 0;
-            retargetService.BeginTick();
-            selected = retargetService.SelectTarget(retargetMover, [blockedTarget, alternateTarget]);
-            retargetService.QueueMove(retargetMover);
-            retargetService.ResolveIntents((_, _) => { });
-            if (selected != blockedTarget || retargetMover.Cell != new Vector2I(3, 0) || retargetMover.WaitingTicks != decision)
-                throw new InvalidOperationException($"goal wait lease retargeted or moved before its boundary: " +
-                                                    $"decision={decision}, target={selected?.RuntimeId}, cell={retargetMover.Cell}, waits={retargetMover.WaitingTicks}");
-        }
-        retargetMover.MoveCooldown = 0;
-        retargetService.BeginTick();
-        selected = retargetService.SelectTarget(retargetMover, [blockedTarget, alternateTarget]);
-        retargetService.QueueMove(retargetMover);
-        retargetService.ResolveIntents((_, _) => { });
-        if (selected != alternateTarget || retargetMover.Cell != new Vector2I(2, 0) || retargetMover.WaitingTicks != 0)
-            throw new InvalidOperationException($"lease-boundary replan did not avoid the retained blocked target: " +
-                                                $"target={selected?.RuntimeId}, cell={retargetMover.Cell}, waits={retargetMover.WaitingTicks}");
-    }
-
     private static void GoalReleaseOnAction()
     {
         using var simulation = new BattleSimulation(Config(
@@ -463,44 +693,6 @@ public partial class GameplayContractSmoke : Node
         var mover = simulation.Units.Single(unit => unit.RuntimeId == "mover");
         if (!attacked || movement.ActiveGoalCount != 0 || movement.RetargetLeaseCount != 0 || mover.WaitingTicks != 0)
             throw new InvalidOperationException("entering legal attack range retained a ghost goal or blocked-route lease");
-    }
-
-    private static void FriendlyFollowChainsAndCycleRejection()
-    {
-        var back = State(Unit("back", range: 1), "back"); back.Cell = new Vector2I(0, 2);
-        var middle = State(Unit("middle", range: 1), "middle"); middle.Cell = new Vector2I(1, 2);
-        var front = State(Unit("front", range: 1), "front"); front.Cell = new Vector2I(2, 2);
-        var target = State(Unit("target", range: 1), "target", team: 1); target.Cell = new Vector2I(5, 2);
-        var chainUnits = new List<BattleUnitState> { back, middle, front, target };
-        using (var chain = new DeterministicGridMovementService(10, 6, () => chainUnits, cell => cell.Y == 2, (_, _, _) => true))
-        {
-            chain.BeginTick();
-            foreach (var chainMover in new[] { back, middle, front })
-            {
-                if (chain.SelectTarget(chainMover, [target]) is null || !chain.QueueMove(chainMover))
-                    throw new InvalidOperationException("follow-chain mover could not create a legal plan");
-            }
-            var events = new List<string>();
-            chain.ResolveIntents((unit, _) => events.Add(unit.RuntimeId));
-            if (back.Cell != new Vector2I(1, 2) || middle.Cell != new Vector2I(2, 2) || front.Cell != new Vector2I(3, 2) ||
-                events.Count != 3 || events.Distinct().Count() != 3 || events[^1] != back.RuntimeId)
-                throw new InvalidOperationException($"friendly follow chain did not commit front-to-back with unique cells: " +
-                    $"back={back.Cell}, middle={middle.Cell}, front={front.Cell}, events={string.Join(',', events)}");
-        }
-
-        var left = State(Unit("left", range: 1), "left"); left.Cell = new Vector2I(2, 2);
-        var right = State(Unit("right", range: 1), "right"); right.Cell = new Vector2I(3, 2);
-        var rightTarget = State(Unit("right-target", range: 1), "right-target", team: 1); rightTarget.Cell = new Vector2I(5, 2);
-        var leftTarget = State(Unit("left-target", range: 1), "left-target", team: 1); leftTarget.Cell = new Vector2I(0, 2);
-        var cycleUnits = new List<BattleUnitState> { left, right, rightTarget, leftTarget };
-        using var cycle = new DeterministicGridMovementService(10, 6, () => cycleUnits, cell => cell.Y == 2, (_, _, _) => true);
-        cycle.BeginTick();
-        cycle.SelectTarget(left, [rightTarget]); cycle.QueueMove(left);
-        cycle.SelectTarget(right, [leftTarget]); cycle.QueueMove(right);
-        var moved = 0;
-        cycle.ResolveIntents((_, _) => moved++);
-        if (moved != 0 || left.Cell != new Vector2I(2, 2) || right.Cell != new Vector2I(3, 2))
-            throw new InvalidOperationException("direct swap/dependency cycle was accepted");
     }
 
     private static void HealingLegalityAndProtection()
@@ -551,8 +743,7 @@ public partial class GameplayContractSmoke : Node
             events.Any(battleEvent => battleEvent.Type == "move" && battleEvent.SourceRuntimeId == "a-mover"))
             throw new InvalidOperationException("dead queued mover emitted movement or lost defeated mode");
         simulation.Step();
-        if (simulation.Units.Where(unit => unit.Alive).Select(unit => unit.Cell).Distinct().Count() != simulation.Units.Count(unit => unit.Alive))
-            throw new InvalidOperationException("death cleanup left occupied-cell authority behind on the next tick");
+        AssertNoLivingOverlaps(simulation.Units, "death cleanup next tick");
     }
 
     private static void SameTickDeathCellReuseAndLifecycleCleanup()
@@ -573,28 +764,21 @@ public partial class GameplayContractSmoke : Node
                 throw new InvalidOperationException("same-tick death retained dependent target facts, goals, requests, or non-terminal mode");
         }
 
+        var deathSummon = Unit("same-tick-summon", health: 1000, damage: 0, moveTicks: 10);
         using (var reuse = new BattleSimulation(Config(
         [
-            Spawn(Hero("killer", health: 1000, damage: 1000, range: 3), 0, 0, 1, "a-killer"),
-            Spawn(Unit("dead", health: 10, damage: 0, range: 1, moveTicks: 1000), 1, 2, 1, "b-dead"),
-            Spawn(Unit("follower", health: 1000, damage: 0, range: 1), 1, 3, 1, "c-follower")
-        ])))
+            Spawn(Hero("player-anchor", health: 1000, damage: 0, range: 1, moveTicks: 1000), 0, 0, 5, "player"),
+            Spawn(Unit("doomed-soldier", health: 10, damage: 0, range: 1, moveTicks: 1000), 0, 2, 1, "b-dead"),
+            Spawn(Unit("enemy-killer", health: 1000, damage: 1000, range: 1, moveTicks: 1000), 1, 3, 1, "a-killer"),
+            Spawn(Unit("enemy-mover", health: 1000, damage: 0, range: 1, moveTicks: 2), 1, 4, 2, "c-follower")
+        ], rule: Rule(summonOnDeath: true), summons: new SummonProfiles(DeathSummon: deathSummon))))
         {
             reuse.Step();
-            var events = reuse.DrainEvents();
             var dead = reuse.Units.Single(unit => unit.RuntimeId == "b-dead");
-            var follower = reuse.Units.Single(unit => unit.RuntimeId == "c-follower");
-            if (follower.Cell != dead.Cell || !events.Any(battleEvent => battleEvent.Type == "move" &&
-                    battleEvent.SourceRuntimeId == follower.RuntimeId && battleEvent.Cell == dead.Cell))
-            {
-                var goals = (Dictionary<string, Vector2I>)(typeof(DeterministicGridMovementService)
-                    .GetField("_goalByUnit", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(Movement(reuse))
-                    ?? new Dictionary<string, Vector2I>());
-                throw new InvalidOperationException($"a living unit could not enter a cell freed by death in the same tick: " +
-                                                    $"dead={dead.Cell}, follower={follower.Cell}/{follower.Mode}/{follower.ActionTargetRuntimeId}, " +
-                                                    $"goal={goals.GetValueOrDefault(follower.RuntimeId)}, " +
-                                                    $"events={string.Join(';', events.Select(battleEvent => $"{battleEvent.Type}:{battleEvent.SourceRuntimeId}->{battleEvent.TargetRuntimeId}@{battleEvent.Cell}"))}");
-            }
+            var summoned = reuse.Units.SingleOrDefault(unit => unit.IsTemporary && unit.Alive);
+            if (dead.Alive || summoned is null)
+                throw new InvalidOperationException("same-tick death did not release the body and create its configured summon");
+            AssertNoLivingOverlaps(reuse.Units, "same-tick death summon obstacle");
         }
 
         var disposable = new BattleSimulation(Config(
@@ -748,8 +932,8 @@ public partial class GameplayContractSmoke : Node
         finally { heroRoot.Free(); }
     }
 
-    private static DeterministicGridMovementService Movement(BattleSimulation simulation) =>
-        (DeterministicGridMovementService)(typeof(BattleSimulation)
+    private static DeterministicContinuousMovementService Movement(BattleSimulation simulation) =>
+        (DeterministicContinuousMovementService)(typeof(BattleSimulation)
             .GetField("_movement", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(simulation)
             ?? throw new InvalidOperationException("battle movement service unavailable"));
 
@@ -823,55 +1007,6 @@ public partial class GameplayContractSmoke : Node
             using var nextBattle = new BattleSimulation(Config(BasicSpawns(), tacticalCommand: LoadTacticalCommand("TacticalRally")));
             if (nextBattle.TacticalPoints != 3 || nextBattle.MaximumTacticalPoints != 3)
                 throw new InvalidOperationException("new battle did not restore tactical points");
-    }
-
-    private static void EngagementReservationsAndWaiting()
-    {
-        var target = Unit("surrounded", health: 10000, damage: 0, range: 1, attackTicks: 1000, moveTicks: 1000);
-        using var simulation = new BattleSimulation(Config(
-        [
-            Spawn(Hero("blocker-hero", health: 10000, damage: 0), 0, 4, 3, "a-blocker-hero"),
-            Spawn(Unit("blocker-east", health: 10000, damage: 0), 0, 6, 3, "a-blocker-east"),
-            Spawn(Unit("blocker-north", health: 10000, damage: 0), 0, 5, 2, "a-blocker-north"),
-            Spawn(Unit("blocker-south", health: 10000, damage: 0), 0, 5, 4, "a-blocker-south"),
-            Spawn(Unit("waiting", health: 10000, damage: 0), 0, 0, 3, "z-waiting"),
-            Spawn(target, 1, 5, 3, "target")
-        ]));
-        var waiting = simulation.Units.Single(unit => unit.RuntimeId == "z-waiting");
-        var origin = waiting.Cell;
-        for (var tick = 0; tick < 35; tick++)
-        {
-            simulation.Step();
-            if (simulation.DrainEvents().Any(e => e.Type == "move" && e.SourceRuntimeId == waiting.RuntimeId))
-                throw new InvalidOperationException("surrounded engagement emitted a waiting move");
-            var occupied = simulation.Units.Where(unit => unit.Alive).Select(unit => unit.Cell).ToArray();
-            if (occupied.Distinct().Count() != occupied.Length) throw new InvalidOperationException("living units shared a grid cell");
-        }
-        if (waiting.Cell != origin || waiting.Mode != BattleUnitMode.Waiting || waiting.WaitingTicks < 30)
-            throw new InvalidOperationException("blocked unit did not remain in explicit waiting state");
-
-        simulation.Units.Single(unit => unit.RuntimeId == "a-blocker-south").Health = 0;
-        var resumed = false;
-        for (var tick = 0; tick < 20 && !resumed; tick++)
-        {
-            simulation.Step();
-            resumed = simulation.DrainEvents().Any(e => e.Type == "move" && e.SourceRuntimeId == waiting.RuntimeId);
-        }
-        if (!resumed || waiting.Cell == origin) throw new InvalidOperationException("waiting unit did not resume after engagement release");
-
-        using var alternate = new BattleSimulation(Config(
-        [
-            Spawn(Hero("blocker-hero", health: 10000, damage: 0), 0, 4, 3, "a-blocker-hero"),
-            Spawn(Unit("blocker-east", health: 10000, damage: 0), 0, 6, 3, "a-blocker-east"),
-            Spawn(Unit("blocker-north", health: 10000, damage: 0), 0, 5, 2, "a-blocker-north"),
-            Spawn(Unit("blocker-south", health: 10000, damage: 0), 0, 5, 4, "a-blocker-south"),
-            Spawn(Unit("seeker", health: 10000, damage: 0), 0, 0, 5, "z-seeker"),
-            Spawn(target, 1, 5, 3, "target-a"),
-            Spawn(Unit("available", health: 10000, damage: 0, moveTicks: 1000), 1, 9, 5, "target-b")
-        ]));
-        alternate.Step();
-        if (!alternate.DrainEvents().Any(e => e.Type == "move" && e.SourceRuntimeId == "z-seeker"))
-            throw new InvalidOperationException("unit did not prefer another enemy with an available engagement position");
     }
 
     private static void ReadabilityAndIndependentTactics(ContentRegistry registry)
@@ -1052,7 +1187,7 @@ public partial class GameplayContractSmoke : Node
         if (!secondBoss.DrainEvents().Any(e => e.Type == "attack" && e.SourceRuntimeId == "a-boss" && e.TargetRuntimeId == "backline"))
             throw new InvalidOperationException("second boss did not prefer the backline");
         for (var i = 0; i < 5; i++) { secondBoss.Step(); secondBoss.DrainEvents(); }
-        var summoned = secondBoss.Units.Count(unit => unit.Team == 1 && unit.IsTemporary);
+        var summoned = secondBoss.Units.Count(unit => unit.Team == 1 && unit.IsTemporary && unit.Alive);
         if (summoned is < 1 or > 2)
             throw new InvalidOperationException($"second boss summon count outside contract: {summoned}");
 

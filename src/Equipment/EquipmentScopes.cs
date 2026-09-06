@@ -146,6 +146,12 @@ public sealed class EquipmentBattleScope : IDisposable
                     bindings[0].Priority,
                     (combatEvent, reactions) => OnCombatEvent(instance, bindings, combatEvent, reactions)));
             }
+            var grants = _instances.Values.SelectMany(instance => GrantRequests(instance)).ToImmutableArray();
+            if (!grants.IsEmpty)
+            {
+                if (context.StatusGrants is null) throw new InvalidOperationException("Equipment grants require a Status grant context.");
+                context.StatusGrants.Replace([], grants.Where(item => context.StatusGrants.CanReceive(item.OwnerId)).ToImmutableArray());
+            }
         }
         catch
         {
@@ -158,8 +164,10 @@ public sealed class EquipmentBattleScope : IDisposable
 
     public bool Remove(string equipmentInstanceId)
     {
-        if (IsCompleted || !_instances.Remove(equipmentInstanceId, out var instance)) return false;
+        if (IsCompleted || !_instances.TryGetValue(equipmentInstanceId, out var instance)) return false;
+        RevokeGrants(instance);
         Remove(instance, bestEffort: false);
+        _instances.Remove(equipmentInstanceId);
         return true;
     }
 
@@ -190,8 +198,12 @@ public sealed class EquipmentBattleScope : IDisposable
     {
         Exception? failure = null;
         foreach (var instance in _instances.Values.OrderBy(instance => instance.Snapshot.InstanceId, StringComparer.Ordinal))
+        {
+            try { RevokeGrants(instance); }
+            catch (Exception exception) { failure ??= exception; }
             try { Remove(instance, bestEffort); }
             catch (Exception exception) { failure ??= exception; }
+        }
         _instances.Clear();
         if (!bestEffort && failure is not null) throw failure;
     }
@@ -216,17 +228,21 @@ public sealed class EquipmentBattleScope : IDisposable
         BattleCombatReactionSink reactions)
     {
         var context = _context;
-        if (context is null || IsCompleted ||
-            !string.Equals(combatEvent.SourceRuntimeId, instance.Owner.RuntimeId, StringComparison.Ordinal))
+        if (context is null || IsCompleted)
             return;
-        var applications = bindings.Select(binding => new StatusApplicationRequest(
+        var applications = bindings.Where(binding => (binding.OwnerRole == StatusReactiveOwnerRole.OwnerIsSource
+                ? combatEvent.SourceRuntimeId : combatEvent.TargetRuntimeId) == instance.Owner.RuntimeId)
+            .Select(binding => new StatusApplicationRequest(
                 binding.Status,
                 binding.Source == EquipmentReactiveStatusSource.Owner
                     ? instance.Owner.RuntimeId
                     : instance.Snapshot.InstanceId,
-                binding.Target == EquipmentReactiveStatusTarget.Owner
-                    ? instance.Owner.RuntimeId
-                    : combatEvent.TargetRuntimeId,
+                binding.Target switch
+                {
+                    EquipmentReactiveStatusTarget.Owner => instance.Owner.RuntimeId,
+                    EquipmentReactiveStatusTarget.EventSource => combatEvent.SourceRuntimeId,
+                    _ => combatEvent.TargetRuntimeId
+                },
                 combatEvent.Tick))
             .Where(application => !string.IsNullOrWhiteSpace(application.OwnerId))
             .ToImmutableArray();
@@ -260,6 +276,18 @@ public sealed class EquipmentBattleScope : IDisposable
         if (!bestEffort && failure is not null) throw failure;
     }
 
+    private IEnumerable<StatusApplicationRequest> GrantRequests(RuntimeEquipmentInstance instance) =>
+        instance.Snapshot.Definition.GrantedStatuses.IsDefaultOrEmpty ? [] :
+        instance.Snapshot.Definition.GrantedStatuses.Select(status => new StatusApplicationRequest(status,
+            instance.Owner.RuntimeId, instance.Owner.RuntimeId, _context?.StatusGrants?.Tick() ?? 0,
+            $"equipment:{ScopeId}:{instance.Snapshot.InstanceId}:{status.StableId}"));
+
+    private void RevokeGrants(RuntimeEquipmentInstance instance)
+    {
+        var ids = GrantRequests(instance).Select(item => item.GrantId).ToImmutableArray();
+        if (!ids.IsEmpty) _context?.StatusGrants?.Replace(ids, []);
+    }
+
     private sealed class RuntimeEquipmentInstance(
         EquipmentBattleInstanceSnapshot snapshot,
         EquipmentOwnerBinding owner,
@@ -277,6 +305,7 @@ public sealed class EquipmentBattleScope : IDisposable
 
 public sealed class EquipmentBattleRuntimeContext
 {
+    public StatusGrantRuntimeContext? StatusGrants { get; init; }
     public required BattleCombatBindingRegistry CombatBindings { get; init; }
     public required Func<string, bool> CanReceiveStatus { get; init; }
     public required Func<ImmutableArray<StatusApplicationRequest>, ImmutableArray<StatusApplicationResult>> ApplyStatuses

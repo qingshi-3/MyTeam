@@ -8,6 +8,7 @@ public partial class MainMenuScreenController : Control
     public event Action? NewRunRequested;
     public event Action? ContinueRequested;
     public event Action? BattleLabRequested;
+    public event Action? ExperienceSliceRequested;
     public event Action? SettingsRequested;
     public event Action? QuitRequested;
 
@@ -15,6 +16,7 @@ public partial class MainMenuScreenController : Control
     private Button _continue = null!;
     private Button _settings = null!;
     private Button _battleLab = null!;
+    private Button _experience = null!;
     private Button _quit = null!;
 
     public override void _Ready()
@@ -23,11 +25,13 @@ public partial class MainMenuScreenController : Control
         _continue = GetNode<Button>("Center/Panel/Menu/ContinueButton");
         _settings = GetNode<Button>("Center/Panel/Menu/SettingsButton");
         _battleLab = GetNode<Button>("Center/Panel/Menu/BattleLabButton");
+        _experience = GetNode<Button>("Center/Panel/Menu/ExperienceSliceButton");
         _quit = GetNode<Button>("Center/Panel/Menu/QuitButton");
         _newRun.Pressed += OnNewRun;
         _continue.Pressed += OnContinue;
         _settings.Pressed += OnSettings;
         _battleLab.Pressed += OnBattleLab;
+        _experience.Pressed += OnExperience;
         _quit.Pressed += OnQuit;
     }
 
@@ -37,6 +41,7 @@ public partial class MainMenuScreenController : Control
         _continue.Pressed -= OnContinue;
         _settings.Pressed -= OnSettings;
         _battleLab.Pressed -= OnBattleLab;
+        _experience.Pressed -= OnExperience;
         _quit.Pressed -= OnQuit;
     }
 
@@ -46,5 +51,6 @@ public partial class MainMenuScreenController : Control
     private void OnContinue() => ContinueRequested?.Invoke();
     private void OnSettings() => SettingsRequested?.Invoke();
     private void OnBattleLab() => BattleLabRequested?.Invoke();
+    private void OnExperience() => ExperienceSliceRequested?.Invoke();
     private void OnQuit() => QuitRequested?.Invoke();
 }

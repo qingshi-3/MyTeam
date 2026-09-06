@@ -13,4 +13,5 @@ public partial class CampaignDefinition : Resource
     [Export] public ContentPoolDefinition? RecruitmentPool { get; set; }
     [Export] public ContentPoolDefinition? ItemRewardPool { get; set; }
     [Export] public ContentPoolDefinition? ShopPool { get; set; }
+    [Export] public RunOfferDefinition[] RunOffers { get; set; } = [];
 }

@@ -19,9 +19,9 @@ public static class ActiveRunConfigurationValidator
         ArgumentNullException.ThrowIfNull(content);
         ArgumentNullException.ThrowIfNull(project);
         var rules = project.RunRules;
-        if (run is null || run.Roster is null || run.Deployment is null || run.Items is null ||
+        if (run is null || run.Roster is null || run.Deployment is null || run.Items is null || run.EquipmentInventory is null ||
             run.EquippedTacticalCommandIds is null || run.PopulationCapSources is null ||
-            run.Version != ActiveRunFormationSchema.CurrentVersion || run.FloorIndex < 0 ||
+            run.Version != ActiveRunFormationSchema.CurrentVersion || run.FloorIndex < 0 || run.Gold < 0 || run.BattleNumber < 0 ||
             run.FloorIndex >= project.Campaign.TotalFloors || run.Roster.Count == 0 ||
             run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
             run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null ||
@@ -33,6 +33,17 @@ public static class ActiveRunConfigurationValidator
             !ActiveRunTacticalCommandPolicy.Validate(run, rules, content.Graph) ||
             run.Deployment.Count != rules.PhysicalDeploymentCeiling)
             return false;
+        if (run.TerminalCompletionId is null || run.TerminalVictory && string.IsNullOrEmpty(run.TerminalCompletionId) ||
+            !string.IsNullOrEmpty(run.TerminalCompletionId) && !Guid.TryParseExact(run.TerminalCompletionId, "N", out _) ||
+            !string.IsNullOrEmpty(run.TerminalCompletionId) && run.PendingOffer is not null ||
+            !RunDecisionValidation.ValidOffer(run.PendingOffer, run,
+                id => content.TryGet(id, out _),
+                id => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition { IsEnemy: false },
+                id => content.TryGet(id, out var entry) && entry.Definition is ItemDefinition)) return false;
+        if (run.PendingOffer is { } pending &&
+            (pending.Kind == Project.RunOfferKind.CombatReward ? run.PendingNode :
+                !run.PendingNode || RunDecisionService.KindFor(run.SelectedNode) != pending.Kind)) return false;
+        if (run.PendingNode && RunDecisionService.KindFor(run.SelectedNode) is not null && run.PendingOffer is null) return false;
 
         var instanceIds = new HashSet<string>(StringComparer.Ordinal);
         foreach (var unit in run.Roster)
@@ -61,6 +72,13 @@ public static class ActiveRunConfigurationValidator
                     !content.Graph.TryGetEquipment(equipment.ContentId, out _))
                     return false;
         }
+        foreach (var equipment in run.EquipmentInventory)
+            if (equipment is null || string.IsNullOrWhiteSpace(equipment.InstanceId) ||
+                !durableInstanceIds.Add(equipment.InstanceId) || equipment.OwnerHeroInstanceId != string.Empty ||
+                equipment.SlotIndex != -1 || !content.TryGet(equipment.ContentId, out var entry) ||
+                entry.Definition is not ItemDefinition { ProductKind: ItemProductKind.Equipment } ||
+                !content.Graph.TryGetEquipment(equipment.ContentId, out _))
+                return false;
         foreach (var item in run.Items)
         {
             if (item is null || item.Stacks <= 0 || item.Charges < 0 || item.Counters is null ||

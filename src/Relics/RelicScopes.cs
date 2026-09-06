@@ -8,6 +8,7 @@ using System.Text;
 using TowerAutobattler.Attributes;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Effects;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.Relics;
 
@@ -426,10 +427,14 @@ public sealed record RelicBattleUnitBinding(
     bool IsInitial,
     bool Alive,
     CombatCell Cell,
-    BattleAttributeSet Attributes);
+    BattleAttributeSet Attributes,
+    CombatPoint Position = default,
+    float BodyRadius = 0f);
 
 public sealed class RelicBattleRuntimeContext
 {
+    public StatusGrantRuntimeContext? StatusGrants { get; init; }
+    public Action<CompiledEffectBinding, string, string, string, int, float, CombatSourceRef>? ExecuteAttributedEffect { get; init; }
     public required BattleCombatBindingRegistry CombatBindings { get; init; }
     public required Func<ImmutableArray<RelicBattleUnitBinding>> QueryUnits { get; init; }
     public required Action<CompiledEffectBinding, string, string, string, int, float> ExecuteEffect { get; init; }
@@ -449,6 +454,7 @@ public sealed class RelicBattleScope : IDisposable
     private long _counterTransitionSequence;
     private bool _battleStartExecuted;
     private RelicBattleTransitionResult? _transition;
+    private HashSet<string> _grantIds = new(StringComparer.Ordinal);
 
     public RelicBattleScope(RelicBattlePreparation preparation)
     {
@@ -546,7 +552,18 @@ public sealed class RelicBattleScope : IDisposable
                                 _ => AdvanceCounter(instance, counter, combatEvent, increment));
                         }));
                 }
+                if (!instance.Definition.StatusGrants.IsDefaultOrEmpty)
+                {
+                    if (context.StatusGrants is null) throw new InvalidOperationException("Relic grants require a Status grant context.");
+                    foreach (var kind in new[] { BattleCombatEventKind.UnitMoved, BattleCombatEventKind.UnitSummoned, BattleCombatEventKind.UnitDefeated })
+                    {
+                        var source = Source(instance, "passive_grants");
+                        _subscriptions.Add(context.CombatBindings.Subscribe(kind, source, 0,
+                            (_, sink) => sink.Enqueue(source, 0, _ => RefreshStatusGrants())));
+                    }
+                }
             }
+            RefreshStatusGrants();
         }
         catch
         {
@@ -583,13 +600,13 @@ public sealed class RelicBattleScope : IDisposable
                         foreach (var target in Units().Where(unit =>
                                      unit.Team == 0 && unit.IsInitial && !unit.IsTemporary)
                                  .OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal))
-                            _context.ExecuteEffect(
+                            ExecuteEffect(
                                 shield.Effect,
                                 sourceId,
                                 instance.InstanceId,
                                 target.RuntimeId,
                                 tick,
-                                shield.Amount);
+                                shield.Amount, Source(instance, effect.BindingId, target.RuntimeId));
                         break;
                     case CompiledRelicBattleStartSummon summon:
                         if (!_context.Summon(
@@ -837,7 +854,7 @@ public sealed class RelicBattleScope : IDisposable
             CompiledRelicPlayerFormationAdjacentTarget => units.Where(unit =>
                 unit.Team == 0 && unit.Alive && units.Any(other =>
                     other.RuntimeId != unit.RuntimeId && other.Team == unit.Team && other.Alive &&
-                    Distance(unit.Cell, other.Cell) <= 1.5f)),
+                    Distance(unit, other) <= 1.5f)),
             _ => throw new InvalidOperationException($"Unsupported Relic target: {target.GetType().Name}")
         };
     }
@@ -907,13 +924,13 @@ public sealed class RelicBattleScope : IDisposable
             if (string.IsNullOrWhiteSpace(targetId))
                 throw new InvalidOperationException(
                     $"Relic counter '{instance.InstanceId}/{counter.CounterId}' has no legal threshold target.");
-            _context!.ExecuteEffect(
+            ExecuteEffect(
                 counter.ThresholdEffect,
                 $"{instance.InstanceId}:{counter.CounterId}:{_counterTransitionSequence}:{execution}",
                 instance.InstanceId,
                 targetId,
                 combatEvent.Tick,
-                increment);
+                increment, Source(instance, counter.CounterId));
         }
     }
 
@@ -930,6 +947,38 @@ public sealed class RelicBattleScope : IDisposable
             _ => throw new InvalidOperationException($"Unsupported Relic threshold target: {counter.Target}")
         };
 
+    private void ExecuteEffect(CompiledEffectBinding binding, string sourceId, string ownerId, string targetId,
+        int tick, float value, CombatSourceRef origin)
+    {
+        if (_context!.ExecuteAttributedEffect is not null)
+            _context.ExecuteAttributedEffect(binding, sourceId, ownerId, targetId, tick, value, origin);
+        else _context.ExecuteEffect(binding, sourceId, ownerId, targetId, tick, value);
+    }
+
+    private void RefreshStatusGrants()
+    {
+        var context = _context?.StatusGrants;
+        if (context is null) return;
+        var requests = ImmutableArray.CreateBuilder<StatusApplicationRequest>();
+        foreach (var instance in OrderedInstances())
+        {
+            if (instance.Definition.StatusGrants.IsDefaultOrEmpty) continue;
+            foreach (var grant in instance.Definition.StatusGrants)
+            {
+                if (grant.Target is CompiledRelicPlayerEmptySlotHeroesTarget && _context!.EmptyDeploymentSlots <= 0) continue;
+                foreach (var target in SelectTargets(grant.Target).Where(unit => context.CanReceive(unit.RuntimeId))
+                             .OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal))
+                for (var stack = 0; stack < instance.Stacks; stack++)
+                    requests.Add(new StatusApplicationRequest(grant.Status, target.RuntimeId, target.RuntimeId, context.Tick(),
+                        $"relic:{_preparation.TransitionId}:{instance.InstanceId}:{grant.BindingId}:{target.RuntimeId}:{stack}"));
+            }
+        }
+        var wanted = requests.Select(item => item.GrantId).ToHashSet(StringComparer.Ordinal);
+        context.Replace(_grantIds.Where(id => !wanted.Contains(id)).ToImmutableArray(),
+            requests.Where(item => !_grantIds.Contains(item.GrantId)).ToImmutableArray());
+        _grantIds = wanted;
+    }
+
     private static bool MatchesUnit(
         IEnumerable<RelicBattleUnitBinding> units,
         string runtimeId,
@@ -944,6 +993,13 @@ public sealed class RelicBattleScope : IDisposable
         return MathF.Sqrt(x * x + y * y);
     }
 
+    private static float Distance(RelicBattleUnitBinding first, RelicBattleUnitBinding second) =>
+        first.Position != default || second.Position != default
+            ? Math.Max(0f, MathF.Sqrt(
+                MathF.Pow(first.Position.X - second.Position.X, 2) +
+                MathF.Pow(first.Position.Y - second.Position.Y, 2)) - first.BodyRadius - second.BodyRadius)
+            : Distance(first.Cell, second.Cell);
+
     private static CombatSourceRef Source(
         BattleRuntimeInstance instance,
         string bindingId,
@@ -956,6 +1012,9 @@ public sealed class RelicBattleScope : IDisposable
     private void Cleanup(bool bestEffort)
     {
         Exception? failure = null;
+        try { if (_grantIds.Count > 0) _context?.StatusGrants?.Replace(_grantIds.ToImmutableArray(), []); }
+        catch (Exception exception) { failure = exception; }
+        _grantIds.Clear();
         foreach (var subscription in _subscriptions.AsEnumerable().Reverse())
             try { subscription.Dispose(); }
             catch (Exception exception) { failure ??= exception; }
@@ -1049,6 +1108,7 @@ public sealed class RelicBattleScope : IDisposable
         private readonly int _transitionCount;
         private readonly long _transitionSequence;
         private readonly bool _battleStartExecuted;
+        private readonly HashSet<string> _grantIds;
 
         internal RelicStateCheckpoint(RelicBattleScope owner)
         {
@@ -1060,6 +1120,7 @@ public sealed class RelicBattleScope : IDisposable
             _transitionCount = owner._counterTransitions.Count;
             _transitionSequence = owner._counterTransitionSequence;
             _battleStartExecuted = owner._battleStartExecuted;
+            _grantIds = new HashSet<string>(owner._grantIds, StringComparer.Ordinal);
         }
 
         internal void Restore(RelicBattleScope owner)
@@ -1081,6 +1142,7 @@ public sealed class RelicBattleScope : IDisposable
                 owner._counterTransitions.RemoveRange(_transitionCount, owner._counterTransitions.Count - _transitionCount);
             owner._counterTransitionSequence = _transitionSequence;
             owner._battleStartExecuted = _battleStartExecuted;
+            owner._grantIds = new HashSet<string>(_grantIds, StringComparer.Ordinal);
         }
     }
 

@@ -73,3 +73,31 @@ layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"SecondaryLabel"
 text = "候命"
+
+[node name="EquipmentIcons" type="HBoxContainer" parent="Margin/Layout/Copy"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 5
+
+[node name="Slot1" type="TextureRect" parent="Margin/Layout/Copy/EquipmentIcons"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Slot2" type="TextureRect" parent="Margin/Layout/Copy/EquipmentIcons"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Slot3" type="TextureRect" parent="Margin/Layout/Copy/EquipmentIcons"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5

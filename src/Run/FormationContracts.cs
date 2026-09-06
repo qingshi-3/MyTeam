@@ -63,7 +63,7 @@ public sealed record FormationMoveCommand(
 
 public static class ActiveRunFormationSchema
 {
-    public const int CurrentVersion = 4;
+    public const int CurrentVersion = 6;
     private const int LegacyDeploymentCapacity = 6;
 
     public static void InitializeVersion4(ActiveRunDto run)
@@ -99,10 +99,29 @@ public static class ActiveRunFormationSchema
         if (run.Version == CurrentVersion)
             return run.LegacyHeroId is null && run.LegacyHeroHealthRatio == 0 &&
                    run.LegacyHeroCell is null && run.LegacyDeploymentCells is null;
+        if (run.PendingOffer is not null || !string.IsNullOrEmpty(run.TerminalCompletionId) || run.TerminalVictory) return false;
+        if (run.Version == 5)
+        {
+            if (run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
+                run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null) return false;
+            run.Version = CurrentVersion;
+            return true;
+        }
+        // V4 never had loose equipment. Accept only the unambiguous empty inventory
+        // extension; reject a mixed-version payload instead of guessing ownership.
+        if (run.Version == 4)
+        {
+            if (run.EquipmentInventory is null || run.EquipmentInventory.Count != 0 ||
+                run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
+                run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null) return false;
+            run.Version = CurrentVersion;
+            return true;
+        }
         if (run.Version is not (2 or 3) || string.IsNullOrWhiteSpace(run.LegacyHeroId) ||
             !float.IsFinite(run.LegacyHeroHealthRatio) || run.LegacyHeroHealthRatio < 0 ||
             run.LegacyHeroHealthRatio > 1 || run.Roster is null || run.Deployment is null ||
             run.Items is null || run.PopulationCapSources is null ||
+            run.EquipmentInventory is null || run.EquipmentInventory.Count != 0 ||
             run.EquippedTacticalCommandIds is null || run.EquippedTacticalCommandIds.Count != 0 ||
             run.Roster.Any(hero => hero is null || hero.Equipment is null || hero.Equipment.Count != 0) ||
             run.Items.Any(item => item is null || item.Counters is null || item.Counters.Count != 0) ||

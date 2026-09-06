@@ -35,22 +35,28 @@ public static class BattleSetupFactory
         {
             [CombatAttribute.MaxHealth] = definition.MaxHealth,
             [CombatAttribute.AttackDamage] = definition.AttackDamage,
-            [CombatAttribute.SpellPower] = 0,
+            [CombatAttribute.SpellPower] = definition.SpellPower,
             [CombatAttribute.AttackSpeed] = 1,
             [CombatAttribute.Armor] = definition.Armor,
-            [CombatAttribute.MagicResistance] = 0,
+            [CombatAttribute.MagicResistance] = definition.MagicResistance,
             [CombatAttribute.AttackRange] = definition.AttackRange,
             [CombatAttribute.MoveSpeed] = 1,
             [CombatAttribute.CriticalChance] = 0,
             [CombatAttribute.CriticalDamage] = 1.5f,
-            [CombatAttribute.MaxMana] = 0,
-            [CombatAttribute.StartingMana] = 0,
+            [CombatAttribute.MaxMana] = definition.MaxMana,
+            [CombatAttribute.StartingMana] = definition.StartingMana,
+            [CombatAttribute.ManaPerSecond] = definition.ManaPerSecond,
+            [CombatAttribute.ManaPerAttack] = definition.ManaPerAttack,
+            [CombatAttribute.ManaPerDamageRatio] = definition.ManaPerDamageRatio,
+            [CombatAttribute.ManaPerHitCap] = definition.ManaPerHitCap,
             [CombatAttribute.HealingPower] = definition.HealPower,
             [CombatAttribute.LifeSteal] = definition.LifeSteal,
             [CombatAttribute.ControlResistance] = definition.BaseControlResistance
         }),
         graph?.ResolveUnitTraitContributions(definition.Id) ??
-        ImmutableArray<CompiledTraitContribution>.Empty);
+        ImmutableArray<CompiledTraitContribution>.Empty,
+        definition.BodyRadius, definition.AttackDelivery,
+        definition.ProjectileSpeed, definition.ProjectileRadius, definition.ProjectileLifetime);
 
     public static UnitSnapshot Snapshot(CatalogEntry entry, ContentRegistry? content = null)
     {

@@ -11,6 +11,7 @@ using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
 using TowerAutobattler.Statuses;
 using TowerAutobattler.Traits;
+using TowerAutobattler.Effects;
 
 namespace TowerAutobattler.Equipment;
 
@@ -82,7 +83,8 @@ public static partial class EquipmentDefinitionCompiler
 
         if ((authored.AttributeModifiers is null || authored.AttributeModifiers.Length == 0) &&
             (authored.ReactiveStatusBindings is null || authored.ReactiveStatusBindings.Length == 0) &&
-            (authored.TraitContributions is null || authored.TraitContributions.Length == 0))
+            (authored.TraitContributions is null || authored.TraitContributions.Length == 0) &&
+            (authored.GrantedStatuses is null || authored.GrantedStatuses.Length == 0))
             report.Error($"{label}: equipment must declare an Attribute modifier, reactive Status binding, or Trait contribution.");
 
         var compiled = ImmutableArray.CreateBuilder<CompiledAttributeModifier>();
@@ -96,6 +98,9 @@ public static partial class EquipmentDefinitionCompiler
             foreach (var warning in result.Report.Warnings)
                 report.Warn($"{label}: attribute modifier[{modifierIndex}]: {warning}");
             if (result.Modifier is null) continue;
+            AttributeMagnitudeSupport.Validate(result.Modifier.Magnitude,
+                AttributeContextCapabilities.SourceAttribute | AttributeContextCapabilities.TargetAttribute,
+                report, $"{label}: attribute modifier[{modifierIndex}]");
             if (!slots.Add((result.Modifier.Attribute, result.Modifier.SlotId)))
                 report.Error($"{label}: attribute modifier[{modifierIndex}] duplicates " +
                              $"({result.Modifier.Attribute}, {result.Modifier.SlotId}).");
@@ -108,7 +113,7 @@ public static partial class EquipmentDefinitionCompiler
         report.Merge(contributions.Report);
         var reactive = ImmutableArray.CreateBuilder<CompiledEquipmentReactiveStatusBinding>();
         var reactiveKeys = new HashSet<(BattleCombatEventKind EventKind, EquipmentReactiveStatusTarget Target,
-            EquipmentReactiveStatusSource Source, string StatusId)>();
+            EquipmentReactiveStatusSource Source, string StatusId, StatusReactiveOwnerRole OwnerRole)>();
         var authoredReactive = authored.ReactiveStatusBindings ?? [];
         for (var bindingIndex = 0; bindingIndex < authoredReactive.Length; bindingIndex++)
         {
@@ -127,6 +132,7 @@ public static partial class EquipmentDefinitionCompiler
                 report.Error($"{bindingLabel}: target policy is invalid.");
             if (!Enum.IsDefined(binding.Source))
                 report.Error($"{bindingLabel}: source policy is invalid.");
+            if (!Enum.IsDefined(binding.OwnerRole)) report.Error($"{bindingLabel}: owner event role is invalid.");
             if (binding.Status is null)
             {
                 report.Error($"{bindingLabel}: Status is required.");
@@ -149,7 +155,7 @@ public static partial class EquipmentDefinitionCompiler
                              "use an owner source or a source-independent magnitude.");
                 continue;
             }
-            var key = (binding.EventKind, binding.Target, binding.Source, status.StableId);
+            var key = (binding.EventKind, binding.Target, binding.Source, status.StableId, binding.OwnerRole);
             if (!reactiveKeys.Add(key))
             {
                 report.Error($"{bindingLabel}: duplicate reactive Status binding for '{status.StableId}'.");
@@ -160,8 +166,9 @@ public static partial class EquipmentDefinitionCompiler
                 binding.Target,
                 binding.Source,
                 binding.Priority,
-                status));
+                status, binding.OwnerRole));
         }
+        var grants = StatusGrantCompiler.Compile(authored.GrantedStatuses ?? [], resolveStatus, report, label);
         if (report.HasCoreErrors) return null;
         var ordered = compiled.ToImmutable();
         var orderedReactive = reactive.ToImmutable();
@@ -171,37 +178,28 @@ public static partial class EquipmentDefinitionCompiler
             ordered,
             orderedReactive,
             contributions.Contributions,
-            Fingerprint(authored.StableId, ordered, orderedReactive, contributions.Contributions));
+            Fingerprint(authored.StableId, ordered, orderedReactive, contributions.Contributions, grants), grants);
     }
 
     private static string Fingerprint(
         string stableId,
         IEnumerable<CompiledAttributeModifier> modifiers,
         IEnumerable<CompiledEquipmentReactiveStatusBinding> reactive,
-        IEnumerable<CompiledTraitContribution> contributions)
+        IEnumerable<CompiledTraitContribution> contributions,
+        ImmutableArray<CompiledStatusDefinition> grants)
     {
         var canonical = stableId + "|" + string.Join("|", modifiers.Select(modifier =>
             $"{modifier.Attribute}:{modifier.Operation}:{Magnitude(modifier.Magnitude)}:" +
             $"{modifier.Priority}:{modifier.SlotId}")) + "|reactive=" +
             string.Join("|", reactive.Select(binding =>
-                $"{binding.EventKind}:{binding.Target}:{binding.Source}:{binding.Priority}:" +
-                $"{binding.Status.StableId}:{binding.Status.ResourcePath}")) + "|traits=" +
+                $"{binding.EventKind}:{binding.Target}:{binding.Source}:{binding.Priority}:{binding.OwnerRole}:" +
+                StatusDefinitionFingerprint.Compute(binding.Status))) + "|traits=" +
             string.Join("|", contributions.Select(contribution =>
-                $"{contribution.TraitId}:{contribution.Value}"));
+                $"{contribution.TraitId}:{contribution.Value}")) + "|grants=" + string.Join("|", grants.Select(StatusDefinitionFingerprint.Compute));
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical))).ToLowerInvariant();
     }
 
-    private static string Magnitude(CompiledAttributeMagnitude magnitude) => magnitude switch
-    {
-        CompiledConstantMagnitude constant =>
-            $"constant:{constant.Value.ToString("R", CultureInfo.InvariantCulture)}:{constant.CaptureMode}",
-        CompiledSourceAttributeMagnitude source => $"source:{source.Attribute}:{source.CaptureMode}",
-        CompiledTargetAttributeMagnitude target => $"target:{target.Attribute}:{target.CaptureMode}",
-        CompiledContextValueMagnitude context => $"context:{context.Key}:{context.CaptureMode}",
-        CompiledTeamCountMagnitude count => $"count:{count.CountKind}:{count.Team}:{count.CaptureMode}",
-        CompiledTraitValueMagnitude trait => $"trait:{trait.TraitId}:{trait.Team}:{trait.CaptureMode}",
-        _ => throw new InvalidOperationException($"Unsupported Equipment magnitude: {magnitude.GetType().Name}")
-    };
+    private static string Magnitude(CompiledAttributeMagnitude magnitude) => AttributeMagnitudeSupport.Fingerprint(magnitude);
 
     private static bool IsReactiveEvent(BattleCombatEventKind kind) => kind is
         BattleCombatEventKind.AttackDeclared or
@@ -224,7 +222,21 @@ public static partial class EquipmentDefinitionCompiler
         {
             if (!visited.Add(current)) continue;
             if (current.AttributeModifiers.Any(modifier =>
-                    modifier.Magnitude is CompiledSourceAttributeMagnitude))
+                    AttributeMagnitudeSupport.Leaves(modifier.Magnitude).Any(item => item is CompiledSourceAttributeMagnitude)))
+            {
+                statusId = current.StableId;
+                return true;
+            }
+            var effects = current.LifecycleBindings.Select(item => item.Binding)
+                .Concat(current.CombatReactiveBindings.Select(item => item.Binding));
+            if (current.PeriodicEffect is not null) effects = effects.Append(current.PeriodicEffect);
+            if (effects.Any(binding =>
+                    binding.TargetQuery is CompiledSourceTargetQuery or CompiledFilteredTargetQuery { Anchor: EffectEntityReference.Source } ||
+                    binding.Conditions.Any(condition => condition is CompiledEntityAliveCondition { Entity: EffectEntityReference.Source }
+                        or CompiledHealthRatioCondition { Entity: EffectEntityReference.Source }
+                        or CompiledEntityTagCondition { Entity: EffectEntityReference.Source }) ||
+                    binding.Effects.Any(step => step.Magnitude is not null &&
+                        AttributeMagnitudeSupport.Leaves(step.Magnitude).Any(item => item is CompiledSourceAttributeMagnitude))))
             {
                 statusId = current.StableId;
                 return true;

@@ -90,7 +90,7 @@ public partial class FormationDeploymentContractSmoke : Node
 
         var app = new RunApplication(registry, service, project);
         var migrated = app.ActiveRun ?? throw new InvalidOperationException("lossless v3 fixture rejected");
-        Require(migrated.Version == 4 && migrated.Roster.Count == 4 &&
+        Require(migrated.Version == ActiveRunFormationSchema.CurrentVersion && migrated.Roster.Count == 4 &&
                 migrated.Roster[0].ContentId == legacy.LegacyHeroId &&
                 migrated.Roster[0].HealthRatio == legacy.LegacyHeroHealthRatio &&
                 migrated.Roster[2].Rank == 2 && migrated.CurrentPopulation == 7 &&

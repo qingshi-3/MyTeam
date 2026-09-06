@@ -262,7 +262,7 @@ export default function AtlasApp() {
       {pendingImport && <aside className="alert-banner import-banner" role="alert"><span>备份校验通过：{pendingImport.workspaces.length} 个工作区、{pendingImport.snapshots.length} 个快照，结构版本 {pendingImport.schemaVersion}。</span><div><button onClick={() => applyImport("merge")}>安全合并</button><button className="danger" onClick={() => applyImport("overwrite")}>覆盖本机</button><button onClick={() => setPendingImport(null)}>取消</button></div></aside>}
 
       <aside className="side-nav" aria-label="图谱主导航">
-        <nav>{viewMeta.map((view) => <button key={view.id} className={state.ui.view === view.id ? "active" : ""} onClick={() => setView(view.id)} aria-current={state.ui.view === view.id ? "page" : undefined}><span>{view.label}</span><small>{view.hint}</small></button>)}<Link href="/run-progression"><span>局内进程</span><small>10 套框架</small></Link></nav>
+        <nav>{viewMeta.map((view) => <button key={view.id} className={state.ui.view === view.id ? "active" : ""} onClick={() => setView(view.id)} aria-current={state.ui.view === view.id ? "page" : undefined}><span>{view.label}</span><small>{view.hint}</small></button>)}<Link href="/run-progression"><span>局内进程</span><small>10 套框架</small></Link><Link href="/model-lab"><span>模型实验室</span><small>可编辑关系网</small></Link></nav>
         <div className="authority-note"><strong>探索 ≠ 权威</strong><p>工作区中的“确认”仅代表当前设计筛选，不会修改正式玩法契约。</p><code>gameplay-design/</code></div>
       </aside>
 

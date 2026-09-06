@@ -212,6 +212,11 @@ public partial class AbilityStatusContractSmoke : Node
 
     private static void EntryPointsCooldownUsageAndIsolation()
     {
+        using var passiveStatus = AuthoredStatus("status_entry_passive");
+        passiveStatus.StackLimit = 1;
+        passiveStatus.DispelCategory = StatusDispelCategory.NonDispellable;
+        passiveStatus.DeathPolicy = StatusDeathPolicy.Remove;
+        var compiledPassive = StatusDefinitionCompiler.Compile(passiveStatus).Definition;
         var authored = new[]
         {
             EntryAbility("ability_entry_manual", AbilityActivationKind.ManualCommand, AbilityTriggerKind.None,
@@ -219,9 +224,15 @@ public partial class AbilityStatusContractSmoke : Node
             EntryAbility("ability_entry_battle_start", AbilityActivationKind.Automatic, AbilityTriggerKind.BattleStarted),
             EntryAbility("ability_entry_periodic", AbilityActivationKind.Automatic, AbilityTriggerKind.PeriodicTick, intervalTicks: 2),
             EntryAbility("ability_entry_triggered", AbilityActivationKind.Triggered, AbilityTriggerKind.AttackHit),
-            EntryAbility("ability_entry_passive", AbilityActivationKind.Passive, AbilityTriggerKind.None)
+            new AbilityDefinition
+            {
+                StableId = "ability_entry_passive", DisplayName = "常驻测试",
+                ActivationKind = AbilityActivationKind.Passive, Trigger = AbilityTriggerKind.None,
+                Operations = [new ApplyStatusAbilityOperationSpec { Status = passiveStatus, TargetQuery = new OwnerTargetQuerySpec() }]
+            }
         };
-        var compiled = AbilityDefinitionCompiler.CompileLoadout(new AbilityLoadoutDefinition { Abilities = [.. authored] });
+        var compiled = AbilityDefinitionCompiler.CompileLoadout(new AbilityLoadoutDefinition { Abilities = [.. authored] },
+            status => ReferenceEquals(status, passiveStatus) ? compiledPassive : null);
         Expect(!compiled.Report.HasCoreErrors && compiled.Loadout is not null,
             "entry-point authoring did not compile: " + string.Join(" | ", compiled.Report.CoreErrors));
         var entryLoadout = compiled.Loadout ?? throw new InvalidOperationException("entry loadout missing");

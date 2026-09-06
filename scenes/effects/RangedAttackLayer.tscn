@@ -1,0 +1,12 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/Presentation/RangedAttackLayer.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/effects/BasicProjectile.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/effects/BasicBeam.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/effects/BasicImpact.tscn" id="4"]
+
+[node name="RangedAttackLayer" type="Node2D"]
+script = ExtResource("1")
+ProjectileScene = ExtResource("2")
+BeamScene = ExtResource("3")
+ImpactScene = ExtResource("4")

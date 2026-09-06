@@ -72,3 +72,9 @@ theme_type_variation = &"SecondaryButton"
 custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 text = "退出"
+
+[node name="ExperienceSliceButton" type="Button" parent="Center/Panel/Menu"]
+theme_type_variation = &"SecondaryButton"
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "玩法试验 · 两战短旅程"

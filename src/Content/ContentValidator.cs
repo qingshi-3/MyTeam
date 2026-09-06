@@ -71,7 +71,10 @@ public static class ContentValidator
 
         var tacticalAuthored = LoadProductionTacticalCommandGraph(report);
         var equipmentStatusReferences = CollectEquipmentStatusReferences(
-            CollectItemEquipmentReferences(catalog, report).Select(reference => reference.Definition));
+            CollectItemEquipmentReferences(catalog, report).Select(reference => reference.Definition))
+            .Concat(CollectCarrierStatusReferences(
+                LoadResources<TraitDefinition>(DiscoverFiles("res://content/traits/definitions", ".tres", false, report), "Trait definition", report),
+                CollectItemRelicReferences(catalog, report).Select(reference => reference.Definition))).ToArray();
         var abilityStatus = CompileProductionAbilityStatusGraph(
             catalog,
             additionalLoadoutReferences.Concat(tacticalAuthored.Definitions
@@ -79,9 +82,9 @@ public static class ContentValidator
                 .Select(definition => definition!.AbilityLoadout)).ToArray(),
             equipmentStatusReferences,
             report);
-        var relics = CompileProductionRelicGraph(catalog, report);
+        var relics = CompileProductionRelicGraph(catalog, abilityStatus.Statuses.Definitions, report);
         var equipment = CompileProductionEquipmentGraph(catalog, abilityStatus.Statuses.Definitions, report);
-        var traits = CompileProductionTraitGraph(catalog, equipment.Equipment.Definitions, report);
+        var traits = CompileProductionTraitGraph(catalog, equipment.Equipment.Definitions, abilityStatus.Statuses.Definitions, report);
         var tacticalCommands = CompileTacticalCommandGraph(
             tacticalAuthored,
             abilityStatus.Abilities,
@@ -100,19 +103,21 @@ public static class ContentValidator
                     .Cast<TacticalCommandDefinition>(),
                 traits.Definitions,
                 traits.UnitContributions);
-        return new ContentGraphCompilationResult(graph, report);
+        if (graph is not null) ContentPrimitiveValidator.Validate(graph, report);
+        return new ContentGraphCompilationResult(report.HasCoreErrors ? null : graph, report);
     }
 
     private static TraitGraphCompilationResult CompileProductionTraitGraph(
         ContentCatalog catalog,
         IReadOnlyList<CompiledEquipmentDefinition> equipment,
+        IReadOnlyList<CompiledStatusDefinition> statuses,
         ValidationReport report)
     {
         var authored = LoadResources<TraitDefinition>(
             DiscoverFiles("res://content/traits/definitions", ".tres", false, report),
             "Trait definition",
             report);
-        var compilation = CompileTraitGraph(authored, catalog, equipment);
+        var compilation = CompileTraitGraph(authored, catalog, equipment, statuses);
         report.Merge(compilation.Report);
         return compilation;
     }
@@ -140,6 +145,7 @@ public static class ContentValidator
 
     private static RelicGraphCompilationResult CompileProductionRelicGraph(
         ContentCatalog catalog,
+        IReadOnlyList<CompiledStatusDefinition> statuses,
         ValidationReport report)
     {
         var authored = LoadResources<RelicDefinition>(
@@ -156,7 +162,7 @@ public static class ContentValidator
         var compilation = CompileRelicGraph(
             authored,
             referenced,
-            catalog.AllEntries().Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal));
+            catalog.AllEntries().Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal), statuses);
         report.Merge(compilation.Report);
         return compilation;
     }
@@ -227,7 +233,8 @@ public static class ContentValidator
     private static RelicGraphCompilationResult CompileRelicGraph(
         IEnumerable<RelicDefinition?> authoredDefinitions,
         IEnumerable<(string ItemId, RelicDefinition? Definition)> itemReferences,
-        IReadOnlySet<string> validContentIds)
+        IReadOnlySet<string> validContentIds,
+        IEnumerable<CompiledStatusDefinition>? statuses = null)
     {
         ArgumentNullException.ThrowIfNull(authoredDefinitions);
         ArgumentNullException.ThrowIfNull(itemReferences);
@@ -256,7 +263,7 @@ public static class ContentValidator
 
         var batch = RelicDefinitionCompiler.CompileBatch(
             authored,
-            validContentIds);
+            validContentIds, StatusResolver(statuses));
         report.Merge(batch.Report);
         if (!report.HasCoreErrors && batch.Definitions.Length != referenced.Length)
             report.Error("Relic publication did not compile exactly one definition for every production item scene.");
@@ -281,6 +288,8 @@ public static class ContentValidator
             DiscoverFiles("res://content/abilities/automatic", ".tres", false, report),
             "automatic ability",
             report);
+        var triggeredAbilities = LoadOptionalAbilityDirectory("triggered", AbilityActivationKind.Triggered, report);
+        var passiveAbilities = LoadOptionalAbilityDirectory("passive", AbilityActivationKind.Passive, report);
         var statuses = LoadResources<StatusDefinition>(
             DiscoverFiles("res://content/statuses", ".tres", false, report),
             "status definition",
@@ -298,7 +307,7 @@ public static class ContentValidator
             .ToArray();
         var graph = new AbilityStatusAuthoredGraph(
             loadouts,
-            commandAbilities.Concat(automaticAbilities).ToArray(),
+            commandAbilities.Concat(automaticAbilities).Concat(triggeredAbilities).Concat(passiveAbilities).ToArray(),
             statuses,
             contentLoadoutReferences,
             catalog.AllEntries().Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal))
@@ -437,7 +446,14 @@ public static class ContentValidator
                 instance = entry.Scene.Instantiate();
                 if (instance is not UnitContentRoot unit) continue;
                 if (unit.AbilityLoadout?.Loadout is not null)
+                {
                     result.Add(unit.AbilityLoadout.Loadout);
+                    var manaSkills = unit.AbilityLoadout.Loadout.Abilities
+                        .Where(ability => ability is not null && ability.Trigger == AbilityTriggerKind.ManaFull).ToArray();
+                    if (manaSkills.Any(ability => unit.Definition.MaxMana <= 0 ||
+                            Math.Abs(unit.Definition.MaxMana - ability.ManaCost) > .001f))
+                        report.Error($"{entry.Scene.ResourcePath}: mana-full skill cost must match the unit's positive authored MaxMana.");
+                }
             }
             catch (Exception exception)
             {
@@ -530,13 +546,13 @@ public static class ContentValidator
                 .ToArray(),
             validContentIds)
         {
-            AdditionalStatusReferences = CollectEquipmentStatusReferences(equipment)
+            AdditionalStatusReferences = CollectEquipmentStatusReferences(equipment).Concat(CollectCarrierStatusReferences(traits, relics)).ToArray()
         });
         report.Merge(abilityStatus.Report);
         var relicCompilation = CompileRelicGraph(
             relics,
             CollectItemRelicReferences(catalog, report),
-            validContentIds);
+            validContentIds, abilityStatus.Statuses.Definitions);
         report.Merge(relicCompilation.Report);
         var equipmentCompilation = CompileEquipmentGraph(
             equipment,
@@ -546,7 +562,7 @@ public static class ContentValidator
         var traitCompilation = CompileTraitGraph(
             traits,
             catalog,
-            equipmentCompilation.Equipment.Definitions);
+            equipmentCompilation.Equipment.Definitions, abilityStatus.Statuses.Definitions);
         report.Merge(traitCompilation.Report);
         var tacticalCompilation = CompileTacticalCommandGraph(
             new TacticalCommandAuthoredGraph(tacticalCommands, tacticalCommandScenes),
@@ -566,19 +582,21 @@ public static class ContentValidator
                     .Cast<TacticalCommandDefinition>(),
                 traitCompilation.Definitions,
                 traitCompilation.UnitContributions);
-        return new ContentGraphCompilationResult(graph, report);
+        if (graph is not null) ContentPrimitiveValidator.Validate(graph, report);
+        return new ContentGraphCompilationResult(report.HasCoreErrors ? null : graph, report);
     }
 
     private static TraitGraphCompilationResult CompileTraitGraph(
         IEnumerable<TraitDefinition?> authoredDefinitions,
         ContentCatalog catalog,
-        IReadOnlyList<CompiledEquipmentDefinition> equipment)
+        IReadOnlyList<CompiledEquipmentDefinition> equipment,
+        IEnumerable<CompiledStatusDefinition>? statuses = null)
     {
         ArgumentNullException.ThrowIfNull(authoredDefinitions);
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(equipment);
         var report = new ValidationReport();
-        var compilation = TraitDefinitionCompiler.CompileBatch(authoredDefinitions);
+        var compilation = TraitDefinitionCompiler.CompileBatch(authoredDefinitions, StatusResolver(statuses));
         report.Merge(compilation.Report);
         var validIds = compilation.Definitions.Select(definition => definition.StableId)
             .ToHashSet(StringComparer.Ordinal);
@@ -799,7 +817,36 @@ public static class ContentValidator
             .SelectMany(definition => definition!.ReactiveStatusBindings ?? [])
             .Where(binding => binding is not null)
             .Select(binding => binding.Status)
+            .Concat(equipment.Where(definition => definition is not null).SelectMany(definition => definition!.GrantedStatuses ?? []))
             .ToArray();
+    }
+
+    private static IEnumerable<StatusDefinition?> CollectCarrierStatusReferences(
+        IEnumerable<TraitDefinition?> traits, IEnumerable<RelicDefinition?> relics) =>
+        traits.OfType<TraitDefinition>().SelectMany(trait => trait.Breakpoints ?? [])
+            .Where(tier => tier is not null).SelectMany(tier => tier.GrantedStatuses ?? [])
+            .Concat(relics.OfType<RelicDefinition>().SelectMany(relic => relic.StatusGrants ?? [])
+                .Where(grant => grant is not null).Select(grant => grant.Status));
+
+    private static Func<StatusDefinition?, CompiledStatusDefinition?> StatusResolver(IEnumerable<CompiledStatusDefinition>? statuses)
+    {
+        var definitions = (statuses ?? []).ToArray();
+        var byId = definitions.ToDictionary(status => status.StableId, StringComparer.Ordinal);
+        var byPath = definitions.Where(status => !string.IsNullOrEmpty(status.ResourcePath))
+            .ToDictionary(status => status.ResourcePath, StringComparer.Ordinal);
+        return authored => authored is null ? null :
+            !string.IsNullOrEmpty(authored.ResourcePath) && byPath.TryGetValue(authored.ResourcePath, out var byResource)
+                ? byResource : byId.GetValueOrDefault(authored.StableId);
+    }
+
+    private static IReadOnlyList<AbilityDefinition?> LoadOptionalAbilityDirectory(string folder, AbilityActivationKind kind, ValidationReport report)
+    {
+        var path = $"res://content/abilities/{folder}";
+        if (!DirAccess.DirExistsAbsolute(path)) return [];
+        var definitions = LoadResources<AbilityDefinition>(DiscoverFiles(path, ".tres", false, report), $"{folder} ability", report);
+        foreach (var definition in definitions.OfType<AbilityDefinition>())
+            if (definition.ActivationKind != kind) report.Error($"{ResourceLabel(definition)}: {folder} directory requires {kind} entry point.");
+        return definitions;
     }
 
     private static void ValidateFloorRules(
@@ -1053,9 +1100,25 @@ public static class ContentValidator
             _ => false
         };
         if (!valid) report.Error($"{definition.Id}: category flags do not match {category}.");
+        if (!Enum.IsDefined(definition.AttackDelivery) ||
+            !float.IsFinite(definition.ProjectileSpeed) || definition.ProjectileSpeed is <= 0 or > 100 ||
+            !float.IsFinite(definition.ProjectileRadius) || definition.ProjectileRadius is <= 0 or > .5f ||
+            !float.IsFinite(definition.ProjectileLifetime) || definition.ProjectileLifetime is <= 0 or > 10)
+            report.Error($"{definition.Id}: invalid attack delivery or projectile speed/radius/lifetime.");
         if (!float.IsFinite(definition.BaseControlResistance) ||
             definition.BaseControlResistance is < 0 or > 1)
             report.Error($"{definition.Id}: BaseControlResistance must be finite and within [0,1].");
+        if (!float.IsFinite(definition.SpellPower) || definition.SpellPower < 0 ||
+            !float.IsFinite(definition.MagicResistance) || definition.MagicResistance < 0)
+            report.Error($"{definition.Id}: SpellPower and MagicResistance must be finite and nonnegative.");
+        if (new[] { definition.MaxMana, definition.StartingMana, definition.ManaPerSecond,
+                definition.ManaPerAttack, definition.ManaPerDamageRatio, definition.ManaPerHitCap }
+            .Any(value => !float.IsFinite(value) || value < 0 || value > 1_000_000) ||
+            definition.StartingMana > definition.MaxMana)
+            report.Error($"{definition.Id}: mana values must be finite, nonnegative and StartingMana cannot exceed MaxMana.");
+        if (!float.IsFinite(definition.BodyRadius) ||
+            definition.BodyRadius is < TowerAutobattler.Battle.BattlefieldSpace.MinimumBodyRadius or > TowerAutobattler.Battle.BattlefieldSpace.MaximumBodyRadius)
+            report.Error($"{definition.Id}: BodyRadius must be finite and within [0.1,0.49].");
         var expectedFolder = category switch
         {
             ContentCategory.Hero => "heroes",

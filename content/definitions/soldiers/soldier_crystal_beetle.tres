@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "soldier_crystal_beetle"
+MaxMana = 80.0
+StartingMana = 20.0
 DisplayName = "晶甲虫"
 Description = "小型重甲单位，适合堵路。"
 Role = 0

@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "hero_hour_arbiter"
+MaxMana = 90.0
+StartingMana = 25.0
 DisplayName = "时序仲裁者"
 Description = "操纵冷却与行动窗口，用有限指令逆转战场。"
 Role = 3
@@ -17,6 +19,7 @@ RecruitCost = 0
 MaxHealth = 225
 AttackDamage = 22
 AttackRange = 4.5
+AttackDelivery = 2
 AttackCooldown = 1.2
 MoveInterval = 0.45
 Armor = 2

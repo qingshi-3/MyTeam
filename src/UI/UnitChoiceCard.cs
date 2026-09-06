@@ -22,16 +22,22 @@ public partial class UnitChoiceCard : Button
     private Label _description = null!;
     private Label _meta = null!;
     private ChosenEventHandler? _chosenHandler;
+    private Action<string>? _inspectionHandler;
 
     public override void _Ready()
     {
         CacheNodes();
         Pressed += OnPressed;
+        MouseEntered += OnInspect;
+        FocusEntered += OnInspect;
     }
 
     public override void _ExitTree()
     {
         Pressed -= OnPressed;
+        MouseEntered -= OnInspect;
+        FocusEntered -= OnInspect;
+        _inspectionHandler = null;
         if (_chosenHandler is not null) Chosen -= _chosenHandler;
         _chosenHandler = null;
     }
@@ -80,6 +86,8 @@ public partial class UnitChoiceCard : Button
     }
 
     private void OnPressed() => EmitSignal(SignalName.Chosen, StableId);
+    public void ConnectInspected(Action<string> handler) => _inspectionHandler = handler;
+    private void OnInspect() => _inspectionHandler?.Invoke(StableId);
 
     private void CacheNodes()
     {

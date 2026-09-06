@@ -7,6 +7,8 @@
 script = ExtResource("1")
 Portrait = ExtResource("portrait")
 Id = "hero_edge_ascetic"
+MaxMana = 70.0
+StartingMana = 10.0
 DisplayName = "无尽剑圣"
 Description = "纯Solo路线。空位就是修行，强攻但惧怕围困。"
 Role = 4
