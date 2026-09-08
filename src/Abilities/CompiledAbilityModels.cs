@@ -8,7 +8,8 @@ namespace TowerAutobattler.Abilities;
 public sealed record CompiledAbilityPresentation(
     string SemanticIcon,
     string Cue,
-    string ReportLabel);
+    string ReportLabel,
+    string DamageVfx = "");
 
 public abstract record CompiledAbilityOperation;
 

@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="Texture2D" path="res://assets/vfx/energy-mote.png" id="mote"]
+[sub_resource type="CanvasItemMaterial" id="Add"]
+blend_mode = 1
+[node name="ShockMote" type="Sprite2D"]
+texture = ExtResource("mote")
+texture_filter = 2
+material = SubResource("Add")

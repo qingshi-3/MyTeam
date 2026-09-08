@@ -6,7 +6,7 @@
 - Compare the pre-extraction Run preparation and the shared assembler adapter for fixed Run/Encounter fixtures: complete `BattleConfig`, spawn cells/identities/snapshots, floor rule, Equipment, Relics, Traits, commands, summons, Boss timeline, seed, identity, and deterministic battle digest/result must match.
 - Publish the Lab index from `CompiledGamePackage`; every player hero, legal PvE unit, Equipment, and Relic must derive from typed published metadata. Elite/summon membership cannot use concrete ids, paths, or id prefixes.
 - Fingerprint the complete authored/compiled Resource graph before edit, preset round-trip, battle, reset, and exit. Every fingerprint must remain unchanged.
-- Snapshot the real production Meta, Settings, Active Run, and schema-v4 files plus save-service call counters before Lab entry. Opening, editing, starting, completing, resetting, preset saving/loading, exiting, and re-entering must add zero production-save calls and preserve byte/semantic identity.
+- Use recoverable isolated production-save fixtures and save-service call counters, never migrate or overwrite actual player saves for this check. Opening, editing, starting, completing, resetting, preset saving/loading, exiting, and re-entering must add zero production-save calls and preserve fixture byte/semantic identity for the currently supported format (v6), independently of the Lab preset schema.
 
 ## Placement And Real Input
 

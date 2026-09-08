@@ -204,6 +204,7 @@ public partial class BattleScreenController : Control
             RefreshCommandHud();
             RefreshStatus();
             SyncPresenters("idle");
+            _rangedAttackLayer.SynchronizeUnits(_simulation.Units);
             PresentResolvedFacts();
             SetProcess(true);
             SetProcessUnhandledInput(false);
@@ -313,6 +314,8 @@ public partial class BattleScreenController : Control
     private void PresentEvents(IReadOnlyList<BattleEvent> events)
     {
         _rangedAttackLayer.Present(events, _paused);
+        if (_simulation is not null && !events.Any(e => e.Type == "battle_finished"))
+            _rangedAttackLayer.SynchronizeUnits(_simulation.Units);
         foreach (var battleEvent in events)
         {
             if (battleEvent.Type != "move" || string.IsNullOrWhiteSpace(battleEvent.SourceRuntimeId)) continue;

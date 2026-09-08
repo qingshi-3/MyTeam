@@ -1,5 +1,7 @@
 # Mature Combat Build Systems Migration Test Cases
 
+Historical migration checklist. Schema-v4 and phase-entry RED/no-schema-bump requirements below describe the original migration, not a restriction on current v6. Current persistence, hero mana and shared content contracts are routed through `../../system-design/README.md` and `content-system-foundation.md`. Reuse applicable behavioral assertions, not historical missing-feature/old-version expectations; no new execution is implied by this alignment.
+
 ## Phase 0 — Governance And RED Contracts
 
 Phase 0 establishes executable names for the missing product contracts without implementing production behavior or changing gameplay values. `MatureCombatBuildSystemsRedContractSmoke` must compile and exit non-zero with `MATURE_COMBAT_BUILD_RED_EXPECTED`; each missing capability must appear once as `MATURE_COMBAT_BUILD_RED_GAP [id]`. An unexpected crash, compile error, missing diagnostic, or an existing completed-platform gate turning red is not the intended RED state.

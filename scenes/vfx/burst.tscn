@@ -1,0 +1,132 @@
+[gd_scene load_steps=15 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="1"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="2"]
+[ext_resource type="Shader" path="res://scenes/vfx/shockwave.gdshader" id="shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/shock_pressure.gdshader" id="pressure"]
+[ext_resource type="Shader" path="res://scenes/vfx/shock_flash.gdshader" id="flash"]
+[ext_resource type="Texture2D" path="res://assets/vfx/burst.png" id="wake"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="particles"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ShockMote.tscn" id="mote"]
+
+[sub_resource type="Gradient" id="White"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="Surface"]
+gradient = SubResource("White")
+width = 256
+height = 256
+
+[sub_resource type="ShaderMaterial" id="Wave"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+[sub_resource type="ShaderMaterial" id="Echo"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+shader_parameter/impulse_share = 0.4
+shader_parameter/impulse_rate = 7.0
+[sub_resource type="ShaderMaterial" id="Pressure"]
+resource_local_to_scene = true
+shader = ExtResource("pressure")
+[sub_resource type="ShaderMaterial" id="Flash"]
+resource_local_to_scene = true
+shader = ExtResource("flash")
+
+[node name="burst" type="Node2D"]
+script = ExtResource("1")
+
+[node name="PressureWake" type="Sprite2D" parent="."]
+texture = ExtResource("wake")
+material = SubResource("Pressure")
+texture_filter = 2
+script = ExtResource("2")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.85
+
+[node name="Impulse" type="Sprite2D" parent="."]
+texture = SubResource("Surface")
+material = SubResource("Flash")
+script = ExtResource("2")
+ShaderLifecycle = true
+StartScale = 0.6
+EndScale = 1.0
+Duration = 0.2
+
+[node name="Core" type="Sprite2D" parent="."]
+texture = SubResource("Surface")
+material = SubResource("Wave")
+texture_filter = 2
+script = ExtResource("2")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.85
+Opacity = 0.9
+
+[node name="FollowingWave" type="Sprite2D" parent="."]
+texture = SubResource("Surface")
+material = SubResource("Echo")
+texture_filter = 2
+scale = Vector2(0.96, 0.96)
+script = ExtResource("2")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Delay = 0.07
+Duration = 0.88
+Opacity = 0.52
+
+[node name="OuterEcho" type="Sprite2D" parent="."]
+texture = SubResource("Surface")
+material = SubResource("Echo")
+texture_filter = 2
+scale = Vector2(0.91, 0.91)
+script = ExtResource("2")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Delay = 0.14
+Duration = 0.88
+Opacity = 0.3
+
+[node name="LastEcho" type="Sprite2D" parent="."]
+texture = SubResource("Surface")
+material = SubResource("Echo")
+texture_filter = 2
+scale = Vector2(0.86, 0.86)
+script = ExtResource("2")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Delay = 0.21
+Duration = 0.88
+Opacity = 0.16
+
+[node name="RadialSparks" type="Node2D" parent="."]
+script = ExtResource("particles")
+ParticleScene = ExtResource("mote")
+Amount = 14
+Radial = true
+OriginRadius = 12.0
+Gravity = 0.0
+Delay = 0.015
+SpeedRange = Vector2(260, 310)
+LifetimeRange = Vector2(0.28, 0.48)
+SizeRange = Vector2(34, 58)
+HeightScale = 1.6
+EndTint = Color(0.18, 0.58, 1, 1)
+
+[node name="OuterMotes" type="Node2D" parent="."]
+script = ExtResource("particles")
+ParticleScene = ExtResource("mote")
+Amount = 10
+Radial = true
+OriginRadius = 46.0
+Gravity = 0.0
+Delay = 0.11
+SpeedRange = Vector2(165, 205)
+LifetimeRange = Vector2(0.45, 0.7)
+SizeRange = Vector2(20, 35)
+HeightScale = 1.4
+EndTint = Color(0.15, 0.45, 0.9, 1)

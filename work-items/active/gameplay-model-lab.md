@@ -1,6 +1,14 @@
 # Gameplay Model Lab
 
-Status: Implemented Locally — Awaiting Interaction Review
+Status: Preserved Tool — Rule Snapshot Partly Stale; Not The Primary Decision Workflow
+
+## 当前边界（2026-09-06，优先于下方历史计划）
+
+保留关系图、交互、共享模型及用户草案。当前不继续扩建 Web 决策问卷，也不恢复独立体验切片；正式游戏工作见 `../README.md`。本文件下方的方案、域状态和冲突判断是设计时快照，不是新的玩法权威。
+
+本轮只对齐文档，未同步 Web 目录数据或浏览器草案。使用任何旧 `Accepted` / `Open` / 本地确认记录前，必须与 `../../gameplay-design/README.md` 及对应系统契约核对；不能从界面标记推定已实现或已验收。
+
+已知过期投影：F10/F11 的 optional mana 不再适用于持久英雄；他们已有独立法力自动施法，完整 channel/interrupt 等扩展仍未定。装备战前免费转移已确认，不再全部列为 Open。F09 的地图规格是当前基线，不能屏蔽新的地图方向。F14/术语的跨英雄供给、读取与兑现方向见正式构筑框架；未定的完整 schema 不等于这些设计方向未获确认。
 
 ## Goal
 
@@ -8,7 +16,7 @@ Define and review a neutral foundation-rule model for the complete game through 
 
 ## Confirmed Direction
 
-- 2026-09-05 follow-up: The user found even the scenario-led Web decisions too demanding and authorized Agent-led synthesis plus an in-engine playable experience slice. Preserve this graph, its shared model and all existing local drafts as the design/dependency substrate. New cross-module execution lives in `work-items/active/gameplay-experience-slice.md`; do not expand this Web question flow as the primary validation surface. Earlier interface implementation remains available, not discarded.
+- Historical 2026-09-05 follow-up moved decision work to an in-engine slice; 2026-09-06 then moved further experience work to the formal game. Preserve this graph, its model and local drafts. The slice records that transition but is no longer a new-execution entry point.
 
 - A scenario-led decision view is the primary decision entry; the existing graph, editable foundation model, and projections remain available. First slice: one unresolved recruitment-recovery scenario with three explicit proposals, a fixed illustrative player situation, recommendation/tradeoffs, research provenance, and navigable rule links. Local tentative/confirmed/deferred decision records reference stable foundation ids in the same workspace; they do not overwrite whole-domain status or gameplay authority. Changes to linked rule semantics make an earlier decision require review. Camera-only edits do not. Further scenario population and automatic natural-language interpretation are out of scope.
 - The current Shield × Ice / Shield × Earth / Shield × Marksman prototype is rejected as the primary information architecture. Those combinations were stress-test examples, not the definition of the game.
@@ -256,7 +264,7 @@ These are coverage tests, not content proposals.
 
 ### Authority Conflicts and Open Decisions
 
-No direct contradiction was found among the three accepted authority documents. V2 exposes the following decisions instead of solving them through evidence:
+Historical V2 audit snapshot, not a current conflict-free certification. The list below must be read with the 2026-09-06 corrections at the top and current gameplay/system authority; it cannot reopen an already settled rule:
 
 1. Complete Meta progression, unlock economy, difficulty structure, and relationship between guided entry, direct Run entry, and developer Lab.
 2. Route topology, node cadence, risk escalation, checkpoint/retry policy, exact timeout, and simultaneous victory/defeat/tie precedence.
@@ -329,7 +337,7 @@ No direct contradiction was found among the three accepted authority documents. 
 
 ## Resume Condition
 
-Present the first decision scenario at local `/model-lab` for user review, with the existing full-screen foundation graph one click away. Ask whether comparing concrete consequences makes this one decision easier before expanding scenario coverage. The graph remains the shared editable foundation, not a discarded prototype. No hosting without explicit authorization. If the user rejects a product-model decision, return to discussion; if feedback concerns only the confirmed interface behavior or visual execution, update this work item and continue the authorized Web implementation.
+Preserve the local graph and drafts; do not resume the former scenario-question flow automatically. Follow the current boundary at the top and `../README.md`. A future explicit Web change first reconciles affected rule projections with gameplay authority, without overwriting user drafts. No hosting without explicit authorization.
 
 ## Verification Handoff
 

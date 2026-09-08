@@ -1,0 +1,53 @@
+[gd_scene load_steps=15 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxFallingTrack.cs" id="flight"]
+[ext_resource type="Texture2D" path="res://assets/vfx/energy-mote.png" id="image"]
+[ext_resource type="Shader" path="res://scenes/vfx/fireball_body.gdshader" id="body"]
+[ext_resource type="Shader" path="res://scenes/vfx/fire_glow.gdshader" id="glow"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/FireballWake.tscn" id="mote"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/FireImpact.tscn" id="impact"]
+[ext_resource type="Texture2D" path="res://assets/vfx/fireball-body.png" id="sphere"]
+[ext_resource type="Shader" path="res://scenes/vfx/fireball_tail.gdshader" id="tail"]
+[sub_resource type="ShaderMaterial" id="Tail"]
+resource_local_to_scene = true
+shader = ExtResource("tail")
+[sub_resource type="ShaderMaterial" id="Body"]
+resource_local_to_scene = true
+shader = ExtResource("body")
+[sub_resource type="ShaderMaterial" id="Glow"]
+resource_local_to_scene = true
+shader = ExtResource("glow")
+[sub_resource type="Gradient" id="White"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+[sub_resource type="GradientTexture2D" id="Surface"]
+gradient = SubResource("White")
+width = 64
+height = 64
+[node name="Firefall" type="Node2D"]
+script = ExtResource("root")
+[node name="Flight" type="Node2D" parent="."]
+script = ExtResource("flight")
+TravelDuration = 0.78
+ArcHeight = 72.0
+TrailParticle = ExtResource("mote")
+[node name="Trail" type="Node2D" parent="Flight"]
+[node name="Projectile" type="Node2D" parent="Flight"]
+[node name="Glow" type="Sprite2D" parent="Flight/Projectile"]
+scale = Vector2(1.2, 1.2)
+texture = SubResource("Surface")
+material = SubResource("Glow")
+[node name="Body" type="Sprite2D" parent="Flight/Projectile"]
+texture = ExtResource("sphere")
+texture_filter = 4
+material = SubResource("Body")
+scale = Vector2(0.031, 0.031)
+[node name="Tail" type="Sprite2D" parent="Flight/Projectile"]
+z_index = -1
+texture = ExtResource("image")
+texture_filter = 2
+material = SubResource("Tail")
+scale = Vector2(0.04, 0.22)
+offset = Vector2(-650, 0)
+[node name="Impact" parent="." instance=ExtResource("impact")]
+scale = Vector2(1, 0.6)
+Delay = 0.78

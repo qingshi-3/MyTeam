@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Texture2D" path="res://assets/vfx/fire-ash-puff.png" id="image"]
+[node name="FireAsh" type="Sprite2D"]
+texture_filter = 4
+texture = ExtResource("image")

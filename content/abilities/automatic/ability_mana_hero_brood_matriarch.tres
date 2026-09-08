@@ -60,6 +60,7 @@ script = ExtResource("presentation")
 SemanticIcon = &"damage"
 Cue = &"skill_cast"
 ReportLabel = "原兽撕咬"
+DamageVfx = "rend"
 
 [resource]
 script = ExtResource("ability")
@@ -71,4 +72,3 @@ ManaCost = 80
 CooldownTicks = 10
 Operations = [SubResource("Operation_0"), SubResource("Operation_1")]
 Presentation = SubResource("Presentation")
-

@@ -278,7 +278,8 @@ public static partial class StatusDefinitionCompiler
                 authored.Presentation.OnActiveCue.ToString(),
                 authored.Presentation.WhileActiveCue.ToString(),
                 authored.Presentation.RemovedCue.ToString(),
-                authored.Presentation.ReportLabel);
+                authored.Presentation.ReportLabel,
+                authored.Presentation.PersistentVfx);
         var definition = new CompiledStatusDefinition(
             authored.StableId,
             authored.ResourcePath,

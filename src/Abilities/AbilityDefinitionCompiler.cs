@@ -210,7 +210,8 @@ public static partial class AbilityDefinitionCompiler
             : new CompiledAbilityPresentation(
                 authored.Presentation.SemanticIcon.ToString(),
                 authored.Presentation.Cue.ToString(),
-                authored.Presentation.ReportLabel);
+                authored.Presentation.ReportLabel,
+                authored.Presentation.DamageVfx);
         var provisional = new CompiledAbilityDefinition(
             authored.StableId,
             authored.DisplayName,

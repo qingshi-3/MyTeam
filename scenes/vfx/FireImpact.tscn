@@ -1,0 +1,99 @@
+[gd_scene load_steps=17 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="group"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="particles"]
+[ext_resource type="Shader" path="res://scenes/vfx/fire_impact.gdshader" id="fire"]
+[ext_resource type="Shader" path="res://scenes/vfx/fire_scorch.gdshader" id="scorch"]
+[ext_resource type="Shader" path="res://scenes/vfx/contact_flash.gdshader" id="flash"]
+[ext_resource type="Shader" path="res://scenes/vfx/shockwave.gdshader" id="wave"]
+[ext_resource type="Texture2D" path="res://assets/vfx/burst.png" id="texture"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/FireMote.tscn" id="mote"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/FireAsh.tscn" id="ash"]
+[sub_resource type="Gradient" id="White"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+[sub_resource type="GradientTexture2D" id="Surface"]
+gradient = SubResource("White")
+width = 256
+height = 256
+[sub_resource type="ShaderMaterial" id="Fire"]
+resource_local_to_scene = true
+shader = ExtResource("fire")
+[sub_resource type="ShaderMaterial" id="Scorch"]
+resource_local_to_scene = true
+shader = ExtResource("scorch")
+[sub_resource type="ShaderMaterial" id="Flash"]
+resource_local_to_scene = true
+shader = ExtResource("flash")
+[sub_resource type="ShaderMaterial" id="Wave"]
+resource_local_to_scene = true
+shader = ExtResource("wave")
+shader_parameter/wave_color = Color(1, 0.29, 0.045, 1)
+shader_parameter/impulse_share = 0.4
+shader_parameter/impulse_rate = 7.0
+[node name="FireImpact" type="Node2D"]
+script = ExtResource("group")
+[node name="GroundHeat" type="Sprite2D" parent="."]
+texture = SubResource("Surface")
+material = SubResource("Scorch")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 1.15
+[node name="AshPuffs" type="Node2D" parent="."]
+position = Vector2(0, -15)
+modulate = Color(1, 1, 1, 0.9)
+script = ExtResource("particles")
+ParticleScene = ExtResource("ash")
+Amount = 5
+Radial = true
+OriginRadius = 23.0
+Gravity = 0.0
+Delay = 0.08
+SpeedRange = Vector2(80, 135)
+LifetimeRange = Vector2(1.0, 1.25)
+SizeRange = Vector2(62, 85)
+HeightScale = 1.65
+FaceVelocity = false
+EndSizeFactor = Vector2(1.4, 1.4)
+EndTint = Color(0.9, 0.83, 0.75, 1)
+[node name="Contact" type="Sprite2D" parent="."]
+texture = SubResource("Surface")
+material = SubResource("Flash")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+StartScale = 0.65
+EndScale = 1.05
+Duration = 0.18
+[node name="FlameFront" type="Sprite2D" parent="."]
+texture = ExtResource("texture")
+texture_filter = 2
+material = SubResource("Fire")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.9
+[node name="Echo" type="Sprite2D" parent="."]
+texture = SubResource("Surface")
+material = SubResource("Wave")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.9
+Delay = 0.075
+Opacity = 0.35
+[node name="FireSparks" type="Node2D" parent="."]
+script = ExtResource("particles")
+ParticleScene = ExtResource("mote")
+Amount = 14
+Radial = true
+OriginRadius = 10.0
+Gravity = 0.0
+Delay = 0.015
+SpeedRange = Vector2(260, 330)
+LifetimeRange = Vector2(0.35, 0.65)
+SizeRange = Vector2(24, 42)
+HeightScale = 1.25
+EndTint = Color(1, 0.22, 0.04, 1)

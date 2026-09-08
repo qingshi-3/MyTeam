@@ -2,6 +2,8 @@
 
 Status: Completed
 
+Historical scope notice (2026-09-06): completion below applies to the original Alpha and its recorded acceptance, not the current product. The one-hero/soldier/reserve model and hero-owned commands were superseded. Use `../../gameplay-design/README.md` and `../README.md` for current rules and work; do not restore this historical content target or rerun this task as the current Alpha plan.
+
 ## Goal
 
 Build a complete, Chinese-language, playable Alpha in `C:\Users\qs\godot\my-team`: choose a hero, build and deploy an army while climbing three tower regions, complete automatic battles with limited hero commands, defeat the final boss, receive victory/defeat results, persist progress, and start or resume another run.

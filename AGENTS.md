@@ -6,6 +6,8 @@ This project is a Godot 4.7 .NET single-player tower-climbing hero-roster autoba
 
 - Player-facing rules live under `gameplay-design/`.
 - Runtime ownership, scene contracts, and data flow live under `system-design/`.
+- Long-form gameplay discussion lives under `design-discussion/`, separate from current authority. For these discussions, read `design-discussion/README.md`, `roadmap.md`, the current topic and relevant cross-topic issues before continuing; update the topic record and roadmap before handing off.
+- Discussion confirmation does not authorize implementation or incremental authority edits. Keep conclusions in the discussion area until the agreed integration review and user-confirmed merge; retain rejected/deferred decisions and do not treat research examples as rules.
 - Confirmed execution scope and resume state live under `work-items/active/`.
 - Test cases and manual QA live under `docs/testcases/`.
 - Keep this file limited to stable routing and hard constraints.

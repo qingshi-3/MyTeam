@@ -1,93 +1,81 @@
 using System.Collections.Generic;
-using System.Linq;
 using Godot;
 using TowerAutobattler.Battle;
+using TowerAutobattler.Vfx;
 
 namespace TowerAutobattler.Presentation;
 
-public partial class RangedAttackLayer : Node2D
+// Compatibility facade; all effect instances belong to the shared player.
+public partial class RangedAttackLayer : Node2D, IVfxStage
 {
-    [Export] public PackedScene ProjectileScene { get; set; } = null!;
-    [Export] public PackedScene BeamScene { get; set; } = null!;
-    [Export] public PackedScene ImpactScene { get; set; } = null!;
-    private readonly Dictionary<int, RangedAttackVisual> _projectiles = [];
-    private readonly List<RangedAttackVisual> _flashes = [];
+    [Export] public Vector2 BodyOffset { get; set; } = new(0, -22);
+    private VfxPlayer _player = null!;
     private BattleBoard? _board;
-    private bool _paused;
-    private float _speed = .8f;
+    private readonly HashSet<int> _projectiles = [];
+    private readonly HashSet<string> _shields = [];
     public int ProjectileCount => _projectiles.Count;
-
-    public void Bind(BattleBoard board) => _board = board;
-    public void SetClock(bool paused, float speed) { _paused = paused; _speed = speed; }
-
+    public float UnitScale => _board?.CurrentProjection.UnitScale ?? 1;
+    public Vector2 Project(Vector2 point, bool ground) =>
+        (_board?.LogicalToLocal(point) ?? point) + (ground ? Vector2.Zero : BodyOffset * UnitScale);
+    public float RadiusPixels(float radius) => _board is null ? radius :
+        _board.LogicalToLocal(new Vector2(radius, 0)).DistanceTo(_board.LogicalToLocal(Vector2.Zero));
+    public override void _Ready() => _player = GetNode<VfxPlayer>("Player");
+    public void Bind(BattleBoard board) { _board = board; _player.Bind(this); }
+    public void SetClock(bool paused, float speed) { _player.Paused = paused; _player.Speed = speed; }
+    public void SynchronizeUnits(IEnumerable<BattleUnitState> units)
+    {
+        foreach (var unit in units)
+        {
+            var key = "shield:" + unit.RuntimeId;
+            if (unit.Alive && unit.Shield > 0)
+            {
+                _shields.Add(unit.RuntimeId);
+                _player.Play("shield", new(unit.Position, unit.Position), key);
+            }
+            else if (_shields.Remove(unit.RuntimeId))
+                _player.End(key, unit.Alive ? VfxEndReason.Depleted : VfxEndReason.OwnerDefeated);
+        }
+    }
     public void Present(IReadOnlyList<BattleEvent> events, bool snap)
     {
         foreach (var fact in events)
         {
+            var context = new VfxContext(fact.Origin, fact.Position, fact.Vfx?.Radius ?? 0);
+            var projectile = "projectile:" + fact.EntityId;
+            var shield = "shield:" + fact.TargetRuntimeId;
+            if (fact.Vfx is { } cue)
+            {
+                if (cue.Phase == BattleVfxPhase.ShieldActive) _shields.Add(fact.TargetRuntimeId);
+                if (cue.Phase == BattleVfxPhase.ShieldDepleted) _shields.Remove(fact.TargetRuntimeId);
+                VfxBindingResolver.Present(_player, cue, context, fact.TargetRuntimeId);
+            }
             switch (fact.Type)
             {
                 case "projectile_spawn":
-                    if (!_projectiles.ContainsKey(fact.EntityId))
-                        _projectiles.Add(fact.EntityId, Spawn(ProjectileScene, fact.Origin, fact.Position));
-                    break;
-                case "projectile_move":
-                    if (_projectiles.TryGetValue(fact.EntityId, out var moving)) moving.MoveTo(fact.Position, snap);
-                    break;
-                case "projectile_impact":
-                    Flash(ImpactScene, fact.Position, fact.Position);
-                    break;
+                    _projectiles.Add(fact.EntityId);
+                    _player.Play("projectile", context, projectile); break;
+                case "projectile_move": _player.UpdateContext(projectile, context); break;
+                case "projectile_impact": _player.Play("impact", context); break;
                 case "projectile_end":
-                    if (_projectiles.Remove(fact.EntityId, out var ended)) ended.Free();
-                    break;
+                    _projectiles.Remove(fact.EntityId);
+                    _player.End(projectile, VfxEndReason.ScopeEnded); break;
                 case "beam":
-                    Flash(BeamScene, fact.Origin, fact.Position);
-                    Flash(ImpactScene, fact.Position, fact.Position);
-                    break;
-                case "battle_finished":
-                    ClearProjectiles();
-                    break;
+                    _player.Play("beam", context);
+                    _player.Play("impact", context); break;
+                case "heal": _player.Play("heal", context); break;
+                case "defeated":
+                    _shields.Remove(fact.TargetRuntimeId);
+                    _player.End(shield, VfxEndReason.OwnerDefeated); break;
+                case "battle_finished": Clear(); break;
             }
         }
-        Refresh(0);
+        if (snap) _player.Advance(TowerAutobattler.Domain.BattleTiming.TickSeconds);
     }
-
-    private RangedAttackVisual Spawn(PackedScene scene, Vector2 origin, Vector2 position)
-    {
-        var visual = scene.Instantiate<RangedAttackVisual>();
-        AddChild(visual);
-        visual.Bind(origin, position);
-        return visual;
-    }
-
-    private void Flash(PackedScene scene, Vector2 origin, Vector2 position)
-    {
-        // Only transient decoration is capped; every active gameplay projectile keeps its own node.
-        if (_flashes.Count >= 96) { _flashes[0].Free(); _flashes.RemoveAt(0); }
-        _flashes.Add(Spawn(scene, origin, position));
-    }
-
-    public override void _Process(double delta) => Refresh(_paused ? 0 : (float)delta * _speed);
-
-    private void Refresh(float seconds)
-    {
-        if (_board is null) return;
-        foreach (var projectile in _projectiles.Values) projectile.Advance(seconds, _board);
-        foreach (var flash in _flashes.ToArray())
-            if (!flash.Advance(seconds, _board)) { _flashes.Remove(flash); flash.Free(); }
-    }
-
-    private void ClearProjectiles()
-    {
-        foreach (var projectile in _projectiles.Values) projectile.Free();
-        _projectiles.Clear();
-    }
-
     public void Clear()
     {
-        ClearProjectiles();
-        foreach (var flash in _flashes) flash.Free();
-        _flashes.Clear();
+        _player?.Clear();
+        _projectiles.Clear();
+        _shields.Clear();
     }
-
-    public override void _ExitTree() => Clear();
 }
+

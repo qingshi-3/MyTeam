@@ -37,7 +37,7 @@ public static class StatusDefinitionFingerprint
                 Compute(status.OverflowTransition.Target)),
             status.Presentation is null ? "none" : Pack("presentation", status.Presentation.SemanticIcon,
                 status.Presentation.ExecutedCue, status.Presentation.OnActiveCue, status.Presentation.WhileActiveCue,
-                status.Presentation.RemovedCue, status.Presentation.ReportLabel));
+                status.Presentation.RemovedCue, status.Presentation.ReportLabel, status.Presentation.PersistentVfx));
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical))).ToLowerInvariant();
     }
 }

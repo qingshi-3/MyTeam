@@ -12,7 +12,8 @@ public sealed record CompiledStatusPresentation(
     string OnActiveCue,
     string WhileActiveCue,
     string RemovedCue,
-    string ReportLabel);
+    string ReportLabel,
+    string PersistentVfx = "");
 
 public sealed record CompiledStatusLifecycleBinding(
     StatusLifecycleTriggerKind Trigger,
@@ -99,7 +100,8 @@ public sealed record StatusRuntimeSnapshot(
     ImmutableArray<StatusSourceContributionSnapshot> SourceContributions,
     ImmutableArray<StatusCapturedMagnitudeSnapshot> CapturedMagnitudes,
     string SemanticIcon,
-    string ReportLabel);
+    string ReportLabel,
+    string PersistentVfx = "");
 
 public sealed record StatusModifierProjectionSnapshot(
     string StatusInstanceId,

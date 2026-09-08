@@ -11,4 +11,5 @@ public partial class StatusPresentationSpec : Resource
     [Export] public StringName WhileActiveCue { get; set; } = new();
     [Export] public StringName RemovedCue { get; set; } = new();
     [Export] public string ReportLabel { get; set; } = string.Empty;
+    [Export] public string PersistentVfx { get; set; } = string.Empty;
 }

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/projectile.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+StableId = "projectile"
+DisplayName = "能量弹"
+Scene = ExtResource("2")
+Duration = 1
+Persistent = true
+Ground = false
+StretchBetween = false
+Size = 32
+

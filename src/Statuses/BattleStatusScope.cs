@@ -1165,7 +1165,8 @@ public sealed class BattleStatusScope : IDisposable
                         })))
                 .ToImmutableArray(),
             instance.Definition.Presentation?.SemanticIcon ?? string.Empty,
-            instance.Definition.Presentation?.ReportLabel ?? string.Empty);
+            instance.Definition.Presentation?.ReportLabel ?? string.Empty,
+            instance.Definition.Presentation?.PersistentVfx ?? string.Empty);
     }
 
     private static string PrimarySource(RuntimeInstance instance) => instance.Contributions

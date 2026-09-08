@@ -106,7 +106,7 @@ public sealed class BattleConfig
 public sealed record BattleEvent(
     int Tick, string Type, string SourceRuntimeId, string TargetRuntimeId,
     float Value, Vector2I Cell, string Cue, Vector2 Position = default,
-    int EntityId = 0, Vector2 Origin = default);
+    int EntityId = 0, Vector2 Origin = default, BattleVfxCue? Vfx = null);
 
 public sealed class BattleUnitState
 {

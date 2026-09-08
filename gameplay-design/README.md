@@ -1,8 +1,17 @@
 # Gameplay Design
 
-Accepted player-facing rules for the project live here.
+游戏的玩家侧设计权威位于本目录。研究资料、Web 图谱和活动任务不能另行定义同一条正式规则。
 
 - Core game authority: `tower-autobattler-core.md`
-- Combat build, hero-role, population, and landmark authority: `combat-build-framework.md`
+- 构筑、培养与替换、内容机制定位、人口及里程碑：`combat-build-framework.md`（含 2026-09-06 讨论对齐）。
 
-Execution progress and temporary decisions do not belong in this directory.
+## 阅读与状态
+
+- **已定规则**：当前实现必须遵守的产品契约。改变规则需有新的明确设计决策。
+- **已确认方向／细节待定**：确定要支持的体验与机制定位，不意味着参数、交互或实现方案已获批准。
+- **待讨论／暂缓／保留意见**：不能自动进入实现或被具体示例替代。
+- **当前实现基线**：描述现有规格，不冒充永远不可变化的产品原则；在新方案明确前继续保持，不因设计讨论擅自改代码。
+
+每条规则只在一个归属章节维护；其他文档引用它。外部游戏机制和 Agent 建议只有经用户确认的部分进入正式方向。具体数值、地图形态、实现顺序未确认时保持未定。
+
+实现进度与验收证据另见 `../work-items/README.md`：已确认设计不等于已实现，编译通过不等于行为或玩家体验验收通过。Web 模型和浏览器草案保留，但本地“确认”记录不自动改写这里的权威。

@@ -2,6 +2,8 @@
 
 Status: Completed
 
+Historical scope notice (2026-09-06): the evidence below accepts that period's scoped polish, not every subsequent change. Current gameplay, implementation and pending verification are routed by `../../gameplay-design/README.md` and `../README.md`; old non-goals do not prohibit later explicitly accepted features.
+
 ## Goal
 
 Resolve the seven playtest findings from the first completed run without changing the accepted product identity: correct combat animation lifecycles, expose army and hero-command information, make unit roles readable, eliminate blocked-unit oscillation while retaining tactical grid occupancy, and replace the abstract sequential deployment interaction with a real battlefield preview and direct rearrangement.

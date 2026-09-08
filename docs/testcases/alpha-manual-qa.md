@@ -1,5 +1,13 @@
 # Alpha Manual QA
 
+## 当前使用边界（2026-09-06）
+
+下方是历次 Alpha 的混合历史检查记录，不是现行完整验收清单。旧“英雄统领士兵”“英雄自带手动命令/共享 MP”和具体商人技能配方已不能作为产品要求；旧通过记录也不代表新版本通过。
+
+当前玩家规则读 `../../gameplay-design/README.md`；英雄独立法力/装备检查读 `formal-equipment-and-hero-mana.md`，通用模型/保存检查读 `content-system-foundation.md`，远程行为读 `ranged-attacks.md`，连续移动读 `continuous-space-combat.md`。其他仍适用的历史检查只按本次变更风险挑选，不默认执行全局/多分辨率扫测，也不为满足旧断言恢复过期行为。
+
+## 历史检查项
+
 ## Complete Loop
 
 1. Start from the main menu in Chinese and open settings once to verify volume and default battle speed persist and apply on the next launch/battle. The page must not expose an unsupported damage-number option.

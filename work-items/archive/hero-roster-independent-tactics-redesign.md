@@ -1,6 +1,12 @@
 # Hero Roster And Independent Tactics Redesign
 
-Status: Documentation Confirmed — Implementation Deferred
+Status: Superseded — Historical Design/Migration Plan, Not Fully Accepted Implementation
+
+## 当前边界（2026-09-06）
+
+本任务的“整体实现暂缓”和下方恢复/委派指令已失效，不得重新执行整轮迁移。统一英雄、独立战术指令及后续英雄法力/装备已有新的契约和实现记录；这不表示本任务全部旧验收已通过。当前规则以 `../../gameplay-design/README.md`、`../../system-design/README.md` 为准；实现证据见 `../active/formal-equipment-and-hero-mana.md`、`../active/content-system-foundation.md`。人口/培养待决问题及 Lab 兼容差异转入 `../active/combat-build-population-framework.md`。
+
+以下保留 2026-08-31 的历史意图与记录，包括当时的范围限制、旧版本迁移和验收提案；它们不是现行执行授权。
 
 ## Goal
 
@@ -58,7 +64,7 @@ The resulting product remains a Godot 4.7 .NET single-player tower-climbing real
 - Rewrite the player-facing hero/soldier, deployment capacity, recruitment, failure, temporary-unit, tactical-command, UI terminology, Alpha-content, solo, conversion, and non-goal clauses in `gameplay-design/tower-autobattler-core.md`. Remove obsolete contracts rather than layering deprecation prose.
 - Route and maintain the focused combat-build/population authority through `gameplay-design/README.md` and `gameplay-design/combat-build-framework.md`.
 - This documentation turn does not modify `system-design/`, runtime ownership, code comments, resources, persistence, UI implementation, or QA. Those surfaces require a later handoff after the separately owned content-platform architecture work completes or explicitly yields its implementation boundary.
-- `work-items/active/content-platform-architecture-migration.md` remains an active, separately owned architecture task at `Phase 5 Verification Corrections`. This redesign neither cancels, supersedes, absorbs, nor changes that task's ownership or correction scope.
+- At the time, the separately owned architecture task was at `Phase 5 Verification Corrections`; its preserved record now lives at `work-items/archive/content-platform-architecture-migration.md`. This historical redesign did not change that task's ownership or correction scope.
 
 ## Deferred System Design Handoff
 
@@ -187,7 +193,7 @@ Exit 4: the full run flow recruits, manages, deploys, inspects, and reports hero
 
 ## Resume Condition
 
-Implementation remains deferred. Continue unresolved population/build discussion through `work-items/active/combat-build-population-framework.md`. Resume implementation only after `work-items/active/content-platform-architecture-migration.md` reaches a completed handoff or its owner explicitly yields a non-overlapping boundary, and after the starting curve, reserve contract, and recruitment rules required by the chosen implementation slice are confirmed. The future owner must first inspect that final architecture result and current dirty diff, then reconcile `system-design/tower-autobattler-architecture.md` with this confirmed player contract before changing code, resources, active-run schema, formation, battle termination, tactical commands, UI, or tests. Do not infer that the architecture task was cancelled or that its remaining findings transferred here.
+Historical gate: implementation originally waited for the separate architecture handoff, now preserved at `work-items/archive/content-platform-architecture-migration.md`, and unresolved population/economy decisions. That blanket deferral is superseded; follow the current boundary at the top and `work-items/active/combat-build-population-framework.md`, not this old migration plan. The historical handoff remains evidence, not authorization to repeat or undo later work.
 
 ## Verification Handoff
 

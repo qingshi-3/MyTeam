@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxOrbitTrack.cs" id="script"]
+[ext_resource type="Texture2D" path="res://assets/vfx/rend-strip.png" id="strip"]
+[ext_resource type="Texture2D" path="res://assets/vfx/energy-mote.png" id="mote"]
+[ext_resource type="Shader" path="res://scenes/vfx/orbit_band.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="Band"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+[sub_resource type="CanvasItemMaterial" id="Add"]
+blend_mode = 1
+[node name="OrbitBand" type="Node2D"]
+script = ExtResource("script")
+[node name="Back" type="MeshInstance2D" parent="."]
+z_index = -1
+texture_filter = 2
+texture = ExtResource("strip")
+material = SubResource("Band")
+[node name="Front" type="MeshInstance2D" parent="."]
+z_index = 1
+texture_filter = 2
+texture = ExtResource("strip")
+material = SubResource("Band")
+[node name="Head" type="Sprite2D" parent="."]
+z_index = 2
+texture = ExtResource("mote")
+texture_filter = 2
+material = SubResource("Add")
+[node name="HeadBack" type="Sprite2D" parent="."]
+z_index = -2
+texture = ExtResource("mote")
+texture_filter = 2
+material = SubResource("Add")

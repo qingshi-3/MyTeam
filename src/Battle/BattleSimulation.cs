@@ -930,6 +930,13 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                             Emit("shield", plan.SourceId, step.TargetId, step.AppliedAmount, target.Position, "skill_cast");
                         }
                     facts.AddRange(steps.Select(step => $"{step.Kind}:{step.TargetId}:{step.AppliedAmount:0.###}"));
+                    if (plan.Ability.Presentation?.DamageVfx is { Length: > 0 } vfx)
+                        foreach (var step in steps.Where(step => step.Kind == EffectKind.Damage && step.AppliedAmount > 0))
+                        {
+                            var target = _units.First(unit => unit.RuntimeId == step.TargetId);
+                            Emit("vfx", plan.SourceId, target.RuntimeId, step.AppliedAmount, target.Position, "",
+                                vfx: new BattleVfxCue(BattleVfxPhase.Burst, vfx));
+                        }
                     break;
                 }
                 case CompiledCooldownAbilityOperation cooldown:
@@ -1229,6 +1236,9 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             Cell: ToCombatCell(target.Cell),
             Position: ToCombatPoint(target.Position)));
         if (attacker.Definition.SplashRadius > 0)
+            Emit("vfx", attacker.RuntimeId, target.RuntimeId, 0, target.Position, "",
+                vfx: new BattleVfxCue(BattleVfxPhase.Burst, "burst", attacker.Definition.SplashRadius));
+        if (attacker.Definition.SplashRadius > 0)
             foreach (var splash in Allies(target.Team).Where(other =>
                          other != target &&
                          Math.Max(0f, other.Position.DistanceTo(target.Position) - other.BodyRadius) <=
@@ -1303,6 +1313,9 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         var resolvedDamage = damage;
         var absorbed = Math.Min(target.Shield, damage);
         target.Shield -= absorbed;
+        if (absorbed > 0)
+            Emit("vfx", sourceRuntimeId, target.RuntimeId, absorbed, target.Position, "",
+                vfx: new BattleVfxCue(target.Shield > 0 ? BattleVfxPhase.ShieldImpact : BattleVfxPhase.ShieldDepleted, "shield"));
         damage -= absorbed;
         target.Health = Math.Max(0, target.Health - damage);
         var healthRemoved = Math.Min(healthBefore, damage);
@@ -1692,6 +1705,9 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             TickIndex,
             amount));
         target.Shield += calculated.ResolvedAmount;
+        if (calculated.ResolvedAmount > 0)
+            Emit("vfx", sourceRuntimeId, target.RuntimeId, calculated.ResolvedAmount, target.Position, "",
+                vfx: new BattleVfxCue(BattleVfxPhase.ShieldActive, "shield"));
         PublishCombat(new BattleCombatEventDraft(
             BattleCombatEventKind.ShieldResolved,
             combatSource,
@@ -1993,10 +2009,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         => Emit(type, source, target, value, BattlefieldSpace.CellCenter(cell), cue);
 
     private void Emit(string type, string source, string target, float value, Vector2 position, string cue,
-        int entityId = 0, Vector2 origin = default)
+        int entityId = 0, Vector2 origin = default, BattleVfxCue? vfx = null)
     {
         var cell = BattlefieldSpace.PositionToCell(position);
-        var battleEvent = new BattleEvent(TickIndex, type, source, target, value, cell, cue, position, entityId, origin);
+        var battleEvent = new BattleEvent(TickIndex, type, source, target, value, cell, cue, position, entityId, origin, vfx);
         _events.Add(battleEvent);
         _digest.Append(TickIndex).Append('|').Append(type).Append('|').Append(source).Append('|').Append(target).Append('|')
             .Append(value.ToString("0.###", CultureInfo.InvariantCulture)).Append('|')

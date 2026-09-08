@@ -1,5 +1,7 @@
 # Content Platform Architecture Migration Test Cases
 
+Historical migration checklist. Version-3 round trips, "no schema v4" and phase-entry RED requirements below belong to that migration, not the current v6 implementation. Reuse relevant lifecycle/rollback cases under current `../../system-design/content-composition-foundation.md` and `content-system-foundation.md`; do not lower the save version or restore missing behavior merely to satisfy historical gates. This notice records no new test execution.
+
 ## Phase 1 — Typed Effect Kernel And Lifecycle
 
 Automated acceptance:
