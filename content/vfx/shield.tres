@@ -7,10 +7,10 @@
 script = ExtResource("1")
 StableId = "shield"
 DisplayName = "守护屏障"
+ReactsToImpact = true
 Scene = ExtResource("2")
 Duration = 1
 Persistent = true
 Ground = false
 StretchBetween = false
 Size = 115
-

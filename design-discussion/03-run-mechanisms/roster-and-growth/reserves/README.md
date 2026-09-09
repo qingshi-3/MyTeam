@@ -13,5 +13,7 @@
 
 先读 [讨论区约定](../../../README.md) 和 [跨议题问题](../../../05-integration/cross-topic-issues.md)，再读取与本题相关的现行权威。现行规则是本轮基线，修改建议只记录在讨论区。
 
-本议题尚未建立专题证据、方案或决策文件。开始后按需增加 evidence.md、proposals.md、decisions.md 和 artifacts/，遵循 [记录约定](../../../topic-records.md)。不得将“目录已建”误认为“调研已做”。
+[已有证据](evidence.md)保存检索、原作依据与缺口；[方案讨论](proposals.md)展开容量与满员获取机制。[讨论决定](decisions.md)记录用户确认的范围，遵循 [记录约定](../../../topic-records.md)。
+
+战前自由调整依 G03-D01；培养回收依 [R03-D01–D03](../replacement-recovery/decisions.md)。上场人口与名册容量分开，腾位不自动退款。R05 负责人口成长，R07／R08 负责招募与机会供给；相关依赖见 I25。
 

@@ -1,0 +1,39 @@
+[gd_scene load_steps=10 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/liquid_surface.gdshader" id="liquid"]
+[ext_resource type="Script" path="res://src/Vfx/VfxPoolBubbleTrack.cs" id="bubbles"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/PoolBubble.tscn" id="bubble"]
+[sub_resource type="FastNoiseLite" id="noise"]
+seed = 811
+frequency = 0.009
+fractal_octaves = 2
+[sub_resource type="NoiseTexture2D" id="turbulence"]
+width = 256
+height = 256
+seamless = true
+generate_mipmaps = true
+noise = SubResource("noise")
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("liquid")
+shader_parameter/turbulence = SubResource("turbulence")
+[node name="Poison" type="Node2D"]
+script = ExtResource("root")
+[node name="Pool" type="Sprite2D" parent="."]
+texture = ExtResource("surface")
+texture_filter = 4
+material = SubResource("material")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+scale = Vector2(1,0.55)
+Duration = 1.0
+[node name="SurfaceBubbles" type="Node2D" parent="."]
+script = ExtResource("bubbles")
+ParticleScene = ExtResource("bubble")
+Amount = 12
+Spread = Vector2(86,41)
+SizeRange = Vector2(40,66)
+CycleDuration = 1.85

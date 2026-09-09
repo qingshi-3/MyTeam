@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+shader_parameter/rays = 0.0
+[node name="ElementDust" type="Sprite2D"]
+texture = ExtResource("surface")
+material = SubResource("material")

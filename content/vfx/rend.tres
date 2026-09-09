@@ -9,6 +9,7 @@ StableId = "rend"
 DisplayName = "交叉撕裂"
 Scene = ExtResource("2")
 Duration = 1.15
+ActionSpan = 0.24
 Persistent = false
 Ground = false
 StretchBetween = false

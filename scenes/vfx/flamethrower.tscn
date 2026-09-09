@@ -1,0 +1,95 @@
+[gd_scene load_steps=11 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxJetTrack.cs" id="jet"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="ambient"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/FlameTongueParticle.tscn" id="flame"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/MistParticle.tscn" id="smoke"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/fire_jet.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="jet_mat"]
+shader = ExtResource("shader")
+[node name="Flamethrower" type="Node2D"]
+script = ExtResource("root")
+[node name="TailSmoke" type="Node2D" parent="."]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("smoke")
+Amount = 7
+Seed = 1170
+Motion = 2
+Spread = Vector2(0,40)
+Velocity = Vector2(290,0)
+Drag = 1.0
+ScreenRiseAcceleration = 48.0
+Lifetime = 0.9
+EmitDuration = 0.5
+FollowCastEmission = true
+SizeRange = Vector2(23,36)
+EndScale = Vector2(1.4,1.7)
+StartTint = Color(0.34,0.18,0.12,1)
+EndTint = Color(0.16,0.12,0.13,1)
+Opacity = 0.24
+[node name="JetBody" type="Sprite2D" parent="."]
+texture = ExtResource("surface")
+material = SubResource("jet_mat")
+centered = false
+position = Vector2(0,-64)
+scale = Vector2(1,0.5)
+script = ExtResource("jet")
+SupplyDuration = 0.5
+TransitDuration = 0.32
+[node name="FlameJet" type="Node2D" parent="."]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("flame")
+AnimateMaterial = true
+FadeStart = 0.48
+Amount = 28
+Seed = 1171
+Motion = 2
+Spread = Vector2(0,62)
+Velocity = Vector2(550,0)
+Drag = 1.15
+ScreenRiseAcceleration = 65.0
+Lifetime = 0.65
+EmitDuration = 0.5
+FollowCastEmission = true
+SizeRange = Vector2(20,32)
+EndScale = Vector2(1.9,1.45)
+FaceVelocity = true
+RotationOffset = -1.5708
+StartTint = Color(1,0.85,0.7,1)
+EndTint = Color(0.88,0.48,0.2,1)
+Opacity = 0.9
+[node name="HotSparks" type="Node2D" parent="."]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("glint")
+Amount = 10
+Seed = 1172
+Motion = 2
+Spread = Vector2(0,72)
+Velocity = Vector2(435,0)
+Lifetime = 0.52
+EmitDuration = 0.5
+FollowCastEmission = true
+SizeRange = Vector2(16,26)
+EndScale = Vector2(0.3,0.3)
+StartTint = Color(1,0.7,0.15,1)
+EndTint = Color(1,0.14,0.015,1)
+Opacity = 0.85
+[node name="FineEmbers" type="Node2D" parent="."]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("dust")
+Amount = 24
+Seed = 1173
+Motion = 2
+Spread = Vector2(0,100)
+Velocity = Vector2(320,0)
+Lifetime = 0.72
+EmitDuration = 0.5
+FollowCastEmission = true
+SizeRange = Vector2(7,14)
+EndScale = Vector2(0.25,0.25)
+StartTint = Color(1,0.42,0.035,1)
+EndTint = Color(0.7,0.08,0.01,1)
+Opacity = 0.85

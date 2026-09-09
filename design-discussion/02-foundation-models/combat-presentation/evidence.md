@@ -1,5 +1,26 @@
 # P01 本地架构核对
 
+## 2026-09-08：强化与毒沼动作参考
+
+- [P01-S21：Making hand-drawn auras for a fighting game](https://realtimevfx.com/t/making-hand-drawn-auras-for-a-fighting-game-feedback-appreciated/2576)，已读作者与反馈正文，取得第 6 楼公开 GIF（480×248、45 帧、2.99 秒），查看 0/0.40/0.73/1.07/1.47/1.87/2.20/2.53 秒画面。实际观察是脚边前景+身后主体形成归属，上方尖端不断脱离成小形体；作者说明是 2D 手绘动画并补了前景火焰改善体积。它支持分层归属、上升与分离，不能证明 DNF 强化具体动画，也不要求采用大面积持续火焰。本项目短促金色光簇来自用户提出的表达方向，使用独立纹理粒子是项目适配。
+- [P01-S22：Ryan Dziurgot 的 VFX Journal，第 7–11 楼](https://realtimevfx.com/t/vfx-journal-ryan-dziurgot/3000/7)，已读正文并取得第 10 楼 GIF（500×500、172 帧、10.32 秒），查看 0–9 秒连续阶段。观察到地面绿色液体流动、较亮泡体出现后破裂、主体先收起而零星碎滴后消失。第 9 楼反馈明确要求泡体先“exploded”再 dissolve，作者随后更新并提到实现出生时序困难；不能由此推定作者具体 shader 或完整工程。本项目采用固定液面位置的鼓起→破裂碎滴→涟漪解析周期，未复制参考的空心圆环或作者资产。
+- 检索入口为 Real-Time VFX 公开搜索 JSON 和原帖 JSON。buff effect breakdown/toxic puddle 查询返回 429，未持续重试；power up aura、poison pool 找到上述可直接查看的动图。8053 的 Jump Force 风格习作与 6419 的 magic buff 视频入口仅作候选，未据未观看视频写动作结论。
+- 原帖 JSON、公开参考 GIF、阶段帧和链接记录留在当前 visualizations 的 status-study；不加入项目资产。制作前动作说明、实施调整和新旧引擎动态对照归现有活动任务。用户只评价此前椭圆横扫“勉强可以”，本次强化/毒沼尚未获审美认可。
+
+## 2026-09-08：用户“试一下”后的横扫动态取证
+
+- 本轮取得 P01-S17 [Venom Slash 原帖](https://realtimevfx.com/t/venom-slash-breakdown-of-the-effect-included/18903) 的公开 GIF，并逐帧查看首次挥动 0.03–0.69 秒：约 0.09 秒可见弧面，0.15–0.21 秒亮部沿圆周推进，约 0.27 秒主面退去，飞溅继续停留在路径附近。这些时间来自 GIF 采样，只是观察证据，不是作者公开参数。
+- 原始 GIF 为 300×205、302 帧、约 9.15 秒，含多次挥动；来源正文/链接存于本地研究输出 cleave-study/source.json，原图及首次挥动关键帧分别为 reference.gif、reference-first-sweep.png。仅作研究，未作为项目运行时资产。
+- 作者说明的静态环形网格、中心遮罩、滚动纹理、辉光与独立飞溅，与已观察到的圆周推进及主次层收尾对应。参考无角色，不能证明角色挂点/动作同步，也不能据此认定恰好 180°。本项目“施放者中心、指定前向 180°”来自用户；0.30 秒挥出/0.24 秒局部尾迹是项目样板选择。
+- 据此先形成动作说明，再实施横扫空间载体与分层材质；实现/检查/同视角新旧动态输出见 work-items/active/combat-vfx-and-preview.md。本次没有补完 DNF 强化动画观察，也没有认可其他被否定样例。
+
+## 2026-09-08：D05 逐项检索的前序进度与缺口
+
+- 复核 P01-S17 作者正文：Venom Slash 明确使用静态环形网格、中心 alpha mask、两纹理相乘、其中一层滚动、色带/辉光及独立飞溅。它提供了可拆解的空间载体和材质运动依据；不证明本项目所需的施放者中心/前向 180° 已实现，也没有给出可直接抄用的时长。
+- [DFO World Wiki：Overdrive](https://wiki.dfo.world/view/Overdrive) 正文可读，内容是武器强化/属性与施放时间等玩法说明，页面显示最后编辑于 2021-05-16。未取得有效的实际动画观察，不能从这些数据推导强化光簇的形状、方向和层次。
+- [Recklol 的 magic buff 拆解帖子](https://realtimevfx.com/t/recklols-vfx-sketchbook/6419/8) 作者确实提供了 [视频](https://youtu.be/j2-J04zzqC8) 和拆解图；目前仅确认入口，尚未观看，不将其构成或运动写成已验证结论。
+- 浏览器创建参考页再次超时；改用只读 HTTP 获取文字。Bing 的 `game vfx melee slash 180 degree mesh breakdown` 返回低相关结果，未采用；Real-Time VFX 站内搜索 `buff effect breakdown` 找到上述作者帖。猜测的 Diablo slash 帖子 URL 返回 404，不作为来源。本轮未下载参考美术或修改运行时，完整动作描述仍待动态证据补齐。
+
 2026-09-06：仅静态读取本仓库，没有构建、运行、外部素材调研或体验验收。
 
 | 当前入口 | 已有能力 | 缺口 |
@@ -70,3 +91,33 @@
 - 已阅读专业指南正文和一份具体斩击构成拆解；没有声称已观看并逐帧分析商业游戏视频，也没有声称研究了付费课程完整项目。
 - 当前可得结论足以纠正制作顺序与资产划分；每个样板的具体轨迹/时间/亮度仍须选参考并做动态对照，不能从文章直接宣称“已掌握高质量特效”。
 
+## P01-S23–S24：雷击与冰爆动作参考（2026-09-08）
+
+- P01-S23：[Discharge Strike 作者拆解](https://realtimevfx.com/t/discharge-strike-vfx-breakdown/10878)。读取作者正文并查看公开 GIF 阶段帧：作者以 Houdini 静态噪声分支网格、宽度渐变和 UV 电流组织电弧，较短放电与定向主放电分层，另配亮斑、火星和余波。动态可见聚集/分支爆发、定向放电和残留。补看 [Alex Huang Lightning Strike 第 2 楼](https://realtimevfx.com/t/aletsux-sketchbook/31237/2) 7.1 秒公开 GIF：下行接触、径向爆发、碎屑收尾。项目采用分支形体、主次电流及独立接触层；0.05 秒贯通、0.15 秒余电为项目参数，未复制参考长预备或地面破坏。没有声称看过链接中的 Vimeo 拆解或商业游戏源码。
+- P01-S24：[Frost Grenade 作者作品与说明](https://realtimevfx.com/t/frost-grenade/6047)。已读作者说明：爆点/法线决定冻结方向遮罩，噪声挤出、切换可破坏体并施加冲量、蓄起与爆裂时序以及光照烟雾；查看 4.92 秒公开 GIF，观察形成/冻结→碎裂→独立冰片与冷雾分别收尾。项目仅采用生长、破裂、碎片惯性和低显著性冷雾的层次，不实现角色冻结或破坏玩法；7 根晶体、16 个碎片、具体时长为项目设计。
+- 研究输出位于当前任务 visualizations/element-study：topic JSON、reference-sources.json、三份公开参考 GIF 及阶段图。参考只作研究，没有加入游戏资产或形成运行时外部依赖。
+- 制作前动作说明和完成状态见 work-items/active/combat-vfx-and-preview.md。lightning-before-after.gif、frost-before-after.gif 是同视角/尺寸的正常速度引擎录制（左旧右新），已检查最终关键帧和浅底减少动态；隔离行为与构建通过不代表用户已认可视觉质量。
+
+## P01-S25–S26：贴附燃烧与连续喷流（2026-09-09，首轮实施已被否定）
+
+- P01-S25：[Ryan Zeng：Stylized Zelda camp fire breakdown](https://realtimevfx.com/t/stylized-zelda-camp-fire-breakdown/9613)、[作者双语博客](https://ryanzengvfx.blogspot.com/2019/06/zelda-stylize-camp-fire.html)。已读正文并查看 132 帧/8.87 秒公开 GIF 的阶段图。作者分开火星、火体、烟雾；RGBA 分工为内焰、外焰和两路扰动，内焰弱扰动/外焰强扰动，以纵向渐变稳定根部，烟雾依据自身明暗形成消散遮罩。图中火根稳定、外焰持续换形、烟和火星分别移动。是社区作者的 Zelda 风格作品，不是任天堂原作技术揭秘。项目采用根部稳定/上流/分层，并生成自己的单火舌；未复制作者贴图，未实现营火玩法。
+- P01-S26：[Flamethrower (Unreal Engine 5)](https://realtimevfx.com/t/flamethrower-unreal-engine-5/30985)。已读作者与评论、查看作者第 8 楼最终 GIF（50 帧/5 秒）。作者自述由约 1600 粒子降至约 60 粒子加一个低模根部网格；可见窄根连续喷射、前端膨开/卷动、火烟分离。评论的指令数/FPS估计没有在本项目验证，不作为预算规则。作者指出 GIF 本身有跳帧，不把它当完整帧率基准。
+- 连续喷流动作补证：[Dragon Breath 教程入口](https://realtimevfx.com/t/heres-how-to-create-a-dragon-breath-in-unity/19009)，已看公开 GIF（100 帧/5 秒）的启动、持续和停止后残焰阶段；正文确认 Shader Graph、VFX Graph 和 Krita 纹理，未观看 YouTube 教学。另读取 [Giovanni Chequi 第 8–9 楼](https://realtimevfx.com/t/giovanni-chequi-vfx-sketchbook/20382/8) 的锥体纹理/纵向遮罩说明和 0.97 秒公开 GIF；它是短促锥形爆发，仅作材质/遮罩辅证，不充当持续吐息演示。
+- 项目适配：灼烧为 7 根贴附火舌、少量离体火焰/炭烟/余烬；吐息为连续流体与独立下游火舌组合，0.5 秒供给和 0.32 秒传播为项目参数，施法只改供给。素材粒度与动态对照记录在活动任务。fire-study 保存搜索/原文 JSON、作者博客文本、公开 GIF/阶段图和新旧引擎录制，研究图未进入游戏。新两项尚待用户审美验收。
+
+## P01-S27–S28：火尖形变与统一焰体（2026-09-09，统一焰体实施已否定）
+
+- P01-S27：[Ivan Boyko：2d animation “stylized fire” vfx](https://realtimevfx.com/t/2d-animation-stylized-fire-vfx/15248)。作者明确 Adobe Animate、30fps 逐帧手绘，无 shader；已查看四份公开 GIF 的各 12 个阶段，分别 54/64/80/30 帧。可见火尖相对火根侧弯、细颈拉伸后脱离，内外轮廓同时演变。采用的是这组动作关系，不将当前单图 shader 声称为手绘序列帧或已达到参考质量。
+- P01-S28：[Shannon McSheehan：LoL FX + Knowledge Share，第 209 楼](https://realtimevfx.com/t/shannon-mcsheehan-lol-fx-knowledge-share/1133/209)。已读作者关于渐变圆、黑色负形遮罩分别上移并循环，导出 flipbook 的说明；未查看该楼构建截图或原商业游戏动画。作为多个形体先合成再着色的依据，不能把项目的密度场实现称为作者原管线。
+- 结合 S26 的喷流阶段，项目移除“喷火背景＋横向直立火苗”，以重叠焰团的统一密度/颜色场表现前推、膨开、卷动、断流及残焰。灼烧裁去原图圆肚，加强根部至尖端的传播弯曲，独立小碎焰、暖光、火星。18 个活跃喷流采样、0.55 秒焰团寿命及形变参数均为项目适配，没有真实流体求解。
+- 新检索/原文和 GIF 存 fire-study 的 motion_research.py、topic-15248.json、topic-1133-209.json、handdrawn-reference-sources.json、handdrawn-fire-*；只作研究。最新正常速度对照为 burn-curl-unified-compare.gif、flamethrower-curl-unified-compare.gif，左为用户已否定的 motion-fix 版，右为本次；已检查阶段渲染，审美尚待用户验收。
+
+
+- 后续验收纠正：用户指出单火苗局部调整被擅自扩大为高火根/构图重做，形似触手；统一密度场形似胶状物。该实验已撤回，S27 仅用于原大小火苗的局部轻摆，S28 不再作为当前喷流实现说明。源码/录制恢复与验收入口见活动任务。
+
+## P01-S29–S30：召唤阶段与剩余状态表现（2026-09-09）
+
+- P01-S29：[Void/Star Summon FX](https://realtimevfx.com/t/void-star-summon-fx/19105)。查看作者 101 帧公开 GIF 的 12 阶段：地面能量和竖向形体相接，较亮峰值后主体先退，零碎光点另行结束。作者只说明练习作品，没有给技术拆解；不推断其 shader 参数或商用游戏归属。
+- P01-S30：[Skeleton Mage Summon With Shaders and Textures](https://realtimevfx.com/t/skeleton-mage-summon-with-shaders-and-textures/10196)。已读作者说明顶点位移、世界空间渐隐/侵蚀、mesh ribbons、事件时序、独立纹理等分工，并查看首份 265 帧 GIF 的 12 阶段：能量/碎片出现后实体显现，余能随后退出。没有观看嵌入的 YouTube 教学，没有取用其角色、纹理或工程。
+- 项目适配保留已有法阵，修正光柱悬空及阶段衔接；用局部 shader 光幕、独立短亮/碎光，不实现参考的实体材质变化或 3D 召唤。项目起升/短亮时长不冒充参考参数。检索、原文、两份公开 GIF 与阶段图在 remaining-study，未加入游戏资源。
+- 眩晕本轮保留现有三颗星椭圆绕行，仅做清晰星形、近远明暗/大小与短尾光，复用已有护盾连续深度表达。检索到的 Bubble Stun 和 Ethereal AOE Stun 动作不适用，Google/DDG 未提供可用结果；没有声称看过商业游戏星环，未据不适用的参考重做动作。

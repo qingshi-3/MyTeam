@@ -86,6 +86,7 @@ StartScale = 0.44
 EndScale = 0.50
 Duration = 0.14
 [node name="FirstFragments" type="Node2D" parent="."]
+FollowCastDelay = true
 script = ExtResource("particles")
 ParticleScene = ExtResource("fragment")
 Amount = 4
@@ -93,6 +94,7 @@ Delay = 0.055
 Direction = 0.7
 Spread = 0.65
 [node name="SecondFragments" type="Node2D" parent="."]
+FollowCastDelay = true
 script = ExtResource("particles")
 ParticleScene = ExtResource("fragment")
 Amount = 5

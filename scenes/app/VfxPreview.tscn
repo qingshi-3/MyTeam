@@ -223,3 +223,127 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "重置预览参数"
 
+[node name="InstanceParameters" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="CastSpeedLabel" type="Label" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "施法倍率"
+[node name="CastSpeed" type="HSlider" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.25
+max_value = 3
+step = 0.25
+value = 1
+
+[node name="MotionSpeedLabel" type="Label" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "内部流动"
+[node name="MotionSpeed" type="HSlider" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.25
+max_value = 3
+step = 0.25
+value = 1
+
+[node name="FlightTimeLabel" type="Label" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "飞行秒数"
+[node name="FlightTime" type="HSlider" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.2
+max_value = 2
+step = 0.02
+value = 0.78
+
+[node name="AppearanceParameters" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ParticleSizeLabel" type="Label" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "粒子尺寸"
+[node name="ParticleSize" type="HSlider" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.5
+max_value = 2
+step = 0.1
+value = 1
+
+[node name="DensityLabel" type="Label" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "粒子密度"
+[node name="Density" type="HSlider" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.5
+max_value = 3
+step = 0.25
+value = 1
+
+[node name="WidthLabel" type="Label" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "束体宽度"
+[node name="Width" type="HSlider" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.5
+max_value = 2
+step = 0.1
+value = 1
+
+[node name="EventMode" type="CheckButton" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "事件驱动"
+[node name="Fired" type="Button" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "出手"
+[node name="ContactCue" type="Button" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "命中"
+[node name="Progress" type="HSlider" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(130,32)
+max_value = 1.0
+step = 0.01
+tooltip_text = "事件驱动：实际飞行进度"
+
+[node name="HeadingLabel" type="Label" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "朝向 0°"
+[node name="Heading" type="HSlider" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(130,32)
+max_value = 345.0
+step = 15.0
+value = 0.0
+tooltip_text = "0°朝右，90°朝下，180°朝左；重新播放时锁定挥出方向"

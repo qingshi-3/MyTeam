@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/empower.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "empower"
+PreviewNote = "脚边亮起后，不等高光簇分批加速上冲、顶部解体，较细余光继续上升"
+DisplayName = "战意强化"
+Scene = ExtResource("scene")
+Duration = 1.55
+ActionSpan = 0.46
+Size = 130
+Ground = false
+FlattenGround = false
+Persistent = false
+StretchBetween = false

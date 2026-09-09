@@ -1,0 +1,8 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://scenes/vfx/FlameTongueParticle.tscn" id="base"]
+[ext_resource type="Shader" path="res://scenes/vfx/flame_tongue.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+shader_parameter/tip_sway = 0.12
+[node name="BurnFlameParticle" instance=ExtResource("base")]
+material = SubResource("material")

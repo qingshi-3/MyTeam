@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/frost.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "frost"
+PreviewNote = "中央主晶与高低冰晶遮叠长成完整晶簇，青白闪点与冷光点缀；破裂后碎晶飞散，冰蓝晶尘收尾"
+DisplayName = "冰霜爆裂"
+Scene = ExtResource("scene")
+Duration = 1.5
+ActionSpan = 0.36
+Size = 180
+Ground = true
+FlattenGround = false
+Persistent = false
+StretchBetween = false

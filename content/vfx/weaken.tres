@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/weaken.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "weaken"
+PreviewNote = "碎光下沉、脚下侵蚀；可正常消退"
+DisplayName = "虚弱侵蚀"
+Scene = ExtResource("scene")
+Duration = 1
+Size = 130
+Ground = false
+FlattenGround = false
+Persistent = true
+StretchBetween = false

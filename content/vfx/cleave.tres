@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/cleave.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "cleave"
+PreviewNote = "以施放者为圆心，朝目标方向扫过180°；距离只定方向，半径决定扫击范围"
+DisplayName = "横扫斩击"
+Scene = ExtResource("scene")
+Duration = 1.05
+ActionSpan = 0.30
+Size = 130
+Ground = false
+UsesRadius = true
+FlattenGround = false
+Persistent = false
+StretchBetween = false

@@ -1,0 +1,8 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/pool_bubble.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+[node name="PoolBubble" type="Sprite2D"]
+texture = ExtResource("surface")
+material = SubResource("material")

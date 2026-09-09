@@ -1,0 +1,169 @@
+[gd_scene load_steps=15 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxLightningTrack.cs" id="bolt"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/branched_lightning.gdshader" id="electric"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Shader" path="res://scenes/vfx/electric_contact.gdshader" id="contact_shader"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="emitter"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ShockMote.tscn" id="mote"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="ambient"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="group"]
+[sub_resource type="ShaderMaterial" id="electric_mat"]
+shader = ExtResource("electric")
+[sub_resource type="ShaderMaterial" id="contact_mat"]
+shader = ExtResource("contact_shader")
+[node name="Lightning" type="Node2D"]
+script = ExtResource("root")
+[node name="MainBolt" type="MeshInstance2D" parent="."]
+script = ExtResource("bolt")
+texture = ExtResource("surface")
+material = SubResource("electric_mat")
+From = Vector2(-6,-215)
+To = Vector2(0,32)
+Width = 30.0
+Jaggedness = 37.0
+Seed = 410
+TailDuration = 0.18
+[node name="AfterBolt" type="MeshInstance2D" parent="."]
+script = ExtResource("bolt")
+texture = ExtResource("surface")
+material = SubResource("electric_mat")
+From = Vector2(10,-205)
+To = Vector2(0,32)
+Width = 18.0
+Branches = 5
+Jaggedness = 32.0
+Seed = 710
+Delay = 0.15
+TravelDuration = 0.035
+TailDuration = 0.16
+[node name="GroundArcs" type="MeshInstance2D" parent="."]
+position = Vector2(0,32)
+scale = Vector2(0.9,0.48)
+script = ExtResource("bolt")
+texture = ExtResource("surface")
+material = SubResource("electric_mat")
+GroundFan = true
+Branches = 6
+Width = 12.0
+Jaggedness = 12.0
+Seed = 821
+Delay = 0.02
+TravelDuration = 0.065
+TailDuration = 0.30
+[node name="Contact" type="Sprite2D" parent="."]
+position = Vector2(0,32)
+scale = Vector2(0.95,0.48)
+texture = ExtResource("surface")
+material = SubResource("contact_mat")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.2
+[node name="Sparks" type="Node2D" parent="."]
+position = Vector2(0,32)
+script = ExtResource("emitter")
+ParticleScene = ExtResource("mote")
+Amount = 12
+Radial = true
+OriginRadius = 6.0
+Seed = 221
+Gravity = 140.0
+LiftSpeed = 50.0
+Delay = 0.03
+FollowCastDelay = true
+SpeedRange = Vector2(110,220)
+LifetimeRange = Vector2(0.22,0.50)
+SizeRange = Vector2(9,18)
+HeightScale = 0.4
+EndTint = Color(0.2,0.4,1,1)
+
+[node name="ArcGlints0" type="Node2D" parent="."]
+position = Vector2(-8,-160)
+modulate = Color(0.58,0.66,1,0.95)
+script = ExtResource("emitter")
+ParticleScene = ExtResource("glint")
+Amount = 6
+Seed = 910
+Radial = true
+OriginRadius = 12.0
+Delay = 0.035
+EmitDuration = 0.07
+FollowCastDelay = true
+Gravity = 25.0
+LiftSpeed = 10.0
+FaceVelocity = false
+SpeedRange = Vector2(45,115)
+LifetimeRange = Vector2(0.28,0.53)
+SizeRange = Vector2(15,28)
+HeightScale = 1.0
+EndSizeFactor = Vector2(0.4,0.4)
+EndTint = Color(0.32,0.45,1,1)
+
+[node name="ArcGlints1" type="Node2D" parent="."]
+position = Vector2(12,-82)
+modulate = Color(0.58,0.66,1,0.95)
+script = ExtResource("emitter")
+ParticleScene = ExtResource("glint")
+Amount = 6
+Seed = 911
+Radial = true
+OriginRadius = 12.0
+Delay = 0.055
+EmitDuration = 0.07
+FollowCastDelay = true
+Gravity = 25.0
+LiftSpeed = 10.0
+FaceVelocity = false
+SpeedRange = Vector2(45,115)
+LifetimeRange = Vector2(0.28,0.53)
+SizeRange = Vector2(15,28)
+HeightScale = 1.0
+EndSizeFactor = Vector2(0.4,0.4)
+EndTint = Color(0.32,0.45,1,1)
+
+[node name="ArcGlints2" type="Node2D" parent="."]
+position = Vector2(0,25)
+modulate = Color(0.58,0.66,1,0.95)
+script = ExtResource("emitter")
+ParticleScene = ExtResource("glint")
+Amount = 10
+Seed = 912
+Radial = true
+OriginRadius = 12.0
+Delay = 0.085
+EmitDuration = 0.07
+FollowCastDelay = true
+Gravity = 25.0
+LiftSpeed = 10.0
+FaceVelocity = false
+SpeedRange = Vector2(45,115)
+LifetimeRange = Vector2(0.28,0.53)
+SizeRange = Vector2(15,28)
+HeightScale = 1.0
+EndSizeFactor = Vector2(0.4,0.4)
+EndTint = Color(0.32,0.45,1,1)
+
+[node name="AfterDust" type="Node2D" parent="."]
+position = Vector2(0,8)
+modulate = Color(0.36,0.52,1,1)
+script = ExtResource("group")
+Delay = 0.10
+DelayFollowsCast = true
+[node name="Motes" type="Node2D" parent="AfterDust"]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("dust")
+Amount = 28
+Seed = 923
+Spread = Vector2(58,38)
+Velocity = Vector2(0,-26)
+Lifetime = 0.56
+EmitDuration = 0.08
+SizeRange = Vector2(7,16)
+EndScale = Vector2(0.45,0.45)
+Opacity = 0.85
+EndTint = Color(0.55,0.45,1,1)

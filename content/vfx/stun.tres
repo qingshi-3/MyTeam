@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/stun.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "stun"
+PreviewNote = "三颗金星沿头顶椭圆绕行，近处略大略亮，短尾光跟随；保留原轨迹与节奏"
+DisplayName = "眩晕星环"
+Scene = ExtResource("scene")
+Duration = 1
+Size = 130
+Ground = false
+FlattenGround = false
+Persistent = true
+StretchBetween = false

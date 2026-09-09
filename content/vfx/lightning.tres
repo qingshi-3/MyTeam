@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/lightning.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "lightning"
+PreviewNote = "主干快速贯通、余电补闪；蓝紫碎光沿电弧散开，落点电火星与细尘分别收尾"
+DisplayName = "雷霆落击"
+Scene = ExtResource("scene")
+Duration = 0.85
+ActionSpan = 0.19
+Size = 150
+Ground = false
+FlattenGround = false
+Persistent = false
+StretchBetween = false

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/flamethrower.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "flamethrower"
+PreviewNote = "已撤回胶状焰团，恢复上一版喷流与离体火焰；此版本仍待后续优化"
+DisplayName = "烈焰吐息"
+Scene = ExtResource("scene")
+Duration = 1.45
+ActionSpan = 0.5
+Size = 150
+Ground = false
+FlattenGround = false
+Persistent = false
+StretchBetween = true

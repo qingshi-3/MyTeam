@@ -1,0 +1,51 @@
+[gd_scene load_steps=9 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxRiseTrack.cs" id="rise"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/RisingPlume.tscn" id="plume"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/empower_flash.gdshader" id="flash_shader"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="group"]
+[sub_resource type="ShaderMaterial" id="flash"]
+shader = ExtResource("flash_shader")
+[node name="Empower" type="Node2D"]
+script = ExtResource("root")
+[node name="FootLight" type="Node2D" parent="."]
+script = ExtResource("group")
+Clock = 1
+[node name="Glow" type="Sprite2D" parent="FootLight"]
+position = Vector2(0,55)
+scale = Vector2(0.65,0.19)
+texture = ExtResource("surface")
+material = SubResource("flash")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.48
+[node name="MainPlumes" type="Node2D" parent="."]
+position = Vector2(0,48)
+script = ExtResource("rise")
+ParticleScene = ExtResource("plume")
+Amount = 9
+Seed = 320
+Size = Vector2(138,92)
+Spread = Vector2(37,7)
+Lifetime = 0.62
+InitialSpeed = 85.0
+Acceleration = 390.0
+Opacity = 0.95
+[node name="Afterglints" type="Node2D" parent="."]
+position = Vector2(0,48)
+script = ExtResource("rise")
+ParticleScene = ExtResource("plume")
+Amount = 13
+Seed = 723
+Size = Vector2(18,30)
+Spread = Vector2(43,10)
+Delay = 0.16
+EmitDuration = 0.30
+Lifetime = 0.85
+InitialSpeed = 145.0
+Acceleration = 95.0
+Opacity = 0.8

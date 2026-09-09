@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=18 format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
 [ext_resource type="Script" path="res://src/Vfx/VfxFallingTrack.cs" id="flight"]
 [ext_resource type="Texture2D" path="res://assets/vfx/energy-mote.png" id="image"]
@@ -8,6 +8,11 @@
 [ext_resource type="PackedScene" path="res://scenes/vfx/FireImpact.tscn" id="impact"]
 [ext_resource type="Texture2D" path="res://assets/vfx/fireball-body.png" id="sphere"]
 [ext_resource type="Shader" path="res://scenes/vfx/fireball_tail.gdshader" id="tail"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="group"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[sub_resource type="ShaderMaterial" id="ChargeMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("body")
 [sub_resource type="ShaderMaterial" id="Tail"]
 resource_local_to_scene = true
 shader = ExtResource("tail")
@@ -50,4 +55,21 @@ scale = Vector2(0.04, 0.22)
 offset = Vector2(-650, 0)
 [node name="Impact" parent="." instance=ExtResource("impact")]
 scale = Vector2(1, 0.6)
-Delay = 0.78
+Delay = 0.0
+StartCue = 2
+[node name="Cast" type="Node2D" parent="."]
+script = ExtResource("group")
+AtSource = true
+SourceOffset = Vector2(16, -12)
+UntilFired = true
+Clock = 1
+[node name="Charge" type="Sprite2D" parent="Cast"]
+ShaderLifecycle = true
+texture = ExtResource("sphere")
+texture_filter = 4
+material = SubResource("ChargeMaterial")
+script = ExtResource("sprite")
+scale = Vector2(0.16, 0.16)
+Duration = 0.3
+StartScale = 0.3
+EndScale = 0.95

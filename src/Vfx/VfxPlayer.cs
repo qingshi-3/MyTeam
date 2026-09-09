@@ -12,6 +12,7 @@ public partial class VfxPlayer : Node2D
     public float Speed { get; set; } = 1;
     public bool ReducedMotion { get; set; }
     public int ActiveCount => _instances.Count;
+    public VfxPlaybackState? PlaybackFor(string key) => _instances.TryGetValue(key, out var instance) ? instance.Playback : null;
     private readonly Dictionary<string, VfxInstance> _instances = [];
     private IVfxStage? _stage;
     private long _sequence;
@@ -24,8 +25,8 @@ public partial class VfxPlayer : Node2D
         // Bound transient work, but never drop an owned persistent effect.
         if (!definition.Persistent && _instances.Count >= 192) return key;
         var instance = definition.Scene.Instantiate<VfxInstance>();
-        AddChild(instance);
-        instance.Bind(definition, context);
+        try { instance.Bind(definition, context); AddChild(instance); }
+        catch { instance.Free(); throw; }
         _instances.Add(key, instance);
         if (_stage is not null) instance.Advance(0, _stage, ReducedMotion);
         return key;
@@ -35,6 +36,10 @@ public partial class VfxPlayer : Node2D
         if (_instances.TryGetValue(key, out var instance)) instance.Context = context;
     }
     public void Impact(string key) { if (_instances.TryGetValue(key, out var instance)) instance.Impact(); }
+    public void Signal(string key, VfxStartCue cue)
+    {
+        if (_instances.TryGetValue(key, out var instance)) instance.Signal(cue);
+    }
     public void End(string key, VfxEndReason reason)
     {
         if (_instances.Remove(key, out var instance))
@@ -47,6 +52,7 @@ public partial class VfxPlayer : Node2D
     public override void _Process(double delta) => Advance(Paused ? 0 : (float)delta * Speed);
     public void Advance(float seconds)
     {
+        if (!float.IsFinite(seconds)) throw new ArgumentOutOfRangeException(nameof(seconds));
         if (_stage is null) return;
         foreach (var pair in _instances.ToArray())
             if (!pair.Value.Advance(Math.Max(0, seconds), _stage, ReducedMotion))

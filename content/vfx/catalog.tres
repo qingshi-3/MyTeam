@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="VfxCatalog" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="VfxCatalog" load_steps=21 format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxCatalog.cs" id="1"]
 [ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
 [ext_resource type="Resource" path="res://content/vfx/rend.tres" id="2"]
@@ -9,6 +9,16 @@
 [ext_resource type="Resource" path="res://content/vfx/impact.tres" id="7"]
 [ext_resource type="Resource" path="res://content/vfx/heal.tres" id="8"]
 [ext_resource type="Resource" path="res://content/vfx/firefall.tres" id="9"]
+[ext_resource type="Resource" path="res://content/vfx/cleave.tres" id="cleave"]
+[ext_resource type="Resource" path="res://content/vfx/lightning.tres" id="lightning"]
+[ext_resource type="Resource" path="res://content/vfx/frost.tres" id="frost"]
+[ext_resource type="Resource" path="res://content/vfx/flamethrower.tres" id="flamethrower"]
+[ext_resource type="Resource" path="res://content/vfx/burn.tres" id="burn"]
+[ext_resource type="Resource" path="res://content/vfx/poison.tres" id="poison"]
+[ext_resource type="Resource" path="res://content/vfx/empower.tres" id="empower"]
+[ext_resource type="Resource" path="res://content/vfx/weaken.tres" id="weaken"]
+[ext_resource type="Resource" path="res://content/vfx/stun.tres" id="stun"]
+[ext_resource type="Resource" path="res://content/vfx/summon.tres" id="summon"]
 [resource]
 script = ExtResource("1")
-Effects = Array[ExtResource("def")]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9")])
+Effects = Array[ExtResource("def")]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("cleave"), ExtResource("lightning"), ExtResource("frost"), ExtResource("flamethrower"), ExtResource("burn"), ExtResource("poison"), ExtResource("empower"), ExtResource("weaken"), ExtResource("stun"), ExtResource("summon")])

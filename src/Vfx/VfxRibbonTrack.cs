@@ -4,7 +4,7 @@ namespace TowerAutobattler.Vfx;
 
 // Immutable authored path, instance-owned mesh/material. UV.x measures stroke
 // distance; vertex color carries its tangent for the shader's trailing motion.
-public partial class VfxRibbonTrack : MeshInstance2D, IVfxTrack
+public partial class VfxRibbonTrack : MeshInstance2D, IVfxTrack, IVfxPlaybackTrack
 {
     [Export] public Curve2D Path { get; set; } = null!;
     [Export] public float Width { get; set; } = 42;
@@ -12,6 +12,8 @@ public partial class VfxRibbonTrack : MeshInstance2D, IVfxTrack
     [Export] public float SweepDuration { get; set; } = .17f;
     [Export] public float TailDuration { get; set; } = .24f;
     private ShaderMaterial _shader = null!;
+    private float _castSpeed = 1;
+    public void ConfigurePlayback(VfxPlaybackState playback) => _castSpeed = playback.Parameters.CastSpeed;
 
     public override void _Ready()
     {
@@ -58,8 +60,11 @@ public partial class VfxRibbonTrack : MeshInstance2D, IVfxTrack
 
     public void Sample(float age, bool sustained, float release, float impact, bool reducedMotion)
     {
-        float localAge = age - Delay;
-        Visible = localAge >= 0 && localAge < SweepDuration + TailDuration && release < 1;
+        float localAge = age - Delay / _castSpeed;
+        // Only the moving blade accelerates. Already-painted tail segments
+        // keep their authored real-time fade, including at slow cast speeds.
+        _shader.SetShaderParameter("sweep_duration", SweepDuration / _castSpeed);
+        Visible = localAge >= 0 && localAge < SweepDuration / _castSpeed + TailDuration && release < 1;
         _shader.SetShaderParameter("age", Mathf.Max(0, localAge));
         _shader.SetShaderParameter("release", release);
         _shader.SetShaderParameter("motion_amount", reducedMotion ? 0f : 1f);

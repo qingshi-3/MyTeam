@@ -1,0 +1,52 @@
+[gd_scene load_steps=9 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="e0"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="e1"]
+[ext_resource type="Texture2D" path="res://assets/vfx/arcane-seal.png" id="e2"]
+[ext_resource type="Shader" path="res://scenes/vfx/seal_reveal.gdshader" id="e3"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="e4"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ShockMote.tscn" id="e5"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/MistParticle.tscn" id="e6"]
+[sub_resource type="ShaderMaterial" id="s0"]
+resource_local_to_scene = true
+shader = ExtResource("e3")
+shader_parameter/tint = Color(0.6,0.18,0.86,0.65)
+shader_parameter/spin_speed = -0.16
+[node name="Weaken" type="Node2D"]
+script = ExtResource("e0")
+[node name="CurseSeal" type="Sprite2D" parent="."]
+texture = ExtResource("e2")
+texture_filter = 4
+material = SubResource("s0")
+script = ExtResource("e1")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+position = Vector2(0,55)
+scale = Vector2(0.65,0.25)
+Duration = 1
+[node name="DrainingMotes" type="Node2D" parent="."]
+script = ExtResource("e4")
+ParticleScene = ExtResource("e5")
+position = Vector2(0,-70)
+Amount = 14
+Spread = Vector2(40,14)
+Velocity = Vector2(0,92)
+Lifetime = 1.2
+SizeRange = Vector2(24,35)
+EndScale = Vector2(0.2,0.2)
+StartTint = Color(0.74,0.4,1,1)
+EndTint = Color(0.32,0.1,0.5,1)
+FaceVelocity = true
+[node name="LowMist" type="Node2D" parent="."]
+script = ExtResource("e4")
+ParticleScene = ExtResource("e6")
+position = Vector2(0,48)
+Amount = 7
+Spread = Vector2(42,8)
+Velocity = Vector2(0,-14)
+Lifetime = 1.8
+SizeRange = Vector2(40,58)
+EndScale = Vector2(1.2,0.8)
+StartTint = Color(0.35,0.1,0.5,1)
+EndTint = Color(0.17,0.06,0.26,1)
+Opacity = 0.45

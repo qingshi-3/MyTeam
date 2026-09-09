@@ -6,7 +6,7 @@ namespace TowerAutobattler.Vfx;
 
 // A presentation-only lob. Trail particles stay at their historical birth
 // positions rather than being dragged with the projectile. No damage is applied.
-public partial class VfxFallingTrack : Node2D, IVfxTrack, IVfxSourceTrack
+public partial class VfxFallingTrack : Node2D, IVfxTrack, IVfxSourceTrack, IVfxPlaybackTrack
 {
     [Export] public float TravelDuration { get; set; } = .78f;
     [Export] public float ArcHeight { get; set; } = 72;
@@ -18,7 +18,15 @@ public partial class VfxFallingTrack : Node2D, IVfxTrack, IVfxSourceTrack
     private readonly List<Spark> _sparks = [];
     private Vector2 _start = new(-180, -35);
     private float _unitScale = 1;
-    private sealed record Spark(Sprite2D Sprite, float Birth, float Lifetime, float Size, Vector2 Drift);
+    private VfxPlaybackState? _playback;
+    private float _lastAge;
+    private float _lastProgress;
+    public void ConfigurePlayback(VfxPlaybackState playback) => _playback = playback;
+    private sealed record Spark(Sprite2D Sprite, float Birth, float Lifetime, float Size, Vector2 Drift)
+    {
+        public Vector2? HistoricalPosition { get; set; }
+        public float HistoricalRotation { get; set; }
+    }
     public void SetSource(Vector2 localSource, float localUnitScale)
     {
         _unitScale = localUnitScale;
@@ -50,12 +58,16 @@ public partial class VfxFallingTrack : Node2D, IVfxTrack, IVfxSourceTrack
     }
     public void Sample(float age, bool sustained, float release, float impact, bool reducedMotion)
     {
-        float p = Mathf.Clamp(age / Mathf.Max(.01f, TravelDuration), 0, 1);
-        _projectile.Visible = age < TravelDuration && release < 1;
+        if (_playback is not null) age = _playback.Since(VfxStartCue.Fired);
+        float duration = _playback?.FlightDuration > 0 ? _playback.FlightDuration : TravelDuration;
+        bool external = _playback?.Parameters.Timing == VfxTimingMode.Events;
+        bool landed = _playback?.ImpactAt is not null;
+        float p = landed ? 1 : external ? _playback!.TravelProgress ?? 0 : Mathf.Clamp(age / Mathf.Max(.01f, duration), 0, 1);
+        _projectile.Visible = age >= 0 && !landed && (external || age < duration) && release < 1;
         _projectile.Position = reducedMotion ? new Vector2(0, -25) * _unitScale : PositionAt(p);
         _projectile.Rotation = reducedMotion ? 0 : TangentAt(p).Angle();
         _projectile.Scale = Vector2.One * _unitScale;
-        _projectile.Modulate = new Color(1, 1, 1, Mathf.Min(age / .045f, 1) * (1 - release));
+        _projectile.Modulate = new Color(1, 1, 1, Mathf.Clamp(age / .045f, 0, 1) * (1 - release));
         foreach (var material in _materials)
         {
             material.SetShaderParameter("age", age);
@@ -64,15 +76,27 @@ public partial class VfxFallingTrack : Node2D, IVfxTrack, IVfxSourceTrack
         }
         foreach (var spark in _sparks)
         {
-            float t = age - spark.Birth;
-            spark.Sprite.Visible = !reducedMotion && t >= 0 && t < spark.Lifetime;
+            float birth = spark.Birth / TravelDuration * duration;
+            float t = age - birth;
+            float stop = _playback?.ImpactAt is { } hit ? hit - (_playback.FiredAt ?? 0) : float.PositiveInfinity;
+            spark.Sprite.Visible = !reducedMotion && t >= 0 && t < spark.Lifetime && birth <= stop;
             if (!spark.Sprite.Visible) continue;
+            if (external && spark.HistoricalPosition is null)
+            {
+                // Follow supplied progress history, including early contacts;
+                // never predict a gameplay hit from the decorative duration.
+                float atBirth = Mathf.Lerp(_lastProgress, p, Mathf.Clamp((birth - _lastAge) / Mathf.Max(.0001f, age - _lastAge), 0, 1));
+                spark.HistoricalPosition = PositionAt(atBirth);
+                spark.HistoricalRotation = TangentAt(atBirth).Angle();
+            }
             float life = t / spark.Lifetime;
-            spark.Sprite.Position = PositionAt(spark.Birth / TravelDuration) + spark.Drift * t * _unitScale;
-            spark.Sprite.Rotation = TangentAt(spark.Birth / TravelDuration).Angle();
+            spark.Sprite.Position = (spark.HistoricalPosition ?? PositionAt(spark.Birth / TravelDuration)) + spark.Drift * t * _unitScale;
+            spark.Sprite.Rotation = external ? spark.HistoricalRotation : TangentAt(spark.Birth / TravelDuration).Angle();
             spark.Sprite.Scale = new Vector2(1, .85f) * _unitScale * spark.Size * (1 - .6f * life) / spark.Sprite.Texture.GetWidth();
             spark.Sprite.Modulate = new Color(1, 1 - .5f * life, 1 - .8f * life,
                 .75f * Mathf.Min(t / .025f, 1) * (1 - life) * (1 - release));
         }
+        _lastAge = Mathf.Max(0, age);
+        _lastProgress = p;
     }
 }

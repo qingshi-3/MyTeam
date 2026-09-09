@@ -81,3 +81,11 @@ Slotbound 高 rarity 可容纳更多 passive，结合吸收继承形成更复杂
 HT01 是不采用固定档级的整体对照；HT02 是采用后的供给作用。HT03–HT07 可共存，描述不同英雄在分级体系内的价值，不要求每档所有英雄共享一种角色。HT08 会改变培养与替换承诺；HT09 已受 M01 初期范围限制。确切档数、名称、开放方式和概率，以及同一英雄是否能升星，都不在本题顺带决定。
 
 建议见 [Q01-P01](proposals.md)，尚无 R01 用户决定。I24 跟踪固定档级、早期投入、后期奖励与供给的衔接。
+
+## 用户费用＋品阶方案的定点证据回读
+
+2026-09-08 用户提出固有费用、消耗升阶资源获得英雄专属加强，并询问补充。此轮不是新一轮全库机制枚举；对 780 深记录的规则／实践／机制字段筛查 augment、hero-specific、personal upgrade、英雄强化等关联词，回读 `ev-tft-010-high-impact-augment-agency` 及 `src-tft-riot-monsters-learnings`，同时沿用本题已有低费培养与功能互补材料。未联网获取新资料。
+
+Riot 的 [Monsters Attack! Learnings](https://teamfighttactics.leagueoflegends.com/en-us/news/dev/dev-teamfight-tactics-monsters-attack-learnings/)为 2023-05-22 Set 7/8 设计复盘；深记录整理了英雄强化将显著规则变化与特定英雄绑定、选择控制需与构筑影响相匹配的启示。记录将此推论标为中等置信度，并明确没有适用于所有项目的刷新／控制数量。它支持讨论专属加强与获取可控性的关系，不能证明“消耗材料升阶”就是原作 Hero Augment 的获取制度，也不保证本项目低费升阶的强度。
+
+用户的类比与项目机制分别见 [Q01-P03／HF01–HF06](proposals.md)。示意技能为 Agent 说明用途，不是新增正式内容或原作事实。

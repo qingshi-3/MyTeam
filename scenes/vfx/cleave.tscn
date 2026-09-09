@@ -1,0 +1,54 @@
+[gd_scene load_steps=11 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSweepPlane.cs" id="plane"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSectorTrack.cs" id="sector"]
+[ext_resource type="Texture2D" path="res://assets/vfx/rend-strip.png" id="ink"]
+[ext_resource type="Shader" path="res://scenes/vfx/sector_sweep.gdshader" id="shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/sector_glow.gdshader" id="glow_shader"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="emitter"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ShockMote.tscn" id="mote"]
+[sub_resource type="ShaderMaterial" id="glow"]
+resource_local_to_scene = true
+shader = ExtResource("glow_shader")
+[sub_resource type="ShaderMaterial" id="body"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+[node name="Cleave" type="Node2D"]
+script = ExtResource("root")
+[node name="Sweep" type="Node2D" parent="."]
+script = ExtResource("plane")
+DefaultRadius = 1.5
+SideRadiusRatio = 0.72
+[node name="Glow" type="MeshInstance2D" parent="Sweep"]
+script = ExtResource("sector")
+texture = ExtResource("ink")
+texture_filter = 2
+material = SubResource("glow")
+InnerRadiusRatio = 0.10
+SweepDuration = 0.30
+TailDuration = 0.24
+[node name="Blade" type="MeshInstance2D" parent="Sweep"]
+script = ExtResource("sector")
+texture = ExtResource("ink")
+texture_filter = 2
+material = SubResource("body")
+InnerRadiusRatio = 0.28
+SweepDuration = 0.30
+TailDuration = 0.24
+[node name="Sparks" type="Node2D" parent="Sweep"]
+script = ExtResource("emitter")
+ParticleScene = ExtResource("mote")
+Amount = 12
+Radial = true
+ArcDegrees = 180.0
+Direction = -1.5707963
+VelocityAngleOffset = 1.05
+OriginRadius = 111.0
+EmitDuration = 0.30
+Delay = 0.015
+FollowCastDelay = true
+SpeedRange = Vector2(70,115)
+LifetimeRange = Vector2(0.20,0.36)
+SizeRange = Vector2(6,12)
+Gravity = 0.0
+EndTint = Color(1,0.5,0.15,1)

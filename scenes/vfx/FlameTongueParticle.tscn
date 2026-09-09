@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="Texture2D" path="res://assets/vfx/flame-tongue.png" id="image"]
+[ext_resource type="Shader" path="res://scenes/vfx/flame_tongue.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+[node name="FlameTongueParticle" type="Sprite2D"]
+texture = ExtResource("image")
+texture_filter = 4
+material = SubResource("material")

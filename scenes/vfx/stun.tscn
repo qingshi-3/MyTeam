@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="e0"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="e1"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="e2"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/StarParticle.tscn" id="e3"]
+
+[node name="Stun" type="Node2D"]
+script = ExtResource("e0")
+[node name="FarTrail" type="Node2D" parent="."]
+script = ExtResource("e2")
+ParticleScene = ExtResource("e1")
+position = Vector2(0,-65)
+Amount = 3
+Motion = 3
+Spread = Vector2(58,15)
+SizeRange = Vector2(15,15)
+AngularSpeed = 2.8
+OrbitPhase = -0.38
+OrbitDepthScale = 0.18
+StartTint = Color(1,0.62,0.08,1)
+Opacity = 0.38
+[node name="NearTrail" type="Node2D" parent="."]
+script = ExtResource("e2")
+ParticleScene = ExtResource("e1")
+position = Vector2(0,-65)
+Amount = 3
+Motion = 3
+Spread = Vector2(58,15)
+SizeRange = Vector2(23,23)
+AngularSpeed = 2.8
+OrbitPhase = -0.18
+OrbitDepthScale = 0.18
+StartTint = Color(1,0.8,0.25,1)
+Opacity = 0.55
+[node name="Stars" type="Node2D" parent="."]
+script = ExtResource("e2")
+ParticleScene = ExtResource("e3")
+position = Vector2(0,-65)
+Amount = 3
+Motion = 3
+Spread = Vector2(58,15)
+SizeRange = Vector2(29,34)
+AngularSpeed = 2.8
+OrbitDepthScale = 0.18
+OrbitTilt = 0.28
+Seed = 1410
+Opacity = 1.0

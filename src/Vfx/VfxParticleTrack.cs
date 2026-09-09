@@ -6,7 +6,7 @@ namespace TowerAutobattler.Vfx;
 // A small, bounded emitter sampled analytically so pause/step/slow motion need
 // no second particle clock or frame-dependent physics. Each particle is a
 // separate authored sprite instance; randomness is presentation-local.
-public partial class VfxParticleTrack : Node2D, IVfxTrack
+public partial class VfxParticleTrack : Node2D, IVfxTrack, IVfxPlaybackTrack
 {
     [Export] public PackedScene ParticleScene { get; set; } = null!;
     [Export] public int Amount { get; set; } = 10;
@@ -16,6 +16,8 @@ public partial class VfxParticleTrack : Node2D, IVfxTrack
     [Export] public Vector2 SizeRange { get; set; } = new(14, 25);
     [Export] public Vector2 RiseSpeedRange { get; set; } = new(72, 115);
     [Export] public int Seed { get; set; }
+    private VfxPlaybackState? _playback;
+    public void ConfigurePlayback(VfxPlaybackState playback) => _playback = playback;
     private readonly List<Particle> _particles = [];
     private sealed record Particle(Sprite2D Sprite, Vector2 Origin, float Delay,
         float Lifetime, float Size, float RiseSpeed, float Drift);
@@ -25,7 +27,8 @@ public partial class VfxParticleTrack : Node2D, IVfxTrack
         var random = new RandomNumberGenerator();
         if (Seed == 0) random.Randomize();
         else random.Seed = (ulong)Seed;
-        for (int i = 0; i < Mathf.Clamp(Amount, 1, 32); i++)
+        int count = Mathf.Clamp(Mathf.RoundToInt(Amount * (_playback?.DensityAtBirth ?? 1)), 1, 32);
+        for (int i = 0; i < count; i++)
         {
             var sprite = ParticleScene.Instantiate<Sprite2D>();
             AddChild(sprite);
@@ -54,7 +57,7 @@ public partial class VfxParticleTrack : Node2D, IVfxTrack
             var fadeOut = 1 - Mathf.SmoothStep(0, 1, Mathf.Clamp((t - .5f) / .5f, 0, 1));
             particle.Sprite.Position = particle.Origin + (reducedMotion ? Vector2.Zero :
                 new Vector2(particle.Drift * elapsed, -particle.RiseSpeed * elapsed));
-            particle.Sprite.Scale = Vector2.One * particle.Size / particle.Sprite.Texture.GetWidth();
+            particle.Sprite.Scale = Vector2.One * particle.Size / particle.Sprite.Texture.GetWidth() * (_playback?.ParticleScale ?? 1);
             particle.Sprite.Modulate = new Color(1, 1, 1, fadeIn * fadeOut * (1 - release));
         }
     }

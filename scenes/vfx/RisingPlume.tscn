@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="Texture2D" path="res://assets/vfx/rising-plume.png" id="plume"]
+[ext_resource type="Shader" path="res://scenes/vfx/rise_plume.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+[node name="RisingPlume" type="Sprite2D"]
+texture = ExtResource("plume")
+texture_filter = 4
+material = SubResource("material")

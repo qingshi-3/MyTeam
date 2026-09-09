@@ -2,6 +2,8 @@ shader_type canvas_item;
 render_mode unshaded, blend_add;
 #include "res://scenes/vfx/ribbon_motion.gdshaderinc"
 uniform float strength : hint_range(0.0, 2.0) = 0.85;
+uniform vec4 inner_tint : source_color = vec4(1.0, 0.28, 0.20, 1.0);
+uniform vec4 outer_tint : source_color = vec4(0.90, 0.04, 0.09, 1.0);
 
 void fragment() {
     float passed = passed_time(UV.x);
@@ -26,7 +28,7 @@ void fragment() {
     float edge = 1.0 - smoothstep(0.015, 0.055, passed);
     float across = abs(UV.y - 0.5) * 2.0;
     float boundary = exp(-across * across * 5.0) * (1.0 - smoothstep(0.65, 1.0, across));
-    vec3 tint = mix(vec3(1.0, 0.28, 0.20), vec3(0.90, 0.04, 0.09), across);
+    vec3 tint = mix(inner_tint.rgb, outer_tint.rgb, across);
     float gain = strength * (1.0 + edge * 1.4 * motion_amount);
     COLOR = vec4(tint, light * gain * visible * fade * boundary * (1.0 - release)
         * mix(0.35, 1.0, motion_amount));
