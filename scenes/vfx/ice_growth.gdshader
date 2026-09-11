@@ -19,5 +19,5 @@ void fragment(){
     float flash=exp(-pow((fracture-.12)/.10,2.0))*.85*motion_amount;
     vec3 color=ice.rgb+vec3(.32,.62,.75)*rim*flash;
     float life=smoothstep(0.,.16,growth)*(1.-release);
-    COLOR=vec4(color,ice.a*dissolve*life)*tint;
+    COLOR=vec4(color,pow(ice.a,1.65)*dissolve*life)*tint;
 }

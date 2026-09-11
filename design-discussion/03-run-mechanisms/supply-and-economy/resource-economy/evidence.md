@@ -250,7 +250,7 @@ Merchant 先收 token 展示特殊物品，再用 Gold 购买；token 还用于�
 
 ## R09-Q04：普通装备出售需要什么操作窗口
 
-日期：2026-09-09。问题限定为：D03 已采用的普通装备卖金币，是在合法非战斗管理阶段普遍可用，还是需要到商人等指定交易节点。已有免费换装不能推出出售权限；本轮不重开出售所得、装备拆解、英雄回退、战中介入或商店出现频率。具体研究对应 [SW01／SW02](proposals.md)，无新用户决定。
+日期：2026-09-09。问题限定为：D03 已采用的普通装备卖金币，是在合法非战斗管理阶段普遍可用，还是需要到商人等指定交易节点。已有免费换装不能推出出售权限；本题不重开出售所得、装备拆解、英雄回退、战中介入或商店出现频率。研究对应 [SW01／SW02](proposals.md)；研究时尚未决定，后续用户“同意”采用 SW01 的范围归 [R09-D04](decisions.md)，记录确认时无新检索或来源。
 
 ### Q04 检索范围与方法
 
@@ -296,3 +296,77 @@ Merchant 先收 token 展示特殊物品，再用 Gold 购买；token 还用于�
 - 商店频率与出售权限是两个轴：每战必有商店时，商店出售可能已覆盖几乎所有准备；商人稀疏、节点之间有其他金币用途时，限制出售才明显改变筹资和路线。这个条件分析是项目设计推论，未有本项目体验数据。
 
 据此形成两个直接待决的项目规则 **SW01 非战斗管理阶段普遍可卖、SW02 指定交易节点可卖**；把原作高频商店、路线交易的具体差异用于解释，而非伪造更多互斥套餐。D03 已认可 EX04 特殊交换可分别与两者组合，不重选。现有语料不足以关闭的窗口限制明确留缺口；本轮无联网补研、安装、运行或实现改动。
+
+## R09-Q05：已升级装备退出时，过去投入的升级材料如何处理
+
+日期：2026-09-09。D03／D04 已确认普通装备卖金币及合法非战斗管理窗口；本题只比较升级投入怎样退出。恢复核对 [M05-D02／D03](../../../02-foundation-models/equipment-model/decisions.md)、[R03-D01–D03](../../roster-and-growth/replacement-recovery/decisions.md)与 I21／I24／I33。品质配置固定、材料尽量通用、不升级不能成为推进硬门槛均保持；独立材料及高级 Boss 稳定产出特材仍含候选，不写成完整配方。英雄回退已定不等于装备自动采用同一回退方式。
+
+本节保留研究时点与缺证结论。用户后续在核对投入前提后，已明确“不返还材料，直接折算金币”，见 [R09-D05](decisions.md)；具体计价／折损未定，原 IR02 推荐未采用。记录确认时未新增研究或改写原作证据。
+
+### Q05 实际检索与扩查
+
+只读 [780 条深记录](../../../../web/game-mechanics-atlas/research/deep/mechanic-evidence.json)、106 条发现记录、56 份深档案与 [来源索引](../../../../web/game-mechanics-atlas/research/deep/source-index.md)。JSON 检索字段值，数组连接为文本，不匹配字段名；四核心字段为 `rule_support / practical_support / mechanism / engine`。
+
+- 装备词：`equip|item|gear|weapon|armor|armour|trinket|装备|物品|武器|防具|护甲|饰品`；成长词：`upgrad|enhanc|level|rank|tier|star|enchant|refine|cultivat|强化|升级|升阶|品阶|品质|培养`；退出词：`\b(sell|sells|sold|selling|resale|refund\w*|reimburse\w*|reset|respec\w*)\b|recover|reclaim|return|inherit|transfer|salvag|dismantl|出售|卖出|卖回|退款|返还|回收|重置|回退|继承|转移|分解|拆解`。
+- 成长＋退出命中深记录 **184**，再交叉装备词为 **103**，三组均落在四核心字段为 **19**；发现层对应 **3／1／0**。56 份档案同行三组交叉为 **16 份／25 行**。同行筛查会漏掉分段规则，随后按游戏与退款／继承行为回读，不把同行未命中当作没有机制。
+- 为补“装备”字样之外的相邻退出规则，独立扩查 `\b(refund\w*|reimburse\w*|respec\w*|downgrad\w*|unenchant\w*)\b|退还|返还|退回|退款|重置|回退|降级|降阶|降品|强化转移|升级继承|培养继承`。深记录 **28／核心 11**，发现层 **1／核心 1**；逐项查看命中附近文字，再回读与本题有关的完整字段。包含商业退款、技能资源返还、版本降级和排行重置等假命中，不计作投资退出制度。
+- 主责回读 M05 的升级材料证据、GGM／Magicbook／Dwarves／MPIG／Astronarch 等投入与负面材料、Neon 的装备转交及零投入退款报告。并行定点核验 Guildrun、GGM、The Last Flame、Magicbook、Backpack Battles，以及 Setr’s、Skull Horde、Slotbound、Siralim、Vivid Knight、Just King 与 R03 重置参照。Auto Chess／TFT／Mechabellum 的资料缺口一并核对。
+
+不同查询不相加，命中数不是研究完成率。另一次档案退款词宽查输出只查看了部分命中，不宣称其全部正文已读；本节以完成的定点回读支持结论。未联网补充，未因原库没有条文而推定原作不退款。
+
+### Q05-S01：直接装备资料能证明什么，尚不能证明什么
+
+| 游戏与版本 | 已有明确过程／实践 | 本题的缺口与来源 |
+| --- | --- | --- |
+| Guildrun，Demo 0.5.2–0.5.6；Wiki 2026-08-12 对应 build `ff633149` | 普通物品 66% 卖回；攻略把 common item 当作可部分变现的过渡投入。 | `ev-guildrun-002-shard-shop-pity-economy`／`src-guildrun-wiki-economy-0-5-6`、`src-guildrun-patch-0-5-2`、`src-guildrun-steam-guide-red-rift`。缺少 66% 的计价基准、升级后售价、实际折扣与材料退款；不能将英雄升阶难回收的反馈套给装备。 |
+| Gladiator Guild Manager，1.0 与 1.036 历史节点 | Universal Items 改为只出现基础版本，通过 Workshop／Crafting Tools 升级；兼容装备可交给后续英雄继续使用。 | `ev-ggm-008-item-upgrade-type-synergy-handoff`、`ev-ggm-012-trait-and-item-choice-reworks`／`src-ggm-official-1-0`、`src-ggm-official-1-036`、`src-ggm-steam-campaign-v1`。只证明升级投入与整件移交，不证明售出返工具、降级提取或装备间成长继承。 |
+| The Last Flame，initial 1.0 自述攻略与 2025 实战 | 保留强底材供后续锻造，根据新英雄职责转移装备。 | `ev-tlf-002-item-ownership-and-pivot`／`src-tlf-steam-indepth-2026`、`src-tlf-gameplay-starter-2025`、`src-tlf-gameplay-levels-2025`。dismantle 只出现在限制字段，未给具体产出；2026 更新日期不证明整篇规则均已重新核对。 |
+| Magicbook AutoBattler: Contract，2025-03 至 06 | 三件同名同品质升为同件高品质；不同名同品质随机重铸。五月规则另有橙色材料强化红装；六月改善反复合成操作。 | `ev-mba-003-equipment-merge-reforge-transaction`、`ev-mba-011-endless-growth-cap-rework`、`ev-mba-015-one-click-synthesis-ux-rework`／`src-mba-official-synergy-20-2025-05-18`、`src-mba-official-workshop-leaderboard-2025-06-27`。配方消耗不是退款；“高阶红装给更多材料”的档案表述缺触发与计算，不能补成出售退强化投入。 |
+| Backpack Battles，2024 EA 与 2026-07 单局复盘 | 卖过渡武器或过时物品，取得找下一件核心需要的钱与格位。 | `ev-bpb-007-venomancer-snake-scythe-build`、`ev-bpb-009-lantern-golden-pan-half-start`／`src-bpb-ign-reaper-2024`、`src-bpb-top-lantern-pan-2026`。没有历史投入／配方成品售价表；`ev-bpb-002-stamina-cadence-budget` 的 refund 指 Stamina，不能作为材料退款。 |
+
+M05 还保存了 Dwarves 的 Forge 配方材料（`ev-dwarves-glory-death-loot-016-forge-recruit-growth-economy`，v2.0／约 v2.0.10 资料）、Astronarch 用 Gold 升级（`ev-astro-010-route-morale-potion-swap-decisions`）和 Just King 的 Smith 使用 token 精炼（`ev-jk-010-post-level-three-resource-sinks`，2025 社区材料）。它们补足投入形式，不包含对应的历史退款闭环；配方做出新装备、老兵退休和外层成长不能自动解释为装备投资回收。
+
+### Q05-S02：按成品当前状态估价，与历史退款不同
+
+**Setr’s Auto Battler** 的 `ev-sab-001-shop-economy`：公开 HTML5 1.3.0 客户端按 `tier × level + 1` 定买价，售出按该值一半向下取整、最低 1。来源 `src-sab-official-html5-client-130`，2026-09-03 核验；`src-sab-official-130` 为 2022-01-16 官方历史补丁，早期评测只补周转实践。这里读取单位当前 tier／level，不逐笔累加副本、刷新和培养支出。**可类比装备按身份／当前品质估价，不能证明退还历史材料。** R03 旧证据正文曾误写 Super Auto Battle，本轮按库内 `setrs-auto-battler` 使用正确名称，不沿用误称，也未修改 R03。
+
+**Skull Horde** 的 `ev-skull-horde-002-standard-roster-economy`／`src-skull-review-screenhype`（2026-04-10 正式版首发评测）明确替换一条单位类型线会失去累计进度、只得到部分退款。六条指单位类型线，不是装备或全部战斗实体；具体比例与按购入还是现状计价均缺证。它说明折损式退出确实影响转型，不证明“按原材料种类退实际投入”。
+
+### Q05-S03：出售产成长资源，以及保留对象的独立重置
+
+**Just King** 的 [档案](../../../../web/game-mechanics-atlas/research/deep/game-dossiers/just-king.md)“招募、升级、装备与替换”明确出售英雄返回 token。对应 `ev-jk-008-hero-upgrade-token-sale` 与 `src-jk-guide-hero-030`、`src-jk-guide-achievements-110`、`src-jk-official-2023-06-13`，横跨 0.3.0–1.1.0；0.4.0 又调整 token 来源和成本。它证明售出对象可以产生成长资源，**没有完整数量／类型公式，不能叫按历史实付原样退款，更不能证明装备也采用该规则**。Kādomon 放生单位产 XP（`ev-kado-001-route-recruit-evolve-replace`）同样是退出产物，不自动等同历史投资退款。
+
+**GGM 属性重置**：`ev-ggm-001-timeline-guild-resource-loop`／`src-ggm-official-1-0`、`src-ggm-steam-campaign-v1` 记录建筑开放六项主属性重置，英雄保留。它支持“重置可独立于出售，并由设施开放”，未给每次价格、Trait Blueprint 全部退回或装备退款公式。
+
+**The Last Flame 被动重置**：`ev-tlf-001-run-resource-routing` 及 `src-tlf-steam-indepth-2026` 所属档案记录 Trophy 可用于升级英雄、重置被动及 Reborn。这里支持花资源重配，不能把重配当过去升级费用返还，也不能把 Act 1 Boss 后 Reborn 的一次机会套成每次被动重置的限制。
+
+因此 [R03](../../roster-and-growth/replacement-recovery/decisions.md)按实付种类回收本就是已获用户确认的项目制度，并非原作退款表的照搬。本题若讨论装备退款，仍需明确出售是否失去装备、是否另需回收机会；不能只因用了“回退”两字继承英雄规则。
+
+### Q05-S04：反作用证据与继承边界
+
+- **不愿投入过渡装备**：`ev-mpig-014-enchant-synthesis-commitment`／`src-mpig-update-rewards-duration-2026-08-31`、`src-mpig-review-farm-equipment-233812945`、`src-mpig-review-economy-gear-gap-234241676`。稀有、绑定、毁装风险叠加，玩家报告不愿强化；官方把附魔失败毁装从 100% 降至 50%，合成另有累计十次失败后下一次保底。不能混成同一概率，也没有售装退款证据。它只提醒投资退出代价会影响“现在先用起来”的意愿。
+- **未来交换促使玩家推迟升级**：`ev-astro-015-interstellar-seller-waiting-rework`／`src-astro-official-1-3-5`（2021-02-24）。官方明确调整 Interstellar Seller 的计价以减少等事件而不升级的动机；不是买走旧装备或返材料规则，亦无改动前后采用率统计。项目若让某种处置明显惩罚先升级，应检查是否与前期容错冲突。
+- **零投入也增加退款的历史个案**：`ev-neon-auto-party-015-skill-tree-refund-exploit`／`src-nap-discussion-playtest-feedback-2024-2025`。一名玩家在 0.5.2 之前反馈，右键显示已投值为零的技能仍增加可用点；开发者仅称调查。`src-nap-playtest-update-1` 与 `src-nap-main-0-5-2` 未复现或确认修复，不宣称现行普遍问题。项目启示仅是区分“取得了成长”与“确实支付了可退资源”，不是拿技能树报告证明装备退款方案。
+- **整件物品移交不等于提取成长**：GGM 已述；Neon 的 `ev-neon-auto-party-006-artifact-combine-transfer`／`src-nap-playtest-0-4-2-merging-balance` 明确合并源单位有 Artifact、目标没有时转交 Artifact。目标已有时结果未知，2025 Demo 也未完整演示该链。Auto Brawl Chess 的 `ev-auto-brawl-chess-009-equipment-transition-friction` 记录换队与 Forge 反复卸装的 2023 玩家诉求；两者均非把旧装备的强化提到另一件装备。
+- **定向继承属于其他制度**：Slotbound 的 `ev-slot-004-absorb-imprint-ownership`（Demo 0.2.5–0.3.4）消耗单位传成长点与 Imprint，不保证搬走全部历史投入；Siralim 的 `ev-siralim-ultimate-004-fusion-inheritance`（0.12 历史说明与 2.0 维护资料）按双亲字段继承，不是金币／材料退款。Vivid Knight 的 `ev-vivid-003-three-copy-permanent-symbol-unlock` 卖银星单位后仍保留局内符号解锁，是队伍成果归属，不是装备品质或材料返还。这些不另列为普通卖装候选；装备供体方向已有 EX05，暂不作为初期通用。
+- **脱装后保留精炼收益也不是退款**：Combat Alchemy 的 `ev-combat-alchemy-002-permanent-refinement-portfolio`／`src-ca-itch-post-8880794`，2023-11-14 历史 Web 原型的社区解释，支持某些装备 1／3 星奖励在未穿戴时仍归角色生效。未说明出售、销毁或消费后是否保留，也未证明跨局永久保留；官方十二月补丁仅证实节点效果调整。它留在 M05 升级收益归属，不新增 Q05 装备退款选项。
+- Auto Chess／TFT 已读卖单位返穿戴物只能证明取回装备实例；Mechabellum `ev-mecha-003-upgrade-xp-bounty` 只有升级成本与死亡给对手 XP，不含出售回收表。Tiny Auto Knights `ev-tak-018-removed-item-save-migration` 的退款补偿是研究建议而非已发生原作规则；Monster Train 单位合成、ShapeHero Factory 建筑／Canvas 不继承和 Loot Loop 不可重置亦不补成装备退款机制。
+
+### Q05 覆盖结论
+
+现有材料可支持装备升级与过渡投入、按当前状态估价的相邻制度、售英雄产成长资源、独立重置机会，以及退出代价／退款边界的负面材料。**没有找到与本项目完全同构的已升级装备售出后按历史实付材料返还、历史材料统一折金币、单独退稀有材料或装备降级回收的完整原作条文**；也不能据此认定原作完全不返还。
+
+据此形成 [IR01–IR05](proposals.md)：成品估价、实际材料返还、历史投入折金、受限回收服务，以及按材料区别处理的条件组合。均明确为项目比较，原作证据只支持上文所述部分。掉落成品与自行升级成品是否不同结算、稀有材料是否仅回流实际支出、材料退款与卖价如何避免重复补偿，是本题直接需要展示的差异；比例与价格表不在本轮硬定。D01–D04 保持，无新增用户决定、权威／实现或研究原库修改。
+
+## R09 阶段归属核对：普通收入、表现收益与后续损耗
+
+2026-09-09，D05 已确认后，按恢复流程检查是否还有需要独立表决的基础收入机制。以 `gold|coin|currency|payout|income|reward|loot|bounty|金币|金钱|货币|收入|奖励|掉落|战利品|赏金` 交叉 `streak|victor|win|lose|loss|defeat|perfect|flawless|speed|clear time|surviv|casualt|panic|damage taken|kill|击杀|连胜|连败|胜利|获胜|失败|战败|无伤|速度|用时|存活|阵亡|损伤|伤亡|评分` 及相邻拼写，深记录宽筛 **226／四核心 79**，发现层 **9／核心 0**，56 档案同行交叉 **37 份／110 行**。这只是筛查及指定段落回读，不声称全部宽命中逐篇精读。
+
+回读结果与归属：
+
+- Underlords Standard 的 `ev-dota-underlords-002-standard-economy-loop` 及档案、`src-du-wiki-gold`（Gold 页末修订 2021-03-25）明确胜利额外 1 Gold、连胜最高额外 4、连败最高额外 2，以及败给玩家后的不累积免费刷新。Setr’s `ev-sab-001-shop-economy`／`src-sab-official-html5-client-130` 的 1.3.0 公式也含 win／lose streak；TFT 与 Auto Chess 的历史经济材料支持经营连胜／连败，但未闭合全部当前阶梯。
+- 本项目现行普通战败／超时结束整局，G01 未改这一条。因此败后收入与免费刷新不是无需前提的新普通选项；普通连续胜场也通常等于通过的战斗数，属于进程收入曲线，不包装成 PvP 两条经济路线。此判断不是新决定“永远禁止表现奖励”。
+- 对同一场胜利，快慢／伤亡改变金币的完整普通公式，在本轮定点回读的 TLF、GGM、Astronarch、Dwarves 中未找到。TLF 死亡损失 Flame 是共享资源损耗，GGM 的复活是恢复成本，战报统计不是奖励公式；这些转 R11。The Last Spell／Crops 在本次指定候选、发现与来源索引按名称查找未找到登记，不用熟悉游戏印象补引用。
+- `ev-slot-002-payline-nudge-economy` 的击杀补充转轴 Gold 属于战中操作预算；本项目初期无该输入循环。`ev-d100-015-quick-mode-interest-nine-slot-economy` 的固定轮收入为模式例子，不能直接指定本项目每战金额。经济英雄／遗物、风险节点与来源频率已有各自归属，不因此次宽筛再作整套全局选择。
+
+D01–D05 足以让 R09 的基础讨论阶段收束，未新增 Q06 方案或 D06。基础奖励币种／供给、实际收入与价格曲线、装备升级支付／窗口、拒领结果和具体服务仍未全部完成，分别沿 I21、I24、I30–I33 与对应内容／经济问题衔接；有真实分歧再回看。当前转入 [R11-Q01](../../journey-and-pressure/attrition-and-recovery/proposals.md)，不替并行 R10 选择路线形式，不修改权威、研究原库或实现。

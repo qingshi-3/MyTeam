@@ -13,5 +13,4 @@
 
 先读 [讨论区约定](../../README.md) 和 [跨议题问题](../../05-integration/cross-topic-issues.md)，再读取与本题相关的现行权威。现行规则是本轮基线，修改建议只记录在讨论区。
 
-本议题尚未建立专题证据、方案或决策文件。开始后按需增加 evidence.md、proposals.md、decisions.md 和 artifacts/，遵循 [记录约定](../../topic-records.md)。不得将“目录已建”误认为“调研已做”。
-
+专题入口：[依据与机制差异](evidence.md)、[纸面样例与检查](proposals.md)。用户尚未确认具体样例，不预建空的 decisions.md；后续有决定时按 [记录约定](../../topic-records.md)记录。样例仅使用所需已定模型子集，不以纸面机制顺畅代替平衡、实现或体验验证。

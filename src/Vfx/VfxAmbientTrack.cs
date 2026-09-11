@@ -21,6 +21,10 @@ public partial class VfxAmbientTrack : Node2D, IVfxTrack, IVfxPlaybackTrack
     [Export] public float OrbitPhase { get; set; }
     [Export] public float OrbitDepthScale { get; set; }
     [Export] public float OrbitTilt { get; set; }
+    // Optional bounded rhythm: sampled from the same absolute clock, with
+    // zero defaults so other effects retain their authored trajectories.
+    [Export(PropertyHint.Range, "0,0.3")] public float OrbitSpeedVariation { get; set; }
+    [Export] public float OrbitBobHeight { get; set; }
     [Export] public Color StartTint { get; set; } = Colors.White;
     [Export] public Color EndTint { get; set; } = Colors.White;
     [Export] public float Opacity { get; set; } = .8f;
@@ -91,7 +95,10 @@ public partial class VfxAmbientTrack : Node2D, IVfxTrack, IVfxPlaybackTrack
             {
                 sprite.Visible = release < 1;
                 float angle = particle.Phase * Mathf.Tau + OrbitPhase + (reducedMotion ? 0 : age * AngularSpeed);
+                if (!reducedMotion) angle += OrbitSpeedVariation * Mathf.Sin(angle * 2);
                 sprite.Position = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * Spread;
+                if (!reducedMotion)
+                    sprite.Position += new Vector2(0, OrbitBobHeight * Mathf.Sin(angle * 2 + .6f));
                 // Continuous near/far emphasis; never switch opacity or size at a half-orbit seam.
                 sprite.Scale = Vector2.One * particle.Size / sprite.Texture.GetWidth() * (_playback?.ParticleScale ?? 1)
                     * (1 + OrbitDepthScale * Mathf.Sin(angle));

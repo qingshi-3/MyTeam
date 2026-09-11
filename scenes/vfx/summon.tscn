@@ -19,6 +19,12 @@ shader_parameter/spin_speed = 0.09
 resource_local_to_scene = true
 shader = ExtResource("e5")
 shader_parameter/tint = Color(0.45,0.6,1,0.9)
+shader_parameter/canvas_size = Vector2(166.4,300)
+shader_parameter/ground_y = 232.0
+shader_parameter/footprint_ratio = 0.6
+shader_parameter/layer_radii = Vector3(66.56,47,29)
+shader_parameter/layer_bases = Vector3(0,35,72)
+shader_parameter/layer_heights = Vector3(40,42,36)
 [sub_resource type="ShaderMaterial" id="foot_light"]
 shader = ExtResource("light")
 shader_parameter/rays = 0.0
@@ -55,8 +61,8 @@ ShaderLifecycle = true
 StartScale = 1.0
 EndScale = 1.0
 centered = false
-position = Vector2(-83.2,-215.04)
-scale = Vector2(0.65,0.84)
+position = Vector2(-83.2,-232)
+scale = Vector2(0.65,1.171875)
 Duration = 1.45
 [node name="FootCue" type="Node2D" parent="."]
 script = ExtResource("timed")
@@ -111,3 +117,22 @@ EndScale = Vector2(0.25,0.25)
 StartTint = Color(0.65,0.88,1,1)
 EndTint = Color(0.3,0.45,0.9,1)
 Opacity = 0.65
+[node name="DissolveLight" type="Node2D" parent="."]
+script = ExtResource("timed")
+Delay = 0.95
+[node name="Dust" type="Node2D" parent="DissolveLight"]
+position = Vector2(0,-48)
+script = ExtResource("e6")
+ParticleScene = ExtResource("e7")
+Amount = 18
+Seed = 1422
+Spread = Vector2(48,36)
+Velocity = Vector2(0,-22)
+ScreenRiseAcceleration = 70.0
+Lifetime = 0.65
+EmitDuration = 0.22
+SizeRange = Vector2(9,17)
+EndScale = Vector2(0.25,0.25)
+StartTint = Color(0.55,0.8,1,1)
+EndTint = Color(0.35,0.5,0.95,1)
+Opacity = 0.5

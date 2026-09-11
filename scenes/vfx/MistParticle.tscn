@@ -1,5 +1,5 @@
 [gd_scene load_steps=4 format=3]
-[ext_resource type="Texture2D" path="res://assets/vfx/fire-ash-puff.png" id="e0"]
+[ext_resource type="Texture2D" path="res://assets/vfx/refresh/smoke-puff.png" id="e0"]
 [ext_resource type="Shader" path="res://scenes/vfx/mist_tint.gdshader" id="e1"]
 [sub_resource type="ShaderMaterial" id="s0"]
 resource_local_to_scene = true

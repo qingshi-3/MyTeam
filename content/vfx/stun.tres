@@ -4,7 +4,7 @@
 [resource]
 script = ExtResource("def")
 StableId = "stun"
-PreviewNote = "三颗金星沿头顶椭圆绕行，近处略大略亮，短尾光跟随；保留原轨迹与节奏"
+PreviewNote = "三颗金星贴近头顶绕行，细小卷纹在间隙中轻摆；星体为主，近远明暗连续，短尾光随行"
 DisplayName = "眩晕星环"
 Scene = ExtResource("scene")
 Duration = 1

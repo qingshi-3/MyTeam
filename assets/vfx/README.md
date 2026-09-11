@@ -1,5 +1,17 @@
 # 特效贴图来源
 
+2026-09-11 整批修订：当前共享场景使用 [refresh 目录的十张新素材](refresh/README.md)，完整提示词、原件文件名、用途及 SHA-256 见该来源记录。旧 PNG 保留，下文属于此前各轮的来源与历史使用方式。法阵/盾壳候选生成未通过连接或透明背景检查，仍使用旧图并调整对应 shader；energy-mote 保留旧图。素材均通过内置生图工具生成，未使用 CLI 回退，也未复制商业参考资产。
+
+`weaken-rune.png`：内置 image_gen 原始输出 `exec-8f148ca7-6fac-497f-8c44-9b47cb1d2319.png`，1254×1254 RGBA 原件保留 alpha、启用 mipmap。只有一枚双下压符印，六个独立实例经 AmbientTrack 下沉，独立 shader 亮边掠过和末段碎散；没有整张虚弱图、外部运行路径或复制参考资产。
+
+完整生成提示词：
+> Use case: stylized-concept. Asset type: ONE isolated weakening status rune particle texture for a high-quality 2D fantasy game. True transparent RGBA background, square canvas. A compact vertically stacked DOUBLE DOWNWARD CHEVRON sigil, two broad bent angular brush-metal bands with clear downward V-shaped tips, separated by a generous transparent gap. Both tips point DOWN. The lower band slightly narrower. Rich muted amethyst-violet interior, dark plum beveled undersides, lavender-pink luminous edges with a few tiny pale highlights. Silhouette reads unmistakably as DOWN DOWN at 25-35 pixels. Uneven tapered chipped ends, strong broad shapes, subtle hand-painted texture, elegant cursed magical rune rather than a flat UI button. Centered in 65 percent of canvas with generous true transparent margins. Only ONE connected visual symbol comprising these two bands. No ring, no circle, no shield, no skull, no eye, no extra letters, no sparks, no smoke, no background, no ground, no character, no illustration of the whole effect. A restrained narrow glow only along edges; do not wash out the dark purple interior.
+
+2026-09-10 `stun-scroll.png`：内置 image_gen 原始输出 `exec-d7b6bc3a-d792-4b27-9026-37653e61de08.png`，1254×1254 RGBA 原件，保留透明通道并启用 mipmap。单枚金色卷纹供 StunScroll 实例使用；三枚在原星环轨道错相绕行和轻摆，不包含星星或整套眩晕。项目内副本无外部路径依赖。
+
+完整生成提示词：
+> Use case: stylized-concept. Create ONE isolated small golden curling magical flourish texture component for a 2D fantasy game's dizziness status effect. True transparent RGBA background. Square canvas. A single broad tapered luminous gold brush ribbon curls inward through one and a quarter turns like a whimsical cloud scroll or cinnamon-roll spiral, with an open sweeping tapered tail pointing left. Clean strongly readable open spiral negative space, warm amber shaded underside, golden yellow body, delicate ivory highlight on the upper edge, subtle narrow soft golden halo. Asymmetrical hand-painted ribbon thickness, elegant playful fantasy game VFX, reads at 35 pixels. Occupy about 75 percent of canvas leaving generous fully transparent margins. This is one small scroll ornament to orbit between separately rendered stars. No stars, no full ring, no character, no scene, no multiple disconnected ornaments, no particles, no text, no rectangular background, no white backdrop, no overly detailed metal filigree.
+
 2026-09-09 `flame-tongue.png` 来自内置 image_gen 原始输出 `exec-22915e18-e076-4c52-bfd9-eff7e677c87f.png`，RGBA 原件与 mipmap 保持。用户否定开放高火根如触手、统一焰团如胶状物后，恢复上一版完整单火苗与吐息配置。灼烧仅通过 BurnFlameParticle 的材质覆盖启用上半部小幅侧摆；吐息使用原 FlameTongueParticle，不继承该调整。素材未裁切、未重画，无新增外部依赖。
 
 完整生成提示词（内置工具，未使用 CLI）：

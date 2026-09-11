@@ -17,6 +17,7 @@ void fragment() {
     float edge = (1.0 - smoothstep(0.006, 0.042, passed)) * motion_amount;
     vec3 tint = mix(fresh_tint.rgb, faded_tint.rgb, tail);
     vec3 color = mix(ink.rgb * tint, vec3(1.0, 0.96, 0.85), edge * 0.55);
+    float ends = smoothstep(0.0, 0.025, UV.x) * (1.0 - smoothstep(0.96, 1.0, UV.x));
     // Denser pigment preserves the red body without increasing its glow.
-    COLOR = vec4(color, pow(ink.a, 0.72) * visible * tip * fade * (1.0 - release));
+    COLOR = vec4(color, pow(ink.a, 0.72) * visible * tip * fade * ends * (1.0 - release));
 }

@@ -27,6 +27,8 @@ void fragment() {
     float sweep=.88+.12*sin(angle*6.0-age*2.8*motion_amount);
     float fade=sustained?1.0:1.0-smoothstep(.62,1.0,progress);
     float l=dot(ink.rgb,vec3(.22,.55,.23));
-    float engraving=smoothstep(.18,.65,l);
-    COLOR=vec4(tint.rgb*(.45+l*.9),pow(ink.a,.8)*engraving*valid*reveal*sweep*fade*(1.0-release)*tint.a)*layer_color;
+    // Select the luminous engraving from the source; the darker metal backing
+    // does not become another opaque layer beneath the summoned light.
+    float engraving=smoothstep(.30,.72,l);
+    COLOR=vec4(tint.rgb*(.52+l*.85),ink.a*engraving*valid*reveal*sweep*fade*(1.0-release)*tint.a)*layer_color;
 }

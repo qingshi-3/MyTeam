@@ -28,8 +28,11 @@ void fragment() {
     float edge = 1.0 - smoothstep(0.015, 0.055, passed);
     float across = abs(UV.y - 0.5) * 2.0;
     float boundary = exp(-across * across * 5.0) * (1.0 - smoothstep(0.65, 1.0, across));
+    // Tail drift samples inward from the texture tip; the mesh endpoint still
+    // needs its own fade, otherwise brighter ink ends as a rectangular cap.
+    float ends = smoothstep(0.0, 0.08, UV.x) * (1.0 - smoothstep(0.88, 1.0, UV.x));
     vec3 tint = mix(inner_tint.rgb, outer_tint.rgb, across);
     float gain = strength * (1.0 + edge * 1.4 * motion_amount);
-    COLOR = vec4(tint, light * gain * visible * fade * boundary * (1.0 - release)
+    COLOR = vec4(tint, light * gain * visible * fade * boundary * ends * (1.0 - release)
         * mix(0.35, 1.0, motion_amount));
 }

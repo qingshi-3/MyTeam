@@ -21,7 +21,8 @@ void fragment(){
     uv.y+=(fine-.5)*.10*h*motion_amount;
     vec4 fire=texture(TEXTURE,clamp(uv,vec2(.001),vec2(.999)));
     float tears=smoothstep(.12+h*.24,.35+h*.24,n*.7+fine*.3+.22*(1.-h));
-    float alpha=fire.a*mix(1.,tears,h*motion_amount);
+    // Suppress broad baked haze while retaining the authored flame boundary.
+    float alpha=pow(fire.a,1.35)*mix(1.,tears,h*motion_amount);
     alpha*=1.-smoothstep(.62,.98,particle_progress);
     float heat=clamp(fire.g+.13*(fine-.5)*motion_amount,0.,1.);
     vec3 color=mix(fire.rgb,vec3(1.,.8,.20),smoothstep(.55,.96,heat)*.38);

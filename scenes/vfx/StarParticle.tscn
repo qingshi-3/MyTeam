@@ -1,11 +1,6 @@
-[gd_scene load_steps=4 format=3]
-[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="e0"]
-[ext_resource type="Shader" path="res://scenes/vfx/star.gdshader" id="e1"]
-[sub_resource type="ShaderMaterial" id="s0"]
-resource_local_to_scene = true
-shader = ExtResource("e1")
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Texture2D" path="res://assets/vfx/refresh/stun-star.png" id="e0"]
 
 [node name="StarParticle" type="Sprite2D"]
 texture = ExtResource("e0")
 texture_filter = 4
-material = SubResource("s0")

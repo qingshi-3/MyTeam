@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="e0"]
 [ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="e1"]
-[ext_resource type="Texture2D" path="res://assets/vfx/rend-strip.png" id="e2"]
+[ext_resource type="Texture2D" path="res://assets/vfx/refresh/rend-strip.png" id="e2"]
 [ext_resource type="Shader" path="res://scenes/vfx/beam_flow.gdshader" id="e3"]
 [sub_resource type="ShaderMaterial" id="s0"]
 resource_local_to_scene = true

@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
 [ext_resource type="Script" path="res://src/Vfx/VfxCrystalTrack.cs" id="crystal"]
-[ext_resource type="Texture2D" path="res://assets/vfx/ice-prism.png" id="ice"]
+[ext_resource type="Texture2D" path="res://assets/vfx/refresh/ice-prism.png" id="ice"]
 [ext_resource type="Shader" path="res://scenes/vfx/ice_growth.gdshader" id="ice_shader"]
 [ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="emitter"]
 [ext_resource type="PackedScene" path="res://scenes/vfx/IcePrismParticle.tscn" id="chip"]

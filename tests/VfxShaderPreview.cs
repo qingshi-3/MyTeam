@@ -711,13 +711,27 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
         var context = new VfxContext(new(-700,-500), new(-500,-500));
         player.Play("stun",context,"orbit-detail");
         var instance=player.GetChild<VfxInstance>(0);
-        var stars=instance.GetNode<VfxAmbientTrack>("Stars").GetChildren().Cast<Sprite2D>().ToArray();
-        player.Advance(Mathf.Pi/2.8f-.001f);
+        var starTrack=instance.GetNode<VfxAmbientTrack>("Stars");
+        var stars=starTrack.GetChildren().Cast<Sprite2D>().ToArray();
+        float orbitSample=Mathf.Pi/starTrack.AngularSpeed-.001f;
+        player.Advance(orbitSample);
         var sizes=stars.Select(s=>s.Scale).ToArray();
         var alphas=stars.Select(s=>s.Modulate.A).ToArray();
         player.Advance(.002f);
         if(stars.Where((s,i)=>s.Scale.DistanceTo(sizes[i])>.001f || Math.Abs(s.Modulate.A-alphas[i])>.01f).Any())
             throw new Exception("Star orbit jumps at the near/far boundary.");
+        var steppedPoses=stars.Select(s=>s.Transform).ToArray();
+        player.Advance(0);
+        if(stars.Where((s,i)=>!s.Transform.IsEqualApprox(steppedPoses[i])).Any())
+            throw new Exception("Paused star rhythm still advances.");
+        var definition=player.Catalog.Find("stun");
+        var direct=definition.Scene.Instantiate<VfxInstance>();
+        AddChild(direct); direct.Bind(definition,context);
+        direct.Advance(orbitSample+.002f,this,false);
+        var directStars=direct.GetNode<VfxAmbientTrack>("Stars").GetChildren().Cast<Sprite2D>().ToArray();
+        if(stars.Where((s,i)=>!s.Transform.IsEqualApprox(directStars[i].Transform)).Any())
+            throw new Exception("Star rhythm depends on frame subdivision.");
+        direct.Free();
         player.ReducedMotion=true; player.Advance(0);
         var poses=stars.Select(s=>s.Transform).ToArray();
         player.Advance(.5f);
@@ -797,8 +811,8 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
                 .First(p => p.Visible && p.Modulate.A > .2f);
             Vector2 before = lobe.GlobalPosition;
             player.Advance(.02f);
-            // The texture's thick luminous body is at its bottom; the thin tip is its wake.
-            Vector2 hotHead = lobe.GlobalTransform.BasisXform(Vector2.Down).Normalized();
+            // The dedicated jet texture leads along +X; the tapered wake points left.
+            Vector2 hotHead = lobe.GlobalTransform.BasisXform(Vector2.Right).Normalized();
             if (!lobe.Visible || hotHead.Dot((lobe.GlobalPosition - before).Normalized()) < .85f)
                 throw new Exception("Detached jet flame leads with its thin tail instead of its hot body.");
             player.Clear();

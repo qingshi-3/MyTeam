@@ -4,7 +4,7 @@
 [resource]
 script = ExtResource("def")
 StableId = "summon"
-PreviewNote = "法阵亮起后光幕从地面升起，成形时局部短亮，主体向上收净后余光飘散"
+PreviewNote = "三层光柱由下到上逐级收窄，保持同一椭圆视角；收尾先缓慢变淡，再加速解体上浮"
 DisplayName = "召唤法阵"
 Scene = ExtResource("scene")
 Duration = 1.9

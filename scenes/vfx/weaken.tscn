@@ -1,52 +1,82 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=7 format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="e0"]
-[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="e1"]
-[ext_resource type="Texture2D" path="res://assets/vfx/arcane-seal.png" id="e2"]
-[ext_resource type="Shader" path="res://scenes/vfx/seal_reveal.gdshader" id="e3"]
 [ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="e4"]
-[ext_resource type="PackedScene" path="res://scenes/vfx/ShockMote.tscn" id="e5"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/WeakenRune.tscn" id="e5"]
 [ext_resource type="PackedScene" path="res://scenes/vfx/MistParticle.tscn" id="e6"]
-[sub_resource type="ShaderMaterial" id="s0"]
-resource_local_to_scene = true
-shader = ExtResource("e3")
-shader_parameter/tint = Color(0.6,0.18,0.86,0.65)
-shader_parameter/spin_speed = -0.16
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
 [node name="Weaken" type="Node2D"]
 script = ExtResource("e0")
-[node name="CurseSeal" type="Sprite2D" parent="."]
-texture = ExtResource("e2")
-texture_filter = 4
-material = SubResource("s0")
-script = ExtResource("e1")
-ShaderLifecycle = true
-StartScale = 1.0
-EndScale = 1.0
-position = Vector2(0,55)
-scale = Vector2(0.65,0.25)
-Duration = 1
-[node name="DrainingMotes" type="Node2D" parent="."]
+[node name="LeftRunes" type="Node2D" parent="."]
 script = ExtResource("e4")
 ParticleScene = ExtResource("e5")
-position = Vector2(0,-70)
-Amount = 14
-Spread = Vector2(40,14)
-Velocity = Vector2(0,92)
+position = Vector2(-36,-62)
+Amount = 3
+Seed = 1430
+Spread = Vector2(9,10)
+Velocity = Vector2(0,50)
+Lifetime = 1.5
+SizeRange = Vector2(29,36)
+EndScale = Vector2(0.86,0.96)
+StartTint = Color(1,0.95,1,1)
+EndTint = Color(0.7,0.52,0.86,1)
+AnimateMaterial = true
+FadeStart = 0.55
+Opacity = 0.95
+[node name="RightRunes" type="Node2D" parent="."]
+script = ExtResource("e4")
+ParticleScene = ExtResource("e5")
+position = Vector2(36,-53)
+Amount = 3
+Seed = 1431
+Spread = Vector2(9,10)
+Velocity = Vector2(0,48)
+Lifetime = 1.6
+SizeRange = Vector2(27,34)
+EndScale = Vector2(0.86,0.96)
+StartTint = Color(1,0.95,1,1)
+EndTint = Color(0.7,0.52,0.86,1)
+AnimateMaterial = true
+FadeStart = 0.55
+Opacity = 0.95
+[node name="FallingDust" type="Node2D" parent="."]
+script = ExtResource("e4")
+ParticleScene = ExtResource("dust")
+position = Vector2(0,-56)
+Amount = 22
+Seed = 1432
+Spread = Vector2(42,19)
+Velocity = Vector2(0,63)
+Lifetime = 1.35
+SizeRange = Vector2(9,16)
+EndScale = Vector2(0.25,0.25)
+StartTint = Color(0.8,0.4,1,1)
+EndTint = Color(0.35,0.12,0.55,1)
+Opacity = 0.5
+[node name="FallingGlints" type="Node2D" parent="."]
+script = ExtResource("e4")
+ParticleScene = ExtResource("glint")
+position = Vector2(0,-54)
+Amount = 5
+Seed = 1433
+Spread = Vector2(44,15)
+Velocity = Vector2(0,38)
 Lifetime = 1.2
-SizeRange = Vector2(24,35)
-EndScale = Vector2(0.2,0.2)
-StartTint = Color(0.74,0.4,1,1)
-EndTint = Color(0.32,0.1,0.5,1)
-FaceVelocity = true
+SizeRange = Vector2(13,20)
+StartTint = Color(0.85,0.5,1,1)
+EndTint = Color(0.45,0.2,0.7,1)
+Opacity = 0.35
 [node name="LowMist" type="Node2D" parent="."]
 script = ExtResource("e4")
 ParticleScene = ExtResource("e6")
 position = Vector2(0,48)
-Amount = 7
+Amount = 4
+Seed = 1434
 Spread = Vector2(42,8)
 Velocity = Vector2(0,-14)
 Lifetime = 1.8
-SizeRange = Vector2(40,58)
+SizeRange = Vector2(32,46)
 EndScale = Vector2(1.2,0.8)
 StartTint = Color(0.35,0.1,0.5,1)
 EndTint = Color(0.17,0.06,0.26,1)
-Opacity = 0.45
+Opacity = 0.22

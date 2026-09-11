@@ -4,7 +4,7 @@
 [resource]
 script = ExtResource("def")
 StableId = "weaken"
-PreviewNote = "碎光下沉、脚下侵蚀；可正常消退"
+PreviewNote = "双下压符印在头肩两侧错峰下沉，亮边流过后碎散，紫色细尘流失；持续期间不整组重启"
 DisplayName = "虚弱侵蚀"
 Scene = ExtResource("scene")
 Duration = 1
