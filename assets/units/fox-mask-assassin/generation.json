@@ -1,0 +1,22 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Create a TRUE LOW-RES PIXEL ART GAME SPRITESHEET matching supplied existing game assets. INPUT 1 (red samurai sprite sheet) and INPUT 2 (blue assassin sprite sheet) are AUTHORITATIVE for PIXEL STYLE, SMALL SPRITE SCALE, silhouette proportions, limited palette, side-view camera. INPUT 3 (red/black fox-mask woman portrait) supplies CHARACTER IDENTITY AND COSTUME ONLY. Do NOT use the portrait's smooth anime illustration rendering or large detailed body proportions.\nThe output should look like another unit from the SAME GAME as images 1 and 2: actual hand-placed crisp square pixel clusters, hard stepped diagonals, tiny face in just a few pixels, no anti-aliasing, no smooth gradients, no high-resolution strands, no ink drawing, no painterly shading. Each character visually has only about 40-48 logical pixels of standing height inside an 80x80 logical frame, like the existing units. Distinct read at miniature game scale. Maximum ~24 deliberate colors: jet black and charcoal hair/shadow, crimson/scarlet cloth, gold/amber/cream blades, peach skin, deep grey stockings. No chibi bobblehead. No black background or drawn checkerboard: REAL TRANSPARENT PNG alpha background.\nOUTPUT ONE 6x6 atlas, 36 frames arranged exactly six equal columns and six equal rows. Preferred logical canvas 480x480 with 80x80 cells, or exact NEAREST-NEIGHBOR integer enlargement of this same logical pixel grid to 1920x1920 (320x320 cells). Never smooth enlargement. Absolutely NO labels, frame lines, grid or text. Every whole sprite, hair and weapon fits fully within its OWN cell with generous empty transparent margins on all sides. Same root at cell horizontal center, grounded feet local logical y=66, standing height 44px. All actions same body scale. No overlap neighboring cells.\nCharacter: agile adult female dual-blade assassin facing RIGHT in side/three-quarter game view. Small red-black fox mask on head, black flowing long hair grouped into 2-3 solid locks, sleeveless short red kimono with dark waist belt and subtle gold edge, short skirt, TWO SHORT red waist tails, black thigh-high stockings, dark ankle shoes. Two gold crescent knives/blades, one in each hand, no oversized full moon circles. Simplify floral ornament to tiny gold accents instead of micro-details. Light athletic proportions and low battle stance. DO NOT copy red samurai hat, katana, blue unit's color or blue magic.\nChronological cells left to right:\nRow1 idle (6 loop frames): ready with low blades, small breath rise/settle, tiny hair followthrough, feet planted and stable.\nRow2 run (6 loop frames): nimble forward leaning sprint IN PLACE, alternating legs and opposing arm swing, first contact/compression/flight, opposite contact/compression/flight. Visible different silhouette and clear lift. No skating.\nRow3 attack (6 one-shot frames): guard, rear windup, forward diagonal crescent slash, second hand cross-cut, followthrough, recovery. Two arms two weapons throughout, no duplicates. Compact slash pixel accent at contact only.\nRow4 skill_cast (6 one-shot frames): crouch, gather, low forward lunge in place, upward crossing slash/light hop, soft landing, guard. No particle clutter or big magic disk.\nRow5 hit (6 one-shot frames): ready, recoil, peak recoil, balance recovery, settle, ready. Non-graphic.\nRow6 defeated (6 one-shot frames): stagger, knee down, collapse, side-lying, settle, final side-lying still frame on the same ground baseline.\nOnly this 36-frame sheet with transparent empty background. Pixel density and rendering MUST match actual supplied small sprites rather than a pixel filter on large anime drawings.",
+  "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-a3d96a39-d031-42bd-8b03-4afffeee47bc.png",
+  "references": [
+    {
+      "path": "assets/donor-units/f2_melee/f2_melee.png",
+      "role": "pixel style and game scale"
+    },
+    {
+      "path": "assets/donor-units/f6_freeblade/f6_freeblade.png",
+      "role": "pixel style and agile motion"
+    },
+    {
+      "path": "assets/portraits/illustrations/f2_ranged.png",
+      "role": "final approved character identity"
+    }
+  ],
+  "postProcessingAuthorization": "用户明确回复：可以，程序去底并整理动画帧。",
+  "rejectedStyle": "Earlier smooth anime atlases were rejected after user specified existing-unit pixel art; not packaged.",
+  "userAestheticApproval": false
+}

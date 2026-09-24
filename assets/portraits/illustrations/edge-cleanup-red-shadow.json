@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-12",
+  "method": "built-in image_gen",
+  "request": "reduce ragged edges, fur needles, torn ribbons and incidental texture",
+  "items": [
+    {
+      "id": "f2_lanternfox",
+      "prompt": "Use case: precise-object-edit. Edit the supplied existing full-body character illustration. USER REQUEST: the image has too many visually irritating ragged edges, needle-like tufts, torn cloth ends and tiny jagged fragments. Make a substantial, deliberate DESIGN CLEANUP with smooth connected contours and grouped forms, NOT blur, denoise blur, low-resolution smoothing or loss of overall illustration quality. Keep the exact character identity, species, gender, face, pose, major silhouette, anatomy, palette and signature equipment. Preserve the refined Japanese anime facial rendering, elegant eye design, polished controlled material shading and clean very pale grey background. Background stays nearly solid, no scene, scenery, patterns, stars, particles, texture or noise. 1024x1536 portrait, entire character and equipment inside the frame with breathing room. No words, watermark, collage or additional characters.\nSpecific cleanup for this FOX: preserve the crouching four-legged dark indigo fox, the enormous single curved fluffy tail, pointed ears, red-orange eyes and restrained warm mouth/throat glow. It should remain a fierce elegant supernatural fox, not cute chibi and not a porcupine. REDUCE small fur tufts and isolated spikes by at least 80%. Model the tail as ONE plush flowing crescent mass subdivided into only 5–7 long broad smooth locks, with a clean continuous outer arc and a handful of broad tapering tips. Shoulders, cheeks, back and legs have sleek softly rounded overlapping fur masses: the fur lies in the direction of the body, with only a few broad tufts at the chest and elbow. Do not outline every strand. Remove the dense needle fringe and all little detached hairs; eliminate the high-frequency pale scratches within the fur. Shading uses a few large luxurious indigo/violet gradients and carefully placed red edge reflections. Remove fine flame-like whiskers and loose ember threads at the mouth: keep a small coherent orange glow inside the mouth, no flying fire shreds. Keep true animal ears, claws and muzzle sharply and cleanly drawn. All four paws and whole tail fit with margin.",
+      "editInput": ".godot/portrait-generation/edge-cleanup-before/f2_lanternfox.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09453-3c3c-7fe0-96d2-2959688de8c5\\exec-47ae5578-9272-48df-a393-9a45d611f123.png",
+      "file": "assets/portraits/illustrations/f2_lanternfox.png",
+      "visualReview": "尾巴归为连贯大弧线和少量宽毛束，细碎外翻毛刺与嘴边细焰明显减少；仍保留狐狸耳、爪、深紫毛色、红眼和口部辉光。",
+      "width": 1024,
+      "height": 1536,
+      "userAestheticApproval": false
+    },
+    {
+      "id": "f2_general",
+      "prompt": "Use case: precise-object-edit. Edit the supplied existing full-body character illustration. USER REQUEST: the image has too many visually irritating ragged edges, needle-like tufts, torn cloth ends and tiny jagged fragments. Make a substantial, deliberate DESIGN CLEANUP with smooth connected contours and grouped forms, NOT blur, denoise blur, low-resolution smoothing or loss of overall illustration quality. Keep the exact character identity, species, gender, face, pose, major silhouette, anatomy, palette and signature equipment. Preserve the refined Japanese anime facial rendering, elegant eye design, polished controlled material shading and clean very pale grey background. Background stays nearly solid, no scene, scenery, patterns, stars, particles, texture or noise. 1024x1536 portrait, entire character and equipment inside the frame with breathing room. No words, watermark, collage or additional characters.\nSpecific cleanup for the red-and-black male crescent-blade commander: his handsome refined adult Japanese anime face and orange/crimson hairstyle stay. Reduce loose spiky hair tufts, maintain the dominant swept hairstyle using 5–8 clean layered locks. Replace the numerous shredded crimson scarves and skirt panels with 3–4 broad long flowing intact fabric panels, plus two tidy complete short weapon tassels with simple ends. Fabric edges are smooth continuous tailored hems: ZERO holes, tears, frays, jagged notches or tiny detached fabric strips. Preserve graceful motion through broad S-curves and large folds. Maintain both signature enormous crescent weapons and their main pointed curved ends. Remove most unnecessary tiny saw-tooth barbs on the inner weapon edges and microspikes on armor; retain a FEW larger intentional armor points and the two dominant crescents. Metal shading becomes clean lacquer and broad silver reflections with minimal focused engraving, no random scratch flecks or cracked foil highlights. Do not alter pose, gender, red/black/silver identity or the pale plain background. Leave clear space around both crescent tips and full boots.",
+      "editInput": ".godot/portrait-generation/edge-cleanup-before/f2_general.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09453-3c3c-7fe0-96d2-2959688de8c5\\exec-eca44cb6-2215-4c55-b3d5-521e324c17a1.png",
+      "file": "assets/portraits/illustrations/f2_general.png",
+      "visualReview": "红披带变为宽大完整布片和整齐流苏；双镰内缘与盔甲减少细齿碎尖和刮痕，保留主弯刃、红黑配色与日漫男性脸。",
+      "width": 1024,
+      "height": 1536,
+      "userAestheticApproval": false
+    },
+    {
+      "id": "f2_melee",
+      "prompt": "Use case: precise-object-edit. Edit the supplied existing full-body character illustration. USER REQUEST: the image has too many visually irritating ragged edges, needle-like tufts, torn cloth ends and tiny jagged fragments. Make a substantial, deliberate DESIGN CLEANUP with smooth connected contours and grouped forms, NOT blur, denoise blur, low-resolution smoothing or loss of overall illustration quality. Keep the exact character identity, species, gender, face, pose, major silhouette, anatomy, palette and signature equipment. Preserve the refined Japanese anime facial rendering, elegant eye design, polished controlled material shading and clean very pale grey background. Background stays nearly solid, no scene, scenery, patterns, stars, particles, texture or noise. 1024x1536 portrait, entire character and equipment inside the frame with breathing room. No words, watermark, collage or additional characters.\nSpecific cleanup for the black-clad male ronin with red scarf and red-white hat: preserve the same slim handsome mature Japanese anime face and relaxed diagonal sword stance. Repair ALL torn/frayed clothes. His charcoal long coat becomes 2–3 broad complete tailored panels with long smooth continuous hems and natural large folds; no cut holes, distressed edges, torn threads or slit-like tiny tendrils. His red scarf has only TWO main broad trailing ends, with clean continuous edges and simple tapered or squared ends, and orderly wraps at neck/wrists/ankles. Remove small stray ribbons around shoulders, knees, waist and sword pommel. Keep the same red-and-ivory curved conical hat silhouette, but make the hat surface clean lacquer with a solid smooth brim, no peeling fragments. Consolidate messy individual flyaway hairs into a few soft flowing black locks around the face. Remove scattered white/grey scratch flecks from all black clothing. Material should still look luxurious and dimensional, with large deliberate light/shadow planes and subtle cloth folds. Preserve long dark curved single-edged sword, complete both boots and whole hat and sword inside canvas. No extra spiky ornamentation.",
+      "editInput": ".godot/portrait-generation/edge-cleanup-before/f2_melee.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09453-3c3c-7fe0-96d2-2959688de8c5\\exec-bf19a663-30f5-45ab-80f2-22b7a17902e0.png",
+      "file": "assets/portraits/illustrations/f2_melee.png",
+      "visualReview": "黑长衣及红围巾改为完整大布面、连续收边；帽檐完整，去除碎布尾和随机磨损，脸、刀、姿势与灰底保留。",
+      "width": 1024,
+      "height": 1536,
+      "userAestheticApproval": false
+    }
+  ]
+}

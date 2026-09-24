@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "method": "built-in image_gen independent edits",
+  "date": "2026-09-12",
+  "items": [
+    {
+      "id": "f2_spellthief",
+      "commentNumbers": [
+        2
+      ],
+      "prompt": "Use case: precise-object-edit. Edit this existing polished Japanese anime fantasy spellthief portrait. The user cannot understand the leg clothing. FIX ONLY THE COSTUME CONSTRUCTION FROM THE WAIST DOWN. Keep the exact same beautiful anime face, pale hair with cyan ends, black-red hair ornament, upper-body outfit, arms, hands, dagger, cyan magic flow, overall standing pose and plain light-gray studio background. Preserve her existing identity and detailed premium art quality.\nRebuild the lower outfit as a real coherent wearable costume: one pair of opaque fitted charcoal-black tailored trousers, with a clearly connected waistband under the existing waist belt, a coherent pelvis/crotch, and TWO distinct continuous trouser legs. Both thighs and both knees must be fully covered in the same dark fabric, no new bare skin. The fabric runs smoothly from the waist and hips down both legs, with restrained believable side seams and natural knee folds, no gaps, no intersecting cloth strips. Give her ONE matching pair of structured black-and-deep-crimson calf-high boots, with the same design on both legs, clean upper boot openings around each calf, clearly articulated knees/ankles, consistent black outer material and restrained dark-red inset panels/soles, stable original style heels. Trouser fabric tucks naturally into both boot shafts. Make the separation between each trouser leg and its boot immediately readable. The rear leg is a real continuous leg in matching trousers and a matching boot, not a red fabric ribbon disguised as a leg.\nKeep the black coat with crimson lining, but gather its long lower tails into TWO broad intact flowing rear coat panels attached logically at the rear waist, one behind each side of the hips. Arrange both coat panels BEHIND the trouser legs and leave visible negative space between the legs, so no coat flap cuts through a thigh, overlays the knee ambiguously, or becomes a third leg. Remove the dangling crossing strips and excess hanging chains across the pelvis and legs; retain a restrained belt and essential waist details. No shredded hems, no random strips or holes, no extra leg, no leg penetrating cloth, no flesh-colored clothing patches.\nMaintain refined anatomy, slim proportions, a readable single two-legged stance, full body and both complete boots on the floor. Reframe very slightly smaller only if needed for clear blank gray space around all hair, magic, blade tips, coat tails and feet. 1024x1536 portrait 2:3. Keep the face and upper body exceptionally consistent. Clean crisp intentional seams and edges, refined material highlights, no blur, no low-detail cartoon, no gritty texture, no background scenery, particles, text, logos or watermark.",
+      "editInput": "C:/Users/qs/godot/my-team/.godot/portrait-generation/review-fix-before/f2_spellthief.png",
+      "toolTarget": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f2_spellthief.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-c93586b9-406a-4b49-ac2c-8e988fd505d0.png",
+      "file": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f2_spellthief.png",
+      "visualReview": "已在替换前检视：保留原回头背身方向、上半身姿态、脸、发型、青魔法与匕首；腰胯现在衔接为一条连续深色修身裤，两条裤腿/膝/靴口清楚，红黑靴成对且结构一致。外套后摆归并为后方两组完整布片，无腿部穿透与交叉碎条，未新增腿部裸露。全身与双靴完整、灰底保留。裤脚有正常褶皱，属于布料结构而非破碎边。",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "status": "edited_saved_and_visually_reviewed",
+      "acceptance": "用户审美尚未确认；Agent 仅完成图像检查。"
+    },
+    {
+      "id": "f3_aymarahealer",
+      "commentNumbers": [
+        3
+      ],
+      "prompt": "Use case: precise-object-edit. COMPOSITION-ONLY EDIT of the supplied finished anime healer illustration. The large staff design and its size relative to the woman are approved. Do NOT redesign or resize the staff independently. Treat the complete woman, all her hair and gown, her halo, the complete staff with its ring, finial, tassels and foot, and her contact shadow as ONE locked group. Preserve every shape, pose, face, direction, color, detail, and the exact relative scale and arrangement within this group.\nShrink this ENTIRE GROUP uniformly to approximately 90% of its current size and center it comfortably on the SAME 1024x1536 portrait canvas, expanding only the existing plain pale-gray studio background around it. Maintain the same 2:3 canvas. Nothing is cropped or cut off. The TOPMOST GOLD STAFF FINIAL must now be placed around y=110 pixels and MUST have at least 100 pixels (over 6% of the total canvas height) of completely empty pale gray ABOVE IT. Leave at least 80 pixels (over 4% of the total canvas height) of empty pale gray BELOW the lowest gown edge and staff ground contact. Keep approximately 80 pixels or more of empty gray at both left and right edges as well. The entire content group should fit inside a safe rectangle approximately x=80 to 944 and y=105 to 1435, with visible breathing room on all four sides. Do not let the top finial return toward the canvas edge.\nThe result is the SAME exact beautiful white-haired healer and SAME prominent enlarged tall gold-ring staff, simply shown smaller together with more empty gray around them. Keep her original body orientation, facial features and expression, standing pose, gesture and correct staff grasp; keep staff thickness, ring diameter, staff length, gown width and all other dimensions proportional to each other exactly as in the input. Preserve the crisp refined anime illustration, detailed fabric and gold reflections, no blur or loss of facial detail. Continue the plain subtle pale-gray backdrop seamlessly; no visible pasted rectangle, border, added scenery, texture, particles, words or watermark.",
+      "editInput": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-5d1fdf88-8148-46e9-9e81-0079bdfe554c.png",
+      "toolTarget": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f3_aymarahealer.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-5f75309f-9ed7-4d05-84b4-6a8fab1e1dc9.png",
+      "file": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f3_aymarahealer.png",
+      "visualReview": "仅构图留白返修已在替换前检视：人物和大法杖作为整体缩小，法杖仍明显高于人物、金环仍有原来的存在感，未单独缩小法杖。原脸、朝向、站姿、手势、白金紫衣、握杆与灰底保留。杖顶约有 150px 以上可见灰色留白（超过画布高度6%），最低裙摆下方约200px以上留白（超过4%）；全身、大金环、顶尖、杖足与裙摆完整。生成图实际整体缩放较提示词90%略小，换得更充分四周留白；不声称像素级无变化。用户审美尚未确认。",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "status": "edited_saved_and_visually_reviewed",
+      "acceptance": "用户审美尚未确认；Agent 仅完成图像检查。",
+      "previousGenerations": [
+        {
+          "prompt": "Use case: precise-object-edit. Edit this existing exquisite Japanese anime healer portrait. ONLY enlarge and strengthen the staff so it is a proper visually substantial full-height staff. Preserve the SAME healer woman exactly: her refined delicate anime face and golden eyes, pale white hair, gold halo, graceful standing pose and left-hand gesture, white/gold/lavender flowing outfit with the same details, hairstyle, body proportions, jewelry, and plain warm pale-gray studio backdrop. Do not redesign her dress or face.\nReplace her undersized thin rod with the SAME design of ceremonial healer staff, now LONGER AND CLEARLY THICKER. She holds it upright on viewer right, beside her body rather than diagonally crossing the gown. The bottom gold ferrule physically RESTS ON THE SAME FLOOR as her feet and gown hem, fully visible outside the gown edge; it must not hover at shin height. The rigid shaft continues unbroken through the naturally closed grasp of her right hand, with correct fingers visibly wrapped around the thicker rod. Keep it a straight substantial dark shaft with elegant gold fittings, roughly 1.5 to 2 times the current shaft thickness, still comfortable to hold with one hand.\nEnlarge the ornate gold circular headpiece with its pearl-like central orb until the OUTER GOLD RING has approximately the diameter of her head including the hairstyle (about 190-220 pixels across on a 1024 pixel-wide image). Keep the existing small gold star details and restrained lavender tassels attached to the larger ring. The ring must have a strong readable silhouette and remain clearly distinct from the halo above her head. The WHOLE staff including the ring crown is slightly taller than her standing figure: bottom planted at the floor, the top finial higher than the crown of her hair and near or slightly above the uppermost halo. Staff is one complete upright designed object, no floating headpiece, no broken segments, no duplicate staff.\nCOMPOSITION MUST ADJUST TO FIT: preserve her stance but show the complete character and staff slightly smaller within the same 1024x1536 portrait 2:3. Place the complete woman slightly left of center and the upright staff comfortably at her right side. Leave a clear band of empty pale gray ABOVE the staff finial and above her halo, below the whole gown and staff foot, and outside the enlarged ring on the right; no clipping anywhere. Keep full flowing dress hem and hair inside the image. Ring, top finial and bottom ferrule all completely visible. Clean smooth background, faint soft floor contact shadow only. Preserve exquisite polished anime rendering, detailed clean fabric and gold materials, no noise/grain, no scenery, particles, text, logos or watermark.",
+          "editInput": "C:/Users/qs/godot/my-team/.godot/portrait-generation/review-fix-before/f3_aymarahealer.png",
+          "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-5d1fdf88-8148-46e9-9e81-0079bdfe554c.png",
+          "visualReview": "已在替换前检视：保留原女医师朝向、脸、站姿、白金紫衣、光环与灰底。法杖已明显加粗加长为竖直落地长杖，完整杖杆穿过正常握持的手，金环外径大约接近头部含头发的宽度并更有存在感，顶端高于人物光环；上下端均完整。顶端留白较窄但有清楚灰底间隔。为容纳大杖整体重新留白，未改角色身体方向。",
+          "width": 1024,
+          "height": 1536,
+          "reason": "法杖尺寸已认可，追加整组构图留白修正"
+        }
+      ]
+    }
+  ]
+}

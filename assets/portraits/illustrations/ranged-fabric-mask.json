@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-12",
+  "method": "built-in image_gen",
+  "items": [
+    {
+      "id": "f2_ranged",
+      "prompt": "Use case: precise-object-edit. Repair ONLY CLOTHING SURFACE FINISH and FOX MASK SCALE/ORIENTATION in this existing refined Japanese-anime character illustration. Keep exact back-turned look-back body pose, head and face, both arms and hands, both crescent weapons, current smooth thin glossy straight black hairstyle, figure proportions, full 1024x1536 composition and simple grey background.\nCLOTHING: User says the clothes look faded or as if color is peeling off. Remove random pale brown/grey scuffs, mottled patches, scratch-like flecks, scraped gold fragments, distressed highlights and patchy discoloration on ALL CLOTH/leather garment areas, especially black shorts, fitted black thigh boots, black side-skirt panels and crimson scarf/waist tails. Use rich coherent deep black fabric/leather and saturated crimson red fabric. Smooth broad cel-shaded folds, clear continuous material color, small purposeful soft highlights only. Black stays deep black in shadow and highlights, not cloudy grey or muddy brown. Red stays vivid crimson, not orange/washed pink. Keep gold TRIM and armor as gold, but make cloth gold motifs clean intentional sparse crisp ornamental patterns, not flaking random leaf fragments scattered through the fabric. Continuous gold edging where seams are edged. Do not remove necessary fold shadows. Keep red garment attachment points and all current cloth silhouette/length unchanged. Do NOT dull the actual metal weapons or armor: preserve polished gold metal but remove random scratched/patched appearance from clothing.\nFOX MASK: Keep it attached in the same general upper side of the head currently occupied by the mask; do NOT move it to the other side, to the back of head or onto her human face. Enlarge to approximately 1.4 TIMES its current linear size, a substantial wearable face-size decorative mask. Correct its current thin edge-on angle that looks inserted into hair. The COMPLETE fox mask must sit ON TOP OF / OUTSIDE the hair surface, with a visible continuous lower rim, physical shell thickness, a small contact shadow and red cords tied around the head/hair supporting it. Hair lies UNDER the mask; no hair strands passing through or swallowing the mask. Show the mask's exterior face in a readable moderate THREE-QUARTER angle so both eye openings and muzzle structure can be understood, not flattened side-profile or knife-like edge stuck in skull. Slight tilt resting naturally against the upper head, clear spatial separation from skull and face. Keep black lacquer, crimson markings and fine crisp gold border. The human face and eyes remain completely uncovered; preserve face/head angle and hair style. One coherent full fox mask, no extra horns beyond its fox ears, no duplication.\nKeep the refined delicate Japanese anime facial style and clean low-noise rendering. No added scenery, particles, grain, text or watermark. Target changes only fabric finish and mask readability; all other features locked.",
+      "editInput": ".godot/portrait-generation/ranged-fabric-mask-before/f2_ranged.png",
+      "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-963499c3-d591-445c-bef5-7e7e02e0f88d.png",
+      "file": "assets/portraits/illustrations/f2_ranged.png",
+      "priorAssetBackup": ".godot/portrait-generation/ranged-fabric-mask-before/f2_ranged.png",
+      "width": 1024,
+      "height": 1536,
+      "visualReview": "红黑布料的随机灰白磨损斑块清理为连续色面，金边和装饰纹样更清楚；面具放大并调整角度，外壳下缘和厚度可见、固定在发面外侧。黑长直、背身和两手位置保持。用户审美未确认。",
+      "userAestheticApproval": false
+    }
+  ]
+}

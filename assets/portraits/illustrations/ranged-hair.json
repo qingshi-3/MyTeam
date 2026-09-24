@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-12",
+  "method": "built-in image_gen",
+  "items": [
+    {
+      "id": "f2_ranged",
+      "prompt": "Use case: precise-object-edit. Change ONLY THE HAIR in this existing polished Japanese anime adult female warrior image. The user accepts the current mask position: DO NOT move, rotate, replace or change the fox mask, its ties, or the head. Do not change any other part of the image.\nHAIR EDIT: turn the slightly brown/grey, dense voluminous hair into a deeper true JET BLACK with elegant smooth glossy sheen. Keep rich black shadow masses; use a few controlled cool charcoal/silver highlights following the length and curvature of the hair bundles, not grey overall and not plastic or metallic reflections. Make the hair noticeably LIGHTER AND THINNER IN VOLUME, reducing its bulky spread and layering by about one third. Retain the same long hairstyle, recognizable bangs, length and flowing direction, but use fewer slimmer flowing locks and more airy negative gaps between them. Keep the scalp naturally covered; do not thin the hairline, shorten it, make it transparent, or add scattered flyaways. Dark silky ink-black hair with clean lustrous ribbons of reflected light and a refined anime finish, not rough hair texture or hundreds of tiny strands.\nPRESERVE EXACTLY: the fox mask in its current position, face/red eyes/expression, head angle, BACK-TURNED look-back body pose, both arm positions and both hand grips, two crescent weapons, black/gold outfit and shorts, boots, red scarf and waist ribbons including their current shape and fastening, and pale-grey plain background. Do not confuse the black fabric with hair: edit only black hair strands flowing from her head behind shoulder. Same complete 1024x1536 portrait. No text, scenery, particles or watermark.",
+      "editInput": ".godot/portrait-generation/ranged-hair-before/f2_ranged.png",
+      "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-7bb0bd2f-25fe-4f76-a29a-1ba0d2884bbd.png",
+      "file": "assets/portraits/illustrations/f2_ranged.png",
+      "priorAssetBackup": ".godot/portrait-generation/ranged-hair-before/f2_ranged.png",
+      "width": 1024,
+      "height": 1536,
+      "visualReview": "头发由偏棕灰改为深黑，沿发束保留平滑光泽；减少密集叠层，发束之间空隙增大。面具位置按用户“就这样”保留，脸、手臂、背身与红布结构保持。",
+      "userAestheticApproval": false
+    }
+  ]
+}

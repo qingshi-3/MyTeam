@@ -1,0 +1,80 @@
+{
+  "source": "Original procedural synthesis; no recordings, downloaded audio, or generative audio model.",
+  "format": "48 kHz, mono, signed 16-bit PCM WAV",
+  "status": "Source auditions; runtime selection is recorded in ../ui/source-manifest.json. Subjective listening acceptance is pending.",
+  "preview_sequence": "Three spaced clicks, then four clicks 170 ms apart.",
+  "files": [
+    {
+      "id": "a_light",
+      "design_intent": "轻鼠标点击：细小、短促的开关触点",
+      "sample": {
+        "file": "a_light.wav",
+        "duration_seconds": 0.065,
+        "peak_dbfs": -9.0,
+        "rms_dbfs": -32.19,
+        "sha256": "7d25533257d3f2ffdad6c4993002407da931d0c475a509da9a754c2679461529"
+      },
+      "audition": {
+        "file": "a_light_preview.wav",
+        "duration_seconds": 3.5,
+        "peak_dbfs": -9.0,
+        "rms_dbfs": -41.05,
+        "sha256": "167f80b8e77aa821e1033846fd356fead9ea484ceb8f22dddeb61dfd67dbb649"
+      }
+    },
+    {
+      "id": "b_hard",
+      "design_intent": "硬质按键：清晰触点加少量按键壳体敲击",
+      "sample": {
+        "file": "b_hard.wav",
+        "duration_seconds": 0.085,
+        "peak_dbfs": -9.0,
+        "rms_dbfs": -30.91,
+        "sha256": "c5886d7ec0d31e6939f29953567734b4252174ebfb5ff91fa31e73a9a3a45cae"
+      },
+      "audition": {
+        "file": "b_hard_preview.wav",
+        "duration_seconds": 3.5,
+        "peak_dbfs": -9.0,
+        "rms_dbfs": -38.61,
+        "sha256": "038e822e5f8d3f720a82e8d303a723de8b5caa1dafb1eedabebba2759f18b7bc"
+      }
+    },
+    {
+      "id": "c_latch",
+      "design_intent": "双段卡扣：轻触后落扣，两个接触点相隔36毫秒",
+      "sample": {
+        "file": "c_latch.wav",
+        "duration_seconds": 0.125,
+        "peak_dbfs": -9.0,
+        "rms_dbfs": -32.54,
+        "sha256": "0889950f91e66fcb21b5a8bf21de5e933db7d47863a14a78b8f760dd13ec8e66"
+      },
+      "audition": {
+        "file": "c_latch_preview.wav",
+        "duration_seconds": 3.5,
+        "peak_dbfs": -9.0,
+        "rms_dbfs": -38.56,
+        "sha256": "7db2120fde38c08451afbaa91fdddcce27a2779796e1ecd575144a3f7ba2e8b8"
+      }
+    },
+    {
+      "id": "d_b_then_a",
+      "design_intent": "用户指定咔—嗒：先B硬质按键，80毫秒后A轻鼠标点击",
+      "sample": {
+        "file": "d_b_then_a.wav",
+        "duration_seconds": 0.145,
+        "peak_dbfs": -9.0,
+        "rms_dbfs": -31.27,
+        "sha256": "6d1e4c0f0012dbd06491cc20adb3be045dba7d35571306fff1c4a93eab6f4171"
+      },
+      "audition": {
+        "file": "d_b_then_a_preview.wav",
+        "duration_seconds": 3.5,
+        "peak_dbfs": -9.0,
+        "rms_dbfs": -36.65,
+        "sha256": "3bb4888732826585078fb028ce227a0383e7009aed271836c4b74c6925ab9adf"
+      }
+    }
+  ]
+}

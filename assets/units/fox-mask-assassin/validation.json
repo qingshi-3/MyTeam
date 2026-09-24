@@ -1,0 +1,15 @@
+{
+  "frames": 36,
+  "size": [
+    80,
+    80
+  ],
+  "atlas": [
+    480,
+    480
+  ],
+  "alpha": "binary real transparency",
+  "allFramesInsideCells": true,
+  "atlasMatchesFrames": true,
+  "godotEnginePlaybackTested": false
+}

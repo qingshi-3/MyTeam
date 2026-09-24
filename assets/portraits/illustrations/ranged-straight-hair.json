@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-12",
+  "method": "built-in image_gen",
+  "items": [
+    {
+      "id": "f2_ranged",
+      "prompt": "Use case: precise-object-edit. HAIR-ONLY REFINEMENT of this existing full-body anime character. User wants the hair less frizzy, thinner at the BACK OF THE HEAD, smoother BLACK LONG STRAIGHT HAIR, flowing elegantly without chaotic movement.\nReduce the bulky rear-skull/occipital hair volume so it lies flatter and closer to the head; preserve a normal fully covered scalp, no bald patches. Keep long jet-black hair with restrained glossy highlights. Replace the large curly, looping, tangled and splaying hair behind the shoulder with a SMALL NUMBER of long straight, silky tapered locks that flow TOGETHER in one gentle direction toward image-left. Smooth broad shallow arcs caused by a light breeze, not curls, ringlets, S-shaped loops or turbulent strands. Most hair hangs in a coherent flatter curtain behind the head and shoulder, then drifts gently left; only a few neat separated ends. Remove wiry flyaway strands, spiky stray hairs, frizz and fine tangled hair crossings. Keep the existing overall hair length, elegant bangs and face framing, but make the posterior head silhouette noticeably slimmer and hair motion calm, orderly and graceful. True deep glossy black, clean soft controlled elongated highlights, not brown, grey or rough textured.\nDO NOT EDIT ANYTHING ELSE. Preserve fox mask EXACTLY in its current position/angle, red ties, human face, red eyes and expression, head orientation, back-turned look-back body, BOTH arms and hands, both crescent weapons, red scarf and waist sash including their existing flowing shapes, all clothing/armor/shorts/boots, pose, framing and pale grey background. Do not straighten or remove red cloth by confusing it with hair. Only black hair is changed. Same 1024x1536 complete portrait, no text, particles or watermark.",
+      "editInput": ".godot/portrait-generation/ranged-straight-hair-before/f2_ranged.png",
+      "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-b71c9f28-bb60-470f-8ef1-86679b374797.png",
+      "file": "assets/portraits/illustrations/f2_ranged.png",
+      "priorAssetBackup": ".godot/portrait-generation/ranged-straight-hair-before/f2_ranged.png",
+      "width": 1024,
+      "height": 1536,
+      "visualReview": "后脑发根贴合、体积收薄；多重卷曲和交叉飞丝整理为顺滑长直发束，统一轻微向左飘动，保持深黑光泽。面具位置、脸、手臂和其他造型保留。",
+      "userAestheticApproval": false
+    }
+  ]
+}

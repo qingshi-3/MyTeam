@@ -1,0 +1,4 @@
+[gd_resource type="SpriteFrames" format=3]
+[ext_resource type="Texture2D" path="res://assets/vfx/library/rock-wedge-anime.png" id="texture"]
+[resource]
+animations = [{"frames": [{"duration": 1.0, "texture": ExtResource("texture")}], "loop": true, "name": &"idle", "speed": 1.0}, {"frames": [{"duration": 1.0, "texture": ExtResource("texture")}], "loop": false, "name": &"attack", "speed": 1.0}, {"frames": [{"duration": 1.0, "texture": ExtResource("texture")}], "loop": false, "name": &"defeated", "speed": 1.0}]

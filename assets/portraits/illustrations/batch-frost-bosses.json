@@ -1,0 +1,279 @@
+{
+  "batch": "frost-bosses",
+  "createdAt": "2026-09-12",
+  "scope": "9 independent illustrations; PNG assets only; no runtime changes",
+  "background": "Minimal pale gray gradient, no scenery, text, particles or noise overlay",
+  "faceStyle": "Latest user-approved gold-crescent woman illustration face style; sprite identity remains authoritative",
+  "items": [
+    {
+      "id": "f6_freeblade",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/f6_freeblade/f6_freeblade.png",
+      "sourceFrames": "assets/donor-units/f6_freeblade/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        202,
+        303,
+        100,
+        100
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f6_freeblade/f6_freeblade.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/f6_freeblade.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 80% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: A slender agile adult humanoid ice-blade duelist. Preserve the sprite's long swept-back lavender-silver hair with spiky crown-like tufts, dark navy fitted outfit and long black boots, silver/lavender armor and coattail edges, flowing crimson sash/coattail behind the waist, cyan accents near the shoulders. The narrow sword has a black cross-like guard with a cyan round energy core and an intense white-cyan icy blade. Hold this one sword horizontally at waist level while the other hand is raised lightly, restrained confident expression. Preserve the sprite's slim androgynous adult presentation and long hair; no bulky armor. Hair is lavender-silver, not black.",
+      "correctionPrompt": null,
+      "correctionInput": null,
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-8b5ba146-f464-40d6-a84d-c48d1c7a0f89.png",
+      "output": "assets/portraits/illustrations/f6_freeblade.png",
+      "visualReview": "保留银紫长发、红色腰后布、深蓝黑装束与青白冰剑；精致柔和日漫五官，完整全身。像素脸性别信息有限，采用纤细中性成年呈现。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 2138882
+    },
+    {
+      "id": "f6_frostbitehawker",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/f6_frostbitehawker/f6_frostbitehawker.png",
+      "sourceFrames": "assets/donor-units/f6_frostbitehawker/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        131,
+        0,
+        130,
+        130
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f6_frostbitehawker/f6_frostbitehawker.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/f6_frostbitehawker.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 80% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: An avian frost warrior creature matching the sprite: unmistakable birdlike hooked beak, pale silver-white feathery crest, blue-violet plumage and wing-shaped feathered arms, dark slender torso with a few silver armor plates, cyan crystalline/blade accents along the forearms, long bird talon legs with reddish lower legs and cyan talon highlights. Low alert stance, wings partially spread enough to reveal full feather shape but fit portrait frame. This is a nonhuman bird warrior, NOT a pretty human with cosmetic wings; keep beaked bird head and clawed feet. No human face, no human hair, no human skin.",
+      "correctionPrompt": "Use case: identity-preserve / precise-object-edit. Edit only the framing of this completed Japanese anime character illustration. The wings are too close to the left and right edges. Show all feather tips with at least 85 pixels empty background on both sides by zooming out the ENTIRE character together. Keep portrait 2:3 1024x1536. Keep exactly the same character identity, face, colors, outfit, pose, weapon, clean precise anime rendering and smooth material shading. Preserve anatomy and all existing details without new ornament or extra limbs. Center the character, full body head to feet and entire weapon/wings intact. Maintain a plain almost-flat pale gray background with only the faintest smooth gradient, soft contact shadow; no texture, speckle, grain, architecture, particles, text, or scenery. Do NOT crop any extremity. This is a framing fix, not a redesign.",
+      "correctionInput": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-c13554b4-d876-4693-9865-1b771fea02eb.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-b23edbdc-4156-4b47-9640-c8421553cf18.png",
+      "output": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "visualReview": "保留鸟喙、白色羽冠、紫羽、红色小腿及青色刃爪；非人化鸟人脸。首版左右羽缘留白偏少，已用内置图像工具缩小构图，完整羽翼和脚爪可见。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 2046010
+    },
+    {
+      "id": "f6_general",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/f6_general/f6_general.png",
+      "sourceFrames": "assets/donor-units/f6_general/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        162,
+        810,
+        80,
+        80
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f6_general/f6_general.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/f6_general.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 80% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: An adult slim female ice duelist / commander matching the sprite: short asymmetric icy blue-lavender bob haircut, pale skin, violet-pink eyes, refined composed Japanese anime female face. Dark navy/black fitted battle outfit with silver-white segmented armor along torso and legs, small shoulder armor, long slim black boots, blue cloth panels and a prominent flowing lavender cape or long rear drape lined deep crimson. She holds a narrow bright cyan ice blade aloft in one raised hand with dark sword grip; free hand gracefully poised near her chest. Elegant poised stance retaining the sprite silhouette, no enormous armor and no crown.",
+      "correctionPrompt": "Use case: identity-preserve / precise-object-edit. Edit only the framing of this completed Japanese anime character illustration. The current upright ice sword is clipped at the top edge. Show its FULL pointed tip with at least 100 pixels of empty background above it, by zooming out the ENTIRE figure and sword together. Keep sword proportional and relatively compact, do not lengthen it. Keep portrait 2:3 1024x1536. Keep exactly the same character identity, face, colors, outfit, pose, weapon, clean precise anime rendering and smooth material shading. Preserve anatomy and all existing details without new ornament or extra limbs. Center the character, full body head to feet and entire weapon/wings intact. Maintain a plain almost-flat pale gray background with only the faintest smooth gradient, soft contact shadow; no texture, speckle, grain, architecture, particles, text, or scenery. Do NOT crop any extremity. This is a framing fix, not a redesign.",
+      "correctionInput": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-d169ce88-209d-4893-b4d7-e5b3272de012.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-700ce695-c3a1-4b61-ac5f-82352f1d49ab.png",
+      "output": "assets/portraits/illustrations/f6_general.png",
+      "visualReview": "保留蓝紫短发女性、深色轻甲、紫色红里披布与单冰剑；日漫小鼻小嘴、精致眼睛。首版上方剑尖裁切，已定向扩展构图，剑尖和脚完整可见。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 1748151
+    },
+    {
+      "id": "f6_sister",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/f6_sister/f6_sister.png",
+      "sourceFrames": "assets/donor-units/f6_sister/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        242,
+        605,
+        120,
+        120
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f6_sister/f6_sister.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/f6_sister.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 70% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: A slender adult female ice artificer matching sprite, warm tan skin, refined elegant Japanese anime female face with luminous teal eyes; short pale silver hair partly hidden under a tall upright violet/silver two-pronged headpiece. Dark blue fitted layered outfit, black leggings and boots, crimson waist sash and narrow hanging fabric panels. Around the shoulders and flowing down behind is a long off-white shaggy fur/scalloped pale mantle with a clearly readable cream silhouette. Her dominant right arm carries the sprite's large blue-lavender mechanical/fantasy ice gauntlet apparatus: a conspicuous mint-cyan circular core at the wrist/center and curved hornlike fork shell around a contained small cyan flame at its front. Other hand lifted lightly toward her chest. Keep the round turquoise machinery visibly dominant, no staff and no sword. Whole gauntlet, complete headpiece and feet contained in generous empty margins.",
+      "correctionPrompt": null,
+      "correctionInput": null,
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-d96c1f08-c6c6-407c-a701-a924374d2f5c.png",
+      "output": "assets/portraits/illustrations/f6_sister.png",
+      "visualReview": "保留双尖紫银头饰、白色毛披、蓝红装束、大型青绿圆芯冰装置；精致日漫女性五官。武器能量仅随装置，背景无额外粒子。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 2019641
+    },
+    {
+      "id": "boss_borealjuggernaut",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/boss_borealjuggernaut/boss_borealjuggernaut.png",
+      "sourceFrames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        121,
+        847,
+        120,
+        120
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/boss_borealjuggernaut/boss_borealjuggernaut.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/boss_borealjuggernaut.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 70% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: A massive low-slung NONHUMAN quadrupedal frost juggernaut beast, source silhouette of a heavily armored dinosaur-rhinoceros-dragon creature. Four stout dark charcoal legs with ivory talons, bulky overlapping indigo/blue-violet plate-like scales forming back and shoulder armor, many angular bright icy-blue crystal spikes along the entire back, shoulder and short thick tail. Long forward-curving ice horns on the armored reptilian head, cyan narrow eyes and cyan-edged jaws, broad dark muzzle and menacing ivory teeth. No human face, no humanoid body, no rider. Three-quarter standing view with head turned slightly toward viewer, all four feet visibly grounded; curl tail slightly toward body so entire tail and horn tips fit inside portrait format. Entire beast fully inside image with AT LEAST 12% empty margins; scales shiny clean stylized anime creature rendering rather than photoreal surface or rough brush texture. No frost cloud, no ice scenery, no floor crystals.",
+      "correctionPrompt": null,
+      "correctionInput": null,
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-a11ec12a-2483-4cad-aff5-587e88517aa2.png",
+      "output": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "visualReview": "四足深蓝冰甲兽，青蓝背棘、角和尾完整，脚爪可见；保留非人怪兽脸，未套用人形脸。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 2022084
+    },
+    {
+      "id": "boss_decepticleprime",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/boss_decepticleprime/boss_decepticleprime.png",
+      "sourceFrames": "assets/donor-units/boss_decepticleprime/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        131,
+        655,
+        130,
+        130
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/boss_decepticleprime/boss_decepticleprime.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/boss_decepticleprime.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 70% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: A NONHUMAN black and dark slate-blue mechanical dragon-like combat walker matching sprite. Low angled mechanical torso, hunched predatory posture, two long parallel railgun/cannon barrels mounted prominently above the shoulders/back and aiming diagonally upward, sleek angular armored reptilian/mechanical head with a small magenta sensor eye, articulated segmented rear tail sweeping left, two strong digitigrade clawed legs and short angular manipulator forelimbs. Sparse magenta-violet energy seams on joints and weapon tips, dark teal joints, layered precise mechanical armor panels. Preserve source's asymmetrical lizardlike mech silhouette and twin long back cannons, do not turn into a generic tall human robot or a knight. Premium Japanese mecha anime concept illustration, crisp clean edges and controlled highlights. Full frame 2:3 portrait, step back enough for WHOLE cannon tips and WHOLE tail to fit with at least 12% empty margin everywhere. No electricity bolts or particle effects in background.",
+      "correctionPrompt": null,
+      "correctionInput": null,
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-2b91312f-8248-4133-9395-1e230af1e0d7.png",
+      "output": "assets/portraits/illustrations/boss_decepticleprime.png",
+      "visualReview": "保留低俯机械龙体态、双背部长炮、机械尾、趾行脚与紫色发光接缝；炮口和尾端完整，非人机甲。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 2021328
+    },
+    {
+      "id": "boss_shadowlord",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/boss_shadowlord/boss_shadowlord.png",
+      "sourceFrames": "assets/donor-units/boss_shadowlord/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        121,
+        847,
+        120,
+        120
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/boss_shadowlord/boss_shadowlord.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/boss_shadowlord.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 70% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: A shadow assassin matching sprite: slim athletic adult masculine humanoid with face mostly concealed by a deep black hood and dark lower-face mask, only narrow subtly crimson eyes visible. Dark charcoal fitted layered armor with muted burgundy wrappings on arms and greaves, short black layered cloak billowing to one side; crimson cloth straps and red wrist ties. Exactly TWO long narrow curved red-orange energy blades, one in each hand, with pale pink-white cutting edges, held in a compact crossing-ready position at different heights so neither blade is cropped. Menacing collected posture and agile slim silhouette; no bulky plate armor, no giant horned helmet, no human bare face. Render eyes in fine Japanese anime style under hood. No red smoke, no sparks, no skulls, no gore; only clean blade glow. At least 10% empty border around all tips, cloak and boots.",
+      "correctionPrompt": null,
+      "correctionInput": null,
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-e27e9ed9-ea34-4e03-99f9-4bf6d502c79f.png",
+      "output": "assets/portraits/illustrations/boss_shadowlord.png",
+      "visualReview": "黑兜帽蒙面、暗甲红绑带与双红弯刃；暴露的眼睛采用日漫细线，保留遮脸身份。双刃与披风完整。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 1912769
+    },
+    {
+      "id": "boss_vampire",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/boss_vampire/boss_vampire.png",
+      "sourceFrames": "assets/donor-units/boss_vampire/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        505,
+        505,
+        100,
+        100
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/boss_vampire/boss_vampire.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/boss_vampire.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 70% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: An adult male vampire-like arcane boss as in sprite, slim tall pale humanoid with an extremely pale white/silver closely cropped or shaven-looking head, small pale blue-lilac scalp area, refined Japanese anime male features and narrow cool eyes; no long hairstyle. Dark navy-black high-collared fitted clothing with strongly visible horizontal crimson red sash bands across torso and waist, dark boots, and a flowing dark cape with deep red lining. Holds one thin floating oval magical energy ring immediately beside each hand, TWO rings total, rims in blue-violet and pink-magenta, simple clear ring shapes without runic writing or particles. Poised hovering-like stance with both feet visible and cape falling in two clear shapes. Preserve red and dark palette and pale exposed head from sprite, do not add gold aristocratic armor, canes, bats, fangs displayed grotesquely or a wine glass. Hands and face drawn with clean delicate modern Japanese anime lines. Entire head, cloak, boots and both rings inside image with 10% empty margins.",
+      "correctionPrompt": null,
+      "correctionInput": null,
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-0902d4e4-b056-4c0e-a1c9-6678a8067895.png",
+      "output": "assets/portraits/illustrations/boss_vampire.png",
+      "visualReview": "保留苍白短发/近剃头轮廓、深色红横带衣装、红里披风、双紫粉环；成年男性精致日漫脸，完整全身和双环。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 1823232
+    },
+    {
+      "id": "boss_wujin",
+      "tool": "built-in image_gen",
+      "sourceSprite": "assets/donor-units/boss_wujin/boss_wujin.png",
+      "sourceFrames": "assets/donor-units/boss_wujin/frames.tres",
+      "inspectedAnimation": "idle",
+      "inspectedRegion": [
+        202,
+        505,
+        100,
+        100
+      ],
+      "referenceImages": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/boss_wujin/boss_wujin.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-frost-boss-inspection/boss_wujin.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "prompt": "Use case: stylized-concept. Asset: polished Japanese-anime full-body character illustration for a game roster, one character only, portrait 2:3 1024x1536. Input image 1 is the identity-authoritative game sprite sheet. Input image 2 is an enlarged idle sprite for readability. Input image 3 is a rendering and FACE STYLE reference only, the red/black/gold woman illustration: apply her delicate clean Japanese anime linework and soft refined facial design when the subject is humanoid; do not copy her costume, weapon, pose, or background. Preserve subject species and gender presentation visible in the sprite. Draw the SUBJECT SPEC below. High-quality modern anime game illustration, elegant precise outlines, carefully grouped smooth shading and clean material highlights, exquisitely readable design. Humanoid faces: fine delicate anime eyes with layered irises, small nose and mouth, smooth light skin, soft face silhouette; masculine subjects remain handsome adult anime men, not women. Monster and machine subjects retain animal or machine faces, never humanized. Full body head to feet, entire wings/tail/weapons inside frame, clear attractive dynamic standing pose, generous empty margins, character occupies about 70% of canvas. Background MUST be an almost flat desaturated pale gray with the faintest two-tone gradient and a very soft contact shadow only. No architecture, landscapes, plants, stars, moon, magic backdrop, floating particles, debris, texture, film grain, noise, clutter, text, logos, frames, or watermark. No realistic western sculpted faces, broad square jaw, heavy nose bridge, deep eye sockets, oily skin, or rough painterly surface. No added decorative micro-engraving everywhere. Energy is restricted to existing weapon edges and restrained accents. The source animation action effects and spritesheet cells must not appear in final.\nSUBJECT SPEC: A red simian warrior boss faithful to the sprite, agile adult male monkey-like martial fighter with a compact red-furred/armored torso, angular red head crest or red head armor, visible small pale muzzle/cheek region and pale side tufts, stern expressive anime creature eyes. Red forearms and scarlet shoulder armor, dark charcoal pants and lower-body armor with conspicuous ivory-white edging and gold accents at belt and greaves. Two long slender golden plume/streamer shapes arch back from the head like the source silhouette. Carries ONE long red-shaft staff or spear-like pole weapon with pale-gold end sections, held diagonally across the body. Low ready martial stance with full feet grounded, sinewy rather than bulky build. Keep creature-like compact face and the sprite red, ivory, black and gold silhouette; do not invent a human beauty face or a woman in a revealing outfit; no full-body gold knight armor, no chakrams, no crown halo, no long loose cape or excessive ornaments. Full pole weapon and both arching golden head streamers fit entirely within portrait with generous margin.",
+      "correctionPrompt": null,
+      "correctionInput": null,
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09464-12a7-77f1-8639-5ede210182eb\\exec-7d94c373-a91f-432d-8a18-dca43be30112.png",
+      "output": "assets/portraits/illustrations/boss_wujin.png",
+      "visualReview": "根据帧中红色猿形轮廓绘制，保留红毛/红甲、灰白口鼻、金色双头翎、黑白金下装和长红金棍；不拟人成女性。全棍、尾和头翎完整。",
+      "userAccepted": false,
+      "decodedSize": [
+        1024,
+        1536
+      ],
+      "bytes": 1913305
+    }
+  ]
+}

@@ -1,5 +1,14 @@
 # 特效贴图来源
 
+2026-09-12 常用库扩充：独立岩刺、藤蔓、沉默符号和风纹理的原件及完整提示词见 [library 来源记录](library/README.md)。首轮写实岩刺/藤蔓被用户否定，保留历史但不接入，最终场景改用日漫大色面的候选版本。
+
+2026-09-12 嘲讽负面状态：`taunt-anger.png` 为内置 image_gen 原始输出 `exec-24f44259-8306-4d75-b4a6-ace3febe3e0c.png` 的项目副本，1254×1254 RGBA，保留透明通道并启用 mipmap；SHA-256 `15A5D1A447F6404129F6A7CB22D593E52CE9409993CBCD1F33BD245057BC769C`。原件位于 `C:/Users/qs/.codex/generated_images/01a09041-0471-7f72-bd5d-65fa172af32f/`，无运行时外部依赖。仅单个四瓣怒意符号，弹出／轻摆和状态生命周期由 Godot 控制；范围圈是独立 shader，不在这张图中。未采用 CLI，也未复制商业参考资产。动作依据见表现专题 P01-S32。
+
+完整生成提示词：
+> Create a single game VFX sprite on a truly transparent RGBA background, not a whole effect scene. One isolated bold four-pronged comic ANGER / provoked status symbol, the classic manga anger vein mark: four disconnected thick curved right-angle wedges arranged around a small empty cross-shaped center. Strong legible silhouette at 24-32 pixels. Deep crimson-red body, restrained warm vermilion inner shading, thin warm orange illuminated edge, very subtle dark maroon rim for contrast. Hand-painted polished fantasy RPG effect texture, crisp graphic shape, not pixel art, no metallic object or shield, no face, no letters, no words, no border, no background glow cloud, no scattered particles. Only one symbol centered, upright, equal width and height, occupying 70% of a square canvas with generous transparent margins. This is a small persistent taunt debuff marker above enemies' heads; motion and particle layers will be authored separately in Godot. Output transparent PNG.
+
+2026-09-12 默认箭矢：`arrow.png` 原样复制自用户指定只读供体 `D:/godot/rpg/assets/textures/tiles/训练场_training-arena-tileset-rpg/Arrow_single.png`，32×32 RGBA，SHA-256 `E3958A91AF585E6664C9DA9E7567C996D1135BCE43A1712A05C4A39AB1ED557C`。已查看单箭与同目录 `Arrow.png` 图集：单箭尖端朝上，有独立箭头、细箭杆、蓝色尾羽；只取这张既有素材，不修改供体，不新增外部运行路径。场景以 AtlasTexture 选择有内容的区域并转成 +X 朝向，按战斗投影朝向飞行，亮度和尺寸由场景／定义调整；不是新生成的整段技能效果。运行行为沿已有直线碰撞投射物合同，不由图集推定新的弹道或伤害规则。下文生成素材记录保持历史范围。
+
 2026-09-11 整批修订：当前共享场景使用 [refresh 目录的十张新素材](refresh/README.md)，完整提示词、原件文件名、用途及 SHA-256 见该来源记录。旧 PNG 保留，下文属于此前各轮的来源与历史使用方式。法阵/盾壳候选生成未通过连接或透明背景检查，仍使用旧图并调整对应 shader；energy-mote 保留旧图。素材均通过内置生图工具生成，未使用 CLI 回退，也未复制商业参考资产。
 
 `weaken-rune.png`：内置 image_gen 原始输出 `exec-8f148ca7-6fac-497f-8c44-9b47cb1d2319.png`，1254×1254 RGBA 原件保留 alpha、启用 mipmap。只有一枚双下压符印，六个独立实例经 AmbientTrack 下沉，独立 shader 亮边掠过和末段碎散；没有整张虚弱图、外部运行路径或复制参考资产。

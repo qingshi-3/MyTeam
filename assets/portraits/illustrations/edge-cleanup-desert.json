@@ -1,0 +1,14 @@
+{
+  "items": [
+    {
+      "id": "f3_general",
+      "prompt": "Use case: precise-object-edit. Edit the attached existing full-body anime male desert general illustration. The problem to fix is visually noisy, tattered fabric: jagged ripped hems, skinny shredded strips and mottled broken bright spots. ONLY clean up the cloth silhouette and cloth rendering. Consolidate the beige waist drapery and the long black-and-beige fabric flying on both sides into a small number of wide, long, intact cloth panels. Give them elegant continuous smooth finished edges and large natural flowing folds, with restrained smooth shading. Every panel must look like finished quality fabric rather than shredded ribbons. Remove all tiny ragged teeth, fraying, holes, skinny split ends, broken scraps, mottled chipped-paint stains and scattered bright speckles on the beige and black cloth. Preserve the general direction and movement of the side drapery, while making its shape much simpler and calmer. Keep subtle clean gold edging if needed, no dense micro-patterns. This is deliberate redrawing of forms with crisp controlled edges, NOT blur, smearing, loss of sharpness or washing out detail.\n\nKeep the EXACT existing character identity, refined Japanese anime adult male face, facial expression, black hair, gaze, pose, proportions, enormous open golden ring crown and all its necessary points, long black-and-gold polearm and complete curved steel blade, black-and-gold armor construction, jewelry, colors and lighting. Do not remove the crown horns, weapon tips or armor structural shapes as if they were unwanted fraying. Do not add new accessories, particles or effects. Preserve the same pure pale-gray background and soft contact shadow. Maintain the full-body 2:3 portrait composition with the whole crown, both feet and entire polearm inside the canvas, preserving the existing generous whitespace at top and bottom. High-quality exquisite anime finish, clear silhouette, clean smooth materials, no text or watermark.",
+      "editInput": "C:/Users/qs/godot/my-team/.godot/portrait-generation/edge-cleanup-before/f3_general.png",
+      "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09463-4d27-7db2-acdb-c054e3cea67f/exec-9f2abd0a-7b47-4170-84be-b26b42bb2870.png",
+      "file": "assets/portraits/illustrations/f3_general.png",
+      "visualReview": "已实际查看生成结果：米色腰布与两侧飘带改成少量宽长完整布片，破口、锯齿碎尾、斑驳碎亮纹已清理；布边连续清楚且有自然大褶，没有用模糊处理。原日漫男性脸、巨大金环冠、长戟、黑金甲、灰底保留；冠尖、双足、完整武器均在画布内，上下留白保留。仅为Agent视觉检查，未声明用户认可。PNG解码成功。",
+      "width": 1024,
+      "height": 1536
+    }
+  ]
+}

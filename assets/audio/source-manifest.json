@@ -1,0 +1,161 @@
+{
+  "upstream": "https://github.com/open-duelyst/duelyst",
+  "commit": "2843f2400854136598631288c2e8dfb8f5173de7",
+  "license": "CC0-1.0",
+  "license_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/LICENSE",
+  "files": [
+    {
+      "cue": "arrow_release",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_neutral_crossbones_attack_swing.m4a",
+      "source_sha256": "edc482939c0409bf92ab9139f7635ba4d631889379d39a6d3e3f858a64647751",
+      "file": "feedback/arrow_release.ogg",
+      "sha256": "b6b22ddc1959d9140078768dfd5f9fe97f1bdfe7e9cd9df2a26a8606eae2f3a8",
+      "max_duration": 0.45,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.45,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.35:d=0.1"
+    },
+    {
+      "cue": "arrow_hit",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_neutral_crossbones_attack_impact.m4a",
+      "source_sha256": "660c166d2a82d2981481658361dcd2d1b428a37ae2c9d1c1caae63d5ed355b44",
+      "file": "feedback/arrow_hit.ogg",
+      "sha256": "eae5dcd5d4cef1b4b584ef38f2a972ff9b3953a05bb87c2f7e638a022b861b16",
+      "max_duration": 0.4,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.4,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.30000000000000004:d=0.1"
+    },
+    {
+      "cue": "melee_swing",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_f1general_attack_swing.m4a",
+      "source_sha256": "d2a1399ec935c12cc0c0b4d936bd164a18f63224267cbec1a7877f46c88a0f39",
+      "file": "feedback/melee_swing.ogg",
+      "sha256": "c2d2f27b6caa67028679a11f95406c74e3df4e5e8a3b86d34f8671bd2c877530",
+      "max_duration": 0.4,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.4,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.30000000000000004:d=0.1"
+    },
+    {
+      "cue": "melee_hit",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_f1tank_attack_impact.m4a",
+      "source_sha256": "0280369d6ddb9ca3d9c68a3368b88df780b0171b10ac1ccf1e3e65edcfa2fcb4",
+      "file": "feedback/melee_hit.ogg",
+      "sha256": "12cb56b32eb584fda0cd984331bdfdd98294fbeb19cde5e698ee8b3400137d95",
+      "max_duration": 0.45,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.45,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.35:d=0.1"
+    },
+    {
+      "cue": "freeze",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_spell_icepillar.m4a",
+      "source_sha256": "7a80165b5c607ec683a0ad250814fd254439ed1c4a6259f47b701c578cfaa149",
+      "file": "feedback/freeze.ogg",
+      "sha256": "6c3438f93b3689691ca1d22f5f32dc91b82e4bd26139e0f6248578feab0ac902",
+      "max_duration": 0.85,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.85,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.75:d=0.1"
+    },
+    {
+      "cue": "shield",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_spell_forcebarrier.m4a",
+      "source_sha256": "7e8f2f1377687a989f80cef8592bdce1c09724fed08f7f9227cc3eed419c5b53",
+      "file": "feedback/shield.ogg",
+      "sha256": "287405c426a3662339db33b1bf574d6781f0238bcef57a6f60a504cec2802195",
+      "max_duration": 0.7,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.7,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.6:d=0.1"
+    },
+    {
+      "cue": "shield_break",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_spell_icepillar_melt.m4a",
+      "source_sha256": "19ee211e1ff2284ad124c64ed7f5c3682b0a135840387db2f7553f44c1952475",
+      "file": "feedback/shield_break.ogg",
+      "sha256": "62ae689a60f08ffff9c513001f32928c1234402c3c4dd0a2035c177fcca05c4e",
+      "max_duration": 0.6,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.6,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.5:d=0.1"
+    },
+    {
+      "cue": "explosion",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_spell_graspofagony.m4a",
+      "source_sha256": "54e09bd2b94ab0b875f3ac6320868ea3559a2630a585e9464fc1c4462e954ec7",
+      "file": "feedback/explosion.ogg",
+      "sha256": "1641c579e9be3070c5da3c629d6ded339302b0e4504006226f8d77759dee8e86",
+      "max_duration": 0.85,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.85,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.75:d=0.1"
+    },
+    {
+      "cue": "summon",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_spell_nethersummoning.m4a",
+      "source_sha256": "2ec56f623caa47a54c8fddfb96201422bd58a6367bf1403e1d2d2d7c26392153",
+      "file": "feedback/summon.ogg",
+      "sha256": "7cb1ec0930489002339b6a7528f505293e37269f95112050304938f6799ebf7d",
+      "max_duration": 0.85,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.85,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.75:d=0.1"
+    },
+    {
+      "cue": "heal",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_spell_heal.m4a",
+      "source_sha256": "f3dafe8a9d718993ff5716a44c860d5b1b74d419281448f6b9446eca5247a1df",
+      "file": "feedback/heal.ogg",
+      "sha256": "237d4f73f293da6eb51923a70df71bcd89eae27191d0e803eb61469b6eebcef1",
+      "max_duration": 0.65,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.65,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.55:d=0.1"
+    },
+    {
+      "cue": "skill",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_spell_innerfocus.m4a",
+      "source_sha256": "31d6828bfb6893127b25f5d58720c5cd699a1e17d9186a5a0cfb2b57934864ce",
+      "file": "feedback/skill.ogg",
+      "sha256": "155c0b2d4cb8b9449b8d4b5c62bb8c6919b09b8565c801605966a865572f130b",
+      "max_duration": 0.55,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.55,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.45000000000000007:d=0.1"
+    },
+    {
+      "cue": "death",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_neutral_golembloodshard_death.m4a",
+      "source_sha256": "593224a30fbede122491e40240ef046b9b1086114a0ffb53faa3b1468951e91a",
+      "file": "feedback/death.ogg",
+      "sha256": "536abff8ef872ab24cdc933c4151c3d0fa366801361eb16a33e193b74099e57c",
+      "max_duration": 0.6,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.6,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.5:d=0.1"
+    },
+    {
+      "cue": "victory",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_victory_match.m4a",
+      "source_sha256": "9a0e9278dc2568c938f99deef3f27f0e3ae0b40fe844152cf288c7703f3e48ed",
+      "file": "feedback/victory.ogg",
+      "sha256": "b45448a08fac4f5b3e6cfc638d119341ce0eba261174f7fd31a45dd96bac61da",
+      "max_duration": 1.4,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=1.4,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=1.2999999999999998:d=0.1"
+    },
+    {
+      "cue": "ui_select",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_ui_select.m4a",
+      "source_sha256": "bd34ec143a0027d21ed5d838014419328c55ec6f9a2e76419de7c29bcff37eda",
+      "file": "feedback/ui_select.ogg",
+      "sha256": "f3405918ee59361de3db2a9e724e59e60e9b71842f3b605c3e6f2f0a12bb8480",
+      "max_duration": 0.16,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.16,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.06:d=0.1"
+    },
+    {
+      "cue": "ui_error",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_ui_error.m4a",
+      "source_sha256": "5fbd292e44e4b9888bd66ac80bf10273e757b8dd779afe62c9c090b7d9607f17",
+      "file": "feedback/ui_error.ogg",
+      "sha256": "723a43c277048fa7c24de8afe18041ddedbe84b1873fe7fd352dd4b34094474e",
+      "max_duration": 0.35,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.35,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.24999999999999997:d=0.1"
+    },
+    {
+      "cue": "purchase",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_gold_reward_1.m4a",
+      "source_sha256": "c0e5790e4cde766be59c9f0aad3e965aad846a5f9781f22115e8e0c5c1b16d06",
+      "file": "feedback/purchase.ogg",
+      "sha256": "5c49a8f1b35ad82fb344583b2a292a1bcc195ab58467741f895ce8f21a6b5776",
+      "max_duration": 0.5,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=0.5,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=0.4:d=0.1"
+    },
+    {
+      "cue": "defeat",
+      "source_url": "https://raw.githubusercontent.com/open-duelyst/duelyst/2843f2400854136598631288c2e8dfb8f5173de7/app/resources/sfx/sfx_spell_darkseed.m4a",
+      "source_sha256": "08cd6c9bf7662744f5998bb4b148eb2024137ae475b360337985d7ff79c469aa",
+      "file": "feedback/defeat.ogg",
+      "sha256": "61aa76fd19309e789d615fcb469a7a5c24119c456e89f3eb8d11b4e810f36613",
+      "max_duration": 1.1,
+      "processing": "silenceremove=start_periods=1:start_threshold=-48dB:start_silence=0.003,atrim=duration=1.1,asetpts=PTS-STARTPTS,loudnorm=I=-22:TP=-5:LRA=5,afade=t=out:st=1.0:d=0.1"
+    }
+  ]
+}

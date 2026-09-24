@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "batch_id": "desert-shadow",
+  "created_date": "2026-09-12",
+  "scope": "Standalone character illustration assets only; no runtime integration.",
+  "background_contract": "Opaque near-solid pale neutral gray or extremely subtle gradient, no scenery, particles, debris, stars, text or texture; faint contact shadow only.",
+  "face_style_reference": "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+  "face_style_policy": "Use exquisite Japanese anime facial treatment while preserving original gender/species. Style reference does not override sprite identity.",
+  "entries": [
+    {
+      "id": "f3_aymarahealer",
+      "source_animation": "assets/donor-units/f3_aymarahealer/f3_aymarahealer.png",
+      "output_path": "assets/portraits/illustrations/f3_aymarahealer.png",
+      "prompt": "Use case: stylized-concept. Asset type: one premium anime full-body game character illustration. Generate a single finished character from the sprite sheet in image 1, NOT a sprite sheet. Image 1 is the authoritative source of species, identity, anatomy, outfit silhouette, dominant colors and equipment. Image 2 (golden wheel woman) is ONLY the facial drawing style reference: exquisite Japanese anime eyes with clear irises, fine clean lines, small delicately drawn nose and mouth, graceful facial contours, completely smooth clean skin, nuanced expression. Preserve the subject's original gender; male faces must be elegant mature Japanese anime men, not women. Image 3 is ONLY an overall rendering quality reference for layered light, polished fabrics and metal; copy no character identity or background from either style reference. Anime illustration, beautifully controlled edge hierarchy, refined material rendering, graceful confident pose, crisp readable silhouette. Portrait 2:3, full body from highest adornment to toes, entire weapon visible, with generous clean breathing room around all edges. Simple almost-solid very pale desaturated neutral gray background, at most an extremely faint two-tone gradient, only a faint soft contact shadow under the subject. Clean noise-free image, smooth surfaces, no background texture, no architecture, plants, landscapes, stars, moon, debris, floating particles, sparkles, smoke, scenic effects, text, captions, logos or watermark. Do not generate transparent background or checkerboard. No realistic Western face, square heavy jaw, deep eye sockets, prominent realistic nose bridge, stubble, rough oil-painted skin, 3D render or pixel art.\nSubject: Aymara healer. Elegant adult female healing priestess, pale silver-white hair, refined gentle anime face, narrow oval golden halo headdress rising immediately above her head. Long flowing layered ivory-white robe and pale lavender lower hem folds, fitted dark charcoal bodice and shoulders with restrained golden armor/jewelry details, gold belt. Hold a slender dark staff with small gold ends and ornaments; it is thin rather than an enormous fantasy weapon. A slight raised open healing hand. Preserve her recognizable tall slender white-robed silhouette and calm dignified posture. She is the white-robed healer from the sprite, not the golden-wheel woman. No large external magic effects.",
+      "referenced_image_paths": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f3_aymarahealer/f3_aymarahealer.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp"
+      ],
+      "generation_tool": "built-in image_gen",
+      "initial_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-66783485-99c9-45f8-9c9f-cb739c3dd988.png",
+      "selected_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-66783485-99c9-45f8-9c9f-cb739c3dd988.png",
+      "source_frames": "assets/donor-units/f3_aymarahealer/frames.tres",
+      "visual_inspection_notes": "实际查看源动画及生成结果：白银发女性、白/淡紫长袍、黑金胸肩、金环头饰和细杖保留；日漫五官、纯净浅灰背景。整个人物及裙摆/杖端在画布内，上下留白较紧。",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "full_image_visually_inspected": true,
+        "user_approved": false
+      }
+    },
+    {
+      "id": "f3_dervish",
+      "source_animation": "assets/donor-units/f3_dervish/f3_dervish.png",
+      "output_path": "assets/portraits/illustrations/f3_dervish.png",
+      "prompt": "Use case: stylized-concept. Asset type: one premium anime full-body game character illustration. Generate a single finished character from the sprite sheet in image 1, NOT a sprite sheet. Image 1 is the authoritative source of species, identity, anatomy, outfit silhouette, dominant colors and equipment. Image 2 (golden wheel woman) is ONLY the facial drawing style reference: exquisite Japanese anime eyes with clear irises, fine clean lines, small delicately drawn nose and mouth, graceful facial contours, completely smooth clean skin, nuanced expression. Preserve the subject's original gender; male faces must be elegant mature Japanese anime men, not women. Image 3 is ONLY an overall rendering quality reference for layered light, polished fabrics and metal; copy no character identity or background from either style reference. Anime illustration, beautifully controlled edge hierarchy, refined material rendering, graceful confident pose, crisp readable silhouette. Portrait 2:3, full body from highest adornment to toes, entire weapon visible, with generous clean breathing room around all edges. Simple almost-solid very pale desaturated neutral gray background, at most an extremely faint two-tone gradient, only a faint soft contact shadow under the subject. Clean noise-free image, smooth surfaces, no background texture, no architecture, plants, landscapes, stars, moon, debris, floating particles, sparkles, smoke, scenic effects, text, captions, logos or watermark. Do not generate transparent background or checkerboard. No realistic Western face, square heavy jaw, deep eye sockets, prominent realistic nose bridge, stubble, rough oil-painted skin, 3D render or pixel art.\nSubject: a nonhuman Dervish sand-and-wind spirit. Preserve sprite anatomy: a small smooth pale white mask head with dark eye slits, floating above a tapering torso made of stacked curved gray-brown bands forming a tight spiral vortex, no pelvis, no legs, no human face. Two dark brown segmented armlike appendages with compact brass-gold cuffs/clawlike hands extend from the upper vortex. Its lower body ends in a narrow swirling point suspended above the faint ground shadow. Make the spiral bands a clean coherent sculptural silhouette, close to the body, no scattered sand grains, no particle cloud or atmospheric background. Detailed elegant anime creature illustration, polished shapes, restrained turquoise accents only if visible in sprite. Not a clothed human, not a skeleton or mummy.",
+      "referenced_image_paths": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f3_dervish/f3_dervish.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp"
+      ],
+      "generation_tool": "built-in image_gen",
+      "initial_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-3c64af39-13c2-4d82-a96c-eac4387645c8.png",
+      "selected_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-3c64af39-13c2-4d82-a96c-eac4387645c8.png",
+      "source_frames": "assets/donor-units/f3_dervish/frames.tres",
+      "visual_inspection_notes": "实际查看源动画及生成结果：白面具、灰褐螺旋无腿躯干、两臂及黄铜装饰保留；没有改成人类。背景纯净浅灰，无粒子云；螺旋以凝聚的带状材质表现。",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "full_image_visually_inspected": true,
+        "user_approved": false
+      }
+    },
+    {
+      "id": "f3_dunecaster",
+      "source_animation": "assets/donor-units/f3_dunecaster/f3_dunecaster.png",
+      "output_path": "assets/portraits/illustrations/f3_dunecaster.png",
+      "prompt": "Use case: stylized-concept. Asset type: one premium anime full-body game character illustration. Generate a single finished character from the sprite sheet in image 1, NOT a sprite sheet. Image 1 is the authoritative source of species, identity, anatomy, outfit silhouette, dominant colors and equipment. Image 2 (golden wheel woman) is ONLY the facial drawing style reference: exquisite Japanese anime eyes with clear irises, fine clean lines, small delicately drawn nose and mouth, graceful facial contours, completely smooth clean skin, nuanced expression. Preserve the subject's original gender; male faces must be elegant mature Japanese anime men, not women. Image 3 is ONLY an overall rendering quality reference for layered light, polished fabrics and metal; copy no character identity or background from either style reference. Anime illustration, beautifully controlled edge hierarchy, refined material rendering, graceful confident pose, crisp readable silhouette. Portrait 2:3, full body from highest adornment to toes, entire weapon visible, with generous clean breathing room around all edges. Simple almost-solid very pale desaturated neutral gray background, at most an extremely faint two-tone gradient, only a faint soft contact shadow under the subject. Clean noise-free image, smooth surfaces, no background texture, no architecture, plants, landscapes, stars, moon, debris, floating particles, sparkles, smoke, scenic effects, text, captions, logos or watermark. Do not generate transparent background or checkerboard. No realistic Western face, square heavy jaw, deep eye sockets, prominent realistic nose bridge, stubble, rough oil-painted skin, 3D render or pixel art.\nSubject: Dunecaster, a tall androgynous masculine humanoid desert mage. Sprite has a very small pale white bald head or close white head-covering, with minimal dark facial markings, an extremely long black/dark-charcoal upright robe extending all the way to the floor, wide clean vertical golden trim bands and gold shoulder/neck ornaments. Keep the black-and-gold tall narrow robe silhouette, not a white-haired female. Slender hands slightly open at chest height; hold one small clean cyan triangular magical outline just above one palm, this triangle is the sole localized effect. No staff unless actually in the sprite. Face refined Japanese anime male or smooth pale magical face, restrained and serene, no beard, no Western gritty realism.",
+      "referenced_image_paths": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f3_dunecaster/f3_dunecaster.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp"
+      ],
+      "generation_tool": "built-in image_gen",
+      "initial_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-a74f468a-08db-4b61-ad8f-4377686a506f.png",
+      "selected_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-a74f468a-08db-4b61-ad8f-4377686a506f.png",
+      "source_frames": "assets/donor-units/f3_dunecaster/frames.tres",
+      "visual_inspection_notes": "实际查看源动画及生成结果：白头、黑金窄长袍、单个青色三角法术保留；采用精致日漫男性面部，无粗糙欧美写实脸；浅灰底，长袍和足部完整。",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "full_image_visually_inspected": true,
+        "user_approved": false
+      }
+    },
+    {
+      "id": "f3_general",
+      "source_animation": "assets/donor-units/f3_general/f3_general.png",
+      "output_path": "assets/portraits/illustrations/f3_general.png",
+      "prompt": "Use case: stylized-concept. Asset type: one premium anime full-body game character illustration. Generate a single finished character from the sprite sheet in image 1, NOT a sprite sheet. Image 1 is the authoritative source of species, identity, anatomy, outfit silhouette, dominant colors and equipment. Image 2 (golden wheel woman) is ONLY the facial drawing style reference: exquisite Japanese anime eyes with clear irises, fine clean lines, small delicately drawn nose and mouth, graceful facial contours, completely smooth clean skin, nuanced expression. Preserve the subject's original gender; male faces must be elegant mature Japanese anime men, not women. Image 3 is ONLY an overall rendering quality reference for layered light, polished fabrics and metal; copy no character identity or background from either style reference. Anime illustration, beautifully controlled edge hierarchy, refined material rendering, graceful confident pose, crisp readable silhouette. Portrait 2:3, full body from highest adornment to toes, entire weapon visible, with generous clean breathing room around all edges. Simple almost-solid very pale desaturated neutral gray background, at most an extremely faint two-tone gradient, only a faint soft contact shadow under the subject. Clean noise-free image, smooth surfaces, no background texture, no architecture, plants, landscapes, stars, moon, debris, floating particles, sparkles, smoke, scenic effects, text, captions, logos or watermark. Do not generate transparent background or checkerboard. No realistic Western face, square heavy jaw, deep eye sockets, prominent realistic nose bridge, stubble, rough oil-painted skin, 3D render or pixel art.\nSubject: the armored male desert General from the sprite. Strong regal warrior silhouette clad in articulated black, dark bronze and polished gold armor with angular shoulders and sand-beige draped waist cloth. His defining head ornament is a very tall huge open ring-shaped golden crown/halo with symmetrical upward flame- or hornlike gold prongs around the head. Preserve the sprite's open ring crown, not a conventional helmet. Carry a very long slim dark polearm with gold fittings and a pale steel curved blade/spear head, entirely within frame, held confidently diagonally near his side. Show an elegant adult masculine Japanese anime face under the crown, clean smooth skin, controlled fine facial lines, narrow graceful jaw, expressive eyes, small clean nose, no beard or grizzled Western face. No red costume, no disks or wheel weapon.",
+      "referenced_image_paths": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f3_general/f3_general.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp"
+      ],
+      "generation_tool": "built-in image_gen",
+      "initial_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-6cf4104b-2c72-491c-a74e-4b607546ec35.png",
+      "selected_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-e8e53d90-085e-4965-a974-cd0a96355a54.png",
+      "source_frames": "assets/donor-units/f3_general/frames.tres",
+      "visual_inspection_notes": "实际查看源动画及生成结果：巨大环冠、黑金盔甲、砂色腰布和长戟保留；日漫男性脸。初稿冠顶贴边，已用内置图像工具单独缩小构图并补全冠尖；最终冠尖、脚与完整武器均在画布内。",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "full_image_visually_inspected": true,
+        "user_approved": false
+      },
+      "revision": {
+        "prompt": "Use case: precise-object-edit. Edit image 1 only to fix framing: zoom the entire character and weapon out by about 12% within the same 2:3 portrait canvas, center them, reconstruct the complete tips of the tall open gold crown that currently touch the top edge, and leave at least 6% empty background above crown and below toes/blade. Preserve the EXACT same character identity, elegant male Japanese anime facial features, pose, anatomy, costume, gold materials, colors, weapon and details. Every crown tip, both feet, fabric tail, and whole polearm must be fully inside the frame. Keep the smooth almost-solid very pale neutral-gray background with only a faint soft contact shadow. No scene, particles, dust, text or background texture. Change only framing and completion of crown tips; do not redesign character. Full body with generous breathing room.",
+        "referenced_image_paths": [
+          "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-6cf4104b-2c72-491c-a74e-4b607546ec35.png"
+        ],
+        "output_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-e8e53d90-085e-4965-a974-cd0a96355a54.png",
+        "reason": "Restore cropped crown tips and increase framing margin."
+      }
+    },
+    {
+      "id": "f3_irondervish",
+      "source_animation": "assets/donor-units/f3_irondervish/f3_irondervish.png",
+      "output_path": "assets/portraits/illustrations/f3_irondervish.png",
+      "prompt": "Use case: stylized-concept. Asset type: one premium anime full-body game character illustration. Generate a single finished character from the sprite sheet in image 1, NOT a sprite sheet. Image 1 is the authoritative source of species, identity, anatomy, outfit silhouette, dominant colors and equipment. Image 2 (golden wheel woman) is ONLY the facial drawing style reference: exquisite Japanese anime eyes with clear irises, fine clean lines, small delicately drawn nose and mouth, graceful facial contours, completely smooth clean skin, nuanced expression. Preserve the subject's original gender; male faces must be elegant mature Japanese anime men, not women. Image 3 is ONLY an overall rendering quality reference for layered light, polished fabrics and metal; copy no character identity or background from either style reference. Anime illustration, beautifully controlled edge hierarchy, refined material rendering, graceful confident pose, crisp readable silhouette. Portrait 2:3, full body from highest adornment to toes, entire weapon visible, with generous clean breathing room around all edges. Simple almost-solid very pale desaturated neutral gray background, at most an extremely faint two-tone gradient, only a faint soft contact shadow under the subject. Clean noise-free image, smooth surfaces, no background texture, no architecture, plants, landscapes, stars, moon, debris, floating particles, sparkles, smoke, scenic effects, text, captions, logos or watermark. Do not generate transparent background or checkerboard. No realistic Western face, square heavy jaw, deep eye sockets, prominent realistic nose bridge, stubble, rough oil-painted skin, 3D render or pixel art.\nSubject: Iron Dervish, a nonhuman small lean brass-gold animated construct. Sprite has a hunched agile humanoid mechanical silhouette, thin bent articulated legs and flat pointed feet, a large circular/curved gold structure across upper back/shoulders and heavy curved golden forearm or hand weapons. Compact small angular head and a tiny cyan blue inner core or face accent. Show it poised in an alert low crouch, with arms extending, highly legible gold-metal joints and curved crescent-like armor plates. Preserve its mechanical creature anatomy; no human face, no clothing or giant armored human. Smooth polished brass with dark recessed joints and a restrained cyan light, not rusty grainy texture. No scattered sand particles or slash effect.",
+      "referenced_image_paths": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f3_irondervish/f3_irondervish.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp"
+      ],
+      "generation_tool": "built-in image_gen",
+      "initial_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-471d4bed-b1ea-46ec-a0d0-28a941a49fd9.png",
+      "selected_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-471d4bed-b1ea-46ec-a0d0-28a941a49fd9.png",
+      "source_frames": "assets/donor-units/f3_irondervish/frames.tres",
+      "visual_inspection_notes": "实际查看源动画及生成结果：非人黄铜构装、瘦长弯腿、背部环构件、金色曲刃及小青色核心保留；全身与武器完整，浅灰底无粒子。",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "full_image_visually_inspected": true,
+        "user_approved": false
+      }
+    },
+    {
+      "id": "f4_bloodbaronette",
+      "source_animation": "assets/donor-units/f4_bloodbaronette/f4_bloodbaronette.png",
+      "output_path": "assets/portraits/illustrations/f4_bloodbaronette.png",
+      "prompt": "Use case: stylized-concept. Asset type: one premium anime full-body game character illustration. Generate a single finished character from the sprite sheet in image 1, NOT a sprite sheet. Image 1 is the authoritative source of species, identity, anatomy, outfit silhouette, dominant colors and equipment. Image 2 (golden wheel woman) is ONLY the facial drawing style reference: exquisite Japanese anime eyes with clear irises, fine clean lines, small delicately drawn nose and mouth, graceful facial contours, completely smooth clean skin, nuanced expression. Preserve the subject's original gender; male faces must be elegant mature Japanese anime men, not women. Image 3 is ONLY an overall rendering quality reference for layered light, polished fabrics and metal; copy no character identity or background from either style reference. Anime illustration, beautifully controlled edge hierarchy, refined material rendering, graceful confident pose, crisp readable silhouette. Portrait 2:3, full body from highest adornment to toes, entire weapon visible, with generous clean breathing room around all edges. Simple almost-solid very pale desaturated neutral gray background, at most an extremely faint two-tone gradient, only a faint soft contact shadow under the subject. Clean noise-free image, smooth surfaces, no background texture, no architecture, plants, landscapes, stars, moon, debris, floating particles, sparkles, smoke, scenic effects, text, captions, logos or watermark. Do not generate transparent background or checkerboard. No realistic Western face, square heavy jaw, deep eye sockets, prominent realistic nose bridge, stubble, rough oil-painted skin, 3D render or pixel art.\nSubject: Blood Baronette, a lithe adult female dark sorceress warrior from the sprite. Bright icy cyan-blue hair swept back into a short ponytail/long side-tail, pale cool skin, exquisite confident Japanese anime face. Dark charcoal-black fitted long-sleeved short coat/dress with a flared skirt, subtle blue-gray edges, deep purple leggings and slender pointed dark boots, red/crimson collar or chest accent. Carry the sprite's very long slender purple-dark polearm/staff with red thornlike or hooked crescent head and blue inset, entirety of weapon visible diagonally beside body. Preserve the blue-haired black-dressed red-staff silhouette. She is not a white-haired elf and has no antlers. Poised stylish stance, clean fabric shapes, no red splash, no blood, no particle aura.",
+      "referenced_image_paths": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f4_bloodbaronette/f4_bloodbaronette.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp"
+      ],
+      "generation_tool": "built-in image_gen",
+      "initial_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-11e3d53a-8142-403e-8bd2-32c0cb37d41c.png",
+      "selected_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-11e3d53a-8142-403e-8bd2-32c0cb37d41c.png",
+      "source_frames": "assets/donor-units/f4_bloodbaronette/frames.tres",
+      "visual_inspection_notes": "实际查看源动画及生成结果：青蓝发、黑色短裙长袖装、紫袜、红色长柄法杖保留；精致日漫女性面部；完整人物与杖头/杖尾在画布内，杖头上/右留白较紧；背景纯净。",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "full_image_visually_inspected": true,
+        "user_approved": false
+      }
+    },
+    {
+      "id": "f4_crawler",
+      "source_animation": "assets/donor-units/f4_crawler/f4_crawler.png",
+      "output_path": "assets/portraits/illustrations/f4_crawler.png",
+      "prompt": "Use case: stylized-concept. Asset type: one premium anime full-body game character illustration. Generate a single finished character from the sprite sheet in image 1, NOT a sprite sheet. Image 1 is the authoritative source of species, identity, anatomy, outfit silhouette, dominant colors and equipment. Image 2 (golden wheel woman) is ONLY the facial drawing style reference: exquisite Japanese anime eyes with clear irises, fine clean lines, small delicately drawn nose and mouth, graceful facial contours, completely smooth clean skin, nuanced expression. Preserve the subject's original gender; male faces must be elegant mature Japanese anime men, not women. Image 3 is ONLY an overall rendering quality reference for layered light, polished fabrics and metal; copy no character identity or background from either style reference. Anime illustration, beautifully controlled edge hierarchy, refined material rendering, graceful confident pose, crisp readable silhouette. Portrait 2:3, full body from highest adornment to toes, entire weapon visible, with generous clean breathing room around all edges. Simple almost-solid very pale desaturated neutral gray background, at most an extremely faint two-tone gradient, only a faint soft contact shadow under the subject. Clean noise-free image, smooth surfaces, no background texture, no architecture, plants, landscapes, stars, moon, debris, floating particles, sparkles, smoke, scenic effects, text, captions, logos or watermark. Do not generate transparent background or checkerboard. No realistic Western face, square heavy jaw, deep eye sockets, prominent realistic nose bridge, stubble, rough oil-painted skin, 3D render or pixel art.\nSubject: Crawler, a small nonhuman dark purple shadow beast, never an anime girl or person. Sprite shows a low hunched compact body, pointed batlike ear/horn protrusions and ragged spiked dark navy-purple back, long thin clawed forelimbs bracing low, bent compact hindquarters, vivid pink-magenta glowing eyes and jagged mouth accents with small visible pale teeth. Creature proportions, crouched four-limbed scrambling stance, claws, clean dark indigo skin/chitin with purple-edged plates. Keep the original compact sinister imp/insectlike silhouette, not a large wolf, humanoid warrior, dragon or skeleton. Refined anime monster design and smooth polished shading with controlled details; pink face highlights are compact, not particle effects. Full creature including every limb within a 2:3 portrait canvas with whitespace.",
+      "referenced_image_paths": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f4_crawler/f4_crawler.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp"
+      ],
+      "generation_tool": "built-in image_gen",
+      "initial_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-45b0f2fb-c3ae-4c13-8e29-b74555f032a5.png",
+      "selected_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-45b0f2fb-c3ae-4c13-8e29-b74555f032a5.png",
+      "source_frames": "assets/donor-units/f4_crawler/frames.tres",
+      "visual_inspection_notes": "实际查看源动画及生成结果：低伏非人爬兽、深靛紫躯体、尖耳/背刺、细长爪肢与洋红眼口保留；没有拟人化，整只怪物在画布内；背景纯净浅灰。",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "full_image_visually_inspected": true,
+        "user_approved": false
+      }
+    },
+    {
+      "id": "f4_darkspine",
+      "source_animation": "assets/donor-units/f4_darkspine/f4_darkspine.png",
+      "output_path": "assets/portraits/illustrations/f4_darkspine.png",
+      "prompt": "Use case: stylized-concept. Asset type: one premium anime full-body game character illustration. Generate a single finished character from the sprite sheet in image 1, NOT a sprite sheet. Image 1 is the authoritative source of species, identity, anatomy, outfit silhouette, dominant colors and equipment. Image 2 (golden wheel woman) is ONLY the facial drawing style reference: exquisite Japanese anime eyes with clear irises, fine clean lines, small delicately drawn nose and mouth, graceful facial contours, completely smooth clean skin, nuanced expression. Preserve the subject's original gender; male faces must be elegant mature Japanese anime men, not women. Image 3 is ONLY an overall rendering quality reference for layered light, polished fabrics and metal; copy no character identity or background from either style reference. Anime illustration, beautifully controlled edge hierarchy, refined material rendering, graceful confident pose, crisp readable silhouette. Portrait 2:3, full body from highest adornment to toes, entire weapon visible, with generous clean breathing room around all edges. Simple almost-solid very pale desaturated neutral gray background, at most an extremely faint two-tone gradient, only a faint soft contact shadow under the subject. Clean noise-free image, smooth surfaces, no background texture, no architecture, plants, landscapes, stars, moon, debris, floating particles, sparkles, smoke, scenic effects, text, captions, logos or watermark. Do not generate transparent background or checkerboard. No realistic Western face, square heavy jaw, deep eye sockets, prominent realistic nose bridge, stubble, rough oil-painted skin, 3D render or pixel art.\nSubject: Darkspine, a bulky nonhuman squat armored shadow construct/beast. Sprite shows broad hunched dark navy and royal-purple plated shoulders/back, several long pointed spikes rising from the shoulders and upper back with cool cyan tips, a small recessed head with narrow cold bright cyan eyes, very large muscular or armored forearms with clawed blocky hands, short powerful bent legs ending in angular clawed feet, magenta-purple lower armor accents. Preserve the broad squat nonhuman silhouette and cyan horn/spine crown, massive arms and compact head. Elegant highly polished anime monster rendering, blue-black armor with fine crisp reflections and smooth gradients, not a human in armor, not an anime man or girl. Do not add weapons. No floating electric bolts, smoke, particles or complex background.",
+      "referenced_image_paths": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f4_darkspine/f4_darkspine.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp"
+      ],
+      "generation_tool": "built-in image_gen",
+      "initial_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-ce1fa58f-6a97-4f4c-b04b-ad5912b2b470.png",
+      "selected_generated_path": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-4d27-7db2-acdb-c054e3cea67f\\exec-ce1fa58f-6a97-4f4c-b04b-ad5912b2b470.png",
+      "source_frames": "assets/donor-units/f4_darkspine/frames.tres",
+      "visual_inspection_notes": "实际查看源动画及生成结果：宽矮非人甲兽、粗壮前臂、短腿、深蓝紫甲片与青色背刺/眼保留；没有拟人化，所有肢体和背刺均在画布内；背景纯净浅灰。",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "full_image_visually_inspected": true,
+        "user_approved": false
+      }
+    }
+  ]
+}

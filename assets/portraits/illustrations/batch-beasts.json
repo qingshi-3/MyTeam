@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "batch": "beasts",
+  "generation_mode": "built-in image_gen; one independent call per asset; 8 successful calls",
+  "created_date": "2026-09-12",
+  "notes": "原动画表只作为角色身份依据；用户参考图仅用于精致动漫渲染及新增人脸要求。保留所有生成原件，未修改代码、共享 manifest 或启动 Godot。",
+  "assets": [
+    {
+      "id": "f4_general",
+      "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f4_general/f4_general.png",
+      "source_frames": "C:/Users/qs/godot/my-team/assets/donor-units/f4_general/frames.tres",
+      "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f4_general.png",
+      "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-82347e9b-608d-4c35-8ef1-7482f0a8793d.png",
+      "prompt": "Use case: stylized-concept. Asset type: premium fantasy game individual full-body character portrait. Create ONE standalone high-resolution 2:3 vertical 1024x1536 anime illustration, not a spritesheet, not a collage. Input 1 is the authoritative actual animation sprite sheet: infer one coherent character from its idle/standing frames, preserve species, anatomy, silhouette, dominant palette and equipment. Inputs 2-4 are style references ONLY for refined anime illustration quality, beautiful crisp material rendering, controlled layered lighting; do NOT copy their characters or scenery. Input 5 is a facial rendering style reference ONLY where a humanlike face is present: refined delicate Japanese anime features, expressive precisely drawn eyes, small elegant nose and mouth, clean smooth face, fine lines, no Western realistic broad jaw, deep-set eyes, thick nose, rough skin or coarse oil painting. Subject:\nA tall elegant feminine demonic general matching the sprite exactly: lavender/violet skin, pale icy lavender hair, a crown-like pair of long forked dark violet horns, sharp layered violet armor and black flowing split skirt/cape. Hold the sprite's long dark polearm with glowing pink/red orange-edged hooked crescent blade; preserve the twin branching ends and asymmetric silhouette seen in idle frames. Delicate refined Japanese anime feminine face, detailed expressive eyes, small graceful nose and mouth, smooth clean skin, fine linework. Do not copy the reference woman's costume, gold wheels, hat, or face identity. No giant extra wings.\nComposition: a single complete full-body character in a confident readable three-quarter presentation, centered, head to feet and every horn/tail/weapon tip fully inside frame, generous 8-12% margins, coherent anatomy. Illustration style: exquisite polished Japanese anime fantasy art, clean precise silhouette, controlled fine linework, attractive clear local colors, smooth refined cel/painterly hybrid shading, carefully designed material highlights, no photographic or Western concept-art grunge. Background MUST be completely simple solid low-saturation pale cool gray or barely visible smooth two-tone gradient, matte flat untextured studio backdrop; only a very faint soft contact shadow beneath feet. No environment, building, plants, moon, stars, scenery, landscape, rocks, smoke, dust, sparks, motes, flying fragments, floating particles, texture, noise, film grain, stippling, patterned backdrop, visible checkerboard, transparent background, text, logo, border or watermark. Keep all visual interest on the character, with clear breathing room.",
+      "reference_images": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f4_general/f4_general.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-0215deb0-6585-4035-9bf6-e3b625db0f12.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9f903ca0-44d5-42f5-a191-3718a18a65c7.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "status": "generated_and_saved",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "visually_inspected": true,
+        "background": "极淡低饱和冷灰渐变；无场景、纹理、背景粒子与棋盘。",
+        "notes": "紫肤、冰紫长发、分叉长角、黑紫甲与黑红裙、双端红粉月刃均可辨；可见脸采用精致日漫五官。全身与武器都在画内，顶部角尖与武器尖接近边缘，未达到提示词理想的 8%-12% 留白。"
+      },
+      "acceptance": "Agent 已检视，未代表用户审美确认；未接入引擎。"
+    },
+    {
+      "id": "f4_mech",
+      "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f4_mech/f4_mech.png",
+      "source_frames": "C:/Users/qs/godot/my-team/assets/donor-units/f4_mech/frames.tres",
+      "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f4_mech.png",
+      "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-abf4fc0a-530d-4278-90c3-b62326bc382a.png",
+      "prompt": "Use case: stylized-concept. Asset type: premium fantasy game individual full-body character portrait. Create ONE standalone high-resolution 2:3 vertical 1024x1536 anime illustration, not a spritesheet, not a collage. Input 1 is the authoritative actual animation sprite sheet: infer one coherent character from its idle/standing frames, preserve species, anatomy, silhouette, dominant palette and equipment. Inputs 2-4 are style references ONLY for refined anime illustration quality, beautiful crisp material rendering, controlled layered lighting; do NOT copy their characters or scenery. Input 5 is a facial rendering style reference ONLY where a humanlike face is present: refined delicate Japanese anime features, expressive precisely drawn eyes, small elegant nose and mouth, clean smooth face, fine lines, no Western realistic broad jaw, deep-set eyes, thick nose, rough skin or coarse oil painting. Subject:\nA fully enclosed dark indigo and violet humanoid battle mech from the sprite: narrow armored waist, imposing pointed spiky pauldrons and crown-like helmet, layered angular plating, segmented limbs, cyan luminous small accents, sharp clawed armored feet; carry a long slender orange/red glowing energy-edged spear/lance in one hand as visible in its animation. Entirely mechanical, no human skin or human face, no pilot. Preserve the sharp spindly silhouette and deep blue-purple identity of the sprite.\nComposition: a single complete full-body character in a confident readable three-quarter presentation, centered, head to feet and every horn/tail/weapon tip fully inside frame, generous 8-12% margins, coherent anatomy. Illustration style: exquisite polished Japanese anime fantasy art, clean precise silhouette, controlled fine linework, attractive clear local colors, smooth refined cel/painterly hybrid shading, carefully designed material highlights, no photographic or Western concept-art grunge. Background MUST be completely simple solid low-saturation pale cool gray or barely visible smooth two-tone gradient, matte flat untextured studio backdrop; only a very faint soft contact shadow beneath feet. No environment, building, plants, moon, stars, scenery, landscape, rocks, smoke, dust, sparks, motes, flying fragments, floating particles, texture, noise, film grain, stippling, patterned backdrop, visible checkerboard, transparent background, text, logo, border or watermark. Keep all visual interest on the character, with clear breathing room.",
+      "reference_images": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f4_mech/f4_mech.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-0215deb0-6585-4035-9bf6-e3b625db0f12.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9f903ca0-44d5-42f5-a191-3718a18a65c7.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "status": "generated_and_saved",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "visually_inspected": true,
+        "background": "极淡低饱和冷灰渐变；无场景、纹理、背景粒子与棋盘。",
+        "notes": "保持全机械封闭外形、深蓝紫尖刺装甲、青色点缀与红橙能量长兵器；无皮肤或人脸。全身未裁切，尖刺与脚部外缘留白偏窄。"
+      },
+      "acceptance": "Agent 已检视，未代表用户审美确认；未接入引擎。"
+    },
+    {
+      "id": "f5_drogon",
+      "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f5_drogon/f5_drogon.png",
+      "source_frames": "C:/Users/qs/godot/my-team/assets/donor-units/f5_drogon/frames.tres",
+      "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_drogon.png",
+      "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-ff92a029-959a-4a5e-acac-d513fe3d062c.png",
+      "prompt": "Use case: stylized-concept. Asset type: premium fantasy game individual full-body character portrait. Create ONE standalone high-resolution 2:3 vertical 1024x1536 anime illustration, not a spritesheet, not a collage. Input 1 is the authoritative actual animation sprite sheet: infer one coherent character from its idle/standing frames, preserve species, anatomy, silhouette, dominant palette and equipment. Inputs 2-4 are style references ONLY for refined anime illustration quality, beautiful crisp material rendering, controlled layered lighting; do NOT copy their characters or scenery. Input 5 is a facial rendering style reference ONLY where a humanlike face is present: refined delicate Japanese anime features, expressive precisely drawn eyes, small elegant nose and mouth, clean smooth face, fine lines, no Western realistic broad jaw, deep-set eyes, thick nose, rough skin or coarse oil painting. Subject:\nA powerful upright reptilian dragon beast exactly based on the sprite: teal turquoise scales, thick muscular torso and massive clawed forearms, low horned dragon head, a ridge of long bright turquoise back spines with ivory highlights, gold/ochre claw and bony accents, dark segmented underside, digitigrade hindlegs, long flexible tapering tail curling behind. No wings, no humanoid face, no clothes. Preserve the hunched bipedal beast stance and compact dragon silhouette; quietly poised, no attack burst.\nComposition: a single complete full-body character in a confident readable three-quarter presentation, centered, head to feet and every horn/tail/weapon tip fully inside frame, generous 8-12% margins, coherent anatomy. Illustration style: exquisite polished Japanese anime fantasy art, clean precise silhouette, controlled fine linework, attractive clear local colors, smooth refined cel/painterly hybrid shading, carefully designed material highlights, no photographic or Western concept-art grunge. Background MUST be completely simple solid low-saturation pale cool gray or barely visible smooth two-tone gradient, matte flat untextured studio backdrop; only a very faint soft contact shadow beneath feet. No environment, building, plants, moon, stars, scenery, landscape, rocks, smoke, dust, sparks, motes, flying fragments, floating particles, texture, noise, film grain, stippling, patterned backdrop, visible checkerboard, transparent background, text, logo, border or watermark. Keep all visual interest on the character, with clear breathing room.",
+      "reference_images": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f5_drogon/f5_drogon.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-0215deb0-6585-4035-9bf6-e3b625db0f12.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9f903ca0-44d5-42f5-a191-3718a18a65c7.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "status": "generated_and_saved",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "visually_inspected": true,
+        "background": "极淡低饱和冷灰渐变；无场景、纹理、背景粒子与棋盘。",
+        "notes": "保留青绿双足龙兽、背部尖刺、粗前臂与弯尾，无人化、无新添翼。全身含角尾爪可见，左爪与角尖留白偏窄。"
+      },
+      "acceptance": "Agent 已检视，未代表用户审美确认；未接入引擎。"
+    },
+    {
+      "id": "f5_firebreather",
+      "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f5_firebreather/f5_firebreather.png",
+      "source_frames": "C:/Users/qs/godot/my-team/assets/donor-units/f5_firebreather/frames.tres",
+      "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_firebreather.png",
+      "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-0e3183bb-89c8-440d-8edc-55bb3ac69087.png",
+      "prompt": "Use case: stylized-concept. Asset type: premium fantasy game individual full-body character portrait. Create ONE standalone high-resolution 2:3 vertical 1024x1536 anime illustration, not a spritesheet, not a collage. Input 1 is the authoritative actual animation sprite sheet: infer one coherent character from its idle/standing frames, preserve species, anatomy, silhouette, dominant palette and equipment. Inputs 2-4 are style references ONLY for refined anime illustration quality, beautiful crisp material rendering, controlled layered lighting; do NOT copy their characters or scenery. Input 5 is a facial rendering style reference ONLY where a humanlike face is present: refined delicate Japanese anime features, expressive precisely drawn eyes, small elegant nose and mouth, clean smooth face, fine lines, no Western realistic broad jaw, deep-set eyes, thick nose, rough skin or coarse oil painting. Subject:\nA compact crawling scorpion-like firebreathing beast from the sprite: dark teal armored low quadrupedal/multilegged creature with sharp claws, a very long thin jointed arched tail or neck looping upward above the body, with a small red/orange glowing fire-emitting tip, tiny red-magenta organic accent along the curled appendage, segmented turquoise-black carapace. Preserve the actual sprite anatomy and low beast body, the curved appendage is attached to the creature. Do not humanize, no woman, no wings, no giant flames or fireballs. Use the idle frames as primary identity reference.\nComposition: a single complete full-body character in a confident readable three-quarter presentation, centered, head to feet and every horn/tail/weapon tip fully inside frame, generous 8-12% margins, coherent anatomy. Illustration style: exquisite polished Japanese anime fantasy art, clean precise silhouette, controlled fine linework, attractive clear local colors, smooth refined cel/painterly hybrid shading, carefully designed material highlights, no photographic or Western concept-art grunge. Background MUST be completely simple solid low-saturation pale cool gray or barely visible smooth two-tone gradient, matte flat untextured studio backdrop; only a very faint soft contact shadow beneath feet. No environment, building, plants, moon, stars, scenery, landscape, rocks, smoke, dust, sparks, motes, flying fragments, floating particles, texture, noise, film grain, stippling, patterned backdrop, visible checkerboard, transparent background, text, logo, border or watermark. Keep all visual interest on the character, with clear breathing room.",
+      "reference_images": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f5_firebreather/f5_firebreather.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-0215deb0-6585-4035-9bf6-e3b625db0f12.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9f903ca0-44d5-42f5-a191-3718a18a65c7.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "status": "generated_and_saved",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "visually_inspected": true,
+        "background": "极淡低饱和冷灰渐变；无场景、纹理、背景粒子与棋盘。",
+        "notes": "低伏多足青黑虫兽、长弯曲喷火尾、红色薄膜结构一致；尾端有小股火焰但无背景粒子，主体完整可见。"
+      },
+      "acceptance": "Agent 已检视，未代表用户审美确认；未接入引擎。"
+    },
+    {
+      "id": "f5_general",
+      "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f5_general/f5_general.png",
+      "source_frames": "C:/Users/qs/godot/my-team/assets/donor-units/f5_general/frames.tres",
+      "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_general.png",
+      "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-0315934f-8fee-4bc6-bcbd-36bd681f3369.png",
+      "prompt": "Use case: stylized-concept. Asset type: premium fantasy game individual full-body character portrait. Create ONE standalone high-resolution 2:3 vertical 1024x1536 anime illustration, not a spritesheet, not a collage. Input 1 is the authoritative actual animation sprite sheet: infer one coherent character from its idle/standing frames, preserve species, anatomy, silhouette, dominant palette and equipment. Inputs 2-4 are style references ONLY for refined anime illustration quality, beautiful crisp material rendering, controlled layered lighting; do NOT copy their characters or scenery. Input 5 is a facial rendering style reference ONLY where a humanlike face is present: refined delicate Japanese anime features, expressive precisely drawn eyes, small elegant nose and mouth, clean smooth face, fine lines, no Western realistic broad jaw, deep-set eyes, thick nose, rough skin or coarse oil painting. Subject:\nA large brutal reptilian war-general beast matching the sprite: bulky dark teal scaled and plated muscular body, low forward snarling reptile/dragon head with visible pale teeth, massive clawed fists, curled backward dark horns or spikes and prominent shoulder/back armor-spines, small bright crimson-magenta highlights, dark crimson cloth hanging at the waist, gold circular ornaments around wrists/legs, digitigrade claw feet and thick tail. Reptilian face, no human face, no humanized beautiful man, no extra weapon not present in idle sprite. Preserve its squat strong bipedal monster silhouette.\nComposition: a single complete full-body character in a confident readable three-quarter presentation, centered, head to feet and every horn/tail/weapon tip fully inside frame, generous 8-12% margins, coherent anatomy. Illustration style: exquisite polished Japanese anime fantasy art, clean precise silhouette, controlled fine linework, attractive clear local colors, smooth refined cel/painterly hybrid shading, carefully designed material highlights, no photographic or Western concept-art grunge. Background MUST be completely simple solid low-saturation pale cool gray or barely visible smooth two-tone gradient, matte flat untextured studio backdrop; only a very faint soft contact shadow beneath feet. No environment, building, plants, moon, stars, scenery, landscape, rocks, smoke, dust, sparks, motes, flying fragments, floating particles, texture, noise, film grain, stippling, patterned backdrop, visible checkerboard, transparent background, text, logo, border or watermark. Keep all visual interest on the character, with clear breathing room.",
+      "reference_images": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f5_general/f5_general.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-0215deb0-6585-4035-9bf6-e3b625db0f12.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9f903ca0-44d5-42f5-a191-3718a18a65c7.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "status": "generated_and_saved",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "visually_inspected": true,
+        "background": "极淡低饱和冷灰渐变；无场景、纹理、背景粒子与棋盘。",
+        "notes": "青黑巨型双足兽将、黑角/背刺、红腰布、金色腕饰与红色点缀保留；爬兽面孔，无人脸。全身完整，左右外缘留白偏窄。"
+      },
+      "acceptance": "Agent 已检视，未代表用户审美确认；未接入引擎。"
+    },
+    {
+      "id": "f5_spiritharvester",
+      "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f5_spiritharvester/f5_spiritharvester.png",
+      "source_frames": "C:/Users/qs/godot/my-team/assets/donor-units/f5_spiritharvester/frames.tres",
+      "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_spiritharvester.png",
+      "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-727fb511-ff1c-4b3f-b59a-944df9814fb8.png",
+      "prompt": "Use case: stylized-concept. Asset type: premium fantasy game individual full-body character portrait. Create ONE standalone high-resolution 2:3 vertical 1024x1536 anime illustration, not a spritesheet, not a collage. Input 1 is the authoritative actual animation sprite sheet: infer one coherent character from its idle/standing frames, preserve species, anatomy, silhouette, dominant palette and equipment. Inputs 2-4 are style references ONLY for refined anime illustration quality, beautiful crisp material rendering, controlled layered lighting; do NOT copy their characters or scenery. Input 5 is a facial rendering style reference ONLY where a humanlike face is present: refined delicate Japanese anime features, expressive precisely drawn eyes, small elegant nose and mouth, clean smooth face, fine lines, no Western realistic broad jaw, deep-set eyes, thick nose, rough skin or coarse oil painting. Subject:\nAn eerie chitinous hovering/crawling spirit-harvester creature from the sprite: compact dark green-black oval beetle-like central carapace, two long curved black horn/scythe structures arching around its body, splayed narrow blade-like pale mint/turquoise and ivory appendages radiating laterally, a small amber-orange mouth/core on the underside. Preserve the inhuman insect silhouette and compact symmetry of the idle frames. No human face, no robe, no humanoid reaper, no souls or attack effects, no ghostly background.\nComposition: a single complete full-body character in a confident readable three-quarter presentation, centered, head to feet and every horn/tail/weapon tip fully inside frame, generous 8-12% margins, coherent anatomy. Illustration style: exquisite polished Japanese anime fantasy art, clean precise silhouette, controlled fine linework, attractive clear local colors, smooth refined cel/painterly hybrid shading, carefully designed material highlights, no photographic or Western concept-art grunge. Background MUST be completely simple solid low-saturation pale cool gray or barely visible smooth two-tone gradient, matte flat untextured studio backdrop; only a very faint soft contact shadow beneath feet. No environment, building, plants, moon, stars, scenery, landscape, rocks, smoke, dust, sparks, motes, flying fragments, floating particles, texture, noise, film grain, stippling, patterned backdrop, visible checkerboard, transparent background, text, logo, border or watermark. Keep all visual interest on the character, with clear breathing room.",
+      "reference_images": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f5_spiritharvester/f5_spiritharvester.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-0215deb0-6585-4035-9bf6-e3b625db0f12.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9f903ca0-44d5-42f5-a191-3718a18a65c7.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "status": "generated_and_saved",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "visually_inspected": true,
+        "background": "极淡低饱和冷灰渐变；无场景、纹理、背景粒子与棋盘。",
+        "notes": "黑绿卵形甲壳、双长弧镰结构、浅青/白侧刃肢与橙色核心保留；未变成人形死神，主体完整。"
+      },
+      "acceptance": "Agent 已检视，未代表用户审美确认；未接入引擎。"
+    },
+    {
+      "id": "f5_tank",
+      "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f5_tank/f5_tank.png",
+      "source_frames": "C:/Users/qs/godot/my-team/assets/donor-units/f5_tank/frames.tres",
+      "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_tank.png",
+      "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-d9068002-edd9-4bbf-b2b7-fa3d8bbe3518.png",
+      "prompt": "Use case: stylized-concept. Asset type: premium fantasy game individual full-body character portrait. Create ONE standalone high-resolution 2:3 vertical 1024x1536 anime illustration, not a spritesheet, not a collage. Input 1 is the authoritative actual animation sprite sheet: infer one coherent character from its idle/standing frames, preserve species, anatomy, silhouette, dominant palette and equipment. Inputs 2-4 are style references ONLY for refined anime illustration quality, beautiful crisp material rendering, controlled layered lighting; do NOT copy their characters or scenery. Input 5 is a facial rendering style reference ONLY where a humanlike face is present: refined delicate Japanese anime features, expressive precisely drawn eyes, small elegant nose and mouth, clean smooth face, fine lines, no Western realistic broad jaw, deep-set eyes, thick nose, rough skin or coarse oil painting. Subject:\nA squat heavy armored reptilian/construct biped from the sprite, turquoise teal segmented armored body with a large teal armored fist at viewer left; enormous black cubic hammer or block mounted above the shoulder, containing a clean turquoise spiral sigil and a red-orange circular inset. Forward-projecting gray metal blunt snout/gauntlet at viewer right with orange-yellow conical spikes, broad hunched shoulders, tiny sturdy claw feet, red tubing/straps over torso, black cylindrical handle/shaft corresponding to the animation. Preserve sprite's unusual asymmetric heavy silhouette and every main equipment mass. No wheeled military tank, no human face, no humanoid beautiful woman.\nComposition: a single complete full-body character in a confident readable three-quarter presentation, centered, head to feet and every horn/tail/weapon tip fully inside frame, generous 8-12% margins, coherent anatomy. Illustration style: exquisite polished Japanese anime fantasy art, clean precise silhouette, controlled fine linework, attractive clear local colors, smooth refined cel/painterly hybrid shading, carefully designed material highlights, no photographic or Western concept-art grunge. Background MUST be completely simple solid low-saturation pale cool gray or barely visible smooth two-tone gradient, matte flat untextured studio backdrop; only a very faint soft contact shadow beneath feet. No environment, building, plants, moon, stars, scenery, landscape, rocks, smoke, dust, sparks, motes, flying fragments, floating particles, texture, noise, film grain, stippling, patterned backdrop, visible checkerboard, transparent background, text, logo, border or watermark. Keep all visual interest on the character, with clear breathing room.",
+      "reference_images": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f5_tank/f5_tank.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-0215deb0-6585-4035-9bf6-e3b625db0f12.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9f903ca0-44d5-42f5-a191-3718a18a65c7.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "status": "generated_and_saved",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "visually_inspected": true,
+        "background": "极淡低饱和冷灰渐变；无场景、纹理、背景粒子与棋盘。",
+        "notes": "青绿色重甲兽构装体、巨大黑方锤、青色旋纹/红圆环、灰色尖刺前突结构、巨大拳头保留。侧前兵装转译成兽面与炮口的复合结构，属于像素细节可辨度有限处的生成解释；主体完整。"
+      },
+      "acceptance": "Agent 已检视，未代表用户审美确认；未接入引擎。"
+    },
+    {
+      "id": "f6_crystalbeetle",
+      "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f6_crystalbeetle/f6_crystalbeetle.png",
+      "source_frames": "C:/Users/qs/godot/my-team/assets/donor-units/f6_crystalbeetle/frames.tres",
+      "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f6_crystalbeetle.png",
+      "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-40f66946-a8b5-4cd2-be2e-db3f3c362ceb.png",
+      "prompt": "Use case: stylized-concept. Asset type: premium fantasy game individual full-body character portrait. Create ONE standalone high-resolution 2:3 vertical 1024x1536 anime illustration, not a spritesheet, not a collage. Input 1 is the authoritative actual animation sprite sheet: infer one coherent character from its idle/standing frames, preserve species, anatomy, silhouette, dominant palette and equipment. Inputs 2-4 are style references ONLY for refined anime illustration quality, beautiful crisp material rendering, controlled layered lighting; do NOT copy their characters or scenery. Input 5 is a facial rendering style reference ONLY where a humanlike face is present: refined delicate Japanese anime features, expressive precisely drawn eyes, small elegant nose and mouth, clean smooth face, fine lines, no Western realistic broad jaw, deep-set eyes, thick nose, rough skin or coarse oil painting. Subject:\nA small magical crystal beetle creature faithfully based on the sprite: low insect body covered in a clustered jagged faceted shell of white and icy lavender crystals, cool blue shaded crevices, several delicate pale blue/white jointed insect legs, a curled slender pale tail/antenna-like appendage ending in a rounded dark sapphire-blue crystal orb. Preserve the squat beetle silhouette, crystalline back and curled orb-tipped appendage, no human face, no humanoid, no wings, no crystals scattered on the floor. Resting alert with all appendages clearly visible.\nComposition: a single complete full-body character in a confident readable three-quarter presentation, centered, head to feet and every horn/tail/weapon tip fully inside frame, generous 8-12% margins, coherent anatomy. Illustration style: exquisite polished Japanese anime fantasy art, clean precise silhouette, controlled fine linework, attractive clear local colors, smooth refined cel/painterly hybrid shading, carefully designed material highlights, no photographic or Western concept-art grunge. Background MUST be completely simple solid low-saturation pale cool gray or barely visible smooth two-tone gradient, matte flat untextured studio backdrop; only a very faint soft contact shadow beneath feet. No environment, building, plants, moon, stars, scenery, landscape, rocks, smoke, dust, sparks, motes, flying fragments, floating particles, texture, noise, film grain, stippling, patterned backdrop, visible checkerboard, transparent background, text, logo, border or watermark. Keep all visual interest on the character, with clear breathing room.",
+      "reference_images": [
+        "C:/Users/qs/godot/my-team/assets/donor-units/f6_crystalbeetle/f6_crystalbeetle.png",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-0215deb0-6585-4035-9bf6-e3b625db0f12.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9f903ca0-44d5-42f5-a191-3718a18a65c7.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-05733c6e-652a-4e81-abd7-ffe24d913f9d.webp",
+        "C:/Users/qs/AppData/Local/Temp/codex-clipboard-442019f1-623b-4aa0-a8d0-0667386dd62d.png"
+      ],
+      "status": "generated_and_saved",
+      "validation": {
+        "decoded": true,
+        "format": "PNG",
+        "width": 1024,
+        "height": 1536,
+        "visually_inspected": true,
+        "background": "极淡低饱和冷灰渐变；无场景、纹理、背景粒子与棋盘。",
+        "notes": "冰白/浅紫晶簇壳、纤细多足、弯曲蓝珠尾保留；低伏虫兽轮廓清楚，背景干净，留白充足。"
+      },
+      "acceptance": "Agent 已检视，未代表用户审美确认；未接入引擎。"
+    }
+  ]
+}

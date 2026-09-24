@@ -1,0 +1,820 @@
+{
+  "identity": "fox-mask-assassin",
+  "style": "pixel-art",
+  "size": [
+    80,
+    80
+  ],
+  "atlasSize": [
+    480,
+    480
+  ],
+  "authoredFacingRight": true,
+  "userAestheticApproval": false,
+  "runtimeAssigned": false,
+  "actions": [
+    {
+      "key": "idle",
+      "label": "待机",
+      "fps": 7,
+      "loop": true,
+      "frames": 6
+    },
+    {
+      "key": "move",
+      "label": "疾跑",
+      "fps": 10,
+      "loop": true,
+      "frames": 6
+    },
+    {
+      "key": "attack",
+      "label": "双刃斩击",
+      "fps": 10,
+      "loop": false,
+      "frames": 6
+    },
+    {
+      "key": "skill_cast",
+      "label": "突袭挑斩",
+      "fps": 10,
+      "loop": false,
+      "frames": 6
+    },
+    {
+      "key": "hit",
+      "label": "受击",
+      "fps": 14,
+      "loop": false,
+      "frames": 6
+    },
+    {
+      "key": "defeated",
+      "label": "倒下",
+      "fps": 8,
+      "loop": false,
+      "frames": 6
+    }
+  ],
+  "frames": [
+    {
+      "action": "idle",
+      "frame": 0,
+      "sourceRect": [
+        0,
+        0,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        17,
+        23,
+        61,
+        68
+      ],
+      "file": "frames/idle/00.png"
+    },
+    {
+      "action": "idle",
+      "frame": 1,
+      "sourceRect": [
+        209,
+        0,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        18,
+        23,
+        61,
+        68
+      ],
+      "file": "frames/idle/01.png"
+    },
+    {
+      "action": "idle",
+      "frame": 2,
+      "sourceRect": [
+        418,
+        0,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        17,
+        23,
+        60,
+        68
+      ],
+      "file": "frames/idle/02.png"
+    },
+    {
+      "action": "idle",
+      "frame": 3,
+      "sourceRect": [
+        627,
+        0,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        17,
+        23,
+        61,
+        68
+      ],
+      "file": "frames/idle/03.png"
+    },
+    {
+      "action": "idle",
+      "frame": 4,
+      "sourceRect": [
+        836,
+        0,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        17,
+        22,
+        61,
+        68
+      ],
+      "file": "frames/idle/04.png"
+    },
+    {
+      "action": "idle",
+      "frame": 5,
+      "sourceRect": [
+        1045,
+        0,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        16,
+        23,
+        60,
+        68
+      ],
+      "file": "frames/idle/05.png"
+    },
+    {
+      "action": "move",
+      "frame": 0,
+      "sourceRect": [
+        0,
+        209,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        6
+      ],
+      "bbox": [
+        21,
+        25,
+        67,
+        68
+      ],
+      "file": "frames/move/00.png"
+    },
+    {
+      "action": "move",
+      "frame": 1,
+      "sourceRect": [
+        209,
+        209,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        5
+      ],
+      "bbox": [
+        21,
+        23,
+        69,
+        68
+      ],
+      "file": "frames/move/01.png"
+    },
+    {
+      "action": "move",
+      "frame": 2,
+      "sourceRect": [
+        418,
+        209,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        7
+      ],
+      "bbox": [
+        22,
+        26,
+        67,
+        68
+      ],
+      "file": "frames/move/02.png"
+    },
+    {
+      "action": "move",
+      "frame": 3,
+      "sourceRect": [
+        627,
+        209,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        5
+      ],
+      "bbox": [
+        22,
+        24,
+        67,
+        68
+      ],
+      "file": "frames/move/03.png"
+    },
+    {
+      "action": "move",
+      "frame": 4,
+      "sourceRect": [
+        836,
+        209,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        5
+      ],
+      "bbox": [
+        20,
+        24,
+        65,
+        68
+      ],
+      "file": "frames/move/04.png"
+    },
+    {
+      "action": "move",
+      "frame": 5,
+      "sourceRect": [
+        1045,
+        209,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        5
+      ],
+      "bbox": [
+        18,
+        24,
+        65,
+        68
+      ],
+      "file": "frames/move/05.png"
+    },
+    {
+      "action": "attack",
+      "frame": 0,
+      "sourceRect": [
+        0,
+        418,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        4
+      ],
+      "bbox": [
+        15,
+        25,
+        65,
+        68
+      ],
+      "file": "frames/attack/00.png"
+    },
+    {
+      "action": "attack",
+      "frame": 1,
+      "sourceRect": [
+        209,
+        418,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        4
+      ],
+      "bbox": [
+        18,
+        20,
+        62,
+        68
+      ],
+      "file": "frames/attack/01.png"
+    },
+    {
+      "action": "attack",
+      "frame": 2,
+      "sourceRect": [
+        418,
+        418,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        4
+      ],
+      "bbox": [
+        10,
+        16,
+        73,
+        68
+      ],
+      "file": "frames/attack/02.png"
+    },
+    {
+      "action": "attack",
+      "frame": 3,
+      "sourceRect": [
+        627,
+        418,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        3
+      ],
+      "bbox": [
+        11,
+        26,
+        76,
+        68
+      ],
+      "file": "frames/attack/03.png"
+    },
+    {
+      "action": "attack",
+      "frame": 4,
+      "sourceRect": [
+        836,
+        418,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        2
+      ],
+      "bbox": [
+        15,
+        14,
+        68,
+        68
+      ],
+      "file": "frames/attack/04.png"
+    },
+    {
+      "action": "attack",
+      "frame": 5,
+      "sourceRect": [
+        1045,
+        418,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        4
+      ],
+      "bbox": [
+        13,
+        24,
+        64,
+        68
+      ],
+      "file": "frames/attack/05.png"
+    },
+    {
+      "action": "skill_cast",
+      "frame": 0,
+      "sourceRect": [
+        0,
+        627,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        19,
+        34,
+        67,
+        68
+      ],
+      "file": "frames/skill_cast/00.png"
+    },
+    {
+      "action": "skill_cast",
+      "frame": 1,
+      "sourceRect": [
+        209,
+        627,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        13,
+        35,
+        68,
+        68
+      ],
+      "file": "frames/skill_cast/01.png"
+    },
+    {
+      "action": "skill_cast",
+      "frame": 2,
+      "sourceRect": [
+        418,
+        627,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        9,
+        30,
+        70,
+        68
+      ],
+      "file": "frames/skill_cast/02.png"
+    },
+    {
+      "action": "skill_cast",
+      "frame": 3,
+      "sourceRect": [
+        627,
+        627,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        -2
+      ],
+      "bbox": [
+        18,
+        4,
+        68,
+        64
+      ],
+      "file": "frames/skill_cast/03.png"
+    },
+    {
+      "action": "skill_cast",
+      "frame": 4,
+      "sourceRect": [
+        836,
+        627,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        13,
+        34,
+        67,
+        68
+      ],
+      "file": "frames/skill_cast/04.png"
+    },
+    {
+      "action": "skill_cast",
+      "frame": 5,
+      "sourceRect": [
+        1045,
+        627,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        1
+      ],
+      "bbox": [
+        15,
+        23,
+        61,
+        68
+      ],
+      "file": "frames/skill_cast/05.png"
+    },
+    {
+      "action": "hit",
+      "frame": 0,
+      "sourceRect": [
+        0,
+        836,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        6
+      ],
+      "bbox": [
+        20,
+        22,
+        64,
+        68
+      ],
+      "file": "frames/hit/00.png"
+    },
+    {
+      "action": "hit",
+      "frame": 1,
+      "sourceRect": [
+        209,
+        836,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        6
+      ],
+      "bbox": [
+        23,
+        26,
+        66,
+        68
+      ],
+      "file": "frames/hit/01.png"
+    },
+    {
+      "action": "hit",
+      "frame": 2,
+      "sourceRect": [
+        418,
+        836,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        6
+      ],
+      "bbox": [
+        21,
+        26,
+        60,
+        68
+      ],
+      "file": "frames/hit/02.png"
+    },
+    {
+      "action": "hit",
+      "frame": 3,
+      "sourceRect": [
+        627,
+        836,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        6
+      ],
+      "bbox": [
+        20,
+        24,
+        65,
+        68
+      ],
+      "file": "frames/hit/03.png"
+    },
+    {
+      "action": "hit",
+      "frame": 4,
+      "sourceRect": [
+        836,
+        836,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        6
+      ],
+      "bbox": [
+        17,
+        24,
+        64,
+        68
+      ],
+      "file": "frames/hit/04.png"
+    },
+    {
+      "action": "hit",
+      "frame": 5,
+      "sourceRect": [
+        1045,
+        836,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        6
+      ],
+      "bbox": [
+        16,
+        23,
+        60,
+        68
+      ],
+      "file": "frames/hit/05.png"
+    },
+    {
+      "action": "defeated",
+      "frame": 0,
+      "sourceRect": [
+        0,
+        1045,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        15
+      ],
+      "bbox": [
+        23,
+        31,
+        65,
+        68
+      ],
+      "file": "frames/defeated/00.png"
+    },
+    {
+      "action": "defeated",
+      "frame": 1,
+      "sourceRect": [
+        209,
+        1045,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        15
+      ],
+      "bbox": [
+        20,
+        37,
+        60,
+        68
+      ],
+      "file": "frames/defeated/01.png"
+    },
+    {
+      "action": "defeated",
+      "frame": 2,
+      "sourceRect": [
+        418,
+        1045,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        15
+      ],
+      "bbox": [
+        15,
+        47,
+        72,
+        68
+      ],
+      "file": "frames/defeated/02.png"
+    },
+    {
+      "action": "defeated",
+      "frame": 3,
+      "sourceRect": [
+        627,
+        1045,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        17
+      ],
+      "bbox": [
+        13,
+        53,
+        76,
+        68
+      ],
+      "file": "frames/defeated/03.png"
+    },
+    {
+      "action": "defeated",
+      "frame": 4,
+      "sourceRect": [
+        836,
+        1045,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        18
+      ],
+      "bbox": [
+        11,
+        52,
+        69,
+        68
+      ],
+      "file": "frames/defeated/04.png"
+    },
+    {
+      "action": "defeated",
+      "frame": 5,
+      "sourceRect": [
+        1045,
+        1045,
+        209,
+        209
+      ],
+      "translation": [
+        4,
+        18
+      ],
+      "bbox": [
+        7,
+        53,
+        68,
+        68
+      ],
+      "file": "frames/defeated/05.png"
+    }
+  ],
+  "sourceSha256": "bcfca611105ce667680330bceb3243807411a7b2d6177189462bf79a95464fad",
+  "atlasSha256": "0589d3ae9807741f0078d210de25152d3330b51abd03a66f5de196558a0c7c0e",
+  "processing": "User authorized programmatic checkerboard removal, nearest-neighbor reduction, per-frame floor alignment, and atlas assembly. No synthesized poses or interpolated frames."
+}

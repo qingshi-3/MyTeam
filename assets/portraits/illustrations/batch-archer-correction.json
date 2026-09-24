@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "asset_id": "f1_ranged",
+  "mode": "built-in image_gen edit",
+  "created_date": "2026-09-12",
+  "source_animation": "C:/Users/qs/godot/my-team/assets/donor-units/f1_ranged/f1_ranged.png",
+  "edit_input_path": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f1_ranged.png",
+  "preserved_edit_input": "C:/Users/qs/.codex/generated_images/01a09463-83cd-7570-b5f6-3cd386803bce/f1_ranged-before-bow-correction.png",
+  "generated_original": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-d476ed4c-16f8-4b1a-bd15-f6eefd3d187c.png",
+  "output": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f1_ranged.png",
+  "prompt": "Use case: precise-object-edit. EDIT input image 1, the existing exquisite anime archer portrait. Input 2 is her original animation spritesheet for identity/equipment confirmation only. The single purpose is to FIX THE CROPPED LONG BOW by a clear change to the arms, bow pose, and overall framing. Preserve this exact adult woman: same beautifully refined Japanese anime face and eyes, long vivid crimson high ponytail with gold crown ornament, same purple-and-gold ornate armor, split purple cloth with red lining, gold armored high boots, detailed smooth rendering. Keep the same completely plain pale cool gray very subtle gradient background and faint ground contact shadow.\nNEW POSE REQUIRED: she is now standing in an elegant calm ready stance, NOT drawing the bow. Her bow-holding arm is lowered beside her body, elbow slightly bent, and her hand holds the bow's central grip at WAIST/UPPER-HIP HEIGHT. The entire ornate white-and-gold longbow is held beside her on viewer right, nearly vertical with a slight diagonal angle. Its highest gold tip is BELOW the top of her head, roughly at forehead/temple height; its lowest gold tip is ABOVE the floor near the lower calf. This one intact recurve bow must have both elegant curved limbs, both complete pointed end tips, and the complete taut string connecting both tips visibly rendered within the image. No cut off bow tips, no bow parts outside the image. The bow is about 70% of the standing figure's total height and has a clear separate silhouette. Her other lowered relaxed hand holds one complete slender golden arrow diagonally across the front at thigh height, arrowhead and tail fully visible. Do not maintain the previous raised-arm drawing pose; change both arms deliberately to the lowered resting presentation.\nCOMPOSITION: 1024x1536 portrait 2:3. Reframe so the ENTIRE combined silhouette of woman, all hair ends, all cloth ends, both boots, bow including BOTH tip points and full arrow is contained within central 78% of canvas width and central 82% of canvas height. Leave broad empty gray space on all FOUR sides; at least 100 px top and 90 px each side, at least 110 px below both boots. Ponytail can flow softly behind her but must not touch the left edge. Highest element must leave visible empty gray above. Lowest element must leave visible empty gray below. Draw her full body and both whole boots with ground visible beneath; no crop anywhere.\nKeep the excellent polished anime quality of image 1, identity, proportions, facial beauty, color palette and costume details. Clean silhouette and fine linework, smooth clean skin, rich materials without random grain. No background buildings, landscapes, stars, texture, noise, checkerboard, transparent backdrop, scenery, particles, smoke, sparks, extra characters, words, borders or logos.",
+  "description": "将上端裁切的拉弓姿势改成腰侧垂臂持弓、另一手斜持箭的待命姿势。红长马尾、金紫甲、精致日漫脸和极简灰背景保留。替换目标资产，生成原件与编辑前输入均保留。",
+  "validation": {
+    "decoded": true,
+    "format": "PNG",
+    "width": 1024,
+    "height": 1536,
+    "visually_inspected": true,
+    "full_bow_visible": true,
+    "full_arrow_visible": true,
+    "both_feet_visible": true,
+    "hair_and_cloth_not_cropped": true,
+    "empty_margin_all_four_edges": true,
+    "notes": "逐图检视：弓的上下尖端、完整弓身/弓弦与整箭均在画内；弓最高点低于马尾头顶。四周均有明显灰色留白，脚下淡影，无场景与粒子。"
+  },
+  "acceptance": "Agent 图像检查通过；不代表用户最终审美确认。未启动 Godot，未改共享 manifest。"
+}

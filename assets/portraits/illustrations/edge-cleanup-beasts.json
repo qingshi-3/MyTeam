@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "method": "built-in image_gen; one independent targeted edit per image",
+  "date": "2026-09-12",
+  "scope": "修整布片与红膜的高频碎边；不修改必要硬结构；未接入引擎或改动共享清单。",
+  "items": [
+    {
+      "id": "f4_general",
+      "prompt": "Use case: precise-object-edit. Edit the supplied EXISTING polished anime fantasy character portrait. Make a targeted costume/organic-membrane edge cleanup ONLY as described below; preserve the SAME character identity, gender/species, beautiful refined Japanese anime face where present, pose, proportions, equipment, main color palette, and premium detailed material rendering. Keep the current plain pale cool gray studio gradient background and very soft contact shadow. No new scenery, particles, dirt, text, watermark or checkerboard. Keep the entire figure and all original weapons, horns, feet, claws, tail, hair and cloth ends inside the image, with clear empty gray margins all around. If necessary reframe the same pose slightly smaller for breathing room. Do not crop. Final portrait 1024x1536, 2:3.\nTARGETED CHANGE:\nThe lower half black-and-magenta/red flowing cape and skirt currently break into numerous long narrow jagged strips with bite-shaped holes and ragged forked edges. Replace ONLY this excessive ragged fabric structure with THREE broad substantial continuous flowing fabric panels: one broad outer panel on each side behind her legs, plus one coherent inner rear skirt panel. Preserve the black/violet outer fabric and magenta/red lining, original waist attachment, elegance and overall flowing silhouette. Each panel has one controlled broad graceful curve and a smooth clean finished hem; at most one deliberate tapering end per panel. Fill all random holes and torn notches. No shredded streamers, no strings, no tiny triangular cloth spikes, no thin fringes. Keep the face, pale lavender hair and skin, delicate expression, horn crown, chest and leg armor and the complete double-ended pink crescent polearm as they are. The design must still be a striking dark elegant anime demon general with flowing layered cloth; keep refined volume and folds.\nRender the revised edges crisply with clean deliberate fine linework, coherent material shading and polished highlights. Eliminate accidental micro-scratches, isolated broken bright flecks or fraying only in the edited cloth/membrane areas. This is a deliberate shape redesign of the ragged edges, NOT blur or smoothing over pixels. Do not use a blurry outline, do not flatten all details, do not turn the illustration into a simple cartoon. Leave important armor facets, bones, horns, claws, scales, weapon cutting shapes and essential anatomy exactly recognizable. No extra accessory, cloth strip, ornament, limb or floating piece.",
+      "editInput": "C:/Users/qs/godot/my-team/.godot/portrait-generation/edge-cleanup-before/f4_general.png",
+      "toolTarget": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f4_general.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-64d68c1a-2cdb-405c-b28c-d70ecbaf902f.png",
+      "file": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f4_general.png",
+      "visualReview": "黑红披摆已从多条撕裂尖布整理为少量宽大连续布片，破洞及密集碎口消除，保留自然折面和红色内衬。脸部、肤色、长发、角、紫甲与双端月刃保持。全身/武器均完整，沿用原构图，顶部角尖、刃尖与侧缘留白偏窄但未裁切；背景仍为干净灰渐变，非模糊糊边。",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "status": "edited_saved_and_visually_reviewed",
+      "acceptance": "Agent 图像检查；尚未代表用户最终审美确认。"
+    },
+    {
+      "id": "f5_general",
+      "prompt": "Use case: precise-object-edit. Edit the supplied EXISTING polished anime fantasy character portrait. Make a targeted costume/organic-membrane edge cleanup ONLY as described below; preserve the SAME character identity, gender/species, beautiful refined Japanese anime face where present, pose, proportions, equipment, main color palette, and premium detailed material rendering. Keep the current plain pale cool gray studio gradient background and very soft contact shadow. No new scenery, particles, dirt, text, watermark or checkerboard. Keep the entire figure and all original weapons, horns, feet, claws, tail, hair and cloth ends inside the image, with clear empty gray margins all around. If necessary reframe the same pose slightly smaller for breathing room. Do not crop. Final portrait 1024x1536, 2:3.\nTARGETED CHANGE:\nThe dark crimson waist cloth currently ends in torn thin ragged hanging strips and interrupted chipped gold trim. Replace ONLY the waist cloth lower half with THREE broad intact substantial cloth panels hanging from the same belt: a central broad front panel and two restrained side panels. Preserve crimson color, cloth length and natural vertical folds. Give them simple smooth finished hems with at most a broad intentional angled lower corner and one clear continuous refined gold border. Remove tears, holes, dangling little ribbons, jagged thin slivers and broken speckly gold trim. Keep the gold belt and existing substantial clasps/jewelry, no new ornaments. Preserve the reptilian general's entire anatomy and pose: huge teal muscular body, reptile face and teeth, dark horns, claws, scale patterns, back and arm spikes, tail, gold wrist/ankle rings. Do NOT remove or soften its natural armor spikes or scales.\nRender the revised edges crisply with clean deliberate fine linework, coherent material shading and polished highlights. Eliminate accidental micro-scratches, isolated broken bright flecks or fraying only in the edited cloth/membrane areas. This is a deliberate shape redesign of the ragged edges, NOT blur or smoothing over pixels. Do not use a blurry outline, do not flatten all details, do not turn the illustration into a simple cartoon. Leave important armor facets, bones, horns, claws, scales, weapon cutting shapes and essential anatomy exactly recognizable. No extra accessory, cloth strip, ornament, limb or floating piece.",
+      "editInput": "C:/Users/qs/godot/my-team/.godot/portrait-generation/edge-cleanup-before/f5_general.png",
+      "toolTarget": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_general.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-4571b6c2-f7f0-4a44-98da-68b8f440622a.png",
+      "file": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_general.png",
+      "visualReview": "酒红腰布已整理为完整中央与侧垂布，金边连续，原先下缘撕条与碎金边已去除。兽脸、躯干、鳞片、角爪、尾与金饰保持。全身完整，沿用原构图，顶部与右侧爪缘留白偏窄但未裁切；背景干净，布料边缘清楚。",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "status": "edited_saved_and_visually_reviewed",
+      "acceptance": "Agent 图像检查；尚未代表用户最终审美确认。"
+    },
+    {
+      "id": "f5_firebreather",
+      "prompt": "Use case: precise-object-edit. Edit the supplied EXISTING polished anime fantasy character portrait. Make a targeted costume/organic-membrane edge cleanup ONLY as described below; preserve the SAME character identity, gender/species, beautiful refined Japanese anime face where present, pose, proportions, equipment, main color palette, and premium detailed material rendering. Keep the current plain pale cool gray studio gradient background and very soft contact shadow. No new scenery, particles, dirt, text, watermark or checkerboard. Keep the entire figure and all original weapons, horns, feet, claws, tail, hair and cloth ends inside the image, with clear empty gray margins all around. If necessary reframe the same pose slightly smaller for breathing room. Do not crop. Final portrait 1024x1536, 2:3.\nTARGETED CHANGE:\nThe magenta/crimson organic membranes attached along the raised curved tail are currently ragged, perforated and ribbon-like with sharp torn forks. Replace ONLY these red membrane shapes with a small number of complete smooth organic membrane fins, attached securely along the SAME tail at the same main locations. Use three or four coherent broad soft fin lobes, each with a smooth uninterrupted outer curved contour and no holes. These are fleshy/crystalline smooth membranes, NOT loose cloth, ribbons, flags, tattered streamers or hairy fringes. Remove all tiny red torn offshoots, strings and ragged notches, especially the large upper-left red arc along the tail and the red membrane at the tail root above the back. Preserve their crimson color and restrained organic shading. Preserve the entire original scorpion/arthropod anatomy and pose, the large looping dark teal segmented tail and fire nozzle with the same small flame, claws, legs, face, teal plate segments and essential chitin spikes. Keep the silhouette strong and all appendages complete.\nRender the revised edges crisply with clean deliberate fine linework, coherent material shading and polished highlights. Eliminate accidental micro-scratches, isolated broken bright flecks or fraying only in the edited cloth/membrane areas. This is a deliberate shape redesign of the ragged edges, NOT blur or smoothing over pixels. Do not use a blurry outline, do not flatten all details, do not turn the illustration into a simple cartoon. Leave important armor facets, bones, horns, claws, scales, weapon cutting shapes and essential anatomy exactly recognizable. No extra accessory, cloth strip, ornament, limb or floating piece.",
+      "editInput": "C:/Users/qs/godot/my-team/.godot/portrait-generation/edge-cleanup-before/f5_firebreather.png",
+      "toolTarget": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_firebreather.png",
+      "generatedOriginal": "C:\\Users\\qs\\.codex\\generated_images\\01a09463-83cd-7570-b5f6-3cd386803bce\\exec-e011edc7-9bcf-4eb0-b675-860ba23c51de.png",
+      "file": "C:/Users/qs/godot/my-team/assets/portraits/illustrations/f5_firebreather.png",
+      "visualReview": "尾部红膜已整理为少量完整光滑膜鳍，原有破洞、破布岔口与细碎尖条消除。红膜仍附着于尾部，长弯尾、火口、小火焰、甲片、四肢和爪形保持。全身与尾/火焰完整，背景纯净灰渐变，膜边清楚，无模糊或卡通化。",
+      "width": 1024,
+      "height": 1536,
+      "format": "PNG",
+      "status": "edited_saved_and_visually_reviewed",
+      "acceptance": "Agent 图像检查；尚未代表用户最终审美确认。"
+    }
+  ]
+}

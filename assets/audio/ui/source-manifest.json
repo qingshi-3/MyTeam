@@ -1,0 +1,10 @@
+{
+  "source": "Original procedural synthesis; no external recordings",
+  "file": "ui_hover.wav",
+  "source_file": "../ui-click-study/a_light.wav",
+  "generator": "../ui-click-study/generate.py",
+  "composition": "A light click only; total 65 ms",
+  "sha256": "7d25533257d3f2ffdad6c4993002407da931d0c475a509da9a754c2679461529",
+  "format": "48000 Hz mono PCM16; Godot import uncompressed, no trim, normalization or loop",
+  "runtime": "FeedbackAudio.tscn ui_select; volume -4 dB; single concurrent voice; minimum interval 65 ms"
+}

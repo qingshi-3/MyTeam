@@ -1,0 +1,14 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Precise localized costume edit of the supplied adult anime short-kimono warrior. Make these three changes only: 1. Remove BOTH hanging kimono sleeves entirely. Make the existing red upper garment SLEEVELESS, with neat narrow black-and-gold finished armholes at the shoulders. Reveal natural bare shoulders and arms in exactly their current pose, same elbows/wrists/hands and weapon grips. No detached sleeve remnants, no hanging arm fabric. Remove red sleeve cloth on the image-right bent arm too; preserve its small existing wrist cuff if useful but no new bracers. Keep the same fitted red torso garment, collar, back orientation and already narrowed waist. 2. REMOVE all long RED RIBBONS/SCARF TAILS coming from the UPPER BODY/collar/shoulder: these currently float behind the extended image-left arm and across the upper hair around y320-720. Completely remove those upper-body streamers; show uninterrupted black hair and pale background in their place. Keep the red mask tassel and tiny existing decorative knots; those are not the upper-body streamers. Do NOT remove or cut the black hair. 3. KEEP the TWO long broad red patterned WAIST SASH TAILS attached to the obi, flowing diagonally toward image-left and down, but SHORTEN EACH by 25 percent measured along its length from its waist attachment (remaining length 75 percent). Preserve attachment, general flowing curves and direction, gold edging and floral motif, now cleanly resized/repositioned near the shorter tips; do not cut flat through the floral motif. Distinguish waist sash tails from the short kimono skirt: KEEP actual skirt hem length unchanged, keep obi bow and small tassels. Preserve EVERYTHING ELSE: exact face, fox mask position, jet-black glossy smooth long hair shape and length, back-turned over-shoulder stance, anatomy except clothing removal, hands/fingers, two gold crescent weapons and grips, legs/feet and shoes, slim waist, smooth wrinkle-free semi-transparent black stockings, pale background and composition. Rich clean saturated crimson/deep black/polished gold, no faded patches, grey hair, noise, scuffs or ragged edges. Full portrait 1024x1536. Do not turn body toward viewer or change pose.",
+  "editInput": "02-short-kimono-rich-color-waist.png",
+  "file": "../f2_ranged.png",
+  "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-a2e054d2-6215-4997-bbcf-e920db0db090.png",
+  "visualReview": "已查看：上衣双袖和上身长红飘带去除，腰间两条红飘带缩短，保留花纹和收边。约缩短1/4为视觉目标而非精确曲线测量。头脸面具、双武器握姿和腿脚落位保留；无褶皱丝袜及红黑配色延续。",
+  "userAestheticApproval": true,
+  "width": 1024,
+  "height": 1536,
+  "mode": "RGB",
+  "sha256": "0f7f150658b6b7c1a32ad57cb830d3e43882f750e5de19060cb95e0278ef5040",
+  "selected": true
+}

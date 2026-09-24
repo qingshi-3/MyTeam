@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-12",
+  "method": "built-in image_gen",
+  "items": [
+    {
+      "id": "f2_ranged",
+      "prompt": "Use case: precise-object-edit. ONE SMALL ACCESSORY POSITION CORRECTION ONLY. User says the fox mask belongs at the UPPER LEFT OF THE CHARACTER'S HEAD IN THE IMAGE, NOT at the back of her head. The current mask is wrongly behind the ear/back hair.\nMove this SAME black-red-gold fox mask UPWARD to the TOP-LEFT SIDE OF THE HEAD, perched on the upper-left crown hair around the 10 o'clock position relative to the head center. Its LOWER rim rests against the upper-left crown above the temple; most of the mask sits above the skull silhouette, on top-left hair, NOT beside or behind the ear, NOT at the nape/back of head. Keep the mask clearly higher than the eyebrows and visible ear. Position its red tie on the upper-left crown hair, with a believable small fixing knot. Keep an attractive oblique side angle rather than a flat front-facing mask. Its fox muzzle points diagonally left and slightly down; keep face-mask shape, black lacquer, red marks and thin gold edge. One mask only, no duplication.\nRestore the hair where the accessory was behind the ear. Preserve the woman's FACE, head angle, gaze and hair everywhere else. Do not move/rotate her head. Preserve ALL OTHER CONTENT IDENTICALLY: back-turned three-quarter stance, BOTH arms and hand grips, both golden crescent weapons, red scarves and waist sash, black shorts, boots, gold armor, camera/framing and pale grey background. Only shift the accessory from behind-ear position to UPPER-LEFT CROWN. Same full-body 1024x1536 image. No text or watermark.",
+      "editInput": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-04d138c7-c838-4b82-8004-8e174cf010aa.png",
+      "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-6c0a57be-dc83-42a6-9a62-10524514936b.png",
+      "file": "assets/portraits/illustrations/f2_ranged.png",
+      "priorAssetBackup": ".godot/portrait-generation/ranged-palm-before/f2_ranged.png",
+      "width": 1024,
+      "height": 1536,
+      "visualReview": "按用户再次纠正，面具从耳后/后脑位置上移至画面中头部左上侧的顶发上，保持斜向角度；人物脸、手臂位置、背身和其他服饰保持。用户审美未确认。",
+      "userAestheticApproval": false,
+      "generationSteps": [
+        {
+          "id": "f2_ranged",
+          "prompt": "Use case: precise-object-edit. MICRO EDIT OF ONE HAND ONLY. The user approves the CURRENT ARM POSITION in the supplied image. Keep BOTH upper arms, elbows, forearms, wrists' locations, both weapons' locations, full body, rear-three-quarter back-turned look-back pose, face, huge gold hat, hair, clothing, red scarves, all colors and plain grey background EXACTLY AS THEY ARE.\nTARGET = the hand on the RIGHT SIDE OF THE IMAGE holding the upright crescent blade at waist height. This is the CHARACTER'S ANATOMICAL LEFT HAND. DO NOT edit the other hand stretched out on image-left.\nREQUIRED CHANGE: rotate/supinate THIS LEFT HAND so the PALM FACES FORWARD TOWARD THE VIEWER, instead of showing the back of the hand. Clearly show the inner palm surface and thenar/thumb pad; do not show the dorsal knuckle row in place of the palm. The LEFT thumb must be on the IMAGE-RIGHT/OUTER side of this forward-facing palm, with its base visibly connected to that side of the left wrist. The four fingers curl naturally around the far/back side of the existing black weapon grip, with the curled finger ends visible around the opposite edge. A comfortable LEFT-HANDED PALM-FORWARD grip, not a right-hand grip. Exactly one thumb and four fingers, natural forearm supination without broken wrist. Preserve the wrist center at the current spot and the elbow/arm pose; only rotate and redraw the hand and the tiny wrist transition necessary. Keep the crescent blade and handle position/angle unchanged. No new limb. The palm facing the camera must be unmistakable.\nEverything outside that one image-right hand and tiny wrist area stays identical. Do not change costume, hat, sash, body direction, anatomy elsewhere, face or composition. Maintain polished Japanese anime linework and shading. Output the same full 1024x1536 portrait, not a crop, no text.",
+          "editInput": ".godot/portrait-generation/ranged-palm-before/f2_ranged.png",
+          "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-ff0ba380-1f90-47fd-8c29-05c93ee1bad6.png",
+          "file": "assets/portraits/illustrations/f2_ranged.png",
+          "priorAssetBackup": ".godot/portrait-generation/ranged-palm-before/f2_ranged.png",
+          "visualReview": "用户认可手臂位置，要求画面右侧角色左手掌心朝前；定向重画该处握柄手型，保持手臂与其他造型。随后用户追加将头饰改成面具，最终替换待面具生成完成。",
+          "width": 1024,
+          "height": 1536,
+          "userAestheticApproval": false
+        },
+        {
+          "id": "f2_ranged",
+          "prompt": "Use case: precise-object-edit. Change ONLY the head accessory in the supplied full-body Japanese anime warrior illustration. Replace the ENTIRE enormous golden crescent hat and its crescent decorations with ONE elegant wearable Japanese fox-inspired MASK perched diagonally on the TOP/SIDE OF HER HEAD, secured by a visible dark red cord around the hair. The mask is not being worn over her face: keep her original face and eyes completely visible and unchanged. Make it a substantial face-sized mask, an intentional ornamental head accessory, black lacquer with crimson-red painted markings and restrained gold edging, smooth sculpted eye openings and a short elegant fox muzzle, a coherent single mask shape. It should be recognizable as a mask at a glance. No gold crescent hat, no floating crescent blades on the head, no horn crown, no extra mask, no tiny tiara. Keep most of her existing hair placement; only adapt hair immediately under mask or ties. Mask rests physically on hair with believable contact and attachment.\nLOCK ALL OTHER PIXELS/FEATURES as closely as possible: same delicate adult female Japanese anime face, red eyes, head angle, back-turned three-quarter look-back body orientation, BOTH ARM AND HAND POSES including the newly palm-forward grip on image-right, both crescent WEAPONS in the hands, waist shorts, boots, outfit, red shoulder scarf and waist-tied ribbons, and gold trim. Do not confuse handheld gold crescent weapons with the head accessory; keep both weapons unchanged. Same full body 1024x1536 portrait and pale-grey simple background. Clean refined anime rendering, no additional particles, scenery, noise, text or watermark.",
+          "editInput": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-ff0ba380-1f90-47fd-8c29-05c93ee1bad6.png",
+          "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-8a03d386-eb6a-4e5c-9bfa-b0c30d94598f.png",
+          "file": "assets/portraits/illustrations/f2_ranged.png",
+          "priorAssetBackup": ".godot/portrait-generation/ranged-palm-before/f2_ranged.png",
+          "width": 1024,
+          "height": 1536,
+          "visualReview": "按用户追加要求将大月轮帽替换为头顶斜扣的黑红描金狐面，红绳固定且原脸完整可见。保留背身、两手位置及飘带连接；沿用本次掌心朝前握柄重绘，掌根区域可见。用户仅认可此前手臂位置，未声明最终手型或面具审美已获认可。",
+          "userAestheticApproval": false
+        },
+        {
+          "id": "f2_ranged",
+          "prompt": "Use case: precise-object-edit. Correct ONLY the LOCATION and ORIENTATION of the fox mask on this woman's head. The current image incorrectly places a front-facing mask over her FOREHEAD. User explicitly wants it BEHIND HER HEAD, attached at the rear/back-side of her hair, viewed obliquely from the side/rear.\nRemove the mask and its attachment from the forehead/crown-front completely and restore the normal black hair there. Move the SAME black-red-gold fox mask to the BACK OF HER HEAD, nestled against the rear hair mass on the IMAGE-LEFT side behind the visible ear, toward the upper back/nape. It must clearly sit BEHIND the head, not above the eyebrow, not in front of the hairline. Secure it with the red tie to a small rear hair knot. Orient the mask along the rear-side curvature of her head, in a steep OBLIQUE THREE-QUARTER SIDE/REAR view: show the mask's edge, part of its rear/inner rim and fastening, only a partial side view of its sculpted outer fox face. It must NOT present a full frontal symmetrical fox face toward the camera. Its muzzle points sideways along the side of her head; the mask is an accessory hanging against rear hair, not worn over her face and not a tiara standing upright atop forehead. Keep its scale about the same as a wearable face mask. Preserve its black lacquer, red markings and fine gold border.\nLOCK EVERYTHING ELSE: exact unchanged human face/eyes/expression/head angle, back-turned look-back pose, hair except the small accessory contact area, both arm and hand poses, palm-forward image-right grip, both crescent weapons, red scarf and waist sash, shorts, legs, boots, plain grey background and full-body 1024x1536 framing. Do not redraw any hand or body part. One mask only. No old large gold hat. No other changes.",
+          "editInput": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-8a03d386-eb6a-4e5c-9bfa-b0c30d94598f.png",
+          "generatedOriginal": "C:/Users/qs/.codex/generated_images/01a09453-3c3c-7fe0-96d2-2959688de8c5/exec-04d138c7-c838-4b82-8004-8e174cf010aa.png",
+          "file": "assets/portraits/illustrations/f2_ranged.png",
+          "priorAssetBackup": ".godot/portrait-generation/ranged-palm-before/f2_ranged.png",
+          "width": 1024,
+          "height": 1536,
+          "visualReview": "按用户纠正，狐面移至后脑侧、可见耳朵后方的发束上，用红结固定；狐面呈侧向视角，额前恢复头发，人物脸、手臂位置及背身保持。未宣称用户已认可。",
+          "userAestheticApproval": false
+        }
+      ]
+    }
+  ]
+}

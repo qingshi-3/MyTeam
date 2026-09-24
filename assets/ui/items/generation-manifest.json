@@ -1,0 +1,132 @@
+{
+  "date": "2026-09-15",
+  "tool": "built-in image_gen",
+  "items": [
+    {
+      "id": "equipment_rimebrand",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler: a compact frost-enchanted curved steel sword, blade growing three broad pale cyan ice crystals, dark leather grip, aged brass fittings. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas, diagonal orientation. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. This is the item Frostbrand.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-1a26fbcd-a9ec-42c9-974f-ccb2de1225bd.png",
+      "file": "equipment_rimebrand.png"
+    },
+    {
+      "id": "equipment_vanguard_insignia",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a heavy steel breastplate with broad shoulderless silhouette, a single bold embossed golden chevron on its chest, leather straps, cool steel and muted gold. No shield.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-fd425494-1e10-460b-ae49-300aeee522f6.png",
+      "file": "equipment_vanguard_insignia.png"
+    },
+    {
+      "id": "equipment_field_focus",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a compact brass telescopic aiming scope, two broad glass lenses with warm amber reflection, short sturdy barrel and leather attachment band, diagonal composition.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-beed520c-4c7a-40f1-8117-a6ad488b24c6.png",
+      "file": "equipment_field_focus.png"
+    },
+    {
+      "id": "equipment_ne01_mana_charm",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a large faceted vivid blue crystal enclosed by two crescent silver prongs on a short loop of dark cord, magical energy contained INSIDE the crystal, simple pendant silhouette.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-040ae409-544f-466c-b2a6-30283bce8042.png",
+      "file": "equipment_ne01_mana_charm.png"
+    },
+    {
+      "id": "equipment_ne10_swift_gloves",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a single agile dark leather archer glove with articulated bronze finger guards, three swept featherlike brass ridges along wrist, warm tawny leather, clenched slightly; entire object inside frame.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-6b8597bd-4ee3-4177-bda7-878e3b967c45.png",
+      "file": "equipment_ne10_swift_gloves.png"
+    },
+    {
+      "id": "equipment_ne10_winter_badge",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a silver brooch shaped like two outspread icy bird wings around one frosty pale blue oval stone, horizontal wing silhouette, no cord, compact distinct heraldic pin.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-3a223f4e-2dd9-4514-858b-138acc8767e0.png",
+      "file": "equipment_ne10_winter_badge.png"
+    },
+    {
+      "id": "item_clockwork_seed",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a spherical brass clockwork seed with three chunky interlocking cog segments opened around a warm amber central core, compact mechanical artifact with a few steel rivets, no scenery.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-98813ad8-6601-46e8-b813-d305561d39dd.png",
+      "file": "item_clockwork_seed.png"
+    },
+    {
+      "id": "item_war_drum",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a squat red leather marching drum with thick bronze rims and crisscross rope, two short drumsticks resting across top, iconic broad cylinder, muted vermilion.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-ca45615f-d458-4c64-aec7-ec642471e4bf.png",
+      "file": "item_war_drum.png"
+    },
+    {
+      "id": "item_field_rations",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: an open brown leather ration pouch containing one round loaf of bread and a wrapped wedge of cheese, tied cloth bundle, warm ochre earthy materials.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-59893267-b4f6-4f73-b9d1-95220bd8266d.png",
+      "file": "item_field_rations.png"
+    },
+    {
+      "id": "item_gilded_contract",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a rolled ivory parchment contract with a heavy round gold wax seal and broad golden ribbon, no writing or letters anywhere, bold diagonal curled scroll silhouette.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-aa918943-34a7-4043-87cf-424ca225f5e1.png",
+      "file": "item_gilded_contract.png"
+    },
+    {
+      "id": "item_aegis_standard",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a pristine deep blue hanging military standard on a short horizontal silver crossbar, gold shield emblem embossed at center, pointed lower hem, upright symmetrical silhouette.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-0b6ec79d-b51b-42e8-b2a7-df0e9e6b77b5.png",
+      "file": "item_aegis_standard.png"
+    },
+    {
+      "id": "item_blood_chalice",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a heavy silver chalice filled with dark crimson liquid, wide bowl and stout foot, one large red garnet on bowl, three clawlike silver ribs, no blood splashes.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-09b6be97-cbd2-48e5-9981-8e8a710bea82.png",
+      "file": "item_blood_chalice.png"
+    },
+    {
+      "id": "item_duelist_seal",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a chunky antique golden signet ring in three-quarter perspective, square raised sealing face with simple crossed sword relief, a red inset stone on each shoulder.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-4cc76610-0da1-48bc-b4d9-e34ca7be4c2b.png",
+      "file": "item_duelist_seal.png"
+    },
+    {
+      "id": "item_lone_crown",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a narrow blackened steel crown with five long asymmetric gold tipped spikes and a single central violet gemstone, empty hollow center visible, regal lonely mood.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-4f91ef9d-e56b-4cfd-a3fa-f5cf5d6d6109.png",
+      "file": "item_lone_crown.png"
+    },
+    {
+      "id": "item_soul_lantern",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: an old hexagonal iron lantern with a loop handle, glass chamber enclosing one large turquoise ghostly flame, dark wrought metal and muted brass, clear lantern silhouette.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-1197ed72-6490-4731-afef-a39e4e22a490.png",
+      "file": "item_soul_lantern.png"
+    },
+    {
+      "id": "item_commander_map",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: an unfolded square parchment tactical map with chunky red and blue miniature formation markers and a bronze compass, curled corners, top-down three-quarter view, no written text.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-b3cd85b4-6ef6-48b0-a428-9bb346ed36fa.png",
+      "file": "item_commander_map.png"
+    },
+    {
+      "id": "item_crimson_mail",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a folded sleeveless crimson armored surcoat with broad layered red scales and a heavy black belt, crimson cloth draping below, no wearer, no shoulder armor.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-5499edda-58ba-491b-ba14-8b0c984136fa.png",
+      "file": "item_crimson_mail.png"
+    },
+    {
+      "id": "item_last_banner",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a battered burgundy swallowtail battle flag on a short diagonal wooden pole with a broken spear finial, large ivory phoenix emblem, torn bottom and stitched repairs, distinguishable from pristine blue standard.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-5b72dc2e-66c8-481e-8205-904f6f5f5073.png",
+      "file": "item_last_banner.png"
+    },
+    {
+      "id": "item_ne01_opening_bulwark",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a small fortress-shaped steel reliquary: three joined upright shield plates forming a protective semicircle around a warm golden light, broad horizontal fortified silhouette, no flags.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-2f39ba66-59a3-4c65-99d2-9bbdc1eb50c2.png",
+      "file": "item_ne01_opening_bulwark.png"
+    },
+    {
+      "id": "item_ne02_bone_vigor",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: a squat dark wooden coffer reinforced with pale ivory ribs and a small horned animal skull clasp, lid slightly open revealing soft green light, distinct rectangular chest silhouette.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-06b97569-5ab4-4a82-b34f-0fd234c5cf0d.png",
+      "file": "item_ne02_bone_vigor.png"
+    },
+    {
+      "id": "item_ne10_control_shelter",
+      "prompt": "Use case: stylized-concept. Create ONE square inventory icon for a polished dark fantasy indie autobattler. Painterly game item illustration with bold sculpted shapes, strong readable silhouette at 48 pixels, restrained detail, crisp edges, upper-left soft light. Single centered object fills 78% of canvas. Flat very dark desaturated navy background (#111b29), no scenery, no border, no lettering, no watermark, no tiny particles. Cohesive premium illustrated inventory art, not flat symbol, not photorealistic. Subject: an iron shackled amulet with a single large violet gem gripped by two angular steel jaws, short heavy broken chain curling on each side, chunky dark silver and purple, no cord.",
+      "source": "C:\\Users\\qs\\.codex\\generated_images\\01a09041-0471-7f72-bd5d-65fa172af32f\\exec-6fa9a05e-b025-455e-a3f4-06d194f0f335.png",
+      "file": "item_ne10_control_shelter.png"
+    }
+  ]
+}
