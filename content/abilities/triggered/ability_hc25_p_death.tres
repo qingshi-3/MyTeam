@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/SummonAbilityOperationSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Profile = 4
+Count = 2
+MaximumLivingTemporaryUnits = 5
+LimitPerOwner = true
+RequireAtLeastOne = true
+SummonContentId = "soldier_bc_skeleton"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc25_p_death"
+DisplayName = "葬礼 · 补员"
+Description = "死亡时补出 2 名骨卒；这是可复制亡语，维持上限仍为 5。"
+ActivationKind = 2
+Trigger = 4
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = true
+Operations = [SubResource("s0")]

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_ee07_furnace_lizard.tres" id="portrait"]
+[resource]
+script = ExtResource("script")
+Portrait = ExtResource("portrait")
+Id = "enemy_ee07_furnace_lizard"
+DisplayName = "炉喉蜥卫"
+Description = "锁定方向喷吐三段扇形火焰；控制可打断后续吐息。"
+Role = 0
+Faction = 7
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 330
+AttackDamage = 23
+AttackRange = 0.3
+AttackCooldown = 1.5
+MoveInterval = 0.6
+BodyRadius = 0.8
+Armor = 3
+Tags = Array[StringName]([&"enemy", &"elite"])

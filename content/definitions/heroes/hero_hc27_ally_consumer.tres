@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc27_ally_consumer.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc27_ally_consumer"
+DisplayName = "饕餮"
+Description = "HC27／BC24 测试稿。吃掉 2 格内最近友方临时单位，获得其当前攻击 50% 与最大生命 30%，并恢复新增的生命。 被动：开战生成 2 个食饵，之后每 8 秒补 1 个，自己最多维持 2 个。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 450
+AttackDamage = 21
+Armor = 8
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

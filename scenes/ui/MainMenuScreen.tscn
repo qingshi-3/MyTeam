@@ -36,7 +36,7 @@ horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Center/Panel/Menu"]
 layout_mode = 2
-text = "选择英雄，征募军团，攻上三重高塔"
+text = "六选二组队，征募伙伴，攻上三重高塔"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="Center/Panel/Menu"]

@@ -29,7 +29,7 @@ public partial class RelicContractSmoke : Node
     {
         try
         {
-            var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres")
+            var catalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres")
                 ?? throw new InvalidOperationException("catalog load");
             var gate = await TestProjectFixture.PublishAsync(this);
             var registry = gate.Package?.Content

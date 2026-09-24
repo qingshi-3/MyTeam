@@ -12,8 +12,11 @@ public partial class EncounterDefinition : Resource
     [Export] public ContentPoolDefinition? EnemyPool { get; set; }
     [Export] public ContentPoolDefinition? FloorRulePool { get; set; }
     [Export] public string LeadEnemyId { get; set; } = string.Empty;
+    [Export] public string[] AlternateLeadEnemyIds { get; set; } = [];
     [Export] public int BaseEnemyCount { get; set; } = 4;
     [Export] public bool AddRegionIndexToCount { get; set; } = true;
     [Export] public int SeedSalt { get; set; }
+    [Export] public float EnemyHealthMultiplier { get; set; } = 1;
+    [Export] public float EnemyDamageMultiplier { get; set; } = 1;
     [Export] public BossTimelineDefinition? BossTimeline { get; set; }
 }

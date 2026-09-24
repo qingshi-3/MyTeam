@@ -19,20 +19,24 @@ public partial class UnitDefinition : Resource
     [Export] public UnitFaction Faction { get; set; } = UnitFaction.Neutral;
     [Export] public bool IsHero { get; set; }
     [Export] public bool IsEnemy { get; set; }
+    [Export] public bool IsTestDummy { get; set; }
     [Export] public int RecruitCost { get; set; } = 5;
     [Export] public float MaxHealth { get; set; } = 100;
     [Export] public float AttackDamage { get; set; } = 15;
-    [Export] public float AttackRange { get; set; } = 1.2f;
+    // Extra reach outside both bodies; the short default is suitable for melee contact.
+    [Export] public float AttackRange { get; set; } = .25f;
     [Export] public AttackDelivery AttackDelivery { get; set; } = AttackDelivery.Melee;
     // Logical battlefield units per second; independent of rendering and playback speed.
     [Export] public float ProjectileSpeed { get; set; } = 8f;
     [Export] public float ProjectileRadius { get; set; } = .07f;
     [Export] public float ProjectileLifetime { get; set; } = 3f;
+    // Base-speed windup and the matching normalized release point in the attack clip.
+    [Export] public float ProjectileWindupSeconds { get; set; }
+    [Export(PropertyHint.Range, "0.05,1,0.01")] public float AttackReleaseProgress { get; set; } = .8f;
     [Export] public float AttackCooldown { get; set; } = 1.2f;
     [Export] public float MoveInterval { get; set; } = 0.45f;
-    [Export(PropertyHint.Range, "0.1,0.49,0.01")] public float BodyRadius { get; set; } = .32f;
+    [Export(PropertyHint.Range, "0.1,1.5,0.01")] public float BodyRadius { get; set; } = .32f;
     [Export] public float Armor { get; set; }
-    [Export] public float MagicResistance { get; set; }
     [Export] public float SpellPower { get; set; }
     [Export] public float HealPower { get; set; }
     [Export] public float SplashRadius { get; set; }

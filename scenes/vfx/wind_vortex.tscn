@@ -1,0 +1,32 @@
+[gd_scene load_steps=11 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxVortexTrack.cs" id="vortex"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/vfx/library/wind-flow.png" id="flow"]
+[ext_resource type="Shader" path="res://scenes/vfx/wind_vortex.gdshader" id="shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/wind_vortex_ground.gdshader" id="ground_shader"]
+[sub_resource type="ShaderMaterial" id="back"]
+shader=ExtResource("shader")
+shader_parameter/back_pass=1.0
+shader_parameter/flow_texture=ExtResource("flow")
+[sub_resource type="ShaderMaterial" id="front"]
+shader=ExtResource("shader")
+shader_parameter/flow_texture=ExtResource("flow")
+[sub_resource type="ShaderMaterial" id="ground"]
+shader=ExtResource("ground_shader")
+shader_parameter/flow_texture=ExtResource("flow")
+[node name="WindVortex" type="Node2D"]
+script=ExtResource("root")
+[node name="Funnel" type="Node2D" parent="."]
+script=ExtResource("vortex")
+MoteScene=ExtResource("dust")
+[node name="GroundSkirt" type="Sprite2D" parent="Funnel"]
+texture=ExtResource("surface")
+material=SubResource("ground")
+[node name="Back" type="MeshInstance2D" parent="Funnel"]
+texture=ExtResource("surface")
+material=SubResource("back")
+[node name="Front" type="MeshInstance2D" parent="Funnel"]
+texture=ExtResource("surface")
+material=SubResource("front")

@@ -480,6 +480,7 @@ public static partial class RelicDefinitionCompiler
     private static CompiledRelicUnitTarget? CompileUnitTarget(RelicUnitTargetSpec? target) => target switch
     {
         RelicPlayerArmyTargetSpec => new CompiledRelicPlayerArmyTarget(),
+        RelicPlayerSummonsTargetSpec => new CompiledRelicPlayerSummonsTarget(),
         RelicPlayerHeroesTargetSpec => new CompiledRelicPlayerHeroesTarget(),
         RelicPlayerFormationAdjacentTargetSpec => new CompiledRelicPlayerFormationAdjacentTarget(),
         RelicPlayerEmptySlotHeroesTargetSpec => new CompiledRelicPlayerEmptySlotHeroesTarget(),

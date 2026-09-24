@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc21_last_stand.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc21_last_stand"
+DisplayName = "背水狂徒"
+Description = "HC21／BC18 测试稿。对目标造成攻击力 200% 伤害，自身恢复 40 生命。 被动：每战首次实际受伤后降到 35% 生命以下，获得 90 护盾，5 秒内增加 0.75 攻速和 25% 吸血。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 380
+AttackDamage = 27
+Armor = 4
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

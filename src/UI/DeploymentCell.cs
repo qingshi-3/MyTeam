@@ -27,6 +27,9 @@ public partial class DeploymentCell : Button
     private Func<string, FormationEvaluation?>? _dropEvaluator;
     private Action<DeploymentCell, FormationEvaluation?>? _dragHoverRequested;
     private Tween? _resultTween;
+    private Func<Variant, EquipmentDropEvaluation>? _equipmentEvaluator;
+    private Action<Variant>? _equipmentReceiver;
+    private EquipmentDropEvaluation? _equipmentHover;
 
     public override void _Ready()
     {
@@ -35,12 +38,20 @@ public partial class DeploymentCell : Button
         _roleBadge = GetNode<TextureRect>("%RoleBadge");
         _reachBadge = GetNode<TextureRect>("%ReachBadge");
         Pressed += OnPressed;
+        MouseExited += ClearDragState;
     }
     public override void _ExitTree()
     {
         _resultTween?.Kill();
         ClearDragState();
         Pressed -= OnPressed;
+        MouseExited -= ClearDragState;
+    }
+
+    public void ConfigureEquipmentDrop(Func<Variant, EquipmentDropEvaluation> evaluator, Action<Variant> receiver)
+    {
+        _equipmentEvaluator = evaluator;
+        _equipmentReceiver = receiver;
     }
 
     public void ConfigureDrag(
@@ -62,8 +73,9 @@ public partial class DeploymentCell : Button
 
     public override void _Notification(int what)
     {
-        if (what != NotificationDragEnd || !_dragSource) return;
+        if (what != NotificationDragEnd) return;
         _dragSource = false;
+        ClearDragState();
         RefreshVisualRole();
     }
 
@@ -140,6 +152,13 @@ public partial class DeploymentCell : Button
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
     {
+        if (EquipmentSlotButton.TryEquipmentId(data, out _))
+        {
+            _equipmentHover = _equipmentEvaluator?.Invoke(data)
+                ?? EquipmentDropEvaluation.Reject("当前不能更换装备。");
+            RefreshVisualRole();
+            return _equipmentHover.Value.Allowed;
+        }
         if (data.VariantType != Variant.Type.Dictionary) return false;
         var dictionary = data.AsGodotDictionary();
         if (!dictionary.ContainsKey("piece_id")) return false;
@@ -157,6 +176,12 @@ public partial class DeploymentCell : Button
 
     public override void _DropData(Vector2 atPosition, Variant data)
     {
+        if (EquipmentSlotButton.TryEquipmentId(data, out _))
+        {
+            if (_equipmentEvaluator?.Invoke(data).Allowed == true) _equipmentReceiver?.Invoke(data);
+            ClearDragState();
+            return;
+        }
         if (data.VariantType != Variant.Type.Dictionary) return;
         var dictionary = data.AsGodotDictionary();
         if (!dictionary.ContainsKey("piece_id")) return;
@@ -174,7 +199,8 @@ public partial class DeploymentCell : Button
 
     public void ClearDragState()
     {
-        if (!_dropHover && _dragEvaluation is null) return;
+        if (!_dropHover && _dragEvaluation is null && _equipmentHover is null) return;
+        _equipmentHover = null;
         _dropHover = false;
         _dragEvaluation = null;
         RefreshVisualRole();
@@ -184,6 +210,7 @@ public partial class DeploymentCell : Button
 
     private void RefreshVisualRole()
     {
+        QueueRedraw();
         var activeEvaluation = _dropHover ? _dragEvaluation : _targetEvaluation;
         var activeLegal = activeEvaluation?.IsValid ?? IsLegalTarget;
         ThemeTypeVariation = _dragSource ? "DeploymentCellDrag"
@@ -195,5 +222,14 @@ public partial class DeploymentCell : Button
             : _hasSelection && !string.IsNullOrEmpty(PieceId) ? "DeploymentCellSwap"
             : _hasSelection ? "DeploymentCellLegal"
             : "GridCellButton";
+    }
+
+    public override void _Draw()
+    {
+        // A drop hover must not change the cell's minimum size/theme while
+        // Godot is hit-testing it. Draw the authored feedback over its base.
+        if (_equipmentHover is { } equipment)
+            DrawStyleBox(GetThemeStylebox("normal", equipment.Allowed ? "EquipmentSlotValid" : "EquipmentSlotInvalid"),
+                new Rect2(Vector2.Zero, Size));
     }
 }

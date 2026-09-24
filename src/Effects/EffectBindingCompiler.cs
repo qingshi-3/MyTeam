@@ -260,7 +260,7 @@ public static partial class EffectBindingCompiler
                     if (leaf.Key != "InvocationValue" && (leaf.Key != "EventEffectiveValue" || trigger?.Kind != EffectTriggerKind.DomainEvent))
                         report.Error($"{label}: effect[{index}] context '{leaf.Key}' is not supplied by this trigger.");
             }
-            var damageType = step is DamageEffectSpec damage ? damage.DamageType : EffectDamageType.Physical;
+            var damageType = step is DamageEffectSpec damage ? damage.DamageType : EffectDamageType.Normal;
             if (!Enum.IsDefined(damageType)) report.Error($"{label}: effect[{index}] has an invalid damage type.");
             effects.Add(new CompiledEffectStep(kind.Value, step.AmountSource, step.Amount, magnitude, damageType));
         }

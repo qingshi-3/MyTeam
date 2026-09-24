@@ -5,6 +5,8 @@ namespace TowerAutobattler.Components;
 [GlobalClass]
 public partial class UnitBehaviorComponent : Node
 {
+    [Export] public bool Stationary { get; set; }
+    [Export] public bool DisableBasicAttacks { get; set; }
     [Export] public int SlowOnHitTicks { get; set; }
     [Export] public float AdjacentArmorAura { get; set; }
     [Export] public float AdjacentDamageAura { get; set; }

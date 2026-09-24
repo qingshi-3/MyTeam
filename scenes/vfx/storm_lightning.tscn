@@ -1,0 +1,11 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://scenes/vfx/lightning.tscn" id="base"]
+[ext_resource type="Shader" path="res://scenes/vfx/branched_lightning.gdshader" id="electric"]
+[sub_resource type="ShaderMaterial" id="soft_root"]
+shader = ExtResource("electric")
+shader_parameter/root_fade = 0.065
+[node name="StormLightning" instance=ExtResource("base")]
+[node name="MainBolt" parent="." index="0"]
+material = SubResource("soft_root")
+[node name="AfterBolt" parent="." index="1"]
+material = SubResource("soft_root")

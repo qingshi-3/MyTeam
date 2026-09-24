@@ -1,0 +1,27 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="root"]
+[ext_resource type="Resource" path="res://content/definitions/soldiers/soldier_bc_morsel.tres" id="definition"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f6_crystalbeetle/frames.tres" id="frames"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="animation"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="health"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="behavior"]
+[ext_resource type="PackedScene" path="res://scenes/components/HeroRuleComponent.tscn" id="rule"]
+
+[ext_resource type="Script" path="res://src/Audio/UnitAnimationSound.cs" id="frame_sound_type"]
+[ext_resource type="Resource" path="res://content/audio/units/soldier_bc_morsel_attack.tres" id="attack_sound"]
+
+[node name="soldier_bc_morsel" type="Node2D"]
+script = ExtResource("root")
+Definition = ExtResource("definition")
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
+[node name="VisualRoot" type="Node2D" parent="."]
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("animation")]
+FrameSounds = Array[ExtResource("frame_sound_type")]([ExtResource("attack_sound")])
+Frames = ExtResource("frames")
+[node name="HealthViewComponent" parent="." instance=ExtResource("health")]
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("behavior")]
+
+[node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
+RuleTitle = "食饵 · 临时单位"
+RuleDescription = "120 生命，14 攻击，1.2 秒普攻间隔。由对应英雄生成，不进入招募；战斗结束后移除。"

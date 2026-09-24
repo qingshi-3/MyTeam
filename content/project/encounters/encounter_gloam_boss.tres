@@ -15,3 +15,5 @@ FloorRulePool = ExtResource("3")
 LeadEnemyId = "enemy_shadow_boss"
 BaseEnemyCount = 3
 BossTimeline = ExtResource("4")
+EnemyHealthMultiplier = 1.35
+EnemyDamageMultiplier = 1.18

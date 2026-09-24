@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="1"]
+
+[node name="DeploymentBodyPortrait" type="Control"]
+mouse_filter = 2
+
+[node name="Portrait" parent="." instance=ExtResource("1")]
+custom_minimum_size = Vector2(0, 0)
+offset_left = 14.0
+offset_top = 14.0
+offset_right = -14.0
+offset_bottom = -32.0
+FitVisibleArtwork = true
+
+[node name="UnitName" type="Label" parent="."]
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.95, 0.96, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1

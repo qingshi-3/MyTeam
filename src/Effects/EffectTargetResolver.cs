@@ -25,7 +25,7 @@ public static class EffectTargetResolver
                 var anchorId = EntityId(filter.Anchor, sourceId, ownerId, explicitTargetId);
                 if (filter.Anchor == EffectEntityReference.Owner && !snapshot.Entities.ContainsKey(anchorId)) anchorId = sourceId;
                 if (!snapshot.Entities.TryGetValue(anchorId, out var anchor)) return [];
-                var needsPosition = filter.Range >= 0 || filter.Order == EffectTargetOrder.Nearest;
+                var needsPosition = filter.Range >= 0 || filter.Order is EffectTargetOrder.Nearest or EffectTargetOrder.Farthest;
                 if (needsPosition && anchor.Position is null)
                     throw new InvalidOperationException("Spatial target query requires anchor position.");
                 targets = snapshot.Entities.Values.Where(entity =>
@@ -40,6 +40,7 @@ public static class EffectTargetResolver
                 var ordered = filter.Order switch
                 {
                     EffectTargetOrder.Nearest => targets.OrderBy(entity => entity.Position!.Value.DistanceSquaredTo(anchor.Position!.Value)),
+                    EffectTargetOrder.Farthest => targets.OrderByDescending(entity => entity.Position!.Value.DistanceSquaredTo(anchor.Position!.Value)),
                     EffectTargetOrder.LowestHealthRatio => targets.OrderBy(HealthRatio),
                     EffectTargetOrder.HighestHealthRatio => targets.OrderByDescending(HealthRatio),
                     _ => targets.OrderBy(entity => entity.RuntimeId, StringComparer.Ordinal)

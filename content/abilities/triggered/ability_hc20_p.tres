@@ -1,0 +1,38 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Team = 1
+Anchor = 1
+Range = 2
+MaxTargets = 1
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Action = 0
+TargetQuery = SubResource("s0")
+Amount = 12
+Terms = []
+DamageType = 0
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc20_p"
+DisplayName = "以痛催战"
+Description = "自身实际失去生命时，对附近最近敌人造成 12 伤害，最多每 0.5 秒触发一次。"
+ActivationKind = 2
+Trigger = 9
+ManaCost = 0
+CooldownTicks = 5
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

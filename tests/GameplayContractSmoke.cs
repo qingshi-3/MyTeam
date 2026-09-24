@@ -34,7 +34,23 @@ public partial class GameplayContractSmoke : Node
     {
         try
         {
-            var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ?? throw new InvalidOperationException("catalog load");
+            if (OS.GetCmdlineUserArgs().Contains("--movement-only"))
+            {
+                ContinuousSpaceGeometryAndMovement();
+                ContinuousPlanningRecoveryContracts();
+                SymmetricContinuousTrafficRecovery();
+                ContinuousCooldownAndRollback();
+                UniformShortRangeLineOfSight();
+                HealerPursuesWoundedAlly();
+                HealerWithoutLegalHealJoinsCombat();
+                GoalReleaseOnAction();
+                HealingLegalityAndProtection();
+                QueuedMoverDeathCleanup();
+                SameTickDeathCellReuseAndLifecycleCleanup();
+                GD.Print("MOVEMENT_CONTRACT_OK terrain bodies traffic goals determinism rollback healing death cleanup");
+                return 0;
+            }
+            var catalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres") ?? throw new InvalidOperationException("catalog load");
             var gate = await TestProjectFixture.PublishAsync(this);
             var registry = gate.Package?.Content ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
 
@@ -264,7 +280,7 @@ public partial class GameplayContractSmoke : Node
         for (var tick = 0; tick < 36 && dense.Outcome == BattleOutcome.Running; tick++)
         {
             dense.Step();
-            AssertNoLivingOverlaps(dense.Units, "dense opposing traffic");
+            AssertNoLivingOverlaps(dense.Units, $"dense opposing traffic tick={dense.TickIndex}");
             denseActions += dense.DrainEvents().Count(battleEvent => battleEvent.Type is "move" or "attack");
         }
         stopwatch.Stop();
@@ -288,7 +304,7 @@ public partial class GameplayContractSmoke : Node
             if (living[first].Position.DistanceTo(living[second].Position) + .0001f <
                 living[first].BodyRadius + living[second].BodyRadius + BattlefieldSpace.BodyClearance)
                 throw new InvalidOperationException(
-                    $"{context} overlapped {living[first].RuntimeId} and {living[second].RuntimeId}");
+                    $"{context} overlapped {living[first].RuntimeId} at {living[first].Position} and {living[second].RuntimeId} at {living[second].Position}; distance={living[first].Position.DistanceTo(living[second].Position)}");
     }
 
     private static void ContinuousSpatialEffectsAndObjectives()
@@ -470,6 +486,8 @@ public partial class GameplayContractSmoke : Node
         using var rollback = new BattleSimulation(Config(
         [
             Spawn(Hero("rollback-mover", health: 1000, damage: 0, range: 1, moveTicks: 3), 0, 0, 2, "mover"),
+            Spawn(Unit("rollback-blocker", health: 1000, damage: 0,
+                behavior: new UnitBehaviorSnapshot(Stationary: true, DisableBasicAttacks: true)), 0, 2, 2, "blocker"),
             Spawn(Unit("rollback-target", health: 1000, damage: 0, range: 1, moveTicks: 1000), 1, 6, 2, "target")
         ]));
         var mover = rollback.Units.Single(unit => unit.RuntimeId == "mover");
@@ -488,10 +506,11 @@ public partial class GameplayContractSmoke : Node
             .Single().Invoke([rollback]);
         var emit = typeof(BattleSimulation).GetMethod(
             "Emit", BindingFlags.Instance | BindingFlags.NonPublic, null,
-            [typeof(string), typeof(string), typeof(string), typeof(float), typeof(Vector2), typeof(string)], null)
+            [typeof(string), typeof(string), typeof(string), typeof(float), typeof(Vector2), typeof(string),
+                typeof(int), typeof(Vector2), typeof(BattleVfxCue), typeof(BattleAttackTiming), typeof(BattleDisplacementCue)], null)
             ?? throw new InvalidOperationException("continuous event append method missing");
         void ResolveWithEvent() => movement.ResolveIntents((unit, position) =>
-            emit.Invoke(rollback, ["move", unit.RuntimeId, "", 0f, position, "move"]));
+            emit.Invoke(rollback, ["move", unit.RuntimeId, "", 0f, position, "move", 0, Vector2.Zero, null, null, null]));
         ResolveWithEvent();
         var attemptedPosition = mover.Position;
         var attemptedDigest = rollback.CreateResult().Digest;
@@ -1048,10 +1067,10 @@ public partial class GameplayContractSmoke : Node
             unit.ApplyPresentation("idle", Vector2.Zero, 100, 100);
             if (animation.ActiveCue == "idle") throw new InvalidOperationException("same-frame idle overwrote attack one-shot");
             unit.ApplyPresentation("hit", Vector2.Zero, 100, 100);
-            if (animation.ActiveLogicalCue != "attack" || animation.PendingCue != "hit")
-                throw new InvalidOperationException("bounded presentation queue did not preserve attack before hit");
+            if (animation.ActiveLogicalCue != "attack" || animation.PendingCue != "")
+                throw new InvalidOperationException("damage interrupted or queued a reaction behind the attack");
             animation._Process(animation.ActivePlaybackSeconds + .01);
-            if (animation.ActiveLogicalCue != "hit") throw new InvalidOperationException("queued hit did not follow the completed attack");
+            if (animation.ActiveLogicalCue != "idle") throw new InvalidOperationException("attack completion did not return directly to idle");
 
             animation.ResetPresentation();
             unit.ApplyPresentation("skill_cast", Vector2.Zero, 100, 100);

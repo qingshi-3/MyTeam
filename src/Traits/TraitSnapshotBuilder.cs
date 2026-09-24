@@ -48,6 +48,12 @@ public static class TraitSnapshotBuilder
                         EqualityComparer<(TraitContributionSourceKind, string)>.Default)
                     .Select(group => group.First())
                     .ToArray();
+            // Membership carried by a badge and native membership belong to the same
+            // recipient. Different recipients wearing the same badge remain distinct.
+            if (definition.CountingPolicy.DuplicateContentPolicy == TraitDuplicateContentPolicy.UniqueOwner)
+                eligible = eligible.GroupBy(input => string.IsNullOrWhiteSpace(input.OwnerRuntimeId)
+                        ? $"source:{input.SourceInstanceId}" : $"owner:{input.OwnerRuntimeId}", StringComparer.Ordinal)
+                    .Select(group => group.OrderByDescending(input => input.Value).First()).ToArray();
             var snapshots = eligible.Select(ToSnapshot).ToImmutableArray();
             counted.AddRange(snapshots);
             var value = snapshots.Sum(contribution => contribution.Value);

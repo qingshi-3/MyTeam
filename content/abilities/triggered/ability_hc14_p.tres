@@ -1,0 +1,40 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 0
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 0.02
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc14_p"
+DisplayName = "厚积重拳"
+Description = "每次普攻命中追加自身最大生命 2% 的伤害。"
+ActivationKind = 2
+Trigger = 3
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2")]

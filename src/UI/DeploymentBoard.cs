@@ -12,6 +12,7 @@ public partial class DeploymentBoard : Control
 {
     public event Action<Vector2I, string>? CellSelected;
     public event Action<string, Vector2I>? PieceDropped;
+    public event Action<string>? EnemySelected;
 
     private readonly List<DeploymentCell> _cells = [];
     private readonly List<(DeploymentMarker Marker, Vector2I Cell)> _markers = [];
@@ -23,6 +24,10 @@ public partial class DeploymentBoard : Control
     private PackedScene _enemyPreviewScene = null!;
     private IBattleFloorRuleRuntime? _floorRule;
     private BattlefieldProjection _projection;
+    private DeploymentFootprintLayer _footprints = null!;
+    private readonly Dictionary<string, float> _bodyRadii = new(StringComparer.Ordinal);
+    public Func<string, Variant, EquipmentDropEvaluation>? EquipmentDropEvaluator { get; set; }
+    public Action<string, Variant>? EquipmentReceiver { get; set; }
 
     public BattlefieldProjection CurrentProjection => _projection;
     public int CandidateCellCount => _cells.Count;
@@ -30,6 +35,7 @@ public partial class DeploymentBoard : Control
 
     public override void _Ready()
     {
+        _footprints = GetNode<DeploymentFootprintLayer>("%DeploymentFootprints");
         _cellScene = GD.Load<PackedScene>("res://scenes/ui/components/DeploymentCell.tscn");
         _markerScene = GD.Load<PackedScene>("res://scenes/ui/components/DeploymentMarker.tscn");
         _enemyPreviewScene = GD.Load<PackedScene>("res://scenes/ui/components/EnemyDeploymentPreview.tscn");
@@ -42,6 +48,10 @@ public partial class DeploymentBoard : Control
             cell.CellSelected += OnCellSelected;
             cell.PieceDropped += OnPieceDropped;
             cell.ConfigureDrag(pieceId => EvaluationFor(pieceId, cell.Cell) ?? LegacyEvaluation(cell.Cell), OnDragHovered);
+            cell.ConfigureEquipmentDrop(
+                data => EquipmentDropEvaluator?.Invoke(cell.PieceId, data)
+                    ?? EquipmentDropEvaluation.Reject("当前不能更换装备。"),
+                data => EquipmentReceiver?.Invoke(cell.PieceId, data));
             _cells.Add(cell);
         }
         UpdateProjection();
@@ -51,6 +61,14 @@ public partial class DeploymentBoard : Control
     {
         if (what == NotificationResized && _cells.Count > 0) UpdateProjection();
         else if (what == NotificationDragEnd) ClearDragHover();
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_footprints.DragBody is not null &&
+            (!GetViewport().GuiIsDragging() || CurrentDragHoverCell is not { } cell ||
+             !_projection.CellRect(cell).HasPoint(GetLocalMousePosition())))
+            ClearDragHover();
     }
 
     public override void _ExitTree()
@@ -72,31 +90,32 @@ public partial class DeploymentBoard : Control
         ClearDragHover();
         _floorRule = config.FloorRule;
         _evaluations.Clear();
+        _bodyRadii.Clear();
         foreach (var piece in pieces)
+        {
+            _bodyRadii[piece.InstanceId] = piece.BodyRadius;
             if (piece.TargetEvaluations is not null)
                 _evaluations[piece.InstanceId] = piece.TargetEvaluations;
+        }
+        _footprints.Bind(pieces.Where(piece => piece.Cell is not null).Select(piece =>
+            new DeploymentBodyPreview(piece.InstanceId, piece.Cell!.Value, piece.BodyRadius, 0, piece.InstanceId == selectedId))
+            .Concat((enemies ?? []).Select(enemy => new DeploymentBodyPreview(enemy.InstanceId, enemy.Cell, enemy.BodyRadius, 1))));
         var occupants = pieces.Where(piece => piece.Cell is not null).ToDictionary(piece => piece.Cell!.Value);
-        var selected = pieces.FirstOrDefault(piece => piece.InstanceId == selectedId);
         foreach (var cellControl in _cells)
         {
             var cell = cellControl.Cell;
             occupants.TryGetValue(cell, out var piece);
             var preview = _floorRule.GetCellPreview(cell);
-            var evaluation = string.IsNullOrEmpty(selectedId)
-                ? null
-                : EvaluationFor(selectedId, cell) ?? LegacyEvaluation(cell);
             cellControl.Bind(cell, piece?.InstanceId ?? string.Empty, piece?.DisplayName ?? string.Empty,
-                piece?.IsHero == true, piece?.InstanceId == selectedId, evaluation?.IsValid == true, preview,
+                piece?.IsHero == true, piece?.InstanceId == selectedId, _floorRule.CanOccupy(cell), preview,
                 piece?.Portrait, piece?.Role ?? UnitRole.Fighter, piece?.AttackRange ?? 1f,
-                selected is not null, evaluation);
+                false);
             cellControl.ApplyProjection(_projection);
         }
         WireCellFocus();
 
         ClearMarkers();
-        ClearEnemyPreviews();
-        if (enemies is not null)
-            foreach (var enemy in enemies) AddEnemyPreview(enemy);
+        SynchronizeEnemyPreviews(enemies ?? []);
         for (var y = 0; y < BattlefieldLayout.Height; y++)
         for (var x = BattlefieldLayout.PlayerDeploymentColumns; x < BattlefieldLayout.Width; x++)
         {
@@ -148,9 +167,10 @@ public partial class DeploymentBoard : Control
     private void UpdateProjection()
     {
         _projection = BattlefieldProjection.Fit(Size);
+        _footprints.SetGrid(_projection.Origin, _projection.CellPitch, _projection.CellRect(Vector2I.Zero).Size);
         foreach (var cell in _cells) cell.ApplyProjection(_projection);
         foreach (var (marker, cell) in _markers) ApplyMarkerProjection(marker, cell);
-        foreach (var (preview, cell) in _enemyPreviews) ApplyMarkerProjection(preview, cell);
+        foreach (var (preview, cell) in _enemyPreviews) ApplyEnemyProjection(preview, cell);
         QueueRedraw();
     }
 
@@ -186,18 +206,47 @@ public partial class DeploymentBoard : Control
         var preview = _enemyPreviewScene.Instantiate<EnemyDeploymentPreview>();
         AddChild(preview);
         preview.Bind(model);
+        preview.Selected += OnEnemySelected;
         _enemyPreviews.Add((preview, model.Cell));
-        ApplyMarkerProjection(preview, model.Cell);
+        ApplyEnemyProjection(preview, model.Cell);
+    }
+
+    private void ApplyEnemyProjection(EnemyDeploymentPreview preview, Vector2I cell)
+    {
+        var size = preview.BodyRadius > .5f ? _projection.CellPitch * (2 * preview.BodyRadius) : _projection.CellRect(cell).Size;
+        preview.CustomMinimumSize = Vector2.Zero;
+        preview.Size = size;
+        preview.Position = _projection.CellToLocal(cell) - size * .5f;
     }
 
     private void ClearEnemyPreviews()
     {
         foreach (var (preview, _) in _enemyPreviews)
         {
+            preview.Selected -= OnEnemySelected;
             RemoveChild(preview);
             preview.QueueFree();
         }
         _enemyPreviews.Clear();
+    }
+
+    private void SynchronizeEnemyPreviews(IReadOnlyList<EnemyDeploymentViewModel> enemies)
+    {
+        // Rebinding selection must preserve the focused button and its portrait playback.
+        if (_enemyPreviews.Select(item => item.Preview.InstanceId)
+            .SequenceEqual(enemies.Select(enemy => enemy.InstanceId)))
+        {
+            for (var index = 0; index < enemies.Count; index++)
+            {
+                var preview = _enemyPreviews[index].Preview;
+                preview.Bind(enemies[index]);
+                _enemyPreviews[index] = (preview, enemies[index].Cell);
+                ApplyEnemyProjection(preview, enemies[index].Cell);
+            }
+            return;
+        }
+        ClearEnemyPreviews();
+        foreach (var enemy in enemies) AddEnemyPreview(enemy);
     }
 
     private FormationEvaluation? EvaluationFor(string pieceId, Vector2I cell) =>
@@ -216,10 +265,15 @@ public partial class DeploymentBoard : Control
             _cells.FirstOrDefault(candidate => candidate.Cell == current)?.ClearDragState();
         CurrentDragHoverCell = cell.Cell;
         cell.SetDragHovered(evaluation ?? FormationEvaluation.Reject("该格当前不可部署。"));
+        var data = GetViewport().GuiGetDragData();
+        if (data.VariantType == Variant.Type.Dictionary && data.AsGodotDictionary().TryGetValue("piece_id", out var identity) &&
+            _bodyRadii.TryGetValue(identity.AsString(), out var radius))
+            _footprints.ShowDrag(new DeploymentBodyPreview(identity.AsString(), cell.Cell, radius, 0), evaluation?.IsValid == true);
     }
 
     public void ClearDragHover()
     {
+        if (IsInstanceValid(_footprints)) _footprints.ShowDrag(null);
         foreach (var cell in _cells) cell.ClearDragState();
         CurrentDragHoverCell = null;
     }
@@ -248,6 +302,7 @@ public partial class DeploymentBoard : Control
     }
 
     private void OnCellSelected(Vector2I cell, string pieceId) => CellSelected?.Invoke(cell, pieceId);
+    private void OnEnemySelected(string instanceId) => EnemySelected?.Invoke(instanceId);
     private void OnPieceDropped(string pieceId, Vector2I cell)
     {
         ClearDragHover();

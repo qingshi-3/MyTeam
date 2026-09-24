@@ -44,6 +44,8 @@ public static partial class GameProjectCompiler
         var rules = CompileRunRules(authored.RunRules!, authored.Content!, contentGraph, report);
         if (campaign is not null && rules is not null)
         {
+            if (campaign.RecruitmentSupply is not null && rules.InitialPopulation < CompiledRecruitmentSupply.OpeningSelectionCount)
+                report.Error($"{source}: initial population must fit both opening heroes.");
             if (campaign.StarterPool.ContentIds.Length < rules.StarterRosterHeroCount)
                 report.Error($"{source}: starter pool cannot supply the configured distinct initial roster count.");
             campaign = RunOfferDefaults.WithDefaults(campaign, rules, id => context.Entry(id));
@@ -142,7 +144,11 @@ public static partial class GameProjectCompiler
             starter,
             recruitment,
             itemReward,
-            shop) { RunOffers = CompileRunOffers(authored, context) };
+            shop)
+        {
+            RunOffers = CompileRunOffers(authored, context),
+            RecruitmentSupply = CompileRecruitmentSupply(authored, recruitment, context)
+        };
     }
 
     private static CompiledTowerNodeTable? CompileNodeTable(
@@ -210,6 +216,9 @@ public static partial class GameProjectCompiler
         if (string.IsNullOrWhiteSpace(authored.TitlePattern)) context.Report.Error($"{source}: title pattern is required.");
         if (authored.BaseEnemyCount <= 0) context.Report.Error($"{source}: base enemy count must be positive.");
         if (authored.SeedSalt < 0) context.Report.Error($"{source}: seed salt cannot be negative.");
+        if (!float.IsFinite(authored.EnemyHealthMultiplier) || authored.EnemyHealthMultiplier is <= 0 or > 100 ||
+            !float.IsFinite(authored.EnemyDamageMultiplier) || authored.EnemyDamageMultiplier is <= 0 or > 100)
+            context.Report.Error($"{source}: enemy health/damage multipliers must be finite and within (0, 100].");
         var enemyPool = context.CompilePool(authored.EnemyPool, ContentPoolKind.Enemy, $"{source}.EnemyPool");
         var floorPool = context.CompilePool(authored.FloorRulePool, ContentPoolKind.FloorRule, $"{source}.FloorRulePool");
         if (!string.IsNullOrWhiteSpace(authored.LeadEnemyId) && !context.IsContent(authored.LeadEnemyId, ContentPoolKind.Enemy))
@@ -218,6 +227,9 @@ public static partial class GameProjectCompiler
             context.Report.Error($"{source}: boss encounter requires a lead enemy.");
         if (authored.NodeType != TowerNodeType.Boss && authored.BossTimeline is not null)
             context.Report.Error($"{source}: only a boss encounter may reference a boss timeline.");
+        foreach(var alternate in authored.AlternateLeadEnemyIds)
+            if (!context.IsContent(alternate,ContentPoolKind.Enemy) || authored.NodeType != TowerNodeType.Elite)
+                context.Report.Error($"{source}: alternate leaders require valid elite enemy ids.");
         var timeline = authored.BossTimeline is null
             ? null
             : CompileBossTimeline(authored.BossTimeline, authored.LeadEnemyId, context);
@@ -234,7 +246,7 @@ public static partial class GameProjectCompiler
             authored.BaseEnemyCount,
             authored.AddRegionIndexToCount,
             authored.SeedSalt,
-            timeline);
+            timeline, authored.EnemyHealthMultiplier, authored.EnemyDamageMultiplier, authored.AlternateLeadEnemyIds.ToImmutableArray());
     }
 
     private static CompiledBossTimeline? CompileBossTimeline(
@@ -360,9 +372,7 @@ public static partial class GameProjectCompiler
             if (!legacyMappings.TryAdd(mapping.HeroContentId, compiled.StableId))
                 report.Error($"{source}: duplicate legacy tactical-command mapping for '{mapping.HeroContentId}'.");
         }
-        foreach (var hero in catalog.Heroes)
-            if (!legacyMappings.ContainsKey(hero.StableId))
-                report.Error($"{source}: legacy tactical-command mapping is missing hero '{hero.StableId}'.");
+        // Mappings describe retired save schemas; newly authored heroes need no legacy command identity.
         if (report.HasCoreErrors) return null;
         return new CompiledRunRules(
             authored.OrdinaryPopulationCap,
@@ -578,7 +588,7 @@ public static partial class GameProjectCompiler
             if (!_entries.TryGetValue(stableId, out var entry)) return false;
             return kind switch
             {
-                ContentPoolKind.Soldier => entry.Definition is UnitDefinition { IsEnemy: false },
+                ContentPoolKind.Soldier => entry.Definition is UnitDefinition { IsEnemy: false, IsTestDummy: false },
                 ContentPoolKind.Item => entry.Definition is ItemDefinition,
                 ContentPoolKind.Enemy => entry.Definition is UnitDefinition { IsEnemy: true },
                 _ => false

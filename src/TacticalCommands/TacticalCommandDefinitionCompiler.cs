@@ -136,10 +136,12 @@ public static partial class TacticalCommandDefinitionCompiler
         ability.MaxUses,
         ability.IntervalTicks,
         ability.AutomaticTarget,
+        ability.Echoable,
+        ability.AuthoredDescription,
         string.Join("/", ability.Operations.Select(Operation)),
         ability.Presentation is null
             ? string.Empty
-            : $"{ability.Presentation.SemanticIcon}:{ability.Presentation.Cue}:{ability.Presentation.ReportLabel}");
+            : $"{ability.Presentation.SemanticIcon}:{ability.Presentation.Cue}:{ability.Presentation.ReportLabel}:{ability.Presentation.DamageVfx}");
 
     private static string Operation(CompiledAbilityOperation operation) => operation switch
     {
@@ -150,17 +152,65 @@ public static partial class TacticalCommandDefinitionCompiler
             $"cooldown:{Target(cooldown.TargetQuery)}:{cooldown.AttackAdjustment}:{cooldown.AttackValue}:" +
             $"{cooldown.MoveAdjustment}:{cooldown.MoveValue}",
         CompiledApplyStatusAbilityOperation status =>
-            $"status:{StatusDefinitionFingerprint.Compute(status.Status)}:{Target(status.TargetQuery)}",
+            $"status:{StatusDefinitionFingerprint.Compute(status.Status)}:{Target(status.TargetQuery)}:{status.ApplicationVfx}",
+        CompiledScaledStatusAbilityOperation scaled => string.Join(":", "scaled-status",
+            StatusDefinitionFingerprint.Compute(scaled.Status), Target(scaled.TargetQuery), scaled.BaseStacks,
+            scaled.StatusId, Number(scaled.ExistingStackRatio), Number(scaled.Chance),
+            scaled.ChanceStatusId, Number(scaled.ChancePerStack), scaled.ApplicationVfx,
+            scaled.ChanceTraitId, Number(scaled.MaximumChance),
+            scaled.ChanceByTraitTier.IsDefaultOrEmpty ? "" : string.Join(",", scaled.ChanceByTraitTier.Select(Number))),
         CompiledSummonAbilityOperation summon =>
             $"summon:{summon.Profile}:{summon.Count}:" +
             $"{summon.HealthMultiplier.ToString("R", CultureInfo.InvariantCulture)}:" +
             $"{summon.DamageMultiplier.ToString("R", CultureInfo.InvariantCulture)}:" +
-            $"{summon.MaximumLivingTemporaryUnits}:{summon.RequireAtLeastOne}:{summon.SummonContentId}",
+            $"{summon.MaximumLivingTemporaryUnits}:{summon.RequireAtLeastOne}:{summon.SummonContentId}:{summon.LimitPerOwner}",
+        CompiledDuelOperation d => $"duel:{d.DurationTicks}:{Number(d.BreakDistance)}",
+        CompiledCounterattackOperation c => $"counter:{c.HitsRequired}:{Number(c.AttackRatio)}:{Number(c.LifestealRatio)}",
+        CompiledGritStorageOperation g => $"grit:{g.CounterKey}:{g.WindowTicks}:{Number(g.MaximumHealthRatio)}",
+        CompiledGritPunchOperation p => string.Join(":", "punch", p.CounterKey,
+            Number(p.LowHealthRatio),Number(p.CriticalHealthRatio),Number(p.Range),Number(p.Radius),
+            p.ChargeTicks,p.RecoveryTicks,p.ShieldTicks,Number(p.AttackRatio),Number(p.GritDamageRatio)),
+        CompiledHookOperation h => string.Join(":","hook",Number(h.Range),Number(h.Radius),Number(h.Speed),h.WindupTicks,h.ReturnTicks,Number(h.AttackRatio),h.ExcludeBoss),
+        CompiledConeBreath x => string.Join(":","cone",Number(x.Range),Number(x.AngleDegrees),x.WindupTicks,x.PulseIntervalTicks,x.PulseCount,x.RecoveryTicks,Number(x.AttackMultiplier),x.Vfx),
+        CompiledReturningBlade x => string.Join(":","return",Number(x.Range),Number(x.Radius),Number(x.Speed),Number(x.AttackMultiplier),x.Vfx),
+        CompiledPositionSwap x => string.Join(":","swap",Number(x.Range),x.PrepareTicks,x.RecoveryTicks,x.Vfx),
+        CompiledRampart x => string.Join(":","rampart",x.WallContentId,x.RaiseTicks,x.IntervalTicks,x.FissureWindupTicks,x.RecoveryTicks,x.WallLifetimeTicks,Number(x.Range),Number(x.FissureRadius),Number(x.AttackMultiplier),x.Vfx),
+        CompiledBroodPhase x => string.Join(":","brood",x.EggContentId,x.LarvaContentId,Number(x.HealthThreshold),x.BreakTicks,Number(x.SmallRadius),Number(x.RetreatDistance),Number(x.RangedReach),x.HatchTicks,x.SpawnCycleTicks,x.MaximumLiving,x.MaximumBatches,Number(x.SwipeMultiplier),x.Vfx),
+        CompiledTrampleOperation trample => string.Join(":", "trample", Number(trample.Range), Number(trample.Distance),
+            Number(trample.Speed), trample.ChargeTicks, trample.RecoveryTicks, Number(trample.SideDistance),
+            Number(trample.AttackMultiplier), trample.WarningVfx, trample.RushVfx),
+        CompiledChargedLineOperation line => string.Join(":", "charged-line", line.Delivery, line.DamageType,
+            Number(line.Range), Number(line.Radius), line.ChargeTicks, Number(line.AttackMultiplier), line.MaximumHits,
+            Number(line.SubsequentHitMultiplier), Number(line.ProjectileSpeed), line.HoldPosition, line.ChargeVfx, line.ReleaseVfx),
+        CompiledProjectileSequenceAbilityOperation sequence =>
+            $"projectile-sequence:{sequence.ShotCount}:{Number(sequence.AttackIntervalRatio)}:{Number(sequence.AttackDamageMultiplier)}:{sequence.MaxTargets}",
+        CompiledBattleValueOperation value => string.Join(":",
+            "battle-value", value.Action, Target(value.TargetQuery), value.TargetPolicy, Number(value.Amount),
+            string.Join(",", value.Terms.Select(term => string.Join(";", term.Metric, term.Subject, term.Attribute,
+                term.Key, Number(term.Scale), term.TeamShared, term.OwnStatusOnly))),
+            value.DamageType, value.Attribute, value.CounterKey, value.TeamShared,
+            Number(value.Minimum), Number(value.Maximum), value.Every, value.Broadcast, value.Label),
+        CompiledConsumeStatusOperation consume =>
+            $"consume-status:{Target(consume.TargetQuery)}:{consume.StatusId}:{Number(consume.DamageMultiplier)}:{consume.DamageType}",
+        CompiledEchoOperation echo => $"echo:{Number(echo.Range)}:{echo.BehindOnly}",
+        CompiledDisplacementOperation displacement => string.Join(":", "displacement", displacement.Kind,
+            Target(displacement.TargetQuery), Number(displacement.Distance), displacement.DurationTicks,
+            Number(displacement.StopDistance), displacement.BehindTarget, displacement.ExcludeBoss,
+            Number(displacement.ImpactDamage), Number(displacement.AttackRatio), Number(displacement.ImpactRadius),
+            displacement.DamageType,
+            displacement.ImpactStatus is { } impact ? StatusDefinitionFingerprint.Compute(impact) : "",
+            Number(displacement.ArcHeight)),
+        CompiledLifecycleOperation lifecycle => string.Join(":", "lifecycle", lifecycle.Kind,
+            Target(lifecycle.TargetQuery), lifecycle.DelayTicks, lifecycle.DurationTicks,
+            Number(lifecycle.HealthRatio), Number(lifecycle.AttackTransferRatio), lifecycle.SummonContentId,
+            lifecycle.MaximumLivingSummons),
         _ => throw new InvalidOperationException(
             $"Unsupported tactical-command Ability operation: {operation.GetType().Name}")
     };
 
     private static string Binding(CompiledEffectBinding binding) => EffectModelText.BindingFingerprint(binding);
+
+    private static string Number(float value) => value.ToString("R", CultureInfo.InvariantCulture);
 
     private static string Target(CompiledEffectTargetQuery query) => EffectModelText.Target(query);
 

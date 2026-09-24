@@ -1,0 +1,42 @@
+[gd_resource type="Theme" load_steps=8 format=3]
+
+[sub_resource type="StyleBoxFlat" id="background"]
+bg_color = Color(0.035, 0.05, 0.075, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.36, 0.42, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="mana"]
+bg_color = Color(0.25, 0.57, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="grit"]
+bg_color = Color(1, 0.46, 0.15, 1)
+
+[sub_resource type="StyleBoxFlat" id="timer"]
+bg_color = Color(0.78, 0.59, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="condition"]
+bg_color = Color(0.9, 0.77, 0.35, 1)
+
+[sub_resource type="StyleBoxFlat" id="passive"]
+bg_color = Color(0.63, 0.72, 0.75, 1)
+
+[sub_resource type="StyleBoxFlat" id="counter"]
+bg_color = Color(0.42, 0.82, 0.74, 1)
+
+[resource]
+ProgressBar/styles/background = SubResource("background")
+SkillMana/base_type = &"ProgressBar"
+SkillMana/styles/fill = SubResource("mana")
+SkillGrit/base_type = &"ProgressBar"
+SkillGrit/styles/fill = SubResource("grit")
+SkillTimer/base_type = &"ProgressBar"
+SkillTimer/styles/fill = SubResource("timer")
+SkillCondition/base_type = &"ProgressBar"
+SkillCondition/styles/fill = SubResource("condition")
+SkillPassive/base_type = &"ProgressBar"
+SkillPassive/styles/fill = SubResource("passive")
+SkillCounter/base_type = &"ProgressBar"
+SkillCounter/styles/fill = SubResource("counter")

@@ -1,5 +1,9 @@
 [gd_resource type="Theme" format=3 uid="uid://tpy8it3enlul"]
 
+[sub_resource type="SystemFont" id="CombatBoldFont"]
+font_names = PackedStringArray("Microsoft YaHei", "Noto Sans CJK SC")
+font_weight = 700
+
 [sub_resource type="StyleBoxFlat" id="StyleBox_badge"]
 content_margin_left = 6.0
 content_margin_top = 3.0
@@ -664,8 +668,182 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
+[sub_resource type="StyleBoxFlat" id="StyleBox_lab_player_cell"]
+bg_color = Color(0.09, 0.10, 0.075, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.38, 0.34, 0.20, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_lab_enemy_cell"]
+bg_color = Color(0.105, 0.065, 0.075, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.36, 0.22, 0.25, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_sidebar_normal"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.035, 0.055, 0.07, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.15, 0.23, 0.28, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_sidebar_hover"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.065, 0.11, 0.14, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.32, 0.58, 0.69, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_sidebar_selected"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.12, 0.115, 0.075, 1)
+border_width_left = 2
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.87, 0.68, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+
+[sub_resource type="StyleBoxFlat" id="EquipmentValid"]
+bg_color = Color(0.08, 0.23, 0.20, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.38, 0.90, 0.70, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="EquipmentInvalid"]
+bg_color = Color(0.26, 0.09, 0.10, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.95, 0.36, 0.38, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="EquipmentPanelValid"]
+bg_color = Color(0.08, 0.23, 0.20, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.38, 0.90, 0.70, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+content_margin_left = 1.0
+content_margin_right = 1.0
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="EquipmentPanelInvalid"]
+bg_color = Color(0.26, 0.09, 0.10, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.95, 0.36, 0.38, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+content_margin_left = 1.0
+content_margin_right = 1.0
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+
 [resource]
 default_font_size = 16
+RichTextLabel/fonts/bold_font = SubResource("CombatBoldFont")
+RichTextLabel/font_sizes/normal_font_size = 14
+RichTextLabel/font_sizes/bold_font_size = 14
+RichTextLabel/colors/default_color = Color(0.78, 0.83, 0.88, 1)
+RichTextLabel/constants/line_separation = 4
+BattleLabPlayerCell/base_type = &"GridCellButton"
+BattleLabPlayerCell/styles/normal = SubResource("StyleBox_lab_player_cell")
+BattleLabEnemyCell/base_type = &"GridCellButton"
+BattleLabEnemyCell/styles/normal = SubResource("StyleBox_lab_enemy_cell")
+BattleLabTabs/base_type = &"TabContainer"
+BattleLabTabs/colors/font_selected_color = Color(1, 0.88, 0.58, 1)
+BattleLabTabs/colors/font_unselected_color = Color(0.58, 0.66, 0.72, 1)
+BattleLabTabs/font_sizes/font_size = 16
+BattleLabTabs/styles/panel = SubResource("StyleBox_panel")
+BattleLabTabs/styles/tab_selected = SubResource("StyleBox_selected")
+BattleLabTabs/styles/tab_unselected = SubResource("StyleBox_compact_normal")
+BattleLabTabs/styles/tab_hovered = SubResource("StyleBox_compact_hover")
+BattleLabTabs/styles/tab_focus = SubResource("StyleBox_compact_focus")
+BattleLabEntry/base_type = &"LineEdit"
+BattleLabEntry/styles/normal = SubResource("StyleBox_button_normal")
+BattleLabEntry/styles/focus = SubResource("StyleBox_button_focus")
+BattleLabEntry/styles/read_only = SubResource("StyleBox_button_disabled")
+BattleLabEntry/colors/font_placeholder_color = Color(0.58, 0.66, 0.72, 0.85)
+BattleLabPresetList/base_type = &"ItemList"
+BattleLabPresetList/styles/panel = SubResource("StyleBox_panel")
+BattleLabPresetList/styles/focus = SubResource("StyleBox_button_focus")
+BattleLabPresetList/styles/selected = SubResource("StyleBox_selected")
+BattleLabPresetList/styles/selected_focus = SubResource("StyleBox_selected")
+BattleLabPresetList/styles/hovered = SubResource("StyleBox_button_hover")
+BattleLabPresetList/colors/font_color = Color(0.88, 0.92, 0.95, 1)
+BattleLabPresetList/colors/font_selected_color = Color(1, 0.88, 0.58, 1)
+BattleLabPresetList/constants/v_separation = 8
+BattleLabFold/base_type = &"FoldableContainer"
+BattleLabFold/styles/title_panel = SubResource("StyleBox_compact_normal")
+BattleLabFold/styles/title_hover_panel = SubResource("StyleBox_compact_hover")
+BattleLabFold/styles/title_collapsed_panel = SubResource("StyleBox_compact_normal")
+BattleLabFold/styles/title_collapsed_hover_panel = SubResource("StyleBox_compact_hover")
+BattleLabFold/styles/focus = SubResource("StyleBox_compact_focus")
 BadgePanel/base_type = &"PanelContainer"
 BadgePanel/styles/panel = SubResource("StyleBox_badge")
 Button/colors/font_color = Color(0.88, 0.92, 0.95, 1)
@@ -687,6 +865,16 @@ ChoiceTitle/base_type = &"Label"
 ChoiceTitle/colors/font_color = Color(0.94, 0.96, 1, 1)
 ChoiceTitle/font_sizes/font_size = 20
 CompactButton/base_type = &"Button"
+SidebarRailButton/base_type = &"CompactButton"
+SidebarRailButton/font_sizes/font_size = 14
+SidebarRailButton/styles/normal = SubResource("StyleBox_sidebar_normal")
+SidebarRailButton/styles/hover = SubResource("StyleBox_sidebar_hover")
+SidebarRailButton/styles/pressed = SubResource("StyleBox_sidebar_selected")
+SidebarRailSelectedButton/base_type = &"SidebarRailButton"
+SidebarRailSelectedButton/colors/font_color = Color(1, 0.9, 0.6, 1)
+SidebarRailSelectedButton/styles/normal = SubResource("StyleBox_sidebar_selected")
+SidebarRailSelectedButton/styles/hover = SubResource("StyleBox_sidebar_selected")
+SidebarRailSelectedButton/styles/pressed = SubResource("StyleBox_sidebar_selected")
 CompactButton/font_sizes/font_size = 14
 CompactButton/styles/disabled = SubResource("StyleBox_compact_disabled")
 CompactButton/styles/focus = SubResource("StyleBox_compact_focus")
@@ -834,6 +1022,9 @@ ManaCostSurface/styles/panel = SubResource("StyleBox_mana_badge")
 ManaValue/base_type = &"Label"
 ManaValue/colors/font_color = Color(0.32, 0.67, 1, 1)
 ManaValue/font_sizes/font_size = 18
+FreezeValue/base_type = &"Label"
+FreezeValue/colors/font_color = Color(0.47, 0.79, 1, 1)
+FreezeValue/font_sizes/font_size = 18
 ModalPanel/base_type = &"PanelContainer"
 ModalPanel/styles/panel = SubResource("StyleBox_modal")
 NotificationPanel/base_type = &"PanelContainer"
@@ -903,8 +1094,11 @@ SelectedButton/styles/hover = SubResource("StyleBox_selected")
 SelectedButton/styles/normal = SubResource("StyleBox_selected")
 SelectedButton/styles/pressed = SubResource("StyleBox_selected")
 ShieldValue/base_type = &"Label"
-ShieldValue/colors/font_color = Color(0.67, 0.73, 0.82, 1)
+ShieldValue/colors/font_color = Color(1, 1, 1, 1)
 ShieldValue/font_sizes/font_size = 18
+ArmorValue/base_type = &"Label"
+ArmorValue/colors/font_color = Color(0.67, 0.73, 0.82, 1)
+ArmorValue/font_sizes/font_size = 18
 TacticalPointCostSurface/base_type = &"PanelContainer"
 TacticalPointCostSurface/styles/panel = SubResource("StyleBox_mana_badge")
 TacticalPointValue/base_type = &"Label"
@@ -929,3 +1123,26 @@ WarningLabel/font_sizes/font_size = 18
 WarningTitleLabel/base_type = &"TitleLabel"
 WarningTitleLabel/colors/font_color = Color(1, 0.66, 0.26, 1)
 WarningTitleLabel/font_sizes/font_size = 36
+
+EquipmentDropValid/base_type = &"PanelContainer"
+EquipmentDropValid/styles/panel = SubResource("EquipmentPanelValid")
+EquipmentDropInvalid/base_type = &"PanelContainer"
+EquipmentDropInvalid/styles/panel = SubResource("EquipmentPanelInvalid")
+EquipmentSlotValid/base_type = &"Button"
+EquipmentSlotValid/styles/normal = SubResource("EquipmentValid")
+EquipmentSlotValid/styles/hover = SubResource("EquipmentValid")
+EquipmentSlotValid/styles/pressed = SubResource("EquipmentValid")
+EquipmentSlotInvalid/base_type = &"Button"
+EquipmentSlotInvalid/styles/normal = SubResource("EquipmentInvalid")
+EquipmentSlotInvalid/styles/hover = SubResource("EquipmentInvalid")
+EquipmentSlotInvalid/styles/pressed = SubResource("EquipmentInvalid")
+
+MagicValue/base_type = &"Label"
+MagicValue/colors/font_color = Color(0.77, 0.65, 1, 1)
+MagicValue/font_sizes/font_size = 18
+LifeStealValue/base_type = &"Label"
+LifeStealValue/colors/font_color = Color(0.45, 0.87, 0.66, 1)
+LifeStealValue/font_sizes/font_size = 18
+AttackSpeedValue/base_type = &"Label"
+AttackSpeedValue/colors/font_color = Color(1, 0.77, 0.35, 1)
+AttackSpeedValue/font_sizes/font_size = 18

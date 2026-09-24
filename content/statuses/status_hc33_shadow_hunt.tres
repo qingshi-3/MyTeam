@@ -1,0 +1,42 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r0")
+Value = 0.25
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r1")
+Attribute = 3
+Operation = 0
+SlotId = "status_hc33_shadow_hunt_3"
+Magnitude = SubResource("s0")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r0")
+Value = 0.2
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r1")
+Attribute = 13
+Operation = 0
+SlotId = "status_hc33_shadow_hunt_13"
+Magnitude = SubResource("s2")
+
+[resource]
+script = ExtResource("r2")
+StableId = "status_hc33_shadow_hunt"
+DisplayName = "跃影追猎"
+Behavior = 2
+Disposition = 1
+DurationKind = 1
+DurationTicks = 30
+StackLimit = 1
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+DispelCategory = 1
+ControlDurationRule = 0
+AttributeModifiers = [SubResource("s1"), SubResource("s3")]

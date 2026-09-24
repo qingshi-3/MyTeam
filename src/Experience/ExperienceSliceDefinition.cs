@@ -13,7 +13,7 @@ namespace TowerAutobattler.Experience;
 [GlobalClass]
 public partial class ExperienceSliceDefinition : Resource
 {
-    [Export] public string StableId { get; set; } = "reward_loop";
+    [Export] public string StableId { get; set; } = "";
     [Export] public int Revision { get; set; } = 1;
     [Export] public int Seed { get; set; } = 9052026;
     [Export] public string StartingHeroId { get; set; } = "";
@@ -24,16 +24,16 @@ public partial class ExperienceSliceDefinition : Resource
     [Export] public string StartingEquipmentId { get; set; } = "";
     [Export] public string EnemyFrontId { get; set; } = "";
     [Export] public string EnemySupportId { get; set; } = "";
-    [Export] public string FloorRuleId { get; set; } = "rule_clear";
+    [Export] public string FloorRuleId { get; set; } = "";
     [Export(PropertyHint.Range, "2,8,1")] public int FirstEnemyCount { get; set; } = 4;
     [Export(PropertyHint.Range, "2,8,1")] public int SecondEnemyCount { get; set; } = 6;
 
     public CompiledExperienceSlice Compile(CompiledGamePackage package)
     {
         if (string.IsNullOrWhiteSpace(StableId) || Revision < 1 || Seed < 1 ||
-            StartingCompanions.Length != 3 || RecruitIds.Length != 3 || RelicIds.Length != 3 ||
+            StartingCompanions.Length is < 1 or > 17 || RecruitIds.Length is < 1 or > 3 || RelicIds.Length != 3 ||
             EquipmentIds.Length != 3 || FirstEnemyCount is < 2 or > 8 || SecondEnemyCount is < 2 or > 8)
-            throw new InvalidOperationException("试验定义需要四人起点、各三项候选及合法版本／敌人数。");
+            throw new InvalidOperationException("试验定义需要 1–17 名初始同伴、1–3 项招募、各三项物品候选及合法版本／敌人数。");
         foreach (var ids in new[] { StartingCompanions, RecruitIds, RelicIds, EquipmentIds })
             if (ids.Distinct(StringComparer.Ordinal).Count() != ids.Length)
                 throw new InvalidOperationException("同一试验候选组不能重复。");
@@ -41,6 +41,8 @@ public partial class ExperienceSliceDefinition : Resource
         if (Required(StartingHeroId).Definition is not UnitDefinition { IsHero: true })
             throw new InvalidOperationException("试验起始英雄必须具备现有起始契约。");
         foreach (var id in StartingCompanions.Concat(RecruitIds)) Unit(id, false);
+        if (StartingCompanions.Contains(StartingHeroId, StringComparer.Ordinal))
+            throw new InvalidOperationException("试验初始同伴不能重复起始英雄。");
         Unit(EnemyFrontId, true); Unit(EnemySupportId, true);
         foreach (var id in RelicIds)
             if (Required(id).Definition is not ItemDefinition { ProductKind: ItemProductKind.Relic } ||
@@ -72,7 +74,7 @@ public partial class ExperienceSliceDefinition : Resource
                 RecruitmentPool = new CompiledContentPool(StableId + "_recruits", ContentPoolKind.Soldier, RecruitIds.ToImmutableArray()),
                 NodeTable = campaign.NodeTable with { BossLocalFloor = 2, Rotation = [TowerNodeType.Combat, TowerNodeType.Elite], RegularOptionCount = 2, RotationStride = 1 }
             },
-            RunRules = package.Project.RunRules with { StarterRosterHeroCount = 3 }
+            RunRules = package.Project.RunRules with { StarterRosterHeroCount = StartingCompanions.Length }
         };
         return new(StableId, Revision, (ulong)Seed, StartingHeroId, StartingEquipmentId,
             RecruitIds.ToImmutableArray(), RelicIds.ToImmutableArray(), EquipmentIds.ToImmutableArray(), project);
@@ -81,7 +83,7 @@ public partial class ExperienceSliceDefinition : Resource
             throw new InvalidOperationException("试验内容未发布：" + id);
         void Unit(string id, bool enemy)
         {
-            if (Required(id).Definition is not UnitDefinition unit || unit.IsEnemy != enemy)
+            if (Required(id).Definition is not UnitDefinition unit || unit.IsEnemy != enemy || unit.IsTestDummy)
                 throw new InvalidOperationException("试验单位阵营错误：" + id);
         }
         CompiledEncounter Encounter(string suffix, TowerNodeType type, string title, int count) =>

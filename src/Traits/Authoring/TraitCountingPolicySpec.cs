@@ -4,7 +4,7 @@ namespace TowerAutobattler.Traits;
 
 public enum TraitDeploymentPolicy { AllEligible, DeployedOnly }
 public enum TraitTemporaryUnitPolicy { Exclude, Include }
-public enum TraitDuplicateContentPolicy { CountEach, UniqueContent }
+public enum TraitDuplicateContentPolicy { CountEach, UniqueContent, UniqueOwner }
 
 [GlobalClass]
 public partial class TraitCountingPolicySpec : Resource

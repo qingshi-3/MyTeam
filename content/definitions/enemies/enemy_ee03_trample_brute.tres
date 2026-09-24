@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_ee03_trample_brute.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_ee03_trample_brute"
+DisplayName = "破阵巨兽"
+Description = "大型精英。蓝量充满后消耗全部蓝量，蓄力锁向并贯穿冲锋，将沿途单位撞向两侧；冲锋结束后收招。冲锋动作期间暂停回蓝，普攻和受伤不回蓝。"
+Role = 0
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 340
+AttackDamage = 24
+AttackRange = 0.25
+AttackCooldown = 1.45
+MoveInterval = 0.7
+Armor = 8
+BodyRadius = 0.7
+MaxMana = 100
+StartingMana = 90
+ManaPerSecond = 12.5
+ManaPerAttack = 0
+ManaPerDamageRatio = 0
+ManaPerHitCap = 0
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"enemy", &"beast", &"elite"])

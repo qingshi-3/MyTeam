@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="UnitPortraitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="script"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f1_windbladecommander/frames.tres" id="frames"]
+[resource]
+script = ExtResource("script")
+StableId = "hero_hc37_legion_duelist"
+Frames = ExtResource("frames")
+AnimationName = &"idle"
+Zoom = 1.35

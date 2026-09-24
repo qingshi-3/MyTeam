@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+[ext_resource type="Texture2D" path="res://assets/ui/items/equipment_ne10_swift_gloves.png" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "equipment_ne10_swift_gloves"
+DisplayName = "疾攻手套"
+Description = "持有者攻速增加 0.25；提高普攻、按攻速连射与攻击命中触发的供给频率。"
+Icon = ExtResource("r1")
+Rarity = 1
+ProductKind = 1
+Price = 18
+Tags = Array[StringName]([&"item", &"equipment"])

@@ -18,53 +18,40 @@ public sealed class BattleLabPreparationAdapter
     public BattleConfig Build(BattleLabStartSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
-        ValidateSnapshot(snapshot);
+        snapshot = ValidateSnapshot(snapshot);
         var playerUnits = snapshot.Units.Where(unit => unit.Side == BattleLabSide.Player).ToArray();
-        if (playerUnits.Length == 0) throw new InvalidOperationException("战斗实验室至少需要一个我方英雄。");
+        if (playerUnits.Length == 0) throw new InvalidOperationException("A 队至少需要一个单位。");
         if (!snapshot.Units.Any(unit => unit.Side == BattleLabSide.Enemy))
-            throw new InvalidOperationException("战斗实验室至少需要一个敌方单位。");
+            throw new InvalidOperationException("B 队至少需要一个单位。");
 
-        return BuildPreparedConfig(snapshot, snapshot.PrimaryHeroInstanceId, playerUnits.Length);
+        return BuildPreparedConfig(snapshot);
     }
 
     public BattleConfig BuildProjection(BattleLabStartSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
-        ValidateSnapshot(snapshot);
-        var playerUnits = snapshot.Units.Where(unit => unit.Side == BattleLabSide.Player).ToArray();
-        var primaryInstanceId = playerUnits.Length > 0
-            ? snapshot.PrimaryHeroInstanceId
-            : string.Empty;
-        return BuildPreparedConfig(snapshot, primaryInstanceId, playerUnits.Length);
+        return BuildPreparedConfig(ValidateSnapshot(snapshot));
     }
 
-    private BattleConfig BuildPreparedConfig(
-        BattleLabStartSnapshot snapshot,
-        string primaryInstanceId,
-        int playerCount)
+    private BattleConfig BuildPreparedConfig(BattleLabStartSnapshot snapshot)
     {
-        var primaryContentId = string.IsNullOrWhiteSpace(primaryInstanceId)
-            ? _index.PlayerHeroes.FirstOrDefault()?.StableId ?? throw new InvalidOperationException(
-                "战斗实验室没有可用于只读派生的发布英雄规则。")
-            : snapshot.Units.Single(unit => unit.InstanceId == primaryInstanceId).ContentId;
-
         var floorRoot = _index.ResolveFloorRuleScene(snapshot.FloorRuleId).Instantiate<FloorRuleContentRoot>();
         try
         {
-            var relics = PrepareRelics(snapshot, primaryContentId);
+            var relics = PrepareRelics(snapshot, "battle-lab");
             var units = snapshot.Units.Select(unit => new BattlePreparationUnitSource(
                 unit.InstanceId,
                 unit.ContentId,
                 unit.Side == BattleLabSide.Player ? 0 : 1,
                 1f,
                 false,
-                unit.Side == BattleLabSide.Player,
+                true,
                 true,
                 unit.Equipment.Select(item => new BattlePreparationEquipmentSource(
                     item.InstanceId,
                     item.ContentId,
                     unit.InstanceId,
-                    item.SlotIndex)).ToImmutableArray())).ToImmutableArray();
+                    item.SlotIndex)).ToImmutableArray(), unit.RetainAttackStacks)).ToImmutableArray();
             var placements = snapshot.Units.Select(unit => new BattlePreparationPlacementSource(
                 unit.InstanceId,
                 unit.Cell)).ToImmutableArray();
@@ -75,22 +62,22 @@ public sealed class BattleLabPreparationAdapter
                 floorRoot.CreateRuntime(),
                 units,
                 placements,
-                primaryContentId,
+                string.Empty,
                 relics.Modifiers,
-                snapshot.Mode == BattleLabPlacementMode.Formal
-                    ? snapshot.CurrentPopulation - playerCount
-                    : 0,
+                0,
                 0,
                 relics.BattlePreparation,
                 null,
-                ResolveBossTimeline(snapshot),
-                BattlePlacementValidation.ExactAll);
+                null,
+                BattlePlacementValidation.ExactAll,
+                HeroRuleOverride: HeroRuleSnapshot.Neutral,
+                AdditionalBossTimelines: ResolveBossTimelines(snapshot));
             return BattlePreparationAssembler.Assemble(request);
         }
         finally { floorRoot.Free(); }
     }
 
-    private void ValidateSnapshot(BattleLabStartSnapshot snapshot)
+    private BattleLabStartSnapshot ValidateSnapshot(BattleLabStartSnapshot snapshot)
     {
         // Restore is the authoritative semantic gate. Recomputing a digest is
         // integrity checking only and never authorizes untrusted preset data.
@@ -101,6 +88,7 @@ public sealed class BattleLabPreparationAdapter
             snapshot.Mode,
             snapshot.FloorRuleId);
         validator.Restore(snapshot);
+        return validator.Freeze();
     }
 
     private RunRelicPreparation PrepareRelics(BattleLabStartSnapshot snapshot, string heroContentId)
@@ -125,18 +113,18 @@ public sealed class BattleLabPreparationAdapter
             new RelicRunKey(unchecked((ulong)snapshot.Seed), heroContentId, 0, 0), bindings);
     }
 
-    private BossTimelineSnapshot? ResolveBossTimeline(BattleLabStartSnapshot snapshot)
+    private ImmutableArray<BossTimelineSnapshot> ResolveBossTimelines(BattleLabStartSnapshot snapshot)
     {
-        var bosses = snapshot.Units.Where(unit => unit.Side == BattleLabSide.Enemy)
-            .Select(unit => unit.ContentId).ToHashSet(StringComparer.Ordinal);
+        var bosses = snapshot.Units.Select(unit => unit.ContentId).ToHashSet(StringComparer.Ordinal);
         var matches = _index.Package.Project.Campaign.Regions.SelectMany(region => region.Encounters.Values)
             .Select(encounter => encounter.BossTimeline).Where(timeline => timeline is not null &&
-                bosses.Contains(timeline.BossContentId)).Distinct().ToArray();
-        if (matches.Length != 1) return null;
-        var timeline = matches[0]!;
-        return new BossTimelineSnapshot(timeline.StableId, timeline.BossContentId,
+                bosses.Contains(timeline.BossContentId)).Select(timeline => timeline!)
+            .DistinctBy(timeline => timeline.StableId).OrderBy(timeline => timeline.StableId, StringComparer.Ordinal).ToArray();
+        if (matches.GroupBy(timeline => timeline.BossContentId).Any(group => group.Count() > 1))
+            throw new InvalidOperationException("同一首领存在多套阶段配置，无法确定测试使用的配置。");
+        return matches.Select(timeline => new BossTimelineSnapshot(timeline.StableId, timeline.BossContentId,
             timeline.Phases.Select(phase => new BossPhaseSnapshot(phase.StableId, phase.DisplayName,
-                phase.StartHealthRatio, phase.AbilityLoadout)).ToImmutableArray());
+                phase.StartHealthRatio, phase.AbilityLoadout)).ToImmutableArray())).ToImmutableArray();
     }
 
     private CatalogEntry Required(string id) => _index.Package.Content.TryGet(id, out var entry)

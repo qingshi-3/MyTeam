@@ -12,7 +12,7 @@ public static class BattlefieldSpace
 {
     public const float DefaultBodyRadius = .32f;
     public const float MinimumBodyRadius = .1f;
-    public const float MaximumBodyRadius = .49f;
+    public const float MaximumBodyRadius = 1.5f;
     public const float BodyClearance = .015f;
     public const float CellHalfExtent = .5f;
 

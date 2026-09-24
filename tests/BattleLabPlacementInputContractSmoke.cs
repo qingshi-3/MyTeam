@@ -31,7 +31,7 @@ public partial class BattleLabPlacementInputContractSmoke : Node
             var traitEquipment = index.Equipment.First(item =>
                 graph.ResolveEquipment(item.StableId).TraitContributions.Length > 0);
             var session = new BattleLabSession(index, Math.Max(2, package.Project.RunRules.InitialPopulation));
-            var scene = GD.Load<PackedScene>("res://scenes/ui/BattleLabScreen.tscn") ??
+            var scene = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/ui/BattleLabScreen.tscn") ??
                         throw new InvalidOperationException("BattleLabScreen scene missing");
             screen = scene.Instantiate<BattleLabScreenController>();
             host = new Control { Size = new Vector2(1600, 900) };
@@ -113,19 +113,18 @@ public partial class BattleLabPlacementInputContractSmoke : Node
             Require(screen.LastFeedback.Contains("已位于", StringComparison.Ordinal),
                 "real player re-selection before build editing");
 
-            var slot = screen.GetNode<OptionButton>("%EquipmentSlot");
-            var equipmentChoice = screen.GetNode<OptionButton>("%EquipmentChoice");
-            var traitEquipmentIndex = Enumerable.Range(0, index.Equipment.Length)
-                .First(itemIndex => index.Equipment[itemIndex].StableId == traitEquipment.StableId);
-            equipmentChoice.Select(traitEquipmentIndex);
-            Require(index.Rules.EquipmentSlotCapacity == 3 && slot.ItemCount == index.Rules.EquipmentSlotCapacity,
+            var equipmentPanel = screen.GetNode<BattleLabEquipmentPanel>("%EquipmentDragPanel");
+            var slots = Descendants<EquipmentSlotButton>(equipmentPanel).Where(tile => tile.SlotIndex >= 0)
+                .OrderBy(tile => tile.SlotIndex).ToArray();
+            var source = Descendants<EquipmentSlotButton>(equipmentPanel)
+                .Single(tile => tile.InstanceId == "catalog:" + traitEquipment.StableId);
+            Require(index.Rules.EquipmentSlotCapacity == 3 && slots.Length == index.Rules.EquipmentSlotCapacity,
                 "authored Equipment UI exposes exactly the production three slots");
-            for (var slotIndex = 0; slotIndex < index.Rules.EquipmentSlotCapacity; slotIndex++)
+            for (var slotIndex = 0; slotIndex < slots.Length; slotIndex++)
             {
-                slot.Select(slotIndex);
-                await Click(screen.GetNode<Control>("%EquipButton"));
+                await Drag(source, slots[slotIndex]);
                 Require(session.At(new Vector2I(6, 5))?.Equipment.Length == slotIndex + 1,
-                    $"real choose-and-click Equipment slot {slotIndex + 1}");
+                    $"real Equipment drag into slot {slotIndex + 1}");
             }
             Require(!session.Equip(secondId, 3, traitEquipment.StableId) &&
                     session.At(new Vector2I(6, 5))?.Equipment.Length == index.Rules.EquipmentSlotCapacity,
@@ -133,8 +132,7 @@ public partial class BattleLabPlacementInputContractSmoke : Node
             Require(screen.GetNode<Label>("%Inspector").Text.Contains("控制抗性", StringComparison.Ordinal) &&
                     screen.GetNode<Label>("%Inspector").Text.Contains("实例", StringComparison.Ordinal),
                 "prepared selected-unit inspector");
-            slot.Select(0);
-            await Click(screen.GetNode<Control>("%RemoveEquipmentButton"));
+            await Drag(slots[0], equipmentPanel.GetNode<Control>("Library/Layout/Title"));
             Require(session.At(new Vector2I(6, 5))?.Equipment.Length == index.Rules.EquipmentSlotCapacity - 1,
                 "real equipment removal");
             var traitEquipmentInstanceId = session.At(new Vector2I(6, 5))!.Equipment
@@ -210,14 +208,14 @@ public partial class BattleLabPlacementInputContractSmoke : Node
 
             var presets = new BattleLabPresetStore(screen.PresetCatalog);
             screen.Bind(index, session, presets);
-            await ActivateButton(screen.GetNode<Button>("%RestoreDefaultButton"));
+            await ActivateButton(screen.GetNode<Control>("%PresetPanel").GetNode<Button>("%RestoreDefaultButton"));
             Require(session.Units.Count >= 2 && !string.IsNullOrWhiteSpace(session.PrimaryHeroInstanceId),
                 "real default preset restore");
-            var presetChoice = screen.GetNode<OptionButton>("%PresetChoice");
+            var presetChoice = screen.GetNode<Control>("%PresetPanel").GetNode<OptionButton>("%PresetChoice");
             var frostIndex = Enumerable.Range(0, presetChoice.ItemCount)
                 .First(itemIndex => presetChoice.GetItemText(itemIndex).Contains("冰霜", StringComparison.Ordinal));
             presetChoice.Select(frostIndex);
-            await ActivateButton(screen.GetNode<Button>("%LoadPresetButton"));
+            await ActivateButton(screen.GetNode<Control>("%PresetPanel").GetNode<Button>("%LoadPresetButton"));
             var frostConfig = new BattleLabPreparationAdapter(index).Build(session.Freeze());
             Require(frostConfig.Equipment.Instances.Length >= 2 &&
                     frostConfig.Spawns.Any(spawn => spawn.Team == 1 &&

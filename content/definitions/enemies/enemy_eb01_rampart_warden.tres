@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_eb01_rampart_warden.tres" id="portrait"]
+[resource]
+script = ExtResource("script")
+Portrait = ExtResource("portrait")
+Id = "enemy_eb01_rampart_warden"
+DisplayName = "岩垒督军"
+Description = "短岩墙可被普攻击碎；起墙后沿窄线震出地裂，随后收势。"
+Role = 7
+Faction = 7
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 920
+AttackDamage = 31
+AttackRange = 0.4
+AttackCooldown = 1.6
+MoveInterval = 0.85
+BodyRadius = 1.1
+Armor = 8
+Tags = Array[StringName]([&"enemy", &"boss"])
+SplashRadius = 0.65

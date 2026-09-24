@@ -1,22 +1,15 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=6 format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="e0"]
 [ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="e1"]
 [ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="e2"]
-[ext_resource type="Shader" path="res://scenes/vfx/shock_flash.gdshader" id="e3"]
-[ext_resource type="Shader" path="res://scenes/vfx/shockwave.gdshader" id="e4"]
-[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="e5"]
-[ext_resource type="PackedScene" path="res://scenes/vfx/ShockMote.tscn" id="e6"]
+[ext_resource type="Shader" path="res://scenes/vfx/scratch_hit.gdshader" id="e3"]
 [sub_resource type="ShaderMaterial" id="s0"]
 resource_local_to_scene = true
 shader = ExtResource("e3")
 
-[sub_resource type="ShaderMaterial" id="s1"]
-resource_local_to_scene = true
-shader = ExtResource("e4")
-shader_parameter/wave_color = Color(0.24,0.7,1,0.3)
 [node name="Impact" type="Node2D"]
 script = ExtResource("e0")
-[node name="Contact" type="Sprite2D" parent="."]
+[node name="Scratch" type="Sprite2D" parent="."]
 texture = ExtResource("e2")
 texture_filter = 4
 material = SubResource("s0")
@@ -24,29 +17,51 @@ script = ExtResource("e1")
 ShaderLifecycle = true
 StartScale = 1.0
 EndScale = 1.0
-scale = Vector2(0.75,0.75)
-Duration = 0.12
-[node name="Wave" type="Sprite2D" parent="."]
+rotation = -0.62
+scale = Vector2(0.95,0.62)
+Duration = 0.22
+[node name="SmallScratch" type="Sprite2D" parent="."]
 texture = ExtResource("e2")
 texture_filter = 4
-material = SubResource("s1")
+material = SubResource("s0")
 script = ExtResource("e1")
 ShaderLifecycle = true
 StartScale = 1.0
 EndScale = 1.0
-Duration = 0.28
-[node name="Splinters" type="Node2D" parent="."]
-script = ExtResource("e5")
-ParticleScene = ExtResource("e6")
-Amount = 9
-Radial = true
-Delay = 0.005
-Gravity = 0.0
-SpeedRange = Vector2(200,380)
-LifetimeRange = Vector2(0.20,0.42)
-SizeRange = Vector2(80,120)
-HeightScale = 1.1
-EndTint = Color(0.25,0.65,1,1)
+position = Vector2(-10,24)
+rotation = -0.53
+scale = Vector2(0.58,0.45)
+Delay = 0.012
+Duration = 0.18
+Opacity = 0.7
+
+[node name="SparkUpper" type="Sprite2D" parent="."]
+texture = ExtResource("e2")
+material = SubResource("s0")
+script = ExtResource("e1")
+position = Vector2(25,-18)
+rotation = -0.9
+scale = Vector2(0.19,0.35)
+StartScale = 1.0
+EndScale = 0.35
+Travel = Vector2(48,-66)
+MotionDuration = 0.18
+Duration = 0.23
+Delay = 0.018
+
+[node name="SparkLower" type="Sprite2D" parent="."]
+texture = ExtResource("e2")
+material = SubResource("s0")
+script = ExtResource("e1")
+position = Vector2(-22,12)
+rotation = -0.32
+scale = Vector2(0.16,0.32)
+StartScale = 1.0
+EndScale = 0.25
+Travel = Vector2(-64,24)
+MotionDuration = 0.2
+Duration = 0.25
+Delay = 0.012
 
 
 

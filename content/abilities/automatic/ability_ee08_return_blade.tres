@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ReturningBladeAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="action"]
+script = ExtResource("operation")
+[resource]
+script = ExtResource("ability")
+StableId = "ability_ee08_return_blade"
+DisplayName = "往返刃"
+Description = "挥臂直接投出旋刃；沿固定路线飞出再返回，每程各命中一次。"
+ActivationKind = 1
+Trigger = 2
+CooldownTicks = 70
+IntervalTicks = 8
+Operations = [SubResource("action")]

@@ -1,0 +1,35 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r0")
+Team = 0
+Anchor = 1
+Range = 3.6
+MaxTargets = 2
+IncludeAnchor = false
+Order = 1
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r1")
+Action = 2
+TargetQuery = SubResource("s0")
+Amount = 25
+Terms = []
+
+[resource]
+script = ExtResource("r2")
+StableId = "ability_hc36_p"
+DisplayName = "回旋护流"
+Description = "每 3 秒为自己 3.6 格内最近的两名其他友军各提供 25 护盾。"
+ActivationKind = 1
+Trigger = 2
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 30
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

@@ -1,0 +1,57 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ShieldEffectSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="r4"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="r5"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusCombatReactiveBindingSpec.cs" id="r6"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusPresentationSpec.cs" id="r7"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+AmountSource = 0
+Amount = 12
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r5")
+StableId = "effect_ne10_control_shield"
+Trigger = SubResource("s1")
+TargetQuery = SubResource("s2")
+Effects = [SubResource("s0")]
+Limits = SubResource("s3")
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r6")
+EventKind = 20
+OwnerRole = 0
+EffectSourcePolicy = 0
+Binding = SubResource("s4")
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("r7")
+SemanticIcon = ""
+ReportLabel = "缚敌护佑"
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_ne10_control_shelter"
+DisplayName = "缚敌护佑"
+Behavior = 2
+Disposition = 1
+DurationKind = 0
+AggregationPolicy = 0
+StackLimit = 1
+DispelCategory = 0
+CombatReactiveBindings = [SubResource("s5")]
+Presentation = SubResource("s6")

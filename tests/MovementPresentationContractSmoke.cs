@@ -24,7 +24,7 @@ public partial class MovementPresentationContractSmoke : Node
     {
         try
         {
-            var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres")
+            var catalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres")
                 ?? throw new InvalidOperationException("catalog load");
             var gate = await TestProjectFixture.PublishAsync(this);
             var registry = gate.Package?.Content ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
@@ -252,10 +252,10 @@ public partial class MovementPresentationContractSmoke : Node
             Rebind(unit, "motion-action-idle");
             unit.SnapPresentation(source, 100, 100);
             unit.QueueMovement(destination);
-            unit.RefreshPresentation("hit", 100, 100);
+            unit.RefreshPresentation("skill_cast", 100, 100);
             motion._Process(.30);
             AdvanceFrames(motion, 5, .05);
-            if (animation.ActiveLogicalCue != "hit") throw new InvalidOperationException("motion completion erased an active action one-shot");
+            if (animation.ActiveLogicalCue != "skill_cast") throw new InvalidOperationException("motion completion erased an active action one-shot");
             animation._Process(animation.ActivePlaybackSeconds + .01);
             if (animation.ActiveLogicalCue != "idle") throw new InvalidOperationException("completed action did not restore idle after travel ended");
 
@@ -507,7 +507,7 @@ public partial class MovementPresentationContractSmoke : Node
             }, "生产治疗朝向");
             screen._Process(.13);
             var healerAnimation = Animation(Presenter(screen, "production-healer"));
-            if (healerAnimation.FacingRight || healerAnimation.ActiveLogicalCue != "skill_cast")
+            if (healerAnimation.FacingRight || healerAnimation.ActiveLogicalCue != "attack")
                 throw new InvalidOperationException("production BattleScreen heal routing did not face the healer toward its protected ally");
         }
         finally
@@ -617,7 +617,7 @@ public partial class MovementPresentationContractSmoke : Node
 
             screen._Process(.13);
             Equal(presenter.Position, source, "production move event teleported before spatial presentation advanced");
-            if (!motion.IsMoving || Animation(presenter).ActiveLogicalCue != "hit")
+            if (!motion.IsMoving || Animation(presenter).ActiveLogicalCue != "move")
                 throw new InvalidOperationException(
                     $"cue arbitration discarded a simultaneous production move destination " +
                     $"(moving={motion.IsMoving}, queued={motion.PendingWaypointCount}, cue={Animation(presenter).ActiveLogicalCue}, " +
@@ -889,7 +889,7 @@ public partial class MovementPresentationContractSmoke : Node
 
     private async Task<UnitContentRoot> AttachCommanderAsync()
     {
-        var unit = GD.Load<PackedScene>("res://content/heroes/hero_banner_marshal.tscn").Instantiate<UnitContentRoot>();
+        var unit = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/content/heroes/hero_banner_marshal.tscn").Instantiate<UnitContentRoot>();
         AddChild(unit);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         return unit;

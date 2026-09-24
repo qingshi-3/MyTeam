@@ -1,0 +1,40 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 7
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 0.5
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 2
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc19_p"
+DisplayName = "光有余"
+Description = "自己收到的过量治疗有 50% 转为自己的护盾；实际治疗量仍按原规则计入报告。"
+ActivationKind = 2
+Trigger = 12
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2")]

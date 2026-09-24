@@ -1,0 +1,11 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/abilities/automatic/ability_hc22_a.tres" id="r1"]
+[ext_resource type="Resource" path="res://content/abilities/passive/ability_hc22_p0.tres" id="r2"]
+[ext_resource type="Resource" path="res://content/abilities/triggered/ability_hc22_p1.tres" id="r3"]
+[ext_resource type="Resource" path="res://content/abilities/triggered/ability_hc22_p2.tres" id="r4"]
+
+[resource]
+script = ExtResource("r0")
+Abilities = [ExtResource("r1"), ExtResource("r2"), ExtResource("r3"), ExtResource("r4")]

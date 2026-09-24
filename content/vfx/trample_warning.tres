@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="definition"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/trample_warning.tscn" id="scene"]
+[resource]
+script = ExtResource("definition")
+StableId = "trample_warning"
+DisplayName = "冲阵 · 真实身体宽度预警"
+PreviewNote = "锁向蓄势、持续推进；独立技能消费正式战斗的阶段事实。"
+Scene = ExtResource("scene")
+Duration = 1.5
+CastDuration = 1.2
+Persistent = true
+Ground = true
+UsesRadius = true
+ReferenceRadius = 0.9
+Size = 256

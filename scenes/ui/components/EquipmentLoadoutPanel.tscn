@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/UI/EquipmentLoadoutPanel.cs" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
+
+[ext_resource type="Script" path="res://src/UI/EquipmentDropZone.cs" id="DropZone"]
 
 [node name="EquipmentLoadoutPanel" type="PanelContainer"]
 custom_minimum_size = Vector2(324, 0)
@@ -40,6 +42,12 @@ layout_mode = 2
 text = "›"
 tooltip_text = "下一位英雄"
 
+[node name="EquipmentHeroes" type="HFlowContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
+
 [node name="EquipmentSlots" type="HBoxContainer" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -51,24 +59,7 @@ custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 autowrap_mode = 2
-text = "拖装备到槽位，或先点装备再点槽位。"
-
-[node name="Actions" type="HBoxContainer" parent="Layout"]
-layout_mode = 2
-
-[node name="EquipmentRemove" type="Button" parent="Layout/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-theme_override_font_sizes/font_size = 14
-text = "卸下回包"
-
-[node name="EquipmentCancel" type="Button" parent="Layout/Actions"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"SecondaryButton"
-theme_override_font_sizes/font_size = 14
-text = "放下选择"
+text = "拖到英雄或槽位穿戴 · 拖回背包卸下"
 
 [node name="EquipmentInventoryTitle" type="Label" parent="Layout"]
 unique_name_in_owner = true
@@ -76,15 +67,34 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "装备背包"
 
-[node name="InventoryScroll" type="ScrollContainer" parent="Layout"]
-custom_minimum_size = Vector2(0, 72)
+[node name="EquipmentReturnZone" type="PanelContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 110)
+theme_type_variation = &"ContextSidebarPanel"
+script = ExtResource("DropZone")
+tooltip_text = "将已穿戴装备拖到背包区域卸下。"
+
+[node name="InventoryLayout" type="VBoxContainer" parent="Layout/EquipmentReturnZone"]
+layout_mode = 2
+mouse_filter = 1
+
+[node name="ReturnHint" type="Label" parent="Layout/EquipmentReturnZone/InventoryLayout"]
+text = "↓ 拖到背包卸下"
+mouse_filter = 2
+theme_override_font_sizes/font_size = 13
+
+[node name="InventoryScroll" type="ScrollContainer" parent="Layout/EquipmentReturnZone/InventoryLayout"]
+mouse_filter = 1
+custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
 horizontal_scroll_mode = 0
 
-[node name="EquipmentInventory" type="HFlowContainer" parent="Layout/InventoryScroll"]
+[node name="EquipmentInventory" type="HFlowContainer" parent="Layout/EquipmentReturnZone/InventoryLayout/InventoryScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 1
 theme_override_constants/h_separation = 4
 theme_override_constants/v_separation = 4
 

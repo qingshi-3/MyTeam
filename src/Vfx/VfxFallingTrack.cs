@@ -13,6 +13,8 @@ public partial class VfxFallingTrack : Node2D, IVfxTrack, IVfxSourceTrack, IVfxP
     [Export] public Vector2 LaunchOffset { get; set; } = new(16, -12);
     [Export] public PackedScene TrailParticle { get; set; } = null!;
     [Export] public int Seed { get; set; }
+    [Export] public Color TrailStartTint { get; set; } = Colors.White;
+    [Export] public Color TrailEndTint { get; set; } = new(1, .5f, .2f);
     private Node2D _projectile = null!;
     private ShaderMaterial[] _materials = [];
     private readonly List<Spark> _sparks = [];
@@ -93,8 +95,9 @@ public partial class VfxFallingTrack : Node2D, IVfxTrack, IVfxSourceTrack, IVfxP
             spark.Sprite.Position = (spark.HistoricalPosition ?? PositionAt(spark.Birth / TravelDuration)) + spark.Drift * t * _unitScale;
             spark.Sprite.Rotation = external ? spark.HistoricalRotation : TangentAt(spark.Birth / TravelDuration).Angle();
             spark.Sprite.Scale = new Vector2(1, .85f) * _unitScale * spark.Size * (1 - .6f * life) / spark.Sprite.Texture.GetWidth();
-            spark.Sprite.Modulate = new Color(1, 1 - .5f * life, 1 - .8f * life,
-                .75f * Mathf.Min(t / .025f, 1) * (1 - life) * (1 - release));
+            var tint = TrailStartTint.Lerp(TrailEndTint, life);
+            spark.Sprite.Modulate = new Color(tint.R, tint.G, tint.B,
+                tint.A * .75f * Mathf.Min(t / .025f, 1) * (1 - life) * (1 - release));
         }
         _lastAge = Mathf.Max(0, age);
         _lastProgress = p;

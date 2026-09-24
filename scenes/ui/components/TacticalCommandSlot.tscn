@@ -5,7 +5,7 @@
 
 [node name="TacticalCommandSlot" type="Button"]
 theme_type_variation = &"CompactButton"
-custom_minimum_size = Vector2(250, 102)
+custom_minimum_size = Vector2(260, 58)
 focus_mode = 2
 script = ExtResource("1")
 
@@ -55,6 +55,7 @@ mouse_filter = 2
 
 [node name="CommandEffect" type="Label" parent="Layout"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2

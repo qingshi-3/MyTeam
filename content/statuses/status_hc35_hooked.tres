@@ -1,0 +1,18 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_hc35_hooked"
+DisplayName = "钩缚"
+Behavior = 0
+Disposition = 2
+DurationKind = 1
+DurationTicks = 10
+StackLimit = 1
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+DispelCategory = 1
+ControlDurationRule = 1
+GrantedTags = Array[StringName]([&"state.action_disabled"])

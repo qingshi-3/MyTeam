@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/storm_lightning.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "storm_lightning"
+DisplayName = "雷暴 · 单次落雷"
+Scene = ExtResource("scene")
+Duration = 0.85
+ActionSpan = 0.19
+Size = 150
+Ground = false
+FlattenGround = false

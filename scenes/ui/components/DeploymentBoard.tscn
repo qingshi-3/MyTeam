@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/UI/DeploymentBoard.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/DeploymentFootprintLayer.tscn" id="2"]
 
 [node name="DeploymentBoard" type="Control"]
 custom_minimum_size = Vector2(820, 420)
@@ -8,3 +9,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("1")
+
+[node name="DeploymentFootprints" parent="." instance=ExtResource("2")]
+unique_name_in_owner = true

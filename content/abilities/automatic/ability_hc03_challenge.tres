@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="owner"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="around"]
+[ext_resource type="Resource" path="res://content/statuses/status_hc03_guard.tres" id="guard"]
+[ext_resource type="Resource" path="res://content/statuses/status_taunted.tres" id="taunt"]
+[sub_resource type="Resource" id="owner"]
+script = ExtResource("owner")
+[sub_resource type="Resource" id="around"]
+script = ExtResource("around")
+Team = 1
+Anchor = 1
+Range = 2.5
+[sub_resource type="Resource" id="guard"]
+script = ExtResource("operation")
+Status = ExtResource("guard")
+TargetQuery = SubResource("owner")
+[sub_resource type="Resource" id="taunt"]
+script = ExtResource("operation")
+Status = ExtResource("taunt")
+TargetQuery = SubResource("around")
+ApplicationVfx = "taunt_call"
+[resource]
+script = ExtResource("script")
+StableId = "ability_hc03_challenge"
+DisplayName = "铁壁挑衅"
+Description = "嘲讽周围 2.5 格敌人，持续 3 秒。\n自身防御 +18，持续 3 秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 80
+CooldownTicks = 3
+Operations = [SubResource("guard"), SubResource("taunt")]

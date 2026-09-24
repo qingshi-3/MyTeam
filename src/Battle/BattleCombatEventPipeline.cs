@@ -13,7 +13,7 @@ public enum BattleCombatEventKind
     BattleStarted, BattleCompleted, AttackDeclared, AttackLanded, AbilityResolved,
     DamageResolved, HealingResolved, ShieldResolved,
     StatusApplied, StatusStackChanged, StatusRemoved,
-    UnitSummoned, UnitMoved, UnitDefeated, UnitKilled
+    UnitSummoned, UnitMoved, UnitDefeated, UnitKilled, SkillHitLanded, CriticalHit, AttackDodged, HealthLost, ManaSkillResolved, ControlApplied, UnitRevived, AllegianceChanged
 }
 
 public enum BattleCombatCalculationKind { Damage, Healing, Shield }
@@ -27,21 +27,21 @@ public sealed record BattleCombatEventDraft(
     BattleCombatEventKind Kind, CombatSourceRef Source, string SourceRuntimeId, string TargetRuntimeId, int Tick,
     float RequestedValue = 0, float AppliedValue = 0, float EffectiveValue = 0, CombatCell Cell = default,
     string SubjectStableId = "", int PreviousStacks = 0, int CurrentStacks = 0, string Reason = "",
-    CombatPoint Position = default, EffectDamageType DamageType = EffectDamageType.Physical);
+    CombatPoint Position = default, EffectDamageType DamageType = EffectDamageType.Normal);
 
 public sealed record BattleCombatEvent(
     long Sequence, string ScopeId, BattleIdentity? Identity, string ChainId, int Depth, BattleCombatEventKind Kind,
     CombatSourceRef Source, string SourceRuntimeId, string TargetRuntimeId, int Tick,
     float RequestedValue, float AppliedValue, float EffectiveValue, CombatCell Cell,
     string SubjectStableId, int PreviousStacks, int CurrentStacks, string Reason, CombatPoint Position,
-    EffectDamageType DamageType = EffectDamageType.Physical);
+    EffectDamageType DamageType = EffectDamageType.Normal);
 
 public sealed record BattleCombatPublishResult(
     bool Accepted, BattleCombatPublishRejection Rejection, BattleCombatEvent? Event, string Message);
 
 public sealed record BattleCombatCalculationRequest(
     BattleCombatCalculationKind Kind, CombatSourceRef Source, string SourceRuntimeId,
-    string TargetRuntimeId, int Tick, float RequestedAmount, EffectDamageType DamageType = EffectDamageType.Physical);
+    string TargetRuntimeId, int Tick, float RequestedAmount, EffectDamageType DamageType = EffectDamageType.Normal);
 
 public sealed record BattleCombatCalculationContribution(
     CombatSourceRef Source, int Priority, float Before, float After);

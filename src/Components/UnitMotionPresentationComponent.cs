@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using TowerAutobattler.Abilities;
+using TowerAutobattler.Battle;
+using TowerAutobattler.Domain;
 
 namespace TowerAutobattler.Components;
 
@@ -11,12 +14,15 @@ public partial class UnitMotionPresentationComponent : Node
     [Signal] public delegate void MotionStateChangedEventHandler(bool moving);
     [Signal] public delegate void HorizontalSegmentStartedEventHandler(float horizontalDelta);
     [Signal] public delegate void TravelWeightChangedEventHandler(float normalizedWeight);
+    [Signal] public delegate void DisplacementPoseChangedEventHandler(string cue);
+    [Signal] public delegate void DisplacementElevationChangedEventHandler(float pixels);
 
     [Export(PropertyHint.Range, "0.01,0.5,0.005")] public float AuthoritySampleSecondsAtOneTimes { get; set; } = .125f;
     [Export] public float MaximumVisualLagSeconds { get; set; } = .25f;
     [Export(PropertyHint.Range, "0.001,0.1,0.001")] public float MaximumFrameDeltaSeconds { get; set; } = .05f;
     [Export(PropertyHint.Range, "1,64,1")] public int MaximumQueuedWaypoints { get; set; } = 12;
     [Export(PropertyHint.Range, "1,64,1")] public int MaximumSegmentsPerFrame { get; set; } = 16;
+    [Export] public bool ReducedMotion { get; set; }
 
     private readonly List<QueuedWaypoint> _waypoints = [];
     private Node2D? _target;
@@ -39,6 +45,19 @@ public partial class UnitMotionPresentationComponent : Node
     private bool _terminal;
     private bool _hasPlacement;
     private float _speedScale = 1f;
+    private float _simulationSpeed = .8f;
+    private bool _displacementActive;
+    private bool _displacementFinishing;
+    private bool _freshDisplacementSample;
+    private int _displacementStartTick;
+    private DisplacementKind _displacementKind;
+    private Vector2 _displacementFrom;
+    private Vector2 _displacementTo;
+    private float _displacementProgress;
+    private float _displacementFromProgress;
+    private float _displacementToProgress;
+    private float _displacementElapsed;
+    private float _displacementArcHeight;
 
     public bool IsMoving => _isMoving;
     public bool IsPaused => _paused;
@@ -49,6 +68,7 @@ public partial class UnitMotionPresentationComponent : Node
                                            _waypoints.Sum(waypoint => waypoint.PlaybackSeconds) +
                                            (_settling ? Math.Max(0f, _settleDuration - _settleElapsed) : 0f);
     public float SpeedScale => _speedScale;
+    public bool IsDisplaced => _displacementActive;
 
     public override void _Ready() => SetProcess(false);
 
@@ -69,6 +89,14 @@ public partial class UnitMotionPresentationComponent : Node
     public void QueueWaypoint(Vector2 destination)
     {
         if (_terminal || _target is null || !_hasPlacement) return;
+        if (_displacementActive)
+        {
+            // These are new post-arrival walking samples, never the stale path cleared
+            // when the skill began. Preserve them behind the last displacement sample.
+            if (_displacementFinishing && (_waypoints.Count == 0 || !_waypoints[^1].Position.IsEqualApprox(destination)))
+                _waypoints.Add(new QueuedWaypoint(destination, EffectiveSampleSeconds()));
+            return;
+        }
         if (_segmentActive && _segmentTarget.IsEqualApprox(destination) && _waypoints.Count == 0) return;
         if (_waypoints.Count > 0 && _waypoints[^1].Position.IsEqualApprox(destination)) return;
         if (!_segmentActive)
@@ -103,6 +131,9 @@ public partial class UnitMotionPresentationComponent : Node
         _target.Position = Remap(_target.Position);
         _segmentStart = Remap(_segmentStart);
         _segmentTarget = Remap(_segmentTarget);
+        _displacementFrom = Remap(_displacementFrom);
+        _displacementTo = Remap(_displacementTo);
+        ApplyDisplacementElevation();
         for (var index = 0; index < _waypoints.Count; index++)
             _waypoints[index] = _waypoints[index] with { Position = Remap(_waypoints[index].Position) };
     }
@@ -136,6 +167,120 @@ public partial class UnitMotionPresentationComponent : Node
         EnforceLagBudget();
     }
 
+    public void SetSimulationSpeed(float simulationSpeed) => _simulationSpeed = Math.Max(0f, simulationSpeed);
+
+    public void SnapAuthorityPosition(Vector2 position)
+    {
+        if (!_displacementActive) { SnapTo(position); return; }
+        if (_terminal || _target is null) return;
+        _displacementTo = position;
+        _displacementElapsed = BattleTiming.TickSeconds;
+        _freshDisplacementSample = false;
+        SampleDisplacement(1f);
+        if (_displacementFinishing) CompleteDisplacement();
+    }
+
+    // Interpolate only a pair of committed ground samples. A leap's apparent height is
+    // emitted separately and must never move the root, hit target, or health markers.
+    public void PresentDisplacement(BattleDisplacementCue cue, Vector2 position, Vector2 start,
+        float arcHeightPixels, bool snap)
+    {
+        if (_terminal || _target is null || !_hasPlacement) return;
+        if (cue.Kind == DisplacementKind.Blink && !cue.Finished && !cue.Cancelled)
+        {
+            if (!_displacementActive || _displacementStartTick != cue.StartTick)
+                BeginDisplacement(cue, start, arcHeightPixels);
+            return;
+        }
+        if ((cue.Kind == DisplacementKind.Blink && (cue.Finished || cue.Cancelled)) || (cue.Finished && snap))
+        {
+            ClearActiveMotion();
+            _target.Position = position;
+            return;
+        }
+        var newDisplacement = !_displacementActive || _displacementStartTick != cue.StartTick || _displacementKind != cue.Kind;
+        if (newDisplacement)
+            BeginDisplacement(cue, start, arcHeightPixels);
+
+        _displacementFrom = _target.Position;
+        _displacementTo = position;
+        _displacementFromProgress = _displacementProgress;
+        _displacementToProgress = Mathf.Clamp(cue.Progress, 0f, 1f);
+        _displacementElapsed = 0f;
+        _displacementArcHeight = Math.Max(0f, arcHeightPixels);
+        _freshDisplacementSample = newDisplacement && !snap;
+        _displacementFinishing = cue.Finished;
+        if (cue.Kind is DisplacementKind.Charge or DisplacementKind.Leap)
+        {
+            var horizontal = position.X - _target.Position.X;
+            if (Math.Abs(horizontal) > .001f) EmitSignal(SignalName.HorizontalSegmentStarted, horizontal);
+        }
+        if (snap) SampleDisplacement(1f);
+        SetProcess(true);
+    }
+
+    private void BeginDisplacement(BattleDisplacementCue cue, Vector2 start, float arcHeightPixels)
+    {
+        ClearActiveMotion();
+        _displacementActive = true;
+        _displacementFinishing = false;
+        _displacementStartTick = cue.StartTick;
+        _displacementKind = cue.Kind;
+        _displacementProgress = 0f;
+        _displacementFromProgress = 0f;
+        _displacementToProgress = 0f;
+        _displacementFrom = start;
+        _displacementTo = start;
+        _displacementArcHeight = Math.Max(0f, arcHeightPixels);
+        if (_target is not null) _target.Position = start;
+        var pose = cue.Kind switch
+        {
+            DisplacementKind.Charge => "move",
+            DisplacementKind.Leap or DisplacementKind.Blink => "skill_cast",
+            _ => "displaced"
+        };
+        EmitSignal(SignalName.DisplacementPoseChanged, pose);
+        ApplyDisplacementElevation();
+        SetProcess(true);
+    }
+
+    private void AdvanceDisplacement(float seconds)
+    {
+        if (_freshDisplacementSample)
+        {
+            _freshDisplacementSample = false;
+            return;
+        }
+        _displacementElapsed = Math.Min(BattleTiming.TickSeconds,
+            _displacementElapsed + Math.Max(0f, seconds));
+        SampleDisplacement(_displacementElapsed / BattleTiming.TickSeconds);
+        if (_displacementFinishing && _displacementElapsed >= BattleTiming.TickSeconds)
+            CompleteDisplacement();
+    }
+
+    private void SampleDisplacement(float progress)
+    {
+        if (_target is null) return;
+        _target.Position = _displacementFrom.Lerp(_displacementTo, progress);
+        _displacementProgress = Mathf.Lerp(_displacementFromProgress, _displacementToProgress, progress);
+        ApplyDisplacementElevation();
+    }
+
+    private void ApplyDisplacementElevation()
+    {
+        var height = _displacementActive && _displacementKind == DisplacementKind.Leap
+            ? _displacementArcHeight * 4f * _displacementProgress * (1f - _displacementProgress)
+            : 0f;
+        EmitSignal(SignalName.DisplacementElevationChanged, height * (ReducedMotion ? .25f : 1f));
+    }
+
+    private void CompleteDisplacement()
+    {
+        var walkingAfterArrival = _waypoints.ToArray();
+        ClearActiveMotion();
+        foreach (var waypoint in walkingAfterArrival) QueueWaypoint(waypoint.Position);
+    }
+
     public void CancelForDefeat()
     {
         if (_terminal) return;
@@ -153,7 +298,13 @@ public partial class UnitMotionPresentationComponent : Node
 
     public override void _Process(double delta)
     {
-        if (_paused || _terminal || !_isMoving || _target is null) return;
+        if (_paused || _terminal || _target is null) return;
+        if (_displacementActive)
+        {
+            AdvanceDisplacement((float)delta * _simulationSpeed);
+            return;
+        }
+        if (!_isMoving) return;
         if (_deferFreshMotionDelta)
         {
             _deferFreshMotionDelta = false;
@@ -359,6 +510,16 @@ public partial class UnitMotionPresentationComponent : Node
 
     private void ClearActiveMotion()
     {
+        if (_displacementActive)
+        {
+            _displacementActive = false;
+            _displacementFinishing = false;
+            _freshDisplacementSample = false;
+            _displacementProgress = 0f;
+            _displacementElapsed = 0f;
+            EmitSignal(SignalName.DisplacementElevationChanged, 0f);
+            EmitSignal(SignalName.DisplacementPoseChanged, string.Empty);
+        }
         var changed = _isMoving;
         _waypoints.Clear();
         _segmentActive = false;

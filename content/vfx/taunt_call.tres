@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/taunt_call.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "taunt_call"
+DisplayName = "嘲讽怒吼"
+PreviewNote = "施放者脚下显示实际范围，声压向外展开，短暂收净；受控标记独立持续"
+Scene = ExtResource("scene")
+Duration = 1.0
+Size = 256
+ReferenceRadius = 2.5
+Ground = true
+UsesRadius = true
+FlattenGround = false

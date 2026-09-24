@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc24_swarm_keeper.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc24_swarm_keeper"
+DisplayName = "虫群牧者"
+Description = "HC24／BC21 测试稿。在附近召唤 2 只虫卒，自己最多同时维持 6 只。 被动：自己召唤的虫卒每次普攻命中，为牧者增加 4 护盾。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 5
+Faction = 6
+RecruitCost = 5
+MaxHealth = 310
+AttackDamage = 12
+Armor = 4
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

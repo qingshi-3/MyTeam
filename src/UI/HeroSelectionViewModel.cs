@@ -1,4 +1,5 @@
 using TowerAutobattler.Content;
+using TowerAutobattler.Battle;
 
 namespace TowerAutobattler.UI;
 
@@ -7,4 +8,6 @@ public sealed record HeroSelectionViewModel(
     UnitDefinition Definition,
     bool Unlocked,
     string RuleTitle,
-    string RuleDescription);
+    string RuleDescription,
+    UnitSnapshot? Snapshot = null,
+    int RecruitmentTier = 0);

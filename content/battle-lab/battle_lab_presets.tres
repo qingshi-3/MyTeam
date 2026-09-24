@@ -1,45 +1,460 @@
-[gd_resource type="Resource" script_class="BattleLabPresetCatalog" format=3 uid="uid://bsalpjndwnr25"]
+[gd_resource type="Resource" script_class="BattleLabPresetCatalog" format=3]
 
-[ext_resource type="Script" uid="uid://cor4kb65i8om3" path="res://src/BattleLab/BattleLabPresetCatalog.cs" id="1"]
-[ext_resource type="Script" uid="uid://bnt3ei3p2h01b" path="res://src/BattleLab/BattleLabBuiltInPreset.cs" id="2"]
+[ext_resource type="Script" path="res://src/BattleLab/BattleLabPresetCatalog.cs" id="1"]
+[ext_resource type="Script" path="res://src/BattleLab/BattleLabBuiltInPreset.cs" id="2"]
 
-[sub_resource type="Resource" id="DefaultPreset"]
+[sub_resource type="Resource" id="p0"]
 script = ExtResource("2")
 DisplayName = "默认配置"
 PresetJson = "{
   \"SchemaVersion\": 1,
   \"Mode\": 0,
-  \"CurrentPopulation\": 2,
-  \"Seed\": 20260901,
+  \"CurrentPopulation\": 3,
+  \"Seed\": 20260911,
   \"FloorRuleId\": \"rule_clear\",
   \"PrimaryHeroInstanceId\": \"lab-unit-1\",
   \"Units\": [
-    { \"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_banner_marshal\", \"Side\": 0, \"X\": 0, \"Y\": 2, \"Equipment\": [] },
-    { \"InstanceId\": \"lab-unit-2\", \"ContentId\": \"enemy_rust_guard\", \"Side\": 1, \"X\": 9, \"Y\": 2, \"Equipment\": [] }
+    {
+      \"InstanceId\": \"lab-unit-1\",
+      \"ContentId\": \"hero_hc01_crossbow\",
+      \"Side\": 0,
+      \"X\": 1,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-2\",
+      \"ContentId\": \"hero_hc03_iron_guard\",
+      \"Side\": 0,
+      \"X\": 2,
+      \"Y\": 3,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-3\",
+      \"ContentId\": \"soldier_dummy_melee\",
+      \"Side\": 1,
+      \"X\": 7,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-4\",
+      \"ContentId\": \"soldier_dummy_melee\",
+      \"Side\": 1,
+      \"X\": 7,
+      \"Y\": 3,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-5\",
+      \"ContentId\": \"soldier_dummy_ranged\",
+      \"Side\": 1,
+      \"X\": 8,
+      \"Y\": 3,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    }
   ],
   \"Relics\": []
 }"
 
-[sub_resource type="Resource" id="FrostPreset"]
+[sub_resource type="Resource" id="p1"]
 script = ExtResource("2")
-DisplayName = "冰霜体系验证"
+DisplayName = "连弩手叠速"
 PresetJson = "{
   \"SchemaVersion\": 1,
   \"Mode\": 0,
-  \"CurrentPopulation\": 2,
-  \"Seed\": 97031,
+  \"CurrentPopulation\": 3,
+  \"Seed\": 20260911,
   \"FloorRuleId\": \"rule_clear\",
   \"PrimaryHeroInstanceId\": \"lab-unit-1\",
   \"Units\": [
-    { \"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_banner_marshal\", \"Side\": 0, \"X\": 0, \"Y\": 2, \"Equipment\": [{ \"InstanceId\": \"lab-equipment-3\", \"ContentId\": \"equipment_rimebrand\", \"SlotIndex\": 0 }] },
-    { \"InstanceId\": \"lab-unit-2\", \"ContentId\": \"hero_gear_architect\", \"Side\": 0, \"X\": 0, \"Y\": 3, \"Equipment\": [{ \"InstanceId\": \"lab-equipment-4\", \"ContentId\": \"equipment_rimebrand\", \"SlotIndex\": 0 }] },
-    { \"InstanceId\": \"lab-unit-5\", \"ContentId\": \"enemy_scale_brute\", \"Side\": 1, \"X\": 9, \"Y\": 2, \"Equipment\": [] },
-    { \"InstanceId\": \"lab-unit-6\", \"ContentId\": \"enemy_resistance_dummy\", \"Side\": 1, \"X\": 9, \"Y\": 5, \"Equipment\": [] }
+    {
+      \"InstanceId\": \"lab-unit-1\",
+      \"ContentId\": \"hero_hc01_crossbow\",
+      \"Side\": 0,
+      \"X\": 2,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-2\",
+      \"ContentId\": \"soldier_dummy_static\",
+      \"Side\": 1,
+      \"X\": 7,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    }
   ],
   \"Relics\": []
 }"
+
+[sub_resource type="Resource" id="p2"]
+script = ExtResource("2")
+DisplayName = "连弩手升阶换目标"
+PresetJson = "{
+  \"SchemaVersion\": 1,
+  \"Mode\": 0,
+  \"CurrentPopulation\": 3,
+  \"Seed\": 20260911,
+  \"FloorRuleId\": \"rule_clear\",
+  \"PrimaryHeroInstanceId\": \"lab-unit-1\",
+  \"Units\": [
+    {
+      \"InstanceId\": \"lab-unit-1\",
+      \"ContentId\": \"hero_hc01_crossbow\",
+      \"Side\": 0,
+      \"X\": 2,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": true
+    },
+    {
+      \"InstanceId\": \"lab-unit-2\",
+      \"ContentId\": \"soldier_dummy_melee\",
+      \"Side\": 1,
+      \"X\": 7,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-3\",
+      \"ContentId\": \"soldier_dummy_melee\",
+      \"Side\": 1,
+      \"X\": 8,
+      \"Y\": 3,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-4\",
+      \"ContentId\": \"soldier_dummy_static\",
+      \"Side\": 1,
+      \"X\": 9,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    }
+  ],
+  \"Relics\": []
+}"
+
+[sub_resource type="Resource" id="p3"]
+script = ExtResource("2")
+DisplayName = "铁甲卫嘲讽反伤"
+PresetJson = "{
+  \"SchemaVersion\": 1,
+  \"Mode\": 1,
+  \"CurrentPopulation\": 3,
+  \"Seed\": 20260911,
+  \"FloorRuleId\": \"rule_clear\",
+  \"PrimaryHeroInstanceId\": \"lab-unit-1\",
+  \"Units\": [
+    {
+      \"InstanceId\": \"lab-unit-1\",
+      \"ContentId\": \"hero_hc03_iron_guard\",
+      \"Side\": 0,
+      \"X\": 4,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-2\",
+      \"ContentId\": \"hero_hc01_crossbow\",
+      \"Side\": 0,
+      \"X\": 3,
+      \"Y\": 4,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-3\",
+      \"ContentId\": \"soldier_dummy_melee\",
+      \"Side\": 1,
+      \"X\": 5,
+      \"Y\": 2,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-4\",
+      \"ContentId\": \"soldier_dummy_melee\",
+      \"Side\": 1,
+      \"X\": 5,
+      \"Y\": 3,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    },
+    {
+      \"InstanceId\": \"lab-unit-5\",
+      \"ContentId\": \"soldier_dummy_ranged\",
+      \"Side\": 1,
+      \"X\": 6,
+      \"Y\": 4,
+      \"Equipment\": [],
+      \"RetainAttackStacks\": false
+    }
+  ],
+  \"Relics\": []
+}"
+
+[sub_resource type="Resource" id="bc01"]
+script = ExtResource("2")
+DisplayName = "BC01 · 追刃客 · 普攻与暴击"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20260913,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc04_crit_duelist\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc02"]
+script = ExtResource("2")
+DisplayName = "BC02 · 回潮术士 · 反复施法"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260914,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc05_tide_caster\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc19_overheal_priest\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc03"]
+script = ExtResource("2")
+DisplayName = "BC03 · 共鸣使 · 全队共鸣"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 4,\n  \"Seed\": 20260915,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc06_surge_conductor\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc05_tide_caster\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc12_control_clock\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-8\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc04"]
+script = ExtResource("2")
+DisplayName = "BC04 · 传灯狐 · 身后亡语"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260916,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc07_death_echo\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc25_death_provider\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc05"]
+script = ExtResource("2")
+DisplayName = "BC05 · 药鸦 · 持续叠毒"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260917,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc08_poison_keeper\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc06"]
+script = ExtResource("2")
+DisplayName = "BC06 · 裂印使 · 命中读印"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260918,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc09_breach_scribe\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc01_crossbow\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc07"]
+script = ExtResource("2")
+DisplayName = "BC07 · 引烬师 · 积累引爆"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260919,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc10_ember_cashout\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc11_triad_weaver\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc08"]
+script = ExtResource("2")
+DisplayName = "BC08 · 三相使 · 多状态联动"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 4,\n  \"Seed\": 20260920,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc11_triad_weaver\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc08_poison_keeper\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc09_breach_scribe\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-8\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc09"]
+script = ExtResource("2")
+DisplayName = "BC09 · 缚钟人 · 控制回流"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260921,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc12_control_clock\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc05_tide_caster\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc10"]
+script = ExtResource("2")
+DisplayName = "BC10 · 晶盾剑士 · 当前盾转暴击"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260922,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc13_shield_crit\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc15_shield_grower\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc26_ash_returner\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc11"]
+script = ExtResource("2")
+DisplayName = "BC11 · 磐岩拳师 · 生命防御转伤害"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260923,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc14_stone_fist\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc30_armor_broadcaster\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc12"]
+script = ExtResource("2")
+DisplayName = "BC12 · 接盾战士 · 频繁受盾成长"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 4,\n  \"Seed\": 20260924,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc15_shield_grower\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc07_death_echo\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc15_shield_grower\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 1,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-8\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc13"]
+script = ExtResource("2")
+DisplayName = "BC13 · 碎盾轰卫 · 耗盾爆发"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260925,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc16_shield_bomber\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc15_shield_grower\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc14"]
+script = ExtResource("2")
+DisplayName = "BC14 · 蓄痛卫 · 实际承伤蓄痛"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260926,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc17_pain_vessel\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc20_blood_drummer\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc15"]
+script = ExtResource("2")
+DisplayName = "BC15 · 济世医师 · 实际治疗回响"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260927,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc17_pain_vessel\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc20_blood_drummer\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc16"]
+script = ExtResource("2")
+DisplayName = "BC16 · 溢光祭司 · 过疗转盾"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260928,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc19_overheal_priest\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc17"]
+script = ExtResource("2")
+DisplayName = "BC17 · 血契鼓手 · 友军自伤"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260929,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc20_blood_drummer\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc17_pain_vessel\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc18"]
+script = ExtResource("2")
+DisplayName = "BC18 · 背水狂徒 · 低血保护爆发"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 1,\n  \"Seed\": 20260930,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc21_last_stand\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc19"]
+script = ExtResource("2")
+DisplayName = "BC19 · 风步刺客 · 闪避读取"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20260931,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc22_dodge_assassin\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc20"]
+script = ExtResource("2")
+DisplayName = "BC20 · 霜历法师 · 本战历史积累"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260932,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc23_frost_historian\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc21"]
+script = ExtResource("2")
+DisplayName = "BC21 · 虫群牧者 · 军团接敌"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20260933,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc24_swarm_keeper\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc19_overheal_priest\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc22"]
+script = ExtResource("2")
+DisplayName = "BC22 · 送葬人 · 死亡供给"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20260934,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc25_death_provider\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc24_swarm_keeper\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc23"]
+script = ExtResource("2")
+DisplayName = "BC23 · 灰烬行者 · 同一身份返场"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20260935,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc26_ash_returner\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"soldier_dummy_static\",\n      \"Side\": 0,\n      \"X\": 1,\n      \"Y\": 5,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc24"]
+script = ExtResource("2")
+DisplayName = "BC24 · 饕餮 · 消费临时友军"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20260936,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc27_ally_consumer\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc19_overheal_priest\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc25"]
+script = ExtResource("2")
+DisplayName = "BC25 · 拾骸者 · 利用敌尸"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260937,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc28_corpse_raiser\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc01_crossbow\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 4,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc26"]
+script = ExtResource("2")
+DisplayName = "BC26 · 缚心者 · 夺取活敌"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20260938,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc29_mind_binder\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc01_crossbow\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="bc27"]
+script = ExtResource("2")
+DisplayName = "BC27 · 山岳旗手 · 防御广播"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 4,\n  \"Seed\": 20260939,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc30_armor_broadcaster\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc14_stone_fist\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc15_shield_grower\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-8\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="mv01"]
+script = ExtResource("2")
+DisplayName = "MV01 · 破阵骑兵 · 冲锋"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20261001,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc31_breach_lancer\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="mv02"]
+script = ExtResource("2")
+DisplayName = "MV02 · 腾空武僧 · 跳跃"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20261002,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc32_sky_monk\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 5,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="mv03"]
+script = ExtResource("2")
+DisplayName = "MV03 · 影隙刺客 · 闪现"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20261003,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc33_rift_assassin\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 5,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="mv04"]
+script = ExtResource("2")
+DisplayName = "MV04 · 震盾卫 · 击退"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20261004,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc34_shockshield_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc01_crossbow\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 5,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 5,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 5,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="mv05"]
+script = ExtResource("2")
+DisplayName = "MV05 · 铁钩猎手 · 拉拽"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 2,\n  \"Seed\": 20261005,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc35_hook_hunter\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc09_breach_scribe\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 5,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="mv06"]
+script = ExtResource("2")
+DisplayName = "MV06 · 风眼术士 · 聚怪"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 20261006,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc36_cyclone_weaver\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc14_stone_fist\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc15_shield_grower\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 0,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-8\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 4,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": []\n}"
+
+[sub_resource type="Resource" id="ne01"]
+script = ExtResource("2")
+DisplayName = "NE01 · 棘毒防守 · 撑住叠毒"
+Description = "启动：铁甲卫和开场护盾撑住第一轮。配合：棘毒使叠毒，接盾战士承伤，医师续航；蓄能护符加快毒云。取舍：需要时间，前排先倒或毒被净化就难以兑现。"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 4,\n  \"Seed\": 2026091301,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc08_poison_keeper\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-1-1\",\n          \"ContentId\": \"equipment_ne01_mana_charm\",\n          \"SlotIndex\": 0\n        },\n        {\n          \"InstanceId\": \"lab-equip-1-2\",\n          \"ContentId\": \"equipment_ne10_swift_gloves\",\n          \"SlotIndex\": 1\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-2-1\",\n          \"ContentId\": \"equipment_vanguard_insignia\",\n          \"SlotIndex\": 0\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 3,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-3-1\",\n          \"ContentId\": \"equipment_ne01_mana_charm\",\n          \"SlotIndex\": 0\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"hero_hc15_shield_grower\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-4-1\",\n          \"ContentId\": \"equipment_vanguard_insignia\",\n          \"SlotIndex\": 0\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-8\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-9\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": [\n    {\n      \"InstanceId\": \"lab-relic-1\",\n      \"ContentId\": \"item_ne01_opening_bulwark\",\n      \"Stacks\": 1\n    }\n  ]\n}"
+
+[sub_resource type="Resource" id="ne02"]
+script = ExtResource("2")
+DisplayName = "NE02 · 砂骨殉爆 · 召唤与牺牲"
+Description = "启动：送葬人召唤砂骨仆。配合：丰骨匣增加生命与殉爆伤害；灰烬行者撑线，身前的传灯狐代触发送葬人亡语。取舍：仆从更厚也死得更慢，爆炸只伤害附近敌人。"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 3,\n  \"Seed\": 2026091302,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc25_death_provider\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 2,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-1-1\",\n          \"ContentId\": \"equipment_ne01_mana_charm\",\n          \"SlotIndex\": 0\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc26_ash_returner\",\n      \"Side\": 0,\n      \"X\": 1,\n      \"Y\": 3,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-3-1\",\n          \"ContentId\": \"equipment_vanguard_insignia\",\n          \"SlotIndex\": 0\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"hero_hc07_death_echo\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-4-1\",\n          \"ContentId\": \"equipment_ne10_swift_gloves\",\n          \"SlotIndex\": 0\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-8\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-9\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": [\n    {\n      \"InstanceId\": \"lab-relic-1\",\n      \"ContentId\": \"item_ne02_bone_vigor\",\n      \"Stacks\": 1\n    }\n  ]\n}"
+
+[sub_resource type="Resource" id="ne10"]
+script = ExtResource("2")
+DisplayName = "NE10 · 霜羽连射 · 命中与冰冻"
+Description = "启动：两名原生成员加两名徽章持有者，激活 4 人霜羽同盟，使寒羽冰冻概率达到 50% 上限。配合：攻速增加命中机会，轮转箭扩大覆盖，成功控制给自身护盾。基础冰冻 0.8 秒，受控制抗性影响；不再叠层或减速。"
+PresetJson = "{\n  \"SchemaVersion\": 1,\n  \"Mode\": 1,\n  \"CurrentPopulation\": 4,\n  \"Seed\": 2026091303,\n  \"FloorRuleId\": \"rule_clear\",\n  \"PrimaryHeroInstanceId\": \"lab-unit-1\",\n  \"Units\": [\n    {\n      \"InstanceId\": \"lab-unit-1\",\n      \"ContentId\": \"hero_hc23_frost_historian\",\n      \"Side\": 0,\n      \"X\": 2,\n      \"Y\": 2,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-1-1\",\n          \"ContentId\": \"equipment_ne10_swift_gloves\",\n          \"SlotIndex\": 0\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-2\",\n      \"ContentId\": \"hero_hc03_iron_guard\",\n      \"Side\": 0,\n      \"X\": 4,\n      \"Y\": 2,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-2-1\",\n          \"ContentId\": \"equipment_vanguard_insignia\",\n          \"SlotIndex\": 0\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-3\",\n      \"ContentId\": \"hero_hc01_crossbow\",\n      \"Side\": 0,\n      \"X\": 3,\n      \"Y\": 3,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-3-1\",\n          \"ContentId\": \"equipment_ne10_winter_badge\",\n          \"SlotIndex\": 0\n        },\n        {\n          \"InstanceId\": \"lab-equip-3-2\",\n          \"ContentId\": \"equipment_ne10_swift_gloves\",\n          \"SlotIndex\": 1\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-4\",\n      \"ContentId\": \"hero_hc18_healing_reader\",\n      \"Side\": 0,\n      \"X\": 1,\n      \"Y\": 3,\n      \"Equipment\": [\n        {\n          \"InstanceId\": \"lab-equip-4-1\",\n          \"ContentId\": \"equipment_ne10_winter_badge\",\n          \"SlotIndex\": 0\n        },\n        {\n          \"InstanceId\": \"lab-equip-4-2\",\n          \"ContentId\": \"equipment_ne01_mana_charm\",\n          \"SlotIndex\": 1\n        }\n      ],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-5\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 1,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-6\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-7\",\n      \"ContentId\": \"soldier_dummy_melee\",\n      \"Side\": 1,\n      \"X\": 6,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-8\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 2,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    },\n    {\n      \"InstanceId\": \"lab-unit-9\",\n      \"ContentId\": \"soldier_dummy_ranged\",\n      \"Side\": 1,\n      \"X\": 7,\n      \"Y\": 3,\n      \"Equipment\": [],\n      \"RetainAttackStacks\": false\n    }\n  ],\n  \"Relics\": [\n    {\n      \"InstanceId\": \"lab-relic-1\",\n      \"ContentId\": \"item_ne10_control_shelter\",\n      \"Stacks\": 1\n    },\n    {\n      \"InstanceId\": \"lab-relic-2\",\n      \"ContentId\": \"item_ne01_opening_bulwark\",\n      \"Stacks\": 1\n    }\n  ]\n}"
+
+[sub_resource type="Resource" id="es01"]
+script = ExtResource("2")
+DisplayName = "ES01 · 贯阵弩手 · 预警与贯穿"
+Description = "敌人从普攻射程外蓄力；观察方向条、渐亮和释放。三个假人排成一线只命中前两个，可移动假人比较错位阵形。"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 20260916, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 1, \"Y\": 0, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 2, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 1, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-5\", \"ContentId\": \"enemy_es01_piercing_crossbow\", \"Side\": 1, \"X\": 9, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="es04"]
+script = ExtResource("2")
+DisplayName = "ES04 · 贯光术士 · 预警与贯穿"
+Description = "敌人从普攻射程外蓄力；观察方向条、渐亮和释放。三个假人排成一线只命中前两个，可移动假人比较错位阵形。"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 20260916, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 1, \"Y\": 0, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 2, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 1, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-5\", \"ContentId\": \"enemy_es04_prism_caster\", \"Side\": 1, \"X\": 9, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="ee03"]
+script = ExtResource("2")
+DisplayName = "EE03 · 破阵巨兽 · 大体型分边冲锋"
+Description = "观察蓄力方向、宽阔冲锋与沿途分边；同侧锈甲守卫也会被推开但不受伤。可改变单位位置比较撞开方向。"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 20260919, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 5, \"Y\": 0, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 4, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 2, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"soldier_dummy_static\", \"Side\": 0, \"X\": 0, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-5\", \"ContentId\": \"enemy_ee03_trample_brute\", \"Side\": 1, \"X\": 8, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-6\", \"ContentId\": \"enemy_rust_guard\", \"Side\": 1, \"X\": 6, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="hc37"]
+script = ExtResource("2")
+DisplayName = "HC37 · 军团斗士 · 决斗与反击"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 20260919, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc37_legion_duelist\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"enemy_rust_guard\", \"Side\": 1, \"X\": 4, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"enemy_crossbow\", \"Side\": 1, \"X\": 6, \"Y\": 3, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="hc38"]
+script = ExtResource("2")
+DisplayName = "HC38 · 怒拳斗士 · 承伤蓄怒重拳"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 20260919, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc38_grit_brawler\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"enemy_rust_guard\", \"Side\": 1, \"X\": 4, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"enemy_crossbow\", \"Side\": 1, \"X\": 6, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"enemy_crossbow\", \"Side\": 1, \"X\": 6, \"Y\": 3, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-5\", \"ContentId\": \"enemy_resistance_dummy\", \"Side\": 1, \"X\": 8, \"Y\": 4, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="hc39"]
+script = ExtResource("2")
+DisplayName = "HC39 · 铁钩机兵 · 前排挡钩"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 20260919, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc39_hook_machine\", \"Side\": 0, \"X\": 1, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"enemy_rust_guard\", \"Side\": 1, \"X\": 4, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"enemy_crossbow\", \"Side\": 1, \"X\": 7, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="ee07"]
+script = ExtResource("2")
+DisplayName = "EE07 · 炉喉蜥卫 · 机制试战"
+Description = "固定朝向吐息，三段扇形伤害。可调整站位，观察前方覆盖、身后空档和控制打断。"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 2026091900, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 4, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"hero_hc01_crossbow\", \"Side\": 0, \"X\": 3, \"Y\": 1, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"hero_hc18_healing_reader\", \"Side\": 0, \"X\": 2, \"Y\": 3, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"enemy_ee07_furnace_lizard\", \"Side\": 1, \"X\": 6, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="ee08"]
+script = ExtResource("2")
+DisplayName = "EE08 · 返刃投手 · 机制试战"
+Description = "挥臂直接投刃，去回两程各命中一次。可将单位排成直线，观察飞刃回到原投掷点。"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 2026091901, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"hero_hc01_crossbow\", \"Side\": 0, \"X\": 1, \"Y\": 1, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"hero_hc18_healing_reader\", \"Side\": 0, \"X\": 1, \"Y\": 3, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"enemy_ee08_return_blade\", \"Side\": 1, \"X\": 6, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="ee09"]
+script = ExtResource("2")
+DisplayName = "EE09 · 换位妖使 · 机制试战"
+Description = "标记最远合法敌人并互换位置，自身同样暴露。可调整前后排位置，观察两端保护关系。"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 2026091902, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"hero_hc01_crossbow\", \"Side\": 0, \"X\": 1, \"Y\": 1, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"hero_hc18_healing_reader\", \"Side\": 0, \"X\": 1, \"Y\": 3, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"enemy_ee09_swap_envoy\", \"Side\": 1, \"X\": 6, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="eb01"]
+script = ExtResource("2")
+DisplayName = "EB01 · 岩垒督军 · 机制试战"
+Description = "观察普通近战、短岩墙、窄地裂与收招循环；自动单位可以普攻拆墙。"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 2026091903, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"hero_hc01_crossbow\", \"Side\": 0, \"X\": 1, \"Y\": 1, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"hero_hc18_healing_reader\", \"Side\": 0, \"X\": 1, \"Y\": 3, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"enemy_eb01_rampart_warden\", \"Side\": 1, \"X\": 7, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
+
+[sub_resource type="Resource" id="eb02"]
+script = ExtResource("2")
+DisplayName = "EB02 · 裂壳虫母 · 机制试战"
+Description = "将虫母打至半血，观察裂壳缩体、后退、酸液与可破坏虫卵。母死后仍需清理已孵化幼虫。"
+PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 2026091904, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"hero_hc01_crossbow\", \"Side\": 0, \"X\": 1, \"Y\": 1, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"hero_hc18_healing_reader\", \"Side\": 0, \"X\": 1, \"Y\": 3, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"enemy_eb02_shell_matriarch\", \"Side\": 1, \"X\": 7, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
 
 [resource]
 script = ExtResource("1")
 DefaultPresetName = "默认配置"
-Presets = Array[ExtResource("2")]([SubResource("DefaultPreset"), SubResource("FrostPreset")])
+Presets = [SubResource("p0"), SubResource("p1"), SubResource("p2"), SubResource("p3"), SubResource("bc01"), SubResource("bc02"), SubResource("bc03"), SubResource("bc04"), SubResource("bc06"), SubResource("bc07"), SubResource("bc08"), SubResource("bc09"), SubResource("bc10"), SubResource("bc11"), SubResource("bc12"), SubResource("bc13"), SubResource("bc14"), SubResource("bc15"), SubResource("bc16"), SubResource("bc17"), SubResource("bc18"), SubResource("bc19"), SubResource("bc21"), SubResource("bc23"), SubResource("bc24"), SubResource("bc26"), SubResource("bc27"), SubResource("ne01"), SubResource("ne02"), SubResource("ne10"), SubResource("es01"), SubResource("es04"), SubResource("ee03"), SubResource("hc37"), SubResource("hc38"), SubResource("hc39"), SubResource("ee07"), SubResource("ee08"), SubResource("ee09"), SubResource("eb01"), SubResource("eb02")]
+

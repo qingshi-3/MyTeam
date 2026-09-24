@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc04_crit_duelist.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc04_crit_duelist"
+DisplayName = "追刃客"
+Description = "HC04／BC01 测试稿。4 秒内增加 35% 暴击率和 0.35 攻速。 被动：常驻 15% 暴击；普攻暴击后清零攻击等待，接下一次完整普攻。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 280
+AttackDamage = 20
+Armor = 4
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

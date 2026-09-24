@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RetainedContentLibrary" format=3]
+
+[ext_resource type="Script" path="res://src/Content/RetainedContentLibrary.cs" id="library"]
+[ext_resource type="Resource" path="res://content/catalogs/entries/hero_hc28_corpse_raiser.tres" id="hc28"]
+[ext_resource type="Resource" path="res://content/catalogs/entries/hero_hc31_breach_lancer.tres" id="hc31"]
+[ext_resource type="Resource" path="res://content/catalogs/entries/hero_hc32_sky_monk.tres" id="hc32"]
+[ext_resource type="Resource" path="res://content/catalogs/entries/hero_hc33_rift_assassin.tres" id="hc33"]
+[ext_resource type="Resource" path="res://content/catalogs/entries/hero_hc34_shockshield_guard.tres" id="hc34"]
+[ext_resource type="Resource" path="res://content/catalogs/entries/hero_hc35_hook_hunter.tres" id="hc35"]
+[ext_resource type="Resource" path="res://content/catalogs/entries/hero_hc36_cyclone_weaver.tres" id="hc36"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_hero_hc08_poison_keeper.tres" id="old_hc08"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_hero_hc23_frost_historian.tres" id="old_hc23"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_hero_hc25_death_provider.tres" id="old_hc25"]
+
+[resource]
+script = ExtResource("library")
+Heroes = [ExtResource("hc28"), ExtResource("hc31"), ExtResource("hc32"), ExtResource("hc33"), ExtResource("hc34"), ExtResource("hc35"), ExtResource("hc36")]
+AbilityLoadouts = [ExtResource("old_hc08"), ExtResource("old_hc23"), ExtResource("old_hc25")]

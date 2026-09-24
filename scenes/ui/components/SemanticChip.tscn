@@ -10,6 +10,12 @@ theme_override_constants/separation = 4
 script = ExtResource("1")
 Catalog = ExtResource("2")
 
+[node name="SemanticCaption" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
 [node name="SemanticIcon" type="TextureRect" parent="."]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(18, 18)

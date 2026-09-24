@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="definition"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/position_swap.tscn" id="scene"]
+[resource]
+script = ExtResource("definition")
+StableId = "position_swap"
+DisplayName = "成对换位"
+Scene = ExtResource("scene")
+Duration = 1.0
+Persistent = true
+Ground = true
+UsesRadius = true
+ReferenceRadius = 1
+Size = 256

@@ -1,4 +1,6 @@
 using Godot;
+using System.Collections.Generic;
+using System.Linq;
 using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
@@ -19,10 +21,15 @@ public partial class ArmyOverviewController : Control
     private FocusBehaviorRecursiveEnum _previousScopeBehavior;
     private FocusModeEnum _previousSummaryFocusMode;
     private bool _isOpen;
-    private EquipmentLoadoutPanel _equipmentPanel = null!;
+    private RosterLoadoutView _equipmentPanel = null!;
     private RunApplication? _application;
+    private string _inspectedHero = "";
 
     public bool IsOpen => _isOpen;
+    // The global resource strip owns this header band. ScreenRouter reserves it
+    // before laying out page-local controls, including their popup launchers.
+    public float HeaderReservedHeight => System.Math.Max(_summary.OffsetBottom,
+        _summary.OffsetTop + _summary.GetCombinedMinimumSize().Y) + 12f;
 
     public override void _Ready()
     {
@@ -34,7 +41,11 @@ public partial class ArmyOverviewController : Control
         _rows = GetNode<VBoxContainer>("%Rows");
         _rowScene = GD.Load<PackedScene>("res://scenes/ui/components/ArmyDrawerRow.tscn");
         _sectionScene = GD.Load<PackedScene>("res://scenes/ui/components/ArmyDrawerSection.tscn");
-        _equipmentPanel = GetNode<EquipmentLoadoutPanel>("%ArmyEquipmentPanel");
+        _equipmentPanel = GetNode<RosterLoadoutView>("%ArmyEquipmentPanel");
+        var pages = GetNode<TabContainer>("%Pages");
+        pages.SetTabTitle(0, "英雄与装备");
+        pages.SetTabTitle(1, "军团总览");
+        _equipmentPanel.HeroSelected += OnEquipmentHeroSelected;
         _equipmentPanel.EquipmentChanged += OnEquipmentChanged;
         _summary.Pressed += Open;
         _close.Pressed += Close;
@@ -46,6 +57,7 @@ public partial class ArmyOverviewController : Control
     public override void _ExitTree()
     {
         _equipmentPanel.EquipmentChanged -= OnEquipmentChanged;
+        _equipmentPanel.HeroSelected -= OnEquipmentHeroSelected;
         RestoreModalFocus();
         _summary.Pressed -= Open;
         _close.Pressed -= Close;
@@ -57,7 +69,7 @@ public partial class ArmyOverviewController : Control
     public void BindEquipmentManagement(RunApplication app)
     {
         _application = app;
-        _equipmentPanel.Bind(app);
+        RefreshRoster();
     }
 
     private void OnEquipmentChanged()
@@ -82,10 +94,18 @@ public partial class ArmyOverviewController : Control
         AddSection("遗物与备用装备");
         if (model.Items.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无物品", "", ""));
         else foreach (var item in model.Items) AddRow(item);
+        RefreshRoster();
     }
 
+    private void RefreshRoster()
+    {
+        if (_application is not null) _equipmentPanel.Bind(_application, _inspectedHero);
+    }
+
+    private void OnEquipmentHeroSelected(string identity) => _inspectedHero = identity;
     public void Close()
     {
+        BattleLabHoverHint.HideAll(true);
         _drawer.Visible = false;
         _backdrop.Visible = false;
         MouseFilter = MouseFilterEnum.Ignore;
@@ -99,9 +119,11 @@ public partial class ArmyOverviewController : Control
         if (_isOpen) return;
         if (_application?.ActiveRun is { } run)
         {
-            _equipmentPanel.Bind(_application);
             Bind(ArmyOverviewFactory.Build(run, _application.Content, _application.Rules));
         }
+        foreach (var node in GetTree().GetNodesInGroup("context_popup_windows"))
+            if (node is ContextPopup popup && popup.IsOpen) popup.Close();
+        BattleLabHoverHint.HideAll(true);
         _previousFocus = GetViewport().GuiGetFocusOwner();
         _previousSummaryFocusMode = _summary.FocusMode;
         _summary.FocusMode = FocusModeEnum.None;
@@ -117,11 +139,35 @@ public partial class ArmyOverviewController : Control
         _close.GrabFocus();
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
-        if (!_isOpen || !@event.IsActionPressed("ui_cancel")) return;
-        Close();
-        GetViewport().SetInputAsHandled();
+        if (!_isOpen || @event is not InputEventKey { Pressed: true, Echo: false } key) return;
+        if (key.Keycode == Key.Escape)
+        {
+            if (GetViewport().GuiIsDragging()) GetViewport().GuiCancelDrag();
+            else Close();
+            GetViewport().SetInputAsHandled();
+        }
+        else if (key.Keycode == Key.Tab)
+        {
+            var focusable = FocusableControls(_drawer).ToArray();
+            if (focusable.Length > 0)
+            {
+                var index = System.Array.IndexOf(focusable, GetViewport().GuiGetFocusOwner());
+                focusable[(index + (key.ShiftPressed ? -1 : 1) + focusable.Length) % focusable.Length].GrabFocus();
+            }
+            GetViewport().SetInputAsHandled();
+        }
+    }
+
+    private static IEnumerable<Control> FocusableControls(Node root)
+    {
+        foreach (var child in root.GetChildren())
+        {
+            if (child is Control control && control.IsVisibleInTree() && control.FocusMode == FocusModeEnum.All
+                && control is not BaseButton { Disabled: true }) yield return control;
+            foreach (var nested in FocusableControls(child)) yield return nested;
+        }
     }
 
     private void RestoreModalFocus()

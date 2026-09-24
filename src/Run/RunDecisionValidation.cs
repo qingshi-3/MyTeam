@@ -32,7 +32,8 @@ public static class RunDecisionValidation
     {
         if (offer is null) return true;
         if (string.IsNullOrWhiteSpace(offer.OfferId) || string.IsNullOrWhiteSpace(offer.DisplayName) || !Enum.IsDefined(offer.Kind) ||
-            offer.FloorIndex != run.FloorIndex || offer.BattleNumber != run.BattleNumber || offer.Choices.IsDefaultOrEmpty ||
+            offer.FloorIndex != run.FloorIndex || offer.BattleNumber != run.BattleNumber || offer.Choices.IsDefault ||
+            offer.Choices.IsEmpty && !offer.AllowSkip ||
             offer.Repeatable && offer.Kind != RunOfferKind.Shop || offer.Kind == RunOfferKind.Shop && !offer.AllowSkip ||
             offer.Choices.Any(choice => choice is null) || offer.Choices.Select(choice => choice.StableId).Distinct().Count() != offer.Choices.Length)
             return false;

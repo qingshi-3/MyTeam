@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_es04_prism_caster.tres" id="portrait"]
+
+[resource]
+script = ExtResource("1")
+Portrait = ExtResource("portrait")
+Id = "enemy_es04_prism_caster"
+DisplayName = "贯光术士"
+Description = "蓄力 1.2 秒，锁定方向贯穿最多 2 个敌人。首个目标受到 120% 攻击力伤害，第二个为 80%。受控可打断；分散站位避免同时受击。"
+Role = 6
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 85
+AttackDamage = 22
+AttackRange = 3.5
+AttackDelivery = 2
+AttackCooldown = 2.1
+MoveInterval = 0.54
+Armor = 0
+HealPower = 0
+SplashRadius = 0
+LifeSteal = 0
+Tags = Array[StringName]([&"enemy", &"specialist"])

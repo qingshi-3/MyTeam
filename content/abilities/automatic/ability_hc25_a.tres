@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/SummonAbilityOperationSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Profile = 4
+Count = 2
+MaximumLivingTemporaryUnits = 5
+LimitPerOwner = true
+RequireAtLeastOne = true
+SummonContentId = "soldier_bc_skeleton"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc25_a"
+DisplayName = "白骨先锋"
+Description = "召唤 2 名骨卒，自己最多维持 5 名。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s0")]

@@ -36,7 +36,7 @@ public sealed record CompiledEffectStep(
     EffectAmountSource AmountSource,
     float Amount,
     CompiledAttributeMagnitude? Magnitude = null,
-    EffectDamageType DamageType = EffectDamageType.Physical);
+    EffectDamageType DamageType = EffectDamageType.Normal);
 
 public sealed record CompiledEffectBindingLimits(
     int MaxUses,

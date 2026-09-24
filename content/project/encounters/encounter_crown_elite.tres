@@ -13,3 +13,7 @@ EnemyPool = ExtResource("2")
 FloorRulePool = ExtResource("3")
 BaseEnemyCount = 6
 SeedSalt = 17
+LeadEnemyId = "enemy_es04_prism_caster"
+EnemyHealthMultiplier = 1.8
+EnemyDamageMultiplier = 1.4
+AlternateLeadEnemyIds = Array[String](["enemy_ee09_swap_envoy"])

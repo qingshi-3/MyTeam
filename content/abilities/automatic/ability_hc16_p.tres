@@ -1,0 +1,29 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Action = 2
+TargetQuery = SubResource("s0")
+Amount = 20
+Terms = []
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc16_p"
+DisplayName = "叠甲"
+Description = "每 2 秒获得 20 护盾。"
+ActivationKind = 1
+Trigger = 2
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 20
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

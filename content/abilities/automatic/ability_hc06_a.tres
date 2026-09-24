@@ -1,0 +1,75 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 5
+Subject = 0
+Attribute = 0
+Key = "surge"
+Scale = 1
+TeamShared = true
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 7
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+Minimum = 5
+Maximum = 1e+20
+Every = 1
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r3")
+Action = 4
+TargetQuery = SubResource("s3")
+Amount = -5
+Terms = []
+CounterKey = "surge"
+TeamShared = true
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r4")
+Team = 0
+Anchor = 2
+Range = 4
+MaxTargets = 0
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s5")
+Amount = 100
+Terms = []
+DamageType = 0
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc06_a"
+DisplayName = "共鸣迸发"
+Description = "满蓝且全队共鸣至少 5 点时，花费 5 点，以攻击范围内的敌方目标为中心，对其 4 格内敌人造成 100 伤害。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2"), SubResource("s4"), SubResource("s6")]

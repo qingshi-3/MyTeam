@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc14_stone_fist.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc14_stone_fist"
+DisplayName = "磐岩拳师"
+Description = "HC14／BC11 测试稿。对周围 1.5 格敌人造成自身最大生命 12% 加防御 2 倍的伤害。 被动：每次普攻命中追加自身最大生命 2% 的伤害。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 500
+AttackDamage = 12
+Armor = 10
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

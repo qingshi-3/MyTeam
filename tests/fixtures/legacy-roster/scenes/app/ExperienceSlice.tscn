@@ -1,0 +1,67 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://tests/fixtures/legacy-roster/LegacyExperienceSliceRoot.cs" id="1"]
+[ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="2"]
+[ext_resource type="Resource" path="res://tests/fixtures/legacy-roster/content/project/alpha_project.tres" id="3"]
+[ext_resource type="Resource" path="res://tests/fixtures/legacy-roster/content/experience/reward_loop.tres" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ExperienceSlicePanel.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/DeploymentScreen.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/BattleScreen.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/BattleReportScreen.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/ArmyOverview.tscn" id="9"]
+
+[node name="ExperienceSlice" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2")
+script = ExtResource("1")
+ProjectDefinition = ExtResource("3")
+SliceDefinition = ExtResource("4")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.018, 0.032, 0.043, 1)
+
+[node name="Screens" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ExperiencePanel" parent="Screens" instance=ExtResource("5")]
+layout_mode = 1
+visible = true
+
+[node name="DeploymentScreen" parent="Screens" instance=ExtResource("6")]
+layout_mode = 1
+visible = false
+
+[node name="BattleScreen" parent="Screens" instance=ExtResource("7")]
+layout_mode = 1
+visible = false
+
+[node name="BattleReportScreen" parent="Screens" instance=ExtResource("8")]
+layout_mode = 1
+visible = false
+
+[node name="ArmyOverview" parent="." instance=ExtResource("9")]
+layout_mode = 1
+visible = false
+
+[node name="ExitDialog" type="ConfirmationDialog" parent="."]
+title = "离开玩法试验？"
+size = Vector2i(520, 180)
+dialog_text = "本次尝试和检查点只在内存中，离开后不保留。\n正式征程和存档不会被修改。"
+ok_button_text = "离开试验"
+cancel_button_text = "继续体验"
+

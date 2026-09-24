@@ -1,0 +1,180 @@
+[gd_resource type="Resource" load_steps=26 format=3]
+
+[ext_resource type="Script" path="res://src/UI/CombatKeywordCatalog.cs" id="1"]
+[ext_resource type="Script" path="res://src/UI/CombatKeyword.cs" id="2"]
+
+[sub_resource type="Resource" id="Term_0"]
+script = ExtResource("2")
+Word = "暴击"
+Aliases = PackedStringArray("暴击率")
+SemanticIcon = &"keyword.critical"
+Explanation = "普攻的暴击概率；暴击伤害由攻击者的暴击倍率决定。百分数增益增加概率百分点。"
+Tint = Color(1, 0.38, 0.34, 1)
+
+[sub_resource type="Resource" id="Term_1"]
+script = ExtResource("2")
+Word = "攻速"
+Aliases = PackedStringArray("攻击速度")
+SemanticIcon = &"keyword.attack-speed"
+Explanation = "攻击速度倍率。+0.35 表示倍率增加 0.35，不是每秒多攻击 0.35 次。"
+Tint = Color(1, 0.77, 0.35, 1)
+
+[sub_resource type="Resource" id="Term_2"]
+script = ExtResource("2")
+Word = "追击"
+SemanticIcon = &"keyword.follow-up"
+Explanation = "清零本次攻击等待；下一次仍需完成完整普攻动作，不是立即追加一段伤害。"
+Tint = Color(1, 0.77, 0.35, 1)
+
+[sub_resource type="Resource" id="Term_3"]
+script = ExtResource("2")
+Word = "嘲讽"
+SemanticIcon = &"keyword.taunt"
+Explanation = "强制以施加者为攻击目标；持续时间和有效范围由施加技能决定。"
+Tint = Color(1, 0.38, 0.34, 1)
+
+[sub_resource type="Resource" id="Term_4"]
+script = ExtResource("2")
+Word = "眩晕"
+SemanticIcon = &"keyword.stun"
+Explanation = "持续期间无法行动；实际持续时间受目标适用的控制抗性影响。"
+Tint = Color(0.77, 0.65, 1, 1)
+
+[sub_resource type="Resource" id="Term_5"]
+script = ExtResource("2")
+Word = "护盾"
+SemanticIcon = &"shield"
+Explanation = "优先吸收伤害。当前盾量、新获得次数和破盾是不同的读取条件。"
+Tint = Color(1, 1, 1, 1)
+
+[sub_resource type="Resource" id="Term_6"]
+script = ExtResource("2")
+Word = "反伤"
+SemanticIcon = &"keyword.thorns"
+Explanation = "受到指定攻击后向攻击者造成伤害；触发资格与计算基数以技能为准。"
+Tint = Color(1, 1, 1, 1)
+
+[sub_resource type="Resource" id="Term_7"]
+script = ExtResource("2")
+Word = "吸血"
+SemanticIcon = &"keyword.lifesteal"
+Explanation = "按符合吸血条件的伤害恢复生命，比例由当前吸血属性决定。"
+Tint = Color(0.45, 0.87, 0.66, 1)
+
+[sub_resource type="Resource" id="Term_8"]
+script = ExtResource("2")
+Word = "过疗"
+Aliases = PackedStringArray("过量治疗")
+SemanticIcon = &"keyword.overheal"
+Explanation = "超过生命缺口的治疗部分，不计入实际恢复量；只有明确效果会读取或转换它。"
+Tint = Color(0.45, 0.87, 0.66, 1)
+
+[sub_resource type="Resource" id="Term_9"]
+script = ExtResource("2")
+Word = "闪避"
+SemanticIcon = &"keyword.dodge"
+Explanation = "躲过符合闪避条件的普攻；成功闪避可被明确的被动效果读取。"
+Tint = Color(0.47, 0.79, 1, 1)
+
+[sub_resource type="Resource" id="Term_10"]
+script = ExtResource("2")
+Word = "亡语"
+SemanticIcon = &"keyword.deathrattle"
+Explanation = "死亡时触发的效果；只有明确允许复制的亡语才能被其他能力代触发。"
+Tint = Color(0.77, 0.65, 1, 1)
+
+[sub_resource type="Resource" id="Term_ne01_poison"]
+script = ExtResource("2")
+Word = "棘毒"
+SemanticIcon = &"keyword.poison"
+Explanation = "持续 12 秒，每层每秒造成 2 真实伤害，重复施加刷新持续时间。毒云先给范围内目标加 3 层，再给主目标追加此时毒层的 50%，向下取整。当前 500 层为测试保护上限，尚非最终定值。"
+Tint = Color(0.61, 0.86, 0.36, 1)
+
+[sub_resource type="Resource" id="Term_ne02_death_blast"]
+script = ExtResource("2")
+Word = "殉爆"
+SemanticIcon = &"keyword.death-blast"
+Explanation = "己方临时小兵被击杀或被消费时，以死者为中心，对 1.5 格内敌人造成死者最大生命 25% 的伤害。到期离场、战斗清理不触发；送葬人自身的殉爆亡语可被代触发，读取送葬人的最大生命。"
+Tint = Color(1, 0.63, 0.36, 1)
+
+[sub_resource type="Resource" id="Term_ne10_freeze"]
+script = ExtResource("2")
+Word = "冰冻"
+Aliases = PackedStringArray("冻结")
+SemanticIcon = &"keyword.freeze"
+Explanation = "持续期间无法行动，实际时长受控制抗性影响。寒羽基础冰冻 0.8 秒、概率 25%；霜羽同盟 2／4 名成员时提高至 35%／50%，最高 50%。不叠层、不附带减速，没有额外冰冻免疫期。"
+Tint = Color(0.47, 0.79, 1, 1)
+
+[sub_resource type="Resource" id="Attribute_attack"]
+script = ExtResource("2")
+Word = "攻击"
+SemanticIcon = &"attack"
+Aliases = PackedStringArray("攻击力")
+Explanation = "普攻与明确读取攻击的技能公式使用此值；最终伤害还会经过目标防御等结算。"
+Tint = Color(1, 0.38, 0.34, 1)
+
+[sub_resource type="Resource" id="Attribute_health"]
+script = ExtResource("2")
+Word = "生命"
+SemanticIcon = &"health"
+Aliases = PackedStringArray("最大生命", "生命上限")
+Explanation = "生命降至 0 时死亡；最大生命限制可恢复的生命上限。"
+Tint = Color(0.38, 0.88, 0.52, 1)
+
+[sub_resource type="Resource" id="Attribute_armor"]
+script = ExtResource("2")
+Word = "防御"
+SemanticIcon = &"armor"
+Aliases = PackedStringArray("护甲")
+Explanation = "统一降低普通伤害，真实伤害绕过防御；减伤后的伤害再由护盾优先吸收。"
+Tint = Color(0.67, 0.73, 0.82, 1)
+
+[sub_resource type="Resource" id="Attribute_mana"]
+script = ExtResource("2")
+Word = "法力"
+SemanticIcon = &"mana"
+Aliases = PackedStringArray("法力上限", "初始法力", "回蓝")
+Explanation = "法力达到上限且满足条件时自动施放主动技能。"
+Tint = Color(0.32, 0.67, 1, 1)
+
+[sub_resource type="Resource" id="Attribute_range"]
+script = ExtResource("2")
+Word = "射程"
+SemanticIcon = &"reach"
+Aliases = PackedStringArray("近战触及", "远程射程")
+Explanation = "以战场格为单位的攻击可达距离。"
+Tint = Color(0.52, 0.9, 1, 1)
+
+[sub_resource type="Resource" id="Attribute_resistance"]
+script = ExtResource("2")
+Word = "控制抗性"
+SemanticIcon = &"control_resistance"
+Explanation = "缩短适用控制的持续时间。"
+Tint = Color(0.67, 0.73, 0.82, 1)
+
+[sub_resource type="Resource" id="Attribute_true_damage"]
+script = ExtResource("2")
+Word = "真实伤害"
+SemanticIcon = &"keyword.true-damage"
+Explanation = "绕过防御减伤；仍受适用的伤害修饰和护盾吸收影响。"
+Tint = Color(0.956863, 0.933333, 0.878431, 1)
+
+[sub_resource type="Resource" id="Attribute_damage"]
+script = ExtResource("2")
+Word = "伤害"
+Aliases = PackedStringArray("普通伤害")
+SemanticIcon = &"damage"
+Explanation = "由具体公式计算；攻击、法强、生命等仅在公式明确读取时参与。普通伤害统一经过防御减伤。"
+Tint = Color(1, 0.38, 0.34, 1)
+
+[sub_resource type="Resource" id="Attribute_spell_power"]
+script = ExtResource("2")
+Word = "法强"
+Aliases = PackedStringArray("法术强度")
+SemanticIcon = &"spell_power"
+Explanation = "仅参与明确读取法强的公式，不自动增强全部技能，也不决定另一套伤害或防御类别。"
+Tint = Color(0.77, 0.65, 1, 1)
+
+[resource]
+script = ExtResource("1")
+Terms = [SubResource("Term_0"), SubResource("Term_1"), SubResource("Term_2"), SubResource("Term_3"), SubResource("Term_4"), SubResource("Term_5"), SubResource("Term_6"), SubResource("Term_7"), SubResource("Term_8"), SubResource("Term_9"), SubResource("Term_10"), SubResource("Term_ne01_poison"), SubResource("Term_ne02_death_blast"), SubResource("Term_ne10_freeze"), SubResource("Attribute_attack"), SubResource("Attribute_health"), SubResource("Attribute_armor"), SubResource("Attribute_mana"), SubResource("Attribute_range"), SubResource("Attribute_resistance"), SubResource("Attribute_true_damage"), SubResource("Attribute_damage"), SubResource("Attribute_spell_power")]

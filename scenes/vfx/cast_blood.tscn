@@ -1,0 +1,75 @@
+[gd_scene load_steps=13 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBodySurfaceTrack.cs" id="body"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="particles"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/cast_body_surface.gdshader" id="body_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/cast_energy_veil.gdshader" id="veil_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="glow"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="dust"]
+
+[sub_resource type="ShaderMaterial" id="BodyMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("body_shader")
+shader_parameter/tint = Color(1, 0.16, 0.24, 1)
+shader_parameter/strength = 0.42
+
+[sub_resource type="ShaderMaterial" id="VeilMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("veil_shader")
+shader_parameter/tint = Color(1, 0.16, 0.24, 1)
+
+[sub_resource type="ShaderMaterial" id="LightMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("glow")
+shader_parameter/rays = 0.0
+shader_parameter/core_strength = 0.22
+shader_parameter/corona_strength = 0.28
+shader_parameter/tint = Color(1, 0.78, 0.58, 1)
+
+[node name="SourceCast" type="Node2D"]
+script = ExtResource("root")
+
+[node name="BodySurface" type="Sprite2D" parent="."]
+script = ExtResource("body")
+material = SubResource("BodyMaterial")
+Duration = 0.6
+
+[node name="BodyLight" type="Sprite2D" parent="."]
+script = ExtResource("sprite")
+texture = ExtResource("surface")
+material = SubResource("LightMaterial")
+scale = Vector2(0.44, 0.5)
+Duration = 0.27
+StartScale = 0.4
+EndScale = 1.0
+
+[node name="EnergyVeil" type="Sprite2D" parent="."]
+script = ExtResource("sprite")
+texture = ExtResource("surface")
+material = SubResource("VeilMaterial")
+scale = Vector2(0.65, 0.61)
+position = Vector2(0, 8)
+ShaderLifecycle = true
+Duration = 0.65
+StartScale = 1.0
+EndScale = 1.0
+
+[node name="ReleaseMotes" type="Node2D" parent="."]
+script = ExtResource("particles")
+ParticleScene = ExtResource("dust")
+Amount = 10
+Seed = 1820
+Radial = true
+Delay = 0.10
+EmitDuration = 0.08
+OriginRadius = 35.0
+SpeedRange = Vector2(75, 140)
+LifetimeRange = Vector2(0.32, 0.60)
+SizeRange = Vector2(6, 12)
+HeightScale = 1.0
+Gravity = -20.0
+LiftSpeed = 20.0
+EndTint = Color(1, 0.16, 0.24, 1)
+modulate = Color(1, 0.78, 0.58, 1)

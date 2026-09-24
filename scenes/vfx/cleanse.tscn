@@ -1,0 +1,93 @@
+[gd_scene load_steps=14 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="timed"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="ambient"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="ballistic"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/cleanse_sweep.gdshader" id="sweep"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="light"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
+[sub_resource type="ShaderMaterial" id="SweepMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("sweep")
+[sub_resource type="ShaderMaterial" id="ContactMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("light")
+shader_parameter/rays = 0.0
+shader_parameter/core_strength = 0.28
+shader_parameter/corona_strength = 0.8
+shader_parameter/tint = Color(0.42,0.88,0.77,0.75)
+[sub_resource type="ShaderMaterial" id="AfterglowMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("light")
+shader_parameter/rays = 0.0
+shader_parameter/core_strength = 0.15
+shader_parameter/corona_strength = 0.5
+shader_parameter/tint = Color(0.57,0.91,0.91,0.5)
+[node name="Cleanse" type="Node2D"]
+script = ExtResource("root")
+[node name="Purify" type="Node2D" parent="."]
+script = ExtResource("timed")
+StartCue = 1
+[node name="FootContact" type="Sprite2D" parent="Purify"]
+texture = ExtResource("surface")
+material = SubResource("ContactMaterial")
+script = ExtResource("sprite")
+scale = Vector2(0.58,0.22)
+Duration = 0.56
+StartScale = 0.8
+EndScale = 1.2
+[node name="BodySweep" type="Sprite2D" parent="Purify"]
+texture = ExtResource("surface")
+material = SubResource("SweepMaterial")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+position = Vector2(0,-40)
+scale = Vector2(0.50,0.52)
+Duration = 0.54
+StartScale = 1.0
+EndScale = 1.0
+[node name="CleanAfterglow" type="Sprite2D" parent="Purify"]
+texture = ExtResource("surface")
+material = SubResource("AfterglowMaterial")
+script = ExtResource("sprite")
+position = Vector2(0,-42)
+scale = Vector2(0.46,0.52)
+Delay = 0.18
+Duration = 0.6
+StartScale = 0.85
+EndScale = 1.05
+[node name="ReleasedSpecks" type="Node2D" parent="Purify"]
+script = ExtResource("ballistic")
+ParticleScene = ExtResource("dust")
+position = Vector2(0,-54)
+Amount = 15
+Seed = 6131
+Radial = true
+OriginRadius = 28.0
+Delay = 0.08
+EmitDuration = 0.13
+SpeedRange = Vector2(80,140)
+LifetimeRange = Vector2(0.3,0.6)
+SizeRange = Vector2(8,13)
+HeightScale = 1.0
+FaceVelocity = false
+Gravity = 0.0
+LiftSpeed = 26.0
+EndTint = Color(0.32,0.59,0.65,1)
+[node name="PureGlints" type="Node2D" parent="Purify"]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("glint")
+position = Vector2(0,-48)
+Amount = 5
+Seed = 6132
+Spread = Vector2(38,34)
+Velocity = Vector2(0,-28)
+Lifetime = 0.58
+EmitDuration = 0.20
+SizeRange = Vector2(13,23)
+StartTint = Color(0.75,1,0.92,1)
+EndTint = Color(0.33,0.69,0.73,1)
+Opacity = 0.5

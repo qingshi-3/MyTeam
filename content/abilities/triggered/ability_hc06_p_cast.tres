@@ -1,0 +1,31 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Action = 4
+TargetQuery = SubResource("s0")
+Amount = 1
+Terms = []
+CounterKey = "surge"
+TeamShared = true
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc06_p_cast"
+DisplayName = "协奏供能"
+Description = "每次友军满蓝技能成功释放产生 1 点全队共鸣；自身每第三次普攻命中也产生 1 点。"
+ActivationKind = 2
+Trigger = 13
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

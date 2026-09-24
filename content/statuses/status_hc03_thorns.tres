@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="StatusDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusCombatReactiveBindingSpec.cs" id="reaction"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="binding"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="trigger"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="limits"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="target"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/DamageEffectSpec.cs" id="damage"]
+[ext_resource type="Script" path="res://src/Attributes/SourceAttributeMagnitudeSpec.cs" id="armor"]
+[sub_resource type="Resource" id="armor"]
+script = ExtResource("armor")
+Attribute = 4
+[sub_resource type="Resource" id="target"]
+script = ExtResource("target")
+[sub_resource type="Resource" id="trigger"]
+script = ExtResource("trigger")
+[sub_resource type="Resource" id="limits"]
+script = ExtResource("limits")
+[sub_resource type="Resource" id="damage"]
+script = ExtResource("damage")
+Magnitude = SubResource("armor")
+[sub_resource type="Resource" id="binding"]
+script = ExtResource("binding")
+StableId = "effect_hc03_thorns"
+Trigger = SubResource("trigger")
+TargetQuery = SubResource("target")
+Effects = [SubResource("damage")]
+Limits = SubResource("limits")
+[sub_resource type="Resource" id="reaction"]
+script = ExtResource("reaction")
+EventKind = 3
+OwnerRole = 1
+SourceKind = 1
+Binding = SubResource("binding")
+[resource]
+script = ExtResource("script")
+StableId = "status_hc03_thorns"
+DisplayName = "荆棘甲"
+Behavior = 2
+Disposition = 1
+CombatReactiveBindings = [SubResource("reaction")]

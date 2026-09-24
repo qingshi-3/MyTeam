@@ -4,7 +4,7 @@ using TowerAutobattler.TacticalCommands;
 
 namespace TowerAutobattler.UI;
 
-public partial class TacticalCommandHud : PanelContainer
+public partial class TacticalCommandHud : VBoxContainer
 {
     public event Action<int>? UseRequested;
 

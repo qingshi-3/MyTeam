@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Security.Cryptography;
@@ -27,10 +28,28 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
             : project.Campaign;
         var definition = campaign.RunOffers[kind];
         var identity = $"{run.Seed:x16}:{run.FloorIndex}:{run.BattleNumber}:{definition.StableId}";
-        var pooled = definition.PoolChoices.OrderBy(choice => StableRoll(identity + ":" + choice.StableId))
-            .Take(definition.PoolChoiceCount);
-        return new PendingRunOffer(identity, kind, definition.DisplayName, definition.AllowSkip, definition.Repeatable,
-            run.FloorIndex, run.BattleNumber, definition.Choices.Concat(pooled).ToImmutableArray());
+        var selected = new HashSet<string>(StringComparer.Ordinal);
+        var fixedChoices = definition.Choices
+            .Where(choice => RunRecruitmentPolicy.TrySelect(run, choice, selected)).ToImmutableArray();
+        var poolOrder = definition.PoolChoices.OrderBy(choice => StableRoll(identity + ":" + choice.StableId)).AsEnumerable();
+        if (definition.PoolAction == RunPoolAction.Recruit && project.Campaign.RecruitmentSupply is { } supply)
+        {
+            // Authored pool recipes each grant one hero. Use the operation identity,
+            // never the presentation id, to preserve ordinary uniqueness semantics.
+            var eligible = poolOrder.Where(choice => RunRecruitmentPolicy.CanOffer(run, choice))
+                .Where(choice => choice.Operations.Length == 1 && choice.Operations[0].Kind == RunOperationKind.Recruit)
+                .Where(choice => !selected.Contains(choice.Operations[0].ContentId))
+                .GroupBy(choice => choice.Operations[0].ContentId, StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+            poolOrder = RecruitmentSupplySampler.Draw(supply, eligible.Keys, supply.WeightsAt(run.FloorIndex),
+                definition.PoolChoiceCount, identity).Select(id => eligible[id]);
+        }
+        var pooled = poolOrder
+            .Where(choice => RunRecruitmentPolicy.TrySelect(run, choice, selected))
+            .Take(definition.PoolChoiceCount).ToImmutableArray();
+        var choices = fixedChoices.AddRange(pooled);
+        return new PendingRunOffer(identity, kind, definition.DisplayName, definition.AllowSkip || choices.IsEmpty, definition.Repeatable,
+            run.FloorIndex, run.BattleNumber, choices);
     }
 
     public RunDecisionResult Resolve(ActiveRunDto? run, string offerId, string? choiceId)
@@ -38,6 +57,7 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
         if (run?.PendingOffer is not { } offer) return RunDecisionResult.Reject(RunDecisionFailure.NoOffer, "没有待处理的选择。");
         if (offer.OfferId != offerId) return RunDecisionResult.Reject(RunDecisionFailure.StaleOffer, "这个选择已失效，请查看当前机会。");
         if (!persistence.ValidateRun(run)) return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "当前征程状态无效，未作修改。");
+        offer = RunRecruitmentPolicy.VisibleOffer(run, offer);
         var working = persistence.CloneRun(run);
         var chanceSucceeded = true;
         if (choiceId is null)
@@ -70,6 +90,7 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
                 working.PendingNode = false;
             }
         }
+        else working.PendingOffer = RunRecruitmentPolicy.VisibleOffer(working, offer);
         if (!persistence.ValidateRun(working)) return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "结果不符合征程规则，未作修改。");
         var changes = Changes(run, working);
         if (!persistence.TryPublish(working, run)) return RunDecisionResult.Reject(RunDecisionFailure.PersistenceFailed, "保存失败，机会、代价和原状态均已保留，请重试。");
@@ -78,6 +99,8 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
 
     public RunDecisionResult Check(ActiveRunDto run, CompiledRunChoice choice)
     {
+        if (!RunRecruitmentPolicy.CanOffer(run, choice))
+            return RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "普通招募不能取得同名英雄（包含后备）。");
         foreach (var condition in choice.Conditions)
         {
             var satisfied = condition.Kind switch

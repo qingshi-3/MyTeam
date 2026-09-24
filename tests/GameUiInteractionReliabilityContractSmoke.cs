@@ -27,7 +27,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
         var failures = new List<string>();
         try
         {
-            var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres")
+            var catalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres")
                 ?? throw new InvalidOperationException("catalog load failed");
             var gate = await TestProjectFixture.PublishAsync(this);
             var registry = gate.Package?.Content
@@ -157,7 +157,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
     {
         const string saveNamespace = "tests/ui-interaction";
         new SaveService(saveNamespace).DeleteActiveRun();
-        var root = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
+        var root = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
         root.SaveNamespace = saveNamespace;
         AddChild(root);
 
@@ -186,7 +186,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
             var rosterCount = app.ActiveRun.Roster.Count;
             root.Flow.ShowRecruitment();
             await ProcessFrames(2);
-            var recruitCard = root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/ChoiceScroll/Choices")
+            var recruitCard = root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices")
                 .GetChildren().OfType<UnitChoiceCard>().FirstOrDefault()
                 ?? throw new InvalidOperationException("run-flow fixture has no recruitment card");
             await ActivateFocused(recruitCard);
@@ -196,7 +196,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
             var rewardItemCount = app.ActiveRun.Items.Count;
             root.Flow.ShowCombatReward();
             await ProcessFrames(2);
-            var rewardCard = root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/ChoiceScroll/Choices")
+            var rewardCard = root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices")
                 .GetChildren().OfType<ChoiceCard>().FirstOrDefault()
                 ?? throw new InvalidOperationException("run-flow fixture has no reward card");
             await Click(rewardCard);
@@ -252,7 +252,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
     {
         const string saveNamespace = "tests/ui-settlement-retry";
         new SaveService(saveNamespace).DeleteActiveRun();
-        var root = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
+        var root = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
         root.SaveNamespace = saveNamespace;
         AddChild(root);
 
@@ -361,6 +361,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
 
     private async Task Click(Control control)
     {
+        await RevealDeploymentCard(control);
         var point = control.GetGlobalRect().GetCenter();
         GetViewport().PushInput(new InputEventMouseMotion
         {
@@ -387,6 +388,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
 
     private async Task Drag(Control source, Control target)
     {
+        await RevealDeploymentCard(source);
         var start = source.GetGlobalRect().GetCenter();
         var end = target.GetGlobalRect().GetCenter();
         GetViewport().PushInput(new InputEventMouseMotion { Position = start, GlobalPosition = start }, true);
@@ -419,6 +421,32 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
         GetViewport().PushInput(new InputEventAction { Action = "ui_accept", Pressed = true, Strength = 1f }, true);
         await ProcessFrames(1);
         GetViewport().PushInput(new InputEventAction { Action = "ui_accept", Pressed = false, Strength = 0f }, true);
+        await ProcessFrames(2);
+    }
+
+    private async Task SelectTab(TabContainer tabs, int index)
+    {
+        var bar = tabs.GetTabBar();
+        var point = bar.GlobalPosition + bar.GetTabRect(index).GetCenter();
+        GetViewport().PushInput(new InputEventMouseMotion { Position = point, GlobalPosition = point }, true);
+        GetViewport().PushInput(new InputEventMouseButton { Position = point, GlobalPosition = point,
+            ButtonIndex = MouseButton.Left, Pressed = true }, true);
+        await ProcessFrames(1);
+        GetViewport().PushInput(new InputEventMouseButton { Position = point, GlobalPosition = point,
+            ButtonIndex = MouseButton.Left, Pressed = false }, true);
+        await ProcessFrames(2);
+        if (tabs.CurrentTab != index) throw new InvalidOperationException("Tab input did not open requested page");
+    }
+
+    private async Task RevealDeploymentCard(Control control)
+    {
+        if (control is not DeploymentUnitCard) return;
+        Node? ancestor = control;
+        while (ancestor is not null && ancestor is not DeploymentScreenController) ancestor = ancestor.GetParent();
+        if (ancestor is not DeploymentScreenController deployment) return;
+        await SelectTab(deployment.GetNode<TabContainer>("%SidebarTabs"), 1);
+        deployment.GetNode<ScrollContainer>("Margin/Layout/Columns/SidebarTabs/RosterPage/RosterScroll")
+            .EnsureControlVisible(control);
         await ProcessFrames(2);
     }
 

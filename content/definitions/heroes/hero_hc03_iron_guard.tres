@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc03_iron_guard.tres" id="portrait"]
+
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="ne10_trait_script"]
+
+[sub_resource type="Resource" id="ne10_winter_member"]
+script = ExtResource("ne10_trait_script")
+TraitId = "trait_ne10_winter"
+Value = 1
+
+[resource]
+script = ExtResource("script")
+Id = "hero_hc03_iron_guard"
+DisplayName = "铁甲卫"
+Description = "HC03 测试稿：嘲讽周围 2.5 格内敌人 3 秒，同时防御增加 18。受到普攻命中后，对攻击者造成当前防御 100% 的反伤。数值均为测试暂值。"
+Portrait = ExtResource("portrait")
+IsHero = true
+IsEnemy = false
+IsTestDummy = false
+Role = 0
+Faction = 6
+RecruitCost = 5
+MaxHealth = 480
+AttackDamage = 12
+AttackRange = 0.25
+AttackCooldown = 1.4
+Armor = 12
+MaxMana = 80
+StartingMana = 40
+Tags = Array[StringName]([&"hero"])
+TraitContributions = [SubResource("ne10_winter_member")]

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/healing_field.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "healing_field"
+DisplayName = "治疗领域"
+PreviewNote = "地面边界完整保持，柔和波纹缓慢向外；绿色加号与细尘在范围内独立错峰上升。扩大半径改变分布，单枚加号保持清楚的尺寸，结束时统一收净。"
+Scene = ExtResource("scene")
+Duration = 1.0
+Persistent = true
+Ground = true
+UsesRadius = true
+FlattenGround = false
+ReferenceRadius = 1.5
+Size = 180

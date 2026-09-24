@@ -520,11 +520,12 @@ public sealed class RelicBattleScope : IDisposable
                 foreach (var binding in instance.Definition.AttributeBindings)
                 {
                     RefreshProjection(instance, binding);
-                    if (binding.Target is not CompiledRelicPlayerFormationAdjacentTarget) continue;
+                    if (binding.Target is not (CompiledRelicPlayerFormationAdjacentTarget or CompiledRelicPlayerSummonsTarget)) continue;
                     foreach (var eventKind in new[]
                              {
                                  BattleCombatEventKind.UnitMoved,
                                  BattleCombatEventKind.UnitSummoned,
+                                 BattleCombatEventKind.AllegianceChanged,
                                  BattleCombatEventKind.UnitDefeated
                              })
                     {
@@ -571,6 +572,17 @@ public sealed class RelicBattleScope : IDisposable
             _context = null;
             throw;
         }
+    }
+
+    // Apply authored summon modifiers before the birth fact is published, so the
+    // newborn starts at its authored effective health. Later refreshes never heal it.
+    public void RefreshSummonModifiers()
+    {
+        EnsureActive();
+        foreach (var instance in OrderedInstances())
+        foreach (var binding in instance.Definition.AttributeBindings)
+            if (binding.Target is CompiledRelicPlayerSummonsTarget)
+                RefreshProjection(instance, binding);
     }
 
     public void ExecuteBattleStartEffects()
@@ -847,6 +859,8 @@ public sealed class RelicBattleScope : IDisposable
         {
             CompiledRelicPlayerArmyTarget => units.Where(unit =>
                 unit.Team == 0 && unit.IsInitial && !unit.IsTemporary && !unit.IsHero),
+            CompiledRelicPlayerSummonsTarget => units.Where(unit =>
+                unit.Team == 0 && unit.IsTemporary),
             CompiledRelicPlayerHeroesTarget => units.Where(unit =>
                 unit.Team == 0 && unit.IsInitial && !unit.IsTemporary && unit.IsHero),
             CompiledRelicPlayerEmptySlotHeroesTarget => units.Where(unit =>

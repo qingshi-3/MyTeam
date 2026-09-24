@@ -1,0 +1,45 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_hc31_stagger.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/DisplacementAbilityOperationSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r0")
+Team = 1
+Anchor = 1
+Range = 2.2
+MaxTargets = 3
+IncludeAnchor = false
+Order = 1
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Kind = 3
+TargetQuery = SubResource("s0")
+Distance = 1.6
+DurationSeconds = 0.3
+StopDistance = 0.1
+BehindTarget = false
+ExcludeBoss = true
+ImpactDamage = 40
+AttackRatio = 0.8
+ImpactRadius = 0
+DamageType = 0
+ArcHeight = 0.75
+ImpactStatus = ExtResource("r1")
+
+[resource]
+script = ExtResource("r3")
+StableId = "ability_hc34_a"
+DisplayName = "震盾驱敌"
+Description = "开场满蓝。将 2.2 格内最近的至多 3 名非 Boss 敌人向外推开至多 1.6 格，各造成 40 加 80% 攻击力的伤害并眩晕 0.6 秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 80
+CooldownTicks = 12
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

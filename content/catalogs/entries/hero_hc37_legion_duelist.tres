@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="CatalogEntry" format=3]
+
+[ext_resource type="Script" path="res://src/Content/CatalogEntry.cs" id="script"]
+[ext_resource type="PackedScene" path="res://content/heroes/hero_hc37_legion_duelist.tscn" id="scene"]
+[ext_resource type="Resource" path="res://content/definitions/heroes/hero_hc37_legion_duelist.tres" id="definition"]
+
+[resource]
+script = ExtResource("script")
+Scene = ExtResource("scene")
+Definition = ExtResource("definition")

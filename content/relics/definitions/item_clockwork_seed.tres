@@ -5,7 +5,7 @@
 
 [sub_resource type="Resource" id="StartSummon"]
 script = ExtResource("2")
-ContentId = "soldier_void_mech"
+ContentId = "soldier_dummy_melee"
 HealthMultiplier = 0.85
 DamageMultiplier = 0.9
 BindingId = "clockwork_start_summon"

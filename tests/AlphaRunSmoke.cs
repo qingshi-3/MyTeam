@@ -37,7 +37,7 @@ public partial class AlphaRunSmoke : Node
     {
         try
         {
-            var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres");
+            var catalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres");
             var gate = await TestProjectFixture.PublishAsync(this);
             var package = gate.Package ?? throw new InvalidOperationException(string.Join("; ", gate.Report.CoreErrors));
             _content = package.Content;

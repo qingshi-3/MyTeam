@@ -1,0 +1,29 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r0")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r1")
+Action = 2
+TargetQuery = SubResource("s0")
+Amount = 50
+Terms = []
+
+[resource]
+script = ExtResource("r2")
+StableId = "ability_hc31_p"
+DisplayName = "冲阵甲"
+Description = "每次成功启动自己的满蓝主动，获得 50 护盾，帮助承受冲入敌阵后的攻击。"
+ActivationKind = 2
+Trigger = 14
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

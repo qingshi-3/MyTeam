@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="definition"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/grit_charge.tscn" id="scene"]
+[resource]
+script = ExtResource("definition")
+StableId = "grit_charge"
+DisplayName = "蓄怒重拳 · 锁向蓄力"
+Scene = ExtResource("scene")
+Duration = 0.85
+CastDuration = 0.6
+Size = 256
+UsesRadius = true
+ReferenceRadius = 0.8

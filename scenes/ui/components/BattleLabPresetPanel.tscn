@@ -1,0 +1,143 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/UI/BattleLabPresetPanel.cs" id="script"]
+
+[node name="BattleLabPresetPanel" type="Control"]
+script = ExtResource("script")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+mouse_filter = 0
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.005, 0.01, 0.016, 0.88)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Dialog" type="PanelContainer" parent="Center"]
+layout_mode = 2
+custom_minimum_size = Vector2(650, 0)
+theme_type_variation = &"ModalPanel"
+
+[node name="DialogBody" type="VBoxContainer" parent="Center/Dialog"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PresetSummary" type="Label" parent="Center/Dialog/DialogBody"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "当前配置"
+theme_type_variation = &"SecondaryLabel"
+text_overrun_behavior = 3
+
+[node name="DialogHeader" type="HBoxContainer" parent="Center/Dialog/DialogBody"]
+layout_mode = 2
+
+[node name="PresetTitle" type="Label" parent="Center/Dialog/DialogBody/DialogHeader"]
+layout_mode = 2
+text = "实验预设"
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+
+[node name="ClosePresetsButton" type="Button" parent="Center/Dialog/DialogBody/DialogHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+text = "关闭  Esc"
+theme_type_variation = &"CompactButton"
+
+[node name="PresetSearch" type="LineEdit" parent="Center/Dialog/DialogBody"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+theme_type_variation = &"BattleLabEntry"
+placeholder_text = "搜索 BC 编号、英雄或机制名称"
+expand_to_text_length = false
+
+[node name="PresetChoice" type="ItemList" parent="Center/Dialog/DialogBody"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 224)
+size_flags_vertical = 3
+allow_reselect = true
+same_column_width = true
+theme_type_variation = &"BattleLabPresetList"
+
+[node name="PresetPreview" type="Label" parent="Center/Dialog/DialogBody"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 54)
+autowrap_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "选择一个预设，查看双方配置。"
+
+[node name="LoadActions" type="HBoxContainer" parent="Center/Dialog/DialogBody"]
+layout_mode = 2
+
+[node name="RestoreDefaultButton" type="Button" parent="Center/Dialog/DialogBody/LoadActions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+text = "恢复默认配置"
+theme_type_variation = &"SecondaryButton"
+
+[node name="LoadPresetButton" type="Button" parent="Center/Dialog/DialogBody/LoadActions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+text = "载入所选预设"
+theme_type_variation = &"PrimaryButton"
+size_flags_horizontal = 3
+
+[node name="PresetDivider" type="HSeparator" parent="Center/Dialog/DialogBody"]
+layout_mode = 2
+
+[node name="SaveHeading" type="Label" parent="Center/Dialog/DialogBody"]
+layout_mode = 2
+text = "保存当前布置"
+theme_type_variation = &"SectionTitleLabel"
+
+[node name="SaveRow" type="HBoxContainer" parent="Center/Dialog/DialogBody"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PresetName" type="LineEdit" parent="Center/Dialog/DialogBody/SaveRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 38)
+theme_type_variation = &"BattleLabEntry"
+placeholder_text = "新预设名称"
+expand_to_text_length = false
+size_flags_horizontal = 3
+
+[node name="SavePresetButton" type="Button" parent="Center/Dialog/DialogBody/SaveRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+text = "保存"
+theme_type_variation = &"SecondaryButton"
+
+[node name="SaveHelp" type="Label" parent="Center/Dialog/DialogBody"]
+layout_mode = 2
+text = "使用中文、字母、数字、短横线或下划线；同名用户预设会覆盖。"
+autowrap_mode = 2
+theme_type_variation = &"SecondaryLabel"
+

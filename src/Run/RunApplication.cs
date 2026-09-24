@@ -65,6 +65,8 @@ public sealed class RunApplication
     public CompiledRunRules Rules => _project.RunRules;
     public TowerGenerator Tower => _tower;
 
+    // Compatibility fixture/tool entry point. Production navigation uses the saved
+    // opening draft and ConfirmOpeningRecruitment; it never grants random companions.
     public bool StartNewRun(string heroId, ulong seed)
     {
         var run = _rewards.CreateNewRun(heroId, seed, Meta.UnlockedHeroIds);
@@ -74,6 +76,21 @@ public sealed class RunApplication
         EquipmentEditingLocked = false;
         return true;
     }
+
+    public bool BeginOpeningRecruitment(ulong seed)
+    {
+        // Returning to New Game while drafting resumes the same saved opportunity.
+        if (ActiveRun?.OpeningRecruitment is not null) return true;
+        var run = _rewards.CreateOpening(seed);
+        if (run is null) return false;
+        _nodes.ResetRunLifecycle();
+        ActiveRun = run;
+        EquipmentEditingLocked = false;
+        return true;
+    }
+
+    public bool ToggleOpeningHero(string heroId) => _rewards.ToggleOpeningHero(ActiveRun, heroId);
+    public bool ConfirmOpeningRecruitment() => _rewards.ConfirmOpening(ActiveRun);
 
     public void AbandonRun()
     {
@@ -88,7 +105,8 @@ public sealed class RunApplication
     public EncounterPlan CurrentEncounter() => _nodes.CurrentEncounter(ActiveRun);
 
     public bool SelectNode(TowerNodeType type) => _nodes.SelectNode(ActiveRun, type);
-    public PendingRunOffer? PendingOffer => ActiveRun?.PendingOffer;
+    public PendingRunOffer? PendingOffer => ActiveRun?.PendingOffer is { } offer
+        ? RunRecruitmentPolicy.VisibleOffer(ActiveRun, offer) : null;
     public RunDecisionResult ResolveOffer(string offerId, string? choiceId) => EquipmentEditingLocked
         ? RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "战斗尚未完成结算。")
         : _decisions.Resolve(ActiveRun, offerId, choiceId);
@@ -214,8 +232,11 @@ public sealed class RunApplication
     {
         var master = AudioServer.GetBusIndex("Master");
         if (master >= 0)
+        {
+            AudioServer.SetBusMute(master, Settings.MasterVolume <= 0);
             AudioServer.SetBusVolumeDb(
                 master,
                 Mathf.LinearToDb(Mathf.Max(.001f, Settings.MasterVolume)));
+        }
     }
 }

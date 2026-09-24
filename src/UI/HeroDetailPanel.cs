@@ -1,22 +1,15 @@
-using System;
 using Godot;
+using TowerAutobattler.Battle;
 
 namespace TowerAutobattler.UI;
 
 public partial class HeroDetailPanel : PanelContainer
 {
     [Signal] public delegate void DeployRequestedEventHandler(string stableId);
-    [Export] public PackedScene TraitBadgeScene { get; set; } = null!;
 
-    private UnitPortrait _portrait = null!;
-    private Label _name = null!;
-    private Container _traits = null!;
-    private StatBlock _health = null!;
-    private StatBlock _damage = null!;
-    private StatBlock _reach = null!;
-    private Label _description = null!;
     private Label _ruleName = null!;
-    private Label _ruleCopy = null!;
+    private CombatRichText _ruleCopy = null!;
+    private Control _rulePanel = null!;
     private Label _availability = null!;
     private Button _deploy = null!;
     private string _stableId = string.Empty;
@@ -33,38 +26,26 @@ public partial class HeroDetailPanel : PanelContainer
     {
         CacheNodes();
         _stableId = model.StableId;
-        _portrait.Bind(model.Definition.Portrait, model.Definition.Icon);
-        _name.Text = model.Definition.DisplayName;
-        _description.Text = model.Definition.Description;
-        _health.Bind(SemanticIconKeys.Health, model.Definition.MaxHealth.ToString("0"), "生命", "HealthValue");
-        _damage.Bind(SemanticIconKeys.Damage, model.Definition.AttackDamage.ToString("0"), "伤害", "DamageValue");
-        _reach.Bind(SemanticIconKeys.Reach, model.Definition.AttackRange.ToString("0.#"), "攻击距离", "RangeValue");
+        var snapshot = model.Snapshot ?? BattleSetupFactory.Snapshot(model.Definition);
+        GetNode<UnitDetailView>("%UnitDetails").Bind(new UnitInformation(model.StableId, model.Definition, snapshot));
         _ruleName.Text = string.IsNullOrWhiteSpace(model.RuleTitle) ? "军团规则" : model.RuleTitle;
         _ruleCopy.Text = model.RuleDescription;
+        // Legacy rule prose often repeats a skill and may lag behind the published loadout.
+        // Show it only for older units that have no compiled or component ability to inspect.
+        _rulePanel.Visible = !string.IsNullOrWhiteSpace(model.RuleDescription) &&
+            snapshot.AbilityLoadout is null && snapshot.AttackHitGrowth is null;
         _availability.Text = model.Unlocked ? "已解锁 · 可以出征" : "未解锁 · 仅可预览";
         _availability.ThemeTypeVariation = model.Unlocked ? "HealingValue" : "DangerValue";
         _deploy.Disabled = !model.Unlocked;
         _deploy.Text = model.Unlocked ? "以该英雄出征" : "尚未解锁";
-        BindTraits(model);
-        TooltipText = model.Definition.Description;
     }
 
-    private void BindTraits(HeroSelectionViewModel model)
+    public void SetOpeningAction(int tier, bool selected, bool full)
     {
-        foreach (var child in _traits.GetChildren())
-        {
-            _traits.RemoveChild(child);
-            child.Free();
-        }
-        var role = TraitBadgeScene.Instantiate<TraitBadge>();
-        _traits.AddChild(role);
-        role.Bind(UnitSemanticFacts.Responsibility(model.Definition.Role));
-        foreach (var fact in UnitSemanticFacts.Traits(model.Definition.Faction, model.Definition.Tags))
-        {
-            var badge = TraitBadgeScene.Instantiate<TraitBadge>();
-            _traits.AddChild(badge);
-            badge.Bind(fact);
-        }
+        _deploy.ThemeTypeVariation = "SecondaryButton";
+        _availability.Text = $"{tier} 阶英雄 · {(selected ? "已加入开局队伍" : "本次候选")}";
+        _deploy.Disabled = full && !selected;
+        _deploy.Text = selected ? "取消选择" : full ? "已选满两名" : "选择这名英雄";
     }
 
     private void OnDeployPressed()
@@ -75,15 +56,9 @@ public partial class HeroDetailPanel : PanelContainer
 
     private void CacheNodes()
     {
-        _portrait ??= GetNode<UnitPortrait>("%DetailPortrait");
-        _name ??= GetNode<Label>("%DetailName");
-        _traits ??= GetNode<Container>("%DetailTraits");
-        _health ??= GetNode<StatBlock>("%HealthStat");
-        _damage ??= GetNode<StatBlock>("%DamageStat");
-        _reach ??= GetNode<StatBlock>("%ReachStat");
-        _description ??= GetNode<Label>("%HeroDescription");
         _ruleName ??= GetNode<Label>("%RuleName");
-        _ruleCopy ??= GetNode<Label>("%RuleCopy");
+        _ruleCopy ??= GetNode<CombatRichText>("%RuleCopy");
+        _rulePanel ??= GetNode<Control>("%RulePanel");
         _availability ??= GetNode<Label>("%Availability");
         _deploy ??= GetNode<Button>("%DeployButton");
     }

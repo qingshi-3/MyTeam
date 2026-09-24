@@ -1,0 +1,34 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
+
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="1"]
+[ext_resource type="Resource" path="res://content/definitions/enemies/enemy_eb02_shell_matriarch.tres" id="2"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f6_crystalbeetle/frames.tres" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
+
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAbilityLoadoutComponent.tscn" id="loadout_component"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_enemy_eb02_shell_matriarch.tres" id="loadout"]
+
+[node name="enemy_eb02_shell_matriarch" type="Node2D"]
+script = ExtResource("1")
+Definition = ExtResource("2")
+
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("4")]
+Frames = ExtResource("3")
+VisualScale = 3.0
+position = Vector2(0, -30)
+
+[node name="HealthViewComponent" parent="." instance=ExtResource("5")]
+position = Vector2(0, -65)
+
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("6")]
+
+[node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
+Loadout = ExtResource("loadout")

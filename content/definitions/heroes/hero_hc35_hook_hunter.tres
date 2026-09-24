@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc35_hook_hunter.tres" id="r0"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r1"]
+
+[resource]
+script = ExtResource("r1")
+Id = "hero_hc35_hook_hunter"
+DisplayName = "铁钩猎手"
+Description = "HC35／MV05 测试稿。开场满蓝。将 5 格内最远的非 Boss 敌人向自己拉近至多 4 格，各自保留身体和落点间距；造成 20 加 80% 攻击力的伤害并眩晕 1 秒。 被动：普攻命中带有至少一种负面状态的目标时，追加 25% 攻击力的伤害。 数值为测试暂值。"
+Portrait = ExtResource("r0")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 380
+AttackDamage = 25
+Armor = 7
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 80
+StartingMana = 80
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

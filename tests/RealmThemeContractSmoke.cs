@@ -99,7 +99,7 @@ public partial class RealmThemeContractSmoke : Node
 
     private static void VerifyRootAndScreens(List<string> failures)
     {
-        var root = Read("res://scenes/app/GameRoot.tscn");
+        var root = Read("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn");
         Require(root, ThemePath, "GameRoot does not assign the local RealmTheme", failures);
         Require(root, "[node name=\"Background\" type=\"ColorRect\"", "GameRoot background is not an authored ColorRect", failures);
         Require(root, "color = Color(", "GameRoot flat background has no authored color", failures);

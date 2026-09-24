@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/spell_cast.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "spell_cast"
+DisplayName = "施法短光"
+PreviewNote = "主动技能成功施放时，施法者身体短亮，六枚细光点向外散去；不表示治疗、回蓝或持续增益。"
+Scene = ExtResource("scene")
+Duration = 0.48
+Size = 130
+Ground = false
+FlattenGround = false

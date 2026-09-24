@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="AbilityLoadoutDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/abilities/automatic/ability_hc38_a.tres" id="active"]
+[ext_resource type="Resource" path="res://content/abilities/triggered/ability_hc38_p.tres" id="passive"]
+[resource]
+script = ExtResource("script")
+Abilities = [ExtResource("active"), ExtResource("passive")]

@@ -1,0 +1,18 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxEnemyActionTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://assets/vfx/enemy-actions/swap_rune.svg" id="texture"]
+[node name="position_swap" type="Node2D"]
+script = ExtResource("root")
+[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces")]
+script = ExtResource("track")
+Kind = 2
+Surface = NodePath("Surface")
+Other = NodePath("Other")
+Link = NodePath("Link")
+[node name="Surface" type="Sprite2D" parent="Track"]
+texture = ExtResource("texture")
+[node name="Other" type="Sprite2D" parent="Track"]
+texture = ExtResource("texture")
+[node name="Link" type="Line2D" parent="Track"]
+default_color = Color(0.7,0.5,0.95,0.45)

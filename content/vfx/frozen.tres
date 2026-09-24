@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/frozen.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "frozen"
+DisplayName = "冰封状态"
+PreviewNote = "实体冰晶从固定根部长起，中央大晶体覆盖身体，前后晶面保持层次；状态期间只有细微光泽与冷尘。结束时晶面碎退，独立小碎晶向外落散。"
+Scene = ExtResource("scene")
+Duration = 1.0
+Persistent = true
+ReactsToImpact = true
+ActionSpan = 0.34
+Size = 130
+Ground = false
+FlattenGround = false

@@ -8,7 +8,7 @@ script = ExtResource("3")
 Count = 2
 HealthMultiplier = 0.75
 DamageMultiplier = 0.8
-SummonContentId = "soldier_abyss_crawler"
+SummonContentId = "soldier_dummy_melee"
 
 [resource]
 script = ExtResource("1")

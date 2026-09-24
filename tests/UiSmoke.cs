@@ -30,7 +30,7 @@ public partial class UiSmoke : Node
         try
         {
             new SaveService("tests/ui-smoke").DeleteActiveRun();
-            root = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
+            root = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
             root.SaveNamespace = "tests/ui-smoke";
             AddChild(root);
             for (var frame = 0; frame < 10 && root.Content is null; frame++)
@@ -91,14 +91,15 @@ public partial class UiSmoke : Node
             summaryButton.GrabFocus();
             Press(root, "ArmyOverview/SummaryButton");
             if (!root.GetNode<Control>("ArmyOverview/Drawer").Visible) throw new InvalidOperationException("army drawer did not open");
-            var armyUnitRow = root.GetNode<VBoxContainer>("ArmyOverview/Drawer/Layout/Scroll/Rows").GetChildren()
+            overview.GetNode<TabContainer>("%Pages").CurrentTab = 2;
+            var armyUnitRow = root.GetNode<VBoxContainer>("ArmyOverview/Drawer/Layout/Pages/Scroll/Content/Rows").GetChildren()
                 .OfType<ArmyDrawerRow>().FirstOrDefault(row => row.GetNode<UnitPortrait>("%UnitPortrait").Visible);
             if (armyUnitRow?.GetNode<UnitPortrait>("%UnitPortrait").Definition is null)
                 throw new InvalidOperationException("Army details did not reuse the authored unit portrait component");
             var equipmentName = ((ItemDefinition)equipmentEntry.Definition).DisplayName;
             if (!armyUnitRow.GetNode<Label>("%RowDetails").Text.Contains($"装备：{equipmentName}", StringComparison.Ordinal))
                 throw new InvalidOperationException("Army hero details did not expose authored Equipment ownership");
-            var tacticalRow = root.GetNode<VBoxContainer>("ArmyOverview/Drawer/Layout/Scroll/Rows").GetChildren()
+            var tacticalRow = root.GetNode<VBoxContainer>("ArmyOverview/Drawer/Layout/Pages/Scroll/Content/Rows").GetChildren()
                 .OfType<ArmyDrawerRow>().FirstOrDefault(row => row.GetNode<Label>("%RowTitle").Text.StartsWith("槽位 1", StringComparison.Ordinal))
                 ?? throw new InvalidOperationException("Army overview lacks the first tactical-command row");
             var tacticalCost = tacticalRow.GetNode<ResourceCostBadge>("%TacticalPointCostBadge");
@@ -136,13 +137,14 @@ public partial class UiSmoke : Node
                 var reserveSummary = root.GetNode<SemanticChip>("ArmyOverview/SummaryButton/ResourceStrip/Reserve");
                 if (!overview.Visible || reserveSummary.ResolvedIcon is null || string.IsNullOrWhiteSpace(reserveSummary.DisplayText))
                     throw new InvalidOperationException("army overview missing on deployment");
-                var deploymentCards = root.GetNode<VBoxContainer>("Screens/DeploymentScreen/Margin/Layout/Columns/RosterPanel/RosterScroll/RosterChoices")
+                root.GetNode<DeploymentScreenController>("Screens/DeploymentScreen").GetNode<TabContainer>("%SidebarTabs").CurrentTab = 1;
+                var deploymentCards = root.GetNode<VBoxContainer>("Screens/DeploymentScreen/Margin/Layout/Columns/SidebarTabs/RosterPage/RosterScroll/RosterChoices")
                     .GetChildren().OfType<DeploymentUnitCard>().ToArray();
                 if (deploymentCards.Length == 0 || deploymentCards.Any(card => card.Portrait.Definition is null))
                     throw new InvalidOperationException("deployment list did not reuse authored unit portraits");
                 await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
                 VerifyDeploymentFactsFit(
-                    root.GetNode<ScrollContainer>("Screens/DeploymentScreen/Margin/Layout/Columns/RosterPanel/RosterScroll"),
+                    root.GetNode<ScrollContainer>("Screens/DeploymentScreen/Margin/Layout/Columns/SidebarTabs/RosterPage/RosterScroll"),
                     deploymentCards);
                 Press(root, "Screens/DeploymentScreen/Margin/Layout/Actions/BackButton");
             }
@@ -218,7 +220,7 @@ public partial class UiSmoke : Node
             if (!text.Contains(value, StringComparison.Ordinal))
                 throw new InvalidOperationException($"hero detail {stableId} omitted generated value {value}");
         var stats = detail.FindChildren("*", "", true, false).OfType<StatBlock>().ToArray();
-        if (stats.Length != 3 || stats.Select(stat => stat.SemanticKey.ToString()).Order().SequenceEqual(new[] { "damage", "health", "reach" }) is false)
+        if (stats.Length != 3 || stats.Select(stat => stat.SemanticKey.ToString()).Order().SequenceEqual(new[] { "damage", "health", "shield" }) is false)
             throw new InvalidOperationException("hero detail lacks three typed core stat blocks");
     }
 
@@ -479,8 +481,8 @@ public partial class UiSmoke : Node
         if (!found) throw new InvalidOperationException("no deterministic recruitment seed for abyss crawler");
 
         root.Flow.ShowRecruitment();
-        var scroll = root.GetNode<ScrollContainer>("Screens/RecruitmentScreen/Center/Panel/Layout/ChoiceScroll");
-        var choices = root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/ChoiceScroll/Choices");
+        var scroll = root.GetNode<ScrollContainer>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll");
+        var choices = root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices");
         var card = choices.GetChildren().OfType<UnitChoiceCard>().Single(choice => choice.StableId == "soldier_abyss_crawler");
         if (!card.SearchText.Contains("亡灵", StringComparison.Ordinal) || !card.SearchText.Contains("野兽", StringComparison.Ordinal) ||
             card.SearchText.Contains("soldier", StringComparison.Ordinal) || card.SearchText.Contains("undead", StringComparison.Ordinal) ||
@@ -489,7 +491,7 @@ public partial class UiSmoke : Node
         if (choices.GetChildCount() != 3 || choices.GetChildren().OfType<UnitChoiceCard>().Any(choice =>
                 choice.CustomMinimumSize.Y is < 170 or > 174 || choice.Portrait.CustomMinimumSize.X is < 104 or > 108))
             throw new InvalidOperationException("recruitment did not author three compact unit rows with 106px portraits");
-        if (!scroll.IsAncestorOf(root.GetNode("Screens/RecruitmentScreen/Center/Panel/Layout/ChoiceScroll/Choices")) ||
+        if (!scroll.IsAncestorOf(root.GetNode("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices")) ||
             scroll.IsAncestorOf(root.GetNode("Screens/RecruitmentScreen/Center/Panel/Layout/ContinueButton")) ||
             scroll.IsAncestorOf(root.GetNode("Screens/RecruitmentScreen/Center/Panel/Layout/ConvertButton")))
             throw new InvalidOperationException("recruitment scroll ownership moved the fixed bottom actions");
@@ -502,27 +504,30 @@ public partial class UiSmoke : Node
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         var ordinary = root.GetNode<Control>("Screens/RewardScreen");
         var ordinaryPanel = ordinary.GetNode<PanelContainer>("Center/Panel");
-        var ordinaryChoices = ordinary.GetNode<Container>("Center/Panel/Layout/ChoiceScroll/Choices");
+        var ordinaryChoices = ordinary.GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/Choices");
         var ordinaryCards = ordinaryChoices.GetChildren().OfType<ChoiceCard>().ToArray();
+        var viewport = GetViewport().GetVisibleRect();
+        var ordinaryScroll = ordinary.GetNode<ScrollContainer>("Center/Panel/Layout/OfferBody/ChoiceScroll");
         if (!ordinary.Visible || ordinaryCards.Length != 3 ||
-            ordinaryPanel.CustomMinimumSize != new Vector2(900, 650) || ordinaryPanel.Size != new Vector2(900, 650) ||
-            ordinaryCards.Any(card => card.CustomMinimumSize != new Vector2(250, 112) || card.Size.X > 865f))
+            !viewport.Encloses(ordinaryPanel.GetGlobalRect()) ||
+            ordinaryCards.Any(card => card.Size.X > ordinaryScroll.Size.X + 1) ||
+            ordinaryScroll.IsAncestorOf(ordinary.GetNode("Center/Panel/Layout/ContinueButton")))
             throw new InvalidOperationException(
-                $"ordinary reward layout drifted from 900x650 / <=864px cards: panel={ordinaryPanel.Size}, cards={string.Join(',', ordinaryCards.Select(card => card.Size.X.ToString("0.#")))}");
+                $"reward panel/cards or fixed action exceeded their visible region: panel={ordinaryPanel.Size}");
 
         root.Flow.ShowRecruitment();
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         var recruitment = root.GetNodeOrNull<Control>("Screens/RecruitmentScreen")
             ?? throw new InvalidOperationException("recruitment has no independent authored screen");
         var recruitmentPanel = recruitment.GetNode<PanelContainer>("Center/Panel");
-        var recruitmentScroll = recruitment.GetNode<ScrollContainer>("Center/Panel/Layout/ChoiceScroll");
-        var recruitmentChoices = recruitment.GetNode<Container>("Center/Panel/Layout/ChoiceScroll/Choices");
+        var recruitmentScroll = recruitment.GetNode<ScrollContainer>("Center/Panel/Layout/OfferBody/ChoiceScroll");
+        var recruitmentChoices = recruitment.GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/Choices");
         if (!recruitment.Visible || ordinary.Visible ||
-            recruitmentPanel.CustomMinimumSize != new Vector2(980, 760) || recruitmentPanel.Size != new Vector2(980, 760) ||
+            !viewport.Encloses(recruitmentPanel.GetGlobalRect()) ||
             recruitmentChoices.GetChildren().OfType<UnitChoiceCard>().Count() != 3 ||
             recruitmentScroll.IsAncestorOf(recruitment.GetNode("Center/Panel/Layout/ContinueButton")) ||
             recruitmentScroll.IsAncestorOf(recruitment.GetNode("Center/Panel/Layout/ConvertButton")))
-            throw new InvalidOperationException("recruitment did not retain its independent 980x760 single-column/fixed-action layout");
+            throw new InvalidOperationException("recruitment choices or fixed actions escaped their independent visible layout");
     }
 
     private async Task VerifyMerchantHudAsync(ContentRegistry content)

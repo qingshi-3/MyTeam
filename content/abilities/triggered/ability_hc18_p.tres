@@ -1,0 +1,49 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Team = 1
+Anchor = 2
+Range = 2
+MaxTargets = 1
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 6
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 0.6
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+DamageType = 0
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc18_p"
+DisplayName = "济世回响"
+Description = "每次实际治疗后，对受益者附近最近敌人造成实际恢复量 60% 的伤害。"
+ActivationKind = 2
+Trigger = 11
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2")]

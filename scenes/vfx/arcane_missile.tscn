@@ -1,0 +1,93 @@
+[gd_scene load_steps=16 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxFallingTrack.cs" id="flight"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="group"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="particles"]
+[ext_resource type="Texture2D" path="res://assets/vfx/energy-mote.png" id="energy"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="Shader" path="res://scenes/vfx/arcane_missile.gdshader" id="body_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/arcane_contact.gdshader" id="contact_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="glow_shader"]
+[sub_resource type="ShaderMaterial" id="body"]
+shader = ExtResource("body_shader")
+[sub_resource type="ShaderMaterial" id="contact"]
+shader = ExtResource("contact_shader")
+[sub_resource type="ShaderMaterial" id="glow"]
+shader = ExtResource("glow_shader")
+shader_parameter/rays = 0.2
+shader_parameter/core_strength = 0.45
+shader_parameter/corona_strength = 0.30
+shader_parameter/tint = Color(0.24, 0.70, 1, 0.75)
+[sub_resource type="AtlasTexture" id="head"]
+atlas = ExtResource("energy")
+region = Rect2(1210, 190, 515, 440)
+
+[node name="ArcaneMissile" type="Node2D"]
+script = ExtResource("root")
+[node name="Flight" type="Node2D" parent="."]
+script = ExtResource("flight")
+TravelDuration = 0.62
+ArcHeight = 38.0
+LaunchOffset = Vector2(12, -8)
+TrailParticle = ExtResource("dust")
+TrailStartTint = Color(0.60, 0.94, 1, 0.9)
+TrailEndTint = Color(0.20, 0.38, 1, 0.3)
+Seed = 1021
+[node name="Trail" type="Node2D" parent="Flight"]
+[node name="Projectile" type="Node2D" parent="Flight"]
+[node name="Glow" type="Sprite2D" parent="Flight/Projectile"]
+texture = ExtResource("surface")
+material = SubResource("glow")
+scale = Vector2(0.20, 0.20)
+[node name="Body" type="Sprite2D" parent="Flight/Projectile"]
+texture = ExtResource("energy")
+texture_filter = 4
+material = SubResource("body")
+offset = Vector2(-492, 0)
+scale = Vector2(0.0325, 0.0325)
+
+[node name="Cast" type="Node2D" parent="."]
+script = ExtResource("group")
+AtSource = true
+SourceOffset = Vector2(12, -8)
+UntilFired = true
+Clock = 1
+[node name="Charge" type="Sprite2D" parent="Cast"]
+script = ExtResource("sprite")
+texture = SubResource("head")
+material = SubResource("body")
+texture_filter = 4
+ShaderLifecycle = true
+scale = Vector2(0.07, 0.07)
+Duration = 0.22
+StartScale = 0.2
+EndScale = 1.0
+
+[node name="Impact" type="Node2D" parent="."]
+script = ExtResource("group")
+StartCue = 2
+[node name="Contact" type="Sprite2D" parent="Impact"]
+script = ExtResource("sprite")
+texture = ExtResource("surface")
+material = SubResource("contact")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.55
+scale = Vector2(0.72, 0.72)
+[node name="Shards" type="Node2D" parent="Impact"]
+script = ExtResource("particles")
+ParticleScene = ExtResource("dust")
+Amount = 12
+Seed = 1022
+Radial = true
+Delay = 0.0
+Gravity = 0.0
+SpeedRange = Vector2(95, 175)
+LifetimeRange = Vector2(0.30, 0.52)
+SizeRange = Vector2(20, 40)
+HeightScale = 1.0
+EndTint = Color(0.22, 0.40, 1, 1)
+modulate = Color(0.45, 0.85, 1, 0.8)

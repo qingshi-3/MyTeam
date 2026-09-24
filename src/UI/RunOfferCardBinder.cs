@@ -3,59 +3,91 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using TowerAutobattler.Content;
+using TowerAutobattler.Project;
 using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
 
 public static class RunOfferCardBinder
 {
+    private const string CardScenePath = "res://scenes/ui/components/RunOfferChoiceCard.tscn";
+
+    // Existing screen binding signature remains stable; offer cards now own a separate confirmation button.
     public static void Sync(Container parent, RunApplication app, PackedScene choiceTemplate,
         PackedScene itemTemplate, SemanticIconCatalog icons, Action<string> chosen, bool shop = false,
         Action<string>? inspected = null)
     {
         var offer = app.PendingOffer ?? throw new InvalidOperationException("No pending Run offer.");
-        var choices = new List<ChoiceCardViewModel>();
-        var units = new List<UnitChoiceCardViewModel>();
         string Name(string id) => app.Content.TryGet(id, out var entry) ? entry.Definition switch
         {
             UnitDefinition unit => unit.DisplayName,
             ItemDefinition item => item.DisplayName,
             _ => id
         } : id;
-        foreach (var choice in offer.Choices)
+        var models = offer.Choices.Select(choice =>
         {
             var eligibility = app.CheckOfferChoice(choice);
-            var description = RunDecisionText.Describe(choice, Name);
-            var footer = eligibility.Succeeded
-                ? choice.Costs.IsDefaultOrEmpty ? "选择并领取" :
-                    choice.Costs.All(cost => cost.Kind == TowerAutobattler.Project.RunOperationKind.SpendGold)
-                        ? RunDecisionText.Costs(choice, Name) : "需支付代价 · 查看详情"
-                : eligibility.Message;
-            var definition = !string.IsNullOrEmpty(choice.ContentId) && app.Content.TryGet(choice.ContentId, out var entry)
-                ? entry.Definition : null;
-            if (definition is UnitDefinition unit)
+            var definition = app.Content.TryGet(choice.ContentId, out var entry) ? entry.Definition : null;
+            var contentDescription = definition switch
             {
-                units.Add(new(choice.StableId, unit, description, footer,
-                    Disabled: !eligibility.Succeeded, MetaVariation: "PlayerLabel"));
-                continue;
-            }
-            var item = definition as ItemDefinition;
-            choices.Add(new(choice.StableId, choice.DisplayName, description, footer,
-                Disabled: !eligibility.Succeeded, Icon: item?.Icon ?? icons.ResolveIcon(SemanticIconKeys.Loot),
-                Template: item is null ? choiceTemplate : itemTemplate, ItemRarity: item?.Rarity,
-                ShopItem: shop, ProductKind: item?.ProductKind));
-        }
-        ChoiceCardListBinder.SyncMixed(parent, choices, units, offer.Choices.Select(choice => choice.StableId).ToArray(),
-            choiceTemplate, app.Project.Presentation.UnitChoiceCard, icons, chosen);
-        // Unit cards intentionally retain their compact two-line authored body.
-        // Hover/focus exposes the complete rule text in the screen's existing detail label.
-        var details = offer.Choices.ToDictionary(choice => choice.StableId,
-            choice => choice.DisplayName + "\n" + RunDecisionText.Describe(choice, Name), StringComparer.Ordinal);
-        void Inspect(string id) { if (details.TryGetValue(id, out var text)) inspected?.Invoke(text); }
-        foreach (var child in parent.GetChildren().Where(child => !child.IsQueuedForDeletion()))
+                UnitDefinition unit => unit.Description,
+                ItemDefinition item => item.Description,
+                _ => string.Empty
+            };
+            var decision = choice with { Description = string.IsNullOrWhiteSpace(contentDescription)
+                ? choice.Description : choice.Description.Replace(contentDescription, string.Empty, StringComparison.Ordinal).Trim() };
+            var rules = RunDecisionText.Describe(decision, Name);
+            var costs = choice.Costs.IsDefaultOrEmpty ? "" :
+                choice.Costs.All(cost => cost.Kind == RunOperationKind.SpendGold)
+                    ? $"{choice.Costs.Sum(cost => cost.Amount)} 金币" : RunDecisionText.Costs(choice, Name);
+            var action = shop ? "购买" : definition is UnitDefinition ? "招募" : definition is ItemDefinition ? "领取" : "选择";
+            if (shop && choice.Costs.IsDefaultOrEmpty) action = "领取";
+            var notice = costs;
+            if (choice.SuccessChance < 1)
+                notice = $"成功率 {choice.SuccessChance:P0}" + (costs.Length == 0 ? "" : $" · 无论成败支付 {costs}");
+            if (!eligibility.Succeeded)
+                notice = eligibility.Message + (costs.Length == 0 ? "" : $"\n代价：{costs}");
+            return RunOfferDetailText.Card(app, choice.ContentId, choice.StableId, choice.DisplayName,
+                action, rules, notice, !eligibility.Succeeded, icons.ResolveIcon(SemanticIconKeys.Loot));
+        }).ToArray();
+        SyncModels(parent, models, chosen);
+        if (models.Length > 0) inspected?.Invoke(models[0].Title);
+    }
+
+    public static void SyncContent(Container parent, RunApplication app, IEnumerable<string> contentIds,
+        SemanticIconCatalog icons, Action<string> chosen, string action)
+    {
+        var models = contentIds.Select(id => RunOfferDetailText.Card(app, id, id, id, action,
+            "", "", false, icons.ResolveIcon(SemanticIconKeys.Loot))).ToArray();
+        SyncModels(parent, models, chosen);
+    }
+
+    private static void SyncModels(Container parent, IReadOnlyList<RunOfferChoiceViewModel> models, Action<string> chosen)
+    {
+        var existing = parent.GetChildren().OfType<RunOfferChoiceCard>().Where(card => !card.IsQueuedForDeletion())
+            .ToDictionary(card => card.StableId, StringComparer.Ordinal);
+        foreach (var child in parent.GetChildren().Where(child => child is not RunOfferChoiceCard))
         {
-            if (child is UnitChoiceCard unit) unit.ConnectInspected(Inspect);
-            else if (child is ChoiceCard choice) choice.ConnectInspected(Inspect);
+            parent.RemoveChild(child);
+            child.QueueFree();
         }
+        var scene = GD.Load<PackedScene>(CardScenePath);
+        for (var index = 0; index < models.Count; index++)
+        {
+            var model = models[index];
+            if (!existing.Remove(model.Id, out var card))
+            {
+                card = scene.Instantiate<RunOfferChoiceCard>();
+                parent.AddChild(card);
+            }
+            card.Bind(model, chosen);
+            parent.MoveChild(card, index);
+        }
+        foreach (var stale in existing.Values)
+        {
+            parent.RemoveChild(stale);
+            stale.QueueFree();
+        }
+        if (parent is RunOfferChoiceGrid grid) grid.RefreshLayout();
     }
 }

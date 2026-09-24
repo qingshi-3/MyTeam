@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/PositionSwapAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="action"]
+script = ExtResource("operation")
+[resource]
+script = ExtResource("ability")
+StableId = "ability_ee09_swap_envoy"
+DisplayName = "易位印记"
+Description = "标记最远可换位敌人后互换位置；没有换位伤害，自身也进入敌阵。"
+ActivationKind = 1
+Trigger = 2
+CooldownTicks = 100
+IntervalTicks = 10
+Operations = [SubResource("action")]

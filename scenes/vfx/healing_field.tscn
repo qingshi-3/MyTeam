@@ -1,0 +1,19 @@
+[gd_scene load_steps=8 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxHealingFieldTrack.cs" id="field"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/HealPlusParticle.tscn" id="plus"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/healing_field.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+[node name="HealingField" type="Node2D"]
+script = ExtResource("root")
+[node name="Field" type="Node2D" parent="."]
+script = ExtResource("field")
+PlusParticle = ExtResource("plus")
+DustParticle = ExtResource("dust")
+Seed = 1041
+[node name="Surface" type="Sprite2D" parent="Field"]
+texture = ExtResource("surface")
+material = SubResource("material")

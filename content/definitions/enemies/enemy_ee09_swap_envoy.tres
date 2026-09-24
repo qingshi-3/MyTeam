@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_ee09_swap_envoy.tres" id="portrait"]
+[resource]
+script = ExtResource("script")
+Portrait = ExtResource("portrait")
+Id = "enemy_ee09_swap_envoy"
+DisplayName = "换位妖使"
+Description = "标记最远可换位敌人后互换位置；没有换位伤害，自身也进入敌阵。"
+Role = 3
+Faction = 7
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 255
+AttackDamage = 18
+AttackRange = 3.4
+AttackCooldown = 1.7
+MoveInterval = 0.6
+BodyRadius = 0.34
+Armor = 3
+Tags = Array[StringName]([&"enemy", &"elite"])
+AttackDelivery = 2

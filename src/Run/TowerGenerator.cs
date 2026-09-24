@@ -43,6 +43,11 @@ public sealed class TowerGenerator(CompiledCampaign campaign)
         var count = encounter.BaseEnemyCount + (encounter.AddRegionIndexToCount ? regionIndex : 0);
         var random = new DeterministicRandom(
             run.Seed ^ (ulong)(run.FloorIndex + 1) * 0x9E3779B9UL ^ (ulong)encounter.SeedSalt);
+        if (!encounter.AlternateLeadEnemyIds.IsDefaultOrEmpty)
+        {
+            var variant = random.NextInt(0, encounter.AlternateLeadEnemyIds.Length+1);
+            if (variant > 0) { if (enemyIds.Count>0) enemyIds[0]=encounter.AlternateLeadEnemyIds[variant-1]; else enemyIds.Add(encounter.AlternateLeadEnemyIds[variant-1]); }
+        }
         while (enemyIds.Count < count)
             enemyIds.Add(encounter.EnemyPool.ContentIds[random.NextInt(0, encounter.EnemyPool.ContentIds.Length)]);
         var ruleId = encounter.FloorRulePool.ContentIds[

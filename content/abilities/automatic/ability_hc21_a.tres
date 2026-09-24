@@ -1,0 +1,51 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 0
+Subject = 0
+Attribute = 1
+Key = ""
+Scale = 2
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r3")
+Action = 1
+TargetQuery = SubResource("s3")
+Amount = 40
+Terms = []
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc21_a"
+DisplayName = "绝地斩"
+Description = "对目标造成攻击力 200% 伤害，自身恢复 40 生命。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2"), SubResource("s4")]

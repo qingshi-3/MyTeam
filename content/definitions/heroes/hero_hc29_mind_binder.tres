@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc29_mind_binder.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc29_mind_binder"
+DisplayName = "缚心者"
+Description = "HC29／BC26 测试稿。锁定半血以下的非 Boss 敌人 2 秒，完成后令其为己方战斗 8 秒；缚心者死亡即解除。技能与身份保留，战后不带走。 被动：普攻命中施加 4 秒心隙：防御减少 3，移速降低 20%。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 3
+Faction = 6
+RecruitCost = 5
+MaxHealth = 210
+AttackDamage = 15
+Armor = 4
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

@@ -1,0 +1,28 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Value = 0.1
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Attribute = 3
+Operation = 0
+SlotId = "equipment_ne10_winter_badge_bonus"
+Magnitude = SubResource("s0")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+TraitId = "trait_ne10_winter"
+Value = 1
+
+[resource]
+script = ExtResource("r0")
+StableId = "equipment_ne10_winter_badge"
+AttributeModifiers = [SubResource("s1")]
+TraitContributions = [SubResource("s2")]

@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="AbilityLoadoutDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/abilities/automatic/ability_ee09_swap_envoy.tres" id="ability"]
+[resource]
+script = ExtResource("script")
+Abilities = [ExtResource("ability")]

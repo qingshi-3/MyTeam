@@ -12,7 +12,10 @@ public partial class BattleLabContractSmoke : Node
         "src/Battle/BattleSimulation.cs",
         "src/Battle/BattlePreparationContracts.cs",
         "src/Presentation/BattleScreenController.cs",
+        "src/Presentation/BattleFloatingCueLayer.cs",
+        "src/Presentation/BattleRuntimeUnitProjection.cs",
         "src/UI/BattleLabScreenController.cs",
+        "src/UI/BattleLabPresetPanel.cs",
         "src/BattleLab"
     ];
 
@@ -21,6 +24,7 @@ public partial class BattleLabContractSmoke : Node
         "src/BattleLab",
         "src/UI/BattleLabBoardCell.cs",
         "src/UI/BattleLabLibraryCard.cs",
+        "src/UI/BattleLabPresetPanel.cs",
         "src/UI/BattleLabScreenController.cs"
     ];
 

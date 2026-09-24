@@ -8,7 +8,8 @@ public enum StatusBehaviorKind
 {
     DisableActions,
     DamageMultiplier,
-    None
+    None,
+    Taunt
 }
 
 public enum StatusDisposition

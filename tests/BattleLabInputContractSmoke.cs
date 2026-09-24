@@ -20,10 +20,11 @@ public partial class BattleLabInputContractSmoke : Node
             var requirements = new Dictionary<string, string[]>(StringComparer.Ordinal)
             {
                 ["scenes/ui/BattleLabScreen.tscn"] =
-                ["BattleLabScreen", "PlayerLibrary", "EnemyLibrary", "Battlefield", "ModeBanner",
-                 "PresetChoice", "SetPrimaryButton"],
+                ["BattleLabScreen", "UnitLibrary", "PlacementTeam", "Battlefield", "ModeBanner",
+                 "PresetPanel", "UnitFilter"],
+                ["scenes/ui/components/BattleLabPresetPanel.tscn"] = ["PresetChoice"],
                 ["src/UI/BattleLabScreenController.cs"] =
-                ["Viewport", "_Input", "InputEventMouseButton", "自由实验配置", "BattleLabPlacementPolicy"],
+                ["Viewport", "_Input", "InputEventMouseButton", "自由实验", "BattleLabPlacementPolicy"],
                 ["scenes/ui/MainMenuScreen.tscn"] = ["BattleLabButton", "战斗实验室"],
                 ["src/App/AppScreenHost.cs"] = ["BattleLab", "AppScreenId"],
                 ["src/App/GameFlowCoordinator.cs"] =
@@ -46,7 +47,7 @@ public partial class BattleLabInputContractSmoke : Node
             }
 
             GD.Print("BATTLE_LAB_INPUT_CONTRACT_OK contract=authored-source-surface " +
-                     "entry=routing-token placement=input-handler-token modes=formal-free " +
+                     "entry=routing-token placement=input-handler-token mode=free " +
                      "equipment=hero relics=team cleanup=source-contract");
             return 0;
         }

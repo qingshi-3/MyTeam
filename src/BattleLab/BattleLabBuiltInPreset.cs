@@ -6,5 +6,6 @@ namespace TowerAutobattler.BattleLab;
 public partial class BattleLabBuiltInPreset : Resource
 {
     [Export] public string DisplayName { get; set; } = string.Empty;
+    [Export(PropertyHint.MultilineText)] public string Description { get; set; } = string.Empty;
     [Export(PropertyHint.MultilineText)] public string PresetJson { get; set; } = string.Empty;
 }

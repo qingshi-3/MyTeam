@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc28_corpse_raiser.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc28_corpse_raiser"
+DisplayName = "拾骸者"
+Description = "HC28／BC25 测试稿。消费 5 格内最近非 Boss 敌尸，在自己附近生成 1 名复生骸骨，最多维持 4 名。 被动：普攻命中生命不足 30% 的敌人时，再造成攻击力 50% 的伤害，帮助取得首具尸体。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 5
+Faction = 6
+RecruitCost = 5
+MaxHealth = 240
+AttackDamage = 20
+Armor = 4
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

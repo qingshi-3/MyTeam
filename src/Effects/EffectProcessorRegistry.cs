@@ -16,7 +16,7 @@ public interface IEffectProcessor
         EffectOrderingKey ordering,
         EffectWorldSnapshot snapshot,
         IEffectRuntimeWorld world,
-        EffectDamageType damageType = EffectDamageType.Physical);
+        EffectDamageType damageType = EffectDamageType.Normal);
 }
 
 public sealed class EffectProcessorRegistry
@@ -57,7 +57,7 @@ public abstract class EffectProcessorBase(EffectKind kind) : IEffectProcessor
         EffectOrderingKey ordering,
         EffectWorldSnapshot snapshot,
         IEffectRuntimeWorld world,
-        EffectDamageType damageType = EffectDamageType.Physical)
+        EffectDamageType damageType = EffectDamageType.Normal)
     {
         if (!float.IsFinite(requestedAmount) || requestedAmount < 0)
             throw new InvalidOperationException($"Effect amount for {bindingId}[{stepIndex}] is invalid.");

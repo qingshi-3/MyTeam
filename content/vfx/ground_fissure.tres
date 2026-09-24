@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="definition"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ground_fissure.tscn" id="scene"]
+[resource]
+script = ExtResource("definition")
+StableId = "ground_fissure"
+DisplayName = "定向地裂"
+Scene = ExtResource("scene")
+Duration = 1.0
+Persistent = true
+Ground = true
+UsesRadius = true
+ReferenceRadius = 0.28
+Size = 256

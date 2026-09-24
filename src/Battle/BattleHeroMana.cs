@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using TowerAutobattler.Attributes;
 using TowerAutobattler.Domain;
 
@@ -30,7 +31,7 @@ public static class BattleHeroMana
     }
 
     public static bool IsReady(BattleUnitState unit, int tick) =>
-        unit.Alive && unit.MaxMana > 0 && tick >= unit.ManaLockedUntilTick &&
+        unit.Alive && unit.ProjectileSequence is null && unit.ProjectileWindups.IsEmpty && unit.MaxMana > 0 && tick >= unit.ManaLockedUntilTick &&
         unit.CurrentMana + .0001f >= unit.MaxMana;
 
     // Called only inside the successful ability transaction. The enclosing checkpoint owns rollback.
@@ -44,7 +45,9 @@ public static class BattleHeroMana
 
     private static void Gain(BattleUnitState unit, float amount, int tick)
     {
-        if (!unit.Alive || unit.MaxMana <= 0 || tick < unit.ManaLockedUntilTick ||
+        // Trample owns windup, travel and recovery; refill resumes only after that action exits.
+        if (!unit.Alive || unit.Trample is not null || unit.ProjectileSequence is not null || unit.ProjectileWindups.Any(shot => shot.SkillOrigin.IsSpecified) ||
+            unit.MaxMana <= 0 || tick < unit.ManaLockedUntilTick ||
             !float.IsFinite(amount) || amount <= 0) return;
         unit.CurrentMana = Math.Min(unit.MaxMana, unit.CurrentMana + amount);
     }

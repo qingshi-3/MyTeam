@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/cleanse.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "cleanse"
+DisplayName = "澄明净化"
+PreviewNote = "青白扫光从脚边掠向上方，附着细屑向外剥离，干净余辉与微光独立收尾"
+Scene = ExtResource("scene")
+Duration = 1.0
+CastDuration = 0.16
+Size = 160.0
+Ground = true
+FlattenGround = false

@@ -16,9 +16,13 @@ public partial class VfxDefinition : Resource
     [Export] public bool UsesRadius { get; set; }
     [Export] public bool FlattenGround { get; set; } = true;
     [Export] public bool StretchBetween { get; set; }
+    [Export] public bool UsesWidth { get; set; }
+    [Export] public bool FaceDirection { get; set; }
     [Export] public float Size { get; set; } = 110;
     [Export] public float ReferenceRadius { get; set; } = 1.5f;
     [Export] public float CastDuration { get; set; }
     [Export] public float FlightDuration { get; set; }
     [Export] public float ActionSpan { get; set; }
+    [Export] public bool AtSource { get; set; }
+    [Export] public SpriteFrames? PreviewFrames { get; set; }
 }

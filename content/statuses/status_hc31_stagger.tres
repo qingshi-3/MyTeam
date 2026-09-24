@@ -1,0 +1,18 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_hc31_stagger"
+DisplayName = "震荡"
+Behavior = 0
+Disposition = 2
+DurationKind = 1
+DurationTicks = 6
+StackLimit = 1
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+DispelCategory = 1
+ControlDurationRule = 1
+GrantedTags = Array[StringName]([&"state.action_disabled"])

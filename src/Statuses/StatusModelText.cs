@@ -55,6 +55,7 @@ public static class StatusModelText
                 (binding.FilterDamageType ? $"（仅{EffectModelText.DamageTypeName(binding.DamageType)}伤害）" : "") +
                 $"：{EffectModelText.DescribeBinding(binding.Binding)}");
         facts.Add(status.DispelCategory switch { StatusDispelCategory.NonDispellable => "不可驱散", StatusDispelCategory.StrongOnly => "仅强驱散可移除", _ => "可驱散" });
+        if (status.Behavior == StatusBehaviorKind.Taunt) facts.Add("普攻目标改为嘲讽来源；来源阵亡后恢复寻敌");
         if (status.ControlDurationRule == StatusControlDurationRule.LinearResistanceCeiling) facts.Add("持续时间受控制抗性缩短，至少保留一个逻辑帧");
         if (status.DeathPolicy == StatusDeathPolicy.Persist) facts.Add("拥有者阵亡后保留");
         return string.Join("；", facts) + "。";
@@ -63,6 +64,7 @@ public static class StatusModelText
     public static string EventName(BattleCombatEventKind kind) => kind switch
     {
         BattleCombatEventKind.AttackDeclared => "普通攻击开始", BattleCombatEventKind.AttackLanded => "普通攻击命中",
+        BattleCombatEventKind.SkillHitLanded => "技能命中",
         BattleCombatEventKind.AbilityResolved => "技能结算", BattleCombatEventKind.DamageResolved => "伤害结算",
         BattleCombatEventKind.HealingResolved => "治疗结算", BattleCombatEventKind.ShieldResolved => "护盾结算",
         BattleCombatEventKind.UnitDefeated => "单位阵亡", BattleCombatEventKind.UnitKilled => "击杀单位",

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+[ext_resource type="Texture2D" path="res://assets/ui/items/item_ne10_control_shelter.png" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_ne10_control_shelter"
+DisplayName = "缚敌护符"
+Description = "我方英雄每成功对一名敌人施加行动控制，为该施控英雄提供 12 护盾。读取实际施加的控制事件，受控制抗性影响；不为队友代收护盾。"
+Icon = ExtResource("r1")
+Rarity = 1
+ProductKind = 0
+Price = 24
+Tags = Array[StringName]([&"item", &"relic"])

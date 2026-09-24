@@ -1,0 +1,49 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_bc_frost.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r5"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r2")
+Team = 1
+Anchor = 1
+Range = 5.2
+MaxTargets = 1
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r3")
+Status = ExtResource("r1")
+TargetQuery = SubResource("s0")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r4")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r5")
+Action = 4
+TargetQuery = SubResource("s2")
+Amount = 1
+Terms = []
+CounterKey = "frost_history"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc23_p"
+DisplayName = "霜历"
+Description = "每 2 秒对最近敌人施加霜缓，成功后本战历霜加 1；霜缓消失不清掉历史次数。"
+ActivationKind = 1
+Trigger = 2
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 20
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1"), SubResource("s3")]

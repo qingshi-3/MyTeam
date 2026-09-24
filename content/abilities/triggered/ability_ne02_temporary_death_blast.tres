@@ -1,0 +1,50 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityPresentationSpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Metric = 0
+Subject = 3
+Attribute = 0
+Scale = 0.25
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Team = 1
+Anchor = 2
+Range = 1.5
+MaxTargets = 0
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s1")
+Amount = 0
+Terms = [SubResource("s0")]
+DamageType = 0
+Label = "殉爆"
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+ReportLabel = "殉爆"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_ne02_temporary_death_blast"
+DisplayName = "殉爆"
+Description = "己方临时小兵死亡时触发殉爆，对死者周围 1.5 格敌人造成死者最大生命 25% 的伤害。"
+ActivationKind = 2
+Trigger = 23
+ManaCost = 0
+CooldownTicks = 0
+Echoable = false
+Operations = [SubResource("s2")]
+Presentation = SubResource("s3")

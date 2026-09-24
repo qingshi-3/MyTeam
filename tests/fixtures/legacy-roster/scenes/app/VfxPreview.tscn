@@ -1,0 +1,349 @@
+[gd_scene load_steps=8 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxPreviewController.cs" id="1"]
+[ext_resource type="Script" path="res://src/Vfx/VfxPlayer.cs" id="2"]
+[ext_resource type="Resource" path="res://content/vfx/catalog.tres" id="3"]
+[ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="4"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f6_general/frames.tres" id="5"]
+[ext_resource type="Resource" path="res://tests/fixtures/legacy-roster/content/abilities/automatic/ability_mana_hero_brood_matriarch.tres" id="6"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f3_dervish/frames.tres" id="7"]
+
+[node name="VfxPreview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("4")
+script = ExtResource("1")
+RendAbility = ExtResource("6")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Rows" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Margin/Rows/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+text = "特效预览室"
+
+[node name="Return" type="Button" parent="Margin/Rows/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "返回主菜单"
+
+[node name="Body" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 24
+
+[node name="Library" type="VBoxContainer" parent="Margin/Rows/Body"]
+layout_mode = 2
+custom_minimum_size = Vector2(270, 0)
+theme_override_constants/separation = 12
+
+[node name="Search" type="LineEdit" parent="Margin/Rows/Body/Library"]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "搜索特效"
+
+[node name="Effects" type="ItemList" parent="Margin/Rows/Body/Library"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/v_separation = 15
+
+[node name="Skill" type="Button" parent="Margin/Rows/Body/Library"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "技能绑定 · 原兽撕咬"
+
+[node name="Details" type="Label" parent="Margin/Rows/Body/Library"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "参数仅本次预览有效"
+autowrap_mode = 2
+
+[node name="Stage" type="Control" parent="Margin/Rows/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+clip_contents = true
+custom_minimum_size = Vector2(400, 360)
+
+[node name="Backdrop" type="ColorRect" parent="Margin/Rows/Body/Stage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.07, 0.11, 0.17, 1)
+
+[node name="SourceUnit" type="AnimatedSprite2D" parent="Margin/Rows/Body/Stage"]
+unique_name_in_owner = true
+sprite_frames = ExtResource("5")
+animation = &"idle"
+scale = Vector2(2, 2)
+
+[node name="TargetUnit" type="AnimatedSprite2D" parent="Margin/Rows/Body/Stage"]
+unique_name_in_owner = true
+sprite_frames = ExtResource("7")
+animation = &"idle"
+flip_h = true
+scale = Vector2(2, 2)
+
+[node name="Player" type="Node2D" parent="Margin/Rows/Body/Stage"]
+unique_name_in_owner = true
+script = ExtResource("2")
+Catalog = ExtResource("3")
+
+[node name="Clock" type="Label" parent="Margin/Rows/Body/Stage"]
+unique_name_in_owner = true
+offset_left = 18.0
+offset_top = 18.0
+text = "0.00 秒"
+
+[node name="Playback" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Parameters" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Environment" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Replay" type="Button" parent="Margin/Rows/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "重播"
+
+[node name="Pause" type="Button" parent="Margin/Rows/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "暂停"
+
+[node name="Step" type="Button" parent="Margin/Rows/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "单步 1/30 秒"
+
+[node name="Impact" type="Button" parent="Margin/Rows/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "护盾受击"
+
+[node name="End" type="Button" parent="Margin/Rows/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "正常消退"
+
+[node name="Break" type="Button" parent="Margin/Rows/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "护盾破裂"
+
+[node name="SpeedLabel" type="Label" parent="Margin/Rows/Parameters"]
+layout_mode = 2
+text = "播放速度"
+
+[node name="Speed" type="HSlider" parent="Margin/Rows/Parameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120, 32)
+min_value = 0.25
+max_value = 2
+value = 1
+step = 0.25
+
+[node name="RadiusLabel" type="Label" parent="Margin/Rows/Parameters"]
+layout_mode = 2
+text = "范围半径"
+
+[node name="Radius" type="HSlider" parent="Margin/Rows/Parameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120, 32)
+min_value = 0.5
+max_value = 3
+value = 1.5
+step = 0.1
+
+[node name="DistanceLabel" type="Label" parent="Margin/Rows/Parameters"]
+layout_mode = 2
+text = "目标距离"
+
+[node name="Distance" type="HSlider" parent="Margin/Rows/Parameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120, 32)
+min_value = 1
+max_value = 6
+value = 3
+step = 0.1
+
+[node name="Loop" type="CheckButton" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "循环播放"
+button_pressed = true
+
+[node name="Light" type="CheckButton" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "浅色背景"
+button_pressed = false
+
+[node name="Reduced" type="CheckButton" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "减少动态"
+button_pressed = false
+
+[node name="Reset" type="Button" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "重置预览参数"
+
+[node name="InstanceParameters" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="CastSpeedLabel" type="Label" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "施法倍率"
+[node name="CastSpeed" type="HSlider" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.25
+max_value = 3
+step = 0.25
+value = 1
+
+[node name="MotionSpeedLabel" type="Label" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "内部流动"
+[node name="MotionSpeed" type="HSlider" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.25
+max_value = 3
+step = 0.25
+value = 1
+
+[node name="FlightTimeLabel" type="Label" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "飞行秒数"
+[node name="FlightTime" type="HSlider" parent="Margin/Rows/InstanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.2
+max_value = 2
+step = 0.02
+value = 0.78
+
+[node name="AppearanceParameters" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ParticleSizeLabel" type="Label" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "粒子尺寸"
+[node name="ParticleSize" type="HSlider" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.5
+max_value = 2
+step = 0.1
+value = 1
+
+[node name="DensityLabel" type="Label" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "粒子密度"
+[node name="Density" type="HSlider" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.5
+max_value = 3
+step = 0.25
+value = 1
+
+[node name="WidthLabel" type="Label" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "束体宽度"
+[node name="Width" type="HSlider" parent="Margin/Rows/AppearanceParameters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(120,32)
+min_value = 0.5
+max_value = 2
+step = 0.1
+value = 1
+
+[node name="EventMode" type="CheckButton" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "事件驱动"
+[node name="Fired" type="Button" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "出手"
+[node name="ContactCue" type="Button" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "命中"
+[node name="Progress" type="HSlider" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(130,32)
+max_value = 1.0
+step = 0.01
+tooltip_text = "事件驱动：实际飞行进度"
+
+[node name="HeadingLabel" type="Label" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "朝向 0°"
+[node name="Heading" type="HSlider" parent="Margin/Rows/Environment"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(130,32)
+max_value = 345.0
+step = 15.0
+value = 0.0
+tooltip_text = "0°朝右，90°朝下，180°朝左；重新播放时锁定挥出方向"

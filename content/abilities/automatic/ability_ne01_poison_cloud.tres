@@ -1,0 +1,60 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Resource" path="res://content/statuses/status_ne01_poison.tres" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ScaledStatusAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="r4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityPresentationSpec.cs" id="r5"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Team = 0
+Anchor = 2
+Range = 1.5
+MaxTargets = 0
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r3")
+Status = ExtResource("r2")
+TargetQuery = SubResource("s0")
+BaseStacks = 3
+StatusId = "status_ne01_poison"
+ExistingStackRatio = 0
+Chance = 1
+ChanceStatusId = ""
+ChancePerStack = 0
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r4")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r3")
+Status = ExtResource("r2")
+TargetQuery = SubResource("s2")
+BaseStacks = 0
+StatusId = "status_ne01_poison"
+ExistingStackRatio = 0.5
+Chance = 1
+ChanceStatusId = ""
+ChancePerStack = 0
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r5")
+ReportLabel = "毒云"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_ne01_poison_cloud"
+DisplayName = "毒云"
+Description = "对目标及周围 1.5 格敌人施加 3 层棘毒，随后主目标的棘毒层数增加 50%（向下取整）。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+Echoable = false
+Operations = [SubResource("s1"), SubResource("s3")]
+Presentation = SubResource("s4")

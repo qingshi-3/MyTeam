@@ -48,6 +48,14 @@ public partial class HeroLibraryTile : Button
         _state.ThemeTypeVariation = previewed ? "HeroIdentity" : Unlocked ? "SecondaryLabel" : "DangerValue";
     }
 
+    public void SetOpeningState(int tier, bool selected)
+    {
+        ThemeTypeVariation = selected ? "SelectedButton" : "CompactButton";
+        _state.Text = $"{tier} 阶 · {(selected ? "✓ 已选择" : "未选择")}";
+        _state.ThemeTypeVariation = selected ? "HeroIdentity" : "SecondaryLabel";
+        TooltipText = selected ? "点击取消选择" : "点击查看并选择；最多选择两名";
+    }
+
     private void BindTraits(HeroSelectionViewModel model)
     {
         foreach (var child in _traits.GetChildren())

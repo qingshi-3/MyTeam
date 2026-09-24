@@ -1,0 +1,48 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxChargedLineTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/charged_line.gdshader" id="strip"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="glow"]
+[sub_resource type="ShaderMaterial" id="strip_material"]
+resource_local_to_scene = true
+shader = ExtResource("strip")
+[sub_resource type="ShaderMaterial" id="glow_material"]
+shader = ExtResource("glow")
+shader_parameter/rays = 0.6
+shader_parameter/core_strength = 1.3
+shader_parameter/corona_strength = 0.45
+[node name="piercing_beam" type="Node2D"]
+script = ExtResource("root")
+[node name="Layers" type="Node2D" parent="." node_paths=PackedStringArray("Strip", "SourceGlow", "Motes")]
+script = ExtResource("track")
+Beam = true
+Strip = NodePath("Strip")
+SourceGlow = NodePath("SourceGlow")
+Motes = NodePath("Motes")
+Tint = Color(0.25, 0.72, 1, 1)
+[node name="Strip" type="Sprite2D" parent="Layers"]
+texture = ExtResource("surface")
+material = SubResource("strip_material")
+[node name="SourceGlow" type="Sprite2D" parent="Layers"]
+texture = ExtResource("surface")
+material = SubResource("glow_material")
+[node name="Motes" type="Node2D" parent="Layers"]
+[node name="Mote0" type="Sprite2D" parent="Layers/Motes"]
+texture = ExtResource("surface")
+material = SubResource("glow_material")
+[node name="Mote1" type="Sprite2D" parent="Layers/Motes"]
+texture = ExtResource("surface")
+material = SubResource("glow_material")
+[node name="Mote2" type="Sprite2D" parent="Layers/Motes"]
+texture = ExtResource("surface")
+material = SubResource("glow_material")
+[node name="Mote3" type="Sprite2D" parent="Layers/Motes"]
+texture = ExtResource("surface")
+material = SubResource("glow_material")
+[node name="Mote4" type="Sprite2D" parent="Layers/Motes"]
+texture = ExtResource("surface")
+material = SubResource("glow_material")
+[node name="Mote5" type="Sprite2D" parent="Layers/Motes"]
+texture = ExtResource("surface")
+material = SubResource("glow_material")

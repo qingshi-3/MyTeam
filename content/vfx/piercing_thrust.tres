@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/piercing_thrust.tscn" id="scene"]
+[resource]
+script=ExtResource("def")
+StableId="piercing_thrust"
+DisplayName="穿刺突击"
+PreviewNote="从来源沿锁定前向直刺，狭长锋尖快速贯出，身后刀痕逐段退去；半径决定刺出长度，目标距离只定朝向"
+Scene=ExtResource("scene")
+Duration=0.95
+ActionSpan=0.225
+UsesRadius=true
+FlattenGround=false
+Size=160.0
+ReferenceRadius=2.1

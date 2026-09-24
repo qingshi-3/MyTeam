@@ -1,0 +1,80 @@
+[gd_scene load_steps=16 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSweepPlane.cs" id="plane"]
+[ext_resource type="Script" path="res://src/Vfx/VfxThrustTrack.cs" id="thrust"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="group"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="emitter"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/RendFragment.tscn" id="fragment"]
+[ext_resource type="Texture2D" path="res://assets/vfx/refresh/rend-strip.png" id="ink"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/piercing_thrust_blade.gdshader" id="blade_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/piercing_thrust_glow.gdshader" id="glow_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/contact_flash.gdshader" id="contact_shader"]
+[sub_resource type="ShaderMaterial" id="blade"]
+shader=ExtResource("blade_shader")
+[sub_resource type="ShaderMaterial" id="glow"]
+shader=ExtResource("glow_shader")
+[sub_resource type="ShaderMaterial" id="contact"]
+shader=ExtResource("contact_shader")
+[node name="PiercingThrust" type="Node2D"]
+script=ExtResource("root")
+[node name="Stab" type="Node2D" parent="."]
+script=ExtResource("plane")
+DefaultRadius=2.1
+SideRadiusRatio=0.75
+[node name="Glow" type="MeshInstance2D" parent="Stab"]
+script=ExtResource("thrust")
+texture=ExtResource("ink")
+texture_filter=2
+material=SubResource("glow")
+HalfWidth=29.0
+[node name="Blade" type="MeshInstance2D" parent="Stab"]
+script=ExtResource("thrust")
+texture=ExtResource("ink")
+texture_filter=2
+material=SubResource("blade")
+HalfWidth=24.0
+[node name="BackPressure" type="Node2D" parent="Stab"]
+script=ExtResource("emitter")
+ParticleScene=ExtResource("fragment")
+Amount=4
+Seed=94300
+Direction=3.1415927
+Spread=0.22
+Delay=0.07
+FollowCastDelay=true
+SpeedRange=Vector2(25,55)
+LifetimeRange=Vector2(0.13,0.24)
+SizeRange=Vector2(11,19)
+HeightScale=0.3
+Gravity=0.0
+EndTint=Color(0.6,0.25,0.06,1)
+[node name="TipCue" type="Node2D" parent="Stab"]
+position=Vector2(128,0)
+script=ExtResource("group")
+Delay=0.225
+DelayFollowsCast=true
+[node name="Contact" type="Sprite2D" parent="Stab/TipCue"]
+script=ExtResource("sprite")
+texture=ExtResource("surface")
+material=SubResource("contact")
+scale=Vector2(0.24,0.5)
+ShaderLifecycle=true
+StartScale=1.0
+EndScale=1.0
+Duration=0.14
+[node name="Fragments" type="Node2D" parent="Stab/TipCue"]
+script=ExtResource("emitter")
+ParticleScene=ExtResource("fragment")
+Amount=6
+Seed=94301
+Direction=0.0
+Spread=0.75
+Delay=0.0
+SpeedRange=Vector2(55,100)
+LifetimeRange=Vector2(0.2,0.39)
+SizeRange=Vector2(13,23)
+HeightScale=0.32
+Gravity=0.0
+EndTint=Color(0.7,0.29,0.07,1)

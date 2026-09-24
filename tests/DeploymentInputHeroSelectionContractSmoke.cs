@@ -27,7 +27,7 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
         var failures = new List<string>();
         var persisted = new SaveService(SaveNamespace);
         persisted.DeleteActiveRun();
-        var root = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
+        var root = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
         root.SaveNamespace = SaveNamespace;
         AddChild(root);
 
@@ -152,6 +152,23 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
                 preview.GetNode<TextureRect>("%RoleBadge").Scale.X < 0 ||
                 preview.GetNode<TextureRect>("%ReachBadge").Scale.X < 0)
                 failures.Add("enemy deployment mirror escaped the portrait image leaves for " + spawn.Unit.ContentId);
+        }
+        var selectedEnemy = previews.OfType<EnemyDeploymentPreview>().FirstOrDefault();
+        if (selectedEnemy is not null)
+        {
+            var formationBefore = app.ActiveRun!.Deployment.ToArray();
+            var objectId = selectedEnemy.GetInstanceId();
+            await ActivateFocused(selectedEnemy);
+            var deployment = root.GetNode<DeploymentScreenController>("Screens/DeploymentScreen");
+            var rebound = board.GetChildren().OfType<EnemyDeploymentPreview>()
+                .Single(preview => preview.InstanceId == selectedEnemy.InstanceId);
+            if (rebound.GetInstanceId() != objectId || GetViewport().GuiGetFocusOwner() != rebound)
+                failures.Add("enemy keyboard inspection replaced its event-source button or lost focus");
+            var details = deployment.GetNode<PreparedUnitDetailPanel>("%PreparedUnitDetailPanel");
+            var expectedName = enemySpawns.Single(spawn => spawn.InstanceId == selectedEnemy.InstanceId).Unit.DisplayName;
+            if (!details.IsVisibleInTree() || details.GetNode<UnitDetailView>("%UnitDetails").GetNode<Label>("%UnitName").Text != expectedName ||
+                !formationBefore.SequenceEqual(app.ActiveRun.Deployment) || deployment.SelectedPieceId.Length > 0)
+                failures.Add("enemy inspection did not show the selected unit without changing deployment");
         }
         await VerifyPortraitMirrorComposition(failures);
         await ProcessFrames(2);
@@ -364,12 +381,13 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
             await ProcessFrames(2);
             var deployment = root.GetNode<DeploymentScreenController>("Screens/DeploymentScreen");
             var board = deployment.GetNode<DeploymentBoard>("%DeploymentBoard");
-            var rosterScroll = deployment.GetNode<ScrollContainer>("Margin/Layout/Columns/RosterPanel/RosterScroll");
+            var rosterScroll = deployment.GetNode<ScrollContainer>("Margin/Layout/Columns/SidebarTabs/RosterPage/RosterScroll");
             var roster = deployment.GetNode<VBoxContainer>("%RosterChoices");
             var reserve = run.Roster.FirstOrDefault(hero => !run.Deployment.Contains(hero.InstanceId)) ??
                           throw new InvalidOperationException($"no reserve remained before viewport deployment {target}");
             var card = roster.GetChildren().OfType<DeploymentUnitCard>()
                 .Single(candidate => candidate.InstanceId == reserve.InstanceId);
+            await RevealDeploymentCard(card);
             rosterScroll.EnsureControlVisible(card);
             await ProcessFrames(2);
             if (!VisibleWithin(card, rosterScroll))
@@ -434,9 +452,10 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
         await Click(selectedCell);
         if (deployment.SelectedPieceId != selectedCell.PieceId)
             failures.Add($"real viewport click did not select an occupied cell at density {expected}");
-        var rosterScroll = deployment.GetNode<ScrollContainer>("Margin/Layout/Columns/RosterPanel/RosterScroll");
+        var rosterScroll = deployment.GetNode<ScrollContainer>("Margin/Layout/Columns/SidebarTabs/RosterPage/RosterScroll");
         var selectedCard = deployment.GetNode<VBoxContainer>("%RosterChoices").GetChildren()
             .OfType<DeploymentUnitCard>().Single(card => card.InstanceId == selectedCell.PieceId);
+        await RevealDeploymentCard(selectedCard);
         rosterScroll.EnsureControlVisible(selectedCard);
         await ProcessFrames(2);
         if (!VisibleWithin(selectedCard, rosterScroll) ||
@@ -450,8 +469,9 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
 
         var army = root.GetNode<ArmyOverviewController>("ArmyOverview");
         await Click(army.GetNode<Button>("%SummaryButton"));
+        await SelectTab(army.GetNode<TabContainer>("%Pages"), 2);
         var drawer = army.GetNode<PanelContainer>("%Drawer");
-        var armyScroll = army.GetNode<ScrollContainer>("Drawer/Layout/Scroll");
+        var armyScroll = army.GetNode<ScrollContainer>("Drawer/Layout/Pages/Scroll");
         var rows = army.GetNode<VBoxContainer>("%Rows").GetChildren().OfType<ArmyDrawerRow>().ToArray();
         if (!army.IsOpen || !drawer.Visible || !Contains(viewport, drawer.GetGlobalRect()) ||
             !Contains(drawer.GetGlobalRect(), armyScroll.GetGlobalRect()))
@@ -527,6 +547,7 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
 
     private async Task Click(Control control)
     {
+        await RevealDeploymentCard(control);
         var point = control.GetGlobalRect().GetCenter();
         GetViewport().PushInput(new InputEventMouseMotion { Position = point, GlobalPosition = point }, true);
         GetViewport().PushInput(new InputEventMouseButton
@@ -543,6 +564,7 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
 
     private async Task ClickWithin(Control control, Control clipOwner)
     {
+        await RevealDeploymentCard(control);
         var visible = control.GetGlobalRect().Intersection(clipOwner.GetGlobalRect());
         if (visible.Size.X <= 1 || visible.Size.Y <= 1)
             throw new InvalidOperationException($"control has no clickable visible rect: {control.Name}");
@@ -580,6 +602,7 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
 
     private async Task BeginDragAcross(Control source, IReadOnlyList<Control> targets)
     {
+        await RevealDeploymentCard(source);
         var start = source.GetGlobalRect().GetCenter();
         GetViewport().PushInput(new InputEventMouseMotion { Position = start, GlobalPosition = start }, true);
         GetViewport().PushInput(new InputEventMouseButton
@@ -627,6 +650,32 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
         GetViewport().PushInput(new InputEventAction { Action = "ui_accept", Pressed = true, Strength = 1f }, true);
         await ProcessFrames(1);
         GetViewport().PushInput(new InputEventAction { Action = "ui_accept", Pressed = false }, true);
+        await ProcessFrames(2);
+    }
+
+    private async Task SelectTab(TabContainer tabs, int index)
+    {
+        var bar = tabs.GetTabBar();
+        var point = bar.GlobalPosition + bar.GetTabRect(index).GetCenter();
+        GetViewport().PushInput(new InputEventMouseMotion { Position = point, GlobalPosition = point }, true);
+        GetViewport().PushInput(new InputEventMouseButton { Position = point, GlobalPosition = point,
+            ButtonIndex = MouseButton.Left, Pressed = true }, true);
+        await ProcessFrames(1);
+        GetViewport().PushInput(new InputEventMouseButton { Position = point, GlobalPosition = point,
+            ButtonIndex = MouseButton.Left, Pressed = false }, true);
+        await ProcessFrames(2);
+        if (tabs.CurrentTab != index) throw new InvalidOperationException("Tab input did not open requested page");
+    }
+
+    private async Task RevealDeploymentCard(Control control)
+    {
+        if (control is not DeploymentUnitCard) return;
+        Node? ancestor = control;
+        while (ancestor is not null && ancestor is not DeploymentScreenController) ancestor = ancestor.GetParent();
+        if (ancestor is not DeploymentScreenController deployment) return;
+        await SelectTab(deployment.GetNode<TabContainer>("%SidebarTabs"), 1);
+        deployment.GetNode<ScrollContainer>("Margin/Layout/Columns/SidebarTabs/RosterPage/RosterScroll")
+            .EnsureControlVisible(control);
         await ProcessFrames(2);
     }
 

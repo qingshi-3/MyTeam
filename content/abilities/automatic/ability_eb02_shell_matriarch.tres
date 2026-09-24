@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BroodPhaseAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="action"]
+script = ExtResource("operation")
+EggContentId = "enemy_brood_egg"
+LarvaContentId = "enemy_brood_larva"
+[resource]
+script = ExtResource("ability")
+StableId = "ability_eb02_shell_matriarch"
+DisplayName = "裂壳育雏"
+Description = "半血裂壳缩体后退，改用远程酸液并产下可破坏的虫卵。全场最多两批虫卵。"
+ActivationKind = 1
+Trigger = 2
+CooldownTicks = 50
+IntervalTicks = 35
+Operations = [SubResource("action")]

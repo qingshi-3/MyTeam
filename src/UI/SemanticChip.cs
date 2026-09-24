@@ -9,6 +9,7 @@ public partial class SemanticChip : HBoxContainer
 
     private TextureRect _icon = null!;
     private Label _text = null!;
+    private Label _caption = null!;
 
     public StringName SemanticKey { get; private set; } = new();
     public Texture2D? ResolvedIcon => _icon?.Texture;
@@ -19,6 +20,8 @@ public partial class SemanticChip : HBoxContainer
     public void Bind(StringName semanticKey, string text, StringName? typeVariation = null)
     {
         CacheNodes();
+        _caption.Visible = false;
+        _text.RemoveThemeColorOverride("font_color");
         SemanticKey = semanticKey;
         var resolved = Catalog is not null && Catalog.TryResolve(semanticKey, out var entry) ? entry : null;
         _icon.Texture = resolved?.Icon;
@@ -34,10 +37,24 @@ public partial class SemanticChip : HBoxContainer
 
     public void Bind(SemanticFact fact) => Bind(fact.Key, fact.Text, fact.ThemeTypeVariation);
 
+    public void BindCaption(string caption, Color? tint = null)
+    {
+        CacheNodes();
+        _caption.Text = caption;
+        _caption.Visible = !string.IsNullOrWhiteSpace(caption);
+        var color = tint ?? _text.GetThemeColor("font_color");
+        _caption.AddThemeColorOverride("font_color", color);
+        _text.AddThemeColorOverride("font_color", color);
+        _icon.Modulate = color;
+    }
+
     private void CacheNodes()
     {
         _icon ??= GetNode<TextureRect>("%SemanticIcon");
         _text ??= GetNode<Label>("%SemanticText");
+        _caption ??= GetNode<Label>("%SemanticCaption");
+        if (FontSizeOverride > 0) _caption.AddThemeFontSizeOverride("font_size", FontSizeOverride);
+        else _caption.RemoveThemeFontSizeOverride("font_size");
         if (FontSizeOverride > 0) _text.AddThemeFontSizeOverride("font_size", FontSizeOverride);
         else _text.RemoveThemeFontSizeOverride("font_size");
     }

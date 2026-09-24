@@ -1,0 +1,52 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Action = 4
+TargetQuery = SubResource("s0")
+Amount = 1
+Terms = []
+CounterKey = "death_power"
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r3")
+Metric = 5
+Subject = 0
+Attribute = 0
+Key = "death_power"
+Scale = 3
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r2")
+Action = 6
+TargetQuery = SubResource("s2")
+Amount = 0
+Terms = [SubResource("s3")]
+Attribute = 1
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc25_p_growth"
+DisplayName = "葬礼"
+Description = "其他友军每次死亡，本战攻击增加 3；自己死亡时补出 2 名骨卒，此补员亡语可被传灯狐代触发。"
+ActivationKind = 2
+Trigger = 16
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1"), SubResource("s4")]

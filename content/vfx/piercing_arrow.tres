@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/piercing_arrow.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+StableId = "piercing_arrow"
+DisplayName = "贯阵重箭 · 飞行"
+PreviewNote = "蓄力后发射金白亮芯的能量箭，尖锐发光箭头带渐淡长尾；命中后继续飞到射线终点，伤害名额独立于飞行寿命。"
+Scene = ExtResource("2")
+Duration = 1
+Persistent = true
+Ground = false
+StretchBetween = false
+FaceDirection = true
+Size = 80

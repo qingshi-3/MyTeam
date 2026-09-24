@@ -1,0 +1,26 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="1"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/piercing_arrow_trail.gdshader" id="trail"]
+[ext_resource type="Shader" path="res://scenes/vfx/piercing_arrow_core.gdshader" id="core"]
+
+[sub_resource type="ShaderMaterial" id="core_material"]
+shader = ExtResource("core")
+
+[sub_resource type="ShaderMaterial" id="trail_material"]
+shader = ExtResource("trail")
+[node name="projectile" type="Node2D"]
+script = ExtResource("1")
+
+[node name="Core" type="Sprite2D" parent="."]
+position = Vector2(-88, 0)
+scale = Vector2(1, 0.8)
+texture = ExtResource("surface")
+material = SubResource("core_material")
+
+[node name="Trail" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(-218, 0)
+scale = Vector2(1.45, 0.55)
+texture = ExtResource("surface")
+material = SubResource("trail_material")

@@ -7,7 +7,7 @@
 script = ExtResource("3")
 Profile = 2
 HealthMultiplier = 1.15
-SummonContentId = "soldier_aegis_guard"
+SummonContentId = "soldier_dummy_melee"
 
 [resource]
 script = ExtResource("1")

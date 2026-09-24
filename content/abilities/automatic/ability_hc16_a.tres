@@ -1,0 +1,94 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 3
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 1
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 7
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+Minimum = 40
+Maximum = 1e+20
+Every = 1
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r2")
+Metric = 3
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 1
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r3")
+Action = 8
+TargetQuery = SubResource("s3")
+Amount = 0
+Terms = [SubResource("s4")]
+CounterKey = "spent_shield"
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("r4")
+Team = 1
+Anchor = 1
+Range = 1.5
+MaxTargets = 0
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s7"]
+script = ExtResource("r2")
+Metric = 5
+Subject = 0
+Attribute = 0
+Key = "spent_shield"
+Scale = 0.8
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s8"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s6")
+Amount = 0
+Terms = [SubResource("s7")]
+DamageType = 0
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc16_a"
+DisplayName = "碎盾轰击"
+Description = "当前盾至少 40 时消费全部护盾，对周围 1.5 格敌人造成耗盾量 80% 的伤害。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2"), SubResource("s5"), SubResource("s8")]

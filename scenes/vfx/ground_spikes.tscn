@@ -1,0 +1,198 @@
+[gd_scene load_steps=15 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxRockSpikeTrack.cs" id="rock"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="group"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="ambient"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="ballistic"]
+[ext_resource type="Texture2D" path="res://assets/vfx/library/rock-wedge-anime.png" id="stone"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/GroundRockChip.tscn" id="chip"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/MistParticle.tscn" id="mist"]
+[ext_resource type="Shader" path="res://scenes/vfx/ground_spike.gdshader" id="stone_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/ground_fissure.gdshader" id="fissure_shader"]
+[sub_resource type="ShaderMaterial" id="stone_mat"]
+shader=ExtResource("stone_shader")
+[sub_resource type="ShaderMaterial" id="fissure_mat"]
+shader=ExtResource("fissure_shader")
+[node name="GroundSpikes" type="Node2D"]
+script=ExtResource("root")
+[node name="GroundCue" type="Node2D" parent="."]
+script=ExtResource("group")
+Clock=1
+[node name="Fissure" type="Sprite2D" parent="GroundCue"]
+script=ExtResource("sprite")
+texture=ExtResource("surface")
+material=SubResource("fissure_mat")
+scale=Vector2(0.93,0.56)
+ShaderLifecycle=true
+StartScale=1.0
+EndScale=1.0
+Duration=0.65
+[node name="Rock0" type="Sprite2D" parent="."]
+script=ExtResource("rock")
+texture=ExtResource("stone")
+texture_filter=4
+material=SubResource("stone_mat")
+position=Vector2(-54,-8)
+rotation=-0.16
+PixelSize=Vector2(76,100)
+Delay=0.1
+RiseDuration=0.14
+HoldDuration=0.46
+FallDuration=0.46
+[node name="Rock1" type="Sprite2D" parent="."]
+script=ExtResource("rock")
+texture=ExtResource("stone")
+texture_filter=4
+material=SubResource("stone_mat")
+position=Vector2(-22,-23)
+rotation=-0.06
+PixelSize=Vector2(86,132)
+Delay=0.17
+RiseDuration=0.14
+HoldDuration=0.46
+FallDuration=0.46
+[node name="Rock2" type="Sprite2D" parent="."]
+script=ExtResource("rock")
+texture=ExtResource("stone")
+texture_filter=4
+material=SubResource("stone_mat")
+position=Vector2(28,-20)
+rotation=0.14
+flip_h=true
+PixelSize=Vector2(91,118)
+Delay=0.19
+RiseDuration=0.14
+HoldDuration=0.46
+FallDuration=0.46
+[node name="Rock3" type="Sprite2D" parent="."]
+script=ExtResource("rock")
+texture=ExtResource("stone")
+texture_filter=4
+material=SubResource("stone_mat")
+position=Vector2(62,-6)
+rotation=0.25
+flip_h=true
+PixelSize=Vector2(67,98)
+Delay=0.13
+RiseDuration=0.14
+HoldDuration=0.46
+FallDuration=0.46
+[node name="Rock4" type="Sprite2D" parent="."]
+script=ExtResource("rock")
+texture=ExtResource("stone")
+texture_filter=4
+material=SubResource("stone_mat")
+position=Vector2(4,3)
+rotation=0.02
+PixelSize=Vector2(110,153)
+Delay=0.22
+RiseDuration=0.14
+HoldDuration=0.46
+FallDuration=0.46
+[node name="Rock5" type="Sprite2D" parent="."]
+script=ExtResource("rock")
+texture=ExtResource("stone")
+texture_filter=4
+material=SubResource("stone_mat")
+position=Vector2(-32,20)
+rotation=-0.19
+PixelSize=Vector2(80,95)
+Delay=0.18
+RiseDuration=0.14
+HoldDuration=0.46
+FallDuration=0.46
+[node name="Rock6" type="Sprite2D" parent="."]
+script=ExtResource("rock")
+texture=ExtResource("stone")
+texture_filter=4
+material=SubResource("stone_mat")
+position=Vector2(40,20)
+rotation=0.1
+flip_h=true
+PixelSize=Vector2(79,87)
+Delay=0.24
+RiseDuration=0.14
+HoldDuration=0.46
+FallDuration=0.46
+[node name="Fragments0" type="Node2D" parent="."]
+script=ExtResource("ballistic")
+position=Vector2(-52,-5)
+ParticleScene=ExtResource("chip")
+Amount=6
+Seed=92901
+Radial=true
+Delay=0.17
+FollowCastDelay=true
+OriginRadius=5.0
+SpeedRange=Vector2(80,170)
+LiftSpeed=130.0
+Gravity=260.0
+LifetimeRange=Vector2(0.58,0.84)
+SizeRange=Vector2(12,23)
+HeightScale=0.8
+EndSizeFactor=Vector2(0.8,0.8)
+FaceVelocity=false
+Spin=-3.1
+EndTint=Color(0.56,0.50,0.43,1)
+[node name="Fragments1" type="Node2D" parent="."]
+script=ExtResource("ballistic")
+position=Vector2(35,-9)
+ParticleScene=ExtResource("chip")
+Amount=6
+Seed=92902
+Radial=true
+Delay=0.23
+FollowCastDelay=true
+OriginRadius=5.0
+SpeedRange=Vector2(80,170)
+LiftSpeed=130.0
+Gravity=260.0
+LifetimeRange=Vector2(0.58,0.84)
+SizeRange=Vector2(12,23)
+HeightScale=0.8
+EndSizeFactor=Vector2(0.8,0.8)
+FaceVelocity=false
+Spin=3.4
+EndTint=Color(0.56,0.50,0.43,1)
+[node name="Fragments2" type="Node2D" parent="."]
+script=ExtResource("ballistic")
+position=Vector2(2,15)
+ParticleScene=ExtResource("chip")
+Amount=6
+Seed=92903
+Radial=true
+Delay=0.32
+FollowCastDelay=true
+OriginRadius=5.0
+SpeedRange=Vector2(80,170)
+LiftSpeed=130.0
+Gravity=260.0
+LifetimeRange=Vector2(0.58,0.84)
+SizeRange=Vector2(12,23)
+HeightScale=0.8
+EndSizeFactor=Vector2(0.8,0.8)
+FaceVelocity=false
+Spin=-3.1
+EndTint=Color(0.56,0.50,0.43,1)
+[node name="DustCue" type="Node2D" parent="."]
+script=ExtResource("group")
+Delay=0.22
+DelayFollowsCast=true
+[node name="Dust" type="Node2D" parent="DustCue"]
+script=ExtResource("ambient")
+ParticleScene=ExtResource("mist")
+Amount=11
+Seed=92911
+Motion=1
+Spread=Vector2(46,17)
+Velocity=Vector2(40,0)
+Lifetime=1.0
+EmitDuration=0.18
+SizeRange=Vector2(42,66)
+EndScale=Vector2(1.55,0.80)
+StartTint=Color(0.70,0.56,0.38,1)
+EndTint=Color(0.41,0.37,0.33,1)
+Opacity=0.21
+

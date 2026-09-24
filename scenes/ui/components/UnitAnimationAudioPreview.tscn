@@ -1,0 +1,192 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/UI/UnitAnimationAudioPreview.cs" id="1"]
+[ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/audio/FeedbackAudio.tscn" id="3"]
+
+[node name="UnitAnimationAudioPreview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2")
+script = ExtResource("1")
+FullViewport = true
+CloseButtonPath = NodePath("Panel/Margin/Layout/Header/PreviewClose")
+z_index = 110
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.005, 0.01, 0.015, 0.88)
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchor_left = 0.06
+anchor_top = 0.06
+anchor_right = 0.94
+anchor_bottom = 0.94
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="Layout" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="Panel/Margin/Layout"]
+layout_mode = 2
+
+[node name="PreviewTitle" type="Label" parent="Panel/Margin/Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+text = "动画音效"
+
+[node name="PreviewClose" type="Button" parent="Panel/Margin/Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "关闭 · Esc"
+
+[node name="Body" type="HBoxContainer" parent="Panel/Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="Animation" type="VBoxContainer" parent="Panel/Margin/Layout/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="PreviewStage" type="Control" parent="Panel/Margin/Layout/Body/Animation"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 180)
+layout_mode = 2
+size_flags_vertical = 3
+clip_contents = true
+mouse_filter = 2
+
+[node name="Ground" type="ColorRect" parent="Panel/Margin/Layout/Body/Animation/PreviewStage"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.024, 0.043, 0.056, 1)
+
+[node name="PreviewActorHost" type="Node2D" parent="Panel/Margin/Layout/Body/Animation/PreviewStage"]
+unique_name_in_owner = true
+
+[node name="FrameControls" type="HBoxContainer" parent="Panel/Margin/Layout/Body/Animation"]
+layout_mode = 2
+
+[node name="PreviewPreviousFrame" type="Button" parent="Panel/Margin/Layout/Body/Animation/FrameControls"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "‹ 前一帧"
+tooltip_text = "暂停并静默查看；继续会从头重播"
+
+[node name="PreviewFrame" type="Label" parent="Panel/Margin/Layout/Body/Animation/FrameControls"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+text = "第 1 帧"
+
+[node name="PreviewNextFrame" type="Button" parent="Panel/Margin/Layout/Body/Animation/FrameControls"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "后一帧 ›"
+tooltip_text = "暂停并静默查看；继续会从头重播"
+
+[node name="Playback" type="HBoxContainer" parent="Panel/Margin/Layout/Body/Animation"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PreviewAction" type="OptionButton" parent="Panel/Margin/Layout/Body/Animation/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PreviewPlay" type="Button" parent="Panel/Margin/Layout/Body/Animation/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "重播"
+
+[node name="PreviewPause" type="Button" parent="Panel/Margin/Layout/Body/Animation/Playback"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "暂停"
+
+[node name="Markers" type="VBoxContainer" parent="Panel/Margin/Layout/Body"]
+custom_minimum_size = Vector2(310, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/Margin/Layout/Body/Markers"]
+layout_mode = 2
+theme_type_variation = &"SectionTitleLabel"
+text = "当前动作 · 音效标记"
+
+[node name="SoundMarkers" type="ItemList" parent="Panel/Margin/Layout/Body/Markers"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 110)
+
+[node name="FrameRow" type="HBoxContainer" parent="Panel/Margin/Layout/Body/Markers"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Margin/Layout/Body/Markers/FrameRow"]
+layout_mode = 2
+text = "在第几帧播放"
+size_flags_horizontal = 3
+
+[node name="MarkerFrame" type="SpinBox" parent="Panel/Margin/Layout/Body/Markers/FrameRow"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+max_value = 100.0
+step = 1.0
+value = 1.0
+
+[node name="PlaySound" type="Button" parent="Panel/Margin/Layout/Body/Markers"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "只听所选音源"
+
+[node name="ResetSounds" type="Button" parent="Panel/Margin/Layout/Body/Markers"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "还原英雄配置"
+
+[node name="PreviewFeedback" type="Label" parent="Panel/Margin/Layout/Body/Markers"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 74)
+layout_mode = 2
+autowrap_mode = 3
+text = "调整仅用于本次试听。"
+
+[node name="TemporaryNotice" type="Label" parent="Panel/Margin/Layout"]
+layout_mode = 2
+text = "试听调整仅本次有效，关闭后还原。永久修改请在下方英雄场景中配置；帧数从 1 开始。"
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.9, 0.76, 0.45, 1)
+
+[node name="PreviewSource" type="Label" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+autowrap_mode = 3
+text = "永久配置：英雄场景 → UnitAnimationComponent → FrameSounds"
+
+[node name="PreviewAudio" parent="." instance=ExtResource("3")]
+unique_name_in_owner = true

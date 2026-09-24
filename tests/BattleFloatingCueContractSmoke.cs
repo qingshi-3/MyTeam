@@ -286,7 +286,6 @@ public partial class BattleFloatingCueContractSmoke : Node
             [CombatAttribute.SpellPower] = 0,
             [CombatAttribute.AttackSpeed] = 1,
             [CombatAttribute.Armor] = 0,
-            [CombatAttribute.MagicResistance] = 0,
             [CombatAttribute.AttackRange] = range,
             [CombatAttribute.MoveSpeed] = 1,
             [CombatAttribute.CriticalChance] = 0,

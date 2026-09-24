@@ -116,10 +116,12 @@ public partial class HeroManaContractSmoke : Node
         {
             StableId = "mana_contract_control", DisplayName = "契约冻结",
             Behavior = TowerAutobattler.Statuses.StatusBehaviorKind.DisableActions,
+            GrantedTags = [TowerAutobattler.Statuses.StatusDefinitionCompiler.ActionDisabledTag],
             DurationKind = TowerAutobattler.Statuses.StatusDurationKind.TimedTicks, DurationTicks = 6
         };
-        var status = TowerAutobattler.Statuses.StatusDefinitionCompiler.Compile(statusResource).Definition
-            ?? throw new InvalidOperationException("control fixture did not compile");
+        var compiled = TowerAutobattler.Statuses.StatusDefinitionCompiler.Compile(statusResource);
+        var status = compiled.Definition
+            ?? throw new InvalidOperationException("control fixture did not compile: " + string.Join(';', compiled.Report.CoreErrors));
         statusResource.Dispose();
         var mixed = damage with { Operations = damage.Operations.Add(
             new CompiledApplyStatusAbilityOperation(status, new CompiledExplicitTargetQuery())) };

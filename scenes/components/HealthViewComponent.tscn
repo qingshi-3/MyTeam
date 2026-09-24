@@ -1,6 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/Components/HealthViewComponent.cs" id="1"]
+[ext_resource type="Theme" path="res://content/ui/skill_progress_theme.tres" id="SkillTheme"]
 
 [sub_resource type="StyleBoxFlat" id="bar_background"]
 bg_color = Color(0.035, 0.05, 0.075, 0.95)
@@ -13,23 +14,18 @@ border_color = Color(0.3, 0.36, 0.42, 0.9)
 [sub_resource type="StyleBoxFlat" id="health_fill"]
 bg_color = Color(0.3, 0.82, 0.46, 1)
 
-[sub_resource type="StyleBoxFlat" id="mana_fill"]
-bg_color = Color(0.25, 0.57, 1, 1)
-
 [sub_resource type="StyleBoxFlat" id="shield_fill"]
 bg_color = Color(0.78, 0.86, 0.93, 1)
 
-[node name="HealthViewComponent" type="Node2D" node_paths=PackedStringArray("Bar", "ManaBar", "ShieldBar", "ReadyMarker", "StatusText", "StatusIcon", "ControlOutline", "ShieldOutline", "CastOutline", "CastName")]
+[node name="HealthViewComponent" type="Node2D" node_paths=PackedStringArray("Bar", "ManaBar", "ShieldBar", "ReadyMarker", "ResourceMarker", "StatusText", "StatusIcon", "CastName")]
 script = ExtResource("1")
 Bar = NodePath("ProgressBar")
 ManaBar = NodePath("ManaBar")
 ShieldBar = NodePath("ShieldBar")
 ReadyMarker = NodePath("ReadyMarker")
+ResourceMarker = NodePath("ResourceMarker")
 StatusText = NodePath("StatusText")
 StatusIcon = NodePath("StatusIcon")
-ControlOutline = NodePath("ControlOutline")
-ShieldOutline = NodePath("ShieldOutline")
-CastOutline = NodePath("CastOutline")
 CastName = NodePath("CastName")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
@@ -53,8 +49,19 @@ offset_bottom = -46.0
 mouse_filter = 2
 show_percentage = false
 step = 0.0
-theme_override_styles/background = SubResource("bar_background")
-theme_override_styles/fill = SubResource("mana_fill")
+theme = ExtResource("SkillTheme")
+theme_type_variation = &"SkillMana"
+
+[node name="ResourceMarker" type="Label" parent="."]
+visible = false
+offset_left = -46.0
+offset_top = -56.0
+offset_right = -32.0
+offset_bottom = -40.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 1)
+theme_override_constants/outline_size = 3
 
 [node name="ShieldBar" type="ProgressBar" parent="."]
 visible = false
@@ -100,27 +107,6 @@ theme_override_font_sizes/font_size = 11
 theme_override_colors/font_color = Color(0.83, 0.93, 1, 1)
 theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 1)
 theme_override_constants/outline_size = 4
-
-[node name="ControlOutline" type="Line2D" parent="."]
-visible = false
-points = PackedVector2Array(-22, -5, -27, -26, -14, -43, 14, -43, 27, -26, 22, -5, -22, -5)
-width = 2.5
-default_color = Color(0.48, 0.85, 1, 0.9)
-antialiased = true
-
-[node name="ShieldOutline" type="Line2D" parent="."]
-visible = false
-points = PackedVector2Array(-29, -29, -26, -9, 0, 5, 26, -9, 29, -29)
-width = 2.5
-default_color = Color(0.75, 0.85, 0.93, 0.75)
-antialiased = true
-
-[node name="CastOutline" type="Line2D" parent="."]
-visible = false
-points = PackedVector2Array(-24, -5, -18, -13, 0, -17, 18, -13, 24, -5, 18, 3, 0, 7, -18, 3, -24, -5)
-width = 3.0
-default_color = Color(0.48, 0.7, 1, 0.95)
-antialiased = true
 
 [node name="CastName" type="Label" parent="."]
 visible = false

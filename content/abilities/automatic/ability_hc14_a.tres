@@ -1,0 +1,58 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Team = 1
+Anchor = 1
+Range = 1.5
+MaxTargets = 0
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 0
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 0.12
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r2")
+Metric = 0
+Subject = 0
+Attribute = 4
+Key = ""
+Scale = 2
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1"), SubResource("s2")]
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc14_a"
+DisplayName = "磐岩震"
+Description = "对周围 1.5 格敌人造成自身最大生命 12% 加防御 2 倍的伤害。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s3")]

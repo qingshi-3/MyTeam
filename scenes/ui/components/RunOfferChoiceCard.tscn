@@ -1,0 +1,241 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/UI/RunOfferChoiceCard.cs" id="Card"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="Portrait"]
+[ext_resource type="Script" path="res://src/UI/CombatRichText.cs" id="RichCopy"]
+[ext_resource type="Resource" path="res://content/ui/combat_keywords.tres" id="Vocabulary"]
+
+[sub_resource type="StyleBoxFlat" id="CardPanel"]
+bg_color = Color(0.047, 0.067, 0.083, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.52, 0.43, 0.24, 0.75)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10
+content_margin_left = 18.0
+content_margin_top = 16.0
+content_margin_right = 18.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="ArtworkPanel"]
+bg_color = Color(0.078, 0.108, 0.13, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_left = 7
+corner_radius_bottom_right = 7
+
+[sub_resource type="StyleBoxEmpty" id="QuietButton"]
+content_margin_left = 0.0
+content_margin_top = 6.0
+content_margin_right = 0.0
+content_margin_bottom = 6.0
+
+[node name="RunOfferChoiceCard" type="PanelContainer"]
+custom_minimum_size = Vector2(280, 360)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("CardPanel")
+script = ExtResource("Card")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="Artwork" type="PanelContainer" parent="Layout"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 156)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("ArtworkPanel")
+
+[node name="Portrait" parent="Layout/Artwork" instance=ExtResource("Portrait")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 0)
+FitVisibleArtwork = true
+
+[node name="Title" type="Label" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"ChoiceTitle"
+theme_override_font_sizes/font_size = 25
+text = "候选名称"
+autowrap_mode = 2
+
+[node name="Identity" type="Label" parent="Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 15
+text = "英雄"
+autowrap_mode = 2
+
+[node name="Stats" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Health" type="VBoxContainer" parent="Layout/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+tooltip_text = "基础最大生命；当前入队生命与战后恢复依照本次领取规则。"
+
+[node name="Value" type="Label" parent="Layout/Stats/Health"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.44, 0.85, 0.65, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+mouse_filter = 2
+
+[node name="Caption" type="Label" parent="Layout/Stats/Health"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 13
+text = "生命"
+mouse_filter = 2
+
+[node name="Damage" type="VBoxContainer" parent="Layout/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+tooltip_text = "基础攻击力；普攻伤害还会受到防御与技能效果影响。"
+
+[node name="Value" type="Label" parent="Layout/Stats/Damage"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.68, 0.40, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+mouse_filter = 2
+
+[node name="Caption" type="Label" parent="Layout/Stats/Damage"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 13
+text = "攻击"
+mouse_filter = 2
+
+[node name="Armor" type="VBoxContainer" parent="Layout/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+tooltip_text = "基础防御，降低受到的伤害。"
+
+[node name="Value" type="Label" parent="Layout/Stats/Armor"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.77, 0.95, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+mouse_filter = 2
+
+[node name="Caption" type="Label" parent="Layout/Stats/Armor"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 13
+text = "防御"
+mouse_filter = 2
+
+[node name="AttackRate" type="VBoxContainer" parent="Layout/Stats"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+tooltip_text = "基础每秒普攻次数。攻速增益会缩短实际攻击间隔。"
+
+[node name="Value" type="Label" parent="Layout/Stats/AttackRate"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.83, 0.51, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+mouse_filter = 2
+
+[node name="Caption" type="Label" parent="Layout/Stats/AttackRate"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
+theme_override_font_sizes/font_size = 13
+text = "攻速/秒"
+mouse_filter = 2
+
+[node name="BodyScroll" type="ScrollContainer" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 3
+follow_focus = true
+focus_mode = 2
+
+[node name="Body" type="VBoxContainer" parent="Layout/BodyScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 13
+
+[node name="Active" type="RichTextLabel" parent="Layout/BodyScroll/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 17
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+selection_enabled = true
+script = ExtResource("RichCopy")
+Vocabulary = ExtResource("Vocabulary")
+
+[node name="Passive" type="RichTextLabel" parent="Layout/BodyScroll/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 17
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+selection_enabled = true
+script = ExtResource("RichCopy")
+Vocabulary = ExtResource("Vocabulary")
+
+[node name="Effect" type="RichTextLabel" parent="Layout/BodyScroll/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 17
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+selection_enabled = true
+script = ExtResource("RichCopy")
+Vocabulary = ExtResource("Vocabulary")
+
+[node name="DetailsButton" type="Button" parent="Layout/BodyScroll/Body"]
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 2
+toggle_mode = true
+text = "属性与规则  ▾"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.69, 0.78, 0.83, 1)
+theme_override_styles/normal = SubResource("QuietButton")
+tooltip_text = "展开额外属性、条件代价和词条释义。不会领取或购买。"
+
+[node name="Details" type="RichTextLabel" parent="Layout/BodyScroll/Body"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 15
+theme_override_font_sizes/bold_font_size = 15
+theme_override_colors/default_color = Color(0.69, 0.77, 0.81, 1)
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+selection_enabled = true
+script = ExtResource("RichCopy")
+Vocabulary = ExtResource("Vocabulary")
+
+[node name="Notice" type="Label" parent="Layout"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+autowrap_mode = 2
+
+[node name="ConfirmButton" type="Button" parent="Layout"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+focus_mode = 2
+text = "领取"

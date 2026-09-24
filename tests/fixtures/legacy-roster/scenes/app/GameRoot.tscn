@@ -1,0 +1,110 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://tests/fixtures/legacy-roster/LegacyGameRoot.cs" id="1"]
+[ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/MainMenuScreen.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HeroSelectScreen.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/TowerScreen.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/DeploymentScreen.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/BattleScreen.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/RewardScreen.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ShopScreen.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/ui/EventScreen.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/ui/RestScreen.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ResultScreen.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SettingsScreen.tscn" id="13"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/ArmyOverview.tscn" id="14"]
+[ext_resource type="PackedScene" path="res://scenes/ui/BattleReportScreen.tscn" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/ui/RecruitmentScreen.tscn" id="16"]
+[ext_resource type="Resource" path="res://tests/fixtures/legacy-roster/content/project/alpha_project.tres" id="17"]
+[ext_resource type="Script" path="res://src/App/AppScreenHost.cs" id="18"]
+[ext_resource type="PackedScene" path="res://tests/fixtures/legacy-roster/scenes/ui/BattleLabScreen.tscn" id="19"]
+
+[node name="GameRoot" type="Control" unique_id=257826745]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2")
+script = ExtResource("1")
+ProjectDefinition = ExtResource("17")
+
+[node name="Background" type="ColorRect" parent="." unique_id=962434456]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.018, 0.032, 0.043, 1)
+
+[node name="Screens" type="Control" parent="." unique_id=325918878]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("18")
+
+[node name="MainMenuScreen" parent="Screens" unique_id=1339752198 instance=ExtResource("3")]
+layout_mode = 1
+
+[node name="HeroSelectScreen" parent="Screens" unique_id=1184228846 instance=ExtResource("4")]
+visible = false
+layout_mode = 1
+
+[node name="TowerScreen" parent="Screens" unique_id=329741647 instance=ExtResource("5")]
+visible = false
+layout_mode = 1
+
+[node name="DeploymentScreen" parent="Screens" unique_id=1080493444 instance=ExtResource("6")]
+visible = false
+layout_mode = 1
+
+[node name="BattleScreen" parent="Screens" unique_id=1694608159 instance=ExtResource("7")]
+visible = false
+layout_mode = 1
+
+[node name="BattleReportScreen" parent="Screens" unique_id=806601750 instance=ExtResource("15")]
+visible = false
+layout_mode = 1
+
+[node name="BattleLabScreen" parent="Screens" unique_id=1425554011 instance=ExtResource("19")]
+visible = false
+layout_mode = 1
+
+[node name="RewardScreen" parent="Screens" unique_id=255550230 instance=ExtResource("8")]
+visible = false
+layout_mode = 1
+
+[node name="RecruitmentScreen" parent="Screens" unique_id=1000007900 instance=ExtResource("16")]
+visible = false
+layout_mode = 1
+
+[node name="ShopScreen" parent="Screens" unique_id=982439224 instance=ExtResource("9")]
+visible = false
+layout_mode = 1
+
+[node name="EventScreen" parent="Screens" unique_id=636630260 instance=ExtResource("10")]
+visible = false
+layout_mode = 1
+
+[node name="RestScreen" parent="Screens" unique_id=2140605336 instance=ExtResource("11")]
+visible = false
+layout_mode = 1
+
+[node name="ResultScreen" parent="Screens" unique_id=1250241154 instance=ExtResource("12")]
+visible = false
+layout_mode = 1
+
+[node name="SettingsScreen" parent="Screens" unique_id=615417697 instance=ExtResource("13")]
+visible = false
+layout_mode = 1
+
+[node name="ArmyOverview" parent="." unique_id=593151342 instance=ExtResource("14")]
+visible = false
+layout_mode = 1

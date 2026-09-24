@@ -1,0 +1,53 @@
+[gd_scene load_steps=10 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxInwardFlowTrack.cs" id="flow"]
+[ext_resource type="Texture2D" path="res://assets/vfx/refresh/rend-strip.png" id="strip"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/inward_flow.gdshader" id="shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="glow"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/InwardMote.tscn" id="mote"]
+[sub_resource type="ShaderMaterial" id="FlowMaterial"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+[sub_resource type="ShaderMaterial" id="GlowMaterial"]
+shader = ExtResource("glow")
+shader_parameter/rays = 0.25
+shader_parameter/core_strength = 0.8
+shader_parameter/corona_strength = 0.55
+[node name="ManaRestore" type="Node2D"]
+script = ExtResource("root")
+[node name="InwardFlow" type="Node2D" parent="."]
+script = ExtResource("flow")
+Mode = 1
+MoteScene = ExtResource("mote")
+Amount = 15
+FlowDuration = 0.58
+GatherRadius = 58.0
+RibbonWidth = 14.0
+Tint = Color(0.22,0.68,1.0,1)
+[node name="GatherA" type="MeshInstance2D" parent="InwardFlow"]
+texture_filter = 2
+texture = ExtResource("strip")
+material = SubResource("FlowMaterial")
+[node name="GatherB" type="MeshInstance2D" parent="InwardFlow"]
+texture_filter = 2
+texture = ExtResource("strip")
+material = SubResource("FlowMaterial")
+[node name="GatherC" type="MeshInstance2D" parent="InwardFlow"]
+texture_filter = 2
+texture = ExtResource("strip")
+material = SubResource("FlowMaterial")
+[node name="GatherD" type="MeshInstance2D" parent="InwardFlow"]
+texture_filter = 2
+texture = ExtResource("strip")
+material = SubResource("FlowMaterial")
+[node name="GatherE" type="MeshInstance2D" parent="InwardFlow"]
+texture_filter = 2
+texture = ExtResource("strip")
+material = SubResource("FlowMaterial")
+[node name="DestinationGlow" type="Sprite2D" parent="InwardFlow"]
+texture = ExtResource("surface")
+material = SubResource("GlowMaterial")
+[node name="OriginGlow" type="Sprite2D" parent="InwardFlow"]
+texture = ExtResource("surface")
+material = SubResource("GlowMaterial")

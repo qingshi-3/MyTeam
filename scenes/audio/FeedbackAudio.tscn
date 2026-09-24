@@ -1,0 +1,273 @@
+[gd_scene load_steps=41 format=3]
+
+[ext_resource type="Script" path="res://src/Audio/FeedbackAudio.cs" id="1"]
+[ext_resource type="Script" path="res://src/Audio/FeedbackSound.cs" id="2"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/defeat.ogg" id="defeat"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/arrow_release.ogg" id="a0"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/arrow_hit.ogg" id="a1"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/melee_swing.ogg" id="a2"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/melee_hit.ogg" id="a3"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/freeze.ogg" id="a4"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/shield.ogg" id="a5"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/shield_break.ogg" id="a6"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/explosion.ogg" id="a7"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/summon.ogg" id="a8"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/heal.ogg" id="a9"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/skill.ogg" id="a10"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/death.ogg" id="a11"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/victory.ogg" id="a12"]
+[ext_resource type="AudioStream" path="res://assets/audio/ui/ui_hover.wav" id="a13"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/ui_error.ogg" id="a14"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/purchase.ogg" id="a15"]
+
+[ext_resource type="Resource" path="res://content/audio/mix/attack.tres" id="mix_attack"]
+[ext_resource type="Resource" path="res://content/audio/mix/impact.tres" id="mix_impact"]
+[ext_resource type="Resource" path="res://content/audio/mix/support.tres" id="mix_support"]
+[ext_resource type="Resource" path="res://content/audio/mix/highlight.tres" id="mix_highlight"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("2")
+Cue = "arrow_release"
+Stream = ExtResource("a0")
+VolumeDb = -11
+MinimumInterval = 0.085
+MaximumVoices = 2
+Priority = 1
+VaryPitch = true
+MixGroup = ExtResource("mix_attack")
+MaximumDuration = 0.18
+
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+Cue = "arrow_hit"
+Stream = ExtResource("a1")
+VolumeDb = -19
+MinimumInterval = 0.16
+MaximumVoices = 1
+Priority = 0
+VaryPitch = true
+MixGroup = ExtResource("mix_impact")
+MaximumDuration = 0.1
+
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("2")
+Cue = "melee_swing"
+Stream = ExtResource("a2")
+VolumeDb = -12
+MinimumInterval = 0.085
+MaximumVoices = 2
+Priority = 1
+VaryPitch = true
+MixGroup = ExtResource("mix_attack")
+MaximumDuration = 0.18
+
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("2")
+Cue = "melee_hit"
+Stream = ExtResource("a3")
+VolumeDb = -17
+MinimumInterval = 0.16
+MaximumVoices = 1
+Priority = 0
+VaryPitch = true
+MixGroup = ExtResource("mix_impact")
+MaximumDuration = 0.12
+
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("2")
+Cue = "freeze"
+Stream = ExtResource("a4")
+VolumeDb = -9
+MinimumInterval = 0.35
+MaximumVoices = 1
+Priority = 3
+VaryPitch = true
+MixGroup = ExtResource("mix_support")
+MaximumDuration = 0.32
+
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("2")
+Cue = "shield"
+Stream = ExtResource("a5")
+VolumeDb = -14
+MinimumInterval = 0.32
+MaximumVoices = 1
+Priority = 1
+VaryPitch = true
+MixGroup = ExtResource("mix_support")
+MaximumDuration = 0.25
+
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("2")
+Cue = "shield_break"
+Stream = ExtResource("a6")
+VolumeDb = -7
+MinimumInterval = 0.3
+MaximumVoices = 1
+Priority = 3
+VaryPitch = true
+MixGroup = ExtResource("mix_highlight")
+MaximumDuration = 0.4
+
+
+[sub_resource type="Resource" id="s7"]
+script = ExtResource("2")
+Cue = "explosion"
+Stream = ExtResource("a7")
+VolumeDb = -6
+MinimumInterval = 0.24
+MaximumVoices = 2
+Priority = 3
+VaryPitch = true
+MixGroup = ExtResource("mix_highlight")
+MaximumDuration = 0.5
+
+
+[sub_resource type="Resource" id="s8"]
+script = ExtResource("2")
+Cue = "summon"
+Stream = ExtResource("a8")
+VolumeDb = -11
+MinimumInterval = 0.32
+MaximumVoices = 1
+Priority = 1
+VaryPitch = true
+MixGroup = ExtResource("mix_support")
+MaximumDuration = 0.32
+
+
+[sub_resource type="Resource" id="s9"]
+script = ExtResource("2")
+Cue = "heal"
+Stream = ExtResource("a9")
+VolumeDb = -16
+MinimumInterval = 0.4
+MaximumVoices = 1
+Priority = 1
+VaryPitch = true
+MixGroup = ExtResource("mix_support")
+MaximumDuration = 0.25
+
+
+[sub_resource type="Resource" id="s10"]
+script = ExtResource("2")
+Cue = "skill"
+Stream = ExtResource("a10")
+VolumeDb = -7
+MinimumInterval = 0.22
+MaximumVoices = 2
+Priority = 2
+VaryPitch = true
+MixGroup = ExtResource("mix_highlight")
+MaximumDuration = 0.42
+
+
+[sub_resource type="Resource" id="s11"]
+script = ExtResource("2")
+Cue = "death"
+Stream = ExtResource("a11")
+VolumeDb = -12
+MinimumInterval = 0.4
+MaximumVoices = 1
+Priority = 1
+VaryPitch = true
+MixGroup = ExtResource("mix_support")
+MaximumDuration = 0.28
+
+
+[sub_resource type="Resource" id="s12"]
+script = ExtResource("2")
+Cue = "victory"
+Stream = ExtResource("a12")
+VolumeDb = -4.0
+MinimumInterval = 0.16
+MaximumVoices = 1
+Priority = 4
+VaryPitch = false
+
+[sub_resource type="Resource" id="s13"]
+script = ExtResource("2")
+Cue = "ui_select"
+Stream = ExtResource("a13")
+VolumeDb = -4.0
+MinimumInterval = 0.065
+MaximumVoices = 1
+Priority = 4
+VaryPitch = false
+
+[sub_resource type="Resource" id="s14"]
+script = ExtResource("2")
+Cue = "ui_error"
+Stream = ExtResource("a14")
+VolumeDb = -4.0
+MinimumInterval = 0.065
+MaximumVoices = 1
+Priority = 5
+VaryPitch = false
+
+[sub_resource type="Resource" id="s15"]
+script = ExtResource("2")
+Cue = "purchase"
+Stream = ExtResource("a15")
+VolumeDb = -4.0
+MinimumInterval = 0.065
+MaximumVoices = 1
+Priority = 5
+VaryPitch = false
+
+[sub_resource type="Resource" id="defeat"]
+script = ExtResource("2")
+Cue = "defeat"
+Stream = ExtResource("defeat")
+VolumeDb = -4.0
+MinimumInterval = 0.5
+MaximumVoices = 1
+Priority = 4
+VaryPitch = false
+
+[node name="FeedbackAudio" type="Node"]
+script = ExtResource("1")
+AbilityCues = Dictionary[String, String]({"ability_ne02_temporary_death_blast": "explosion", "ability_ne02_owner_death_blast": "explosion"})
+Sounds = Array[ExtResource("2")]([SubResource("s0"), SubResource("s1"), SubResource("s2"), SubResource("s3"), SubResource("s4"), SubResource("s5"), SubResource("s6"), SubResource("s7"), SubResource("s8"), SubResource("s9"), SubResource("s10"), SubResource("s11"), SubResource("s12"), SubResource("s13"), SubResource("s14"), SubResource("s15"), SubResource("defeat")])
+
+[node name="Voice01" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice02" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice03" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice04" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice05" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice06" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice07" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice08" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice09" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice10" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice11" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="Voice12" type="AudioStreamPlayer" parent="."]
+bus = &"Master"

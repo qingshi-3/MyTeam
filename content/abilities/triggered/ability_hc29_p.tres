@@ -1,0 +1,28 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_bc_mind_fray.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r2")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r3")
+Status = ExtResource("r1")
+TargetQuery = SubResource("s0")
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc29_p"
+DisplayName = "心隙"
+Description = "普攻命中施加 4 秒心隙：防御减少 3，移速降低 20%。"
+ActivationKind = 2
+Trigger = 3
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

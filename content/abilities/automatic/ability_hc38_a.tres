@@ -1,0 +1,26 @@
+[gd_resource type="Resource" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/GritPunchAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="operation"]
+script = ExtResource("operation")
+CounterKey = "grit"
+LowHealthRatio = 0.5
+CriticalHealthRatio = 0.2
+Range = 3
+Radius = 0.8
+ChargeTicks = 6
+RecoveryTicks = 4
+ShieldTicks = 30
+AttackRatio = 1
+GritDamageRatio = 0.8
+[resource]
+script = ExtResource("ability")
+StableId = "ability_hc38_a"
+DisplayName = "蓄怒重拳"
+Description = "无蓝技能：怒劲满、生命从 50% 及以上跌至 50% 以下、生命低于 20% 均可触发；20% 濒死触发每战一次，复活不重置。恢复至半血及以上后可再次触发半血。消耗当前全部怒劲，获得等量 3 秒护盾；蓄力 0.6 秒后向锁定方向 3 格、宽 1.6 格打出重拳，造成攻击力 100% + 怒劲 80% 的伤害，再收势 0.4 秒。动作期间的新触发排队，同一技能的待执行触发合并；当前动作结束后才施放下一拳。零怒劲时仍有基础伤害，无额外护盾。"
+ActivationKind = 1
+Trigger = 24
+ManaCost = 0
+CooldownTicks = 5
+Echoable = false
+Operations = [SubResource("operation")]

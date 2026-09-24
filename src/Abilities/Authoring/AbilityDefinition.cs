@@ -17,7 +17,10 @@ public enum AbilityTriggerKind
     PeriodicTick,
     AttackHit,
     OwnerDefeated,
-    ManaFull
+    ManaFull,
+    CriticalHit, DodgedAttack, ReceivedAttack, HealthDamaged, ShieldReceived, HealingDone, OverhealReceived,
+    AllyManaCast, OwnerManaCast, AllyAttackHit, AllyDefeated, EnemyDefeated, ControlApplied, SummonAttackHit, OwnerRevived,
+    OwnerAttackOrSkillHit = 22, AllyTemporaryDefeated = 23, ActionQueued = 24
 }
 
 public enum AbilityAutomaticTargetKind { CurrentEnemy, WoundedAlly }
@@ -29,6 +32,8 @@ public partial class AbilityDefinition : Resource
     [Export] public string DisplayName { get; set; } = string.Empty;
     [Export] public AbilityActivationKind ActivationKind { get; set; }
     [Export] public AbilityTriggerKind Trigger { get; set; }
+    [Export] public bool Echoable { get; set; }
+    [Export(PropertyHint.MultilineText)] public string Description { get; set; } = "";
     [Export] public int ManaCost { get; set; }
     [Export] public int GoldCost { get; set; }
     [Export] public int CooldownTicks { get; set; }

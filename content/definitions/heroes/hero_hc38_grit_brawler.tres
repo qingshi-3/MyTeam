@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc38_grit_brawler.tres" id="portrait"]
+[resource]
+script = ExtResource("script")
+Id = "hero_hc38_grit_brawler"
+DisplayName = "怒拳斗士"
+Description = "无蓝斗士。近期生命承伤积怒劲；满怒、跌破半血或濒死时施放重拳，消耗怒劲增加伤害并获得短盾。低于 20% 生命的濒死触发每战一次。连续触发按自己的动作队列依次施放。护盾承伤不积怒劲。数值为测试暂值。"
+Portrait = ExtResource("portrait")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 800
+AttackDamage = 34
+AttackRange = 0.35
+AttackCooldown = 1.25
+Armor = 6
+MaxMana = 0
+StartingMana = 0
+ManaPerSecond = 0
+ManaPerAttack = 0
+ManaPerDamageRatio = 0
+ManaPerHitCap = 0
+Tags = Array[StringName]([&"hero"])

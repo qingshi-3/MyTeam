@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/UI/RunOfferDetailPanel.cs" id="Panel"]
+[ext_resource type="Script" path="res://src/UI/CombatRichText.cs" id="RichCopy"]
+[ext_resource type="Resource" path="res://content/ui/combat_keywords.tres" id="Vocabulary"]
+
+[node name="OfferDetail" type="PanelContainer"]
+custom_minimum_size = Vector2(340, 0)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"ModalPanel"
+script = ExtResource("Panel")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Layout"]
+layout_mode = 2
+theme_type_variation = &"ChoiceTitle"
+text = "候选详情"
+autowrap_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 3
+follow_focus = true
+focus_mode = 2
+
+[node name="Copy" type="RichTextLabel" parent="Layout/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 17
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+selection_enabled = true
+script = ExtResource("RichCopy")
+Vocabulary = ExtResource("Vocabulary")
+ShowGlossary = true

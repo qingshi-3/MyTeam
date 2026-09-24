@@ -6,6 +6,8 @@ public sealed class DeterministicRandom(ulong seed) : IDeterministicRandom
 {
     private ulong _state = seed == 0 ? 0x9E3779B97F4A7C15UL : seed;
 
+    internal ulong State { get => _state; set => _state = value; }
+
     private ulong Next()
     {
         _state ^= _state >> 12;

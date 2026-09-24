@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/mana_restore.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "mana_restore"
+DisplayName = "法力汇聚"
+PreviewNote = "自身周围五路蓝青能量沿短弧向中心合拢，末端小幅点亮后收净，不产生外部目标"
+Scene = ExtResource("scene")
+Duration = 1.20
+CastDuration = 0.12
+Size = 150.0
+Ground = false
+FlattenGround = false

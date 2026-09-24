@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/SummonAbilityOperationSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Profile = 4
+Count = 2
+MaximumLivingTemporaryUnits = 6
+LimitPerOwner = true
+RequireAtLeastOne = true
+SummonContentId = "soldier_bc_insect"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc24_a"
+DisplayName = "呼群"
+Description = "在附近召唤 2 只虫卒，自己最多同时维持 6 只。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s0")]

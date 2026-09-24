@@ -64,6 +64,7 @@ public static partial class AbilityDefinitionCompiler
             abilities.Add(ability);
         }
         if (abilities.Count == 0) report.Error("Ability loadout must contain at least one ability.");
+        ValidateTechniqueLoadout(abilities, report);
         if (abilities.Count(ability => ability.Trigger == AbilityTriggerKind.ManaFull) > 1)
             report.Error("Ability loadout may contain only one mana-full skill.");
         return new AbilityLoadoutCompilationResult(
@@ -138,6 +139,7 @@ public static partial class AbilityDefinitionCompiler
 
             if (loadoutAbilities.Count == 0)
                 loadoutReport.Error("Ability loadout must contain at least one ability.");
+            ValidateTechniqueLoadout(loadoutAbilities, loadoutReport);
             if (loadoutAbilities.Count(ability => ability.Trigger == AbilityTriggerKind.ManaFull) > 1)
                 loadoutReport.Error("Ability loadout may contain only one mana-full skill.");
             if (!loadoutReport.HasCoreErrors)
@@ -196,7 +198,41 @@ public static partial class AbilityDefinitionCompiler
                     authored.Operations[operationIndex], label, operationIndex, report, resolveStatus);
                 if (operation is not null) operations.Add(operation);
             }
+        foreach (var value in operations.OfType<CompiledBattleValueOperation>())
+            if (authored.ActivationKind != AbilityActivationKind.Triggered && value.Terms.Any(t =>
+                t.Subject is BattleValueSubject.EventSource or BattleValueSubject.EventTarget ||
+                t.Metric is BattleValueMetric.EventEffective or BattleValueMetric.EventOverheal or BattleValueMetric.EventOrdinal))
+                report.Error($"{label}: event-based values require an event-triggered ability.");
         ValidateAtomicOperationShape(operations, label, report);
+        foreach (var technique in operations.OfType<CompiledCombatTechniqueOperation>())
+        {
+            var expected = technique switch {
+                CompiledCounterattackOperation => AbilityTriggerKind.ReceivedAttack,
+                CompiledGritStorageOperation => AbilityTriggerKind.HealthDamaged,
+                CompiledGritPunchOperation => AbilityTriggerKind.ActionQueued,
+                _ => AbilityTriggerKind.ManaFull };
+            if (operations.Count != 1 || authored.Echoable || authored.Trigger != expected ||
+                authored.ActivationKind != (expected is AbilityTriggerKind.ManaFull or AbilityTriggerKind.ActionQueued ? AbilityActivationKind.Automatic : AbilityActivationKind.Triggered))
+                report.Error($"{label}: combat technique requires its single matching automatic/event operation and cannot be echoed.");
+        }
+        if (authored.Trigger == AbilityTriggerKind.ActionQueued && !operations.Any(o => o is CompiledGritPunchOperation))
+            report.Error($"{label}: queued automatic actions require a supported condition producer.");
+        if (operations.Any(operation => operation is CompiledChargedLineOperation or CompiledEnemyAction) &&
+            (operations.Count != 1 || authored.ActivationKind != AbilityActivationKind.Automatic ||
+             authored.Trigger != AbilityTriggerKind.PeriodicTick || authored.AutomaticTarget != AbilityAutomaticTargetKind.CurrentEnemy))
+            report.Error($"{label}: a charged line must be the sole operation of an automatic periodic enemy-targeting ability.");
+        if (operations.Any(operation => operation is CompiledTrampleOperation) &&
+            (operations.Count != 1 || authored.ActivationKind != AbilityActivationKind.Automatic ||
+             authored.Trigger is not (AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.ManaFull) ||
+             authored.AutomaticTarget != AbilityAutomaticTargetKind.CurrentEnemy))
+            report.Error($"{label}: trample must be the sole operation of an automatic periodic or mana-full enemy-targeting ability.");
+        if (operations.Any(operation => operation is CompiledDisplacementOperation) &&
+            (authored.ActivationKind != AbilityActivationKind.Automatic || authored.Trigger != AbilityTriggerKind.ManaFull))
+            report.Error($"{label}: displacement is supported only by an automatic mana-full skill.");
+        if (authored.Echoable && (authored.Trigger != AbilityTriggerKind.OwnerDefeated ||
+            operations.Any(o => o is CompiledLifecycleOperation or CompiledEchoOperation or CompiledDisplacementOperation ||
+                o is CompiledBattleValueOperation { Action: BattleValueAction.AddCounter or BattleValueAction.SetCounter })))
+            report.Error($"{label}: echoable death effects cannot copy lifecycle, echo, displacement or counter operations.");
         if (authored.ActivationKind == AbilityActivationKind.Passive)
         {
             foreach (var operation in operations)
@@ -211,7 +247,8 @@ public static partial class AbilityDefinitionCompiler
                 authored.Presentation.SemanticIcon.ToString(),
                 authored.Presentation.Cue.ToString(),
                 authored.Presentation.ReportLabel,
-                authored.Presentation.DamageVfx);
+                authored.Presentation.DamageVfx,
+                authored.Presentation.CastVfx);
         var provisional = new CompiledAbilityDefinition(
             authored.StableId,
             authored.DisplayName,
@@ -225,8 +262,8 @@ public static partial class AbilityDefinitionCompiler
             authored.IntervalTicks,
             operations.ToImmutable(),
             presentation,
-            authored.AutomaticTarget);
-        return provisional with { Description = AbilityDescriptionRenderer.Describe(provisional) };
+            authored.AutomaticTarget, authored.Echoable, authored.Description);
+        return provisional with { Description = string.IsNullOrWhiteSpace(authored.Description) ? AbilityDescriptionRenderer.Describe(provisional) : authored.Description };
     }
 
     private static void ValidateEntryContract(AbilityDefinition authored, string label, ValidationReport report)
@@ -242,6 +279,13 @@ public static partial class AbilityDefinitionCompiler
                     report.Error($"{label}: manual ability cannot declare an interval.");
                 break;
             case AbilityActivationKind.Automatic:
+                if (authored.Trigger == AbilityTriggerKind.ActionQueued)
+                {
+                    RejectNonManualCosts(authored, label, report);
+                    if (authored.IntervalTicks != 0)
+                        report.Error($"{label}: queued actions cannot declare a periodic interval.");
+                    break;
+                }
                 if (authored.Trigger == AbilityTriggerKind.ManaFull)
                 {
                     if (authored.ManaCost <= 0 || authored.GoldCost != 0 || authored.IntervalTicks != 0)
@@ -257,7 +301,7 @@ public static partial class AbilityDefinitionCompiler
                 RejectNonManualCosts(authored, label, report);
                 break;
             case AbilityActivationKind.Triggered:
-                if (authored.Trigger is AbilityTriggerKind.None or AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.BattleStarted or AbilityTriggerKind.ManaFull)
+                if (authored.Trigger is AbilityTriggerKind.None or AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.BattleStarted or AbilityTriggerKind.ManaFull or AbilityTriggerKind.ActionQueued)
                     report.Error($"{label}: triggered ability requires a supported domain trigger.");
                 if (authored.IntervalTicks != 0)
                     report.Error($"{label}: triggered ability cannot declare an interval.");
@@ -290,6 +334,10 @@ public static partial class AbilityDefinitionCompiler
         foreach (var effect in operations.OfType<CompiledEffectAbilityOperation>())
             if (effect.Binding.Effects.Length != 1)
                 report.Error($"{label}: an ability effect binding must contain exactly one atomic effect step.");
+        if (operations.OfType<CompiledProjectileSequenceAbilityOperation>().Count() > 1)
+            report.Error($"{label}: an ability may schedule only one projectile sequence.");
+        if (operations.OfType<CompiledDisplacementOperation>().Count() > 1)
+            report.Error($"{label}: an ability may schedule only one displacement operation.");
     }
 
     private static CompiledAbilityOperation? CompileOperation(
@@ -302,6 +350,44 @@ public static partial class AbilityDefinitionCompiler
         var operationLabel = $"{label}: operation[{index}]";
         switch (authored)
         {
+            case TrampleAbilityOperationSpec trample:
+                if (!float.IsFinite(trample.Range) || trample.Range is <= 0 or > 64 ||
+                    !float.IsFinite(trample.Distance) || trample.Distance is <= 0 or > 32 ||
+                    !float.IsFinite(trample.Speed) || trample.Speed is <= 0 or > 20 ||
+                    trample.ChargeTicks is < 1 or > 100 || trample.RecoveryTicks is < 1 or > 100 ||
+                    !float.IsFinite(trample.SideDistance) || trample.SideDistance is <= 0 or > 4 ||
+                    !float.IsFinite(trample.AttackMultiplier) || trample.AttackMultiplier < 0 ||
+                    string.IsNullOrWhiteSpace(trample.WarningVfx) || string.IsNullOrWhiteSpace(trample.RushVfx))
+                    report.Error($"{operationLabel}: trample parameters are invalid.");
+                return new CompiledTrampleOperation(trample.Range, trample.Distance, trample.Speed,
+                    trample.ChargeTicks, trample.RecoveryTicks, trample.SideDistance, trample.AttackMultiplier,
+                    trample.WarningVfx, trample.RushVfx);
+            case ConeBreathAbilityOperationSpec or ReturningBladeAbilityOperationSpec or PositionSwapAbilityOperationSpec or RampartAbilityOperationSpec or BroodPhaseAbilityOperationSpec:
+                return CompileEnemyAction(authored, operationLabel, report);
+            case ChargedLineAbilityOperationSpec line:
+                if (!Enum.IsDefined(line.Delivery) || !Enum.IsDefined(line.DamageType) ||
+                    !float.IsFinite(line.Range) || line.Range <= 0 || line.Range > 64 ||
+                    !float.IsFinite(line.Radius) || line.Radius <= 0 || line.Radius > 1 ||
+                    line.ChargeTicks < 1 || line.ChargeTicks > 100 || line.MaximumHits < 1 || line.MaximumHits > 16 ||
+                    !float.IsFinite(line.AttackMultiplier) || line.AttackMultiplier <= 0 ||
+                    !float.IsFinite(line.SubsequentHitMultiplier) || line.SubsequentHitMultiplier is < 0 or > 1 ||
+                    !float.IsFinite(line.ProjectileSpeed) || line.ProjectileSpeed is <= 0 or > 100 ||
+                    string.IsNullOrWhiteSpace(line.ChargeVfx) || string.IsNullOrWhiteSpace(line.ReleaseVfx))
+                    report.Error($"{operationLabel}: charged line parameters are invalid.");
+                return new CompiledChargedLineOperation(line.Delivery, line.DamageType, line.Range, line.Radius,
+                    line.ChargeTicks, line.AttackMultiplier, line.MaximumHits, line.SubsequentHitMultiplier,
+                    line.ProjectileSpeed, line.HoldPosition, line.ChargeVfx, line.ReleaseVfx);
+            case DuelAbilityOperationSpec or CounterattackAbilityOperationSpec or GritStorageAbilityOperationSpec or GritPunchAbilityOperationSpec or HookAbilityOperationSpec:
+                return CompileTechnique(authored, operationLabel, report);
+            case BattleValueAbilityOperationSpec or ConsumeStatusAbilityOperationSpec or EchoAbilityOperationSpec or LifecycleAbilityOperationSpec or DisplacementAbilityOperationSpec:
+                return CompileBattleOperation(authored, operationLabel, report, resolveStatus);
+            case ProjectileSequenceAbilityOperationSpec sequence:
+                if (sequence.ShotCount <= 0 || sequence.ShotCount > 64 || sequence.MaxTargets < 1 || sequence.MaxTargets > 8 ||
+                    !float.IsFinite(sequence.AttackIntervalRatio) || sequence.AttackIntervalRatio <= 0 ||
+                    !float.IsFinite(sequence.AttackDamageMultiplier) || sequence.AttackDamageMultiplier <= 0)
+                    report.Error($"{operationLabel}: projectile sequence parameters are invalid.");
+                return new CompiledProjectileSequenceAbilityOperation(sequence.ShotCount,
+                    sequence.AttackIntervalRatio, sequence.AttackDamageMultiplier, sequence.MaxTargets);
             case EffectAbilityOperationSpec effect:
             {
                 var compiled = EffectBindingCompiler.Compile(effect.Binding);
@@ -330,26 +416,38 @@ public static partial class AbilityDefinitionCompiler
                     cooldown.MoveAdjustment,
                     cooldown.MoveValue);
             }
-            case ApplyStatusAbilityOperationSpec status:
+            case ScaledStatusAbilityOperationSpec scaled:
             {
-                CompiledStatusDefinition? compiledStatus;
-                if (resolveStatus is null)
-                {
-                    var compilation = StatusDefinitionCompiler.Compile(status.Status);
-                    report.Merge(compilation.Report);
-                    compiledStatus = compilation.Definition;
-                }
-                else
-                {
-                    compiledStatus = resolveStatus(status.Status);
-                    if (compiledStatus is null)
-                        report.Error($"{operationLabel}: status is not part of the compiled publication graph.");
-                }
-                var target = CompileTarget(status.TargetQuery, operationLabel, report);
-                return compiledStatus is null || target is null
-                    ? null
-                    : new CompiledApplyStatusAbilityOperation(compiledStatus, target);
+                if (scaled.BaseStacks < 0 || !float.IsFinite(scaled.ExistingStackRatio) || scaled.ExistingStackRatio < 0 ||
+                    !float.IsFinite(scaled.Chance) || scaled.Chance < 0 || scaled.Chance > 1 ||
+                    !float.IsFinite(scaled.ChancePerStack) || scaled.ChancePerStack < 0)
+                    report.Error($"{operationLabel}: scaled status stacks and ratios must be nonnegative and finite; base chance must be within 0..1.");
+                if (scaled.BaseStacks == 0 && scaled.ExistingStackRatio == 0)
+                    report.Error($"{operationLabel}: scaled status requires a positive base or existing-stack ratio.");
+                if (scaled.ExistingStackRatio > 0 && string.IsNullOrWhiteSpace(scaled.StatusId))
+                    report.Error($"{operationLabel}: existing-stack scaling requires a status id.");
+                if (scaled.ChancePerStack > 0 && string.IsNullOrWhiteSpace(scaled.ChanceStatusId))
+                    report.Error($"{operationLabel}: per-stack chance requires a status id.");
+                var tierChances = scaled.ChanceByTraitTier ?? [];
+                if (!float.IsFinite(scaled.MaximumChance) || scaled.MaximumChance < 0 || scaled.MaximumChance > 1 ||
+                    scaled.Chance > scaled.MaximumChance || tierChances.Any(chance =>
+                        !float.IsFinite(chance) || chance < 0 || chance > scaled.MaximumChance))
+                    report.Error($"{operationLabel}: base and tier chances must be within 0..MaximumChance, with a finite cap within 0..1.");
+                if (scaled.ChanceTraitId is null ||
+                    (scaled.ChanceTraitId.Length > 0 && !StableIdPattern.IsMatch(scaled.ChanceTraitId)) ||
+                    (string.IsNullOrEmpty(scaled.ChanceTraitId) != (tierChances.Length == 0)))
+                    report.Error($"{operationLabel}: trait chance requires a valid trait id and one chance per tier.");
+                foreach (var id in new[] { scaled.StatusId, scaled.ChanceStatusId })
+                    if (id is null || (id.Length > 0 && !StableIdPattern.IsMatch(id)))
+                        report.Error($"{operationLabel}: invalid scaled status reference '{id}'.");
+                var compiledApplication = CompileStatusOperation(scaled, operationLabel, report, resolveStatus);
+                return compiledApplication is null ? null : new CompiledScaledStatusAbilityOperation(
+                    compiledApplication.Status, compiledApplication.TargetQuery, scaled.BaseStacks, scaled.StatusId, scaled.ExistingStackRatio,
+                    scaled.Chance, scaled.ChanceStatusId, scaled.ChancePerStack, compiledApplication.ApplicationVfx,
+                    scaled.ChanceTraitId ?? string.Empty, tierChances.ToImmutableArray(), scaled.MaximumChance);
             }
+            case ApplyStatusAbilityOperationSpec status:
+                return CompileStatusOperation(status, operationLabel, report, resolveStatus);
             case SummonAbilityOperationSpec summon:
                 if (!Enum.IsDefined(summon.Profile)) report.Error($"{operationLabel}: summon profile is invalid.");
                 if (summon.Count <= 0) report.Error($"{operationLabel}: summon count must be positive.");
@@ -367,7 +465,7 @@ public static partial class AbilityDefinitionCompiler
                     summon.DamageMultiplier,
                     summon.MaximumLivingTemporaryUnits,
                     summon.RequireAtLeastOne,
-                    summon.SummonContentId);
+                    summon.SummonContentId, summon.LimitPerOwner);
             case null:
                 report.Error($"{operationLabel}: operation is missing.");
                 return null;
@@ -375,6 +473,33 @@ public static partial class AbilityDefinitionCompiler
                 report.Error($"{operationLabel}: unsupported operation type '{authored.GetType().Name}'.");
                 return null;
         }
+    }
+
+    private static CompiledApplyStatusAbilityOperation? CompileStatusOperation(
+        ApplyStatusAbilityOperationSpec status, string label, ValidationReport report,
+        Func<StatusDefinition?, CompiledStatusDefinition?>? resolveStatus)
+    {
+        CompiledStatusDefinition? compiledStatus;
+        if (resolveStatus is null)
+        {
+            var compilation = StatusDefinitionCompiler.Compile(status.Status);
+            report.Merge(compilation.Report);
+            compiledStatus = compilation.Definition;
+        }
+        else
+        {
+            compiledStatus = resolveStatus(status.Status);
+            if (compiledStatus is null)
+                report.Error($"{label}: status is not part of the compiled publication graph.");
+        }
+        var target = CompileTarget(status.TargetQuery, label, report);
+        if (!string.IsNullOrWhiteSpace(status.ApplicationVfx) &&
+            (target is not CompiledFilteredTargetQuery area || area.Range <= 0 ||
+             area.Anchor is not (EffectEntityReference.Source or EffectEntityReference.Owner)))
+            report.Error($"{label}: area VFX requires a finite positive source/owner-centered range query.");
+        return compiledStatus is null || target is null
+            ? null
+            : new CompiledApplyStatusAbilityOperation(compiledStatus, target, status.ApplicationVfx);
     }
 
     private static void ValidateCooldown(
@@ -420,20 +545,53 @@ public static class AbilityDescriptionRenderer
 
         var parts = operations.Select(operation => operation switch
         {
+            CompiledTrampleOperation trample =>
+                $"蓄力 {trample.ChargeTicks * BattleTiming.TickSeconds:0.#} 秒后直线冲锋，将沿途单位撞向两侧；每个敌人受到一次 {trample.AttackMultiplier * 100:0}% 攻击力伤害，友军仅被推开。",
+            CompiledChargedLineOperation line =>
+                $"锁定方向蓄力 {line.ChargeTicks * BattleTiming.TickSeconds:0.#} 秒，直线贯穿最多 {line.MaximumHits} 个敌人，造成 {line.AttackMultiplier * 100:0}% 攻击力的{EffectModelText.DamageTypeName(line.DamageType)}伤害，后续目标倍率 {line.SubsequentHitMultiplier * 100:0}%。",
+            CompiledProjectileSequenceAbilityOperation sequence =>
+                $"连续发射 {sequence.ShotCount} 箭" + (sequence.MaxTargets > 1 ? $"，在最多 {sequence.MaxTargets} 名敌人间轮流射击" : string.Empty) +
+                $"，每箭造成攻击力 {sequence.AttackDamageMultiplier * 100:0.#}% 的伤害；间隔为当前普攻的 {sequence.AttackIntervalRatio:0.##} 倍",
             CompiledEffectAbilityOperation effect => DescribeEffect(effect, ability.AutomaticTarget).TrimEnd('。'),
             CompiledCooldownAbilityOperation cooldown => DescribeCooldown(cooldown).TrimEnd('。'),
             CompiledApplyStatusAbilityOperation status => DescribeStatus(status).TrimEnd('。'),
+            CompiledScaledStatusAbilityOperation scaled => DescribeScaledStatus(scaled),
             CompiledSummonAbilityOperation summon => DescribeSummon(summon).TrimEnd('。'),
+            CompiledDisplacementOperation displacement => DescribeDisplacement(displacement),
             _ => string.Empty
         }).Where(part => !string.IsNullOrWhiteSpace(part)).ToArray();
         return parts.Length == 0 ? ability.DisplayName : string.Join("，", parts) + "。";
+    }
+
+    private static string DescribeDisplacement(CompiledDisplacementOperation operation)
+    {
+        var movement = operation.Kind switch
+        {
+            DisplacementKind.Charge => "向敌人冲锋",
+            DisplacementKind.Leap => operation.BehindTarget ? "跃至敌人身后" : "跃至敌人附近",
+            DisplacementKind.Blink => operation.BehindTarget ? "闪现至敌人身后" : "闪现至敌人附近",
+            DisplacementKind.Knockback => "击退敌人",
+            DisplacementKind.Pull => "将敌人拉向自己",
+            _ => "将范围内敌人向自己聚拢"
+        };
+        var result = $"{movement}，最大位移 {operation.Distance:0.##} 格";
+        if (operation.Kind != DisplacementKind.Blink)
+            result += $"，持续 {operation.DurationTicks * BattleTiming.TickSeconds:0.##} 秒";
+        if (operation.ImpactDamage > 0 || operation.AttackRatio > 0)
+        {
+            var damage = EffectModelText.DamageTypeName(operation.DamageType);
+            result += $"，抵达后造成 {operation.ImpactDamage:0.#}＋{operation.AttackRatio * 100:0.#}% 攻击力的{damage}伤害";
+        }
+        if (operation.ImpactRadius > 0) result += $"，命中范围 {operation.ImpactRadius:0.##} 格";
+        if (operation.ImpactStatus is { } status) result += $"，施加「{status.DisplayName}」";
+        return result;
     }
 
     private static string DescribeEffect(CompiledEffectAbilityOperation operation, AbilityAutomaticTargetKind automaticTarget)
     {
         if (operation.Binding.TargetQuery is CompiledFilteredTargetQuery ||
             operation.Binding.Conditions.Length > 0 || operation.Binding.Effects.Any(step =>
-                step.Magnitude is not null || step.DamageType != EffectDamageType.Physical))
+                step.Magnitude is not null || step.DamageType != EffectDamageType.Normal))
             return EffectModelText.DescribeBinding(operation.Binding);
         var target = operation.Binding.TargetQuery switch
         {
@@ -477,6 +635,19 @@ public static class AbilityDescriptionRenderer
             operation.AttackAdjustment == CooldownAdjustmentKind.Reset)
             return "清零攻击等待。";
         return "调整行动等待。";
+    }
+
+    private static string DescribeScaledStatus(CompiledScaledStatusAbilityOperation operation)
+    {
+        var stacks = $"{operation.BaseStacks}" + (operation.ExistingStackRatio > 0
+            ? $"＋目标「{operation.StatusId}」当前层数×{operation.ExistingStackRatio:0.###}" : string.Empty);
+        var chance = operation.ChancePerStack > 0
+            ? $"以 {operation.Chance:P0}＋目标「{operation.ChanceStatusId}」每层 {operation.ChancePerStack:P0} 的概率（最高 {operation.MaximumChance:P0}）"
+            : operation.Chance < 1 ? $"以 {operation.Chance:P0} 概率" : string.Empty;
+        if (!operation.ChanceByTraitTier.IsDefaultOrEmpty)
+            chance += $"（作为羁绊成员时，随己方档位提高至 {string.Join("／", operation.ChanceByTraitTier.Select(value => value.ToString("P0")))}，上限 {operation.MaximumChance:P0}）";
+        return $"对{EffectModelText.DescribeTarget(operation.TargetQuery)}{chance}施加「{operation.Status.DisplayName}」{stacks} 层" +
+            (operation.ExistingStackRatio > 0 ? "（向下取整）" : string.Empty);
     }
 
     private static string DescribeStatus(CompiledApplyStatusAbilityOperation operation)

@@ -1,0 +1,86 @@
+[gd_scene load_steps=13 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxArcLinkTrack.cs" id="link"]
+[ext_resource type="Script" path="res://src/Vfx/VfxLightningTrack.cs" id="bolt"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTimedGroup.cs" id="group"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="emitter"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/branched_lightning.gdshader" id="electric"]
+[ext_resource type="Shader" path="res://scenes/vfx/electric_contact.gdshader" id="contact"]
+[sub_resource type="ShaderMaterial" id="electric_mat"]
+shader=ExtResource("electric")
+[sub_resource type="ShaderMaterial" id="contact_mat"]
+shader=ExtResource("contact")
+[node name="ArcLightning" type="Node2D"]
+script=ExtResource("root")
+[node name="Connection" type="Node2D" parent="."]
+script=ExtResource("link")
+[node name="Link" type="Node2D" parent="Connection"]
+[node name="Current" type="MeshInstance2D" parent="Connection/Link"]
+script=ExtResource("bolt")
+texture=ExtResource("surface")
+material=SubResource("electric_mat")
+From=Vector2(0,0)
+To=Vector2(256,0)
+Width=24.0
+Jaggedness=29.0
+Branches=4
+Seed=91701
+TravelDuration=0.055
+TailDuration=0.26
+[node name="AfterCurrent" type="MeshInstance2D" parent="Connection/Link"]
+script=ExtResource("bolt")
+texture=ExtResource("surface")
+material=SubResource("electric_mat")
+From=Vector2(0,0)
+To=Vector2(256,0)
+Width=17.0
+Jaggedness=23.0
+Branches=3
+Seed=91702
+Delay=0.14
+TravelDuration=0.045
+TailDuration=0.22
+[node name="SourceContact" type="Node2D" parent="Connection"]
+script=ExtResource("group")
+[node name="Flash" type="Sprite2D" parent="Connection/SourceContact"]
+script=ExtResource("sprite")
+texture=ExtResource("surface")
+material=SubResource("contact_mat")
+scale=Vector2(0.48,0.48)
+ShaderLifecycle=true
+StartScale=1.0
+EndScale=1.0
+Duration=0.2
+[node name="TargetContact" type="Node2D" parent="Connection"]
+script=ExtResource("group")
+Delay=0.045
+DelayFollowsCast=true
+[node name="Flash" type="Sprite2D" parent="Connection/TargetContact"]
+script=ExtResource("sprite")
+texture=ExtResource("surface")
+material=SubResource("contact_mat")
+scale=Vector2(0.78,0.78)
+ShaderLifecycle=true
+StartScale=1.0
+EndScale=1.0
+Duration=0.2
+[node name="Sparks" type="Node2D" parent="Connection/TargetContact"]
+script=ExtResource("emitter")
+ParticleScene=ExtResource("glint")
+Amount=11
+Seed=91703
+Radial=true
+Delay=0.0
+OriginRadius=3.0
+Gravity=90.0
+LiftSpeed=25.0
+FaceVelocity=false
+SpeedRange=Vector2(55,110)
+LifetimeRange=Vector2(0.24,0.47)
+SizeRange=Vector2(13,24)
+HeightScale=1.0
+EndSizeFactor=Vector2(0.3,0.3)
+EndTint=Color(0.25,0.5,1,1)

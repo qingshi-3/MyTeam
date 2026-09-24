@@ -14,7 +14,7 @@ using TowerAutobattler.Traits;
 
 namespace TowerAutobattler.Content;
 
-public static class ContentValidator
+public static partial class ContentValidator
 {
     private static readonly string[] ConcreteDirectories =
     [
@@ -302,17 +302,23 @@ public static class ContentValidator
                      .Where(ability => ability.ActivationKind != AbilityActivationKind.Automatic))
             report.Error($"{ResourceLabel(ability)}: automatic ability must use the automatic entry point.");
 
-        var contentLoadoutReferences = CollectContentAbilityLoadouts(catalog, report)
+        var activeLoadoutReferences = CollectContentAbilityLoadouts(catalog, report)
             .Concat(additionalLoadoutReferences)
             .ToArray();
+        ValidateActiveUnitReferences(catalog, activeLoadoutReferences, report);
+        var contentLoadoutReferences = activeLoadoutReferences
+            .Concat(CollectRetainedContentAbilityLoadouts(catalog, report)).ToArray();
         var graph = new AbilityStatusAuthoredGraph(
             loadouts,
             commandAbilities.Concat(automaticAbilities).Concat(triggeredAbilities).Concat(passiveAbilities).ToArray(),
             statuses,
             contentLoadoutReferences,
-            catalog.AllEntries().Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal))
+            CatalogEntriesForValidation(catalog).Where(entry => entry is not null)
+                .Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal))
         {
-            AdditionalStatusReferences = additionalStatusReferences
+            AdditionalStatusReferences = additionalStatusReferences,
+            ValidUnitContentIds = CatalogEntriesForValidation(catalog).Where(entry => entry?.Definition is UnitDefinition)
+                .Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal)
         };
         var compilation = CompileAbilityStatusAuthoredGraph(graph);
         report.Merge(compilation.Report);
@@ -389,8 +395,12 @@ public static class ContentValidator
         }
 
         var referencedStatusRoots = abilities.SelectMany(ability => ability.Operations)
-            .OfType<ApplyStatusAbilityOperationSpec>()
-            .Select(operation => operation.Status)
+            .Select(operation => operation switch
+            {
+                ApplyStatusAbilityOperationSpec status => status.Status,
+                DisplacementAbilityOperationSpec displacement => displacement.ImpactStatus,
+                _ => null
+            })
             .OfType<StatusDefinition>()
             .Concat(graph.AdditionalStatusReferences.Where(status => status is not null)
                 .Cast<StatusDefinition>())
@@ -409,6 +419,27 @@ public static class ContentValidator
         }
         foreach (var status in referencedStatusRoots) VisitStatus(status);
 
+        // String-based reads and consumption are dependencies too, even if the supplier
+        // belongs to another hero or an item rather than this ability's own operations.
+        var statusesById = statuses.GroupBy(status => status.StableId, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+        foreach (var ability in abilities)
+        foreach (var operation in ability.Operations)
+        {
+            var referencedIds = operation switch
+            {
+                ScaledStatusAbilityOperationSpec scaled => new[] { scaled.StatusId, scaled.ChanceStatusId }
+                    .Where(id => !string.IsNullOrWhiteSpace(id)),
+                ConsumeStatusAbilityOperationSpec consume => new[] { consume.StatusId },
+                BattleValueAbilityOperationSpec value => value.Terms.OfType<BattleValueTermSpec>()
+                    .Where(term => term.Metric == BattleValueMetric.StatusStacks).Select(term => term.Key),
+                _ => Enumerable.Empty<string>()
+            };
+            foreach (var statusId in referencedIds)
+                if (statusesById.TryGetValue(statusId, out var referencedStatus)) VisitStatus(referencedStatus);
+                else report.Error($"{ResourceLabel(ability)}: unknown status reference '{statusId}'.");
+        }
+
         foreach (var status in statuses.Where(status => !reachableStatuses.Contains(status) &&
                                                         (string.IsNullOrWhiteSpace(status.ResourcePath) ||
                                                          !reachableStatuses.Any(reachable =>
@@ -417,9 +448,23 @@ public static class ContentValidator
         foreach (var status in referencedStatusRoots.Where(status => ResolveAuthoredStatus(status) is null))
             report.Error($"Ability references an unregistered status definition: {ResourceLabel(status)}");
 
-        foreach (var summon in abilities.SelectMany(ability => ability.Operations).OfType<SummonAbilityOperationSpec>())
-            if (!string.IsNullOrWhiteSpace(summon.SummonContentId) && !graph.ValidContentIds.Contains(summon.SummonContentId))
-                report.Error($"Summon ability references an unknown content id: {summon.SummonContentId}");
+        foreach (var ability in abilities)
+        foreach (var operation in ability.Operations)
+        {
+            foreach (var dependency in AbilityDefinitionCompiler.EnemyActionDependencies(operation))
+                if (!(graph.ValidUnitContentIds ?? graph.ValidContentIds).Contains(dependency)) report.Error($"{ResourceLabel(ability)}: unavailable enemy action product: {dependency}");
+            var contentId = operation switch
+            {
+                SummonAbilityOperationSpec summon => summon.SummonContentId,
+                LifecycleAbilityOperationSpec { Kind: LifecycleAbilityKind.RaiseCorpse } corpse => corpse.SummonContentId,
+                _ => string.Empty
+            };
+            if (!string.IsNullOrWhiteSpace(contentId) &&
+                !(graph.ValidUnitContentIds ?? graph.ValidContentIds).Contains(contentId))
+                report.Error($"{ResourceLabel(ability)}: summon references an unavailable unit content id: {contentId}");
+        }
+        ContentPrimitiveValidator.ValidateAbilityStatusReferences(abilityBatch.Abilities,
+            statusBatch.Definitions.ToDictionary(status => status.StableId, StringComparer.Ordinal), report);
 
         var canonicalStatusCount = statuses.Select(status => string.IsNullOrWhiteSpace(status.ResourcePath)
                 ? $"instance:{System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(status)}"
@@ -434,12 +479,16 @@ public static class ContentValidator
 
     private static IReadOnlyList<AbilityLoadoutDefinition?> CollectContentAbilityLoadouts(
         ContentCatalog catalog,
+        ValidationReport report) => CollectContentAbilityLoadouts(catalog.AllEntries(), report);
+
+    private static IReadOnlyList<AbilityLoadoutDefinition?> CollectContentAbilityLoadouts(
+        IEnumerable<CatalogEntry> entries,
         ValidationReport report)
     {
         var result = new List<AbilityLoadoutDefinition?>();
-        foreach (var entry in catalog.AllEntries())
+        foreach (var entry in entries)
         {
-            if (entry.Scene is null) continue;
+            if (entry?.Scene is null) continue;
             Node? instance = null;
             try
             {
@@ -535,18 +584,23 @@ public static class ContentValidator
             .Select(entry => entry.StableId)
             .ToHashSet(StringComparer.Ordinal);
 
+        var activeLoadoutReferences = CollectContentAbilityLoadouts(catalog, report)
+            .Concat(additionalLoadoutReferences)
+            .Concat(tacticalCommands.Where(definition => definition is not null)
+                .Select(definition => definition!.AbilityLoadout)).ToArray();
+        ValidateActiveUnitReferences(catalog, activeLoadoutReferences, report);
+
         var abilityStatus = CompileAbilityStatusAuthoredGraph(new AbilityStatusAuthoredGraph(
             loadouts,
             abilities,
             statuses,
-            CollectContentAbilityLoadouts(catalog, report)
-                .Concat(additionalLoadoutReferences)
-                .Concat(tacticalCommands.Where(definition => definition is not null)
-                    .Select(definition => definition!.AbilityLoadout))
-                .ToArray(),
-            validContentIds)
+            activeLoadoutReferences.Concat(CollectRetainedContentAbilityLoadouts(catalog, report)).ToArray(),
+            CatalogEntriesForValidation(catalog).Where(entry => entry is not null)
+                .Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal))
         {
-            AdditionalStatusReferences = CollectEquipmentStatusReferences(equipment).Concat(CollectCarrierStatusReferences(traits, relics)).ToArray()
+            AdditionalStatusReferences = CollectEquipmentStatusReferences(equipment).Concat(CollectCarrierStatusReferences(traits, relics)).ToArray(),
+            ValidUnitContentIds = CatalogEntriesForValidation(catalog).Where(entry => entry?.Definition is UnitDefinition)
+                .Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal)
         });
         report.Merge(abilityStatus.Report);
         var relicCompilation = CompileRelicGraph(
@@ -602,7 +656,9 @@ public static class ContentValidator
             .ToHashSet(StringComparer.Ordinal);
         var byUnit = new Dictionary<string, System.Collections.Immutable.ImmutableArray<CompiledTraitContribution>>(
             StringComparer.Ordinal);
-        foreach (var entry in catalog.AllEntries().Where(entry => entry?.Definition is UnitDefinition))
+        var activeUnitIds = catalog.AllEntries().Where(entry => entry?.Definition is UnitDefinition)
+            .Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal);
+        foreach (var entry in CatalogEntriesForValidation(catalog).Where(entry => entry?.Definition is UnitDefinition))
         {
             var unit = (UnitDefinition)entry.Definition;
             var contributions = TraitDefinitionCompiler.CompileContributions(
@@ -610,7 +666,7 @@ public static class ContentValidator
                 string.IsNullOrWhiteSpace(unit.ResourcePath) ? unit.Id : unit.ResourcePath);
             report.Merge(contributions.Report);
             ValidateTraitContributionDependencies(contributions.Contributions, validIds, unit.Id, report);
-            if (!contributions.Contributions.IsEmpty)
+            if (!contributions.Contributions.IsEmpty && activeUnitIds.Contains(unit.Id))
                 byUnit[unit.Id] = contributions.Contributions;
         }
         foreach (var definition in equipment)
@@ -913,7 +969,7 @@ public static class ContentValidator
         {
             try
             {
-                foreach (var entry in catalog.AllEntries())
+                foreach (var entry in CatalogEntriesForValidation(catalog))
                     TryAddValidationInstance(host, entry.Scene, entry.Scene.ResourcePath, report);
                 foreach (var scene in catalog.FloorRules)
                     TryAddValidationInstance(host, scene, scene?.ResourcePath ?? "<empty floor rule>", report);
@@ -966,7 +1022,7 @@ public static class ContentValidator
         }
     }
 
-    private static void ValidateStructuralProbe(PackedScene? scene, ValidationReport report)
+    internal static void ValidateStructuralProbe(PackedScene? scene, ValidationReport report)
     {
         if (scene is null)
         {
@@ -1032,6 +1088,7 @@ public static class ContentValidator
         ValidateGroup(catalog.Soldiers, ContentCategory.Soldier, report, ids, scenes, definitions, portraits, requireProductionDirectories);
         ValidateGroup(catalog.Enemies, ContentCategory.Enemy, report, ids, scenes, definitions, portraits, requireProductionDirectories);
         ValidateGroup(catalog.Items, ContentCategory.Item, report, ids, scenes, definitions, portraits, requireProductionDirectories);
+        ValidateRetainedContent(catalog, report, ids, scenes, definitions, portraits, requireProductionDirectories);
     }
 
     private static void ValidateEntry(
@@ -1105,12 +1162,14 @@ public static class ContentValidator
             !float.IsFinite(definition.ProjectileRadius) || definition.ProjectileRadius is <= 0 or > .5f ||
             !float.IsFinite(definition.ProjectileLifetime) || definition.ProjectileLifetime is <= 0 or > 10)
             report.Error($"{definition.Id}: invalid attack delivery or projectile speed/radius/lifetime.");
+        if (!float.IsFinite(definition.ProjectileWindupSeconds) || definition.ProjectileWindupSeconds is < 0 or > 5 ||
+            !float.IsFinite(definition.AttackReleaseProgress) || definition.AttackReleaseProgress is < .05f or > 1)
+            report.Error($"{definition.Id}: invalid projectile windup or attack release progress.");
         if (!float.IsFinite(definition.BaseControlResistance) ||
             definition.BaseControlResistance is < 0 or > 1)
             report.Error($"{definition.Id}: BaseControlResistance must be finite and within [0,1].");
-        if (!float.IsFinite(definition.SpellPower) || definition.SpellPower < 0 ||
-            !float.IsFinite(definition.MagicResistance) || definition.MagicResistance < 0)
-            report.Error($"{definition.Id}: SpellPower and MagicResistance must be finite and nonnegative.");
+        if (!float.IsFinite(definition.SpellPower) || definition.SpellPower < 0)
+            report.Error($"{definition.Id}: SpellPower must be finite and nonnegative.");
         if (new[] { definition.MaxMana, definition.StartingMana, definition.ManaPerSecond,
                 definition.ManaPerAttack, definition.ManaPerDamageRatio, definition.ManaPerHitCap }
             .Any(value => !float.IsFinite(value) || value < 0 || value > 1_000_000) ||
@@ -1118,7 +1177,7 @@ public static class ContentValidator
             report.Error($"{definition.Id}: mana values must be finite, nonnegative and StartingMana cannot exceed MaxMana.");
         if (!float.IsFinite(definition.BodyRadius) ||
             definition.BodyRadius is < TowerAutobattler.Battle.BattlefieldSpace.MinimumBodyRadius or > TowerAutobattler.Battle.BattlefieldSpace.MaximumBodyRadius)
-            report.Error($"{definition.Id}: BodyRadius must be finite and within [0.1,0.49].");
+            report.Error($"{definition.Id}: BodyRadius must be finite and within [0.1,1.5].");
         var expectedFolder = category switch
         {
             ContentCategory.Hero => "heroes",
@@ -1221,6 +1280,7 @@ internal sealed record AbilityStatusAuthoredGraph(
     IReadOnlySet<string> ValidContentIds)
 {
     public IReadOnlyList<StatusDefinition?> AdditionalStatusReferences { get; init; } = [];
+    public IReadOnlySet<string>? ValidUnitContentIds { get; init; }
 }
 
 internal sealed partial class ContentReadyGateLogger : Logger

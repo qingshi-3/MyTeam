@@ -1,0 +1,19 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_bc_raised.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "soldier_bc_raised"
+DisplayName = "复生骸骨"
+Description = "BC 机制专用临时召唤体；不进入招募。"
+Portrait = ExtResource("r1")
+Role = 1
+Faction = 6
+MaxHealth = 180
+AttackDamage = 18
+AttackRange = 0.25
+AttackCooldown = 1.2
+RecruitCost = 0
+Tags = Array[StringName]([&"soldier", &"summon"])

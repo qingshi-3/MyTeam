@@ -10,6 +10,7 @@ using TowerAutobattler.Battle;
 
 namespace TowerAutobattler.BattleLab;
 
+// Serialized names/values remain stable for existing presets; the UI calls these A/B.
 public enum BattleLabSide { Player, Enemy }
 public enum BattleLabPlacementMode { Formal, FreeExperiment }
 
@@ -23,7 +24,7 @@ public sealed record BattleLabUnitConfiguration(
     string ContentId,
     BattleLabSide Side,
     Vector2I Cell,
-    ImmutableArray<BattleLabEquipmentConfiguration> Equipment);
+    ImmutableArray<BattleLabEquipmentConfiguration> Equipment, bool RetainAttackStacks = false);
 
 public sealed record BattleLabRelicConfiguration(
     string InstanceId,
@@ -62,14 +63,14 @@ public sealed class BattleLabSession
         BattleLabContentIndex content,
         int currentPopulation,
         long seed = 20260901,
-        BattleLabPlacementMode mode = BattleLabPlacementMode.Formal,
+        BattleLabPlacementMode mode = BattleLabPlacementMode.FreeExperiment,
         string floorRuleId = "")
     {
         Content = content ?? throw new ArgumentNullException(nameof(content));
         ValidateModeAndPopulation(mode, currentPopulation);
         CurrentPopulation = currentPopulation;
         Seed = seed;
-        Mode = mode;
+        Mode = BattleLabPlacementMode.FreeExperiment;
         FloorRuleId = Content.ResolveFloorRuleId(floorRuleId);
         PrimaryHeroInstanceId = string.Empty;
     }
@@ -86,6 +87,7 @@ public sealed class BattleLabSession
     public void SetRules(BattleLabPlacementMode mode, int currentPopulation, long seed, string floorRuleId)
     {
         ValidateModeAndPopulation(mode, currentPopulation);
+        mode = BattleLabPlacementMode.FreeExperiment;
         var resolvedFloorRuleId = Content.ResolveFloorRuleId(floorRuleId);
         ValidateUnitSet(_units.Values, mode, currentPopulation, resolvedFloorRuleId);
         Mode = mode;
@@ -156,9 +158,16 @@ public sealed class BattleLabSession
         return true;
     }
 
+    public bool SetRetentionUpgrade(string instanceId, bool enabled)
+    {
+        if (!_units.TryGetValue(instanceId, out var unit) || !Content.SupportsRetentionUpgrade(unit.ContentId)) return false;
+        _units[instanceId] = unit with { RetainAttackStacks = enabled };
+        return true;
+    }
+
     public bool Equip(string ownerInstanceId, int slotIndex, string contentId)
     {
-        if (!_units.TryGetValue(ownerInstanceId, out var owner) || owner.Side != BattleLabSide.Player ||
+        if (!_units.TryGetValue(ownerInstanceId, out var owner) ||
             slotIndex < 0 || slotIndex >= Content.Rules.EquipmentSlotCapacity ||
             !Content.Equipment.Any(entry => entry.StableId == contentId))
             return false;
@@ -177,6 +186,25 @@ public sealed class BattleLabSession
         var equipment = owner.Equipment.Where(item => item.SlotIndex != slotIndex).ToImmutableArray();
         if (equipment.Length == owner.Equipment.Length) return false;
         _units[ownerInstanceId] = owner with { Equipment = equipment };
+        return true;
+    }
+
+    // Lab uses an unlimited published equipment library, not a persistent inventory.
+    // Validate both endpoints before publishing either owner; keep the dragged identity.
+    public bool MoveEquipment(string equipmentInstanceId, string ownerInstanceId, int slotIndex)
+    {
+        var source = _units.Values.FirstOrDefault(unit => unit.Equipment.Any(item => item.InstanceId == equipmentInstanceId));
+        if (source is null || !_units.TryGetValue(ownerInstanceId, out var destination) ||
+            slotIndex < 0 || slotIndex >= Content.Rules.EquipmentSlotCapacity)
+            return false;
+        var item = source.Equipment.Single(value => value.InstanceId == equipmentInstanceId);
+        if (source.InstanceId == destination.InstanceId && item.SlotIndex == slotIndex) return false;
+        var remaining = source.Equipment.Where(value => value.InstanceId != equipmentInstanceId).ToImmutableArray();
+        var targetItems = (source.InstanceId == destination.InstanceId ? remaining : destination.Equipment)
+            .Where(value => value.SlotIndex != slotIndex).Append(item with { SlotIndex = slotIndex })
+            .OrderBy(value => value.SlotIndex).ToImmutableArray();
+        if (source.InstanceId != destination.InstanceId) _units[source.InstanceId] = source with { Equipment = remaining };
+        _units[destination.InstanceId] = destination with { Equipment = targetItems };
         return true;
     }
 
@@ -225,13 +253,15 @@ public sealed class BattleLabSession
         var floorRuleId = Content.ResolveFloorRuleId(snapshot.FloorRuleId);
         if (!string.Equals(floorRuleId, snapshot.FloorRuleId, StringComparison.Ordinal))
             throw new InvalidOperationException("战斗实验室快照必须显式记录地形规则。");
-        var ids = ValidateUnitSet(snapshot.Units, snapshot.Mode, snapshot.CurrentPopulation, floorRuleId);
+        // Authenticate the original snapshot first, then project legacy formal presets
+        // into unrestricted testing in memory. Never rewrite their source files.
+        var ids = ValidateUnitSet(snapshot.Units, BattleLabPlacementMode.FreeExperiment, snapshot.CurrentPopulation, floorRuleId);
         var playerCount = snapshot.Units.Count(unit => unit.Side == BattleLabSide.Player);
         if ((playerCount == 0 && !string.IsNullOrWhiteSpace(snapshot.PrimaryHeroInstanceId)) ||
             (playerCount > 0 && (string.IsNullOrWhiteSpace(snapshot.PrimaryHeroInstanceId) ||
                 !snapshot.Units.Any(unit => unit.InstanceId == snapshot.PrimaryHeroInstanceId &&
                                             unit.Side == BattleLabSide.Player))))
-            throw new InvalidOperationException("战斗实验室主英雄实例无效。");
+            throw new InvalidOperationException("战斗实验室兼容实例引用无效。");
         foreach (var relic in snapshot.Relics)
             if (relic is null || string.IsNullOrWhiteSpace(relic.InstanceId) ||
                 string.IsNullOrWhiteSpace(relic.ContentId) || !ids.Add(relic.InstanceId) ||
@@ -242,7 +272,7 @@ public sealed class BattleLabSession
         _relics.Clear();
         foreach (var unit in snapshot.Units) _units.Add(unit.InstanceId, unit);
         foreach (var relic in snapshot.Relics) _relics.Add(relic.InstanceId, relic);
-        Mode = snapshot.Mode;
+        Mode = BattleLabPlacementMode.FreeExperiment;
         CurrentPopulation = snapshot.CurrentPopulation;
         Seed = snapshot.Seed;
         FloorRuleId = floorRuleId;
@@ -269,9 +299,7 @@ public sealed class BattleLabSession
     private void ValidateModeAndPopulation(BattleLabPlacementMode mode, int currentPopulation)
     {
         if (!Enum.IsDefined(mode)) throw new ArgumentOutOfRangeException(nameof(mode));
-        var cap = mode == BattleLabPlacementMode.Formal
-            ? Content.Rules.PhysicalDeploymentCeiling
-            : BattlefieldLayout.Width * BattlefieldLayout.Height;
+        var cap = BattlefieldLayout.Width * BattlefieldLayout.Height;
         if (currentPopulation <= 0 || currentPopulation > cap)
             throw new ArgumentOutOfRangeException(nameof(currentPopulation));
     }
@@ -282,9 +310,9 @@ public sealed class BattleLabSession
         int currentPopulation,
         string floorRuleId)
     {
+        units = units.ToArray();
         var ids = new HashSet<string>(StringComparer.Ordinal);
         var cells = new HashSet<Vector2I>();
-        var playerCount = 0;
         foreach (var unit in units)
         {
             if (unit is null || string.IsNullOrWhiteSpace(unit.InstanceId) ||
@@ -294,16 +322,10 @@ public sealed class BattleLabSession
                 !Content.TryGetUnit(unit.ContentId, out var published) ||
                 !published.AllowedSides.Contains(unit.Side))
                 throw new InvalidOperationException("战斗实验室单位配置无效、重复或位于禁格。");
-            if (mode == BattleLabPlacementMode.Formal &&
-                ((unit.Side == BattleLabSide.Player && !BattlefieldLayout.IsPlayerDeploymentCell(unit.Cell)) ||
-                 (unit.Side == BattleLabSide.Enemy &&
-                  unit.Cell.X < BattlefieldLayout.Width - BattlefieldLayout.PlayerDeploymentColumns)))
-                throw new InvalidOperationException("战斗实验室单位不符合正式阵营区域。");
-            if (unit.Side == BattleLabSide.Player) playerCount++;
-            if (unit.Side == BattleLabSide.Enemy && unit.Equipment.Length > 0)
-                throw new InvalidOperationException("敌方单位不能配置玩家装备。");
+            if (unit.RetainAttackStacks && !Content.SupportsRetentionUpgrade(unit.ContentId))
+                throw new InvalidOperationException("此单位不支持保层升阶。");
             if (unit.Equipment.Length > Content.Rules.EquipmentSlotCapacity)
-                throw new InvalidOperationException("英雄装备槽数量无效。");
+                throw new InvalidOperationException("单位装备槽数量无效。");
             var slots = new HashSet<int>();
             foreach (var equipment in unit.Equipment)
                 if (equipment is null || string.IsNullOrWhiteSpace(equipment.InstanceId) ||
@@ -311,10 +333,10 @@ public sealed class BattleLabSession
                     equipment.SlotIndex < 0 || equipment.SlotIndex >= Content.Rules.EquipmentSlotCapacity ||
                     !slots.Add(equipment.SlotIndex) ||
                     !Content.Equipment.Any(item => item.StableId == equipment.ContentId))
-                    throw new InvalidOperationException("英雄装备实例或槽位无效。");
+                    throw new InvalidOperationException("单位装备实例或槽位无效。");
         }
-        if (mode == BattleLabPlacementMode.Formal && playerCount > currentPopulation)
-            throw new InvalidOperationException("我方部署数量超过正式人口。");
+        var bodyError = BattleLabPlacementPolicy.ValidateBodies(Content, units, floorRuleId, mode);
+        if (bodyError is not null) throw new InvalidOperationException(bodyError);
         return ids;
     }
 
@@ -343,6 +365,7 @@ public sealed class BattleLabSession
             primaryHeroInstanceId ?? string.Empty,
             string.Join(";", units.OrderBy(unit => unit.InstanceId, StringComparer.Ordinal).Select(unit =>
                 $"{unit.InstanceId},{unit.ContentId},{(int)unit.Side},{unit.Cell.X},{unit.Cell.Y}," +
+                (unit.RetainAttackStacks ? "upgrade:retain;" : "") +
                 string.Join(',', unit.Equipment.OrderBy(item => item.SlotIndex)
                     .Select(item => $"{item.InstanceId}:{item.ContentId}:{item.SlotIndex}")))),
             string.Join(";", relics.OrderBy(relic => relic.InstanceId, StringComparer.Ordinal).Select(relic =>

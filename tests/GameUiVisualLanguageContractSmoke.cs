@@ -121,7 +121,7 @@ public partial class GameUiVisualLanguageContractSmoke : Node
         cell.Theme = GD.Load<Theme>("res://content/ui/RealmTheme.tres");
         host.AddChild(cell);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-        var hero = GD.Load<UnitDefinition>("res://content/definitions/heroes/hero_banner_marshal.tres");
+        var hero = GD.Load<UnitDefinition>("res://tests/fixtures/legacy-roster/content/definitions/heroes/hero_banner_marshal.tres");
         cell.Bind(new Vector2I(0, 0), "hero", hero.DisplayName, true, true, true, FloorCellPreview.Normal,
             hero.Portrait, hero.Role, hero.AttackRange, true);
         if (cell.Text.Length > 0 || cell.ThemeTypeVariation != "DeploymentCellSelected" ||

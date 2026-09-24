@@ -29,7 +29,7 @@ public static class BattleSetupFactory
             behavior.SlowOnHitTicks, behavior.AdjacentArmorAura, behavior.AdjacentDamageAura,
             behavior.ExecuteHealthThreshold, behavior.LowHealthDamageBonus, behavior.OnDeathDamage, behavior.PiercingLine,
             behavior.PeriodicShieldTicks, behavior.PeriodicShieldAmount, behavior.PeriodicSummonTicks, behavior.PeriodicSummonLimit,
-            behavior.PreferBacklineTargets, behavior.SummonContentId),
+            behavior.PreferBacklineTargets, behavior.SummonContentId, behavior.Stationary, behavior.DisableBasicAttacks),
         abilityLoadout,
         AttributeDefinitionCompiler.Legacy(new Dictionary<CombatAttribute, float>
         {
@@ -38,7 +38,6 @@ public static class BattleSetupFactory
             [CombatAttribute.SpellPower] = definition.SpellPower,
             [CombatAttribute.AttackSpeed] = 1,
             [CombatAttribute.Armor] = definition.Armor,
-            [CombatAttribute.MagicResistance] = definition.MagicResistance,
             [CombatAttribute.AttackRange] = definition.AttackRange,
             [CombatAttribute.MoveSpeed] = 1,
             [CombatAttribute.CriticalChance] = 0,
@@ -56,7 +55,9 @@ public static class BattleSetupFactory
         graph?.ResolveUnitTraitContributions(definition.Id) ??
         ImmutableArray<CompiledTraitContribution>.Empty,
         definition.BodyRadius, definition.AttackDelivery,
-        definition.ProjectileSpeed, definition.ProjectileRadius, definition.ProjectileLifetime);
+        definition.ProjectileSpeed, definition.ProjectileRadius, definition.ProjectileLifetime,
+        ProjectileWindupSeconds: definition.ProjectileWindupSeconds,
+        AttackReleaseProgress: definition.AttackReleaseProgress);
 
     public static UnitSnapshot Snapshot(CatalogEntry entry, ContentRegistry? content = null)
     {
@@ -66,7 +67,10 @@ public static class BattleSetupFactory
             var loadout = root.AbilityLoadout is null || content is null
                 ? null
                 : root.AbilityLoadout.Resolve(content.Graph);
-            return Snapshot((UnitDefinition)entry.Definition, root.Behavior, loadout, content?.Graph);
+            return Snapshot((UnitDefinition)entry.Definition, root.Behavior, loadout, content?.Graph) with
+            {
+                AttackHitGrowth = root.AttackHitGrowth?.Snapshot()
+            };
         }
         finally { root.Free(); }
     }

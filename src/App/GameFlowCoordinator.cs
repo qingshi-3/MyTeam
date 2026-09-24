@@ -17,6 +17,7 @@ public sealed class GameFlowCoordinator : IDisposable
     private readonly Func<RunApplication?> _application;
     private readonly AppScreenHost _screens;
     private readonly Action _quit;
+    private readonly Action<string>? _feedback;
     private readonly CompiledProjectPresentation _presentation;
     private EncounterPlan? _encounter;
     private BattleResult? _pendingBattleResult;
@@ -43,12 +44,14 @@ public sealed class GameFlowCoordinator : IDisposable
         Func<RunApplication?> application,
         AppScreenHost screens,
         CompiledProjectPresentation presentation,
-        Action quit)
+        Action quit,
+        Action<string>? feedback = null)
     {
         _application = application ?? throw new ArgumentNullException(nameof(application));
         _screens = screens ?? throw new ArgumentNullException(nameof(screens));
         _presentation = presentation ?? throw new ArgumentNullException(nameof(presentation));
         _quit = quit ?? throw new ArgumentNullException(nameof(quit));
+        _feedback = feedback;
     }
 
     private RunApplication App => _application() ??
@@ -62,7 +65,8 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.MainMenu.BattleLabRequested += ShowBattleLab;
         _screens.MainMenu.SettingsRequested += ShowSettings;
         _screens.MainMenu.QuitRequested += _quit;
-        _screens.HeroSelection.HeroChosen += StartNewRun;
+        _screens.HeroSelection.OpeningHeroToggled += ToggleOpeningHero;
+        _screens.HeroSelection.OpeningConfirmed += ConfirmOpening;
         _screens.HeroSelection.BackRequested += ShowMainMenu;
         _screens.Tower.NodeSelected += SelectNode;
         _screens.Tower.AbandonRequested += AbandonRun;
@@ -102,7 +106,8 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.MainMenu.BattleLabRequested -= ShowBattleLab;
         _screens.MainMenu.SettingsRequested -= ShowSettings;
         _screens.MainMenu.QuitRequested -= _quit;
-        _screens.HeroSelection.HeroChosen -= StartNewRun;
+        _screens.HeroSelection.OpeningHeroToggled -= ToggleOpeningHero;
+        _screens.HeroSelection.OpeningConfirmed -= ConfirmOpening;
         _screens.HeroSelection.BackRequested -= ShowMainMenu;
         _screens.Tower.NodeSelected -= SelectNode;
         _screens.Tower.AbandonRequested -= AbandonRun;
@@ -232,13 +237,25 @@ public sealed class GameFlowCoordinator : IDisposable
 
     internal void ShowHeroSelection()
     {
-        _screens.HeroSelection.Bind(App.Content, App.Meta);
+        if (!App.BeginOpeningRecruitment((ulong)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()))
+        {
+            ShowResult("开局未能保存", "原征程已保留。请检查存储空间后重试。");
+            return;
+        }
+        _screens.HeroSelection.BindOpening(App);
         Show(AppScreenId.HeroSelection);
     }
 
-    private void StartNewRun(string heroId)
+    private void ToggleOpeningHero(string heroId)
     {
-        if (App.StartNewRun(heroId, (ulong)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())) ShowTower();
+        if (App.ToggleOpeningHero(heroId)) _screens.HeroSelection.RefreshOpening(App.ActiveRun!.OpeningRecruitment!);
+        else _screens.HeroSelection.ShowOpeningError("未能保存选择，原选择已保留，请重试。");
+    }
+
+    private void ConfirmOpening()
+    {
+        if (App.ConfirmOpeningRecruitment()) ShowTower();
+        else _screens.HeroSelection.ShowOpeningError("确认未成功，候选和原选择已保留，请重试。");
     }
 
     private void ContinueRun()
@@ -250,6 +267,7 @@ public sealed class GameFlowCoordinator : IDisposable
     internal void ShowTower()
     {
         if (App.ActiveRun is not { } run) { ShowMainMenu(); return; }
+        if (run.OpeningRecruitment is not null) { ShowHeroSelection(); return; }
         if (!string.IsNullOrEmpty(run.TerminalCompletionId))
         {
             var victory = run.TerminalVictory;
@@ -495,6 +513,7 @@ public sealed class GameFlowCoordinator : IDisposable
     {
         if (App.PendingOffer is not { } offer) return;
         var result = App.ResolveOffer(offer.OfferId, stableId);
+        _feedback?.Invoke(result.Succeeded ? "purchase" : "ui_error");
         if (App.PendingOffer is null) ShowTower(); else ShowShop();
         _screens.Shop.ShowDecisionResult(result);
     }
@@ -525,16 +544,15 @@ public sealed class GameFlowCoordinator : IDisposable
     private void ResolveRunChoice(string choiceId)
     {
         if (App.PendingOffer is not { } offer) return;
-        var choice = System.Linq.Enumerable.FirstOrDefault(offer.Choices, candidate => candidate.StableId == choiceId);
         var result = App.ResolveOffer(offer.OfferId, choiceId);
         if (!result.Succeeded)
         {
+            _feedback?.Invoke("ui_error");
             if (offer.Kind == RunOfferKind.Recruitment) _screens.Recruitment.ShowDecisionMessage(result.Message);
             else _screens.Reward.ShowDecisionMessage(result.Message);
             return;
         }
-        var screen = offer.Kind == RunOfferKind.Recruitment ? _screens.Recruitment : _screens.Reward;
-        screen.ShowResolved(App, choice?.DisplayName ?? "选择已完成", result);
+        ShowTower();
     }
 
     private void SkipRunOffer()

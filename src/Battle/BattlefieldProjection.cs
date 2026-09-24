@@ -9,7 +9,8 @@ public readonly record struct BattlefieldProjection(Vector2 Origin, Vector2 Cell
     private const float CellFill = .92f;
 
     public bool IsValid => CellPitch.X > 0f && CellPitch.Y > 0f;
-    public float UnitScale => Mathf.Clamp(Scale, .9f, 1.4f);
+    // Art and logical bodies must scale together; clamping only art changes the apparent clearance.
+    public float UnitScale => Scale;
     public float SelectionRadius => Mathf.Clamp(44f * Scale, 40f, 62f);
 
     public Vector2 CellToLocal(Vector2I cell) =>

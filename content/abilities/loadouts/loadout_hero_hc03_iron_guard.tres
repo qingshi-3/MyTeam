@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="AbilityLoadoutDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/abilities/automatic/ability_hc03_challenge.tres" id="0"]
+[ext_resource type="Resource" path="res://content/abilities/passive/ability_hc03_thorns.tres" id="1"]
+
+[resource]
+script = ExtResource("script")
+Abilities = [ExtResource("0"), ExtResource("1")]

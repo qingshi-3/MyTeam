@@ -1,0 +1,63 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Resource" path="res://content/statuses/status_bc_last_stand.tres" id="r4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="r5"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 4
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 1
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 7
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+Minimum = 0
+Maximum = 0.35
+Every = 1
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r3")
+Action = 2
+TargetQuery = SubResource("s3")
+Amount = 90
+Terms = []
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("r5")
+Status = ExtResource("r4")
+TargetQuery = SubResource("s5")
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc21_p"
+DisplayName = "背水"
+Description = "每战首次实际受伤后降到 35% 生命以下，获得 90 护盾，5 秒内增加 0.75 攻速和 25% 吸血。"
+ActivationKind = 2
+Trigger = 9
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 1
+Echoable = false
+Operations = [SubResource("s2"), SubResource("s4"), SubResource("s6")]

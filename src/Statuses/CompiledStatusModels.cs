@@ -27,7 +27,7 @@ public sealed record CompiledStatusCombatReactiveBinding(
     CompiledEffectBinding Binding,
     CombatSourceKind SourceKind = CombatSourceKind.None,
     bool FilterDamageType = false,
-    EffectDamageType DamageType = EffectDamageType.Physical);
+    EffectDamageType DamageType = EffectDamageType.Normal);
 
 public sealed record CompiledStatusTransition(
     CompiledStatusDefinition Target,
@@ -101,7 +101,9 @@ public sealed record StatusRuntimeSnapshot(
     ImmutableArray<StatusCapturedMagnitudeSnapshot> CapturedMagnitudes,
     string SemanticIcon,
     string ReportLabel,
-    string PersistentVfx = "");
+    string PersistentVfx = "",
+    int ExpirationTick = 0,
+    int NextPeriodicTick = 0);
 
 public sealed record StatusModifierProjectionSnapshot(
     string StatusInstanceId,
@@ -145,7 +147,7 @@ public sealed record StatusEffectInvocation(
     int Tick,
     CompiledEffectBinding Binding,
     StatusRemovalReason RemovalReason,
-    BattleCombatEvent? CombatEvent = null);
+    BattleCombatEvent? CombatEvent = null, float PeriodicValue = 0, string PeriodicReceiptId = "");
 
 public sealed record StatusCombatReactiveSubscriptionRequest(
     BattleCombatEventKind EventKind,

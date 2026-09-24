@@ -97,7 +97,7 @@ public static class BattleReportViewModels
 
         var units = selected.Select(unit =>
         {
-            var activeTicks = Math.Max(1, (unit.DefeatTick ?? result.Ticks) - unit.JoinTick);
+            var activeTicks = unit.ActiveTicks >= 0 ? Math.Max(1,unit.ActiveTicks) : Math.Max(1, (unit.DefeatTick ?? result.Ticks) - unit.JoinTick);
             var activeSeconds = activeTicks * BattleTiming.TickSeconds;
             var awards = BattleReportAwards.None;
             if (maxDamage > Epsilon && NearlyEqual(unit.DamageDealt, maxDamage)) awards |= BattleReportAwards.DamageLeader;

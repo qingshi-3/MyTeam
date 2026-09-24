@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ConeBreathAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="action"]
+script = ExtResource("operation")
+[resource]
+script = ExtResource("ability")
+StableId = "ability_ee07_furnace_lizard"
+DisplayName = "炉喉吐息"
+Description = "锁定方向喷吐三段扇形火焰；控制可打断后续吐息。"
+ActivationKind = 1
+Trigger = 2
+CooldownTicks = 85
+IntervalTicks = 10
+Operations = [SubResource("action")]

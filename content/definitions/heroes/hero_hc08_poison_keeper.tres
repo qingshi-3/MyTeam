@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc08_poison_keeper.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc08_poison_keeper"
+DisplayName = "棘毒使"
+Description = "普攻叠加棘毒，毒云覆盖敌群并增加主目标毒层。依靠前排和恢复争取持续伤害时间。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 2
+Faction = 6
+RecruitCost = 5
+MaxHealth = 210
+AttackDamage = 14
+Armor = 4
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

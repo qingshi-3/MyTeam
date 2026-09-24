@@ -17,6 +17,7 @@ public sealed record CompiledRelicRunOutcome(
 
 public abstract record CompiledRelicUnitTarget;
 public sealed record CompiledRelicPlayerArmyTarget : CompiledRelicUnitTarget;
+public sealed record CompiledRelicPlayerSummonsTarget : CompiledRelicUnitTarget;
 public sealed record CompiledRelicPlayerHeroesTarget : CompiledRelicUnitTarget;
 public sealed record CompiledRelicPlayerFormationAdjacentTarget : CompiledRelicUnitTarget;
 public sealed record CompiledRelicPlayerEmptySlotHeroesTarget : CompiledRelicUnitTarget;

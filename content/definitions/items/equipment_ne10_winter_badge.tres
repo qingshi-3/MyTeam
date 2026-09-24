@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+[ext_resource type="Texture2D" path="res://assets/ui/items/equipment_ne10_winter_badge.png" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "equipment_ne10_winter_badge"
+DisplayName = "霜羽徽章"
+Description = "持有者攻速增加 0.10，并成为霜羽同盟成员。同一单位最多算 1 名成员，徽章不额外赠送冻结技能。"
+Icon = ExtResource("r1")
+Rarity = 1
+ProductKind = 1
+Price = 18
+Tags = Array[StringName]([&"item", &"equipment"])

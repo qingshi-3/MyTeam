@@ -1,0 +1,17 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_bc_mark"
+DisplayName = "破绽"
+Behavior = 2
+Disposition = 2
+DurationKind = 1
+DurationTicks = 60
+StackLimit = 1
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+DispelCategory = 1
+ControlDurationRule = 0

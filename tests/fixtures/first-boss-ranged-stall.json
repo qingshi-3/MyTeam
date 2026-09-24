@@ -1,0 +1,87 @@
+{
+  "Version": 6,
+  "Seed": 1789237192955,
+  "Roster": [
+    {
+      "InstanceId": "player-hero",
+      "ContentId": "hero_hc01_crossbow",
+      "HealthRatio": 0.49,
+      "Rank": 1,
+      "Equipment": []
+    },
+    {
+      "InstanceId": "roster-hero-1",
+      "ContentId": "hero_hc06_surge_conductor",
+      "HealthRatio": 0.98431826,
+      "Rank": 1,
+      "Equipment": []
+    },
+    {
+      "InstanceId": "roster-hero-2",
+      "ContentId": "hero_hc09_breach_scribe",
+      "HealthRatio": 0.78190345,
+      "Rank": 1,
+      "Equipment": []
+    },
+    {
+      "InstanceId": "roster-hero-4",
+      "ContentId": "hero_hc27_ally_consumer",
+      "HealthRatio": 0.8046129,
+      "Rank": 1,
+      "Equipment": []
+    }
+  ],
+  "CurrentPopulation": 7,
+  "PopulationCapSources": [],
+  "Deployment": [
+    "",
+    "",
+    "",
+    "roster-hero-1",
+    "",
+    "",
+    "roster-hero-2",
+    "roster-hero-4",
+    "",
+    "player-hero",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "Items": [
+    {
+      "InstanceId": "item-3",
+      "ContentId": "item_crimson_mail",
+      "Stacks": 1,
+      "Charges": 0,
+      "Roll": 0,
+      "Counters": []
+    },
+    {
+      "InstanceId": "item-5",
+      "ContentId": "item_commander_map",
+      "Stacks": 1,
+      "Charges": 0,
+      "Roll": 0,
+      "Counters": []
+    }
+  ],
+  "EquipmentInventory": [],
+  "EquippedTacticalCommandIds": [
+    "tactical_rally",
+    "tactical_time_stop"
+  ],
+  "Gold": 30,
+  "FloorIndex": 4,
+  "BattleNumber": 2,
+  "PendingNode": true,
+  "SelectedNode": 6,
+  "PendingOffer": null,
+  "TerminalCompletionId": "",
+  "TerminalVictory": false
+}

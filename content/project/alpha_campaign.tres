@@ -5,8 +5,9 @@
 [ext_resource type="Resource" path="res://content/tower/region_gloam_crypt.tres" id="3"]
 [ext_resource type="Resource" path="res://content/tower/region_crown_engine.tres" id="4"]
 [ext_resource type="Resource" path="res://content/project/tower_node_table.tres" id="5"]
-[ext_resource type="Resource" path="res://content/project/pools/pool_all_soldiers.tres" id="6"]
+[ext_resource type="Resource" path="res://content/project/pools/pool_build_test_heroes.tres" id="6"]
 [ext_resource type="Resource" path="res://content/project/pools/pool_all_items.tres" id="7"]
+[ext_resource type="Resource" path="res://content/project/alpha_recruitment_supply.tres" id="8"]
 
 [resource]
 script = ExtResource("1")
@@ -18,3 +19,4 @@ StarterPool = ExtResource("6")
 RecruitmentPool = ExtResource("6")
 ItemRewardPool = ExtResource("7")
 ShopPool = ExtResource("7")
+RecruitmentSupply = ExtResource("8")

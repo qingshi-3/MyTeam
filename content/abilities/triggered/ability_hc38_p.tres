@@ -1,0 +1,19 @@
+[gd_resource type="Resource" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/GritStorageAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="operation"]
+script = ExtResource("operation")
+CounterKey = "grit"
+WindowTicks = 60
+MaximumHealthRatio = 0.5
+[resource]
+script = ExtResource("ability")
+StableId = "ability_hc38_p"
+DisplayName = "怒劲"
+Description = "最近 6 秒实际损失的生命积为怒劲，上限为最大生命的 50%；每笔积累到时消失。护盾吸收、被防御减免的伤害不计入。"
+ActivationKind = 2
+Trigger = 9
+ManaCost = 0
+CooldownTicks = 0
+Echoable = false
+Operations = [SubResource("operation")]

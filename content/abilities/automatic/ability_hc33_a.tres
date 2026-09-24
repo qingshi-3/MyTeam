@@ -1,0 +1,43 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/DisplacementAbilityOperationSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r0")
+Team = 1
+Anchor = 1
+Range = 5
+MaxTargets = 1
+IncludeAnchor = false
+Order = 4
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r1")
+Kind = 2
+TargetQuery = SubResource("s0")
+Distance = 5
+DurationSeconds = 0.1
+StopDistance = 0.12
+BehindTarget = true
+ExcludeBoss = false
+ImpactDamage = 0
+AttackRatio = 1.8
+ImpactRadius = 0
+DamageType = 0
+ArcHeight = 0.75
+
+[resource]
+script = ExtResource("r2")
+StableId = "ability_hc33_a"
+DisplayName = "影隙穿刺"
+Description = "开场满蓝。闪现至 5 格内最远敌人的后侧合法位置，对原目标造成 180% 攻击力的伤害；不附带眩晕。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 80
+CooldownTicks = 12
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

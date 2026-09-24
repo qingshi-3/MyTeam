@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="StatusDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="modifier"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="constant"]
+[sub_resource type="Resource" id="value"]
+script = ExtResource("constant")
+Value = 18
+[sub_resource type="Resource" id="armor"]
+script = ExtResource("modifier")
+Attribute = 4
+SlotId = "guard-armor"
+Magnitude = SubResource("value")
+[resource]
+script = ExtResource("script")
+StableId = "status_hc03_guard"
+DisplayName = "铁甲架势"
+Behavior = 2
+Disposition = 1
+DurationKind = 1
+DurationTicks = 30
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+AttributeModifiers = [SubResource("armor")]

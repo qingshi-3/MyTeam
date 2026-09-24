@@ -1,0 +1,45 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_hc36_windlocked.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/DisplacementAbilityOperationSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r0")
+Team = 1
+Anchor = 1
+Range = 3.6
+MaxTargets = 5
+IncludeAnchor = false
+Order = 1
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Kind = 5
+TargetQuery = SubResource("s0")
+Distance = 2.4
+DurationSeconds = 0.5
+StopDistance = 0.2
+BehindTarget = false
+ExcludeBoss = true
+ImpactDamage = 30
+AttackRatio = 0.5
+ImpactRadius = 0
+DamageType = 0
+ArcHeight = 0.75
+ImpactStatus = ExtResource("r1")
+
+[resource]
+script = ExtResource("r3")
+StableId = "ability_hc36_a"
+DisplayName = "风眼收束"
+Description = "开场满蓝。牵引 3.6 格内最近的至多 5 名非 Boss 敌人，各向施法者附近不同合法位置靠拢至多 2.4 格；各造成 30 加 50% 攻击力的伤害并眩晕 0.4 秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 100
+CooldownTicks = 12
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

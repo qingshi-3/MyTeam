@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+[ext_resource type="Texture2D" path="res://assets/ui/items/item_ne01_opening_bulwark.png" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_ne01_opening_bulwark"
+DisplayName = "整军壁垒"
+Description = "开场为我方全军各提供 40 护盾，帮助撑过毒与召唤的启动期；战中后来生成的召唤物不补发。"
+Icon = ExtResource("r1")
+Rarity = 1
+ProductKind = 0
+Price = 24
+Tags = Array[StringName]([&"item", &"relic"])

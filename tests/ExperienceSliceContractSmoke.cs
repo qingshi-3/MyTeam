@@ -19,7 +19,7 @@ public partial class ExperienceSliceContractSmoke : Node
             var saves = SaveFingerprint();
             var gate = await TestProjectFixture.PublishAsync(this);
             var package = gate.Package ?? throw new InvalidOperationException(string.Join(";", gate.Report.CoreErrors));
-            var definition = GD.Load<ExperienceSliceDefinition>("res://content/experience/reward_loop.tres");
+            var definition = GD.Load<ExperienceSliceDefinition>("res://tests/fixtures/legacy-roster/content/experience/reward_loop.tres");
             var resourceBefore = ResourceGraphFingerprint.Compute([definition, package.Content.Catalog]);
             VerifyLoop(package, definition);
             VerifyFailure(package, definition);

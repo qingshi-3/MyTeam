@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FeedbackSound" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Audio/FeedbackSound.cs" id="script"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/melee_swing.ogg" id="stream"]
+
+[ext_resource type="Resource" path="res://content/audio/mix/attack.tres" id="mix"]
+
+[resource]
+script = ExtResource("script")
+Cue = "melee_swing"
+Stream = ExtResource("stream")
+VolumeDb = -12
+MinimumInterval = 0.085
+MaximumVoices = 2
+Priority = 1
+VaryPitch = true
+MixGroup = ExtResource("mix")
+MaximumDuration = 0.18
+

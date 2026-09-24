@@ -4,7 +4,7 @@
 [ext_resource type="Resource" path="res://content/vfx/catalog.tres" id="3"]
 [ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="4"]
 [ext_resource type="SpriteFrames" path="res://assets/donor-units/f6_general/frames.tres" id="5"]
-[ext_resource type="Resource" path="res://content/abilities/automatic/ability_mana_hero_brood_matriarch.tres" id="6"]
+[ext_resource type="Resource" path="res://content/vfx/preview_rend_ability.tres" id="6"]
 [ext_resource type="SpriteFrames" path="res://assets/donor-units/f3_dervish/frames.tres" id="7"]
 
 [node name="VfxPreview" type="Control"]

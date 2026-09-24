@@ -16,7 +16,7 @@ public partial class ExperienceSliceInputSmoke : Node
         try
         {
             GetWindow().Size = new Vector2I(1600, 900);
-            root = GD.Load<PackedScene>("res://scenes/app/ExperienceSlice.tscn").Instantiate<ExperienceSliceRoot>();
+            root = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/ExperienceSlice.tscn").Instantiate<ExperienceSliceRoot>();
             AddChild(root);
             for (var frame = 0; frame < 600 && root.Session is null && string.IsNullOrEmpty(root.BootstrapFailure); frame++) await Frame();
             var session = root.Session ?? throw new InvalidOperationException(root.BootstrapFailure);

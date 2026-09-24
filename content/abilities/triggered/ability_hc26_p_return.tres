@@ -1,0 +1,29 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/LifecycleAbilityOperationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Kind = 0
+TargetQuery = SubResource("s0")
+DelayTicks = 20
+HealthRatio = 0.4
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc26_p_return"
+DisplayName = "归灰"
+Description = "2 秒后以同一身份和 40% 生命返场，每战最多两次。"
+ActivationKind = 2
+Trigger = 4
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 2
+Echoable = false
+Operations = [SubResource("s1")]

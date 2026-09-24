@@ -223,7 +223,7 @@ public partial class BattleLabBattleLifecycleContractSmoke : Node
         GameRoot? root = null;
         try
         {
-            var scene = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn") ??
+            var scene = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn") ??
                         throw new InvalidOperationException("GameRoot scene missing for coordinator reset fixture");
             root = scene.Instantiate<GameRoot>();
             root.SaveNamespace = "tests/battle_lab_lifecycle_resets";

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=4 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/cast_mend.tscn" id="scene"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f3_aymarahealer/frames.tres" id="frames"]
+[resource]
+script = ExtResource("def")
+StableId = "cast_mend"
+DisplayName = "续命针·回春施法"
+PreviewNote = "原待机姿态上叠加贴身扫光与短促能量释放；只表达成功施法，持续状态和目标反馈分别呈现。"
+Scene = ExtResource("scene")
+Duration = 0.82
+Size = 105
+Ground = false
+FlattenGround = false
+AtSource = true
+PreviewFrames = ExtResource("frames")

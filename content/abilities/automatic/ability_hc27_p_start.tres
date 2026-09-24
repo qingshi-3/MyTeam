@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/SummonAbilityOperationSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Profile = 4
+Count = 2
+MaximumLivingTemporaryUnits = 2
+LimitPerOwner = true
+RequireAtLeastOne = true
+SummonContentId = "soldier_bc_morsel"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc27_p_start"
+DisplayName = "备粮"
+Description = "开战生成 2 个食饵。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s0")]

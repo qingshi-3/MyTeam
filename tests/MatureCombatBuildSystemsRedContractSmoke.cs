@@ -128,7 +128,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
 
     private static void VerifyFrostFreezeProductionBehavior()
     {
-        var productionCatalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ??
+        var productionCatalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres") ??
             throw new InvalidOperationException("production catalog is missing for the Frost/Freeze probe");
         var production = ContentValidator.CompileProductionGraph(productionCatalog, []);
         var graph = production.Graph ?? throw new InvalidOperationException(
@@ -749,7 +749,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
         VerifyBattleTraitScope(compiled);
         VerifyTraitBattleLifecycle(compiled);
 
-        var productionCatalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ??
+        var productionCatalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres") ??
             throw new InvalidOperationException("production catalog missing for Trait graph probe");
         var production = ContentValidator.CompileProductionGraph(productionCatalog, []);
         if (production.Report.HasCoreErrors || production.Graph is null ||
@@ -1102,7 +1102,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
     {
         VerifySubscriptionHandleTransactionBehavior();
 
-        var authoredRules = GD.Load<RunRulesDefinition>("res://content/project/alpha_run_rules.tres") ??
+        var authoredRules = GD.Load<RunRulesDefinition>("res://tests/fixtures/legacy-roster/content/project/alpha_run_rules.tres") ??
             throw new InvalidOperationException("production Run rules are missing for tactical probe");
         var rules = CompileRunRules(authoredRules);
         if (rules.TacticalCommandSlotCount != 2 ||
@@ -2483,7 +2483,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
         if (rosterElement?.Name != "RosterHeroInstanceDto")
             throw new InvalidOperationException("persistent roster entries are not unified hero instances");
 
-        var authoredRules = GD.Load<RunRulesDefinition>("res://content/project/alpha_run_rules.tres") ??
+        var authoredRules = GD.Load<RunRulesDefinition>("res://tests/fixtures/legacy-roster/content/project/alpha_run_rules.tres") ??
             throw new InvalidOperationException("authored Run rules are missing");
         var compiledRules = CompileRunRules(authoredRules);
         if (authoredRules.OrdinaryPopulationCap != 10 || authoredRules.InitialPopulation != 7 ||
@@ -4056,7 +4056,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
                 Attribute(CombatAttribute.MaxMana, 0, 0, 100),
                 Attribute(CombatAttribute.StartingMana, 0, 0, 100),
                 Attribute(CombatAttribute.HealingPower, 0, 0, 500),
-                Attribute(CombatAttribute.MagicResistance, 0, 0, 100),
+                Attribute(CombatAttribute.ManaPerHitCap, 0, 0, 100),
                 Attribute(CombatAttribute.Armor, 0, 0, 100),
                 Attribute(CombatAttribute.CriticalDamage, 0, 0, 100)
             ]
@@ -4174,7 +4174,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
         target.ApplyModifier(CompileModifier(CombatAttribute.HealingPower, AttributeModifierOperation.Add,
             new TargetAttributeMagnitudeSpec { Attribute = CombatAttribute.MaxHealth, CaptureMode = AttributeCaptureMode.Snapshot }),
             CombatSourceRef.System("target_snapshot"), magnitudeContext);
-        target.ApplyModifier(CompileModifier(CombatAttribute.MagicResistance, AttributeModifierOperation.Add,
+        target.ApplyModifier(CompileModifier(CombatAttribute.ManaPerHitCap, AttributeModifierOperation.Add,
             new ContextAttributeMagnitudeSpec { Key = "power", CaptureMode = AttributeCaptureMode.Live }),
             CombatSourceRef.System("context_live"), magnitudeContext);
         target.ApplyModifier(CompileModifier(CombatAttribute.Armor, AttributeModifierOperation.Add,
@@ -4190,7 +4190,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
         Near(target.GetValue(CombatAttribute.MaxMana), 2, "snapshot magnitude");
         Near(target.GetValue(CombatAttribute.StartingMana), 7, "live source magnitude");
         Near(target.GetValue(CombatAttribute.HealingPower), 50, "target magnitude");
-        Near(target.GetValue(CombatAttribute.MagicResistance), 6, "context magnitude");
+        Near(target.GetValue(CombatAttribute.ManaPerHitCap), 6, "context magnitude");
         Near(target.GetValue(CombatAttribute.Armor), 7, "team count magnitude");
         Near(target.GetValue(CombatAttribute.CriticalDamage), 8, "trait magnitude");
 
@@ -4200,7 +4200,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
                 new CompiledSourceAttributeMagnitude(CombatAttribute.AttackDamage, AttributeCaptureMode.Live), 0, "cycle"),
             CombatSourceRef.System("cycle"), new BattleAttributeMagnitudeContext(target, target)), "live magnitude cycle");
         ExpectThrows(() => target.ApplyModifier(
-            new CompiledAttributeModifier(CombatAttribute.MagicResistance, AttributeModifierOperation.Add,
+            new CompiledAttributeModifier(CombatAttribute.ManaPerHitCap, AttributeModifierOperation.Add,
                 new CompiledContextValueMagnitude("nan", AttributeCaptureMode.Live), 0, "nan"),
             CombatSourceRef.System("nan"), new BattleAttributeMagnitudeContext(contextValue: _ => float.NaN)),
             "non-finite live magnitude");

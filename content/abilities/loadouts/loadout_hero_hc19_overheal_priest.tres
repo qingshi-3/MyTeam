@@ -1,0 +1,9 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/abilities/automatic/ability_hc19_a.tres" id="r1"]
+[ext_resource type="Resource" path="res://content/abilities/triggered/ability_hc19_p.tres" id="r2"]
+
+[resource]
+script = ExtResource("r0")
+Abilities = [ExtResource("r1"), ExtResource("r2")]

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc30_armor_broadcaster.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc30_armor_broadcaster"
+DisplayName = "山岳旗手"
+Description = "HC30／BC27 测试稿。自身防御增加 16，持续 5 秒，并获得 60 护盾。 被动：向 2.5 格内其他友军持续广播自身非广播来源防御的 35%；离开范围或来源倒下立即撤销。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 0
+Faction = 6
+RecruitCost = 5
+MaxHealth = 440
+AttackDamage = 16
+Armor = 14
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

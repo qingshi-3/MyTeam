@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/meteor_rain.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "meteor_rain"
+DisplayName = "陨火连轰"
+PreviewNote = "三枚火球错峰抛向范围内三个落点，末次爆发较重；施法改变出手节奏，飞行与余烟各自收尾。"
+Scene = ExtResource("scene")
+Duration = 3.18
+ActionSpan = 0.88
+UsesRadius = true
+Ground = true
+FlattenGround = false
+Size = 180
+ReferenceRadius = 1.5

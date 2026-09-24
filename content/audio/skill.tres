@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="FeedbackSound" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/Audio/FeedbackSound.cs" id="script"]
+[ext_resource type="AudioStream" path="res://assets/audio/feedback/skill.ogg" id="stream"]
+
+[ext_resource type="Resource" path="res://content/audio/mix/highlight.tres" id="mix"]
+
+[resource]
+script = ExtResource("script")
+Cue = "skill"
+Stream = ExtResource("stream")
+VolumeDb = -7
+MinimumInterval = 0.22
+MaximumVoices = 2
+Priority = 2
+VaryPitch = true
+MixGroup = ExtResource("mix")
+MaximumDuration = 0.42
+

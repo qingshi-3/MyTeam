@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/thunderstorm.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "thunderstorm"
+DisplayName = "雷暴连击"
+PreviewNote = "四道落雷按左、右、前、中心依次击落，余电错峰收尾；半径改变落点分布，电弧粗细保持。"
+Scene = ExtResource("scene")
+Duration = 1.89
+ActionSpan = 1.23
+UsesRadius = true
+Ground = false
+FlattenGround = false
+Size = 180
+ReferenceRadius = 1.5

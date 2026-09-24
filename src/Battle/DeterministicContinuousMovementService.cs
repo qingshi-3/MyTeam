@@ -8,7 +8,7 @@ namespace TowerAutobattler.Battle;
 public interface IContinuousMovementService : IDisposable
 {
     void BeginTick();
-    BattleUnitState? SelectTarget(BattleUnitState mover, IReadOnlyList<BattleUnitState> orderedCandidates);
+    BattleUnitState? SelectTarget(BattleUnitState mover, IReadOnlyList<BattleUnitState> orderedCandidates, float? centerRange = null);
     bool QueueMove(BattleUnitState mover);
     void ResolveIntents(Action<BattleUnitState, Vector2> moved);
     void ReleaseUnit(string runtimeId);
@@ -41,8 +41,12 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
     private readonly Func<IReadOnlyList<BattleUnitState>> _units;
     private readonly Func<Vector2I, bool> _terrainAllows;
     private readonly Func<Vector2, Vector2, bool> _hasLineAccess;
+    private readonly Func<BattleUnitState, bool> _isGrounded;
+    private readonly Func<IReadOnlyList<DisplacementReservation>> _landingReservations;
     private readonly ulong _seed;
     private readonly Dictionary<string, string> _targetByUnit = new(StringComparer.Ordinal);
+    // Skills can use center distance while basic attacks use body-edge reach.
+    private readonly Dictionary<string, float> _centerRangeByUnit = new(StringComparer.Ordinal);
     private readonly Dictionary<string, Vector2> _goalByUnit = new(StringComparer.Ordinal);
     private readonly Dictionary<string, string> _retargetFromByUnit = new(StringComparer.Ordinal);
     private readonly Dictionary<string, BattleUnitState> _snapshotById = new(StringComparer.Ordinal);
@@ -55,10 +59,10 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
     public int PendingRequestCount => _requests.Count;
     internal int RetargetLeaseCount => _retargetFromByUnit.Count;
     internal int PlanningStateCount =>
-        _targetByUnit.Count + _goalByUnit.Count + _requests.Count + _retargetFromByUnit.Count;
+        _targetByUnit.Count + _centerRangeByUnit.Count + _goalByUnit.Count + _requests.Count + _retargetFromByUnit.Count;
     internal bool HasPlanningState(string runtimeId) =>
         _targetByUnit.ContainsKey(runtimeId) || _targetByUnit.ContainsValue(runtimeId) ||
-        _goalByUnit.ContainsKey(runtimeId) ||
+        _goalByUnit.ContainsKey(runtimeId) || _centerRangeByUnit.ContainsKey(runtimeId) ||
         _retargetFromByUnit.ContainsKey(runtimeId) || _retargetFromByUnit.ContainsValue(runtimeId) ||
         _requests.Any(request => request.Mover.RuntimeId == runtimeId || request.TargetRuntimeId == runtimeId) ||
         _snapshotById.ContainsKey(runtimeId);
@@ -69,7 +73,9 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         Func<IReadOnlyList<BattleUnitState>> units,
         Func<Vector2I, bool> terrainAllows,
         Func<Vector2, Vector2, bool> hasLineAccess,
-        ulong seed = 0)
+        ulong seed = 0,
+        Func<BattleUnitState, bool>? isGrounded = null,
+        Func<IReadOnlyList<DisplacementReservation>>? landingReservations = null)
     {
         if (width <= 0 || height <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         _width = width;
@@ -78,6 +84,8 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         _terrainAllows = terrainAllows ?? throw new ArgumentNullException(nameof(terrainAllows));
         _hasLineAccess = hasLineAccess ?? throw new ArgumentNullException(nameof(hasLineAccess));
         _seed = seed;
+        _isGrounded = isGrounded ?? (_ => true);
+        _landingReservations = landingReservations ?? (() => Array.Empty<DisplacementReservation>());
     }
 
     internal MovementStateCheckpoint CaptureState() => new(this);
@@ -125,8 +133,20 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         }
     }
 
-    public BattleUnitState? SelectTarget(BattleUnitState mover, IReadOnlyList<BattleUnitState> orderedCandidates)
+    public BattleUnitState? SelectTarget(BattleUnitState mover, IReadOnlyList<BattleUnitState> orderedCandidates, float? centerRange = null)
     {
+        if (centerRange is { } range && (!float.IsFinite(range) || range <= 0))
+            throw new ArgumentOutOfRangeException(nameof(centerRange));
+        float? previousRange = _centerRangeByUnit.TryGetValue(mover.RuntimeId, out var previous) ? previous : null;
+        if (previousRange != centerRange)
+        {
+            ReleaseGoal(mover.RuntimeId);
+            _requests.RemoveAll(request => request.Mover.RuntimeId == mover.RuntimeId);
+            _retargetFromByUnit.Remove(mover.RuntimeId);
+            mover.WaitingTicks = 0;
+        }
+        if (centerRange is { } actionRange) _centerRangeByUnit[mover.RuntimeId] = actionRange;
+        else _centerRangeByUnit.Remove(mover.RuntimeId);
         var legalCandidates = orderedCandidates
             .Where(candidate => candidate.Alive && candidate.RuntimeId != mover.RuntimeId)
             .DistinctBy(candidate => candidate.RuntimeId)
@@ -202,7 +222,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
 
     public bool QueueMove(BattleUnitState mover)
     {
-        if (!mover.Alive || !_targetByUnit.TryGetValue(mover.RuntimeId, out var targetId))
+        if (!mover.Alive || !_isGrounded(mover) || !_targetByUnit.TryGetValue(mover.RuntimeId, out var targetId))
         {
             MarkWaiting(mover);
             return false;
@@ -224,8 +244,10 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
             _snapshotById.Add(unit.RuntimeId, unit);
             _snapshotPositionById.Add(unit.RuntimeId, unit.Position);
         }
+        // Casts and summons may change grounded bodies or landing reservations after target selection.
+        _routeSearchByOrigin.Clear();
         var liveRequests = _requests
-            .Where(request => request.Mover.Alive &&
+            .Where(request => request.Mover.Alive && _isGrounded(request.Mover) &&
                               _targetByUnit.GetValueOrDefault(request.Mover.RuntimeId) == request.TargetRuntimeId &&
                               _snapshotById.ContainsKey(request.TargetRuntimeId))
             .OrderByDescending(request => request.Mover.WaitingTicks)
@@ -270,7 +292,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
             if (!goals.TryGetValue(request.Mover.RuntimeId, out var goal)) continue;
             var mover = request.Mover;
             var start = _snapshotPositionById[mover.RuntimeId];
-            var route = FindRoute(start, goal, mover.BodyRadius);
+            var route = FindTravelRoute(mover, start, goal);
             if (route is null)
             {
                 MarkWaitingAndMaybeRetarget(mover, request.TargetRuntimeId);
@@ -285,7 +307,9 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
                 MarkWaitingAndMaybeRetarget(mover, request.TargetRuntimeId);
                 continue;
             }
-            desired = AddLocalAvoidance(mover, desired);
+            // A body-clear route already chooses a side around the whole obstruction.
+            // Local repulsion must not steer it back into that obstruction or a terrain corner.
+            if (!route.AvoidsBodies) desired = AddLocalAvoidance(mover, desired);
             var maximumDistance = Math.Min(1f, 1f / Math.Max(1, mover.EffectiveMoveTicks));
             var delta = desired.Normalized() * Math.Min(maximumDistance, desired.Length());
             var terrainFraction = BattlefieldSpace.FirstTerrainHitFraction(
@@ -324,6 +348,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         _requests.RemoveAll(request => request.Mover.RuntimeId == runtimeId || request.TargetRuntimeId == runtimeId);
         _snapshotById.Remove(runtimeId);
         _snapshotPositionById.Remove(runtimeId);
+        _routeSearchByOrigin.Clear();
     }
 
     public void ReleaseTarget(string runtimeId)
@@ -337,6 +362,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
     public void ClearTarget(string runtimeId)
     {
         _targetByUnit.Remove(runtimeId);
+        _centerRangeByUnit.Remove(runtimeId);
         _retargetFromByUnit.Remove(runtimeId);
         ReleaseGoal(runtimeId);
         _requests.RemoveAll(request => request.Mover.RuntimeId == runtimeId);
@@ -344,6 +370,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
 
     public bool IsPositionReserved(Vector2 position, float radius, string ignoredRuntimeId = "")
     {
+        if (IsLandingReserved(position, radius, ignoredRuntimeId)) return true;
         foreach (var pair in _goalByUnit)
         {
             if (pair.Key == ignoredRuntimeId || !_snapshotById.TryGetValue(pair.Key, out var owner)) continue;
@@ -352,10 +379,15 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         return false;
     }
 
+    private bool IsLandingReserved(Vector2 position, float radius, string ignoredRuntimeId) =>
+        _landingReservations().Any(reservation => reservation.RuntimeId != ignoredRuntimeId &&
+            position.DistanceTo(reservation.Position) < radius + reservation.Radius + GoalClearance);
+
     public void Dispose()
     {
         _requests.Clear();
         _targetByUnit.Clear();
+        _centerRangeByUnit.Clear();
         _goalByUnit.Clear();
         _retargetFromByUnit.Clear();
         _snapshotById.Clear();
@@ -370,9 +402,14 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
             return new TargetScore(target, 0f, authoredRank, StableHash(target.RuntimeId), true);
         var best = EngagementPositions(mover, target, 0)
             .Where(position => CanActFrom(mover, target, position))
-            .Select(position => FindRoute(mover.Position, position, mover.BodyRadius)?.Cost ?? float.PositiveInfinity)
+            .Select(position => FindTravelRoute(mover, mover.Position, position)?.Cost ?? float.PositiveInfinity)
             .DefaultIfEmpty(float.PositiveInfinity)
             .Min();
+        if (float.IsPositiveInfinity(best))
+            best = FallbackEngagementPositions(mover, target)
+                .Select(position => FindTravelRoute(mover, mover.Position, position)?.Cost ?? float.PositiveInfinity)
+                .DefaultIfEmpty(float.PositiveInfinity)
+                .Min();
         return float.IsPositiveInfinity(best)
             ? null
             : new TargetScore(target, best, authoredRank, StableHash(target.RuntimeId), false);
@@ -386,29 +423,60 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
     {
         if (retainedGoal is { } retained &&
             IsGoalStillUseful(mover, target, retained) &&
-            IsGoalAvailable(mover, target, retained, reservations))
+            IsGoalAvailable(mover, target, retained, reservations) &&
+            FindRoute(mover.Position, retained, mover.BodyRadius, mover.RuntimeId) is not null)
             return retained;
 
-        for (var ring = 0; ring <= StagingRings; ring++)
+        var attackGoal = SelectAvailableGoal(mover, target, reservations,
+            EngagementPositions(mover, target, 0).Where(position => CanActFrom(mover, target, position)));
+        if (attackGoal is not null) return attackGoal;
+
+        // A long attack radius can put every outer-ring sample outside the arena or behind a
+        // wall, even though a closer firing position is reachable through a side lane. Search
+        // the same fallback used by target scoring before settling for an out-of-range queue.
+        attackGoal = SelectAvailableGoal(mover, target, reservations, FallbackEngagementPositions(mover, target));
+        if (attackGoal is not null) return attackGoal;
+
+        for (var ring = 1; ring <= StagingRings; ring++)
         {
-            var choices = EngagementPositions(mover, target, ring)
-                .Where(position => ring > 0 || CanActFrom(mover, target, position))
-                .Where(position => IsGoalAvailable(mover, target, position, reservations))
-                .Select(position => (Position: position, Route: FindRoute(mover.Position, position, mover.BodyRadius)))
-                .Where(choice => choice.Route is not null)
-                .OrderBy(choice => choice.Route!.Cost)
-                .ThenBy(choice => PositionTieBreak(mover.RuntimeId, choice.Position))
-                .ToArray();
-            if (choices.Length > 0) return choices[0].Position;
+            var stagingGoal = SelectAvailableGoal(mover, target, reservations, EngagementPositions(mover, target, ring));
+            if (stagingGoal is not null) return stagingGoal;
         }
         return null;
     }
 
+    private Vector2? SelectAvailableGoal(
+        BattleUnitState mover,
+        BattleUnitState target,
+        IReadOnlyDictionary<string, Vector2> reservations,
+        IEnumerable<Vector2> positions) =>
+        positions
+            .Where(position => IsGoalAvailable(mover, target, position, reservations))
+            .Select(position => (Position: position, Route: FindTravelRoute(mover, mover.Position, position)))
+            .Where(choice => choice.Route is not null)
+            .OrderByDescending(choice => choice.Route!.AvoidsBodies)
+            .ThenBy(choice => choice.Route!.Cost)
+            .ThenBy(choice => PositionTieBreak(mover.RuntimeId, choice.Position))
+            .Select(choice => (Vector2?)choice.Position)
+            .FirstOrDefault();
+
+    private IEnumerable<Vector2> FallbackEngagementPositions(BattleUnitState mover, BattleUnitState target)
+    {
+        // These are deterministic route samples, not a return to cell-quantized movement.
+        // Geometry, body avoidance, reservations and continuous sweeps remain authoritative.
+        for (var y = 0; y < _height; y++)
+        for (var x = 0; x < _width; x++)
+        {
+            var position = BattlefieldSpace.CellCenter(new Vector2I(x, y));
+            if (IsTerrainClear(position, mover.BodyRadius) && CanActFrom(mover, target, position))
+                yield return position;
+        }
+    }
+
     private IEnumerable<Vector2> EngagementPositions(BattleUnitState mover, BattleUnitState target, int stagingRing)
     {
-        var attackReach = Math.Max(0f, mover.AttackRange - AttackStoppingMargin);
         var contactDistance = mover.BodyRadius + target.BodyRadius + BattlefieldSpace.BodyClearance;
-        var maximumAttackDistance = Math.Max(contactDistance, mover.BodyRadius + target.BodyRadius + attackReach);
+        var maximumAttackDistance = Math.Max(contactDistance, ActionCenterRange(mover, target) - AttackStoppingMargin);
         var outerDistance = maximumAttackDistance + stagingRing * (mover.BodyRadius * 2f + GoalClearance);
         var phase = (StableHash($"{_seed}|{mover.RuntimeId}|{target.RuntimeId}") % EngagementSamples) /
                     (float)EngagementSamples * Mathf.Tau;
@@ -438,7 +506,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         Vector2 position,
         IReadOnlyDictionary<string, Vector2> reservations)
     {
-        if (!IsTerrainClear(position, mover.BodyRadius)) return false;
+        if (!IsTerrainClear(position, mover.BodyRadius) || IsLandingReserved(position, mover.BodyRadius, mover.RuntimeId)) return false;
         foreach (var pair in reservations)
         {
             if (pair.Key == mover.RuntimeId || !_snapshotById.TryGetValue(pair.Key, out var owner)) continue;
@@ -446,7 +514,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         }
         foreach (var other in _snapshotById.Values)
         {
-            if (other.RuntimeId == mover.RuntimeId || other.RuntimeId == target.RuntimeId) continue;
+            if (!other.Alive || !_isGrounded(other) || other.RuntimeId == mover.RuntimeId || other.RuntimeId == target.RuntimeId) continue;
             var otherPosition = _snapshotPositionById[other.RuntimeId];
             if (position.DistanceTo(otherPosition) < mover.BodyRadius + other.BodyRadius + GoalClearance) return false;
         }
@@ -455,26 +523,45 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
 
     private bool IsGoalStillUseful(BattleUnitState mover, BattleUnitState target, Vector2 goal)
     {
-        if (!IsTerrainClear(goal, mover.BodyRadius)) return false;
-        var gap = Math.Max(0f, goal.DistanceTo(target.Position) - mover.BodyRadius - target.BodyRadius);
-        return gap <= mover.AttackRange + .001f && _hasLineAccess(goal, target.Position);
+        if (!IsTerrainClear(goal, mover.BodyRadius) || IsLandingReserved(goal, mover.BodyRadius, mover.RuntimeId)) return false;
+        return goal.DistanceTo(target.Position) <= ActionCenterRange(mover, target) + .001f && HasActionLineAccess(mover, target, goal);
     }
 
     private bool CanActFrom(BattleUnitState mover, BattleUnitState target, Vector2 position)
     {
-        var gap = Math.Max(0f, position.DistanceTo(target.Position) - mover.BodyRadius - target.BodyRadius);
-        return gap <= mover.AttackRange + .0001f && _hasLineAccess(position, target.Position);
+        return position.DistanceTo(target.Position) <= ActionCenterRange(mover, target) + .0001f && HasActionLineAccess(mover, target, position);
     }
 
-    private Route? FindRoute(Vector2 start, Vector2 goal, float radius)
+    private float ActionCenterRange(BattleUnitState mover, BattleUnitState target) =>
+        _centerRangeByUnit.TryGetValue(mover.RuntimeId, out var range) ? range :
+            mover.AttackRange + mover.BodyRadius + target.BodyRadius;
+
+    private bool HasActionLineAccess(BattleUnitState mover, BattleUnitState target, Vector2 position)
     {
-        if (!IsTerrainClear(start, radius) || !IsTerrainClear(goal, radius)) return null;
-        if (BattlefieldSpace.IsSegmentTerrainClear(start, goal, radius, _width, _height, _blockedTerrainCells))
-            return new Route([goal], start.DistanceTo(goal));
-        var origin = new RouteOrigin(start, radius);
+        if (!_hasLineAccess(position, target.Position)) return false;
+        // A clear center ray is insufficient for a physical arrow at a wall corner. Match
+        // hostile projectile execution, while preserving the supplied ray rule for healing
+        // and instant attacks; a healer's projectile art does not change healing access.
+        if (mover.Team == target.Team || mover.AttackDelivery != TowerAutobattler.Content.AttackDelivery.Projectile)
+            return true;
+        return BattlefieldSpace.IsSegmentTerrainClear(position, target.Position,
+            Math.Max(0f, mover.Definition.ProjectileRadius), _width, _height, _blockedTerrainCells);
+    }
+
+    // Bodies are snapshot obstacles, not permanent terrain. If traffic seals every route,
+    // retain the terrain plan so swept following/waiting can resume when the lane opens.
+    private Route? FindTravelRoute(BattleUnitState mover, Vector2 start, Vector2 goal) =>
+        FindRoute(start, goal, mover.BodyRadius, mover.RuntimeId) ?? FindRoute(start, goal, mover.BodyRadius);
+
+    private Route? FindRoute(Vector2 start, Vector2 goal, float radius, string? moverId = null)
+    {
+        if (!IsTerrainClear(start, radius) || !IsRoutePositionClear(goal, radius, moverId)) return null;
+        if (IsRouteSegmentClear(start, goal, radius, moverId))
+            return new Route([goal], start.DistanceTo(goal), moverId is not null);
+        var origin = new RouteOrigin(start, radius, moverId);
         if (!_routeSearchByOrigin.TryGetValue(origin, out var search))
         {
-            search = BuildRouteSearch(start, radius);
+            search = BuildRouteSearch(start, radius, moverId);
             _routeSearchByOrigin.Add(origin, search);
         }
         var orderedNodes = search.Nodes
@@ -482,9 +569,9 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
             .OrderBy(cell => BattlefieldSpace.CellCenter(cell).DistanceSquaredTo(goal))
             .ThenBy(cell => CellTieBreak(cell))
             .ToArray();
-        var reached = FindGoalVisibleNode(orderedNodes.Take(12), search, goal, radius);
+        var reached = FindGoalVisibleNode(orderedNodes.Take(12), search, goal, radius, moverId);
         if (reached.X == int.MinValue)
-            reached = FindGoalVisibleNode(orderedNodes.Skip(12), search, goal, radius);
+            reached = FindGoalVisibleNode(orderedNodes.Skip(12), search, goal, radius, moverId);
         if (reached.X == int.MinValue) return null;
         var path = new List<Vector2> { BattlefieldSpace.CellCenter(reached) };
         while (search.Previous.TryGetValue(reached, out var parent))
@@ -495,45 +582,42 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         path.Reverse();
         path.Add(goal);
         for (var index = path.Count - 1; index > 0; index--)
-            if (BattlefieldSpace.IsSegmentTerrainClear(
-                    start, path[index], radius, _width, _height, _blockedTerrainCells))
+            if (IsRouteSegmentClear(start, path[index], radius, moverId))
             {
                 path.RemoveRange(0, index);
                 break;
             }
         var cost = start.DistanceTo(path[0]);
         for (var index = 1; index < path.Count; index++) cost += path[index - 1].DistanceTo(path[index]);
-        return new Route(path, cost);
+        return new Route(path, cost, moverId is not null);
     }
 
     private Vector2I FindGoalVisibleNode(
         IEnumerable<Vector2I> candidates,
         RouteSearch search,
         Vector2 goal,
-        float radius) =>
+        float radius,
+        string? moverId) =>
         candidates
-            .Where(cell => BattlefieldSpace.IsSegmentTerrainClear(
-                BattlefieldSpace.CellCenter(cell), goal, radius,
-                _width, _height, _blockedTerrainCells))
+            .Where(cell => IsRouteSegmentClear(BattlefieldSpace.CellCenter(cell), goal, radius, moverId))
             .OrderBy(cell => search.Distance[cell] + BattlefieldSpace.CellCenter(cell).DistanceTo(goal))
             .ThenBy(cell => CellTieBreak(cell))
             .FirstOrDefault(new Vector2I(int.MinValue, int.MinValue));
 
-    private RouteSearch BuildRouteSearch(Vector2 start, float radius)
+    private RouteSearch BuildRouteSearch(Vector2 start, float radius, string? moverId)
     {
         var nodes = new List<Vector2I>();
         for (var y = 0; y < _height; y++)
         for (var x = 0; x < _width; x++)
         {
             var cell = new Vector2I(x, y);
-            if (IsTerrainClear(BattlefieldSpace.CellCenter(cell), radius)) nodes.Add(cell);
+            if (IsRoutePositionClear(BattlefieldSpace.CellCenter(cell), radius, moverId)) nodes.Add(cell);
         }
         var distance = nodes.ToDictionary(cell => cell, _ => float.PositiveInfinity);
         var previous = new Dictionary<Vector2I, Vector2I>();
         var open = new HashSet<Vector2I>();
-        foreach (var cell in nodes.Where(cell => BattlefieldSpace.IsSegmentTerrainClear(
-                     start, BattlefieldSpace.CellCenter(cell), radius,
-                     _width, _height, _blockedTerrainCells))
+        foreach (var cell in nodes.Where(cell => IsRouteSegmentClear(
+                     start, BattlefieldSpace.CellCenter(cell), radius, moverId))
                  .OrderBy(cell => start.DistanceSquaredTo(BattlefieldSpace.CellCenter(cell)))
                  .ThenBy(cell => CellTieBreak(cell))
                  .Take(8))
@@ -551,8 +635,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
                 if (!distance.ContainsKey(next)) continue;
                 var currentPoint = BattlefieldSpace.CellCenter(current);
                 var nextPoint = BattlefieldSpace.CellCenter(next);
-                if (!BattlefieldSpace.IsSegmentTerrainClear(
-                        currentPoint, nextPoint, radius, _width, _height, _blockedTerrainCells)) continue;
+                if (!IsRouteSegmentClear(currentPoint, nextPoint, radius, moverId)) continue;
                 var candidate = distance[current] + currentPoint.DistanceTo(nextPoint);
                 if (candidate + .0001f >= distance[next]) continue;
                 distance[next] = candidate;
@@ -563,6 +646,31 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         return new RouteSearch(nodes, distance, previous);
     }
 
+    private bool IsRoutePositionClear(Vector2 position, float radius, string? moverId)
+    {
+        if (!IsTerrainClear(position, radius)) return false;
+        if (moverId is null) return true;
+        if (IsLandingReserved(position, radius, moverId)) return false;
+        return !_snapshotById.Values.Any(other => other.Alive && _isGrounded(other) && other.RuntimeId != moverId &&
+            position.DistanceTo(_snapshotPositionById[other.RuntimeId]) < radius + other.BodyRadius + BattlefieldSpace.BodyClearance);
+    }
+
+    private bool IsRouteSegmentClear(Vector2 start, Vector2 end, float radius, string? moverId)
+    {
+        if (!BattlefieldSpace.IsSegmentTerrainClear(start, end, radius, _width, _height, _blockedTerrainCells)) return false;
+        if (moverId is null) return true;
+        foreach (var other in _snapshotById.Values)
+        {
+            if (!other.Alive || !_isGrounded(other) || other.RuntimeId == moverId) continue;
+            if (BattlefieldSpace.TryMovingCircleTimeOfImpact(start, end - start, radius,
+                    _snapshotPositionById[other.RuntimeId], Vector2.Zero, other.BodyRadius, out _)) return false;
+        }
+        foreach (var reservation in _landingReservations())
+            if (reservation.RuntimeId != moverId && BattlefieldSpace.TryMovingCircleTimeOfImpact(
+                    start, end - start, radius, reservation.Position, Vector2.Zero, reservation.Radius, out _)) return false;
+        return true;
+    }
+
     private Vector2 AddLocalAvoidance(BattleUnitState mover, Vector2 desired)
     {
         var direction = desired.Normalized();
@@ -570,7 +678,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         var start = _snapshotPositionById[mover.RuntimeId];
         foreach (var other in _snapshotById.Values.OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal))
         {
-            if (other.RuntimeId == mover.RuntimeId) continue;
+            if (!other.Alive || !_isGrounded(other) || other.RuntimeId == mover.RuntimeId) continue;
             var offset = _snapshotPositionById[other.RuntimeId] - start;
             var distance = offset.Length();
             if (distance <= .0001f || distance > 1.75f) continue;
@@ -590,7 +698,26 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
 
     private void ResolveBodySweeps(Dictionary<string, Vector2> deltas)
     {
-        var ordered = _snapshotById.Values.OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal).ToArray();
+        // Commit discards sub-epsilon movement. Sweeps must use those same zero deltas,
+        // otherwise a follower can consume clearance that its leader never actually frees.
+        foreach (var runtimeId in deltas.Keys.ToArray()) deltas[runtimeId] = CommittableDelta(deltas[runtimeId]);
+        var ordered = _snapshotById.Values.Where(unit => unit.Alive && _isGrounded(unit))
+            .OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal).ToArray();
+        // An airborne body does not obstruct ground travel. Its destination does, from cast start
+        // until landing, so a leap cannot end inside a walking unit or a newly authored summon.
+        var landingReservations = _landingReservations();
+        foreach (var mover in ordered)
+        {
+            if (!deltas.TryGetValue(mover.RuntimeId, out var delta)) continue;
+            foreach (var reservation in landingReservations)
+            {
+                if (reservation.RuntimeId == mover.RuntimeId) continue;
+                if (BattlefieldSpace.TryMovingCircleTimeOfImpact(_snapshotPositionById[mover.RuntimeId], delta,
+                        mover.BodyRadius, reservation.Position, Vector2.Zero, reservation.Radius, out var contact))
+                    delta *= Math.Max(0f, contact - .001f);
+            }
+            deltas[mover.RuntimeId] = CommittableDelta(delta);
+        }
         var maximumPasses = Math.Max(4, ordered.Length * ordered.Length);
         for (var pass = 0; pass < maximumPasses; pass++)
         {
@@ -609,12 +736,12 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
                 var safeFraction = Math.Max(0f, contact - .001f);
                 if (firstDelta.LengthSquared() > MovementEpsilon * MovementEpsilon)
                 {
-                    deltas[first.RuntimeId] = firstDelta * safeFraction;
+                    deltas[first.RuntimeId] = CommittableDelta(firstDelta * safeFraction);
                     changed = true;
                 }
                 if (secondDelta.LengthSquared() > MovementEpsilon * MovementEpsilon)
                 {
-                    deltas[second.RuntimeId] = secondDelta * safeFraction;
+                    deltas[second.RuntimeId] = CommittableDelta(secondDelta * safeFraction);
                     changed = true;
                 }
             }
@@ -641,6 +768,9 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         if (residualCollision)
             foreach (var runtimeId in deltas.Keys.ToArray()) deltas[runtimeId] = Vector2.Zero;
     }
+
+    private static Vector2 CommittableDelta(Vector2 delta) =>
+        delta.LengthSquared() <= MovementEpsilon * MovementEpsilon ? Vector2.Zero : delta;
 
     private bool IsTerrainClear(Vector2 position, float radius) =>
         BattlefieldSpace.IsPositionTerrainClear(position, radius, _width, _height, _blockedTerrainCells);
@@ -689,8 +819,8 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
     private sealed record TargetScore(
         BattleUnitState Target, float PathCost, int AuthoredRank, ulong TieBreak, bool ImmediatelyActionable);
     private sealed record MoveRequest(BattleUnitState Mover, string TargetRuntimeId);
-    private sealed record Route(IReadOnlyList<Vector2> Points, float Cost);
-    private readonly record struct RouteOrigin(Vector2 Start, float Radius);
+    private sealed record Route(IReadOnlyList<Vector2> Points, float Cost, bool AvoidsBodies);
+    private readonly record struct RouteOrigin(Vector2 Start, float Radius, string? MoverId);
     private sealed record RouteSearch(
         IReadOnlyList<Vector2I> Nodes,
         IReadOnlyDictionary<Vector2I, float> Distance,
@@ -700,6 +830,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
     {
         private readonly DeterministicContinuousMovementService _owner;
         private readonly Dictionary<string, string> _targetByUnit;
+        private readonly Dictionary<string, float> _centerRangeByUnit;
         private readonly Dictionary<string, Vector2> _goalByUnit;
         private readonly Dictionary<string, string> _retargetFromByUnit;
         private readonly Dictionary<string, BattleUnitState> _snapshotById;
@@ -710,6 +841,7 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
         {
             _owner = owner;
             _targetByUnit = new Dictionary<string, string>(owner._targetByUnit, StringComparer.Ordinal);
+            _centerRangeByUnit = new Dictionary<string, float>(owner._centerRangeByUnit, StringComparer.Ordinal);
             _goalByUnit = new Dictionary<string, Vector2>(owner._goalByUnit, StringComparer.Ordinal);
             _retargetFromByUnit = new Dictionary<string, string>(owner._retargetFromByUnit, StringComparer.Ordinal);
             _snapshotById = new Dictionary<string, BattleUnitState>(owner._snapshotById, StringComparer.Ordinal);
@@ -722,12 +854,14 @@ public sealed class DeterministicContinuousMovementService : IContinuousMovement
             if (!ReferenceEquals(owner, _owner))
                 throw new InvalidOperationException("Movement checkpoint belongs to another service.");
             Restore(owner._targetByUnit, _targetByUnit);
+            Restore(owner._centerRangeByUnit, _centerRangeByUnit);
             Restore(owner._goalByUnit, _goalByUnit);
             Restore(owner._retargetFromByUnit, _retargetFromByUnit);
             Restore(owner._snapshotById, _snapshotById);
             Restore(owner._snapshotPositionById, _snapshotPositionById);
             owner._requests.Clear();
             owner._requests.AddRange(_requests);
+            owner._routeSearchByOrigin.Clear();
         }
 
         private static void Restore<TKey, TValue>(

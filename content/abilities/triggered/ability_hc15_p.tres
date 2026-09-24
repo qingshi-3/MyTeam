@@ -1,0 +1,52 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Action = 4
+TargetQuery = SubResource("s0")
+Amount = 1
+Terms = []
+CounterKey = "shield_gifts"
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r3")
+Metric = 5
+Subject = 0
+Attribute = 0
+Key = "shield_gifts"
+Scale = 2
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r2")
+Action = 6
+TargetQuery = SubResource("s2")
+Amount = 0
+Terms = [SubResource("s3")]
+Attribute = 1
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc15_p"
+DisplayName = "百锻"
+Description = "每次独立获得正值新护盾，本战攻击增加 2；单纯状态刷新不计次。"
+ActivationKind = 2
+Trigger = 10
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1"), SubResource("s4")]

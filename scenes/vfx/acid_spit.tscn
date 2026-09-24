@@ -1,0 +1,12 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxEnemyActionTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://assets/vfx/enemy-actions/acid_drop.svg" id="texture"]
+[node name="acid_spit" type="Node2D"]
+script = ExtResource("root")
+[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces")]
+script = ExtResource("track")
+Kind = 7
+Surface = NodePath("Surface")
+[node name="Surface" type="Sprite2D" parent="Track"]
+texture = ExtResource("texture")

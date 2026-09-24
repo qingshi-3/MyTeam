@@ -22,13 +22,14 @@ public partial class EquipmentLoadoutPanel : PanelContainer
     private Label _feedback = null!;
     private Button _previous = null!;
     private Button _next = null!;
-    private Button _remove = null!;
-    private Button _cancel = null!;
     private HFlowContainer _inventory = null!;
     private HBoxContainer _slotsContainer = null!;
     private PackedScene _tileScene = null!;
     private readonly List<EquipmentSlotButton> _slots = [];
     private readonly Dictionary<string, EquipmentSlotButton> _items = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, EquipmentDropZone> _heroTargets = new(StringComparer.Ordinal);
+    private HFlowContainer _heroes = null!;
+    private EquipmentDropZone _returnZone = null!;
 
     public override void _Ready()
     {
@@ -39,23 +40,22 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         _feedback = GetNode<Label>("%EquipmentFeedback");
         _previous = GetNode<Button>("%EquipmentPreviousHero");
         _next = GetNode<Button>("%EquipmentNextHero");
-        _remove = GetNode<Button>("%EquipmentRemove");
-        _cancel = GetNode<Button>("%EquipmentCancel");
         _inventory = GetNode<HFlowContainer>("%EquipmentInventory");
         _slotsContainer = GetNode<HBoxContainer>("%EquipmentSlots");
         _tileScene = GD.Load<PackedScene>("res://scenes/ui/components/EquipmentSlotButton.tscn");
+        _heroes = GetNode<HFlowContainer>("%EquipmentHeroes");
+        _returnZone = GetNode<EquipmentDropZone>("%EquipmentReturnZone");
+        _returnZone.CanReceive = id => _app?.EquipmentEditingLocked == false &&
+            FindEquipment(id) is { OwnerHeroInstanceId.Length: > 0 };
+        _returnZone.Receive = Remove;
         _previous.Pressed += PreviousHero;
         _next.Pressed += NextHero;
-        _remove.Pressed += RemoveSelected;
-        _cancel.Pressed += CancelSelection;
     }
 
     public override void _ExitTree()
     {
         _previous.Pressed -= PreviousHero;
         _next.Pressed -= NextHero;
-        _remove.Pressed -= RemoveSelected;
-        _cancel.Pressed -= CancelSelection;
     }
 
     public void Bind(RunApplication app, string heroId = "")
@@ -78,12 +78,43 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         if (_portrait.Definition != definition.Portrait) _portrait.Bind(definition.Portrait);
         _previous.Disabled = _next.Disabled = run.Roster.Count < 2;
         var editable = !_app.EquipmentEditingLocked;
+        var dragContext = RunEquipmentDropRules.ContextFor(run);
+        _returnZone.DragContext = dragContext;
+        foreach (var staleId in _heroTargets.Keys.Where(id => run.Roster.All(owner => owner.InstanceId != id)).ToArray())
+        {
+            var stale = _heroTargets[staleId]; _heroes.RemoveChild(stale); stale.QueueFree(); _heroTargets.Remove(staleId);
+        }
+        foreach (var owner in run.Roster)
+        {
+            var ownerId = owner.InstanceId;
+            if (!_heroTargets.TryGetValue(ownerId, out var target))
+            {
+                target = GD.Load<PackedScene>("res://scenes/ui/components/EquipmentHeroTarget.tscn").Instantiate<EquipmentDropZone>();
+                _heroes.AddChild(target); _heroTargets.Add(ownerId, target);
+                var select = target.GetNode<Button>("Layout/Select");
+                select.Pressed += () => SelectHero(ownerId);
+                // The name remains a real inspect button while sharing the whole
+                // card's validated drop target, including on its text pixels.
+                select.SetDragForwarding(Callable.From<Vector2, Variant>(_ => default),
+                    Callable.From<Vector2, Variant, bool>((position, data) => target._CanDropData(position, data)),
+                    Callable.From<Vector2, Variant>((position, data) => target._DropData(position, data)));
+                target.CanReceive = id => _app?.EquipmentEditingLocked == false && FindEquipment(id) is not null && FirstEmptySlot(ownerId) >= 0;
+                target.Receive = id => { var slot = FirstEmptySlot(ownerId); if (slot >= 0) { SelectHero(ownerId); Equip(id, slot); } };
+            }
+            var ownerDefinition = (UnitDefinition)Required(owner.ContentId).Definition;
+            target.DragContext = dragContext;
+            target.GetNode<UnitPortrait>("Layout/Portrait").Bind(ownerDefinition.Portrait);
+            target.GetNode<Button>("Layout/Select").Text = ownerDefinition.DisplayName;
+            target.GetNode<Label>("Layout/Capacity").Text = $"{owner.Equipment.Count}/{_app.Rules.EquipmentSlotCapacity} · {(FirstEmptySlot(ownerId) < 0 ? "已满" : "可拖入")}";
+            target.TooltipText = FirstEmptySlot(ownerId) < 0 ? "装备已满；选择英雄后拖到具体槽位替换。" : "把装备拖到此英雄，放入第一个空槽。点击名字查看槽位。";
+        }
         while (_slots.Count < _app.Rules.EquipmentSlotCapacity)
         {
             var tile = _tileScene.Instantiate<EquipmentSlotButton>();
             _slotsContainer.AddChild(tile);
             tile.Chosen += ChooseSlot;
             tile.EquipmentDropped += Equip;
+            tile.KeyboardActionRequested += KeyboardEquipment;
             _slots.Add(tile);
         }
         for (var slot = 0; slot < _slots.Count; slot++)
@@ -91,6 +122,8 @@ public partial class EquipmentLoadoutPanel : PanelContainer
             var item = hero.Equipment.SingleOrDefault(equipment => equipment.SlotIndex == slot);
             _slots[slot].Bind(item?.InstanceId ?? string.Empty, slot,
                 item is null ? null : ItemDefinition(item.ContentId), item?.InstanceId == _selectedEquipmentId, editable);
+            _slots[slot].CanReceive = id => FindEquipment(id) is not null;
+            _slots[slot].DragContext = dragContext;
         }
         var ids = run.EquipmentInventory.Select(item => item.InstanceId).ToHashSet(StringComparer.Ordinal);
         foreach (var staleId in _items.Keys.Where(id => !ids.Contains(id)).ToArray())
@@ -107,9 +140,17 @@ public partial class EquipmentLoadoutPanel : PanelContainer
                 tile = _tileScene.Instantiate<EquipmentSlotButton>();
                 _inventory.AddChild(tile);
                 tile.Chosen += ChooseInventory;
+                tile.KeyboardActionRequested += KeyboardEquipment;
+                // Inventory buttons are hit-test stops; route drops on their artwork
+                // through the same unload command as the surrounding empty bag area.
+                tile.EquipmentDropped += (id, _) => Remove(id);
                 _items.Add(item.InstanceId, tile);
             }
             tile.Bind(item.InstanceId, -1, ItemDefinition(item.ContentId), item.InstanceId == _selectedEquipmentId, editable);
+            tile.DragContext = dragContext;
+            tile.AcceptEquipment = editable;
+            tile.CanReceive = id => _app?.EquipmentEditingLocked == false &&
+                FindEquipment(id) is { OwnerHeroInstanceId.Length: > 0 };
         }
         _inventoryTitle.Text = run.EquipmentInventory.Count == 0 ? "背包暂无装备 · 战利品与商店可获得" :
             $"装备背包 · {run.EquipmentInventory.Count} 件";
@@ -117,29 +158,29 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         if (selected is null) _selectedEquipmentId = string.Empty;
         var selectedOwner = selected is null ? null : run.Roster.FirstOrDefault(owner => owner.InstanceId == selected.OwnerHeroInstanceId);
         var origin = selectedOwner is null ? "背包" : ((UnitDefinition)Required(selectedOwner.ContentId).Definition).DisplayName;
-        _details.Text = selected is null ? "拖装备到槽位，或先点装备再点槽位。替换的旧装备自动回包。" :
+        _details.Text = selected is null ? "拖到英雄或槽位穿戴 · 拖回背包卸下\n点击只查看；替换装备自动回包。" :
             $"{ItemDefinition(selected.ContentId).DisplayName} · 来自{origin}\n{ItemDefinition(selected.ContentId).Description}";
-        _remove.Disabled = !editable || selected is null || string.IsNullOrEmpty(selected.OwnerHeroInstanceId);
-        _cancel.Disabled = selected is null;
     }
 
     private void ChooseInventory(EquipmentSlotButton tile)
     {
         _selectedEquipmentId = tile.InstanceId;
         Refresh();
-        SetFeedback("已拿起装备 · 点击目标槽位放入", false);
+        SetFeedback("拖动可穿戴；点击只查看效果。", false);
+    }
+    private void KeyboardEquipment(EquipmentSlotButton tile, bool remove)
+    {
+        if (remove) { Remove(tile.InstanceId); return; }
+        var slot = FirstEmptySlot(_heroId);
+        if (slot < 0) { SetFeedback("装备已满；先聚焦已装备槽位按 Delete 卸下。", true); return; }
+        Equip(tile.InstanceId, slot);
     }
 
     private void ChooseSlot(EquipmentSlotButton tile)
     {
-        if (!string.IsNullOrEmpty(_selectedEquipmentId) && _selectedEquipmentId != tile.InstanceId)
-            Equip(_selectedEquipmentId, tile.SlotIndex);
-        else
-        {
-            _selectedEquipmentId = tile.InstanceId;
-            Refresh();
-            SetFeedback(string.IsNullOrEmpty(tile.InstanceId) ? "先从背包选择装备。" : "可拖动转交、选择另一槽位，或卸下回包。", false);
-        }
+        _selectedEquipmentId = tile.InstanceId;
+        Refresh();
+        SetFeedback(string.IsNullOrEmpty(tile.InstanceId) ? "把装备拖到这个槽位。" : "拖到其他英雄转交，或拖回背包卸下。", false);
     }
 
     private void Equip(string instanceId, int slot)
@@ -160,9 +201,9 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         _slots[slot].GrabFocus();
     }
 
-    private void RemoveSelected()
+    private void Remove(string instanceId)
     {
-        var item = FindEquipment(_selectedEquipmentId);
+        var item = FindEquipment(instanceId);
         if (item is null || string.IsNullOrEmpty(item.OwnerHeroInstanceId) || _app is null) return;
         if (!_app.RemoveEquipment(item.OwnerHeroInstanceId, item.SlotIndex))
         {
@@ -182,6 +223,16 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         throw new InvalidOperationException("Missing equipment presentation: " + id);
     private ItemDefinition ItemDefinition(string id) => (ItemDefinition)Required(id).Definition;
     private void PreviousHero() => ChangeHero(-1);
+    private int FirstEmptySlot(string ownerId)
+    {
+        var owner = _app?.ActiveRun?.Roster.FirstOrDefault(hero => hero.InstanceId == ownerId);
+        return owner is null ? -1 : Enumerable.Range(0, _app!.Rules.EquipmentSlotCapacity)
+            .FirstOrDefault(slot => owner.Equipment.All(item => item.SlotIndex != slot), -1);
+    }
+    private void SelectHero(string ownerId)
+    {
+        _heroId = ownerId; Refresh(); HeroSelected?.Invoke(ownerId);
+    }
     private void NextHero() => ChangeHero(1);
     private void ChangeHero(int direction)
     {
@@ -191,7 +242,6 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         Refresh();
         HeroSelected?.Invoke(_heroId);
     }
-    private void CancelSelection() { _selectedEquipmentId = string.Empty; Refresh(); SetFeedback("", false); }
     private void SetFeedback(string message, bool error)
     {
         _feedback.Text = message;

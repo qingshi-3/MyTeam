@@ -9,7 +9,8 @@ public sealed record DeploymentUnitViewModel(
     string InstanceId, string DisplayName, string Description, float HealthRatio,
     UnitRole Role, float AttackRange, bool IsHero, int Slot, Vector2I? Cell,
     UnitPortraitDefinition? Portrait = null,
-    IReadOnlyDictionary<Vector2I, FormationEvaluation>? TargetEvaluations = null);
+    IReadOnlyDictionary<Vector2I, FormationEvaluation>? TargetEvaluations = null,
+    float BodyRadius = .32f);
 
 public sealed record EnemyDeploymentViewModel(
     string InstanceId,
@@ -18,4 +19,5 @@ public sealed record EnemyDeploymentViewModel(
     UnitRole Role,
     float AttackRange,
     bool IsBoss,
-    UnitPortraitDefinition? Portrait);
+    UnitPortraitDefinition? Portrait,
+    float BodyRadius = .32f);

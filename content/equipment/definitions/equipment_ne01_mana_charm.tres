@@ -1,0 +1,21 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Value = 3
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Attribute = 15
+Operation = 0
+SlotId = "equipment_ne01_mana_charm_bonus"
+Magnitude = SubResource("s0")
+
+[resource]
+script = ExtResource("r0")
+StableId = "equipment_ne01_mana_charm"
+AttributeModifiers = [SubResource("s1")]

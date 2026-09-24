@@ -36,10 +36,17 @@ public partial class VfxInstance : Node2D
         Playback.Advance(seconds);
         _impact = Mathf.Max(0, _impact - seconds * 6);
         if (_release >= 0) _release += seconds / .25f;
-        Position = stage.Project(Context.Target, _definition.Ground);
+        Position = Context.TargetDisplayPosition ?? stage.Project(Context.Target, _definition.Ground);
         var size = Context.Radius > 0 ? stage.RadiusPixels(Context.Radius) * 2 : _definition.Size * stage.UnitScale;
         Scale = Vector2.One * size / 256;
         if (_definition.Ground && _definition.FlattenGround) Scale *= new Vector2(1, .6f);
+        if (_definition.FaceDirection)
+        {
+            var heading = Context.Direction ?? (Context.Target - Context.Source);
+            if (heading.IsZeroApprox()) heading = Vector2.Right;
+            // Project the heading through the same board transform as the arrow position.
+            Rotation = (stage.Project(Context.Target + heading, _definition.Ground) - Position).Angle();
+        }
         if (_definition.StretchBetween)
         {
             Position = stage.Project(Context.Source, false);

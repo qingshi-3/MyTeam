@@ -1,0 +1,32 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="root"]
+[ext_resource type="Resource" path="res://content/definitions/heroes/hero_hc13_shield_crit.tres" id="definition"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f1_sunforgelancer/frames.tres" id="frames"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="motion"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="animation"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="health"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="behavior"]
+[ext_resource type="PackedScene" path="res://scenes/components/HeroRuleComponent.tscn" id="rule"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAbilityLoadoutComponent.tscn" id="loadout_component"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_hero_hc13_shield_crit.tres" id="loadout"]
+
+[ext_resource type="Script" path="res://src/Audio/UnitAnimationSound.cs" id="frame_sound_type"]
+[ext_resource type="Resource" path="res://content/audio/units/hero_hc13_shield_crit_attack.tres" id="attack_sound"]
+
+[node name="hero_hc13_shield_crit" type="Node2D"]
+script = ExtResource("root")
+Definition = ExtResource("definition")
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
+[node name="VisualRoot" type="Node2D" parent="."]
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("animation")]
+FrameSounds = Array[ExtResource("frame_sound_type")]([ExtResource("attack_sound")])
+Frames = ExtResource("frames")
+[node name="HealthViewComponent" parent="." instance=ExtResource("health")]
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("behavior")]
+
+[node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
+RuleTitle = "晶盾剑士 · 固定被动"
+RuleDescription = "每点当前护盾提供 0.15% 暴击率，最多额外 60%；每个战斗步更新。"
+
+[node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
+Loadout = ExtResource("loadout")

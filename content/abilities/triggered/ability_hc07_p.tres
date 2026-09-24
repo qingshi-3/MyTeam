@@ -1,0 +1,49 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/EchoAbilityOperationSpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 15
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 1
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 7
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+Minimum = 1
+Maximum = 1e+20
+Every = 3
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+Range = 3
+BehindOnly = true
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc07_p"
+DisplayName = "借火"
+Description = "每第三次普攻命中，代触发身后 3 格内最近友军明确可复制的亡语；对方保持存活。"
+ActivationKind = 2
+Trigger = 3
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2"), SubResource("s3")]

@@ -49,7 +49,7 @@ public partial class Phase5BattleDensityContractSmoke : Node
     {
         try
         {
-            var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ??
+            var catalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres") ??
                           throw new InvalidOperationException("production catalog is missing");
             var publication = ContentValidator.CompileProductionGraph(catalog, []);
             var graph = publication.Graph ?? throw new InvalidOperationException(

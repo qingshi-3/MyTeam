@@ -366,7 +366,8 @@ public partial class FormationDeploymentContractSmoke : Node
         var app = new RunApplication(registry, save, project);
         Require(app.StartNewRun("hero_banner_marshal", 505), "recruit atomicity run start");
         var run = app.ActiveRun!;
-        var recruitId = registry.Catalog.Soldiers[0].StableId;
+        var recruitId = registry.Catalog.Soldiers.First(entry =>
+            run.Roster.All(hero => hero.ContentId != entry.StableId)).StableId;
         var expectedInstanceId = $"roster-hero-{run.Roster
             .Select(hero => ParseInstanceSuffix(hero.InstanceId))
             .Concat(run.Items.Select(item => ParseInstanceSuffix(item.InstanceId)))
@@ -386,13 +387,15 @@ public partial class FormationDeploymentContractSmoke : Node
         var overflowApp = new RunApplication(registry, overflowSave, project);
         Require(overflowApp.StartNewRun("hero_banner_marshal", 506), "instance overflow fixture start");
         var overflowRun = overflowApp.ActiveRun!;
+        var overflowRecruitId = registry.Catalog.Soldiers.First(entry =>
+            overflowRun.Roster.All(hero => hero.ContentId != entry.StableId)).StableId;
         var previousId = overflowRun.Roster[1].InstanceId;
         const string maximumId = "roster-hero-2147483647";
         overflowRun.Roster[1].InstanceId = maximumId;
         overflowRun.Deployment[overflowRun.Deployment.IndexOf(previousId)] = maximumId;
         var overflowSignature = RunSignature(overflowRun);
         var overflowSaveCalls = overflowSave.ActiveRunSaveCalls;
-        Require(!overflowApp.Recruit(recruitId) && overflowSave.ActiveRunSaveCalls == overflowSaveCalls &&
+        Require(!overflowApp.Recruit(overflowRecruitId) && overflowSave.ActiveRunSaveCalls == overflowSaveCalls &&
                 RunSignature(overflowRun) == overflowSignature,
             "maximum instance suffix escaped as an exception or mutated the Run");
 
@@ -434,18 +437,18 @@ public partial class FormationDeploymentContractSmoke : Node
         ExpectOneSave(save, () => app.ApplyFormationCommand(
             FormationMoveCommand.RosterHero(first, CellOf(run, second)), clear), "roster hero swap");
 
-        var recruitId = registry.Catalog.Soldiers.First(entry =>
+        string NextRecruitId() => registry.Catalog.Soldiers.First(entry =>
             run.Roster.All(hero => hero.ContentId != entry.StableId)).StableId;
         for (var index = 0; index < 3; index++)
         {
-            Require(app.Recruit(recruitId), "recruit toward initial population");
+            Require(app.Recruit(NextRecruitId()), "recruit toward initial population");
             var deployedRecruit = run.Roster.Last().InstanceId;
             var deploySlot = run.Deployment.FindIndex(string.IsNullOrEmpty);
             ExpectOneSave(save, () => app.ApplyFormationCommand(FormationMoveCommand.RosterHero(
                 deployedRecruit, BattlefieldLayout.PlayerDeploymentCells[deploySlot]), clear),
                 "deploy through initial population");
         }
-        Require(app.Recruit(recruitId), "reserve roster hero recruit");
+        Require(app.Recruit(NextRecruitId()), "reserve roster hero recruit");
         var reserve = run.Roster.Last().InstanceId;
         var emptyCell = BattlefieldLayout.PlayerDeploymentCells.First(cell =>
             run.Deployment[BattlefieldLayout.PlayerDeploymentSlot(cell)].Length == 0);
@@ -479,7 +482,7 @@ public partial class FormationDeploymentContractSmoke : Node
                 PopulationSignature(run) == sourceSignature && save.ActiveRunSaveCalls == sourceSaves,
             "duplicate above-cap source mutated or persisted state");
         while (run.Roster.Count < 18)
-            Require(app.Recruit(registry.Catalog.Soldiers[run.Roster.Count % registry.Catalog.Soldiers.Count].StableId),
+            Require(app.Recruit(NextRecruitId()),
                 "recruit toward physical ceiling");
         foreach (var hero in run.Roster.Where(hero => !run.Deployment.Contains(hero.InstanceId)).ToArray())
         {
@@ -646,11 +649,11 @@ public partial class FormationDeploymentContractSmoke : Node
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         var board = deployment.GetNode<DeploymentBoard>("%DeploymentBoard");
         var cells = board.GetChildren().OfType<DeploymentCell>().ToArray();
-        var cards = deployment.GetNode<VBoxContainer>("%RosterChoices").GetChildren()
+        var cards = deployment.GetNode<Container>("%RosterChoices").GetChildren()
             .OfType<DeploymentUnitCard>().ToArray();
         Require(cells.Length == 18 && cells.All(cell => cell.FocusMode == Control.FocusModeEnum.All) &&
-                cards.Length == run.Roster.Count,
-            "authored deployment UI did not expose all cells/roster heroes");
+                cards.Length == run.Roster.Count(hero => !run.Deployment.Contains(hero.InstanceId)),
+            "authored deployment UI did not expose all cells/reserve heroes");
         deployment.QueueFree();
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
     }

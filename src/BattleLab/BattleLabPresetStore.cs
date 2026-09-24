@@ -28,6 +28,7 @@ public sealed class BattleLabPresetUnitDto
     public BattleLabSide Side { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
+    public bool RetainAttackStacks { get; set; }
     public List<BattleLabPresetEquipmentDto> Equipment { get; set; } = [];
 }
 
@@ -50,6 +51,7 @@ public sealed class BattleLabPresetStore
     public const string UserNamespace = "user://battle_lab/";
     private readonly JsonSerializerOptions _options = new() { WriteIndented = true, PropertyNameCaseInsensitive = true };
     private readonly IReadOnlyDictionary<string, BattleLabPresetDto> _builtIns;
+    private readonly Dictionary<string, string> _builtInDescriptions = new(StringComparer.Ordinal);
 
     public BattleLabPresetStore(IReadOnlyDictionary<string, BattleLabPresetDto>? builtIns = null)
     {
@@ -68,6 +70,7 @@ public sealed class BattleLabPresetStore
             if (!ValidateShape(preset))
                 throw new InvalidOperationException($"内置战斗实验室预设无效：{definition.DisplayName}");
             builtIns.Add(definition.DisplayName, preset!);
+            _builtInDescriptions.Add(definition.DisplayName, definition.Description);
         }
         _builtIns = builtIns;
         DefaultPresetName = catalog?.DefaultPresetName ?? string.Empty;
@@ -76,6 +79,7 @@ public sealed class BattleLabPresetStore
     }
 
     public IReadOnlyDictionary<string, BattleLabPresetDto> BuiltIns => _builtIns;
+    public string BuiltInDescription(string name) => _builtInDescriptions.GetValueOrDefault(name, string.Empty);
     public string DefaultPresetName { get; }
 
     public IReadOnlyList<string> ListNames()
@@ -155,6 +159,7 @@ public sealed class BattleLabPresetStore
             Side = unit.Side,
             X = unit.Cell.X,
             Y = unit.Cell.Y,
+            RetainAttackStacks = unit.RetainAttackStacks,
             Equipment = unit.Equipment.Select(item => new BattleLabPresetEquipmentDto
             {
                 InstanceId = item.InstanceId,
@@ -179,7 +184,7 @@ public sealed class BattleLabPresetStore
             unit.Side,
             new Vector2I(unit.X, unit.Y),
             unit.Equipment.Select(item => new BattleLabEquipmentConfiguration(
-                item.InstanceId, item.ContentId, item.SlotIndex)).ToImmutableArray())).ToImmutableArray();
+                item.InstanceId, item.ContentId, item.SlotIndex)).ToImmutableArray(), unit.RetainAttackStacks)).ToImmutableArray();
         var relics = preset.Relics.Select(relic => new BattleLabRelicConfiguration(
             relic.InstanceId, relic.ContentId, relic.Stacks)).ToImmutableArray();
         return new BattleLabStartSnapshot(

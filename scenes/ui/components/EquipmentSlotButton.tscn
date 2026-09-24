@@ -3,12 +3,15 @@
 [ext_resource type="Script" path="res://src/UI/EquipmentSlotButton.cs" id="1"]
 
 [node name="EquipmentSlotButton" type="Button"]
-custom_minimum_size = Vector2(96, 62)
+texture_filter = 4
+custom_minimum_size = Vector2(96, 88)
 size_flags_horizontal = 3
 theme_type_variation = &"SecondaryButton"
-theme_override_font_sizes/font_size = 15
-theme_override_constants/icon_max_width = 30
+theme_override_font_sizes/font_size = 13
+theme_override_constants/icon_max_width = 48
 text = "空槽"
 expand_icon = true
+icon_alignment = 1
+vertical_icon_alignment = 0
 text_overrun_behavior = 3
 script = ExtResource("1")

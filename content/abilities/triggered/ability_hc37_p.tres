@@ -1,0 +1,19 @@
+[gd_resource type="Resource" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/CounterattackAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="operation"]
+script = ExtResource("operation")
+HitsRequired = 3
+AttackRatio = 1
+LifestealRatio = 0.8
+[resource]
+script = ExtResource("ability")
+StableId = "ability_hc37_p"
+DisplayName = "勇毅反击"
+Description = "每承受 3 次普攻命中，额外反击当前近战对手，造成攻击力 100% 的伤害，并回复实际生命伤害的 80%。反击不触发普攻命中效果。"
+ActivationKind = 2
+Trigger = 8
+ManaCost = 0
+CooldownTicks = 0
+Echoable = false
+Operations = [SubResource("operation")]

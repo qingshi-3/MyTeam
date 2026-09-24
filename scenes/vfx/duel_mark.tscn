@@ -1,0 +1,15 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/duel_mark.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+[node name="DuelMark" type="Node2D"]
+script = ExtResource("root")
+[node name="Mark" type="Sprite2D" parent="."]
+script = ExtResource("track")
+texture = ExtResource("surface")
+material = SubResource("material")
+StartScale = 1.0
+EndScale = 1.0

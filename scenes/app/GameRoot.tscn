@@ -19,6 +19,7 @@
 [ext_resource type="Resource" path="res://content/project/alpha_project.tres" id="17"]
 [ext_resource type="Script" uid="uid://ws34kbfeylup" path="res://src/App/AppScreenHost.cs" id="18"]
 [ext_resource type="PackedScene" path="res://scenes/ui/BattleLabScreen.tscn" id="19"]
+[ext_resource type="PackedScene" path="res://scenes/audio/FeedbackAudio.tscn" id="audio"]
 
 [node name="GameRoot" type="Control" unique_id=257826745]
 layout_mode = 3
@@ -30,6 +31,8 @@ grow_vertical = 2
 theme = ExtResource("2")
 script = ExtResource("1")
 ProjectDefinition = ExtResource("17")
+
+[node name="UiAudio" parent="." instance=ExtResource("audio")]
 
 [node name="Background" type="ColorRect" parent="." unique_id=962434456]
 layout_mode = 1

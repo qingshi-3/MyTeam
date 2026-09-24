@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://tests/RangedAttackVisualPreview.cs" id="1"]
 [ext_resource type="Script" path="res://src/Presentation/BattleBoard.cs" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/effects/RangedAttackLayer.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://content/soldiers/soldier_aymara_mender.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://tests/fixtures/legacy-roster/content/soldiers/soldier_aymara_mender.tscn" id="4"]
 
 [node name="RangedAttackVisualPreview" type="Control"]
 layout_mode = 3

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicPlayerSummonsTargetSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicAttributeBindingSpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Value = 1.3
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Attribute = 0
+Operation = 1
+SlotId = "ne02_summon_vigor"
+Magnitude = SubResource("s0")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+BindingId = "ne02_temporary_health"
+Target = SubResource("s2")
+Modifier = SubResource("s1")
+
+[resource]
+script = ExtResource("r0")
+StableId = "item_ne02_bone_vigor"
+AttributeBindings = [SubResource("s3")]

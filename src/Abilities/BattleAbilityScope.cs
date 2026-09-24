@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace TowerAutobattler.Abilities;
 
+public sealed record AbilityRuntimeStatus(CompiledAbilityDefinition Definition, int Uses, int ReadyTick, int RegisteredTick);
+
 public interface IAbilityRuntimeWorld
 {
     AbilityWorldSnapshot CaptureSnapshot(int tick);
@@ -43,7 +45,7 @@ public sealed class BattleAbilityScope : IDisposable
     public bool IsCompleted => _transition is not null;
     public AbilityScopeTransitionResult? Transition => _transition;
 
-    public void RegisterLoadout(string ownerId, CompiledAbilityLoadout loadout)
+    public void RegisterLoadout(string ownerId, CompiledAbilityLoadout loadout, int tick = 0)
     {
         if (string.IsNullOrWhiteSpace(ownerId))
             throw new ArgumentException("Ability owner id is required.", nameof(ownerId));
@@ -53,12 +55,12 @@ public sealed class BattleAbilityScope : IDisposable
         foreach (var ability in loadout.Abilities)
         {
             var key = new RuntimeKey(ownerId, ability.StableId);
-            if (!_instances.TryAdd(key, new RuntimeInstance(ability, ownerId)))
+            if (!_instances.TryAdd(key, new RuntimeInstance(ability, ownerId, tick)))
                 throw new InvalidOperationException($"Ability '{ability.StableId}' is already registered for '{ownerId}'.");
         }
     }
 
-    public void ReplaceLoadout(string ownerId, CompiledAbilityLoadout loadout)
+    public void ReplaceLoadout(string ownerId, CompiledAbilityLoadout loadout, int tick = 0)
     {
         if (string.IsNullOrWhiteSpace(ownerId))
             throw new ArgumentException("Ability owner id is required.", nameof(ownerId));
@@ -67,8 +69,19 @@ public sealed class BattleAbilityScope : IDisposable
             throw new InvalidOperationException("Cannot replace abilities after the scope has completed.");
         foreach (var key in _instances.Keys.Where(key => key.OwnerId == ownerId).ToArray())
             _instances.Remove(key);
-        RegisterLoadout(ownerId, loadout);
+        RegisterLoadout(ownerId, loadout, tick);
     }
+
+    // Projection only: inspecting a skill must never prepare, activate or advance it.
+    public ImmutableArray<AbilityRuntimeStatus> ReadStates(string ownerId) => _instances.Values
+        .Where(instance => instance.OwnerId == ownerId)
+        .OrderBy(instance => instance.Definition.StableId, StringComparer.Ordinal)
+        .Select(instance => new AbilityRuntimeStatus(instance.Definition, instance.Uses, instance.ReadyTick, instance.RegisteredTick))
+        .ToImmutableArray();
+
+    internal T? FindOperation<T>(string ownerId) where T : CompiledAbilityOperation => _instances.Values
+        .Where(instance => instance.OwnerId == ownerId).SelectMany(instance => instance.Definition.Operations)
+        .OfType<T>().FirstOrDefault();
 
     public CompiledAbilityDefinition? Find(string ownerId, string abilityId) =>
         _instances.TryGetValue(new RuntimeKey(ownerId, abilityId), out var instance)
@@ -113,7 +126,7 @@ public sealed class BattleAbilityScope : IDisposable
         int tick,
         string explicitTargetId = "")
     {
-        if (trigger is AbilityTriggerKind.None or AbilityTriggerKind.BattleStarted or AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.ManaFull)
+        if (trigger is AbilityTriggerKind.None or AbilityTriggerKind.BattleStarted or AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.ManaFull or AbilityTriggerKind.ActionQueued)
             throw new ArgumentOutOfRangeException(nameof(trigger));
         if (_transition is not null) return [];
         return _instances.Values
@@ -137,6 +150,9 @@ public sealed class BattleAbilityScope : IDisposable
         .Select(instance => instance.Definition)
         .ToImmutableArray();
 
+    internal AbilityActivationResult TryActivateQueuedAutomatic(string ownerId, string abilityId, int tick) =>
+        TryActivate(ownerId, abilityId, AbilityActivationKind.Automatic, AbilityTriggerKind.ActionQueued, tick, "");
+
     public ImmutableArray<AbilityActivationResult> ActivatePassives(string ownerId, int tick) => _instances.Values
         .Where(instance => instance.OwnerId == ownerId &&
             instance.Definition.ActivationKind == AbilityActivationKind.Passive && instance.Uses == 0)
@@ -144,6 +160,12 @@ public sealed class BattleAbilityScope : IDisposable
         .ToArray()
         .Select(instance => TryActivate(ownerId, instance.Definition.StableId,
             AbilityActivationKind.Passive, AbilityTriggerKind.None, tick, string.Empty)).ToImmutableArray();
+
+    internal void RearmPassiveGrants(string ownerId)
+    {
+        foreach (var instance in _instances.Values.Where(i => i.OwnerId == ownerId && i.Definition.ActivationKind == AbilityActivationKind.Passive))
+        { instance.Uses = 0; instance.ReadyTick = 0; }
+    }
 
     internal ScopeStateCheckpoint CaptureState() => new(this);
 
@@ -272,10 +294,11 @@ public sealed class BattleAbilityScope : IDisposable
         }
     }
 
-    private sealed class RuntimeInstance(CompiledAbilityDefinition definition, string ownerId)
+    private sealed class RuntimeInstance(CompiledAbilityDefinition definition, string ownerId, int registeredTick)
     {
         public CompiledAbilityDefinition Definition { get; } = definition;
         public string OwnerId { get; } = ownerId;
+        public int RegisteredTick { get; } = registeredTick;
         public int Uses { get; set; }
         public int ReadyTick { get; set; }
     }

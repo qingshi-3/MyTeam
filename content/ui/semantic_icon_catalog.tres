@@ -2,8 +2,13 @@
 
 [ext_resource type="Script" uid="uid://303fgbe86ch8" path="res://src/UI/SemanticIconEntry.cs" id="1"]
 [ext_resource type="Script" uid="uid://lesqqyo4ejd5" path="res://src/UI/SemanticIconCatalog.cs" id="2"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/control-resistance.svg" id="ControlResistance"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-deathrattle.svg" id="KeywordDeathrattle"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-true-damage.svg" id="KeywordTrueDamage"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-physical-damage.svg" id="KeywordPhysicalDamage"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-attack.svg" id="KeywordAttack"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-magic-damage.svg" id="KeywordMagic"]
 [ext_resource type="Texture2D" uid="uid://b615hh070xrmw" path="res://assets/ui/icons/health.svg" id="3"]
-[ext_resource type="Texture2D" uid="uid://78o1k5fb2wmm" path="res://assets/ui/icons/damage.svg" id="4"]
 [ext_resource type="Texture2D" uid="uid://biyur25vpltes" path="res://assets/ui/icons/shield.svg" id="5"]
 [ext_resource type="Texture2D" uid="uid://dm7m5reuvkca7" path="res://assets/ui/icons/healing.svg" id="6"]
 [ext_resource type="Texture2D" uid="uid://dirotjpfplyn0" path="res://assets/ui/icons/mana.svg" id="7"]
@@ -41,17 +46,49 @@
 [ext_resource type="Texture2D" uid="uid://fok8huwca8ti" path="res://assets/ui/icons/tower-rest.svg" id="39"]
 [ext_resource type="Texture2D" uid="uid://cj4rx0yp0gp2p" path="res://assets/ui/icons/tower-boss.svg" id="40"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-critical.svg" id="Keyword_critical"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-attack-speed.svg" id="Keyword_attack_speed"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-follow-up.svg" id="Keyword_follow_up"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-taunt.svg" id="Keyword_taunt"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-stun.svg" id="Keyword_stun"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-thorns.svg" id="Keyword_thorns"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-lifesteal.svg" id="Keyword_lifesteal"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-overheal.svg" id="Keyword_overheal"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-dodge.svg" id="Keyword_dodge"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-poison.svg" id="Keyword_poison"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-death-blast.svg" id="Keyword_death_blast"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-freeze.svg" id="Keyword_freeze"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-armor.svg" id="Keyword_armor"]
+
 [sub_resource type="Resource" id="health"]
 script = ExtResource("1")
 Key = &"health"
 Icon = ExtResource("3")
 PresentationRole = &"HealthValue"
 
+[sub_resource type="Resource" id="control_resistance"]
+script = ExtResource("1")
+Key = &"control_resistance"
+Icon = ExtResource("ControlResistance")
+PresentationRole = &"ShieldValue"
+
 [sub_resource type="Resource" id="damage"]
 script = ExtResource("1")
 Key = &"damage"
-Icon = ExtResource("4")
+Icon = ExtResource("KeywordPhysicalDamage")
 PresentationRole = &"DamageValue"
+
+[sub_resource type="Resource" id="attack"]
+script = ExtResource("1")
+Key = &"attack"
+Icon = ExtResource("KeywordAttack")
+PresentationRole = &"DamageValue"
+
+[sub_resource type="Resource" id="spell_power"]
+script = ExtResource("1")
+Key = &"spell_power"
+Icon = ExtResource("KeywordMagic")
+PresentationRole = &"MagicValue"
 
 [sub_resource type="Resource" id="shield"]
 script = ExtResource("1")
@@ -284,15 +321,105 @@ PresentationRole = &"SecondaryLabel"
 [sub_resource type="Resource" id="status_freeze"]
 script = ExtResource("1")
 Key = &"status.freeze"
-Icon = ExtResource("31")
-PresentationRole = &"SecondaryLabel"
+Icon = ExtResource("Keyword_freeze")
+PresentationRole = &"FreezeValue"
 
 [sub_resource type="Resource" id="status_attack_speed"]
 script = ExtResource("1")
 Key = &"status.attack_speed"
-Icon = ExtResource("4")
-PresentationRole = &"DamageLabel"
+Icon = ExtResource("Keyword_attack_speed")
+PresentationRole = &"AttackSpeedValue"
+
+[sub_resource type="Resource" id="keyword_critical"]
+script = ExtResource("1")
+Key = &"keyword.critical"
+Icon = ExtResource("Keyword_critical")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_deathrattle"]
+script = ExtResource("1")
+Key = &"keyword.deathrattle"
+Icon = ExtResource("KeywordDeathrattle")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_attack_speed"]
+script = ExtResource("1")
+Key = &"keyword.attack-speed"
+Icon = ExtResource("Keyword_attack_speed")
+PresentationRole = &"AttackSpeedValue"
+
+[sub_resource type="Resource" id="keyword_follow_up"]
+script = ExtResource("1")
+Key = &"keyword.follow-up"
+Icon = ExtResource("Keyword_follow_up")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_taunt"]
+script = ExtResource("1")
+Key = &"keyword.taunt"
+Icon = ExtResource("Keyword_taunt")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_stun"]
+script = ExtResource("1")
+Key = &"keyword.stun"
+Icon = ExtResource("Keyword_stun")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_thorns"]
+script = ExtResource("1")
+Key = &"keyword.thorns"
+Icon = ExtResource("Keyword_thorns")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_lifesteal"]
+script = ExtResource("1")
+Key = &"keyword.lifesteal"
+Icon = ExtResource("Keyword_lifesteal")
+PresentationRole = &"LifeStealValue"
+
+[sub_resource type="Resource" id="keyword_overheal"]
+script = ExtResource("1")
+Key = &"keyword.overheal"
+Icon = ExtResource("Keyword_overheal")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_dodge"]
+script = ExtResource("1")
+Key = &"keyword.dodge"
+Icon = ExtResource("Keyword_dodge")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_poison"]
+script = ExtResource("1")
+Key = &"keyword.poison"
+Icon = ExtResource("Keyword_poison")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_death_blast"]
+script = ExtResource("1")
+Key = &"keyword.death-blast"
+Icon = ExtResource("Keyword_death_blast")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_freeze"]
+script = ExtResource("1")
+Key = &"keyword.freeze"
+Icon = ExtResource("Keyword_freeze")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="keyword_armor"]
+script = ExtResource("1")
+Key = &"armor"
+Icon = ExtResource("Keyword_armor")
+PresentationRole = &"ArmorValue"
+
+[sub_resource type="Resource" id="keyword_true_damage"]
+script = ExtResource("1")
+Key = &"keyword.true-damage"
+Icon = ExtResource("KeywordTrueDamage")
+PresentationRole = &"SecondaryLabel"
 
 [resource]
 script = ExtResource("2")
-Entries = [SubResource("health"), SubResource("damage"), SubResource("shield"), SubResource("healing"), SubResource("mana"), SubResource("tactical_point"), SubResource("gold"), SubResource("time"), SubResource("kills"), SubResource("deaths"), SubResource("hero"), SubResource("melee"), SubResource("ranged"), SubResource("risk"), SubResource("loot"), SubResource("reach"), SubResource("role_vanguard"), SubResource("role_fighter"), SubResource("role_ranged"), SubResource("role_support"), SubResource("role_assassin"), SubResource("role_summoner"), SubResource("role_artillery"), SubResource("role_boss"), SubResource("faction_order"), SubResource("faction_desert"), SubResource("faction_undead"), SubResource("faction_beast"), SubResource("faction_machine"), SubResource("faction_frost"), SubResource("faction_neutral"), SubResource("faction_enemy"), SubResource("tower_combat"), SubResource("tower_elite"), SubResource("tower_recruitment"), SubResource("tower_shop"), SubResource("tower_event"), SubResource("tower_rest"), SubResource("tower_boss"), SubResource("status_frost"), SubResource("status_freeze"), SubResource("status_attack_speed")]
+Entries = [SubResource("health"), SubResource("damage"), SubResource("shield"), SubResource("healing"), SubResource("mana"), SubResource("tactical_point"), SubResource("gold"), SubResource("time"), SubResource("kills"), SubResource("deaths"), SubResource("hero"), SubResource("melee"), SubResource("ranged"), SubResource("risk"), SubResource("loot"), SubResource("reach"), SubResource("role_vanguard"), SubResource("role_fighter"), SubResource("role_ranged"), SubResource("role_support"), SubResource("role_assassin"), SubResource("role_summoner"), SubResource("role_artillery"), SubResource("role_boss"), SubResource("faction_order"), SubResource("faction_desert"), SubResource("faction_undead"), SubResource("faction_beast"), SubResource("faction_machine"), SubResource("faction_frost"), SubResource("faction_neutral"), SubResource("faction_enemy"), SubResource("tower_combat"), SubResource("tower_elite"), SubResource("tower_recruitment"), SubResource("tower_shop"), SubResource("tower_event"), SubResource("tower_rest"), SubResource("tower_boss"), SubResource("status_frost"), SubResource("status_freeze"), SubResource("status_attack_speed"), SubResource("control_resistance"), SubResource("attack"), SubResource("spell_power"), SubResource("keyword_critical"), SubResource("keyword_attack_speed"), SubResource("keyword_follow_up"), SubResource("keyword_taunt"), SubResource("keyword_stun"), SubResource("keyword_thorns"), SubResource("keyword_lifesteal"), SubResource("keyword_overheal"), SubResource("keyword_dodge"), SubResource("keyword_poison"), SubResource("keyword_death_blast"), SubResource("keyword_freeze"), SubResource("keyword_armor"), SubResource("keyword_deathrattle"), SubResource("keyword_true_damage")]

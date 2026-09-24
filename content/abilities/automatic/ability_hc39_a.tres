@@ -1,0 +1,23 @@
+[gd_resource type="Resource" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/HookAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="operation"]
+script = ExtResource("operation")
+Range = 7
+Radius = 0.16
+Speed = 10
+WindupTicks = 3
+ReturnTicks = 6
+AttackRatio = 1
+ExcludeBoss = true
+[resource]
+script = ExtResource("ability")
+StableId = "ability_hc39_a"
+DisplayName = "动力飞钩"
+Description = "锁定 7 格内最远敌人的方向，起手 0.3 秒后射出飞钩。沿途首名敌人承受攻击力 100% 的伤害，并在 0.6 秒内拖至身前合法空位。飞钩会被敌方前排阻挡；首领受伤但不被拉动。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 90
+CooldownTicks = 5
+Echoable = false
+Operations = [SubResource("operation")]

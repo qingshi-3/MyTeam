@@ -1,0 +1,54 @@
+[gd_scene load_steps=11 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSweepPlane.cs" id="plane"]
+[ext_resource type="Script" path="res://src/Vfx/VfxWhirlwindTrack.cs" id="whirl"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="emitter"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ShockMote.tscn" id="mote"]
+[ext_resource type="Texture2D" path="res://assets/vfx/refresh/rend-strip.png" id="ink"]
+[ext_resource type="Shader" path="res://scenes/vfx/whirlwind_blade.gdshader" id="blade_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/whirlwind_glow.gdshader" id="glow_shader"]
+[sub_resource type="ShaderMaterial" id="blade"]
+shader=ExtResource("blade_shader")
+[sub_resource type="ShaderMaterial" id="glow"]
+shader=ExtResource("glow_shader")
+[node name="Whirlwind" type="Node2D"]
+script=ExtResource("root")
+[node name="Sweep" type="Node2D" parent="."]
+script=ExtResource("plane")
+DefaultRadius=1.5
+SideRadiusRatio=0.86
+[node name="Glow" type="MeshInstance2D" parent="Sweep"]
+script=ExtResource("whirl")
+texture=ExtResource("ink")
+texture_filter=2
+material=SubResource("glow")
+InnerRadiusRatio=0.53
+SweepDuration=0.66
+TailDuration=0.2
+[node name="Blade" type="MeshInstance2D" parent="Sweep"]
+script=ExtResource("whirl")
+texture=ExtResource("ink")
+texture_filter=2
+material=SubResource("blade")
+InnerRadiusRatio=0.65
+SweepDuration=0.66
+TailDuration=0.2
+[node name="TangentialSparks" type="Node2D" parent="Sweep"]
+script=ExtResource("emitter")
+ParticleScene=ExtResource("mote")
+Amount=16
+Seed=94210
+Radial=true
+ArcDegrees=720.0
+Direction=-1.5707963
+VelocityAngleOffset=1.5707963
+OriginRadius=114.0
+EmitDuration=0.66
+Delay=0.01
+FollowCastDelay=true
+SpeedRange=Vector2(48,95)
+LifetimeRange=Vector2(0.16,0.30)
+SizeRange=Vector2(5,11)
+HeightScale=0.35
+Gravity=0.0
+EndTint=Color(0.38,0.7,0.9,1)

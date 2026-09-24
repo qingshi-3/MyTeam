@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+[ext_resource type="Texture2D" path="res://assets/ui/items/equipment_ne01_mana_charm.png" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "equipment_ne01_mana_charm"
+DisplayName = "蓄能护符"
+Description = "持有者每秒额外恢复 3 法力，帮助毒云覆盖、白骨补员和原有主动反复施放。"
+Icon = ExtResource("r1")
+Rarity = 1
+ProductKind = 1
+Price = 18
+Tags = Array[StringName]([&"item", &"equipment"])

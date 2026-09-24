@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="StatusDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusPresentationSpec.cs" id="presentation"]
+
+[sub_resource type="Resource" id="presentation"]
+script = ExtResource("presentation")
+ReportLabel = "嘲讽"
+PersistentVfx = "taunted"
+
+[resource]
+script = ExtResource("script")
+StableId = "status_taunted"
+DisplayName = "嘲讽"
+Behavior = 3
+Disposition = 2
+DurationKind = 1
+DurationTicks = 30
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+DispelCategory = 1
+ControlDurationRule = 1
+GrantedTags = Array[StringName]([&"state.taunted"])
+Presentation = SubResource("presentation")

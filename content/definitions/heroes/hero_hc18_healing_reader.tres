@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc18_healing_reader.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc18_healing_reader"
+DisplayName = "济世医师"
+Description = "HC18／BC15 测试稿。为 4 格内生命比例最低的两名受伤友军各恢复 70 生命。 被动：每次实际治疗后，对受益者附近最近敌人造成实际恢复量 60% 的伤害。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 3
+Faction = 6
+RecruitCost = 5
+MaxHealth = 230
+AttackDamage = 10
+Armor = 2
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 16
+Tags = Array[StringName]([&"hero"])

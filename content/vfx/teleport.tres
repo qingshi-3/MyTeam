@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/teleport.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "teleport"
+DisplayName = "折跃传送"
+PreviewNote = "源点光隙向内合拢，目标点展开并上冲碎光；两端独立收尾，只展示出入效果"
+Scene = ExtResource("scene")
+Duration = 1.62
+CastDuration = 0.42
+Size = 180.0
+Ground = true
+FlattenGround = false

@@ -35,7 +35,7 @@ public partial class DeploymentInputHeroSelectionCapture : Node
             _saveNamespace = $"tests/deployment-input-hero-capture-{(int)size.X}x{(int)size.Y}";
             var persisted = new SaveService(_saveNamespace);
             persisted.DeleteActiveRun();
-            root = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
+            root = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
             root.SaveNamespace = _saveNamespace;
             var host = new Control { Size = size };
             AddChild(host);

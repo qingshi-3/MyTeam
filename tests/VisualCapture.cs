@@ -175,9 +175,9 @@ public partial class VisualCapture : Node
             await CaptureCurrent("BattleReportEnemyHealing.png");
             Press(root, "Screens/BattleReportScreen/Margin/Panel/Layout/ReportContinue");
             RequireVisible(root, "RewardScreen");
-            if (root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/ChoiceScroll/Choices").GetChildCount() == 0)
+            if (root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices").GetChildCount() == 0)
                 throw new InvalidOperationException("normal combat reward did not populate choices");
-            RejectInternalEnumText(root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/ChoiceScroll/Choices"));
+            RejectInternalEnumText(root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices"));
             await CaptureScreen(root, "RewardScreen");
         }
         finally { await DisposeRoot(root); }
@@ -261,7 +261,7 @@ public partial class VisualCapture : Node
                 throw new InvalidOperationException("recruitment flow leaked into the ordinary reward screen");
             var title = root.GetNode<Label>("Screens/RecruitmentScreen/Center/Panel/Layout/Title").Text;
             if (title != "征募新兵") throw new InvalidOperationException("recruitment flow did not populate its authored screen");
-            RejectInternalEnumText(root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/ChoiceScroll/Choices"));
+            RejectInternalEnumText(root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices"));
             await CaptureCurrent("RecruitmentScreen.png");
         }
         finally { await DisposeRoot(root); }
@@ -678,7 +678,7 @@ public partial class VisualCapture : Node
     {
         var saveNamespace = "tests/visual-capture-" + suffix;
         new SaveService(saveNamespace).DeleteActiveRun();
-        var root = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
+        var root = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
         root.SaveNamespace = saveNamespace;
         AddChild(root);
         for (var frame = 0; frame < 10 && root.Content is null; frame++) await RenderFrame();

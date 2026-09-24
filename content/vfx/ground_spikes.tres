@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ground_spikes.tscn" id="scene"]
+[resource]
+script=ExtResource("def")
+StableId="ground_spikes"
+DisplayName="裂地石柱"
+PreviewNote="地面裂隙先亮，大小岩柱错峰破土顶出；碎岩向外抛落，石柱沉退后余尘收尾"
+Scene=ExtResource("scene")
+Duration=1.7
+ActionSpan=0.38
+Ground=true
+FlattenGround=false
+UsesRadius=true
+Size=220.0
+ReferenceRadius=1.5

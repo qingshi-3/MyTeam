@@ -1,0 +1,29 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Action = 2
+TargetQuery = SubResource("s0")
+Amount = 4
+Terms = []
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc24_p"
+DisplayName = "群护"
+Description = "自己召唤的虫卒每次普攻命中，为牧者增加 4 护盾。"
+ActivationKind = 2
+Trigger = 19
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

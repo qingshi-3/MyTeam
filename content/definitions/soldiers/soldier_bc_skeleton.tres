@@ -1,0 +1,19 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/soldiers/soldier_bc_skeleton.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "soldier_bc_skeleton"
+DisplayName = "砂骨仆"
+Description = "送葬人召唤的临时近战仆从。100 生命、12 攻击；死亡可触发殉爆，不进入招募。"
+Portrait = ExtResource("r1")
+Role = 1
+Faction = 6
+MaxHealth = 100
+AttackDamage = 12
+AttackRange = 0.25
+AttackCooldown = 1.2
+RecruitCost = 0
+Tags = Array[StringName]([&"soldier", &"summon"])

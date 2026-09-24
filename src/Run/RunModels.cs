@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using TowerAutobattler.Equipment;
 
 namespace TowerAutobattler.Run;
+
+public sealed record OpeningRecruitmentDto(ImmutableArray<string> CandidateIds, ImmutableArray<string> SelectedIds);
 
 public sealed class RosterHeroInstanceDto
 {
@@ -39,6 +42,7 @@ public sealed class ActiveRunDto
 {
     public int Version { get; set; } = ActiveRunFormationSchema.CurrentVersion;
     public ulong Seed { get; set; }
+    public OpeningRecruitmentDto? OpeningRecruitment { get; set; }
     public List<RosterHeroInstanceDto> Roster { get; set; } = [];
     public int CurrentPopulation { get; set; } = 1;
     public List<PopulationCapSourceDto> PopulationCapSources { get; set; } = [];

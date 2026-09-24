@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemContentRoot.cs" id="root"]
+[ext_resource type="Resource" path="res://content/definitions/items/item_ne02_bone_vigor.tres" id="definition"]
+[ext_resource type="Resource" path="res://content/relics/definitions/item_ne02_bone_vigor.tres" id="effect"]
+
+[node name="item_ne02_bone_vigor" type="Node"]
+script = ExtResource("root")
+Definition = ExtResource("definition")
+Relic = ExtResource("effect")

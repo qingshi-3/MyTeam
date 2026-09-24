@@ -89,6 +89,44 @@ public sealed class BattleTraitScope : IDisposable
         }, owner.Attributes);
     }
 
+    public void ChangeOwnerTeam(string runtimeId, int team)
+    {
+        EnsureActive();
+        if (string.IsNullOrWhiteSpace(runtimeId)) throw new ArgumentException("Trait owner id is required.", nameof(runtimeId));
+        if (team is < 0 or > 1) throw new ArgumentOutOfRangeException(nameof(team));
+        if (!_owners.TryGetValue(runtimeId, out var owner) || owner.Team == team) return;
+        ExecuteTransaction(() =>
+        {
+            _owners[runtimeId] = owner with { Team = team };
+            // Initial preparation names roster/enemy source instances; mid-battle joins
+            // use their runtime ids. Both forms must move with the same concrete body.
+            _contributions = _contributions.Select(contribution =>
+                contribution.OwnerRuntimeId == runtimeId ||
+                !string.IsNullOrWhiteSpace(owner.SourceInstanceId) && contribution.OwnerRuntimeId == owner.SourceInstanceId
+                    ? contribution with { Team = team }
+                    : contribution).ToImmutableArray();
+            var next = TraitSnapshotBuilder.Build(_definitions, _contributions);
+            ApplySnapshot(next);
+            _snapshot = next;
+        });
+    }
+
+    internal void RearmOwnerGrants(string runtimeId)
+    {
+        EnsureActive();
+        if (_grantContext is null || !_owners.ContainsKey(runtimeId) || !_grantContext.CanReceive(runtimeId)) return;
+        ExecuteTransaction(() =>
+        {
+            // Permanent grants are removed by owner death. Recreate only this owner's
+            // passive grants; existing tier modifiers and battle counters retain identity.
+            foreach (var tier in _activeTiers.Values.Where(tier => tier.Handles.ContainsKey(runtimeId) &&
+                         !tier.Breakpoint.GrantedStatuses.IsDefaultOrEmpty))
+            foreach (var status in tier.Breakpoint.GrantedStatuses)
+                _grants.Remove(GrantId(tier, runtimeId, status.StableId));
+            RefreshGrants();
+        });
+    }
+
     internal TraitStateCheckpoint CaptureState()
     {
         EnsureActive();
@@ -262,7 +300,7 @@ public sealed class BattleTraitScope : IDisposable
                 if (!_grantContext.CanReceive(id)) continue;
                 foreach (var status in tier.Breakpoint.GrantedStatuses)
                     desired.Add(new StatusApplicationRequest(status, id, id, _grantContext.Tick(),
-                        $"trait:{ScopeId}:{tier.Definition.StableId}:{tier.Breakpoint.Index}:{id}:{status.StableId}"));
+                        GrantId(tier, id, status.StableId)));
             }
         }
         var wanted = desired.Select(item => item.GrantId).ToHashSet(StringComparer.Ordinal);
@@ -270,6 +308,9 @@ public sealed class BattleTraitScope : IDisposable
             desired.Where(item => !_grants.Contains(item.GrantId)).ToImmutableArray());
         _grants = wanted;
     }
+
+    private string GrantId(ActiveTierState tier, string runtimeId, string statusId) =>
+        $"trait:{ScopeId}:{tier.Definition.StableId}:{tier.Breakpoint.Index}:{runtimeId}:{statusId}";
 
     private void ValidateAndAddOwner(TraitOwnerBinding owner)
     {

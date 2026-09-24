@@ -203,7 +203,9 @@ public partial class RunDecisionContractSmoke : Node
     {
         var app = new RunApplication(package.Content, new MemorySave(), package.Project);
         Require(app.StartNewRun(app.Meta.UnlockedHeroIds[0], 109), "mixed card fixture");
-        var unitId = app.ActiveRun!.Roster[0].ContentId;
+        var run = app.ActiveRun!;
+        var unitId = package.Project.Campaign.RecruitmentPool.ContentIds
+            .First(id => !run.Roster.Any(hero => hero.ContentId == id));
         var itemId = package.Project.Campaign.ItemRewardPool.ContentIds[0];
         var generic = new CompiledRunChoice("generic_probe", "通用选项", "", [], [],
             [new(RunOperationKind.GainGold, 1)], FailureOperations: []);
@@ -212,8 +214,8 @@ public partial class RunDecisionContractSmoke : Node
             [new(RunOperationKind.Recruit, 1, ContentId: unitId)], FailureOperations: [], ContentId: unitId);
         var item = new CompiledRunChoice("item_probe", "物品选项", "", [], [],
             [new(RunOperationKind.GrantItem, 1, ContentId: itemId)], FailureOperations: [], ContentId: itemId);
-        InstallOffer(app.ActiveRun, generic);
-        app.ActiveRun.PendingOffer = app.PendingOffer! with { Choices = [generic, recruit, item] };
+        InstallOffer(run, generic);
+        run.PendingOffer = app.PendingOffer! with { Choices = [generic, recruit, item] };
         var container = new VBoxContainer();
         AddChild(container);
         try
@@ -221,15 +223,17 @@ public partial class RunDecisionContractSmoke : Node
             var presentation = package.Project.Presentation;
             RunOfferCardBinder.Sync(container, app, presentation.ChoiceCard, presentation.ItemChoiceCard,
                 presentation.SemanticIcons, _ => { });
-            var unitCard = container.GetChild<UnitChoiceCard>(1);
-            Require(container.GetChild(0) is ChoiceCard && container.GetChild(2) is ItemChoiceCard &&
-                    unitCard.StableId == recruit.StableId && unitCard.Portrait is not null && unitCard.Disabled,
+            var unitCard = container.GetChild<RunOfferChoiceCard>(1);
+            Require(container.GetChild<RunOfferChoiceCard>(0).StableId == generic.StableId &&
+                    container.GetChild<RunOfferChoiceCard>(2).StableId == item.StableId &&
+                    unitCard.StableId == recruit.StableId &&
+                    unitCard.GetNode<UnitPortrait>("Layout/Artwork/Portrait").Definition is not null && unitCard.ConfirmButton.Disabled,
                 "mixed offer preserves authored unit portrait, disabled qualification and original generic/unit/item order");
-            app.ActiveRun.PendingOffer = app.PendingOffer! with { Choices = [item, recruit] };
+            run.PendingOffer = app.PendingOffer! with { Choices = [item, recruit] };
             RunOfferCardBinder.Sync(container, app, presentation.ChoiceCard, presentation.ItemChoiceCard,
                 presentation.SemanticIcons, _ => { });
-            Require(container.GetChild(0) is ItemChoiceCard && ReferenceEquals(container.GetChild(1), unitCard) &&
-                    container.GetChildren().OfType<ChoiceCard>().Count(card => !card.IsQueuedForDeletion()) == 1,
+            Require(container.GetChild<RunOfferChoiceCard>(0).StableId == item.StableId && ReferenceEquals(container.GetChild(1), unitCard) &&
+                    container.GetChildren().OfType<RunOfferChoiceCard>().Count(card => !card.IsQueuedForDeletion()) == 2,
                 "mixed rebind retains the live portrait and retires removed generic choices");
         }
         finally { RemoveChild(container); container.Free(); }

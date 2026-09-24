@@ -10,6 +10,8 @@ public partial class ContentCatalog : Resource
     [Export] public Godot.Collections.Array<CatalogEntry> Enemies { get; set; } = [];
     [Export] public Godot.Collections.Array<CatalogEntry> Items { get; set; } = [];
     [Export] public Godot.Collections.Array<PackedScene> FloorRules { get; set; } = [];
+    // Retained authoring remains validated but is never an acquisition or runtime-unit entry.
+    [Export] public RetainedContentLibrary? RetainedContent { get; set; }
 
     public Godot.Collections.Array<CatalogEntry> AllEntries()
     {

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Godot;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
 using TowerAutobattler.Relics;
@@ -67,10 +69,11 @@ public static class RunBattlePreparationAdapter
                 instanceId,
                 BattlefieldLayout.PlayerDeploymentCells[index]));
         }
+        var enemyCells = ResolveEnemyCells(content, encounter, floorRule);
         for (var index = 0; index < encounter.EnemyIds.Count; index++)
             placements.Add(new BattlePreparationPlacementSource(
                 $"enemy-{index}",
-                BattlefieldLayout.EnemyCells[index % BattlefieldLayout.EnemyCells.Length]));
+                enemyCells[index]));
 
         return new BattlePreparationRequest(
             content,
@@ -95,5 +98,33 @@ public static class RunBattlePreparationAdapter
             requireLegalFormation
                 ? BattlePlacementValidation.PlayerFormation
                 : BattlePlacementValidation.None);
+    }
+
+    private static Vector2I[] ResolveEnemyCells(ContentRegistry content, EncounterPlan encounter,
+        IBattleFloorRuleRuntime floor)
+    {
+        var cells = encounter.EnemyIds.Select((_, i) => BattlefieldLayout.EnemyCells[i % BattlefieldLayout.EnemyCells.Length]).ToArray();
+        var radii = encounter.EnemyIds.Select(id => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition unit
+            ? unit.BodyRadius : BattlefieldSpace.DefaultBodyRadius).ToArray();
+        if (!radii.Any(radius => radius > .49f)) return cells;
+        // Reserve the large bodies first. The same resolved anchors drive the deployment preview and
+        // battle, so a formal encounter never relies on the simulator silently repairing its giant.
+        var reserved = new List<int>();
+        foreach (var index in Enumerable.Range(0, cells.Length).OrderByDescending(i => radii[i]).ThenBy(i => i))
+        {
+            var anchor = cells[index];
+            var candidates = Enumerable.Range(0, BattlefieldLayout.Height)
+                .SelectMany(y => Enumerable.Range(BattlefieldLayout.Width - BattlefieldLayout.PlayerDeploymentColumns,
+                    BattlefieldLayout.PlayerDeploymentColumns).Select(x => new Vector2I(x, y)))
+                .OrderBy(cell => cell.DistanceSquaredTo(anchor)).ThenBy(cell => cell.Y).ThenByDescending(cell => cell.X);
+            var destination = candidates.Cast<Vector2I?>().FirstOrDefault(cell =>
+                BattlefieldSpace.IsPositionTerrainClear(BattlefieldSpace.CellCenter(cell!.Value), radii[index],
+                    BattlefieldLayout.Width, BattlefieldLayout.Height, floor.CanOccupy) &&
+                reserved.All(other => cell.Value.DistanceTo(cells[other]) >= radii[index] + radii[other] + BattlefieldSpace.BodyClearance));
+            if (destination is null) throw new InvalidOperationException("敌方部署区无法容纳本场大型单位与同伴。");
+            cells[index] = destination.Value;
+            reserved.Add(index);
+        }
+        return cells;
     }
 }

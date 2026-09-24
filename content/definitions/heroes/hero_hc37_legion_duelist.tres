@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc37_legion_duelist.tres" id="portrait"]
+[resource]
+script = ExtResource("script")
+Id = "hero_hc37_legion_duelist"
+DisplayName = "军团斗士"
+Description = "决斗锁定近战对手 4 秒，双方只攻击彼此且不能发动主动。每承受 3 次普攻，反击当前近战目标并按实际生命伤害的 80% 回复。 数值为测试暂值。"
+Portrait = ExtResource("portrait")
+IsHero = true
+Role = 1
+Faction = 0
+RecruitCost = 5
+MaxHealth = 600
+AttackDamage = 38
+AttackRange = 0.35
+AttackCooldown = 1.1
+Armor = 10
+MaxMana = 70
+StartingMana = 40
+Tags = Array[StringName]([&"hero"])

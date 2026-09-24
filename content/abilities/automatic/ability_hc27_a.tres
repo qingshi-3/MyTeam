@@ -1,0 +1,37 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/LifecycleAbilityOperationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Team = 0
+Anchor = 1
+Range = 2
+MaxTargets = 0
+IncludeAnchor = false
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Kind = 1
+TargetQuery = SubResource("s0")
+AttackTransferRatio = 0.5
+HealthRatio = 0.3
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc27_a"
+DisplayName = "吞食"
+Description = "吃掉 2 格内最近友方临时单位，获得其当前攻击 50% 与最大生命 30%，并恢复新增的生命。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

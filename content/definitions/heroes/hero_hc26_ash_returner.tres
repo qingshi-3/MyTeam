@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc26_ash_returner.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc26_ash_returner"
+DisplayName = "灰烬行者"
+Description = "HC26／BC23 测试稿。对周围 1.5 格敌人造成 65 伤害，自身获得 35 护盾。 被动：死亡时为周围友军提供 50 护盾；2 秒后以同一身份、40% 生命返场，每战最多返场两次。护盾亡语可复制，返场不可复制。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 300
+AttackDamage = 23
+Armor = 3
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

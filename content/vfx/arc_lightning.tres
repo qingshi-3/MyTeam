@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/arc_lightning.tscn" id="scene"]
+[resource]
+UsesWidth = true
+script=ExtResource("def")
+StableId="arc_lightning"
+DisplayName="连结电弧"
+PreviewNote="从真实来源贯通目标的分支电流，源头放电、目标接触亮光与独立火花；改变距离不拉长端点亮光"
+Scene=ExtResource("scene")
+Duration=0.85
+ActionSpan=0.2
+Size=128.0

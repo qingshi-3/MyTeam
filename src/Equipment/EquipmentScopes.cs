@@ -162,6 +162,13 @@ public sealed class EquipmentBattleScope : IDisposable
         }
     }
 
+    internal void RearmOwnerGrants(string runtimeId)
+    {
+        if (IsCompleted || _context?.StatusGrants is not { } context || !context.CanReceive(runtimeId)) return;
+        var grants = _instances.Values.Where(i => i.Owner.RuntimeId == runtimeId).SelectMany(GrantRequests).ToImmutableArray();
+        if (!grants.IsEmpty) context.Replace(grants.Select(g => g.GrantId).ToImmutableArray(),grants);
+    }
+
     public bool Remove(string equipmentInstanceId)
     {
         if (IsCompleted || !_instances.TryGetValue(equipmentInstanceId, out var instance)) return false;

@@ -27,6 +27,9 @@ public partial class ExperienceSliceRoot : Control
     public string BootstrapFailure { get; private set; } = "";
     public event Action? ReturnRequested;
 
+    protected virtual System.Threading.Tasks.Task<GamePackagePublicationResult> PublishPackageAsync() =>
+        GamePackagePublisher.CreateReadyAsync(this, ProjectDefinition);
+
     public override async void _Ready()
     {
         _panel = GetNode<ExperienceSlicePanel>("Screens/ExperiencePanel");
@@ -54,7 +57,7 @@ public partial class ExperienceSliceRoot : Control
         _report.ContinueRequested += ContinueReport;
         try
         {
-            var gate = await GamePackagePublisher.CreateReadyAsync(this, ProjectDefinition);
+            var gate = await PublishPackageAsync();
             if (!IsInstanceValid(this) || !IsInsideTree()) return;
             var package = gate.Package ?? throw new InvalidOperationException(string.Join("\n", gate.Report.CoreErrors));
             SemanticIcons.Configure(package.Project.Presentation.SemanticIcons);

@@ -1,0 +1,129 @@
+[gd_scene load_steps=14 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTeleportEndpointTrack.cs" id="endpoint"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="ambient"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="ballistic"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/teleport_aperture.gdshader" id="aperture"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="light"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
+[sub_resource type="ShaderMaterial" id="Depart"]
+resource_local_to_scene = true
+shader = ExtResource("aperture")
+shader_parameter/departure = true
+[sub_resource type="ShaderMaterial" id="Arrive"]
+resource_local_to_scene = true
+shader = ExtResource("aperture")
+[sub_resource type="ShaderMaterial" id="Peak"]
+resource_local_to_scene = true
+shader = ExtResource("light")
+shader_parameter/rays = 0.0
+shader_parameter/core_strength = 0.5
+shader_parameter/corona_strength = 0.65
+shader_parameter/tint = Color(0.57,0.73,1,0.8)
+[node name="Teleport" type="Node2D"]
+script = ExtResource("root")
+[node name="Departure" type="Node2D" parent="."]
+script = ExtResource("endpoint")
+SourceEndpoint = true
+Clock = 1
+UntilFired = true
+[node name="ClosingAperture" type="Sprite2D" parent="Departure"]
+texture = ExtResource("surface")
+material = SubResource("Depart")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+scale = Vector2(0.8,0.48)
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.43
+[node name="ConvergingLight" type="Sprite2D" parent="Departure"]
+texture = ExtResource("surface")
+material = SubResource("Peak")
+script = ExtResource("sprite")
+position = Vector2(0,-40)
+scale = Vector2(0.35,0.65)
+Duration = 0.43
+StartScale = 1.1
+EndScale = 0.4
+[node name="DepartureRelease" type="Node2D" parent="."]
+script = ExtResource("endpoint")
+SourceEndpoint = true
+StartCue = 1
+[node name="DepartureFlash" type="Sprite2D" parent="DepartureRelease"]
+texture = ExtResource("surface")
+material = SubResource("Peak")
+script = ExtResource("sprite")
+position = Vector2(0,-35)
+scale = Vector2(0.33,0.62)
+Duration = 0.24
+StartScale = 1.2
+EndScale = 0.35
+[node name="VanishingMotes" type="Node2D" parent="DepartureRelease"]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("dust")
+position = Vector2(0,-25)
+Amount = 13
+Seed = 6141
+Spread = Vector2(40,26)
+Velocity = Vector2(0,-43)
+Lifetime = 0.58
+EmitDuration = 0.06
+SizeRange = Vector2(10,17)
+StartTint = Color(0.65,0.72,1,1)
+EndTint = Color(0.23,0.34,0.71,1)
+Opacity = 0.68
+[node name="Arrival" type="Node2D" parent="."]
+script = ExtResource("endpoint")
+StartCue = 1
+Delay = 0.08
+[node name="OpeningAperture" type="Sprite2D" parent="Arrival"]
+texture = ExtResource("surface")
+material = SubResource("Arrive")
+script = ExtResource("sprite")
+ShaderLifecycle = true
+scale = Vector2(0.8,0.48)
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.8
+[node name="ArrivalFlash" type="Sprite2D" parent="Arrival"]
+texture = ExtResource("surface")
+material = SubResource("Peak")
+script = ExtResource("sprite")
+position = Vector2(0,-35)
+scale = Vector2(0.45,0.68)
+Duration = 0.37
+StartScale = 0.3
+EndScale = 1.2
+[node name="AscendingFragments" type="Node2D" parent="Arrival"]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("glint")
+position = Vector2(0,-12)
+Amount = 9
+Seed = 6142
+Spread = Vector2(53,12)
+Velocity = Vector2(0,-115)
+Lifetime = 0.78
+EmitDuration = 0.25
+SizeRange = Vector2(15,26)
+EndScale = Vector2(0.4,0.9)
+StartTint = Color(0.76,0.88,1,1)
+EndTint = Color(0.35,0.46,0.85,1)
+Opacity = 0.65
+[node name="RadialShards" type="Node2D" parent="Arrival"]
+script = ExtResource("ballistic")
+ParticleScene = ExtResource("dust")
+Amount = 14
+Seed = 6143
+Radial = true
+Delay = 0.09
+EmitDuration = 0.06
+OriginRadius = 32.0
+SpeedRange = Vector2(100,190)
+LifetimeRange = Vector2(0.3,0.62)
+SizeRange = Vector2(10,18)
+Gravity = 0.0
+HeightScale = 0.65
+EndTint = Color(0.36,0.48,0.83,1)

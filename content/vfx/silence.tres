@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/silence.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "silence"
+DisplayName = "封声禁言"
+PreviewNote = "独立头顶封声符印，两侧微弱声纹未能连通便散去；状态维持不重复弹入"
+Scene = ExtResource("scene")
+Duration = 1.0
+Size = 130.0
+Ground = false
+FlattenGround = false
+Persistent = true

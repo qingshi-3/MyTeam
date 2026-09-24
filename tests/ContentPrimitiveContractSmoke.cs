@@ -17,6 +17,7 @@ public partial class ContentPrimitiveContractSmoke : Node
             FormulaCaptureAndContextContract();
             AuthoredFormulaValidation();
             UnitAttributeAuthoring();
+            RetiredAuthoringValuesAreRejected();
             SelectionAndEffectComposition();
             GD.Print("CONTENT_PRIMITIVE_CONTRACT_OK");
             GetTree().Quit();
@@ -76,15 +77,31 @@ public partial class ContentPrimitiveContractSmoke : Node
 
     private static void UnitAttributeAuthoring()
     {
-        using var definition = new UnitDefinition { Id = "fixture_unit", SpellPower = 42, MagicResistance = 6 };
+        using var definition = new UnitDefinition { Id = "fixture_unit", SpellPower = 42, Armor = 6 };
         var snapshot = BattleSetupFactory.Snapshot(definition);
         Expect(snapshot.AttributeDefinition!.Find(CombatAttribute.SpellPower).BaseValue == 42 &&
-            snapshot.AttributeDefinition.Find(CombatAttribute.MagicResistance).BaseValue == 6,
+            snapshot.AttributeDefinition.Find(CombatAttribute.Armor).BaseValue == 6,
             "unit authoring did not reach compiled combat attributes");
         var fingerprint = DefinitionFingerprint.Compute(definition);
         definition.SpellPower = 43;
         Expect(DefinitionFingerprint.Compute(definition) != fingerprint && snapshot.AttributeDefinition.Find(CombatAttribute.SpellPower).BaseValue == 42,
             "unit attribute change failed identity/frozen snapshot boundary");
+    }
+
+    private static void RetiredAuthoringValuesAreRejected()
+    {
+        using var retiredAttribute = new SourceAttributeMagnitudeSpec { Attribute = (CombatAttribute)5 };
+        var report = new ValidationReport();
+        AttributeDefinitionCompiler.CompileMagnitude(retiredAttribute, report);
+        Expect(report.HasCoreErrors, "retired magic resistance cannot silently become another formula input");
+        using var binding = new EffectBindingSpec
+        {
+            StableId = "retired_damage", Trigger = new EffectTriggerSpec { Kind = EffectTriggerKind.Manual },
+            TargetQuery = new ExplicitTargetQuerySpec(), Limits = new EffectBindingLimitsSpec(),
+            Effects = [new DamageEffectSpec { DamageType = (EffectDamageType)1, Amount = 100 }]
+        };
+        Expect(EffectBindingCompiler.Compile(binding).Report.HasCoreErrors,
+            "unmigrated damage resources are rejected rather than reinterpreted as true damage");
     }
 
     private static void SelectionAndEffectComposition()

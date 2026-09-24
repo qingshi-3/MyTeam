@@ -117,7 +117,7 @@ public partial class SemanticPresentationContractSmoke : Node
         unitCard.Theme = GD.Load<Theme>("res://content/ui/RealmTheme.tres");
         AddChild(unitCard);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-        var abyss = GD.Load<UnitDefinition>("res://content/definitions/soldiers/soldier_abyss_crawler.tres");
+        var abyss = GD.Load<UnitDefinition>("res://tests/fixtures/legacy-roster/content/definitions/soldiers/soldier_abyss_crawler.tres");
         unitCard.Bind(abyss.Id, abyss, catalog.ResolveIcon(SemanticIconKeys.Melee), abyss.Description, "加入军团");
         var badges = unitCard.FindChildren("*", "", true, false).OfType<TraitBadge>().ToArray();
         var stats = unitCard.FindChildren("*", "", true, false).OfType<StatBlock>().ToArray();
@@ -179,7 +179,7 @@ public partial class SemanticPresentationContractSmoke : Node
 
     private async System.Threading.Tasks.Task VerifyPortraitPlaybackAsync(List<string> failures)
     {
-        var definition = GD.Load<UnitPortraitDefinition>("res://content/portraits/heroes/hero_banner_marshal.tres");
+        var definition = GD.Load<UnitPortraitDefinition>("res://tests/fixtures/legacy-roster/content/portraits/heroes/hero_banner_marshal.tres");
         if (definition.Frames is null || definition.Frames.GetFrameCount(definition.AnimationName) < 2)
         {
             failures.Add("portrait playback probe lacks a multi-frame idle source");

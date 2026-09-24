@@ -143,7 +143,7 @@ public partial class ContentCarrierGrantContractSmoke : Node
         var reactive = new StatusCombatReactiveBindingSpec
         {
             EventKind = BattleCombatEventKind.DamageResolved, OwnerRole = StatusReactiveOwnerRole.OwnerIsTarget,
-            SourceKind = CombatSourceKind.Ability, FilterDamageType = true, DamageType = EffectDamageType.Magical,
+            SourceKind = CombatSourceKind.Ability, FilterDamageType = true, DamageType = EffectDamageType.Normal,
             Binding = new EffectBindingSpec
             {
                 StableId = "probe_reactive", Trigger = new EffectTriggerSpec { Kind = EffectTriggerKind.Manual },
@@ -158,11 +158,11 @@ public partial class ContentCarrierGrantContractSmoke : Node
         void Damage(CombatSourceKind source, EffectDamageType damage) => pipeline.Publish(new(
             BattleCombatEventKind.DamageResolved, new(source, "probe_source", "enemy", "source_instance"),
             "enemy", "owner", 1, EffectiveValue: 5, DamageType: damage));
-        Damage(CombatSourceKind.Unit, EffectDamageType.Magical);
-        Damage(CombatSourceKind.Ability, EffectDamageType.Physical);
+        Damage(CombatSourceKind.Unit, EffectDamageType.Normal);
+        Damage(CombatSourceKind.Ability, EffectDamageType.True);
         Expect(reactions == 0, "reactive binding ignored source or damage-type filter");
-        Damage(CombatSourceKind.Ability, EffectDamageType.Magical);
-        Expect(reactions == 1, "matching magical ability damage did not trigger");
+        Damage(CombatSourceKind.Ability, EffectDamageType.Normal);
+        Expect(reactions == 1, "matching normal ability damage did not trigger");
         reactive.EventKind = BattleCombatEventKind.HealingResolved;
         Expect(StatusDefinitionCompiler.Compile(authored).Definition is null, "nondamage event accepted a meaningless damage filter");
     }

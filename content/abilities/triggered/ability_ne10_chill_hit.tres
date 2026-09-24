@@ -1,0 +1,39 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ScaledStatusAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Resource" path="res://content/statuses/status_ne10_freeze.tres" id="r4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityPresentationSpec.cs" id="r5"]
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r3")
+Status = ExtResource("r4")
+TargetQuery = SubResource("s2")
+BaseStacks = 1
+StatusId = "status_ne10_freeze"
+ExistingStackRatio = 0
+Chance = 0.25
+ChanceTraitId = "trait_ne10_winter"
+ChanceByTraitTier = PackedFloat32Array(0.35, 0.5)
+MaximumChance = 0.5
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r5")
+ReportLabel = "寒羽"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_ne10_chill_hit"
+DisplayName = "寒羽"
+Description = "普攻和技能箭命中有 25% 概率冰冻 0.8 秒。霜羽同盟达到 2／4 名成员时，冰冻概率提高至 35%／50%，最高 50%。"
+ActivationKind = 2
+Trigger = 22
+ManaCost = 0
+CooldownTicks = 0
+Echoable = false
+Operations = [SubResource("s3")]
+Presentation = SubResource("s4")

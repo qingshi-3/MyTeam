@@ -21,6 +21,8 @@ public sealed class BattleStatusScope : IDisposable
     private readonly Dictionary<StatusKey, RuntimeInstance> _instances = [];
     private readonly Dictionary<ProjectionKey, ModifierProjection> _modifierProjections = [];
     private readonly Dictionary<ReactiveSubscriptionKey, IDisposable> _reactiveSubscriptions = [];
+    private readonly Dictionary<string, PendingPeriodicReceipt> _periodicReceipts = new(StringComparer.Ordinal);
+    private readonly bool _deferredPeriodicEffects;
     private StatusScopeTransitionResult? _transition;
     private long _applicationSequence;
     private int _lastTick;
@@ -49,6 +51,7 @@ public sealed class BattleStatusScope : IDisposable
             null,
             null)
     {
+        _deferredPeriodicEffects = false;
     }
 
     public BattleStatusScope(
@@ -74,6 +77,7 @@ public sealed class BattleStatusScope : IDisposable
             new BattleAttributeMagnitudeContext(request.SourceAttributes, request.TargetAttributes));
         _combatReactiveRegistrar = combatReactiveRegistrar;
         _reactiveEffectSink = reactiveEffectSink ?? _effectSink;
+        _deferredPeriodicEffects = true;
     }
 
     public string ScopeId => _scopeId;
@@ -236,10 +240,16 @@ public sealed class BattleStatusScope : IDisposable
                 while (instance.Definition.PeriodicEffect is not null &&
                        instance.Definition.PeriodicIntervalTicks > 0 &&
                        instance.NextPeriodTick > instance.AppliedTick &&
-                       instance.NextPeriodTick <= tick)
+                       instance.NextPeriodTick <= tick &&
+                       (instance.Definition.DurationKind != StatusDurationKind.TimedTicks ||
+                        instance.NextPeriodTick <= instance.ExpirationTick))
                 {
                     var dueTick = instance.NextPeriodTick;
-                    instance.NextPeriodTick += instance.Definition.PeriodicIntervalTicks;
+                    instance.NextPeriodTick = checked(instance.NextPeriodTick + instance.Definition.PeriodicIntervalTicks);
+                    var periodicValue = instance.Stacks * instance.Definition.Magnitude;
+                    var receiptId = $"{_scopeId}:{instance.InstanceId}:period:{dueTick}";
+                    _periodicReceipts.Add(receiptId, new PendingPeriodicReceipt(instance.InstanceId,
+                        instance.OwnerId, instance.Definition.StableId, dueTick, periodicValue));
                     batch.Effects.Add(new StatusEffectInvocation(
                         StatusEffectInvocationKind.Periodic,
                         instance.Definition,
@@ -249,7 +259,7 @@ public sealed class BattleStatusScope : IDisposable
                         instance.OwnerId,
                         dueTick,
                         instance.Definition.PeriodicEffect,
-                        StatusRemovalReason.None));
+                        StatusRemovalReason.None, PeriodicValue: periodicValue, PeriodicReceiptId: receiptId));
                     AddCue(batch, instance.Definition, StatusPresentationCueLifecycle.WhileActive, Snapshot(instance),
                         StatusRemovalReason.None, dueTick);
                     periodicCount++;
@@ -261,7 +271,7 @@ public sealed class BattleStatusScope : IDisposable
             {
                 var instance = pair.Value;
                 if (instance.Definition.DurationKind != StatusDurationKind.TimedTicks) continue;
-                if (instance.RemainingTicks > 0) instance.RemainingTicks--;
+                instance.RemainingTicks = Math.Max(0, instance.ExpirationTick - tick);
                 if (instance.RemainingTicks > 0) continue;
                 var snapshot = Snapshot(instance);
                 expired.Add(snapshot);
@@ -274,6 +284,71 @@ public sealed class BattleStatusScope : IDisposable
                 periodicCount,
                 tags);
         });
+    }
+
+    // Consumable definitions are compiled as one periodic owner-damage operation whose
+    // InvocationValue is stacks * Magnitude. NextPeriodTick excludes scheduled receipts;
+    // the receipt ledger retains their captured values until actual execution or cash-out.
+    public float RemainingPeriodicDamage(string ownerId, string stableId, int tick)
+    {
+        ValidatePeriodicSelection(ownerId, stableId, tick);
+        if (_transition is not null) return 0;
+        double value = _periodicReceipts.Values
+            .Where(receipt => receipt.OwnerId == ownerId && receipt.StableId == stableId)
+            .Sum(receipt => (double)receipt.Value);
+        foreach (var pair in Owned(ownerId).Where(pair => CanConsumePeriodic(pair.Value, stableId)))
+        {
+            var instance = pair.Value;
+            // A due but not-yet-advanced owner still owes its current scheduled tick.
+            // Do not replace NextPeriodTick with the caller's tick or shift expiration.
+            var count = instance.NextPeriodTick > instance.ExpirationTick ? 0L :
+                1L + ((long)instance.ExpirationTick - instance.NextPeriodTick) / instance.Definition.PeriodicIntervalTicks;
+            value += count * (double)instance.Stacks * instance.Definition.Magnitude;
+        }
+        if (!double.IsFinite(value) || value > float.MaxValue || value < 0)
+            throw new InvalidOperationException("Remaining periodic damage is not a finite nonnegative value.");
+        return (float)value;
+    }
+
+    public float ConsumePeriodicDamage(string ownerId, string stableId, int tick)
+    {
+        ValidatePeriodicSelection(ownerId, stableId, tick);
+        EnsureNotMutating();
+        if (_transition is not null) return 0;
+        return ExecuteTransactional(batch =>
+        {
+            _lastTick = Math.Max(_lastTick, tick);
+            var value = RemainingPeriodicDamage(ownerId,stableId,tick);
+            foreach (var receipt in _periodicReceipts.Where(pair => pair.Value.OwnerId == ownerId && pair.Value.StableId == stableId).ToArray())
+                _periodicReceipts.Remove(receipt.Key);
+            foreach (var pair in Owned(ownerId).Where(pair => CanConsumePeriodic(pair.Value, stableId)))
+                RemoveInstance(pair.Key,pair.Value,StatusRemovalReason.OverflowConsumed,tick,Snapshot(pair.Value),batch);
+            return value;
+        });
+    }
+
+    public bool TryClaimPeriodicInvocation(StatusEffectInvocation invocation)
+    {
+        ArgumentNullException.ThrowIfNull(invocation);
+        if (invocation.Kind != StatusEffectInvocationKind.Periodic || string.IsNullOrWhiteSpace(invocation.PeriodicReceiptId))
+            return true; // Compatibility invocations predate the authoritative receipt ledger.
+        if (_transition is not null || !_periodicReceipts.TryGetValue(invocation.PeriodicReceiptId, out var receipt)) return false;
+        if (receipt.InstanceId != invocation.InstanceId || receipt.OwnerId != invocation.OwnerId ||
+            receipt.StableId != invocation.Definition.StableId || receipt.Tick != invocation.Tick || receipt.Value != invocation.PeriodicValue)
+            throw new InvalidOperationException("Periodic effect receipt does not match its scheduled invocation.");
+        _periodicReceipts.Remove(invocation.PeriodicReceiptId);
+        return true;
+    }
+
+    private static bool CanConsumePeriodic(RuntimeInstance instance, string stableId) =>
+        instance.Definition.StableId == stableId && instance.Definition.PeriodicEffect is not null &&
+        instance.Definition.DurationKind == StatusDurationKind.TimedTicks && instance.Definition.PeriodicIntervalTicks > 0;
+
+    private static void ValidatePeriodicSelection(string ownerId, string stableId, int tick)
+    {
+        if (string.IsNullOrWhiteSpace(ownerId)) throw new ArgumentException("Status owner id is required.", nameof(ownerId));
+        if (string.IsNullOrWhiteSpace(stableId)) throw new ArgumentException("Status stable id is required.", nameof(stableId));
+        if (tick < 0) throw new ArgumentOutOfRangeException(nameof(tick));
     }
 
     public bool Dispel(
@@ -416,6 +491,7 @@ public sealed class BattleStatusScope : IDisposable
             RemoveAllModifiers();
             var failure = DisposeAllReactiveSubscriptions();
             _instances.Clear();
+            _periodicReceipts.Clear();
             _modifierProjections.Clear();
 
             foreach (var effect in batch.Effects)
@@ -519,12 +595,16 @@ public sealed class BattleStatusScope : IDisposable
                 else
                     contribution.Stacks.Add(CaptureStack(instance, sourceId, applicationSequence, tick));
             }
-            RefreshDuration(instance, duration, definition.DurationRefreshPolicy);
-            if (!canAdd && definition.OverflowPolicy == StatusOverflowPolicy.RefreshDuration)
+            RefreshDuration(instance, duration, definition.DurationRefreshPolicy, tick);
+            if (!canAdd && definition.OverflowPolicy == StatusOverflowPolicy.RefreshDuration &&
+                definition.DurationKind == StatusDurationKind.TimedTicks)
+            {
+                instance.ExpirationTick = checked(tick + duration);
                 instance.RemainingTicks = duration;
+            }
             if (definition.PeriodicResetPolicy == StatusPeriodicResetPolicy.ResetOnApplication &&
                 definition.PeriodicIntervalTicks > 0)
-                instance.NextPeriodTick = tick + definition.PeriodicIntervalTicks;
+                instance.NextPeriodTick = checked(tick + definition.PeriodicIntervalTicks);
         }
 
         batch.Owners.Add(ownerId);
@@ -654,8 +734,12 @@ public sealed class BattleStatusScope : IDisposable
     private void Flush(MutationBatch batch)
     {
         foreach (var effect in batch.Effects)
+        {
             if (!_effectSink(effect))
                 throw new InvalidOperationException($"Status effect '{effect.Binding.StableId}' failed to schedule.");
+            if (!_deferredPeriodicEffects && !string.IsNullOrWhiteSpace(effect.PeriodicReceiptId))
+                _periodicReceipts.Remove(effect.PeriodicReceiptId);
+        }
         foreach (var owner in batch.Owners.OrderBy(id => id, StringComparer.Ordinal))
             _ownerChanged(owner, SnapshotOwner(owner));
         foreach (var lifecycle in batch.Lifecycles) _lifecycleSink(lifecycle);
@@ -664,6 +748,7 @@ public sealed class BattleStatusScope : IDisposable
 
     private ScopeState CaptureState() => new(
         _instances.ToDictionary(pair => pair.Key, pair => pair.Value.Clone()),
+        new Dictionary<string, PendingPeriodicReceipt>(_periodicReceipts, StringComparer.Ordinal),
         _applicationSequence,
         _lastTick);
 
@@ -671,6 +756,8 @@ public sealed class BattleStatusScope : IDisposable
     {
         _instances.Clear();
         foreach (var pair in backup.Instances) _instances.Add(pair.Key, pair.Value.Clone());
+        _periodicReceipts.Clear();
+        foreach (var pair in backup.PeriodicReceipts) _periodicReceipts.Add(pair.Key, pair.Value);
         _applicationSequence = backup.ApplicationSequence;
         _lastTick = backup.LastTick;
     }
@@ -1038,17 +1125,20 @@ public sealed class BattleStatusScope : IDisposable
     private static void RefreshDuration(
         RuntimeInstance instance,
         int duration,
-        StatusDurationRefreshPolicy policy)
+        StatusDurationRefreshPolicy policy,
+        int tick)
     {
         if (instance.Definition.DurationKind != StatusDurationKind.TimedTicks) return;
-        instance.RemainingTicks = policy switch
+        var refreshedExpiration = checked(tick + duration);
+        instance.ExpirationTick = policy switch
         {
-            StatusDurationRefreshPolicy.None => instance.RemainingTicks,
-            StatusDurationRefreshPolicy.Reset => duration,
-            StatusDurationRefreshPolicy.KeepLonger => Math.Max(instance.RemainingTicks, duration),
-            StatusDurationRefreshPolicy.Extend => checked(instance.RemainingTicks + duration),
+            StatusDurationRefreshPolicy.None => instance.ExpirationTick,
+            StatusDurationRefreshPolicy.Reset => refreshedExpiration,
+            StatusDurationRefreshPolicy.KeepLonger => Math.Max(instance.ExpirationTick, refreshedExpiration),
+            StatusDurationRefreshPolicy.Extend => checked(Math.Max(tick, instance.ExpirationTick) + duration),
             _ => throw new InvalidOperationException("Unsupported Status duration refresh policy.")
         };
+        instance.RemainingTicks = Math.Max(0, instance.ExpirationTick - tick);
     }
 
     private static bool CanDispel(StatusDispelCategory category, StatusDispelStrength strength) => category switch
@@ -1166,7 +1256,9 @@ public sealed class BattleStatusScope : IDisposable
                 .ToImmutableArray(),
             instance.Definition.Presentation?.SemanticIcon ?? string.Empty,
             instance.Definition.Presentation?.ReportLabel ?? string.Empty,
-            instance.Definition.Presentation?.PersistentVfx ?? string.Empty);
+            instance.Definition.Presentation?.PersistentVfx ?? string.Empty,
+            instance.ExpirationTick,
+            instance.NextPeriodTick);
     }
 
     private static string PrimarySource(RuntimeInstance instance) => instance.Contributions
@@ -1199,8 +1291,10 @@ public sealed class BattleStatusScope : IDisposable
         CombatSourceRef Source,
         BattleAttributeMagnitudeContext Context);
     private sealed record ModifierProjection(BattleAttributeSet Attributes, AttributeModifierHandle Handle);
+    private sealed record PendingPeriodicReceipt(string InstanceId, string OwnerId, string StableId, int Tick, float Value);
     private sealed record ScopeState(
         Dictionary<StatusKey, RuntimeInstance> Instances,
+        Dictionary<string, PendingPeriodicReceipt> PeriodicReceipts,
         long ApplicationSequence,
         int LastTick);
 
@@ -1372,8 +1466,13 @@ public sealed class BattleStatusScope : IDisposable
         public int LastAppliedTick { get; set; } = appliedTick;
         public int Stacks { get; set; } = 1;
         public int RemainingTicks { get; set; } = durationTicks;
+        // The due-time boundary is independent of when this owner's turn is visited.
+        // RemainingTicks is its presentation projection, never a new schedule anchor.
+        public int ExpirationTick { get; set; } = definition.DurationKind == StatusDurationKind.TimedTicks
+            ? checked(appliedTick + durationTicks)
+            : 0;
         public int NextPeriodTick { get; set; } = definition.PeriodicIntervalTicks > 0
-            ? appliedTick + definition.PeriodicIntervalTicks
+            ? checked(appliedTick + definition.PeriodicIntervalTicks)
             : 0;
         public List<SourceContribution> Contributions { get; } = [];
 
@@ -1385,6 +1484,7 @@ public sealed class BattleStatusScope : IDisposable
                 LastAppliedTick = LastAppliedTick,
                 Stacks = Stacks,
                 RemainingTicks = RemainingTicks,
+                ExpirationTick = ExpirationTick,
                 NextPeriodTick = NextPeriodTick
             };
             clone.Contributions.AddRange(Contributions.Select(item => item.Clone()));

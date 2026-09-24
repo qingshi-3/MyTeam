@@ -1,0 +1,63 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 8
+Subject = 1
+Attribute = 0
+Key = "status_bc_mark"
+Scale = 1
+TeamShared = false
+OwnStatusOnly = true
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 7
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+Minimum = 1
+Maximum = 1e+20
+Every = 1
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r2")
+Metric = 0
+Subject = 2
+Attribute = 1
+Key = ""
+Scale = 0.2
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s3")
+Amount = 0
+Terms = [SubResource("s4")]
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc09_p"
+DisplayName = "乘隙"
+Description = "任何友军普攻或技能箭命中自己的破绽目标时，额外造成该攻击者攻击力 20% 的伤害。"
+ActivationKind = 2
+Trigger = 15
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2"), SubResource("s5")]

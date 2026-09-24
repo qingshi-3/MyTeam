@@ -1,0 +1,31 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/SummonAbilityOperationSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityPresentationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Profile = 4
+Count = 2
+MaximumLivingTemporaryUnits = 5
+LimitPerOwner = true
+RequireAtLeastOne = true
+SummonContentId = "soldier_bc_skeleton"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+ReportLabel = "砂骨先锋"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_ne02_raise_skeletons"
+DisplayName = "砂骨先锋"
+Description = "在附近召唤 2 名砂骨仆，自己最多同时维持 5 名。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+Echoable = false
+Operations = [SubResource("s0")]
+Presentation = SubResource("s1")

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="definition"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/duel_mark.tscn" id="scene"]
+[resource]
+script = ExtResource("definition")
+StableId = "duel_mark"
+DisplayName = "决斗 · 双方剑徽"
+Scene = ExtResource("scene")
+Persistent = true
+Ground = true
+Size = 64

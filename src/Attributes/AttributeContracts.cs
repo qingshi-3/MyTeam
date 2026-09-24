@@ -12,8 +12,8 @@ public enum CombatAttribute
     SpellPower,
     AttackSpeed,
     Armor,
-    MagicResistance,
-    AttackRange,
+    // Value 5 is retired. Do not renumber authored attributes that follow it.
+    AttackRange = 6,
     MoveSpeed,
     CriticalChance,
     CriticalDamage,
@@ -25,7 +25,8 @@ public enum CombatAttribute
     ManaPerSecond,
     ManaPerAttack,
     ManaPerDamageRatio,
-    ManaPerHitCap
+    ManaPerHitCap,
+    DodgeChance
 }
 
 public enum AttributeModifierOperation { Add, Multiply, Override }

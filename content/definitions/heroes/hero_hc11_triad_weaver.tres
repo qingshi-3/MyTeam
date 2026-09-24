@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc11_triad_weaver.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc11_triad_weaver"
+DisplayName = "三相使"
+Description = "HC11／BC08 测试稿。对目标周围 1.4 格敌人分别施加蚀毒、余烬和 3 秒霜缓。 被动：普攻命中后，每一种不同负面状态额外造成 10 伤害；同类层数不冒充种类。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 6
+Faction = 6
+RecruitCost = 5
+MaxHealth = 230
+AttackDamage = 18
+Armor = 4
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

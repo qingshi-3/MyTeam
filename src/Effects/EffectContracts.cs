@@ -7,13 +7,14 @@ using TowerAutobattler.Attributes;
 namespace TowerAutobattler.Effects;
 
 public enum EffectKind { Damage, Heal, Shield }
-public enum EffectDamageType { Physical, Magical, True }
+// Value 1 is retired; authored magic effects have been migrated to Normal. Keep True at 2.
+public enum EffectDamageType { Normal = 0, True = 2 }
 public enum EffectAmountSource { Fixed, InvocationValue, EventEffectiveValue }
 public enum EffectTriggerKind { Manual, DomainEvent }
 public enum EffectDomainEventKind { None, DamageResolved, HealingResolved, ShieldResolved }
 public enum EffectEntityReference { Source, Owner, ExplicitTarget }
 public enum EffectRelativeTeam { Allies, Enemies }
-public enum EffectTargetOrder { RuntimeId, Nearest, LowestHealthRatio, HighestHealthRatio }
+public enum EffectTargetOrder { RuntimeId, Nearest, LowestHealthRatio, HighestHealthRatio, Farthest = 4 }
 public enum EffectComparison { Less, LessOrEqual, Equal, GreaterOrEqual, Greater }
 public enum EffectExecutionStatus { Succeeded, Skipped, Failed, Interrupted }
 
@@ -125,7 +126,7 @@ public sealed record EffectModifierRequest(
     EffectKind Kind,
     string TargetId,
     float RequestedAmount,
-    EffectDamageType DamageType = EffectDamageType.Physical);
+    EffectDamageType DamageType = EffectDamageType.Normal);
 
 public sealed record EffectModifierContribution(string StableId, float Before, float After);
 

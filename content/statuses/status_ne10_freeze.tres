@@ -1,0 +1,30 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusPresentationSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+SemanticIcon = "status.freeze"
+ExecutedCue = &"status.freeze.executed"
+OnActiveCue = &"status.freeze.active"
+WhileActiveCue = &"status.freeze.while_active"
+RemovedCue = &"status.freeze.removed"
+ReportLabel = "冰冻"
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_ne10_freeze"
+DisplayName = "冰冻"
+Behavior = 0
+Disposition = 2
+DurationKind = 1
+DurationTicks = 8
+AggregationPolicy = 1
+StackLimit = 1
+DurationRefreshPolicy = 2
+OverflowPolicy = 1
+DispelCategory = 2
+ControlDurationRule = 1
+GrantedTags = Array[StringName]([&"state.action_disabled", &"state.frozen"])
+Presentation = SubResource("s0")

@@ -1,0 +1,64 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ExplicitTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 4
+Subject = 1
+Attribute = 0
+Key = ""
+Scale = 1
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 7
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+Minimum = 0
+Maximum = 0.3
+Every = 1
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r2")
+Metric = 0
+Subject = 0
+Attribute = 1
+Key = ""
+Scale = 0.5
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r3")
+Action = 0
+TargetQuery = SubResource("s3")
+Amount = 0
+Terms = [SubResource("s4")]
+DamageType = 0
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc28_p"
+DisplayName = "催命"
+Description = "普攻命中生命不足 30% 的敌人时，再造成攻击力 50% 的伤害，帮助取得首具尸体。"
+ActivationKind = 2
+Trigger = 3
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2"), SubResource("s5")]

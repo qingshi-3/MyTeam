@@ -36,8 +36,9 @@ public static class GamePackagePublisher
     internal static Task<GamePackagePublicationResult> CreateAuthoredReadyAsync(
         Node treeOwner,
         AuthoredContentPackage package,
-        IEnumerable<PackedScene>? additionalValidationScenes = null) =>
-        PublishAsync(treeOwner, package.Project, package, additionalValidationScenes, null);
+        IEnumerable<PackedScene>? additionalValidationScenes = null,
+        IEnumerable<PackedScene>? additionalStructuralValidationScenes = null) =>
+        PublishAsync(treeOwner, package.Project, package, additionalValidationScenes, additionalStructuralValidationScenes);
 
     private static async Task<GamePackagePublicationResult> PublishAsync(
         Node treeOwner,
@@ -77,6 +78,9 @@ public static class GamePackagePublisher
             report.Error("Authored package catalog does not match GameProjectDefinition.Content.");
 
         var projectLoadouts = GameProjectCompiler.CollectAbilityLoadoutReferences(project);
+        if (authoredPackage is not null && additionalStructuralValidationScenes is not null)
+            foreach (var scene in additionalStructuralValidationScenes)
+                ContentValidator.ValidateStructuralProbe(scene, report);
         var content = authoredPackage is null
             ? ContentValidator.CompileProductionGraph(
                 catalog,

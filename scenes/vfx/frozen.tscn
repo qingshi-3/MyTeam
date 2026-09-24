@@ -1,0 +1,136 @@
+[gd_scene load_steps=11 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxFrozenCrystalTrack.cs" id="crystal"]
+[ext_resource type="Script" path="res://src/Vfx/VfxFrozenReleaseTrack.cs" id="release"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="ambient"]
+[ext_resource type="Texture2D" path="res://assets/vfx/refresh/ice-prism.png" id="ice"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/IcePrismParticle.tscn" id="chip"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="Shader" path="res://scenes/vfx/frozen_prism.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="ice_mat"]
+shader = ExtResource("shader")
+
+[node name="Frozen" type="Node2D"]
+script = ExtResource("root")
+
+[node name="BackCenter" type="Sprite2D" parent="."]
+script = ExtResource("crystal")
+texture = ExtResource("ice")
+texture_filter = 4
+material = SubResource("ice_mat")
+position = Vector2(0, 19)
+PixelSize = Vector2(64, 135)
+self_modulate = Color(0.50, 0.68, 0.87, 1)
+GlintPhase = 1.6
+[node name="BackLeft" type="Sprite2D" parent="."]
+script = ExtResource("crystal")
+texture = ExtResource("ice")
+texture_filter = 4
+material = SubResource("ice_mat")
+position = Vector2(-29, 27)
+rotation = -0.20
+PixelSize = Vector2(55, 117)
+self_modulate = Color(0.57, 0.76, 0.91, 1)
+Delay = 0.025
+GlintPhase = 0.5
+[node name="BackRight" type="Sprite2D" parent="."]
+script = ExtResource("crystal")
+texture = ExtResource("ice")
+texture_filter = 4
+material = SubResource("ice_mat")
+position = Vector2(29, 29)
+rotation = 0.22
+PixelSize = Vector2(54, 115)
+self_modulate = Color(0.57, 0.76, 0.91, 1)
+Delay = 0.04
+GlintPhase = 2.1
+[node name="Left" type="Sprite2D" parent="."]
+script = ExtResource("crystal")
+texture = ExtResource("ice")
+texture_filter = 4
+material = SubResource("ice_mat")
+position = Vector2(-44, 40)
+rotation = -0.34
+PixelSize = Vector2(45, 89)
+self_modulate = Color(0.70, 0.86, 1, 1)
+Delay = 0.055
+GlintPhase = 1.2
+[node name="Right" type="Sprite2D" parent="."]
+script = ExtResource("crystal")
+texture = ExtResource("ice")
+texture_filter = 4
+material = SubResource("ice_mat")
+position = Vector2(42, 42)
+rotation = 0.35
+PixelSize = Vector2(44, 86)
+self_modulate = Color(0.70, 0.86, 1, 1)
+Delay = 0.07
+GlintPhase = 0.2
+[node name="BodyCore" type="Sprite2D" parent="."]
+script = ExtResource("crystal")
+texture = ExtResource("ice")
+texture_filter = 4
+material = SubResource("ice_mat")
+position = Vector2(0, 45)
+rotation = -0.03
+PixelSize = Vector2(89, 137)
+self_modulate = Color(0.85, 0.94, 1, 1)
+Delay = 0.045
+GlintPhase = 0.8
+[node name="FrontLeft" type="Sprite2D" parent="."]
+script = ExtResource("crystal")
+texture = ExtResource("ice")
+texture_filter = 4
+material = SubResource("ice_mat")
+position = Vector2(-25, 51)
+rotation = -0.24
+PixelSize = Vector2(51, 78)
+self_modulate = Color(0.91, 0.97, 1, 1)
+Delay = 0.085
+GlintPhase = 2.8
+[node name="FrontRight" type="Sprite2D" parent="."]
+script = ExtResource("crystal")
+texture = ExtResource("ice")
+texture_filter = 4
+material = SubResource("ice_mat")
+position = Vector2(24, 52)
+rotation = 0.25
+PixelSize = Vector2(49, 76)
+self_modulate = Color(0.91, 0.97, 1, 1)
+Delay = 0.10
+GlintPhase = 1.8
+
+[node name="FacetGlints" type="Node2D" parent="."]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("glint")
+position = Vector2(0, -26)
+Amount = 10
+Seed = 1062
+Spread = Vector2(48, 48)
+Velocity = Vector2(0, -5)
+Lifetime = 1.5
+SizeRange = Vector2(16, 27)
+EndScale = Vector2(0.40, 0.40)
+Opacity = 0.54
+StartTint = Color(0.65, 0.93, 1, 1)
+EndTint = Color(0.22, 0.57, 1, 1)
+[node name="ColdDust" type="Node2D" parent="."]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("dust")
+position = Vector2(0, -12)
+Amount = 17
+Seed = 1063
+Spread = Vector2(55, 44)
+Velocity = Vector2(1, -12)
+Lifetime = 1.8
+SizeRange = Vector2(8, 15)
+EndScale = Vector2(0.35, 0.35)
+Opacity = 0.5
+StartTint = Color(0.42, 0.80, 1, 1)
+EndTint = Color(0.12, 0.40, 0.82, 1)
+[node name="ReleaseChips" type="Node2D" parent="."]
+script = ExtResource("release")
+ParticleScene = ExtResource("chip")
+Amount = 18
+Seed = 1061

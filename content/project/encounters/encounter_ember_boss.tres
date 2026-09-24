@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/Project/EncounterDefinition.cs" id="1"]
 [ext_resource type="Resource" path="res://content/project/pools/pool_ember_enemies.tres" id="2"]
 [ext_resource type="Resource" path="res://content/project/pools/pool_ember_boss_rule.tres" id="3"]
-[ext_resource type="Resource" path="res://content/project/boss/timeline_boreal_boss.tres" id="4"]
+[ext_resource type="Resource" path="res://content/project/boss/timeline_eb01_rampart_warden.tres" id="4"]
 
 [resource]
 script = ExtResource("1")
@@ -12,6 +12,8 @@ NodeType = 6
 TitlePattern = "{region}层主战"
 EnemyPool = ExtResource("2")
 FloorRulePool = ExtResource("3")
-LeadEnemyId = "enemy_boreal_boss"
+LeadEnemyId = "enemy_eb01_rampart_warden"
 BaseEnemyCount = 3
 BossTimeline = ExtResource("4")
+EnemyHealthMultiplier = 1
+EnemyDamageMultiplier = 1

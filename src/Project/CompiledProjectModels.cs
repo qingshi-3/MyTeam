@@ -52,7 +52,8 @@ public sealed record CompiledEncounter(
     int BaseEnemyCount,
     bool AddRegionIndexToCount,
     int SeedSalt,
-    CompiledBossTimeline? BossTimeline)
+    CompiledBossTimeline? BossTimeline,
+    float EnemyHealthMultiplier = 1, float EnemyDamageMultiplier = 1, ImmutableArray<string> AlternateLeadEnemyIds = default)
 {
     public string Title(string regionName) => TitlePattern.Replace("{region}", regionName);
 }
@@ -75,6 +76,7 @@ public sealed record CompiledCampaign(
     CompiledContentPool ShopPool)
 {
     public int TotalFloors => FloorsPerRegion * Regions.Length;
+    public CompiledRecruitmentSupply? RecruitmentSupply { get; init; }
     public ImmutableDictionary<RunOfferKind, CompiledRunOffer> RunOffers { get; init; } = ImmutableDictionary<RunOfferKind, CompiledRunOffer>.Empty;
 }
 

@@ -19,7 +19,8 @@ public enum BattleLabUnitClassification
     PveNormal = 2,
     PveElite = 4,
     PveBoss = 8,
-    PublishedSummon = 16
+    PublishedSummon = 16,
+    TestDummy = 32
 }
 
 public sealed record BattleLabPublishedUnit(
@@ -77,7 +78,8 @@ public sealed class BattleLabContentIndex
             .ToHashSet(StringComparer.Ordinal);
         var eliteIds = encounterSets
             .Where(encounter => encounter.NodeType == TowerNodeType.Elite)
-            .SelectMany(encounter => encounter.EnemyPool.ContentIds.Append(encounter.LeadEnemyId))
+            .SelectMany(encounter => encounter.EnemyPool.ContentIds.Append(encounter.LeadEnemyId)
+                .Concat(encounter.AlternateLeadEnemyIds.IsDefault ? [] : encounter.AlternateLeadEnemyIds))
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .ToHashSet(StringComparer.Ordinal);
         var summonIds = CollectSummonIds(package).ToHashSet(StringComparer.Ordinal);
@@ -99,17 +101,18 @@ public sealed class BattleLabContentIndex
                     classification |= BattleLabUnitClassification.PveNormal;
             }
             if (summonIds.Contains(definition.Id)) classification |= BattleLabUnitClassification.PublishedSummon;
-            if (classification == BattleLabUnitClassification.None) continue;
-            var allowed = ImmutableArray.CreateBuilder<BattleLabSide>();
-            if ((classification & BattleLabUnitClassification.PlayerHero) != 0) allowed.Add(BattleLabSide.Player);
-            if ((classification & (BattleLabUnitClassification.PveNormal | BattleLabUnitClassification.PveElite |
-                                   BattleLabUnitClassification.PveBoss | BattleLabUnitClassification.PublishedSummon)) != 0)
-                allowed.Add(BattleLabSide.Enemy);
-            units.Add(definition.Id, new BattleLabPublishedUnit(entry, definition, classification, allowed.ToImmutable()));
+            if (definition.IsTestDummy) classification = BattleLabUnitClassification.TestDummy;
+            // Classification describes content; it never decides test-team eligibility.
+            units.Add(definition.Id, new BattleLabPublishedUnit(entry, definition, classification,
+                [BattleLabSide.Player, BattleLabSide.Enemy]));
         }
         _units = units.ToImmutable();
+        Units = _units.Values.OrderBy(unit => unit.Classification)
+            .ThenBy(unit => unit.StableId, StringComparer.Ordinal).ToImmutableArray();
         PlayerHeroes = _units.Values.Where(unit => unit.Classification.HasFlag(BattleLabUnitClassification.PlayerHero))
             .OrderBy(unit => unit.StableId, StringComparer.Ordinal).ToImmutableArray();
+        PlayerUnits = _units.Values.Where(unit => unit.AllowedSides.Contains(BattleLabSide.Player))
+            .OrderBy(unit => unit.Classification).ThenBy(unit => unit.StableId, StringComparer.Ordinal).ToImmutableArray();
         PveUnits = _units.Values.Where(unit => unit.AllowedSides.Contains(BattleLabSide.Enemy))
             .OrderBy(unit => unit.Classification).ThenBy(unit => unit.StableId, StringComparer.Ordinal).ToImmutableArray();
         Equipment = package.Content.Catalog.Items.Where(entry =>
@@ -126,7 +129,12 @@ public sealed class BattleLabContentIndex
 
     public CompiledGamePackage Package { get; }
     public CompiledRunRules Rules { get; }
+    public ImmutableArray<BattleLabPublishedUnit> Units { get; }
     public ImmutableArray<BattleLabPublishedUnit> PlayerHeroes { get; }
+    public ImmutableArray<BattleLabPublishedUnit> PlayerUnits { get; }
+
+    public bool SupportsRetentionUpgrade(string contentId) => TryGetUnit(contentId, out var unit) &&
+        BattleSetupFactory.Snapshot(unit.Entry, Package.Content).AttackHitGrowth?.RetentionUpgradeAvailable == true;
     public ImmutableArray<BattleLabPublishedUnit> PveUnits { get; }
     public ImmutableArray<BattleLabPublishedItem> Equipment { get; }
     public ImmutableArray<BattleLabPublishedItem> Relics { get; }
@@ -157,12 +165,20 @@ public sealed class BattleLabContentIndex
 
     private static IEnumerable<string> CollectSummonIds(CompiledGamePackage package)
     {
-        foreach (var ability in package.Content.Graph.Abilities)
-        foreach (var summon in ability.Operations.OfType<CompiledSummonAbilityOperation>())
-            if (!string.IsNullOrWhiteSpace(summon.SummonContentId)) yield return summon.SummonContentId;
-        foreach (var command in package.Content.Graph.TacticalCommands)
-        foreach (var summon in command.Ability.Operations.OfType<CompiledSummonAbilityOperation>())
-            if (!string.IsNullOrWhiteSpace(summon.SummonContentId)) yield return summon.SummonContentId;
+        var operations = package.Content.Graph.Abilities.SelectMany(ability => ability.Operations)
+            .Concat(package.Content.Graph.TacticalCommands.SelectMany(command => command.Ability.Operations));
+        foreach (var operation in operations)
+        {
+            if (operation is CompiledEnemyAction action)
+                foreach (var dependency in action.ContentDependencies) yield return dependency;
+            var contentId = operation switch
+            {
+                CompiledSummonAbilityOperation summon => summon.SummonContentId,
+                CompiledLifecycleOperation { Kind: LifecycleAbilityKind.RaiseCorpse } corpse => corpse.SummonContentId,
+                _ => string.Empty
+            };
+            if (!string.IsNullOrWhiteSpace(contentId)) yield return contentId;
+        }
         foreach (var relic in package.Content.Graph.Relics)
         foreach (var summon in relic.BattleStartEffects.OfType<CompiledRelicBattleStartSummon>())
             if (!string.IsNullOrWhiteSpace(summon.ContentId)) yield return summon.ContentId;

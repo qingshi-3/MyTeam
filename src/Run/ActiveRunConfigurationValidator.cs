@@ -22,23 +22,44 @@ public static class ActiveRunConfigurationValidator
         if (run is null || run.Roster is null || run.Deployment is null || run.Items is null || run.EquipmentInventory is null ||
             run.EquippedTacticalCommandIds is null || run.PopulationCapSources is null ||
             run.Version != ActiveRunFormationSchema.CurrentVersion || run.FloorIndex < 0 || run.Gold < 0 || run.BattleNumber < 0 ||
-            run.FloorIndex >= project.Campaign.TotalFloors || run.Roster.Count == 0 ||
+            run.FloorIndex >= project.Campaign.TotalFloors ||
             run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
             run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null ||
-            run.Deployment.Any(id => id is null) || run.Roster[0] is null ||
-            !content.TryGet(run.Roster[0].ContentId, out var startingHero) ||
-            startingHero.Definition is not UnitDefinition { IsHero: true })
+            run.Deployment.Any(id => id is null))
             return false;
         if (!RunPopulationPolicy.Validate(run, rules) ||
             !ActiveRunTacticalCommandPolicy.Validate(run, rules, content.Graph) ||
             run.Deployment.Count != rules.PhysicalDeploymentCeiling)
             return false;
+        if (run.OpeningRecruitment is { } opening)
+        {
+            // An empty roster is valid only for this explicitly persisted opening phase.
+            // The test campaign opens its authored pool independently of legacy account unlocks.
+            var supply = project.Campaign.RecruitmentSupply;
+            return supply is not null && !opening.CandidateIds.IsDefault && !opening.SelectedIds.IsDefault &&
+                opening.CandidateIds.Length == CompiledRecruitmentSupply.OpeningCandidateCount &&
+                opening.CandidateIds.Distinct(StringComparer.Ordinal).Count() == opening.CandidateIds.Length &&
+                opening.CandidateIds.All(id => !string.IsNullOrWhiteSpace(id) && supply.TierOf(id) is > 0 &&
+                    supply.OpeningTierWeights[supply.TierOf(id) - 1] > 0 &&
+                    content.TryGet(id, out var entry) && entry.Definition is UnitDefinition { IsHero: true, IsEnemy: false, IsTestDummy: false }) &&
+                opening.SelectedIds.Length <= CompiledRecruitmentSupply.OpeningSelectionCount &&
+                opening.SelectedIds.Distinct(StringComparer.Ordinal).Count() == opening.SelectedIds.Length &&
+                opening.SelectedIds.All(id => opening.CandidateIds.Contains(id)) &&
+                run.Roster.Count == 0 && run.Deployment.All(string.IsNullOrEmpty) &&
+                run.FloorIndex == 0 && run.BattleNumber == 0 && !run.PendingNode && run.PendingOffer is null &&
+                string.IsNullOrEmpty(run.TerminalCompletionId) && !run.TerminalVictory && run.Seed != 0 &&
+                run.Items.Count == 0 && run.EquipmentInventory.Count == 0 && run.PopulationCapSources.Count == 0 &&
+                run.CurrentPopulation == rules.InitialPopulation && run.Gold == rules.StartingGold;
+        }
+        if (run.Roster.Count == 0 || run.Roster[0] is null ||
+            !content.TryGet(run.Roster[0].ContentId, out var startingHero) ||
+            startingHero.Definition is not UnitDefinition { IsHero: true }) return false;
         if (run.TerminalCompletionId is null || run.TerminalVictory && string.IsNullOrEmpty(run.TerminalCompletionId) ||
             !string.IsNullOrEmpty(run.TerminalCompletionId) && !Guid.TryParseExact(run.TerminalCompletionId, "N", out _) ||
             !string.IsNullOrEmpty(run.TerminalCompletionId) && run.PendingOffer is not null ||
             !RunDecisionValidation.ValidOffer(run.PendingOffer, run,
                 id => content.TryGet(id, out _),
-                id => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition { IsEnemy: false },
+                id => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition { IsEnemy: false, IsTestDummy: false },
                 id => content.TryGet(id, out var entry) && entry.Definition is ItemDefinition)) return false;
         if (run.PendingOffer is { } pending &&
             (pending.Kind == Project.RunOfferKind.CombatReward ? run.PendingNode :
@@ -51,7 +72,7 @@ public static class ActiveRunConfigurationValidator
                 !float.IsFinite(unit.HealthRatio) || unit.HealthRatio < 0 || unit.HealthRatio > 1 || unit.Rank <= 0 ||
                 unit.Equipment is null || unit.Equipment.Count > rules.EquipmentSlotCapacity ||
                 !content.TryGet(unit.ContentId, out var entry) ||
-                entry.Definition is not UnitDefinition { IsEnemy: false })
+                entry.Definition is not UnitDefinition { IsEnemy: false, IsTestDummy: false })
                 return false;
         if (run.Deployment.Any(id => !string.IsNullOrEmpty(id) && !instanceIds.Contains(id))) return false;
         var deployedIds = run.Deployment.Where(id => !string.IsNullOrEmpty(id)).ToArray();

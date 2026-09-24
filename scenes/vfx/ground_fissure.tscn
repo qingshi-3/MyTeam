@@ -1,0 +1,31 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxEnemyActionTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="texture"]
+[ext_resource type="Texture2D" path="res://assets/vfx/library/rock-wedge-anime.png" id="piece"]
+[ext_resource type="Shader" path="res://scenes/vfx/enemy_fissure.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+[node name="ground_fissure" type="Node2D"]
+script = ExtResource("root")
+[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces")]
+script = ExtResource("track")
+Kind = 3
+Surface = NodePath("Surface")
+Pieces = NodePath("Pieces")
+[node name="Surface" type="Sprite2D" parent="Track"]
+texture = ExtResource("texture")
+material = SubResource("material")
+[node name="Pieces" type="Node2D" parent="Track"]
+[node name="Piece0" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("piece")
+[node name="Piece1" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("piece")
+[node name="Piece2" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("piece")
+[node name="Piece3" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("piece")
+[node name="Piece4" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("piece")
+[node name="Piece5" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("piece")

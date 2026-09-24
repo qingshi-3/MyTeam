@@ -29,7 +29,7 @@ public sealed record BattlePreparationUnitSource(
     bool IsTemporary,
     bool IsPersistentRosterHero,
     bool IsDeployed,
-    ImmutableArray<BattlePreparationEquipmentSource> Equipment);
+    ImmutableArray<BattlePreparationEquipmentSource> Equipment, bool RetainAttackStacks = false);
 
 // Placements are deliberately separate from sources. This preserves the
 // legacy Run `requireLegalFormation=false` contract, including duplicate
@@ -64,7 +64,10 @@ public sealed record BattlePreparationRequest(
     BossTimelineSnapshot? BossTimeline,
     BattlePlacementValidation PlacementValidation,
     ImmutableArray<TraitExplicitContribution> ExplicitTraitContributions = default,
-    Action<BattleCombatBindingRegistry>? ConfigureCombatBindings = null);
+    Action<BattleCombatBindingRegistry>? ConfigureCombatBindings = null,
+    float EnemyHealthMultiplier = 1, float EnemyDamageMultiplier = 1,
+    HeroRuleSnapshot? HeroRuleOverride = null,
+    ImmutableArray<BossTimelineSnapshot> AdditionalBossTimelines = default);
 
 public static class BattlePreparationAssembler
 {
@@ -75,12 +78,15 @@ public static class BattlePreparationAssembler
         ArgumentNullException.ThrowIfNull(request.FloorRule);
         ArgumentNullException.ThrowIfNull(request.Modifiers);
         if (request.EmptyDeploymentSlots < 0) throw new ArgumentOutOfRangeException(nameof(request));
-        if (string.IsNullOrWhiteSpace(request.HeroRuleContentId))
+        if (!float.IsFinite(request.EnemyHealthMultiplier) || request.EnemyHealthMultiplier is <= 0 or > 100 ||
+            !float.IsFinite(request.EnemyDamageMultiplier) || request.EnemyDamageMultiplier is <= 0 or > 100)
+            throw new ArgumentOutOfRangeException(nameof(request), "Invalid encounter strength multipliers.");
+        if (request.HeroRuleOverride is null && string.IsNullOrWhiteSpace(request.HeroRuleContentId))
             throw new InvalidOperationException("Battle preparation requires a HeroRule content source.");
 
         var spawns = BuildSpawns(request);
         ValidatePlacements(request.FloorRule, spawns, request.PlacementValidation);
-        var heroRule = BuildHeroRule(request.Content, request.HeroRuleContentId);
+        var heroRule = request.HeroRuleOverride ?? BuildHeroRule(request.Content, request.HeroRuleContentId);
         var equipment = BuildEquipment(request.Content.Graph, request.Units);
         var traits = BuildTraits(request.Content.Graph, request.Units, request.ExplicitTraitContributions);
         var relicSummons = BuildRelicSummons(request.Content, request.Relics);
@@ -106,6 +112,7 @@ public static class BattlePreparationAssembler
             TacticalCommands = request.TacticalCommands,
             TacticalSummons = tacticalSummons,
             BossTimeline = request.BossTimeline,
+            AdditionalBossTimelines = request.AdditionalBossTimelines.IsDefault ? [] : request.AdditionalBossTimelines,
             ConfigureCombatBindings = request.ConfigureCombatBindings
         };
     }
@@ -122,7 +129,18 @@ public static class BattlePreparationAssembler
                 throw new InvalidOperationException(
                     $"Battle preparation placement references a missing unit: {placement.UnitInstanceId}");
             var snapshot = SnapshotRequired(request.Content, source.ContentId, out var behaviorSummonId);
-            if (request.BossTimeline?.BossContentId == snapshot.ContentId)
+            if (source.Team == 1)
+                snapshot = snapshot with { MaxHealth = snapshot.MaxHealth * request.EnemyHealthMultiplier,
+                    Damage = snapshot.Damage * request.EnemyDamageMultiplier };
+            if (source.RetainAttackStacks)
+            {
+                if (snapshot.AttackHitGrowth is not { RetentionUpgradeAvailable: true } growth)
+                    throw new InvalidOperationException("此单位没有可测试的保层升阶。");
+                snapshot = snapshot with { AttackHitGrowth = growth with { ResetOnTargetChange = false } };
+            }
+            if (request.BossTimeline?.BossContentId == snapshot.ContentId ||
+                !request.AdditionalBossTimelines.IsDefaultOrEmpty && request.AdditionalBossTimelines.Any(
+                    timeline => timeline.BossContentId == snapshot.ContentId))
                 snapshot = snapshot with { AbilityLoadout = null };
             builder.Add(new BattleSpawn(
                 snapshot,
@@ -146,6 +164,7 @@ public static class BattlePreparationAssembler
         if (validation == BattlePlacementValidation.None) return;
         var instanceIds = new HashSet<string>(StringComparer.Ordinal);
         var cells = new HashSet<Vector2I>();
+        var bodies = new List<(Vector2 Position, float Radius)>();
         foreach (var spawn in spawns.Where(spawn =>
                      validation == BattlePlacementValidation.ExactAll || spawn.Team == 0))
         {
@@ -157,6 +176,12 @@ public static class BattlePreparationAssembler
                 throw new InvalidOperationException($"Battle preparation contains an illegal cell: {spawn.Cell}");
             if (!cells.Add(spawn.Cell))
                 throw new InvalidOperationException($"Battle preparation contains duplicate cell occupancy: {spawn.Cell}");
+            var position = BattlefieldSpace.CellCenter(spawn.Cell);
+            if (!BattlefieldSpace.IsPositionTerrainClear(position, spawn.Unit.BodyRadius,
+                    BattlefieldLayout.Width, BattlefieldLayout.Height, floorRule.CanOccupy) ||
+                bodies.Any(body => position.DistanceTo(body.Position) < body.Radius + spawn.Unit.BodyRadius + BattlefieldSpace.BodyClearance))
+                throw new InvalidOperationException("战斗准备的单位身体重叠、越界或碰到禁行地形。");
+            bodies.Add((position, spawn.Unit.BodyRadius));
         }
     }
 
@@ -165,7 +190,7 @@ public static class BattlePreparationAssembler
         ImmutableArray<BattlePreparationUnitSource> units)
     {
         var instances = ImmutableArray.CreateBuilder<EquipmentBattleInstanceSnapshot>();
-        foreach (var unit in units.Where(unit => unit.Team == 0 && unit.IsDeployed))
+        foreach (var unit in units.Where(unit => unit.IsDeployed))
         foreach (var equipment in unit.Equipment.OrderBy(item => item.SlotIndex))
         {
             if (equipment is null || string.IsNullOrWhiteSpace(equipment.InstanceId) ||
@@ -268,17 +293,20 @@ public static class BattlePreparationAssembler
         ContentRegistry content,
         TacticalCommandBattlePreparation? preparation)
     {
-        if (preparation is null) return ImmutableDictionary<string, UnitSnapshot>.Empty;
         var summons = ImmutableDictionary.CreateBuilder<string, UnitSnapshot>(StringComparer.Ordinal);
-        foreach (var contentId in preparation.Commands
-                     .SelectMany(command => command.Ability.Operations)
-                     .OfType<CompiledSummonAbilityOperation>()
-                     .Select(operation => operation.SummonContentId)
+        // The shared spawn registry serves automatic heroes and lifecycle products as
+        // well as tactical commands; it must exist even when no command is equipped.
+        var operations = content.Graph.Abilities.SelectMany(ability => ability.Operations)
+            .Concat(preparation?.Commands.SelectMany(command => command.Ability.Operations) ?? []);
+        foreach (var contentId in operations.Select(operation => operation switch {
+                     CompiledSummonAbilityOperation summon => summon.SummonContentId,
+                     CompiledLifecycleOperation { Kind: LifecycleAbilityKind.RaiseCorpse } corpse => corpse.SummonContentId,
+                     _ => "" }).Concat(operations.OfType<CompiledEnemyAction>().SelectMany(action => action.ContentDependencies))
                      .Where(contentId => !string.IsNullOrWhiteSpace(contentId))
                      .Distinct(StringComparer.Ordinal)
                      .OrderBy(contentId => contentId, StringComparer.Ordinal))
             summons.Add(contentId, SnapshotOptional(content, contentId) ?? throw new InvalidOperationException(
-                $"Tactical command references an unavailable summon unit: {contentId}"));
+                $"Battle ability references an unavailable summon unit: {contentId}"));
         return summons.ToImmutable();
     }
 
@@ -298,7 +326,7 @@ public static class BattlePreparationAssembler
                 definition,
                 root.Behavior,
                 root.AbilityLoadout?.Resolve(content.Graph),
-                content.Graph);
+                content.Graph) with { AttackHitGrowth = root.AttackHitGrowth?.Snapshot() };
         }
         finally { root.Free(); }
     }

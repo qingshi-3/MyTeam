@@ -4,19 +4,23 @@
 [ext_resource type="Resource" path="res://content/ui/semantic_icon_catalog.tres" id="2"]
 
 [node name="StatBlock" type="PanelContainer"]
+mouse_filter = 2
 custom_minimum_size = Vector2(124, 66)
 script = ExtResource("1")
 Catalog = ExtResource("2")
 
 [node name="Layout" type="VBoxContainer" parent="."]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/separation = 1
 
 [node name="Primary" type="HBoxContainer" parent="Layout"]
+mouse_filter = 2
 layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="StatIcon" type="TextureRect" parent="Layout/Primary"]
+mouse_filter = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
@@ -24,12 +28,14 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="StatValue" type="Label" parent="Layout/Primary"]
+mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"PlayerLabel"
 text = "0"
 
 [node name="StatLabel" type="Label" parent="Layout"]
+mouse_filter = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryLabel"

@@ -196,6 +196,7 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
     {
         Version = source.Version,
         Seed = source.Seed,
+        OpeningRecruitment = source.OpeningRecruitment,
         Roster = source.Roster is null
             ? null!
             : source.Roster.Select(unit => unit is null
@@ -282,6 +283,7 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         var copy = Clone(source);
         target.Version = copy.Version;
         target.Seed = copy.Seed;
+        target.OpeningRecruitment = copy.OpeningRecruitment;
         target.Roster = copy.Roster;
         target.CurrentPopulation = copy.CurrentPopulation;
         target.PopulationCapSources = copy.PopulationCapSources;

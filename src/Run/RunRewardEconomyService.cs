@@ -45,6 +45,8 @@ public sealed class RunRewardEconomyService
         Place(run, startingHero.InstanceId, BattlefieldLayout.Version2HeroCell);
         var random = new DeterministicRandom(run.Seed);
         var starters = _project.Campaign.StarterPool.ContentIds
+            .Where(id => id != heroId)
+            .Distinct(StringComparer.Ordinal)
             .Select(Required)
             .OrderBy(_ => random.NextInt(0, int.MaxValue))
             .Take(_rules.StarterRosterHeroCount)
@@ -63,15 +65,63 @@ public sealed class RunRewardEconomyService
         return _persistence.ValidateRun(run) && _persistence.SaveActiveRun(run) ? run : null;
     }
 
+    public ActiveRunDto? CreateOpening(ulong seed)
+    {
+        if (_project.Campaign.RecruitmentSupply is not { } supply) return null;
+        var run = new ActiveRunDto { Seed = seed == 0 ? 1UL : seed, Gold = _rules.StartingGold,
+            CurrentPopulation = _rules.InitialPopulation };
+        ActiveRunFormationSchema.InitializeVersion4(run, _rules);
+        var candidates = RecruitmentSupplySampler.Draw(supply, _project.Campaign.RecruitmentPool.ContentIds,
+            supply.OpeningTierWeights, CompiledRecruitmentSupply.OpeningCandidateCount, $"{run.Seed:x16}:opening");
+        run.OpeningRecruitment = new([.. candidates], []);
+        return _persistence.ValidateRun(run) && _persistence.SaveActiveRun(run) ? run : null;
+    }
+
+    public bool ToggleOpeningHero(ActiveRunDto? run, string id)
+    {
+        if (run?.OpeningRecruitment is not { } opening || !_persistence.ValidateRun(run) ||
+            !opening.CandidateIds.Contains(id)) return false;
+        var selected = opening.SelectedIds.Contains(id) ? opening.SelectedIds.Remove(id) : opening.SelectedIds.Add(id);
+        if (selected.Length > CompiledRecruitmentSupply.OpeningSelectionCount) return false;
+        var working = _persistence.CloneRun(run);
+        working.OpeningRecruitment = opening with { SelectedIds = selected };
+        return _persistence.ValidateRun(working) && _persistence.TryPublish(working, run);
+    }
+
+    public bool ConfirmOpening(ActiveRunDto? run)
+    {
+        if (run?.OpeningRecruitment is not { SelectedIds.Length: CompiledRecruitmentSupply.OpeningSelectionCount } opening ||
+            !_persistence.ValidateRun(run)) return false;
+        var working = _persistence.CloneRun(run);
+        working.OpeningRecruitment = null;
+        var cells = new[] { BattlefieldLayout.Version2HeroCell }.Concat(BattlefieldLayout.Version2SoldierCells).Distinct().ToArray();
+        for (var index = 0; index < opening.SelectedIds.Length; index++)
+        {
+            var hero = AddRosterHero(working, opening.SelectedIds[index]);
+            if (hero is null) return false;
+            Place(working, hero.InstanceId, cells[index]);
+        }
+        working.SelectedNode = TowerNodeType.Combat;
+        working.PendingNode = true;
+        return _persistence.ValidateRun(working) && _persistence.TryPublish(working, run);
+    }
+
     public IReadOnlyList<CatalogEntry> PickEntries(
         ActiveRunDto run,
         CompiledContentPool source,
         int count,
         int salt)
     {
+        if (source.Kind == ContentPoolKind.Soldier && _project.Campaign.RecruitmentSupply is { } supply)
+            return RecruitmentSupplySampler.Draw(supply, source.ContentIds.Where(id => !RunRecruitmentPolicy.IsOwned(run, id)),
+                supply.WeightsAt(run.FloorIndex), count, $"{run.Seed:x16}:{run.FloorIndex}:{run.BattleNumber}:{source.StableId}:{salt}")
+                .Select(Required).ToArray();
         var random = new DeterministicRandom(
             run.Seed ^ (ulong)(run.FloorIndex + 1 + salt) * 0x94D049BB133111EBUL);
+        var selectedHeroes = new HashSet<string>(StringComparer.Ordinal);
         return source.ContentIds.Select(Required)
+            .Where(entry => entry.Definition is not UnitDefinition ||
+                !RunRecruitmentPolicy.IsOwned(run, entry.StableId) && selectedHeroes.Add(entry.StableId))
             .OrderBy(_ => random.NextInt(0, int.MaxValue))
             .Take(count)
             .ToArray();
@@ -79,9 +129,10 @@ public sealed class RunRewardEconomyService
 
     public bool Recruit(ActiveRunDto? run, string rosterHeroId)
     {
-        if (run is null || !_persistence.ValidateRun(run) ||
+        if (run is null || run.OpeningRecruitment is not null || !_persistence.ValidateRun(run) ||
             !_content.TryGet(rosterHeroId, out var entry) ||
-            entry.Definition is not UnitDefinition { IsEnemy: false })
+            entry.Definition is not UnitDefinition { IsEnemy: false, IsTestDummy: false } ||
+            RunRecruitmentPolicy.IsOwned(run, rosterHeroId))
             return false;
         var working = _persistence.CloneRun(run);
         if (working.Roster.Count >= working.CurrentPopulation + _rules.ReserveCapacity) return false;
@@ -211,6 +262,7 @@ public sealed class RunRewardEconomyService
         string contentId,
         string? fixedInstanceId = null)
     {
+        if (RunRecruitmentPolicy.IsOwned(run, contentId)) return null;
         var sequence = 0;
         if (fixedInstanceId is null && !TryNextInstanceSequence(run, out sequence)) return null;
         var instance = new RosterHeroInstanceDto

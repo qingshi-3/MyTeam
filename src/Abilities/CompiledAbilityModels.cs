@@ -9,9 +9,13 @@ public sealed record CompiledAbilityPresentation(
     string SemanticIcon,
     string Cue,
     string ReportLabel,
-    string DamageVfx = "");
+    string DamageVfx = "",
+    string CastVfx = "");
 
 public abstract record CompiledAbilityOperation;
+
+public sealed record CompiledProjectileSequenceAbilityOperation(int ShotCount, float AttackIntervalRatio,
+    float AttackDamageMultiplier, int MaxTargets = 1) : CompiledAbilityOperation;
 
 public sealed record CompiledEffectAbilityOperation(
     CompiledEffectBinding Binding,
@@ -27,7 +31,8 @@ public sealed record CompiledCooldownAbilityOperation(
 
 public sealed record CompiledApplyStatusAbilityOperation(
     CompiledStatusDefinition Status,
-    CompiledEffectTargetQuery TargetQuery) : CompiledAbilityOperation;
+    CompiledEffectTargetQuery TargetQuery,
+    string ApplicationVfx = "") : CompiledAbilityOperation;
 
 public sealed record CompiledSummonAbilityOperation(
     AbilitySummonProfile Profile,
@@ -36,7 +41,7 @@ public sealed record CompiledSummonAbilityOperation(
     float DamageMultiplier,
     int MaximumLivingTemporaryUnits,
     bool RequireAtLeastOne,
-    string SummonContentId) : CompiledAbilityOperation;
+    string SummonContentId, bool LimitPerOwner = false) : CompiledAbilityOperation;
 
 public sealed record CompiledAbilityDefinition(
     string StableId,
@@ -51,7 +56,16 @@ public sealed record CompiledAbilityDefinition(
     int IntervalTicks,
     ImmutableArray<CompiledAbilityOperation> Operations,
     CompiledAbilityPresentation? Presentation,
-    AbilityAutomaticTargetKind AutomaticTarget = AbilityAutomaticTargetKind.CurrentEnemy);
+    AbilityAutomaticTargetKind AutomaticTarget = AbilityAutomaticTargetKind.CurrentEnemy,
+    bool Echoable = false, string AuthoredDescription = "")
+{
+    public bool IsActiveSkill => Trigger is AbilityTriggerKind.ManaFull or AbilityTriggerKind.ActionQueued;
+
+    // UI classification also includes authored enemy cast actions. Periodic passive
+    // maintenance remains passive; this does not change combat event routing.
+    public bool IsDisplayedActiveSkill => IsActiveSkill || Operations.Any(operation =>
+        operation is CompiledChargedLineOperation or CompiledTrampleOperation or CompiledEnemyAction);
+}
 
 public sealed record CompiledAbilityLoadout(
     ImmutableArray<CompiledAbilityDefinition> Abilities)

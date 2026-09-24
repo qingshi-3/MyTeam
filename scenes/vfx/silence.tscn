@@ -1,0 +1,47 @@
+[gd_scene load_steps=11 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxAmbientTrack.cs" id="ambient"]
+[ext_resource type="Texture2D" path="res://assets/vfx/library/silence-mark.png" id="mark"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/silence_mark.gdshader" id="mark_shader"]
+[ext_resource type="Shader" path="res://scenes/vfx/silence_echo.gdshader" id="echo_shader"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[sub_resource type="ShaderMaterial" id="Mark"]
+resource_local_to_scene = true
+shader = ExtResource("mark_shader")
+[sub_resource type="ShaderMaterial" id="Echo"]
+resource_local_to_scene = true
+shader = ExtResource("echo_shader")
+[node name="Silence" type="Node2D"]
+script = ExtResource("root")
+[node name="BrokenEcho" type="Sprite2D" parent="."]
+texture = ExtResource("surface")
+material = SubResource("Echo")
+script = ExtResource("sprite")
+position = Vector2(0,-56)
+scale = Vector2(0.48,0.36)
+ShaderLifecycle = true
+Duration = 1.0
+[node name="Seal" type="Sprite2D" parent="."]
+texture = ExtResource("mark")
+texture_filter = 4
+material = SubResource("Mark")
+script = ExtResource("sprite")
+position = Vector2(0,-56)
+scale = Vector2(0.28,0.28)
+ShaderLifecycle = true
+Duration = 1.0
+[node name="QuietMotes" type="Node2D" parent="."]
+script = ExtResource("ambient")
+ParticleScene = ExtResource("dust")
+position = Vector2(0,-58)
+Amount = 7
+Seed = 6121
+Spread = Vector2(46,9)
+Velocity = Vector2(0,13)
+Lifetime = 1.2
+SizeRange = Vector2(7,11)
+StartTint = Color(0.73,0.61,0.9,1)
+EndTint = Color(0.24,0.16,0.43,1)
+Opacity = 0.35

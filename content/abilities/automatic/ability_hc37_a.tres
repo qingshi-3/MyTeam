@@ -1,0 +1,18 @@
+[gd_resource type="Resource" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/DuelAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="operation"]
+script = ExtResource("operation")
+DurationTicks = 40
+BreakDistance = 4
+[resource]
+script = ExtResource("ability")
+StableId = "ability_hc37_a"
+DisplayName = "决斗"
+Description = "与当前近战敌人决斗 4 秒，双方锁定彼此且不能发动主动；第三者仍可攻击。任一方死亡或拉开超过 4 格时结束，不提供永久成长。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 5
+Echoable = false
+Operations = [SubResource("operation")]

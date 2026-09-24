@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="sprite"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBallisticTrack.cs" id="particles"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="glow"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+
+[sub_resource type="ShaderMaterial" id="light"]
+shader = ExtResource("glow")
+shader_parameter/rays = 0.0
+shader_parameter/core_strength = 0.55
+shader_parameter/corona_strength = 0.5
+shader_parameter/tint = Color(0.72, 0.94, 1, 0.85)
+
+[node name="SpellCast" type="Node2D"]
+script = ExtResource("root")
+
+[node name="BodyLight" type="Sprite2D" parent="."]
+script = ExtResource("sprite")
+texture = ExtResource("surface")
+material = SubResource("light")
+scale = Vector2(0.95, 0.95)
+Duration = 0.32
+StartScale = 0.48
+EndScale = 1.0
+
+[node name="ReleaseMotes" type="Node2D" parent="."]
+script = ExtResource("particles")
+ParticleScene = ExtResource("dust")
+Amount = 6
+Seed = 1816
+Radial = true
+Delay = 0.035
+OriginRadius = 14.0
+SpeedRange = Vector2(65, 115)
+LifetimeRange = Vector2(0.22, 0.38)
+SizeRange = Vector2(13, 22)
+HeightScale = 1.0
+Gravity = -25.0
+EndTint = Color(0.5, 0.85, 1, 1)
+modulate = Color(0.78, 0.95, 1, 0.8)

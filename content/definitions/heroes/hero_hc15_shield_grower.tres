@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc15_shield_grower.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc15_shield_grower"
+DisplayName = "接盾战士"
+Description = "HC15／BC12 测试稿。自身及最近一名友军各获得 40 护盾。 被动：每次独立获得正值新护盾，本战攻击增加 2；单纯状态刷新不计次。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 380
+AttackDamage = 16
+Armor = 8
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

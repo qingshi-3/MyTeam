@@ -3,60 +3,14 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Godot;
-using TowerAutobattler.Attributes;
-using TowerAutobattler.Abilities;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Components;
 using TowerAutobattler.Content;
 using TowerAutobattler.Domain;
-using TowerAutobattler.Equipment;
-using TowerAutobattler.Statuses;
-using TowerAutobattler.Traits;
 using TowerAutobattler.UI;
+using TowerAutobattler.Audio;
 
 namespace TowerAutobattler.Presentation;
-
-public sealed record BattleScreenRuntimeUnitSnapshot(
-    string RuntimeId,
-    string SourceInstanceId,
-    string ContentId,
-    string DisplayName,
-    UnitRole Role,
-    bool IsHero,
-    int Team,
-    Vector2I Cell,
-    bool Alive,
-    float Health,
-    float MaxHealth,
-    float Damage,
-    float AttackSpeed,
-    float Reach,
-    float ControlResistance,
-    ImmutableArray<BattleScreenEquipmentSnapshot> Equipment,
-    ImmutableArray<TraitContributionSnapshot> TraitContributions,
-    ImmutableArray<TraitPresentationSnapshot> TeamTraits,
-    ImmutableArray<StatusRuntimeSnapshot> Statuses,
-    BattleUnitMode Mode,
-    BattleActionKind LastActionKind,
-    string ActionTargetName,
-    int AttackCooldown,
-    int DisabledTicks,
-    Vector2 Position = default,
-    float CurrentMana = 0,
-    float MaxMana = 0,
-    float Shield = 0,
-    ImmutableArray<CompiledAbilityDefinition> Abilities = default,
-    string LastAbilityName = "",
-    bool IsPersistentRosterHero = false,
-    bool IsTemporary = false);
-
-public sealed record BattleScreenEquipmentSnapshot(
-    string InstanceId,
-    string ContentId,
-    int SlotIndex,
-    string DisplayName = "",
-    string Description = "",
-    Texture2D? Icon = null);
 
 public partial class BattleScreenController : Control
 {
@@ -69,19 +23,23 @@ public partial class BattleScreenController : Control
     private const float NormalSimulationScale = .8f;
     private const double EndHoldSeconds = 1.1;
     private const double EndFadeSeconds = .45;
-    private const int MaxActiveFloatingCues = 64;
-
-    [Export] public PackedScene? FloatingCueScene { get; set; }
 
     internal Func<CatalogEntry, UnitContentRoot> PresenterFactory { get; set; } =
         entry => entry.Scene.Instantiate<UnitContentRoot>();
 
     private BattleBoard _board = null!;
     private Node2D _unitsRoot = null!;
+    private BattleGeometryOverlay _geometry = null!;
+    private Button _collisionToggle = null!;
+    private Button _attackRangeToggle = null!;
+    private Label _geometryReadout = null!;
     private RangedAttackLayer _rangedAttackLayer = null!;
-    private Control _floatingCueOverlay = null!;
+    private FeedbackAudio _audio = null!;
+    private BattleFloatingCueLayer _floatingCueLayer = null!;
     private Label _title = null!;
     private Label _rule = null!;
+    private Button _ruleButton = null!;
+    private ContextPopup _rulesPopup = null!;
     private BattleStatusStrip _status = null!;
     private Button _pause = null!;
     private Button _speed = null!;
@@ -90,9 +48,9 @@ public partial class BattleScreenController : Control
     private Button _returnToConfiguration = null!;
     private TacticalCommandHud _tacticalCommandHud = null!;
     private SelectedUnitPanel _selectedUnit = null!;
+    private BattleInspectorDock _inspector = null!;
     private ColorRect _endFadeOverlay = null!;
     private readonly Dictionary<string, UnitContentRoot> _presenters = new(StringComparer.Ordinal);
-    private readonly List<BattleFloatingCue> _floatingCues = [];
     private ContentRegistry? _content;
     private BattleConfig? _config;
     private BattleSimulation? _simulation;
@@ -109,7 +67,6 @@ public partial class BattleScreenController : Control
     private string _selectedRuntimeId = string.Empty;
     private int _combatCueCursor;
     private int _statusCueCursor;
-    private long _floatingCueSequence;
     public string LastRuntimeFailure { get; private set; } = string.Empty;
     public float SpeedScale => _speedScale;
     public int TacticalPoints => _simulation?.TacticalPoints ?? 0;
@@ -123,21 +80,34 @@ public partial class BattleScreenController : Control
     public BattleOutcome Outcome => _simulation?.Outcome ?? _terminalResult?.Outcome ?? BattleOutcome.Running;
     public bool HasActiveBattle => _simulation is not null;
     public BattleResult? TerminalResult => _terminalResult;
-    public int MaximumFloatingCueCount => MaxActiveFloatingCues;
-    public int ActiveFloatingCueCount => _floatingCues.Count;
-    public int ActiveFloatingTweenCount => _floatingCues.Count(cue => cue.HasActiveTween);
+    public int MaximumFloatingCueCount => BattleFloatingCueLayer.MaximumCueCount;
+    public int ActiveFloatingCueCount => _floatingCueLayer?.ActiveCueCount ?? 0;
+    public int ActiveFloatingTweenCount => _floatingCueLayer?.ActiveTweenCount ?? 0;
 
     public override void _Ready()
     {
         _board = GetNode<BattleBoard>("%BattleBoard");
         _unitsRoot = GetNode<Node2D>("%UnitsRoot");
+        _geometry = GetNode<BattleGeometryOverlay>("%BattleGeometryOverlay");
+        _collisionToggle = GetNode<Button>("%CollisionToggle");
+        _attackRangeToggle = GetNode<Button>("%AttackRangeToggle");
+        _geometryReadout = GetNode<Label>("%GeometryReadout");
+        _collisionToggle.Toggled += OnGeometryToggled;
+        _attackRangeToggle.Toggled += OnGeometryToggled;
         _rangedAttackLayer = GetNode<RangedAttackLayer>("%RangedAttackLayer");
+        _audio = GetNode<FeedbackAudio>("BattleAudio");
         _rangedAttackLayer.Bind(_board);
-        _floatingCueOverlay = GetNode<Control>("%FloatingCueOverlay");
-        if (FloatingCueScene is null)
-            throw new InvalidOperationException("BattleScreen requires an authored floating-cue scene.");
+        _rangedAttackLayer.BindUnitPositions(id => _presenters.TryGetValue(id, out var unit) ? unit.Position : null);
+        _rangedAttackLayer.BindUnitBodyPositions(id => _presenters.TryGetValue(id, out var unit)
+            ? _unitsRoot.ToLocal(unit.BodyGlobalPosition) : null);
+        _rangedAttackLayer.BindUnitBodyVisuals(id => _presenters.TryGetValue(id, out var unit)
+            ? unit.CaptureBodyVisual(_rangedAttackLayer.GlobalTransform.AffineInverse()) : null);
+        _floatingCueLayer = GetNode<BattleFloatingCueLayer>("%FloatingCueOverlay");
         _title = GetNode<Label>("%BattleTitle");
         _rule = GetNode<Label>("%RuleText");
+        _ruleButton = GetNode<Button>("%RuleButton");
+        _rulesPopup = GetNode<ContextPopup>("%RulesPopup");
+        _ruleButton.Pressed += ShowRules;
         _status = GetNode<BattleStatusStrip>("%BattleStatus");
         _pause = GetNode<Button>("%PauseButton");
         _speed = GetNode<Button>("%SpeedButton");
@@ -145,7 +115,10 @@ public partial class BattleScreenController : Control
         _reset = GetNode<Button>("%ResetBattleButton");
         _returnToConfiguration = GetNode<Button>("%ReturnConfigurationButton");
         _tacticalCommandHud = GetNode<TacticalCommandHud>("%TacticalCommandHud");
-        _selectedUnit = GetNode<SelectedUnitPanel>("%SelectedUnitPanel");
+        _inspector = GetNode<BattleInspectorDock>("%BattleInspectorDock");
+        _selectedUnit = _inspector.Details;
+        _inspector.StatisticsRequested += RefreshInspectorStatistics;
+        _inspector.UnitSelected += OnActorSelected;
         _endFadeOverlay = GetNode<ColorRect>("%EndFadeOverlay");
         _pause.Pressed += TogglePause;
         _speed.Pressed += CycleSpeed;
@@ -160,6 +133,11 @@ public partial class BattleScreenController : Control
 
     public override void _ExitTree()
     {
+        _collisionToggle.Toggled -= OnGeometryToggled;
+        _attackRangeToggle.Toggled -= OnGeometryToggled;
+        _inspector.StatisticsRequested -= RefreshInspectorStatistics;
+        _ruleButton.Pressed -= ShowRules;
+        _inspector.UnitSelected -= OnActorSelected;
         _pause.Pressed -= TogglePause;
         _speed.Pressed -= CycleSpeed;
         _step.Pressed -= OnStepPressed;
@@ -200,7 +178,7 @@ public partial class BattleScreenController : Control
             _commandFeedback = string.Empty;
             _commandFeedbackError = false;
             _selectedRuntimeId = string.Empty;
-            _selectedUnit.Visible = false;
+            _inspector.ResetSelection();
             RefreshCommandHud();
             RefreshStatus();
             SyncPresenters("idle");
@@ -222,6 +200,7 @@ public partial class BattleScreenController : Control
         _reset.Visible = visible;
         _returnToConfiguration.Visible = visible;
         _step.Disabled = !visible || !_paused || _ending || _simulation?.Outcome != BattleOutcome.Running;
+        RefreshCommandHud();
         if (_endFadeOverlay is not null)
             _endFadeOverlay.MouseFilter = visible ? MouseFilterEnum.Ignore : MouseFilterEnum.Stop;
     }
@@ -232,8 +211,11 @@ public partial class BattleScreenController : Control
         _paused = paused;
         _pause.Text = _paused ? "继续" : "暂停";
         _step.Disabled = !_step.Visible || !_paused;
+        // Resuming an animation may emit its pending first-frame marker immediately.
+        _audio.SetPaused(_paused);
         foreach (var presenter in _presenters.Values) presenter.SetPresentationPaused(_paused);
         _rangedAttackLayer.SetClock(_paused, _speedScale * NormalSimulationScale);
+        RefreshGeometry();
     }
 
     public void SetSpeed(float speed)
@@ -241,7 +223,7 @@ public partial class BattleScreenController : Control
         if (_ending) return;
         _speedScale = NormalizeSpeed(speed);
         _speed.Text = $"速度 x{_speedScale:0}";
-        foreach (var presenter in _presenters.Values) presenter.SetPresentationSpeed(_speedScale);
+        foreach (var presenter in _presenters.Values) presenter.SetPresentationSpeed(_speedScale, _speedScale * NormalSimulationScale);
         _rangedAttackLayer.SetClock(_paused, _speedScale * NormalSimulationScale);
     }
 
@@ -251,6 +233,7 @@ public partial class BattleScreenController : Control
             return false;
         try
         {
+            foreach (var presenter in _presenters.Values) presenter.StepAttackPresentation(BattleTiming.TickSeconds);
             _simulation.Step();
             PresentEvents(_simulation.DrainEvents());
             SnapPresentersToAuthority();
@@ -313,12 +296,52 @@ public partial class BattleScreenController : Control
 
     private void PresentEvents(IReadOnlyList<BattleEvent> events)
     {
+        foreach (var change in events.Where(e => e.Type is "revived" or "allegiance"))
+        {
+            var id = change.TargetRuntimeId;
+            if (_presenters.Remove(id,out var previous))
+            {
+                previous.ActorSelected -= OnActorSelected;
+                previous.AnimationSoundRequested -= OnAnimationSoundRequested;
+                previous.Deactivate(); previous.GetParent()?.RemoveChild(previous); previous.Free();
+            }
+            EnsurePresenter(id);
+        }
+        BattleAudioFeedback.Present(_audio, events,
+            id => FindState(id)?.AttackDelivery ?? AttackDelivery.Melee,
+            (id, cue) =>
+            {
+                EnsurePresenter(id);
+                return _presenters.TryGetValue(id, out var actor) && actor.HasAnimationSounds(cue);
+            });
+        PresentDisplacements(events);
+        var displacedOwners = events.Where(fact => fact.Displacement is not null)
+            .Select(fact => fact.TargetRuntimeId).ToHashSet(StringComparer.Ordinal);
+        var timedAttackOwners = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var fact in events)
+        {
+            var released = fact.Type is "attack" or "skill_arrow" && FindState(fact.SourceRuntimeId)?.Definition.ProjectileWindupSeconds > 0;
+            if (fact.AttackTiming is null && fact.Type is not ("attack_cancel" or "line_cancel" or "line_release" or "blade_release") && !released) continue;
+            EnsurePresenter(fact.SourceRuntimeId);
+            if (!_presenters.TryGetValue(fact.SourceRuntimeId, out var actor)) continue;
+            if (fact.AttackTiming is { } timing)
+            {
+                actor.FaceToward(_board.LogicalToLocal(fact.Position));
+                actor.BeginAttackPresentation(timing);
+                timedAttackOwners.Add(fact.SourceRuntimeId);
+            }
+            else if (fact.Type == "line_release") actor.CompleteAttackWindup(fact.Line?.ReleaseProgress ?? .8f);
+            else if (fact.Type == "blade_release") actor.CompleteAttackWindup(FindState(fact.SourceRuntimeId)!.Definition.AttackReleaseProgress);
+            else if (released) actor.CompleteAttackWindup(FindState(fact.SourceRuntimeId)!.Definition.AttackReleaseProgress);
+            else actor.CancelAttackPresentation();
+        }
         _rangedAttackLayer.Present(events, _paused);
         if (_simulation is not null && !events.Any(e => e.Type == "battle_finished"))
             _rangedAttackLayer.SynchronizeUnits(_simulation.Units);
         foreach (var battleEvent in events)
         {
-            if (battleEvent.Type != "move" || string.IsNullOrWhiteSpace(battleEvent.SourceRuntimeId)) continue;
+            if (battleEvent.Type != "move" || string.IsNullOrWhiteSpace(battleEvent.SourceRuntimeId) ||
+                displacedOwners.Contains(battleEvent.SourceRuntimeId)) continue;
             EnsurePresenter(battleEvent.SourceRuntimeId);
             if (_presenters.TryGetValue(battleEvent.SourceRuntimeId, out var mover))
             {
@@ -329,7 +352,7 @@ public partial class BattleScreenController : Control
             }
         }
 
-        foreach (var battleEvent in events.Where(battleEvent => battleEvent.Type is "attack" or "heal" or "ability"))
+        foreach (var battleEvent in events.Where(battleEvent => battleEvent.Type is "attack" or "skill_arrow" or "heal" or "ability"))
         {
             EnsurePresenter(battleEvent.SourceRuntimeId);
             EnsurePresenter(battleEvent.TargetRuntimeId);
@@ -339,6 +362,9 @@ public partial class BattleScreenController : Control
             if (battleEvent.Type == "ability" && _presenters.TryGetValue(battleEvent.SourceRuntimeId, out var caster))
                 caster.PresentAbility(FindState(battleEvent.SourceRuntimeId)?.LastAbilityName ?? "技能");
         }
+        foreach (var fact in events.Where(fact => fact.Type == "line_charge"))
+            if (_presenters.TryGetValue(fact.SourceRuntimeId, out var caster))
+                caster.PresentAbility(FindState(fact.SourceRuntimeId)?.LastAbilityName ?? "蓄力");
 
         var presented = new HashSet<string>(StringComparer.Ordinal);
         foreach (var selection in BattlePresentationCueArbiter.Select(events))
@@ -350,7 +376,7 @@ public partial class BattleScreenController : Control
                 var state = FindState(presentationId);
                 if (state is not null)
                 {
-                    presenter.RefreshPresentation(selection.Value, state.Health, state.MaxHealth);
+                    presenter.RefreshPresentation(state.Alive && timedAttackOwners.Contains(presentationId) ? "" : selection.Value, state.Health, state.MaxHealth);
                     presented.Add(presentationId);
                 }
             }
@@ -361,139 +387,28 @@ public partial class BattleScreenController : Control
 
     private void PresentResolvedFacts()
     {
-        if (_simulation is null || FloatingCueScene is null) return;
-        var lanes = new Dictionary<string, int>(StringComparer.Ordinal);
-
+        if (_simulation is null) return;
         var combatStart = Math.Min(_combatCueCursor, _simulation.CombatEvents.Count);
-        var combatFacts = _simulation.CombatEvents.Skip(combatStart)
-            .Where(item => (item.Kind is BattleCombatEventKind.DamageResolved or
-                            BattleCombatEventKind.HealingResolved) &&
-                           item.EffectiveValue > 0 &&
-                           !string.IsNullOrWhiteSpace(item.TargetRuntimeId))
-            .GroupBy(item => (item.Tick, item.Kind, item.TargetRuntimeId))
-            .Select(group => new
-            {
-                group.Key.Tick,
-                group.Key.Kind,
-                group.Key.TargetRuntimeId,
-                Value = group.Sum(item => item.EffectiveValue),
-                Position = group.OrderBy(item => item.Sequence).Last().Position,
-                Sequence = group.Min(item => item.Sequence)
-            })
-            .OrderBy(item => item.Tick)
-            .ThenBy(item => item.Sequence)
-            .ToArray();
-        _combatCueCursor = _simulation.CombatEvents.Count;
-        foreach (var fact in combatFacts)
-        {
-            var kind = fact.Kind == BattleCombatEventKind.DamageResolved
-                ? BattleFloatingCueKind.Damage
-                : BattleFloatingCueKind.Healing;
-            var sign = kind == BattleFloatingCueKind.Damage ? "-" : "+";
-            SpawnFloatingCue(
-                kind,
-                sign + FormatCueValue(fact.Value),
-                fact.TargetRuntimeId,
-                fact.Tick,
-                fact.Position,
-                lanes);
-        }
-
+        var combatFacts = _simulation.CombatEvents.Skip(combatStart).ToArray();
         var statusStart = Math.Min(_statusCueCursor, _simulation.StatusPresentationCues.Count);
         var statusCues = _simulation.StatusPresentationCues.Skip(statusStart).ToArray();
-        _statusCueCursor = _simulation.StatusPresentationCues.Count;
-        var onActive = statusCues
-            .Where(cue => cue.Lifecycle == StatusPresentationCueLifecycle.OnActive)
-            .Select(cue => (cue.Tick, cue.Status.OwnerId, cue.Status.StableId))
-            .ToHashSet();
-        var presented = new HashSet<(int Tick, string OwnerId, string StableId, BattleFloatingCueKind Kind)>();
-        foreach (var cue in statusCues)
+        foreach (var fact in combatFacts)
         {
-            BattleFloatingCueKind? kind = cue.Lifecycle switch
-            {
-                StatusPresentationCueLifecycle.OnActive => BattleFloatingCueKind.StatusActive,
-                StatusPresentationCueLifecycle.Executed when cue.Status.Stacks > 1 =>
-                    BattleFloatingCueKind.StatusStack,
-                StatusPresentationCueLifecycle.Executed when !onActive.Contains(
-                    (cue.Tick, cue.Status.OwnerId, cue.Status.StableId)) => BattleFloatingCueKind.StatusActive,
-                StatusPresentationCueLifecycle.Removed => BattleFloatingCueKind.StatusRemoved,
-                _ => null
-            };
-            if (kind is null || !presented.Add(
-                    (cue.Tick, cue.Status.OwnerId, cue.Status.StableId, kind.Value)))
-                continue;
-            var label = !string.IsNullOrWhiteSpace(cue.Status.ReportLabel)
-                ? cue.Status.ReportLabel
-                : !string.IsNullOrWhiteSpace(cue.Status.DisplayName)
-                    ? cue.Status.DisplayName
-                    : "状态";
-            var text = kind.Value switch
-            {
-                BattleFloatingCueKind.StatusActive => label + " 生效",
-                BattleFloatingCueKind.StatusStack => $"{label} ×{cue.Status.Stacks}",
-                _ => label + " 消退"
-            };
-            SpawnFloatingCue(
-                kind.Value,
-                text,
-                cue.Status.OwnerId,
-                cue.Tick,
-                default,
-                lanes);
+            _audio.Play(BattleAudioFeedback.CombatCue(fact,
+                FindState(fact.SourceRuntimeId)?.AttackDelivery ?? AttackDelivery.Melee));
+            if (fact.Kind == BattleCombatEventKind.AbilityResolved &&
+                !(_presenters.TryGetValue(fact.SourceRuntimeId, out var caster) && caster.HasAnimationSounds("skill_cast")))
+                _audio.Play(_audio.AbilityCue(fact.SubjectStableId));
         }
+        foreach (var cue in statusCues) _audio.Play(BattleAudioFeedback.StatusCue(cue));
+        _floatingCueLayer.Present(combatFacts, statusCues,
+            id => FindState(id)?.Position, _board.LogicalToLocal);
+        _combatCueCursor = _simulation.CombatEvents.Count;
+        _statusCueCursor = _simulation.StatusPresentationCues.Count;
+        RefreshGeometry();
     }
 
-    private void SpawnFloatingCue(
-        BattleFloatingCueKind kind,
-        string text,
-        string targetRuntimeId,
-        int tick,
-        CombatPoint eventPosition,
-        IDictionary<string, int> lanes)
-    {
-        if (FloatingCueScene is null || _floatingCueOverlay is null) return;
-        while (_floatingCues.Count >= MaxActiveFloatingCues)
-            ReleaseFloatingCue(_floatingCues[0], queueFree: false);
-
-        lanes.TryGetValue(targetRuntimeId, out var sequence);
-        lanes[targetRuntimeId] = sequence + 1;
-        var lane = sequence % 4;
-        var column = sequence / 4 % 3 - 1;
-        var state = FindState(targetRuntimeId);
-        var logicalPosition = eventPosition != default
-            ? new Vector2(eventPosition.X, eventPosition.Y)
-            : state?.Position ?? Vector2.Zero;
-        var cue = FloatingCueScene.Instantiate<BattleFloatingCue>();
-        cue.Name = $"FloatingCue{++_floatingCueSequence}";
-        cue.Finished += OnFloatingCueFinished;
-        _floatingCueOverlay.AddChild(cue);
-        _floatingCues.Add(cue);
-        cue.Play(kind, text, targetRuntimeId, tick, _board.LogicalToLocal(logicalPosition), lane, column);
-    }
-
-    private void OnFloatingCueFinished(BattleFloatingCue cue) =>
-        ReleaseFloatingCue(cue, queueFree: true);
-
-    private void ClearFloatingCues()
-    {
-        foreach (var cue in _floatingCues.ToArray())
-            ReleaseFloatingCue(cue, queueFree: false);
-        _floatingCues.Clear();
-    }
-
-    private void ReleaseFloatingCue(BattleFloatingCue cue, bool queueFree)
-    {
-        if (!_floatingCues.Remove(cue)) return;
-        cue.Finished -= OnFloatingCueFinished;
-        cue.Stop();
-        cue.GetParent()?.RemoveChild(cue);
-        if (queueFree) cue.QueueFree();
-        else cue.Free();
-    }
-
-    private static string FormatCueValue(float value) => value >= 10 || Math.Abs(value - MathF.Round(value)) < .01f
-        ? MathF.Round(value).ToString("0")
-        : value.ToString("0.#");
+    private void ClearFloatingCues() => _floatingCueLayer?.Clear();
 
     private void SyncPresenters(string cue, IReadOnlySet<string>? preserveCue = null)
     {
@@ -505,7 +420,9 @@ public partial class BattleScreenController : Control
             {
                 presenter.RefreshPresentation(state.Alive && preserveCue?.Contains(state.RuntimeId) == true ? "" : state.Alive ? cue : "defeated",
                     state.Health, state.MaxHealth);
-                presenter.RefreshCombatResources(state.CurrentMana, state.MaxMana, state.Shield, state.Statuses, state.Alive);
+                presenter.RefreshBattleForm(state.BodyRadius);
+                presenter.RefreshCombatResources(state.CurrentMana, state.MaxMana, state.Shield, state.Statuses, state.Alive,
+                    _simulation.ReadUnitSkills(state.RuntimeId).Primary);
             }
         }
     }
@@ -523,10 +440,11 @@ public partial class BattleScreenController : Control
             _unitsRoot.AddChild(presenter);
             presenter.Bind(state.RuntimeId, state.Team, state.Health, state.MaxHealth);
             presenter.ActorSelected += OnActorSelected;
+            presenter.AnimationSoundRequested += OnAnimationSoundRequested;
             subscribed = true;
             presenter.Activate(new UnitBindingContext(
                 new DeterministicRandom(1), NullEvents.Instance, NullCommands.Instance));
-            presenter.SetPresentationSpeed(_speedScale);
+            presenter.SetPresentationSpeed(_speedScale, _speedScale * NormalSimulationScale);
             presenter.SetPresentationPaused(_paused);
             presenter.Scale = Vector2.One * _board.CurrentProjection.UnitScale;
             presenter.SnapPresentation(_board.LogicalToLocal(state.Position), state.Health, state.MaxHealth);
@@ -536,7 +454,11 @@ public partial class BattleScreenController : Control
         {
             if (presenter is not null)
             {
-                if (subscribed) presenter.ActorSelected -= OnActorSelected;
+                if (subscribed)
+                {
+                    presenter.ActorSelected -= OnActorSelected;
+                    presenter.AnimationSoundRequested -= OnAnimationSoundRequested;
+                }
                 try { presenter.Deactivate(); }
                 catch { }
                 presenter.GetParent()?.RemoveChild(presenter);
@@ -547,6 +469,12 @@ public partial class BattleScreenController : Control
     }
 
     private BattleUnitState? FindState(string runtimeId) => _simulation?.Units.FirstOrDefault(unit => unit.RuntimeId == runtimeId);
+    private void OnAnimationSoundRequested(FeedbackSound sound)
+    {
+        if (!_ending && !_reported) _audio.Play(sound);
+    }
+
+    private void ShowRules() => _rulesPopup.Open(_ruleButton);
 
     private void TogglePause()
     {
@@ -587,6 +515,8 @@ public partial class BattleScreenController : Control
     private void RefreshCommandHud()
     {
         if (_simulation is null) return;
+        // Lab presets without commands should give this space back to the board and unit details.
+        _tacticalCommandHud.Visible = !_step.Visible || !_simulation.TacticalCommands.Slots.IsDefaultOrEmpty;
         _tacticalCommandHud.Bind(
             _simulation.TacticalCommands,
             _commandFeedback,
@@ -602,13 +532,26 @@ public partial class BattleScreenController : Control
             _simulation.Units.Count(unit => unit.Team == 1 && unit.Alive),
             _simulation.TacticalCommands.Slots.Any(slot => slot.GoldCost > 0), _simulation.RemainingGold,
             _commandFeedback, _commandFeedbackError);
+        RefreshInspectorStatistics();
     }
+
+    private void RefreshInspectorStatistics()
+    {
+        if (_simulation is not null && _inspector.WantsStatistics)
+            _inspector.BindStatistics(_simulation.ReadUnitReports(), ResolveUnitPortrait);
+    }
+
+    private UnitPortraitDefinition? ResolveUnitPortrait(string contentId) =>
+        _content is not null && _content.TryGet(contentId, out var entry) && entry.Definition is UnitDefinition unit
+            ? unit.Portrait : null;
 
     private void OnActorSelected(string runtimeId)
     {
         if (_ending) return;
         _selectedRuntimeId = runtimeId;
         RefreshSelectedUnit();
+        RefreshGeometry();
+        if (!GeometryEnabled) _inspector.ShowUnitDetails();
     }
 
     private void OnBoardGuiInput(InputEvent @event)
@@ -617,7 +560,12 @@ public partial class BattleScreenController : Control
         var presenter = _presenters.Values
             .Where(candidate => candidate.Visible && FindState(candidate.RuntimeId)?.Alive == true)
             .OrderBy(candidate => candidate.Position.DistanceSquaredTo(mouse.Position))
-            .FirstOrDefault(candidate => candidate.Position.DistanceTo(mouse.Position) <= _board.CurrentProjection.SelectionRadius);
+            .FirstOrDefault(candidate =>
+            {
+                var delta = (mouse.Position - candidate.Position) / _board.CurrentProjection.CellPitch;
+                return delta.Length() <= (FindState(candidate.RuntimeId)?.BodyRadius ?? 0) ||
+                    candidate.Position.DistanceTo(mouse.Position) <= _board.CurrentProjection.SelectionRadius;
+            });
         if (presenter is null) return;
         presenter.RequestSelection();
         _board.AcceptEvent();
@@ -627,67 +575,42 @@ public partial class BattleScreenController : Control
     {
         if (string.IsNullOrWhiteSpace(_selectedRuntimeId)) return;
         var state = FindState(_selectedRuntimeId);
-        if (state is not null) _selectedUnit.Bind(BuildRuntimeSnapshot(state));
+        if (state is not null) _inspector.BindSelection(BuildRuntimeSnapshot(state), ResolveUnitPortrait(state.Definition.ContentId));
     }
 
-    private BattleScreenRuntimeUnitSnapshot BuildRuntimeSnapshot(BattleUnitState unit)
+    private BattleScreenRuntimeUnitSnapshot BuildRuntimeSnapshot(BattleUnitState unit) =>
+        BattleRuntimeUnitProjection.Build(unit, _content, _config, _simulation?.TraitSnapshot,
+            _simulation?.DescribeBattleResources(unit.RuntimeId) ?? "", _simulation?.ReadUnitSkills(unit.RuntimeId));
+
+    private bool GeometryEnabled => _collisionToggle.ButtonPressed || _attackRangeToggle.ButtonPressed;
+
+    private void OnGeometryToggled(bool enabled)
     {
-        var equipment = _config?.Equipment.Instances
-            .Where(item => item.OwnerHeroInstanceId == unit.SourceInstanceId)
-            .OrderBy(item => item.SlotIndex)
-            .Select(item =>
-            {
-                var definition = _content is not null && _content.TryGet(item.ContentId, out var entry)
-                    ? entry.Definition as ItemDefinition : null;
-                return new BattleScreenEquipmentSnapshot(item.InstanceId, item.ContentId, item.SlotIndex,
-                    definition?.DisplayName ?? "未知装备", definition?.Description ?? "", definition?.Icon);
-            })
-            .ToImmutableArray() ?? [];
-        var traitSnapshot = _simulation?.TraitSnapshot;
-        var contributions = traitSnapshot?.Contributions
-            .Where(item => item.OwnerRuntimeId == unit.SourceInstanceId ||
-                           item.OwnerRuntimeId == unit.RuntimeId)
-            .OrderBy(item => item.TraitId, StringComparer.Ordinal)
-            .ThenBy(item => item.SourceInstanceId, StringComparer.Ordinal)
-            .ToImmutableArray() ?? [];
-        var teamTraits = traitSnapshot?.Values
-            .Where(value => value.Team == unit.Team)
-            .OrderBy(value => value.TraitId, StringComparer.Ordinal)
-            .Select(value => value.Presentation)
-            .ToImmutableArray() ?? [];
-        return new BattleScreenRuntimeUnitSnapshot(
-            unit.RuntimeId,
-            unit.SourceInstanceId,
-            unit.Definition.ContentId,
-            unit.Definition.DisplayName,
-            unit.Definition.Role,
-            unit.Definition.IsHero,
-            unit.Team,
-            unit.Cell,
-            unit.Alive,
-            unit.Health,
-            unit.MaxHealth,
-            unit.Damage,
-            unit.Attributes.GetValue(CombatAttribute.AttackSpeed),
-            unit.Attributes.GetValue(CombatAttribute.AttackRange),
-            unit.Attributes.GetValue(CombatAttribute.ControlResistance),
-            equipment,
-            contributions,
-            teamTraits,
-            unit.Statuses,
-            unit.Mode,
-            unit.LastActionKind,
-            unit.ActionTargetName,
-            unit.AttackCooldown,
-            unit.DisabledTicks,
-            unit.Position,
-            unit.CurrentMana,
-            unit.MaxMana,
-            unit.Shield,
-            unit.Definition.AbilityLoadout?.Abilities ?? [],
-            unit.LastAbilityName,
-            unit.IsPersistentRosterHero,
-            unit.IsTemporary);
+        if (GeometryEnabled) _inspector.CollapsePanel();
+        RefreshGeometry();
+    }
+
+    private void RefreshGeometry()
+    {
+        _geometryReadout.Visible = GeometryEnabled && _simulation is not null;
+        if (_simulation is null || !GeometryEnabled)
+        {
+            _geometry.Clear();
+            return;
+        }
+        var snapshot = _simulation.ReadSpatialSnapshot();
+        if (!snapshot.Units.Any(unit => unit.RuntimeId == _selectedRuntimeId))
+        {
+            _selectedRuntimeId = snapshot.Units.OrderByDescending(unit => unit.BodyRadius).FirstOrDefault()?.RuntimeId ?? "";
+            RefreshSelectedUnit();
+        }
+        var selected = snapshot.Units.FirstOrDefault(unit => unit.RuntimeId == _selectedRuntimeId);
+        _geometryReadout.Text = selected is null ? "" : $"{selected.DisplayName} · 直径 {selected.BodyRadius * 2:0.##} 格 · 普攻 {selected.AttackReach:0.##} 格";
+        // Diagnostic mode displays the actual committed positions instead of allowing interpolation
+        // lag to separate an actor from its collision circle. It never writes simulation state.
+        SnapPresentersToAuthority();
+        _geometry.Bind(snapshot, _board.CurrentProjection, _selectedRuntimeId,
+            _collisionToggle.ButtonPressed, _attackRangeToggle.ButtonPressed);
     }
 
     private void SnapPresentersToAuthority()
@@ -708,11 +631,15 @@ public partial class BattleScreenController : Control
             presenter.RemapPresentationCoordinates(previous.Origin, previous.CellPitch, next.Origin, next.CellPitch);
             presenter.Scale = Vector2.One * next.UnitScale;
         }
+        if (_geometry is not null) RefreshGeometry();
     }
 
     private void ClearPresenters(bool replacement = false)
     {
+        _audio?.Clear();
         _rangedAttackLayer?.Clear();
+        _geometry?.Clear();
+        if (_geometryReadout is not null) _geometryReadout.Visible = false;
         if (replacement)
         {
             try { _simulation?.Replace(); }
@@ -724,13 +651,14 @@ public partial class BattleScreenController : Control
         foreach (var presenter in _presenters.Values)
         {
             presenter.ActorSelected -= OnActorSelected;
+            presenter.AnimationSoundRequested -= OnAnimationSoundRequested;
             presenter.Deactivate();
             if (presenter.GetParent() is not null) presenter.GetParent().RemoveChild(presenter);
             presenter.Free();
         }
         _presenters.Clear();
         _selectedRuntimeId = string.Empty;
-        if (_selectedUnit is not null) _selectedUnit.Visible = false;
+        if (_inspector is not null) _inspector.ResetSelection();
         _simulation = null;
         _config = null;
         _content = null;
@@ -751,15 +679,23 @@ public partial class BattleScreenController : Control
     {
         if (_ending || _reported || _simulation is null || _simulation.Outcome == BattleOutcome.Running) return;
         _ending = true;
+        // Scope completion can remove an airborne motion without a per-unit finish fact.
+        // The held result screen must retain ground positions, never suspended leap poses.
+        foreach (var state in _simulation.Units)
+            if (_presenters.TryGetValue(state.RuntimeId, out var presenter))
+                presenter.SnapPresentation(_board.LogicalToLocal(state.Position), state.Health, state.MaxHealth);
+        _rangedAttackLayer.Clear();
         _rangedAttackLayer.SetClock(false, _speedScale * NormalSimulationScale);
         _reported = true;
         _accumulator = 0;
         _terminalResult = _simulation.CreateResult();
+        _audio.Clear();
+        _audio.Play(_terminalResult.Outcome == BattleOutcome.PlayerVictory ? "victory" : "defeat");
         _pause.Disabled = true;
         _speed.Disabled = true;
         _step.Disabled = true;
         _board.MouseFilter = MouseFilterEnum.Ignore;
-        _selectedUnit.Visible = false;
+        _inspector.CollapsePanel();
         RefreshCommandHud();
         SetProcessUnhandledInput(true);
         ClearFloatingCues();

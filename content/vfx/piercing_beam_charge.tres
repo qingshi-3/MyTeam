@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="definition"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/piercing_beam_charge.tscn" id="scene"]
+[resource]
+script = ExtResource("definition")
+StableId = "piercing_beam_charge"
+DisplayName = "贯穿光束 · 方向预警与蓄力"
+PreviewNote = "方向固定；源端逐渐聚光。正式战斗由蓄力与释放事实驱动。"
+Scene = ExtResource("scene")
+Duration = 1.45
+CastDuration = 1.2
+Size = 256
+UsesRadius = true
+ReferenceRadius = 0.18

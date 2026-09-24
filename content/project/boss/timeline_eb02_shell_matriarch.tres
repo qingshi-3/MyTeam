@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BossTimelineDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/BossTimelineDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Project/BossPhaseDefinition.cs" id="2"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_enemy_eb02_shell_matriarch.tres" id="loadout"]
+
+[sub_resource type="Resource" id="Phase"]
+script = ExtResource("2")
+StableId = "phase_brood_shell"
+DisplayName = "硬壳与育雏"
+AbilityLoadout = ExtResource("loadout")
+
+[resource]
+script = ExtResource("1")
+StableId = "timeline_eb02_shell_matriarch"
+BossContentId = "enemy_eb02_shell_matriarch"
+Phases = [SubResource("Phase")]

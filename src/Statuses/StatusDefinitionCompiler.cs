@@ -312,12 +312,14 @@ public static partial class StatusDefinitionCompiler
     private static bool IsReactiveEventKind(BattleCombatEventKind kind) => kind is
         BattleCombatEventKind.AttackDeclared or
         BattleCombatEventKind.AttackLanded or
+        BattleCombatEventKind.SkillHitLanded or
         BattleCombatEventKind.AbilityResolved or
         BattleCombatEventKind.DamageResolved or
         BattleCombatEventKind.HealingResolved or
         BattleCombatEventKind.ShieldResolved or
         BattleCombatEventKind.UnitDefeated or
-        BattleCombatEventKind.UnitKilled;
+        BattleCombatEventKind.UnitKilled or
+        BattleCombatEventKind.ControlApplied;
 
     private static void ValidateEnum<T>(T value, string label, string name, ValidationReport report) where T : struct, Enum
     {

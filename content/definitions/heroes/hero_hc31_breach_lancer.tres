@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc31_breach_lancer.tres" id="r0"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r1"]
+
+[resource]
+script = ExtResource("r1")
+Id = "hero_hc31_breach_lancer"
+DisplayName = "破阵骑兵"
+Description = "HC31／MV01 测试稿。开场满蓝。冲向 4 格内最近敌人，在接敌处造成 160% 攻击力的伤害，影响周围 0.8 格并眩晕 0.6 秒；冲锋遵守地面占位。 被动：每次成功启动自己的满蓝主动，获得 50 护盾，帮助承受冲入敌阵后的攻击。 数值为测试暂值。"
+Portrait = ExtResource("r0")
+IsHero = true
+Role = 0
+Faction = 6
+RecruitCost = 5
+MaxHealth = 430
+AttackDamage = 23
+Armor = 9
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 80
+StartingMana = 80
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

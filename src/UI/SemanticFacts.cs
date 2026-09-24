@@ -15,6 +15,11 @@ public static class SemanticIconKeys
 {
     public static readonly StringName Health = "health";
     public static readonly StringName Damage = "damage";
+    public static readonly StringName Attack = "attack";
+    public static readonly StringName SpellPower = "spell_power";
+    public static readonly StringName LifeSteal = "keyword.lifesteal";
+    public static readonly StringName Armor = "armor";
+    public static readonly StringName ControlResistance = "control_resistance";
     public static readonly StringName Shield = "shield";
     public static readonly StringName Healing = "healing";
     public static readonly StringName Mana = "mana";
@@ -32,7 +37,7 @@ public static class SemanticIconKeys
 
     public static IReadOnlyList<StringName> Required { get; } = new StringName[]
         {
-            Health, Damage, Shield, Healing, Mana, TacticalPoint, Gold, Time, Kills, Deaths, Hero, Melee, Ranged, Risk, Loot, Reach
+            Health, Damage, Attack, SpellPower, LifeSteal, ControlResistance, Shield, Healing, Mana, TacticalPoint, Gold, Time, Kills, Deaths, Hero, Melee, Ranged, Risk, Loot, Reach
         }
         .Concat(Enum.GetValues<UnitRole>().Select(Responsibility))
         .Concat(Enum.GetValues<UnitFaction>().Select(Faction))
@@ -76,6 +81,8 @@ public static class UnitSemanticFacts
         SemanticIconKeys.Health, (includeLabel ? "生命 " : string.Empty) + value, "HealthValue");
     public static SemanticFact Damage(string value, bool includeLabel = true) => new(
         SemanticIconKeys.Damage, (includeLabel ? "伤害 " : string.Empty) + value, "DamageValue");
+    public static SemanticFact Attack(string value, bool includeLabel = true) => new(
+        SemanticIconKeys.Attack, (includeLabel ? "攻击 " : string.Empty) + value, "DamageValue");
     public static SemanticFact Reach(float value, bool includeLabel = true) => new(
         SemanticIconKeys.Reach,
         includeLabel

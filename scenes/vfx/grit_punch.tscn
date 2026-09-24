@@ -1,0 +1,20 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxGritPunchTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/grit_punch.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+[node name="grit_punch" type="Node2D"]
+script = ExtResource("root")
+[node name="Layers" type="Node2D" parent="." node_paths=PackedStringArray("GroundStrip", "BodyStrip")]
+script = ExtResource("track")
+Released = true
+GroundStrip = NodePath("Ground")
+BodyStrip = NodePath("Body")
+[node name="Ground" type="Sprite2D" parent="Layers"]
+texture = ExtResource("surface")
+material = SubResource("material")
+[node name="Body" type="Sprite2D" parent="Layers"]
+texture = ExtResource("surface")
+material = SubResource("material")

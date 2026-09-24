@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="owner"]
+[ext_resource type="Resource" path="res://content/statuses/status_hc03_thorns.tres" id="thorns"]
+[sub_resource type="Resource" id="owner"]
+script = ExtResource("owner")
+[sub_resource type="Resource" id="grant"]
+script = ExtResource("operation")
+Status = ExtResource("thorns")
+TargetQuery = SubResource("owner")
+[resource]
+script = ExtResource("script")
+StableId = "ability_hc03_thorns"
+DisplayName = "荆棘甲"
+Description = "被普攻命中：反伤，造成自身当前防御 100% 的伤害。"
+ActivationKind = 3
+Operations = [SubResource("grant")]

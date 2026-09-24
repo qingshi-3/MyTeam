@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/wind_vortex.tscn" id="scene"]
+[resource]
+script=ExtResource("def")
+StableId="wind_vortex"
+DisplayName="风暴旋涡"
+PreviewNote="窄根宽顶的风体持续卷升，偏心腰部轻摆，外围细尘独立旋起；结束后风体抬升散去"
+Scene=ExtResource("scene")
+Duration=2.8
+Persistent=true
+Ground=true
+FlattenGround=false
+UsesRadius=true
+Size=220.0
+ReferenceRadius=1.5

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc36_cyclone_weaver.tres" id="r0"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r1"]
+
+[resource]
+script = ExtResource("r1")
+Id = "hero_hc36_cyclone_weaver"
+DisplayName = "风眼术士"
+Description = "HC36／MV06 测试稿。开场满蓝。牵引 3.6 格内最近的至多 5 名非 Boss 敌人，各向施法者附近不同合法位置靠拢至多 2.4 格；各造成 30 加 50% 攻击力的伤害并眩晕 0.4 秒。 被动：每 3 秒为自己 3.6 格内最近的两名其他友军各提供 25 护盾。 数值为测试暂值。"
+Portrait = ExtResource("r0")
+IsHero = true
+Role = 3
+Faction = 6
+RecruitCost = 5
+MaxHealth = 310
+AttackDamage = 18
+Armor = 5
+AttackRange = 3.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 100
+StartingMana = 100
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

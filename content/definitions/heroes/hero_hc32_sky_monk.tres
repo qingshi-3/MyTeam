@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc32_sky_monk.tres" id="r0"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r1"]
+
+[resource]
+script = ExtResource("r1")
+Id = "hero_hc32_sky_monk"
+DisplayName = "腾空武僧"
+Description = "HC32／MV02 测试稿。开场满蓝。跃向 5.5 格内最远敌人的后侧合法位置；落地对 1 格内敌人造成 140% 攻击力的伤害并眩晕 0.8 秒。 被动：被普通攻击命中时额外获得 3 法力，最多每秒触发一次。 数值为测试暂值。"
+Portrait = ExtResource("r0")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 350
+AttackDamage = 25
+Armor = 6
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 90
+StartingMana = 90
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

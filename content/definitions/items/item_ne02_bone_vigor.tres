@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+[ext_resource type="Texture2D" path="res://assets/ui/items/item_ne02_bone_vigor.png" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_ne02_bone_vigor"
+DisplayName = "丰骨匣"
+Description = "我方临时召唤小兵最大生命提高 30%，包括战中后来生成的单位。生命提高会同时增加承伤时间和按最大生命计算的殉爆伤害。"
+Icon = ExtResource("r1")
+Rarity = 1
+ProductKind = 0
+Price = 24
+Tags = Array[StringName]([&"item", &"relic"])

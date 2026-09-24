@@ -1,0 +1,17 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxTrampleTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/trample.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+[node name="trample_warning" type="Node2D"]
+script = ExtResource("root")
+[node name="Layers" type="Node2D" parent="." node_paths=PackedStringArray("Surface")]
+script = ExtResource("track")
+Rush = false
+Surface = NodePath("Surface")
+[node name="Surface" type="Sprite2D" parent="Layers"]
+texture = ExtResource("surface")
+material = SubResource("material")

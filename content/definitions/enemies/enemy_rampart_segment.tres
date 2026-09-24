@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_rampart_segment.tres" id="portrait"]
+[resource]
+script = ExtResource("script")
+Portrait = ExtResource("portrait")
+Id = "enemy_rampart_segment"
+DisplayName = "短岩垒"
+Description = "挡住通路与飞行物，可被普通攻击击碎。"
+Role = 0
+Faction = 7
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 75
+AttackDamage = 0
+AttackRange = 0
+AttackCooldown = 2
+MoveInterval = 0.6
+BodyRadius = 0.4
+Armor = 3
+Tags = Array[StringName]([&"enemy", &"construct"])

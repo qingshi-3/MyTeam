@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc01_crossbow.tres" id="portrait"]
+
+[resource]
+script = ExtResource("script")
+Id = "hero_hc01_crossbow"
+DisplayName = "连弩手"
+Description = "HC01 测试稿：主动连射 3 箭，每箭 65% 攻击力，发箭间隔随攻速变化。命中每层增加 4% 基础攻速，无层数上限；基础版换目标清零，U01 升阶后保留，战后清零。数值均为测试暂值。"
+Portrait = ExtResource("portrait")
+IsHero = true
+IsEnemy = false
+IsTestDummy = false
+Role = 2
+Faction = 6
+RecruitCost = 5
+MaxHealth = 160
+AttackDamage = 24
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+Armor = 2
+MaxMana = 60
+StartingMana = 20
+Tags = Array[StringName]([&"hero"])

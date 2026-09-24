@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="definition"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/TrampleAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="trample"]
+script = ExtResource("operation")
+Range = 12.0
+Distance = 8.0
+Speed = 5.0
+ChargeTicks = 12
+RecoveryTicks = 10
+SideDistance = 2.4
+AttackMultiplier = 1.2
+WarningVfx = "trample_warning"
+RushVfx = "trample_rush"
+[resource]
+script = ExtResource("definition")
+StableId = "ability_ee03_trample"
+DisplayName = "蛮横冲阵"
+Description = "蓝量充满后消耗全部蓝量，蓄力1.2秒锁定方向，冲锋并把沿途单位推向两侧。每个敌人受到一次120%攻击力伤害，友军仅被推开；无法让路时停止，结束后收招1秒。蓄力、冲锋与收招期间暂停回蓝。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 100
+Operations = [SubResource("trample")]

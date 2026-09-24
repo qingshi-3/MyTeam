@@ -22,7 +22,7 @@ public partial class AbilityFoundationContractSmoke : Node
             PeriodicTargetingDoesNotRequireMana();
             PassiveGrantFollowsOwnerLifetime();
             FailedReactionRestoresOnlyItsOwnMutation();
-            DamageTypesUseTheirOwnResistance();
+            FormulaDamageUsesUnifiedDefense();
             InitialGrantsProjectBeforeTheirGameplayEffects();
             SummoningDoesNotReplayTeamHealth();
             ReactiveStatusLimitsSkipNormally();
@@ -118,28 +118,68 @@ public partial class AbilityFoundationContractSmoke : Node
     }
 
     private static CompiledAbilityDefinition EffectAbility(string id, AbilityActivationKind kind, AbilityTriggerKind trigger,
-        EffectKind effect, float amount, EffectDamageType damageType = EffectDamageType.Physical) => new(id, id, "", kind, trigger, 0, 0, 0, 0, 0,
+        EffectKind effect, float amount, EffectDamageType damageType = EffectDamageType.Normal) => new(id, id, "", kind, trigger, 0, 0, 0, 0, 0,
         [new CompiledEffectAbilityOperation(new CompiledEffectBinding(id + "_effect", 0,
             new CompiledEffectTrigger(EffectTriggerKind.Manual, EffectDomainEventKind.None), [], new CompiledExplicitTargetQuery(),
             [new CompiledEffectStep(effect, EffectAmountSource.Fixed, amount, DamageType: damageType)], new CompiledEffectBindingLimits(0, 0, 0, 0), null),
             AbilityInvocationValueSource.Fixed, 1)], null);
 
-    private static void DamageTypesUseTheirOwnResistance()
+    private static void FormulaDamageUsesUnifiedDefense()
     {
+        CompiledAttributeMagnitude Scale(CombatAttribute attribute, float ratio) =>
+            new CompiledCompositeMagnitude(AttributeMagnitudeOperation.Multiply,
+                [new CompiledSourceAttributeMagnitude(attribute, AttributeCaptureMode.Snapshot),
+                    new CompiledConstantMagnitude(ratio)], AttributeCaptureMode.Snapshot);
+        CompiledAttributeMagnitude?[] formulas = [null, Scale(CombatAttribute.AttackDamage, 2),
+            Scale(CombatAttribute.SpellPower, 4),
+            new CompiledCompositeMagnitude(AttributeMagnitudeOperation.Add,
+                [Scale(CombatAttribute.AttackDamage, 1), Scale(CombatAttribute.SpellPower, 1),
+                    new CompiledConstantMagnitude(25)], AttributeCaptureMode.Snapshot)];
         foreach (var damageType in Enum.GetValues<EffectDamageType>())
+        foreach (var formula in formulas)
+        foreach (var shield in new[] { 0f, 20f, 200f })
+        foreach (var health in new[] { 1000f, 25f })
         {
-            var ability = EffectAbility("typed_damage", AbilityActivationKind.Triggered, AbilityTriggerKind.AttackHit,
+            var ability = EffectAbility("typed_damage", AbilityActivationKind.Automatic, AbilityTriggerKind.PeriodicTick,
                 EffectKind.Damage, 100, damageType);
-            using var battle = Battle(Unit("owner", [ability]), Unit("enemy", []));
-            var enemy = battle.Units.Single(unit => unit.Definition.ContentId == "enemy");
+            var operation = (CompiledEffectAbilityOperation)ability.Operations[0];
+            ability = ability with { IntervalTicks = 1, Operations = [operation with { Binding = operation.Binding with
+                { Effects = [new CompiledEffectStep(EffectKind.Damage, EffectAmountSource.Fixed,
+                    formula is null ? 100 : 1, formula, damageType)] } }] };
+            using var battle = Battle(
+                Unit("owner", [ability]) with { Behavior = new(Stationary: true, DisableBasicAttacks: true) },
+                Unit("enemy", []) with { Behavior = new(Stationary: true, DisableBasicAttacks: true) },
+                bindings: registry => registry.SubscribeCalculation(BattleCombatCalculationKind.Damage,
+                    CombatSourceRef.System("shared_damage_modifier"), 0, (_, amount) => amount * 1.2f));
+            var owner = battle.Units.Single(unit => unit.RuntimeId == "owner");
+            owner.Attributes.SetBaseValue(CombatAttribute.AttackDamage, 50);
+            owner.Attributes.SetBaseValue(CombatAttribute.SpellPower, 25);
+            var enemy = battle.Units.Single(unit => unit.RuntimeId == "enemy");
             enemy.Attributes.SetBaseValue(CombatAttribute.Armor, 100f / 7f);
-            enemy.Attributes.SetBaseValue(CombatAttribute.MagicResistance, 300f / 7f);
+            enemy.Shield = shield;
+            enemy.Health = health;
             battle.Step();
             var fact = battle.CombatEvents.Single(value => value.Kind == BattleCombatEventKind.DamageResolved &&
                 value.Source.StableId == "typed_damage");
-            var expected = damageType switch { EffectDamageType.Physical => 50, EffectDamageType.Magical => 25, _ => 100 };
-            Require(fact.DamageType == damageType && Math.Abs(fact.EffectiveValue - expected) < .01f,
-                "damage type reaches the shared calculation and uses only its designated resistance");
+            var resolved = damageType == EffectDamageType.Normal ? 60f : 120f;
+            var absorbed = Math.Min(shield, resolved);
+            var healthLost = Math.Min(health, resolved - absorbed);
+            var effective = absorbed + healthLost;
+            Require(fact.DamageType == damageType && Math.Abs(fact.RequestedValue - 100) < .01f &&
+                Math.Abs(fact.AppliedValue - resolved) < .01f && Math.Abs(fact.EffectiveValue - effective) < .01f,
+                "fixed, attack, spell-power and mixed formulas share modifiers and defense; only true damage bypasses defense");
+            Require(Math.Abs(enemy.Shield - (shield - absorbed)) < .01f &&
+                Math.Abs(enemy.Health - (health - healthLost)) < .01f,
+                "both damage categories absorb shields before health, without counting overkill");
+            var reports = battle.CreateResult().Units;
+            Require(Math.Abs(reports.Single(unit => unit.RuntimeId == "owner").DamageDealt - effective) < .01f &&
+                Math.Abs(reports.Single(unit => unit.RuntimeId == "enemy").DamageTaken - effective) < .01f &&
+                Math.Abs(reports.Single(unit => unit.RuntimeId == "enemy").ShieldAbsorbed - absorbed) < .01f,
+                "effective damage and shield statistics retain attribution");
+            if (healthLost == health)
+                Require(battle.CombatEvents.Any(value => value.Kind == BattleCombatEventKind.UnitKilled &&
+                    value.Source.StableId == "typed_damage" && value.DamageType == damageType),
+                    "lethal damage retains ability and damage-category attribution");
         }
     }
 

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ProjectileSequenceAbilityOperationSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityPresentationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+ShotCount = 6
+AttackIntervalRatio = 0.6
+AttackDamageMultiplier = 0.5
+MaxTargets = 3
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+ReportLabel = "霜羽连射"
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_ne10_frost_volley"
+DisplayName = "霜羽连射"
+Description = "连续射出 6 箭，在最多 3 个目标间轮转；每箭造成 50% 攻击力伤害，间隔为当前普攻间隔的 60%。每箭命中均触发寒羽。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+Echoable = false
+Operations = [SubResource("s0")]
+Presentation = SubResource("s1")

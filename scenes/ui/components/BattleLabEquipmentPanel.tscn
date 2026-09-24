@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/UI/BattleLabEquipmentPanel.cs" id="1"]
+[ext_resource type="Script" path="res://src/UI/EquipmentDropZone.cs" id="2"]
+
+[node name="BattleLabEquipmentPanel" type="VBoxContainer"]
+script = ExtResource("1")
+theme_override_constants/separation = 8
+
+[node name="Hint" type="Label" parent="."]
+text = "拖到槽位配置 · 拖回装备库卸下"
+theme_override_font_sizes/font_size = 13
+autowrap_mode = 2
+
+[node name="Slots" type="HBoxContainer" parent="."]
+theme_override_constants/separation = 4
+
+[node name="Library" type="PanelContainer" parent="."]
+script = ExtResource("2")
+theme_type_variation = &"ContextSidebarPanel"
+custom_minimum_size = Vector2(0, 100)
+
+[node name="Layout" type="VBoxContainer" parent="Library"]
+mouse_filter = 1
+
+[node name="Title" type="Label" parent="Library/Layout"]
+text = "装备库 · 可重复取用 / 拖回卸下"
+mouse_filter = 2
+theme_override_font_sizes/font_size = 13
+
+[node name="Items" type="HFlowContainer" parent="Library/Layout"]
+mouse_filter = 1
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4

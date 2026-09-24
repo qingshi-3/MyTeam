@@ -1,0 +1,39 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_bc_banner_armor.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r2")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r3")
+Status = ExtResource("r1")
+TargetQuery = SubResource("s0")
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r2")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+Action = 2
+TargetQuery = SubResource("s2")
+Amount = 60
+Terms = []
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc30_a"
+DisplayName = "山岳立旗"
+Description = "自身防御增加 16，持续 5 秒，并获得 60 护盾。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1"), SubResource("s3")]

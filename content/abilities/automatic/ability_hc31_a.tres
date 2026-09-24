@@ -1,0 +1,45 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_hc31_stagger.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/DisplacementAbilityOperationSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r0")
+Team = 1
+Anchor = 1
+Range = 4
+MaxTargets = 1
+IncludeAnchor = false
+Order = 1
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Kind = 0
+TargetQuery = SubResource("s0")
+Distance = 4
+DurationSeconds = 0.4
+StopDistance = 0.12
+BehindTarget = false
+ExcludeBoss = false
+ImpactDamage = 0
+AttackRatio = 1.6
+ImpactRadius = 0.8
+DamageType = 0
+ArcHeight = 0.75
+ImpactStatus = ExtResource("r1")
+
+[resource]
+script = ExtResource("r3")
+StableId = "ability_hc31_a"
+DisplayName = "破阵突进"
+Description = "开场满蓝。冲向 4 格内最近敌人，在接敌处造成 160% 攻击力的伤害，影响周围 0.8 格并眩晕 0.6 秒；冲锋遵守地面占位。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 80
+CooldownTicks = 12
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="owner"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="term"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="value"]
+[sub_resource type="Resource" id="owner"]
+script = ExtResource("owner")
+[sub_resource type="Resource" id="health_ratio"]
+script = ExtResource("term")
+Metric = 4
+Scale = 1
+[sub_resource type="Resource" id="require"]
+script = ExtResource("value")
+Action = 7
+TargetQuery = SubResource("owner")
+Terms = [SubResource("health_ratio")]
+Maximum = 0.3
+[sub_resource type="Resource" id="shield_value"]
+script = ExtResource("term")
+Metric = 0
+Attribute = 0
+Scale = 0.3
+[sub_resource type="Resource" id="shield"]
+script = ExtResource("value")
+Action = 2
+TargetQuery = SubResource("owner")
+Terms = [SubResource("shield_value")]
+[resource]
+script = ExtResource("ability")
+StableId = "ability_hc39_p"
+DisplayName = "应急屏障"
+Description = "每战首次因生命承伤降至最大生命的 30% 及以下时，获得最大生命 30% 的护盾；致命伤不会被此盾挽救。"
+ActivationKind = 2
+Trigger = 9
+MaxUses = 1
+Echoable = false
+Operations = [SubResource("require"), SubResource("shield")]

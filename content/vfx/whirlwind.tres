@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/whirlwind.tscn" id="scene"]
+[resource]
+script=ExtResource("def")
+StableId="whirlwind"
+DisplayName="回旋斩"
+PreviewNote="以来源为中心连续旋劈两圈，锋面按周向推进，经过位置的残光独立渐隐；半径决定范围"
+Scene=ExtResource("scene")
+Duration=1.10
+ActionSpan=0.67
+UsesRadius=true
+FlattenGround=false
+Size=160.0
+ReferenceRadius=1.5

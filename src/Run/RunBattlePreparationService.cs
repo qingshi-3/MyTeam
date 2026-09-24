@@ -56,7 +56,11 @@ public sealed class RunBattlePreparationService
                 bossTimeline,
                 RunPopulationPolicy.Evaluate(run, _rules).AvailableDeploymentPopulation,
                 requireLegalFormation);
-            return BattlePreparationAssembler.Assemble(request);
+            return BattlePreparationAssembler.Assemble(request with
+            {
+                EnemyHealthMultiplier = compiledEncounter.EnemyHealthMultiplier,
+                EnemyDamageMultiplier = compiledEncounter.EnemyDamageMultiplier
+            });
         }
         finally { rule.Free(); }
     }

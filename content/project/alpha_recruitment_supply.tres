@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="RecruitmentSupplyDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/RecruitmentSupplyDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Project/RecruitmentTierDefinition.cs" id="2"]
+[ext_resource type="Script" path="res://src/Project/RecruitmentStageDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="Tier1"]
+script = ExtResource("2")
+HeroIds = PackedStringArray("hero_hc01_crossbow", "hero_hc03_iron_guard", "hero_hc15_shield_grower", "hero_hc24_swarm_keeper")
+
+[sub_resource type="Resource" id="Tier2"]
+script = ExtResource("2")
+HeroIds = PackedStringArray("hero_hc08_poison_keeper", "hero_hc09_breach_scribe", "hero_hc18_healing_reader", "hero_hc20_blood_drummer", "hero_hc39_hook_machine")
+
+[sub_resource type="Resource" id="Tier3"]
+script = ExtResource("2")
+HeroIds = PackedStringArray("hero_hc23_frost_historian", "hero_hc25_death_provider", "hero_hc26_ash_returner", "hero_hc12_control_clock", "hero_hc37_legion_duelist", "hero_hc38_grit_brawler")
+
+[sub_resource type="Resource" id="Tier4"]
+script = ExtResource("2")
+HeroIds = PackedStringArray("hero_hc07_death_echo", "hero_hc30_armor_broadcaster")
+
+[sub_resource type="Resource" id="Stage1"]
+script = ExtResource("3")
+StartFloorIndex = 0
+TierWeights = PackedInt32Array(65, 35, 0, 0)
+
+[sub_resource type="Resource" id="Stage2"]
+script = ExtResource("3")
+StartFloorIndex = 3
+TierWeights = PackedInt32Array(35, 45, 20, 0)
+
+[sub_resource type="Resource" id="Stage3"]
+script = ExtResource("3")
+StartFloorIndex = 6
+TierWeights = PackedInt32Array(15, 30, 45, 10)
+
+[sub_resource type="Resource" id="Stage4"]
+script = ExtResource("3")
+StartFloorIndex = 10
+TierWeights = PackedInt32Array(0, 15, 50, 35)
+
+[resource]
+script = ExtResource("1")
+Tiers = Array[Resource]([SubResource("Tier1"), SubResource("Tier2"), SubResource("Tier3"), SubResource("Tier4")])
+OpeningTierWeights = PackedInt32Array(60, 40, 0, 0)
+Stages = Array[Resource]([SubResource("Stage1"), SubResource("Stage2"), SubResource("Stage3"), SubResource("Stage4")])
+

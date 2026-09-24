@@ -14,11 +14,12 @@ public static class DefinitionFingerprint
         var text = definition switch
         {
             UnitDefinition unit => string.Join("|",
-                unit.Id, unit.DisplayName, unit.Description, unit.Role, unit.Faction, unit.IsHero, unit.IsEnemy,
+                unit.Id, unit.DisplayName, unit.Description, unit.Role, unit.Faction, unit.IsHero, unit.IsEnemy, unit.IsTestDummy,
                 unit.RecruitCost, F(unit.MaxHealth), F(unit.AttackDamage), F(unit.AttackRange), F(unit.AttackCooldown),
-                F(unit.MoveInterval), F(unit.BodyRadius), F(unit.Armor), F(unit.MagicResistance), F(unit.SpellPower), F(unit.HealPower), F(unit.SplashRadius), F(unit.LifeSteal),
+                F(unit.MoveInterval), F(unit.BodyRadius), F(unit.Armor), F(unit.SpellPower), F(unit.HealPower), F(unit.SplashRadius), F(unit.LifeSteal),
                 F(unit.BaseControlResistance), unit.AttackDelivery,
                 F(unit.ProjectileSpeed), F(unit.ProjectileRadius), F(unit.ProjectileLifetime),
+                F(unit.ProjectileWindupSeconds), F(unit.AttackReleaseProgress),
                 F(unit.MaxMana), F(unit.StartingMana), F(unit.ManaPerSecond), F(unit.ManaPerAttack),
                 F(unit.ManaPerDamageRatio), F(unit.ManaPerHitCap),
                 unit.Portrait?.ResourcePath ?? string.Empty, unit.Portrait?.StableId ?? string.Empty,

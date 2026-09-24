@@ -59,7 +59,7 @@ public partial class UnitChoiceCard : Button
         SemanticFact[] attributeFacts =
         [
             UnitSemanticFacts.Health(definition.MaxHealth.ToString("0")),
-            UnitSemanticFacts.Damage(definition.AttackDamage.ToString("0")),
+            UnitSemanticFacts.Attack(definition.AttackDamage.ToString("0")),
             UnitSemanticFacts.Reach(definition.AttackRange)
         ];
         SearchText = string.Join("\n", new[] { definition.DisplayName }
@@ -125,7 +125,7 @@ public partial class UnitChoiceCard : Button
         var facts = new[]
         {
             (SemanticIconKeys.Health, definition.MaxHealth.ToString("0"), "生命", new StringName("HealthValue")),
-            (SemanticIconKeys.Damage, definition.AttackDamage.ToString("0"), "伤害", new StringName("DamageValue")),
+            (SemanticIconKeys.Attack, definition.AttackDamage.ToString("0"), "攻击", new StringName("DamageValue")),
             (SemanticIconKeys.Reach, definition.AttackRange.ToString("0.#"), "攻击距离", new StringName("RangeValue"))
         };
         foreach (var fact in facts)

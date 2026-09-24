@@ -6,11 +6,12 @@
 [resource]
 script = ExtResource("1")
 StableId = "projectile"
-DisplayName = "能量弹"
+DisplayName = "默认箭矢"
+PreviewNote = "普通远程与连射技能共用的箭矢；出手即显示，朝向随实际弹道，命中或失效后移除。"
 Scene = ExtResource("2")
 Duration = 1
 Persistent = true
 Ground = false
 StretchBetween = false
-Size = 32
-
+FaceDirection = true
+Size = 40

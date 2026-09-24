@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using TowerAutobattler.Abilities;
 using TowerAutobattler.Attributes;
+using TowerAutobattler.Effects;
 using TowerAutobattler.Statuses;
 using TowerAutobattler.Traits;
 
@@ -17,6 +18,33 @@ public sealed partial class BattleSimulation
     private bool _projectingInitialGrants = true;
     private bool _discardStatusEffects;
     private readonly List<PendingSetupEffect> _pendingSetupEffects = [];
+
+    private bool TryApproachAutomaticHealingTarget(BattleUnitState owner, ImmutableArray<AbilityActivationResult> results)
+    {
+        if (owner.Definition.Behavior.Stationary || results.Any(result => result.Succeeded)) return false;
+        foreach (var result in results)
+        {
+            // Only an otherwise ready, single-operation heal can attribute failure to
+            // its empty range. Resource/cooldown/compound conditions must not cause pursuit.
+            if (result.Failure != AbilityActivationFailure.ConditionsUnmet ||
+                _abilityScope?.Find(owner.RuntimeId, result.AbilityId) is not
+                { Trigger: AbilityTriggerKind.ManaFull, AutomaticTarget: AbilityAutomaticTargetKind.WoundedAlly,
+                    Operations: [CompiledBattleValueOperation { Action: BattleValueAction.Heal,
+                        TargetPolicy: BattleTargetPolicy.Wounded, TargetQuery: CompiledFilteredTargetQuery
+                        { Anchor: EffectEntityReference.Owner, Team: EffectRelativeTeam.Allies, Range: > 0 } query }] }) continue;
+            if (!ResolveBattleTargets(query, owner, "", BattleTargetPolicy.Wounded).IsEmpty) continue;
+            var candidates = ResolveBattleTargets(query with { Range = -1, MaxTargets = 0 }, owner, "", BattleTargetPolicy.Wounded)
+                .Select(id => _units.First(unit => unit.RuntimeId == id)).ToArray();
+            var target = _movement!.SelectTarget(owner, candidates, query.Range);
+            if (target is null) continue;
+            SetActionTarget(owner, target);
+            owner.LastActionKind = BattleActionKind.Ability;
+            owner.Mode = BattleUnitMode.Seeking;
+            if (owner.MoveCooldown == 0) _movement.QueueMove(owner);
+            return true;
+        }
+        return false;
+    }
 
     private sealed record PendingSetupEffect(StatusEffectInvocation? Status, Action Execute);
 
@@ -64,7 +92,7 @@ public sealed partial class BattleSimulation
     };
 
     private sealed record PendingAbilityReaction(string OwnerId, AbilityTriggerKind Trigger,
-        string TargetId, int Tick, string ChainId, int Depth, bool PassiveGrant = false);
+        string TargetId, int Tick, string ChainId, int Depth, bool PassiveGrant = false, BattleCombatEvent? Event = null, CompiledAbilityDefinition? Echo = null);
 
     private static CombatSourceRef AbilityOrigin(CompiledAbilityDefinition ability, string ownerId) =>
         new(CombatSourceKind.Ability, ability.StableId, ownerId, $"{ownerId}:{ability.StableId}");
@@ -89,24 +117,52 @@ public sealed partial class BattleSimulation
 
     private void BindAbilityCombatEvents()
     {
-        var bindingSource = CombatSourceRef.System("ability_event_bridge");
-        foreach (var kind in new[] { BattleCombatEventKind.AttackLanded, BattleCombatEventKind.UnitDefeated })
-            _abilityCombatSubscriptions.Add(_combatPipeline.Subscribe(kind, bindingSource, 0, (combatEvent, sink) =>
+        var bindingSource = CombatSourceRef.System("ability-event-bridge");
+        var kinds = new[] { BattleCombatEventKind.AttackLanded, BattleCombatEventKind.SkillHitLanded, BattleCombatEventKind.UnitDefeated,
+            BattleCombatEventKind.CriticalHit, BattleCombatEventKind.AttackDodged, BattleCombatEventKind.HealthLost,
+            BattleCombatEventKind.ShieldResolved, BattleCombatEventKind.HealingResolved, BattleCombatEventKind.ManaSkillResolved,
+            BattleCombatEventKind.ControlApplied, BattleCombatEventKind.UnitRevived };
+        foreach (var kind in kinds)
+            _abilityCombatSubscriptions.Add(_combatPipeline.Subscribe(kind,bindingSource,0,(combatEvent,sink) =>
             {
-                var defeated = combatEvent.Kind == BattleCombatEventKind.UnitDefeated;
-                var ownerId = defeated ? combatEvent.TargetRuntimeId : combatEvent.SourceRuntimeId;
-                var targetId = defeated ? combatEvent.SourceRuntimeId : combatEvent.TargetRuntimeId;
-                var trigger = defeated ? AbilityTriggerKind.OwnerDefeated : AbilityTriggerKind.AttackHit;
-                if (_abilityScope?.HasTrigger(ownerId, trigger) != true)
-                    return;
-                if (!sink.Enqueue(bindingSource, 0, context =>
-                    {
+                var source = _units.FirstOrDefault(u => u.RuntimeId == combatEvent.SourceRuntimeId);
+                var target = _units.FirstOrDefault(u => u.RuntimeId == combatEvent.TargetRuntimeId);
+                foreach (var owner in _units.OrderBy(u => u.RuntimeId,StringComparer.Ordinal).ToArray())
+                foreach (var trigger in Enum.GetValues<AbilityTriggerKind>())
+                {
+                    if (_abilityScope?.HasTrigger(owner.RuntimeId,trigger) != true) continue;
+                    bool matches = trigger switch {
+                        AbilityTriggerKind.AttackHit => kind == BattleCombatEventKind.AttackLanded && source == owner,
+                        AbilityTriggerKind.OwnerAttackOrSkillHit => kind is (BattleCombatEventKind.AttackLanded or BattleCombatEventKind.SkillHitLanded) && source == owner,
+                        AbilityTriggerKind.AllyTemporaryDefeated => kind == BattleCombatEventKind.UnitDefeated &&
+                            target is { IsTemporary: true } && target != owner && target.Team == owner.Team &&
+                            combatEvent.Reason is ("" or "Consumed"),
+                        AbilityTriggerKind.OwnerDefeated => kind == BattleCombatEventKind.UnitDefeated && target == owner,
+                        AbilityTriggerKind.CriticalHit => kind == BattleCombatEventKind.CriticalHit && source == owner,
+                        AbilityTriggerKind.DodgedAttack => kind == BattleCombatEventKind.AttackDodged && target == owner,
+                        AbilityTriggerKind.ReceivedAttack => kind == BattleCombatEventKind.AttackLanded && target == owner,
+                        AbilityTriggerKind.HealthDamaged => kind == BattleCombatEventKind.HealthLost && target == owner && combatEvent.EffectiveValue > 0,
+                        AbilityTriggerKind.ShieldReceived => kind == BattleCombatEventKind.ShieldResolved && target == owner && combatEvent.EffectiveValue > 0,
+                        AbilityTriggerKind.HealingDone => kind == BattleCombatEventKind.HealingResolved && source == owner && combatEvent.EffectiveValue > 0,
+                        AbilityTriggerKind.OverhealReceived => kind == BattleCombatEventKind.HealingResolved && target == owner && combatEvent.AppliedValue > combatEvent.EffectiveValue,
+                        AbilityTriggerKind.AllyManaCast => kind == BattleCombatEventKind.ManaSkillResolved && source?.Team == owner.Team,
+                        AbilityTriggerKind.OwnerManaCast => kind == BattleCombatEventKind.ManaSkillResolved && source == owner,
+                        AbilityTriggerKind.AllyAttackHit => kind is (BattleCombatEventKind.AttackLanded or BattleCombatEventKind.SkillHitLanded) && source?.Team == owner.Team,
+                        AbilityTriggerKind.AllyDefeated => kind == BattleCombatEventKind.UnitDefeated && target != owner && target?.Team == owner.Team,
+                        AbilityTriggerKind.EnemyDefeated => kind == BattleCombatEventKind.UnitDefeated && target is not null && target.Team != owner.Team,
+                        AbilityTriggerKind.ControlApplied => kind == BattleCombatEventKind.ControlApplied && source == owner,
+                        AbilityTriggerKind.SummonAttackHit => kind == BattleCombatEventKind.AttackLanded && source?.SummonerRuntimeId == owner.RuntimeId && source.Team == owner.Team,
+                        AbilityTriggerKind.OwnerRevived => kind == BattleCombatEventKind.UnitRevived && target == owner,
+                        _ => false };
+                    if (!matches || !owner.Alive && trigger != AbilityTriggerKind.OwnerDefeated) continue;
+                    string counterpart = target == owner ? source?.RuntimeId ?? "" : target?.RuntimeId ?? "";
+                    if (!sink.Enqueue(bindingSource,0,context => {
                         if (_pendingAbilityReactions.Count >= _combatPipeline.Limits.MaxReactions)
                             throw new InvalidOperationException("Pending ability reaction budget exceeded.");
-                        _pendingAbilityReactions.Add(new PendingAbilityReaction(ownerId, trigger, targetId,
-                            combatEvent.Tick, context.ChainId, context.Depth));
-                    }))
-                    throw new InvalidOperationException("Ability reaction was rejected by the combat chain budget.");
+                        _pendingAbilityReactions.Add(new PendingAbilityReaction(owner.RuntimeId,trigger,counterpart,
+                            combatEvent.Tick,context.ChainId,context.Depth,Event:combatEvent));
+                    })) throw new InvalidOperationException("Ability reaction exceeded combat chain budget.");
+                }
             }));
     }
 
@@ -132,7 +188,23 @@ public sealed partial class BattleSimulation
                     if (_units.Any(unit => unit.RuntimeId == pending.OwnerId && unit.Alive))
                         ActivatePassiveGrants(pending.OwnerId);
                 }
-                else _abilityScope.ActivateTriggered(pending.OwnerId, pending.Trigger, pending.Tick, pending.TargetId);
+                else
+                {
+                    var previousEvent = _abilityTriggerEvent;
+                    var previousEcho = _executingEcho;
+                    _abilityTriggerEvent = pending.Event;
+                    _executingEcho = pending.Echo is not null;
+                    try
+                    {
+                        if (pending.Echo is { } echo)
+                        {
+                            var prepared = PrepareAbility(echo,pending.OwnerId,pending.OwnerId,pending.TargetId,TickIndex);
+                            if (prepared.Succeeded && prepared.Plan is { } plan) CommitAbility(plan);
+                        }
+                        else _abilityScope.ActivateTriggered(pending.OwnerId,pending.Trigger,TickIndex,pending.TargetId);
+                    }
+                    finally { _abilityTriggerEvent = previousEvent; _executingEcho = previousEcho; }
+                }
             }
         }
         finally { _drainingAbilityReactions = false; }

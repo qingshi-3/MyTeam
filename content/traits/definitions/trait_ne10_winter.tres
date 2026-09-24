@@ -1,0 +1,61 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitCountingPolicySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitBreakpointSpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+DeploymentPolicy = 1
+TemporaryUnitPolicy = 0
+DuplicateContentPolicy = 2
+CountEquipment = true
+CountExplicitExtra = false
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Value = 0.15
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Attribute = 3
+Operation = 0
+SlotId = "ne10_winter_attack_speed"
+Magnitude = SubResource("s1")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+MinValue = 2
+MaxValue = 3
+DisplayStyle = "TraitTierOne"
+TargetPolicy = 1
+AttributeModifiers = [SubResource("s2")]
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r2")
+Value = 0.3
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r3")
+Attribute = 3
+Operation = 0
+SlotId = "ne10_winter_attack_speed"
+Magnitude = SubResource("s4")
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("r4")
+MinValue = 4
+MaxValue = 999
+DisplayStyle = "TraitTierTwo"
+TargetPolicy = 1
+AttributeModifiers = [SubResource("s5")]
+
+[resource]
+script = ExtResource("r0")
+StableId = "trait_ne10_winter"
+DisplayName = "霜羽同盟"
+SemanticIconKey = "faction.frost"
+CountingPolicy = SubResource("s0")
+Breakpoints = [SubResource("s3"), SubResource("s6")]

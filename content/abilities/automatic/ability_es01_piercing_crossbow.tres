@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="definition"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ChargedLineAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="line"]
+script = ExtResource("operation")
+Delivery = 0
+DamageType = 0
+Range = 16.0
+Radius = 0.18
+ChargeTicks = 12
+AttackMultiplier = 1.2
+MaximumHits = 2
+SubsequentHitMultiplier = 0.6666667
+ProjectileSpeed = 12.0
+HoldPosition = true
+ChargeVfx = "piercing_arrow_charge"
+ReleaseVfx = "piercing_arrow"
+[resource]
+script = ExtResource("definition")
+StableId = "ability_es01_piercing_crossbow"
+DisplayName = "贯阵重箭"
+Description = "蓄力 1.2 秒，锁定方向贯穿最多 2 个敌人。首个目标受到 120% 攻击力伤害，第二个为 80%。受控可打断；分散站位避免同时受击。"
+ActivationKind = 1
+Trigger = 2
+IntervalTicks = 10
+CooldownTicks = 60
+Operations = [SubResource("line")]

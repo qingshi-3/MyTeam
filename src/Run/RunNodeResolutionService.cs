@@ -49,7 +49,7 @@ public sealed class RunNodeResolutionService
     }
 
     public IReadOnlyList<TowerNodeOption> CurrentOptions(ActiveRunDto? run) =>
-        run is null ? [] : _tower.Options(run);
+        run is null || run.OpeningRecruitment is not null ? [] : _tower.Options(run);
 
     public EncounterPlan CurrentEncounter(ActiveRunDto? run) => run is null
         ? throw new InvalidOperationException("No active run")
@@ -57,7 +57,7 @@ public sealed class RunNodeResolutionService
 
     public bool SelectNode(ActiveRunDto? run, TowerNodeType type)
     {
-        if (run is null || run.PendingNode || run.PendingOffer is not null || !string.IsNullOrEmpty(run.TerminalCompletionId) ||
+        if (run is null || run.OpeningRecruitment is not null || run.PendingNode || run.PendingOffer is not null || !string.IsNullOrEmpty(run.TerminalCompletionId) ||
             !_persistence.ValidateRun(run) || !_tower.Options(run).Any(option => option.Type == type))
             return false;
         var working = _persistence.CloneRun(run);

@@ -27,7 +27,7 @@ public partial class GameUiChangedScreensCapture : Node
             DirAccess.MakeDirRecursiveAbsolute(ProjectSettings.GlobalizePath(OutputPath));
             const string saveNamespace = "tests/ui-changed-capture";
             new SaveService(saveNamespace).DeleteActiveRun();
-            root = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
+            root = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
             root.SaveNamespace = saveNamespace;
             AddChild(root);
             for (var frame = 0; frame < 12 && root.Content is null; frame++) await RenderFrame();

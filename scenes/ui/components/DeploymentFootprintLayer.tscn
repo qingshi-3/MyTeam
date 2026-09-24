@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/UI/DeploymentFootprintLayer.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/DeploymentBodyPortrait.tscn" id="2"]
+
+[node name="DeploymentFootprints" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+z_index = 1
+script = ExtResource("1")
+BodyPortraitScene = ExtResource("2")
+AllyColor = Color(0.4, 0.75, 1, 1)
+EnemyColor = Color(1, 0.45, 0.38, 1)
+SelectedColor = Color(1, 0.8, 0.35, 1)
+LegalColor = Color(0.4, 1, 0.7, 1)
+IllegalColor = Color(1, 0.3, 0.3, 1)

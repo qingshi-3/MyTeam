@@ -1,12 +1,16 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://src/Presentation/BattleScreenController.cs" id="1"]
 [ext_resource type="Script" path="res://src/Presentation/BattleBoard.cs" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/TacticalCommandHud.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/SelectedUnitPanel.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleInspectorDock.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/BattleStatusStrip.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleFloatingCue.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleFloatingCueLayer.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/effects/RangedAttackLayer.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/audio/FeedbackAudio.tscn" id="audio"]
+
+[ext_resource type="Script" path="res://src/UI/ContextPopup.cs" id="popup"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/BattleGeometryOverlay.tscn" id="geometry"]
 
 [node name="BattleScreen" type="Control"]
 layout_mode = 3
@@ -16,7 +20,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
-FloatingCueScene = ExtResource("6")
+
+[node name="BattleAudio" parent="." instance=ExtResource("audio")]
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -40,10 +45,41 @@ layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "战斗"
 
-[node name="RuleText" type="Label" parent="Margin/Layout"]
+[node name="ViewControls" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RuleButton" type="Button" parent="Margin/Layout/ViewControls"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "楼层规则"
+size_flags_horizontal = 0
+theme_type_variation = &"CompactButton"
+text = "战场规则"
+tooltip_text = "查看本场地形与特殊规则"
+
+[node name="CollisionToggle" type="Button" parent="Margin/Layout/ViewControls"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+toggle_mode = true
+text = "○ 碰撞"
+tooltip_text = "实线为真实身体；虚线为空中投影，紫色叉圈为预留落点。地形显示完整阻挡格。\n开启时角色位置按战斗步对齐判定；暂停后可精确检查。点选单位切换观察，详情仍可从单位按钮打开。"
+
+[node name="AttackRangeToggle" type="Button" parent="Margin/Layout/ViewControls"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+toggle_mode = true
+text = "◎ 普攻范围"
+tooltip_text = "黄色虚线为选中单位的身体半径＋普攻射程，触及目标身体即满足距离。连线数字为身体边缘间距与普攻射程；受地形阻挡时单独标记。\n只表示普攻空间条件，仍需满足前摇、冷却、控制等规则；技能范围各自独立。开启时点选单位只切换观察。"
+
+[node name="GeometryReadout" type="Label" parent="Margin/Layout/ViewControls"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+mouse_filter = 2
 
 [node name="BattleArea" type="HBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
@@ -52,7 +88,7 @@ theme_override_constants/separation = 12
 
 [node name="BattleBoard" type="Control" parent="Margin/Layout/BattleArea"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(840, 410)
+custom_minimum_size = Vector2(560, 330)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -62,11 +98,15 @@ script = ExtResource("2")
 [node name="UnitsRoot" type="Node2D" parent="Margin/Layout/BattleArea/BattleBoard"]
 unique_name_in_owner = true
 
+[node name="BattleGeometryOverlay" parent="Margin/Layout/BattleArea/BattleBoard" instance=ExtResource("geometry")]
+unique_name_in_owner = true
+z_index = 5
+
 [node name="RangedAttackLayer" parent="Margin/Layout/BattleArea/BattleBoard" instance=ExtResource("7")]
 unique_name_in_owner = true
 z_index = 20
 
-[node name="FloatingCueOverlay" type="Control" parent="Margin/Layout/BattleArea/BattleBoard"]
+[node name="FloatingCueOverlay" parent="Margin/Layout/BattleArea/BattleBoard" instance=ExtResource("6")]
 unique_name_in_owner = true
 z_index = 30
 layout_mode = 1
@@ -76,15 +116,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="InspectorRegion" type="VBoxContainer" parent="Margin/Layout/BattleArea"]
-custom_minimum_size = Vector2(292, 0)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="SelectedUnitPanel" parent="Margin/Layout/BattleArea/InspectorRegion" instance=ExtResource("4")]
-unique_name_in_owner = true
-layout_mode = 2
 
 [node name="Hud" type="VBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
@@ -144,7 +175,71 @@ text = "返回配置"
 [node name="TacticalCommandHud" parent="Margin/Layout/Hud/ControlRow" instance=ExtResource("3")]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="BattleInspectorDock" parent="." instance=ExtResource("4")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="RulesPopup" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("popup")
+CloseButtonPath = NodePath("Panel/Inset/Layout/Header/Close")
+
+[node name="Backdrop" type="ColorRect" parent="RulesPopup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.015, 0.025, 0.035, 0.6)
+
+[node name="Panel" type="PanelContainer" parent="RulesPopup"]
+layout_mode = 1
+anchor_left = 0.28
+anchor_top = 0.35
+anchor_right = 0.72
+anchor_bottom = 0.65
+theme_type_variation = &"ContextSidebarPanel"
+
+[node name="Inset" type="MarginContainer" parent="RulesPopup/Panel"]
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Layout" type="VBoxContainer" parent="RulesPopup/Panel/Inset"]
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="RulesPopup/Panel/Inset/Layout"]
+
+[node name="Title" type="Label" parent="RulesPopup/Panel/Inset/Layout/Header"]
 size_flags_horizontal = 3
+theme_type_variation = &"HeroIdentity"
+text = "战场规则"
+
+[node name="Close" type="Button" parent="RulesPopup/Panel/Inset/Layout/Header"]
+text = "关闭 ×"
+theme_type_variation = &"CompactButton"
+
+[node name="Scroll" type="ScrollContainer" parent="RulesPopup/Panel/Inset/Layout"]
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="RuleText" type="Label" parent="RulesPopup/Panel/Inset/Layout/Scroll"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+autowrap_mode = 2
+text = "楼层规则"
 
 [node name="EndFadeOverlay" type="ColorRect" parent="."]
 unique_name_in_owner = true

@@ -184,9 +184,10 @@ public static class AttributeDefinitionCompiler
 
     private static (float Minimum, float Maximum) LegacyClamp(CombatAttribute attribute) => attribute switch
     {
-        CombatAttribute.AttackSpeed or CombatAttribute.MoveSpeed => (.01f, 1000f),
+        CombatAttribute.AttackSpeed => (.01f, float.MaxValue),
+        CombatAttribute.MoveSpeed => (.01f, 1000f),
         CombatAttribute.AttackRange => (0, 1000f),
-        CombatAttribute.CriticalChance or CombatAttribute.LifeSteal or CombatAttribute.ControlResistance => (0, 1f),
+        CombatAttribute.CriticalChance or CombatAttribute.DodgeChance or CombatAttribute.LifeSteal or CombatAttribute.ControlResistance => (0, 1f),
         CombatAttribute.MaxMana or CombatAttribute.StartingMana or CombatAttribute.ManaPerSecond or
             CombatAttribute.ManaPerAttack or CombatAttribute.ManaPerDamageRatio or CombatAttribute.ManaPerHitCap => (0, 1_000_000f),
         _ => (-1_000_000_000f, 1_000_000_000f)

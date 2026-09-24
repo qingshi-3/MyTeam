@@ -6,10 +6,11 @@
 [resource]
 script = ExtResource("1")
 StableId = "impact"
-DisplayName = "能量命中"
+DisplayName = "擦伤命中"
+PreviewNote = "受击处的短擦痕与少量碎光，快速划过并淡出；不扩散范围圆环。"
 Scene = ExtResource("2")
-Duration = 0.48
+Duration = 0.28
 Persistent = false
 Ground = false
 StretchBetween = false
-Size = 65
+Size = 44

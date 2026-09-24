@@ -1,0 +1,28 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_bc_crit_window.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r2")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r3")
+Status = ExtResource("r1")
+TargetQuery = SubResource("s0")
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc04_a"
+DisplayName = "追刃姿态"
+Description = "持续 4 秒：暴击 +35%，攻速 +0.35。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1")]

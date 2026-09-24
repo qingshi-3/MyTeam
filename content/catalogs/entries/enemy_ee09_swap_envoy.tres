@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CatalogEntry" format=3]
+[ext_resource type="Script" path="res://src/Content/CatalogEntry.cs" id="script"]
+[ext_resource type="PackedScene" path="res://content/enemies/enemy_ee09_swap_envoy.tscn" id="scene"]
+[ext_resource type="Resource" path="res://content/definitions/enemies/enemy_ee09_swap_envoy.tres" id="definition"]
+[resource]
+script = ExtResource("script")
+Scene = ExtResource("scene")
+Definition = ExtResource("definition")

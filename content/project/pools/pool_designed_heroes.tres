@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "pool_designed_heroes"
+Kind = 0
+ContentIds = PackedStringArray("hero_hc01_crossbow", "hero_hc03_iron_guard", "hero_hc04_crit_duelist", "hero_hc05_tide_caster", "hero_hc06_surge_conductor", "hero_hc07_death_echo", "hero_hc08_poison_keeper", "hero_hc09_breach_scribe", "hero_hc10_ember_cashout", "hero_hc11_triad_weaver", "hero_hc12_control_clock", "hero_hc13_shield_crit", "hero_hc14_stone_fist", "hero_hc15_shield_grower", "hero_hc16_shield_bomber", "hero_hc17_pain_vessel", "hero_hc18_healing_reader", "hero_hc19_overheal_priest", "hero_hc20_blood_drummer", "hero_hc21_last_stand", "hero_hc22_dodge_assassin", "hero_hc23_frost_historian", "hero_hc24_swarm_keeper", "hero_hc25_death_provider", "hero_hc26_ash_returner", "hero_hc27_ally_consumer", "hero_hc29_mind_binder", "hero_hc30_armor_broadcaster", "hero_hc37_legion_duelist", "hero_hc38_grit_brawler", "hero_hc39_hook_machine")

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/arcane_missile.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "arcane_missile"
+DisplayName = "奥术飞弹"
+PreviewNote = "蓝白弹核沿浅弧抛出，尾部局部摆动，蓝色碎光留在经过的位置；命中短亮后光圈与碎屑各自散去。完整发射样板，独立于默认箭矢。"
+Scene = ExtResource("scene")
+Duration = 1.43
+CastDuration = 0.22
+FlightDuration = 0.62
+Size = 90
+Ground = false
+FlattenGround = false

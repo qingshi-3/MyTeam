@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemContentRoot.cs" id="root"]
+[ext_resource type="Resource" path="res://content/definitions/items/equipment_ne10_swift_gloves.tres" id="definition"]
+[ext_resource type="Resource" path="res://content/equipment/definitions/equipment_ne10_swift_gloves.tres" id="effect"]
+
+[node name="equipment_ne10_swift_gloves" type="Node"]
+script = ExtResource("root")
+Definition = ExtResource("definition")
+Equipment = ExtResource("effect")

@@ -24,7 +24,7 @@ public partial class ProjectCompositionContractSmoke : Node
     {
         try
         {
-            var authored = GD.Load<GameProjectDefinition>("res://content/project/alpha_project.tres");
+            var authored = GD.Load<GameProjectDefinition>("res://tests/fixtures/legacy-roster/content/project/alpha_project.tres");
             var compiled = ExpectValid(authored, "production project");
             VerifyProductionValues(compiled);
             VerifyLegacyDeterministicParity(compiled);

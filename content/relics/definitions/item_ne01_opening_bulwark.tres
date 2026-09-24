@@ -1,0 +1,15 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicBattleStartShieldSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+BindingId = "ne01_opening_bulwark"
+Amount = 40
+RepeatPolicy = 0
+
+[resource]
+script = ExtResource("r0")
+StableId = "item_ne01_opening_bulwark"
+BattleStartEffects = [SubResource("s0")]

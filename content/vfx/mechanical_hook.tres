@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="definition"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/mechanical_hook.tscn" id="scene"]
+[resource]
+script = ExtResource("definition")
+StableId = "mechanical_hook"
+DisplayName = "动力飞钩 · 绳链与金属爪"
+Scene = ExtResource("scene")
+Persistent = true
+Size = 256

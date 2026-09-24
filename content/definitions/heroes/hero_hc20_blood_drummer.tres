@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc20_blood_drummer.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc20_blood_drummer"
+DisplayName = "血契鼓手"
+Description = "HC20／BC17 测试稿。对自己及 2 格内友军造成 6 真实伤害，再令存活者获得 4 秒攻速增加 0.35。 被动：自身实际失去生命时，对附近最近敌人造成 12 伤害，最多每 0.5 秒触发一次。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 330
+AttackDamage = 15
+Armor = 5
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

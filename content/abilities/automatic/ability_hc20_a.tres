@@ -1,0 +1,62 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r2"]
+[ext_resource type="Resource" path="res://content/statuses/status_bc_blood_rhythm.tres" id="r3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ApplyStatusAbilityOperationSpec.cs" id="r4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityPresentationSpec.cs" id="cast_type"]
+
+[sub_resource type="Resource" id="cast_presentation"]
+script = ExtResource("cast_type")
+CastVfx = "cast_blood"
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Team = 0
+Anchor = 1
+Range = 2
+MaxTargets = 0
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Action = 0
+TargetQuery = SubResource("s0")
+Amount = 6
+Terms = []
+DamageType = 2
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r1")
+Team = 0
+Anchor = 1
+Range = 2
+MaxTargets = 0
+IncludeAnchor = true
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+Status = ExtResource("r3")
+TargetQuery = SubResource("s2")
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc20_a"
+Presentation = SubResource("cast_presentation")
+DisplayName = "血鼓"
+Description = "对自己及 2 格内友军造成 6 真实伤害，再令存活者获得 4 秒攻速增加 0.35。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 3
+IntervalTicks = 0
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s1"), SubResource("s3")]

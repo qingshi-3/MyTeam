@@ -20,7 +20,11 @@ public sealed record BattleLabPreparedUnitProjection(
     float ControlResistance,
     ImmutableArray<BattleLabEquipmentConfiguration> Equipment,
     ImmutableArray<TraitContributionSnapshot> TraitContributions,
-    ImmutableArray<StatusRuntimeSnapshot> Statuses);
+    ImmutableArray<StatusRuntimeSnapshot> Statuses,
+    float Armor = 0,
+    float Mana = 0,
+    float MaxMana = 0,
+    float ManaPerSecond = 0);
 
 public sealed record BattleLabDerivedProjection(
     bool IsReady,
@@ -42,10 +46,8 @@ public static class BattleLabDerivedProjectionBuilder
         var reasons = ImmutableArray.CreateBuilder<string>();
         var players = snapshot.Units.Count(unit => unit.Side == BattleLabSide.Player);
         var enemies = snapshot.Units.Length - players;
-        if (players == 0) reasons.Add("至少需要一个我方英雄。");
-        if (enemies == 0) reasons.Add("至少需要一个敌方单位。");
-        if (snapshot.Mode == BattleLabPlacementMode.Formal && players > snapshot.CurrentPopulation)
-            reasons.Add("我方部署数量超过当前人口。");
+        if (players == 0) reasons.Add("A 队至少需要一个单位。");
+        if (enemies == 0) reasons.Add("B 队至少需要一个单位。");
         var unitFacts = ImmutableDictionary.CreateBuilder<string, BattleLabPreparedUnitProjection>(StringComparer.Ordinal);
         var traitFacts = ImmutableArray<TraitPresentationSnapshot>.Empty;
         if (snapshot.Units.Length > 0)
@@ -83,7 +85,11 @@ public static class BattleLabDerivedProjectionBuilder
                         state.Attributes.GetValue(CombatAttribute.ControlResistance),
                         authored.Equipment,
                         contributions,
-                        state.Statuses));
+                        state.Statuses,
+                        state.Armor,
+                        state.CurrentMana,
+                        state.MaxMana,
+                        state.Attributes.GetValue(CombatAttribute.ManaPerSecond)));
                 }
                 traitFacts = simulation.TraitSnapshot.Values.Select(value => value.Presentation).ToImmutableArray();
             }

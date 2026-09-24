@@ -26,7 +26,7 @@ public partial class ContentContractSmoke : Node
     {
         try
         {
-            var catalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ?? throw new InvalidOperationException("catalog load");
+            var catalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres") ?? throw new InvalidOperationException("catalog load");
             var gate = await TestProjectFixture.PublishAsync(this);
             var registry = gate.Package?.Content ?? throw new InvalidOperationException("content gate: " + string.Join("; ", gate.Report.CoreErrors));
             VerifyPortraitCoverage(catalog);

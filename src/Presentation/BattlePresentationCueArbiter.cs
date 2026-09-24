@@ -12,7 +12,9 @@ public static class BattlePresentationCueArbiter
         var selected = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var battleEvent in events)
         {
-            var runtimeId = battleEvent.Type is "damage" or "defeated"
+            // Damage remains a combat fact, but never claims the unit's animation pose.
+            if (battleEvent.Cue == "hit") continue;
+            var runtimeId = battleEvent.Type is "damage" or "defeated" or "displacement" or "egg_hatch" or "product_expired"
                 ? battleEvent.TargetRuntimeId
                 : battleEvent.SourceRuntimeId;
             if (string.IsNullOrWhiteSpace(runtimeId) || string.IsNullOrWhiteSpace(battleEvent.Cue)) continue;

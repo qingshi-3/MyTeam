@@ -43,7 +43,7 @@ public static class EffectModelText
         CompiledExplicitTargetQuery => "指定目标",
         CompiledRelativeTeamTargetQuery q => $"全体{Tag(q.RequiredTag)}{Team(q.Team)}{(q.IncludeDefeated ? "（含已阵亡）" : "（存活）")}",
         CompiledFilteredTargetQuery q => $"{Entity(q.Anchor)}{(q.Range >= 0 ? $"周围 {q.Range:0.##} 格内" : "所在战场的")}的" +
-            $"{(q.Order == EffectTargetOrder.Nearest ? "最近" : q.Order == EffectTargetOrder.LowestHealthRatio ? "生命比例最低" : q.Order == EffectTargetOrder.HighestHealthRatio ? "生命比例最高" : "按稳定顺序选择")}的" +
+            $"{(q.Order == EffectTargetOrder.Nearest ? "最近" : q.Order == EffectTargetOrder.Farthest ? "最远" : q.Order == EffectTargetOrder.LowestHealthRatio ? "生命比例最低" : q.Order == EffectTargetOrder.HighestHealthRatio ? "生命比例最高" : "按稳定顺序选择")}的" +
             $"{(q.MaxTargets > 0 ? $"至多 {q.MaxTargets} 名" : "全部")}{Tag(q.RequiredTag)}{Team(q.Team)}" +
             $"{(q.IncludeDefeated ? "（含已阵亡）" : "（存活）")}{(!q.IncludeAnchor ? "，排除中心单位" : "")}",
         _ => throw new InvalidOperationException("Unsupported target description.")
@@ -96,16 +96,16 @@ public static class EffectModelText
     public static string AttributeName(CombatAttribute attribute) => attribute switch
     {
         CombatAttribute.MaxHealth => "最大生命", CombatAttribute.AttackDamage => "攻击力", CombatAttribute.SpellPower => "法强",
-        CombatAttribute.AttackSpeed => "攻速", CombatAttribute.Armor => "护甲", CombatAttribute.MagicResistance => "魔抗",
+        CombatAttribute.AttackSpeed => "攻速", CombatAttribute.Armor => "防御",
         CombatAttribute.AttackRange => "攻击范围", CombatAttribute.MoveSpeed => "移动速度", CombatAttribute.CriticalChance => "暴击率",
         CombatAttribute.CriticalDamage => "暴击倍率", CombatAttribute.MaxMana => "法力上限", CombatAttribute.StartingMana => "初始法力",
         CombatAttribute.HealingPower => "治疗强度", CombatAttribute.LifeSteal => "吸血", CombatAttribute.ControlResistance => "控制抗性",
         CombatAttribute.ManaPerSecond => "每秒回蓝", CombatAttribute.ManaPerAttack => "攻击回蓝", CombatAttribute.ManaPerDamageRatio => "承伤回蓝倍率",
-        CombatAttribute.ManaPerHitCap => "单次受击回蓝上限", _ => attribute.ToString()
+        CombatAttribute.ManaPerHitCap => "单次受击回蓝上限", CombatAttribute.DodgeChance => "闪避率", _ => attribute.ToString()
     };
     public static string DamageTypeName(EffectDamageType damageType) => damageType switch
     {
-        EffectDamageType.Physical => "物理", EffectDamageType.Magical => "魔法", EffectDamageType.True => "真实", _ => throw new InvalidOperationException("Invalid damage type.")
+        EffectDamageType.Normal => "普通", EffectDamageType.True => "真实", _ => throw new InvalidOperationException("Invalid damage type.")
     };
     private static string Team(EffectRelativeTeam team) => team == EffectRelativeTeam.Allies ? "友军" : "敌军";
     private static string Tag(string tag) => string.IsNullOrEmpty(tag) ? "" : $"带「{tag}」标签的";

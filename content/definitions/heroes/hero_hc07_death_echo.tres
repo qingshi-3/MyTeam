@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc07_death_echo.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc07_death_echo"
+DisplayName = "传灯狐"
+Description = "HC07／BC04 测试稿。为自身和身后最近友军各提供 70 护盾。 被动：每第三次普攻命中，代触发身后 3 格内最近友军明确可复制的亡语；对方保持存活。 数值为测试暂值。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 1
+Faction = 6
+RecruitCost = 5
+MaxHealth = 250
+AttackDamage = 20
+Armor = 4
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 20
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

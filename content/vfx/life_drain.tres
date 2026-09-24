@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VfxDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/life_drain.tscn" id="scene"]
+[resource]
+UsesWidth = true
+script = ExtResource("def")
+StableId = "life_drain"
+DisplayName = "生命汲取"
+PreviewNote = "目标到施法者的暗红窄流持续输送，小光团沿真实两端向内流动；停止后束带收拢退去"
+Scene = ExtResource("scene")
+Duration = 1.0
+CastDuration = 0.20
+Size = 150.0
+Ground = false
+FlattenGround = false
+Persistent = true

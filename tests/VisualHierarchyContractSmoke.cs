@@ -100,8 +100,8 @@ public partial class VisualHierarchyContractSmoke : Node
         screen.Theme = GD.Load<Theme>("res://content/ui/RealmTheme.tres");
         AddChild(screen);
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-        var commander = GD.Load<UnitDefinition>("res://content/definitions/heroes/hero_banner_marshal.tres");
-        var regent = GD.Load<UnitDefinition>("res://content/definitions/heroes/hero_bone_regent.tres");
+        var commander = GD.Load<UnitDefinition>("res://tests/fixtures/legacy-roster/content/definitions/heroes/hero_banner_marshal.tres");
+        var regent = GD.Load<UnitDefinition>("res://tests/fixtures/legacy-roster/content/definitions/heroes/hero_bone_regent.tres");
         var models = new[]
         {
             new HeroSelectionViewModel(commander.Id, commander, true, "军团规则甲", "规则正文甲"),

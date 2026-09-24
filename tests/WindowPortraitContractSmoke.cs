@@ -16,7 +16,7 @@ public partial class WindowPortraitContractSmoke : Node
             return;
         }
 
-        GD.Print("WINDOW_PORTRAIT_CONTRACT_OK window=1600x900,windowed,resizable portraits=authored-unit-card");
+        GD.Print("WINDOW_PORTRAIT_CONTRACT_OK viewport=1600x900 window=maximized,resizable portraits=authored-unit-card");
         GetTree().Quit();
     }
 
@@ -26,7 +26,7 @@ public partial class WindowPortraitContractSmoke : Node
         ExpectProjectSetting(failures, "display/window/size/viewport_height", 900L);
         ExpectProjectSetting(failures, "display/window/size/window_width_override", 1600L);
         ExpectProjectSetting(failures, "display/window/size/window_height_override", 900L);
-        ExpectProjectSetting(failures, "display/window/size/mode", 0L);
+        ExpectProjectSetting(failures, "display/window/size/mode", 2L);
         ExpectProjectSetting(failures, "display/window/size/resizable", true);
         ExpectProjectSettingString(failures, "display/window/stretch/mode", "canvas_items");
         ExpectProjectSettingString(failures, "display/window/stretch/aspect", "expand");

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/FilteredTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Team = 0
+Anchor = 1
+Range = 2.5
+MaxTargets = 0
+IncludeAnchor = false
+IncludeDefeated = false
+Order = 1
+RequiredTag = ""
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Action = 2
+TargetQuery = SubResource("s0")
+Amount = 50
+Terms = []
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc26_p_death"
+DisplayName = "余温"
+Description = "死亡时为周围 2.5 格友军提供 50 护盾，可被代触发。"
+ActivationKind = 2
+Trigger = 4
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 0
+MaxUses = 0
+Echoable = true
+Operations = [SubResource("s1")]

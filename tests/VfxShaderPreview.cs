@@ -17,7 +17,9 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
             var args = OS.GetCmdlineUserArgs();
             if (args.Length > 1 && args[0] == "--library")
             {
-                foreach (var id in new[] { "beam", "impact", "cleave", "lightning", "frost", "flamethrower", "burn", "poison", "empower", "weaken", "stun", "summon" })
+                var selection = args.FirstOrDefault(arg => arg.StartsWith("--effects="))?[10..];
+                var captureIds = selection?.Split(',') ?? GetNode<VfxPlayer>("Player").Catalog.Effects.Select(effect => effect.StableId).ToArray();
+                foreach (var id in captureIds)
                     await RecordPreview(System.IO.Path.Combine(args[1], id), id);
                 GetTree().Quit();
                 return;
@@ -42,6 +44,8 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
             CheckShockAndOrbit(player);
             CheckFirefall(player);
             CheckLibrary(player);
+            VfxSubEffectChecks.Run(player);
+            VfxExpansionChecks.Run(player);
             CheckPlaybackParameters(player);
             CheckCleaveGeometry(player);
             CheckStatusMotion(player);
@@ -163,7 +167,7 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
     private async Task RecordPreview(string directory, string? effectOverride = null)
     {
         System.IO.Directory.CreateDirectory(directory);
-        var preview = GD.Load<PackedScene>("res://scenes/app/VfxPreview.tscn").Instantiate<VfxPreviewController>();
+        var preview = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/VfxPreview.tscn").Instantiate<VfxPreviewController>();
         var canvas = new CanvasLayer();
         AddChild(canvas);
         canvas.AddChild(preview);
@@ -188,7 +192,7 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
         list.EmitSignal(ItemList.SignalName.ItemSelected, selectedIndex);
         foreach (var (argument, control) in new[] { ("--cast=", "CastSpeed"), ("--flow=", "MotionSpeed"), ("--radius=", "Radius"),
             ("--heading=", "Heading"), ("--distance=", "Distance"),
-            ("--flight=", "FlightTime"), ("--density=", "Density"), ("--particle-size=", "ParticleSize") })
+            ("--flight=", "FlightTime"), ("--density=", "Density"), ("--particle-size=", "ParticleSize"), ("--width=", "Width") })
         {
             var option=OS.GetCmdlineUserArgs().FirstOrDefault(a=>a.StartsWith(argument));
             if(option is not null) preview.GetNode<HSlider>("%"+control).Value=double.Parse(option[argument.Length..],System.Globalization.CultureInfo.InvariantCulture);
@@ -201,12 +205,23 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
         int frames = continuous ? 540 : effectOverride is null && selectedId == "shield" ? 300
             : (int)Mathf.Ceil((definition.Persistent ? 3.0f : player.PlaybackFor("preview")!.ExpectedDuration + .4f) / step);
         if(eventSequence) frames=210;
+        string? durationOption = OS.GetCmdlineUserArgs().FirstOrDefault(a => a.StartsWith("--seconds="));
+        if (durationOption is not null)
+            frames = (int)Mathf.Ceil(float.Parse(durationOption[10..], System.Globalization.CultureInfo.InvariantCulture) / step);
+        string? endOption = OS.GetCmdlineUserArgs().FirstOrDefault(a => a.StartsWith("--release-at="));
+        float? endAt = endOption is null ? null : float.Parse(endOption[13..], System.Globalization.CultureInfo.InvariantCulture);
+        bool ended = false;
         for (int frame = 0; frame < frames; frame++)
         {
             // Container layout settles after Ready; update the real reference
             // unit projection without advancing the preview's clock or looping.
             preview._Process(continuous && frame > 0 ? 1.0 / 60 : 0);
             if (frame > 0) player.Advance(step);
+            if (endAt is { } ending && !ended && frame * step >= ending)
+            {
+                player.End("preview", VfxEndReason.Completed);
+                ended = true;
+            }
             if(eventSequence)
             {
                 if(frame==18) preview.GetNode<Button>("%Fired").EmitSignal(Button.SignalName.Pressed);
@@ -844,7 +859,7 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
     {
         var canvas = new CanvasLayer();
         AddChild(canvas);
-        var preview = GD.Load<PackedScene>("res://scenes/app/VfxPreview.tscn").Instantiate<VfxPreviewController>();
+        var preview = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/app/VfxPreview.tscn").Instantiate<VfxPreviewController>();
         canvas.AddChild(preview);
         var player = preview.GetNode<VfxPlayer>("%Player");
         preview.SetProcess(false);

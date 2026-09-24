@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc34_shockshield_guard.tres" id="r0"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r1"]
+
+[resource]
+script = ExtResource("r1")
+Id = "hero_hc34_shockshield_guard"
+DisplayName = "震盾卫"
+Description = "HC34／MV04 测试稿。开场满蓝。将 2.2 格内最近的至多 3 名非 Boss 敌人向外推开至多 1.6 格，各造成 40 加 80% 攻击力的伤害并眩晕 0.6 秒。 被动：被普通攻击命中时获得 8 护盾，最多每秒触发一次。 数值为测试暂值。"
+Portrait = ExtResource("r0")
+IsHero = true
+Role = 0
+Faction = 6
+RecruitCost = 5
+MaxHealth = 490
+AttackDamage = 17
+Armor = 12
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 80
+StartingMana = 80
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

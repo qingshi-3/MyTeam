@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc25_death_provider.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+Id = "hero_hc25_death_provider"
+DisplayName = "送葬人"
+Description = "召唤砂骨仆承伤，己方临时小兵死亡触发殉爆。自身殉爆亡语可由队友代触发。"
+Portrait = ExtResource("r1")
+IsHero = true
+Role = 5
+Faction = 6
+RecruitCost = 5
+MaxHealth = 300
+AttackDamage = 16
+Armor = 4
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.5
+AttackReleaseProgress = 0.8
+AttackCooldown = 1.2
+MaxMana = 60
+StartingMana = 60
+HealPower = 0
+Tags = Array[StringName]([&"hero"])

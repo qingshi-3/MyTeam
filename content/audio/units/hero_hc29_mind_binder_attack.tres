@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="UnitAnimationSound" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/Audio/UnitAnimationSound.cs" id="script"]
+[ext_resource type="Resource" path="res://content/audio/arrow_release.tres" id="sound"]
+
+[resource]
+script = ExtResource("script")
+Animation = "attack"
+Frame = 11
+Sound = ExtResource("sound")

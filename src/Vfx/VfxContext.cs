@@ -6,7 +6,8 @@ public enum VfxEndReason { Completed, Depleted, OwnerDefeated, ScopeEnded }
 
 // Coordinates belong to the injected stage. No visual instance queries battle state.
 public readonly record struct VfxContext(Vector2 Source, Vector2 Target, float Radius = 0,
-    VfxPlaybackParameters? Playback = null, float? TravelProgress = null, Vector2? Direction = null);
+    VfxPlaybackParameters? Playback = null, float? TravelProgress = null, Vector2? Direction = null,
+    Vector2? TargetDisplayPosition = null, VfxBodyVisual? Body = null, float ConeAngleDegrees = 0);
 
 // Explicit stage injection for effects whose geometry belongs to the world plane.
 public interface IVfxSpatialTrack

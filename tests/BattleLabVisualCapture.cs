@@ -30,7 +30,7 @@ public partial class BattleLabVisualCapture : Node
             var package = gate.Package ?? throw new InvalidOperationException(
                 "Battle Lab visual package: " + string.Join(';', gate.Report.CoreErrors));
             var index = new BattleLabContentIndex(package);
-            var catalog = GD.Load<BattleLabPresetCatalog>("res://content/battle-lab/battle_lab_presets.tres") ??
+            var catalog = GD.Load<BattleLabPresetCatalog>("res://tests/fixtures/legacy-roster/content/battle-lab/battle_lab_presets.tres") ??
                           throw new InvalidOperationException("Battle Lab preset catalog missing");
             var store = new BattleLabPresetStore(catalog);
             Require(store.TryLoad("冰霜体系验证", out var preset), "Frost visual preset load");
@@ -65,7 +65,7 @@ public partial class BattleLabVisualCapture : Node
             snapshot.Seed, snapshot.Mode, snapshot.FloorRuleId);
         session.Restore(snapshot);
         var host = CreateHost();
-        var scene = GD.Load<PackedScene>("res://scenes/ui/BattleLabScreen.tscn") ??
+        var scene = GD.Load<PackedScene>("res://tests/fixtures/legacy-roster/scenes/ui/BattleLabScreen.tscn") ??
                     throw new InvalidOperationException("BattleLabScreen scene missing");
         var screen = scene.Instantiate<BattleLabScreenController>();
         host.AddChild(screen);

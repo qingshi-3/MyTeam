@@ -1,0 +1,43 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueTermSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/BattleValueAbilityOperationSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Metric = 3
+Subject = 0
+Attribute = 0
+Key = ""
+Scale = 0.0015
+TeamShared = false
+OwnStatusOnly = false
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Action = 6
+TargetQuery = SubResource("s0")
+Amount = 0
+Terms = [SubResource("s1")]
+Attribute = 8
+Minimum = 0
+Maximum = 0.6
+
+[resource]
+script = ExtResource("r0")
+StableId = "ability_hc13_p"
+DisplayName = "晶锋"
+Description = "每点当前护盾提供 0.15% 暴击率，最多额外 60%；每个战斗步更新。"
+ActivationKind = 1
+Trigger = 2
+ManaCost = 0
+CooldownTicks = 0
+IntervalTicks = 1
+MaxUses = 0
+Echoable = false
+Operations = [SubResource("s2")]

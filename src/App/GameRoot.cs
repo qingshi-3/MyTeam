@@ -4,6 +4,7 @@ using TowerAutobattler.Content;
 using TowerAutobattler.Project;
 using TowerAutobattler.Run;
 using TowerAutobattler.UI;
+using TowerAutobattler.Audio;
 
 namespace TowerAutobattler.App;
 
@@ -18,15 +19,21 @@ public partial class GameRoot : Control
     private RunApplication? _app;
     private GameFlowCoordinator? _flow;
     private AppScreenHost _screens = null!;
+    private UiFeedbackBinding? _uiFeedback;
 
     public ContentRegistry? Content => _app?.Content;
     internal GameFlowCoordinator Flow => _flow ??
         throw new System.InvalidOperationException("Game flow has not completed bootstrap.");
 
+    protected virtual System.Threading.Tasks.Task<GamePackagePublicationResult> PublishPackageAsync() =>
+        GamePackagePublisher.CreateReadyAsync(this, ProjectDefinition);
+
     public override async void _Ready()
     {
         _screens = GetNode<AppScreenHost>(ScreenHostPath);
-        var gate = await GamePackagePublisher.CreateReadyAsync(this, ProjectDefinition);
+        var audio = GetNode<FeedbackAudio>("UiAudio");
+        _uiFeedback = new UiFeedbackBinding(this, audio, _screens.MainMenu);
+        var gate = await PublishPackageAsync();
         if (!GodotObject.IsInstanceValid(this) || !IsInsideTree()) return;
         if (gate.Package is not { } package)
         {
@@ -38,7 +45,7 @@ public partial class GameRoot : Control
         var project = package.Project;
         SemanticIcons.Configure(project.Presentation.SemanticIcons);
         _app = new RunApplication(registry, new SaveService(SaveNamespace), project);
-        _flow = new GameFlowCoordinator(() => _app, _screens, project.Presentation, () => GetTree().Quit());
+        _flow = new GameFlowCoordinator(() => _app, _screens, project.Presentation, () => GetTree().Quit(), audio.RequestUi);
         _flow.Start();
         _screens.MainMenu.ExperienceSliceRequested += OpenExperienceSlice;
         _screens.MainMenu.VfxPreviewRequested += OpenVfx;
@@ -46,6 +53,8 @@ public partial class GameRoot : Control
 
     public override void _ExitTree()
     {
+        _uiFeedback?.Dispose();
+        _uiFeedback = null;
         if (_screens is not null) _screens.MainMenu.ExperienceSliceRequested -= OpenExperienceSlice;
         if (_screens is not null) _screens.MainMenu.VfxPreviewRequested -= OpenVfx;
         _flow?.Dispose();

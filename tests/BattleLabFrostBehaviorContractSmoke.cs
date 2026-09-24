@@ -35,7 +35,7 @@ public partial class BattleLabFrostBehaviorContractSmoke : Node
             var package = gate.Package ?? throw new InvalidOperationException(
                 "Battle Lab Frost package: " + string.Join(';', gate.Report.CoreErrors));
             var index = new BattleLabContentIndex(package);
-            var catalog = GD.Load<BattleLabPresetCatalog>("res://content/battle-lab/battle_lab_presets.tres") ??
+            var catalog = GD.Load<BattleLabPresetCatalog>("res://tests/fixtures/legacy-roster/content/battle-lab/battle_lab_presets.tres") ??
                           throw new InvalidOperationException("Battle Lab preset catalog missing");
             var store = new BattleLabPresetStore(catalog);
             Require(store.TryLoad(PresetName, out var preset), "Frost built-in preset load");

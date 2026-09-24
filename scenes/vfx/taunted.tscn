@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxStatusMarkTrack.cs" id="motion"]
+[ext_resource type="Texture2D" path="res://assets/vfx/taunt-anger.png" id="anger"]
+[node name="taunted" type="Node2D"]
+script = ExtResource("root")
+[node name="HeadMark" type="Node2D" parent="."]
+position = Vector2(288, -336)
+script = ExtResource("motion")
+[node name="Anger" type="Sprite2D" parent="HeadMark"]
+texture_filter = 4
+texture = ExtResource("anger")
+scale = Vector2(0.204147, 0.204147)
