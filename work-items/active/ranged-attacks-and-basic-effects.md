@@ -1,5 +1,15 @@
 # 远程攻击实体与基础特效
 
+## 当前修复：第一层 Boss 战远程停手（2026-09-13，已复现并修复）
+
+用户报告第一层 Boss 打到中途远程全部停住。使用当前征程数据的只读副本建立 `tests/fixtures/first-boss-ranged-stall.json`，由内存 SaveService 加载正式内容与遭遇，不写真实存档。原始重放中共鸣使、裂印使、连弩手在杂兵死后长时间 Waiting、目标为空、无射击蓄力或连射；Boss 在中央四格障碍另一侧被饕餮牵制，直到前排死亡、Boss 移到左侧才恢复。
+
+根因：交战点快速采样主要在最大射程外圈，少量内圈点只朝向自己；中央墙与地图边界使这些采样都不可用，`ScoreTarget` 错把有绕路射击点的 Boss 丢弃。现保留快采样优先，失败时以逻辑网格合法站点兜底，目标评分与目的地选择使用相同兜底，保留地形、身体、落点预约和连续移动检查，不改变实际位置为格点。极小回归还定位到零宽视线掠过墙角、实体箭撞墙的问题：敌对投射攻击的行动与站位检查加入实际子弹半径；同队治疗、近战和光束沿用原规则。
+
+验证：低并发编译0警告／0错误。`FirstBossRangedStallSmoke` 重放正式存档副本，最终214tick结束，无目标等待最大0；固定目标窄路用例14tick实际命中，重复轨迹一致；整面封墙120tick不得穿墙发射。额外通过 `GameplayContractSmoke --movement-only`（地形、身体、拥堵、回滚、治疗、死亡清理）、`AlliedBodyNavigationContractSmoke` 和 `RangedAttackContractSmoke`。日志在 `.godot/ui-review/boss-stall-before.log`、`boss-stall-after.log` 与 `boss-*-regression.log`。原样本595tick才结束，不能把时长变化作为平衡结论。以上为隔离模拟行为验证，未进行窗口手动游玩／新动效验收；没有改数值、素材或玩家存档，没有提交／推送。
+
+恢复入口：本节、`DeterministicContinuousMovementService.ScoreTarget/SelectGoal/HasActionLineAccess`、`BattleSimulation.HasLineAccess`、`tests/FirstBossRangedStallSmoke.tscn`。本次bug复现与必要验证按用户当前故障处理授权执行，下方早期“不推进战斗”仅为当时批次边界。
+
 ## 目标与授权
 
 - 2026-09-06：用户要求实现远程攻击逻辑与简单特效，以及无 cast 时使用 attack 的动画兜底。

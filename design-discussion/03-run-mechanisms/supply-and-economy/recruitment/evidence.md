@@ -1,5 +1,13 @@
 # R07 招募机制：已有证据
 
+## 2026-09-16：无同名升星的招募修订依据
+
+本轮复用R01-D01、R02-D01–D03、R03-D01–D03、R07-D01–D03和R09-D01，未新增联网。用户要求重新评估是否做升星，故原唯一制度属于当前比较基线，不用旧结论阻止本轮讨论。
+
+静态核查：`RunRewardEconomyService.CreateNewRun`仍为传入单个heroId并赠同伴；`RunDecisionService.CreateOffer`仍散列排序截取；`RunRewardEconomyService.Recruit`及`AddRosterHero`所读路径没有同名持有排除，AddRosterHero直接追加实例。`RunOperationKind`只有金币、物品、招募、恢复与人口操作，没有培养材料或培养操作；`RosterHeroInstanceDto.Rank`默认1。普通唯一、正式材料养成和6选2均不能凭已有讨论或字段存在声称实现。
+
+TFT相关事实复用[内容调研Q11／Q12](../../../04-content-validation/evidence.md)：费用档概率、有限同名副本和三星追求存在关联，但英雄种类分布与具体招募供给是不同层。Q03的3英雄＋培养资源互斥选项是Agent项目设计，不是从某原作完整复制的机制，也未经过数值模拟或玩家验收。
+
 日期：2026-09-08。只检索已有本地研究，无新增联网研究，不修改原资产。当前问题是同名英雄取得／持有／上场及直接相连的普通羁绊贡献，编号 DR01–DR06 见 [方案](proposals.md)。本次检索时尚无 R07 用户决定；后续结论见 [R07-D01](decisions.md)。
 
 ## 实际检索范围

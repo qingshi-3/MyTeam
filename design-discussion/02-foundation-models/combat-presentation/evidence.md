@@ -1,5 +1,110 @@
 # P01 本地架构核对
 
+## 五名敌人动作制作依据（2026-09-19，实施中）
+
+继承 S26 的喷火器窄根连续供给／下游膨开、S33 岩刺与传送壳层、S34 瞬移的双端分离、S24 碎片独立收尾。以上已有实际观察，不重复宣称本轮重新观看。新查 [Sivir 官方页](https://www.leagueoflegends.com/en-us/champions/sivir/) 的 Q 与媒体地址，文字明确去回两次伤害；浏览器超时、官方 MP4/WebM 返回403，本轮没有观看该片。缓存仅用于研究，未知原作精确速度曲线、接刃姿势及材质实现。
+
+本轮已查看工程 authored SpriteFrames 的 idle/attack 阶段图（`.godot/enemy-five-review/assets-contact.png`）：firebreather 有口部出火；irondervish 有躯干起势与手臂上举挥出；spellthief 有手部法光；crystalbeetle 有硬壳和抬爪。素材事实与以下项目适配分开：
+
+| 动作 | 中心、朝向与轨迹 | 项目阶段与分层／素材 |
+| --- | --- | --- |
+| 炉喉吐息 | 口部身体平面，脚点查询的固定70°/3格扇形；锁向后不追踪 | 1秒吸气、1.8秒连续供给、收势。喷口内焰、外焰卷动、边缘碎火分层；使用专用扇形流动shader，地面淡边界只表达查询，不扩成圆波。供给在控制取消时结束。 |
+| 往返刃 | 挥臂离手点，刀体平面自旋；固定原点→端点→原点 | 无蓄力条。采用本地挥臂帧作离手依据，独立十字金属刀体SVG、窄亮刃、短旋转残痕；飞行插值只消费权威轨迹。匀速往返是已确认项目设计，非对Sivir视频的观察；金属刀形与旋转不从普通箭换色。 |
+| 成对换位 | 两者脚点、地面双端刻印，准备期细链接跟随目标 | 1.1秒刻印、同一逻辑tick双端瞬移、0.8秒施法者收势；复用S34的离散端点语义。配对几何标记不是伤害范围，取消时同时退去。 |
+| 岩垒／地裂 | 三段可攻击岩体组成约2.5格短墙；地裂沿独立锁定地面轴 | 岩块上升、短尘屑；随后窄裂纹预告、逐段尖石突起、碎块退去。复用S33岩石分面素材／由地面向上运动，不使用冰晶换色。墙实体寿命与血量由战斗层控制。 |
+| 裂壳、卵与爪 | 身体外层硬壳向两侧分离，原身体真实缩小；卵在合法地面点 | 1.2秒裂纹、硬片脱落、缩体后沿地面退开；沿用S24破裂与惯性收尾关系，绘制独立甲壳片和有胎体的卵SVG，材质不冒充冰片。爪为短弧三条擦痕，酸液为独立黏液滴。 |
+
+全部时间／尺寸是项目调试初值。预览与战斗使用同一VFX场景、共享暂停时钟；记录不等于已完成动态验收或用户认可。
+
+## P01-S47：决斗、蓄怒重拳与实体飞钩（2026-09-19）
+
+直接动作来源：[军团决斗官方片段](https://cdn.cloudflare.steamstatic.com/apps/dota2/videos/dota_react/abilities/legion_commander/legion_commander_duel.mp4)、[瑟提W](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0875/ability_0875_W1.mp4)、[机器人Q](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0053/ability_0053_Q1.mp4)、[机器人被动](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0053/ability_0053_P1.mp4)。已取得完整演示并查看每秒4帧的完整阶段序列，缓存归`.godot/duel-grit-hook/reference/`。这四项是实际演示观察，不是作者制作教程；未取得原工程材质拆解。
+
+- 观察：军团在近战距离对攻，金色标记持续辨认决斗双方，普通攻击继续播放。项目适配为两人脚下的金色断环与交叉剑徽，跟随各自脚点，开始短亮、4秒持续、结束淡出；不画封闭牢笼、不迁入永久成长。
+- 观察：瑟提W先画前方细范围边界、身体附近蓄力，随后沿原方向推出宽冲击和尘迹；高怒版本增强身体金光。项目适配为0.6秒锁向、3格长/1.6格宽的地面边界，释放层沿前向展开，边缘碎尘快速消失，护盾由真实护盾状态呈现。脚点定义地面命中带，胸前层只作冲击亮核，不扩大真实命中范围；此版全带物理伤害，不照搬原作中央真伤。
+- 观察：机器人Q从身体射出手爪，连续绳链连接源头，命中后目标沿链向源头移动；空钩伸展后回收。项目使用独立金属爪几何、双线绳索与分段铰接，飞行/回收头位置跟随真实事件插值，抓住后跟随被拖者的可见身体；不是瞬移或能量球。0.3秒起手、每秒10格飞行、0.6秒回拖均为项目暂值。首个敌人挡钩、首领不被拖动由逻辑决定。
+- 观察：低血屏障是贴近身体的闭合罩，在连续受击中保持，耗尽后消退。项目复用已存在的护盾视觉/护盾条，只在实际盾账本大于0时保持；不根据角色id额外演一层假盾。
+
+制作依据：方向与阶段据上述真实演示拆分；金属爪/链节用独立场景中的Line2D/Polygon2D，拳击用256基准面shader的边界、纵向冲击与离散尘迹分层。共用VfxPlayer时钟、暂停及减少动态接口。角色动作查看供体攻击阶段图后选择风刃指挥官（近战刀击）、太阳之拳（近身拳击）、Invincibuddy（金属重臂）；放弃投石者和持斧钢魔像。供体只复制选定png与本地化frames资源。正常速度正式BattleScreen核对结果归[活动任务](../../../work-items/active/duel-grit-hook-heroes.md)。
+
+## P01-S46：大型冲阵的身体推进与两侧让位（2026-09-19）
+
+来源：[Riot塞恩官方页](https://www.leagueoflegends.com/en-us/champions/sion/)及从该页取得的[R技能片段](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0014/ability_0014_R1.mp4)。浏览器首次导航超时后读取官方页面媒体地址，提取完整片段每1/3秒阶段图并查看；原片与阶段图保存在`.godot/trample-review/reference/`。约0.7–1.0秒起势，1.3–8.0秒身体向前持续推进，暖色前端与向后的红色拉丝同向移动；约8.3秒接触目标出现短爆发，随后身体恢复普通动作。官方片段是持续冲锋／接触收势的动作依据，未据此证明原技能把所有身体向两侧推开，原作数值和控制免疫不迁入。
+
+本项目适配由用户明确要求：大体型、贯穿行进、沿路两侧撞开。中心为巨兽脚点；锁定的地面方向为主轴，预警的左右边界对应真实身体半径，推动目标沿主轴法向离开。1.2秒预警逐渐增强，正式位移开始后预警消失、肩前压缩气流与向后短尘尾跟随可见身体；被撞者由共享位移呈现播放横向退开及短擦痕，收招1秒。箭形地面指示／肩前薄气流／稀疏尘尾分别为项目新适配，不复用水波圆环，也不照搬塞恩的环形终点爆炸。
+
+素材规格：既有`f5_tank`独立动画资源用于大型精英场景，VisualScale=2.1、身体半径0.9；不修改基础蛮兽的尺寸。新预警／冲锋为独立256基准面的shader场景，按战场双轴投影和同一半径设置空间，运动仅使用共享播放时钟，减少动态时停止纹理流动。技能资源分别引用两项VFX，特效不反向驱动碰撞或伤害。
+
+动作核对：正式BattleScreen隔离预设录制正常速度，首轮发现指示箭头反向，修正后再次录制；查看阶段序列并在本地浏览器以1倍速度播放，核对方向、连续推进和两侧落位。真实暂停按钮输入冻结逻辑及特效，结束清理通过。录制与未验收边界归[大型冲锋任务](../../../work-items/active/enemy-trample-charge.md)，这不是用户观感认可。
+
+## P01-S41–S45：idle 施法的身体覆盖与爆发候选（2026-09-16）
+
+用户明确排除现有库作为最终方案。本轮检索 Google `site:realtimevfx.com buff character aura effect breakdown` 与 RTVFX 公开搜索 `buff effect`；Google 正文要求 JS，浏览器导航/正文读取多次超时。转用论坛公开 JSON 读取以下作者原文和演示地址，未下载媒体或工程。**本轮新参考的动态观察未完成；下面作者说明与项目推论分开，不能据标题或链接声称已逐帧观看。** 原文缓存位于 `.godot/idle-cast-review/reference-*.json`。
+
+| 证据 | 原始来源及作者说明 | 对本需求的价值和边界 |
+| --- | --- | --- |
+| P01-S41 | [SHA3DOW：Strength Buff FX](https://realtimevfx.com/t/strength-buff-fx/31395)。ARPG 力量增益，作者明确目标是有力度且保持角色可辨认，仍在迭代时序；第二帖说明地面破坏由 Houdini 模拟后输出 VAT。[原始动图](https://realtimevfx.com/uploads/default/original/3X/b/9/b964e6cb42bb0fe3c01ee539bf703dfe21dafa7c.gif)。 | 最贴近力量增益爆发的候选；不能把地面破坏当血鼓必需元素，不能据作者目标断言本项目大小下仍清晰。角色本身是否有施法动作尚未核验。 |
+| P01-S42 | [Ilya_2021：Sketch #59 Light](https://realtimevfx.com/t/ilya-2021-sketch-59-light/24528/4)。第4帖明确贴近角色的能量聚集使用简单网格，叠加 masks、dissolve、Fresnel、distortion；第14帖补烟雾序列作为次层。第19–20帖讨论后期过强，作者认同早期版本更适合治疗/增益。[早期更新视频](https://www.youtube.com/watch?v=Oo9P8WYvVIc)，[后续柔和版本](https://www.youtube.com/watch?v=zYgCIK2GMho)，[最终版](https://www.youtube.com/watch?v=aPOgIABQQo0)。 | 提供贴身覆盖、聚集到释放及溶解分层的明确制作依据。2D 能量罩/前景层是项目适配，不是原作者公开了 Godot 或精灵方案。需要比较早期和最终版，不能照搬强伤害风格。 |
+| P01-S43 | [Recklol：Magic buff，第8帖](https://realtimevfx.com/t/recklols-vfx-sketchbook/6419/8)。作者明确是 magic buff 并提供拆解图与[视频](https://youtu.be/j2-J04zzqC8)；[拆解图](https://realtimevfx.com/uploads/default/original/2X/e/e591fba12dffdca5ecab21abfce9b640a8639752.jpeg)。 | 有针对性的增益候选。图中文字和动态尚未实际查看，不臆称其中具体网格数、运动方向或角色姿势。 |
+| P01-S44 | [角色材质覆盖与坐标讨论](https://realtimevfx.com/t/i-need-to-put-a-world-space-shader-to-a-character-like-a-buff-effect-but-following-the-uvs-is-a-bit-of-a-problem/19914)。提问者需要覆盖角色且图案跟随角色；回复建议 UE 的 pre-skinned local bounding box UV，作者确认解决。 | 支持身体覆盖层应跟随角色而非世界纹理滑动。对 Godot 2D 可探索按当前帧 alpha 限定的材质扫光；这属于本项目技术推论，无成品动作演示，也不能直接照搬 3D Fresnel。 |
+| P01-S45 | [Hekaite：Need help with this buff effect](https://realtimevfx.com/t/need-help-with-this-buff-effect/30142)。作者区分 burst、duration、结束前3秒闪烁，仍求助爆发不足并计划改 spiral meshes；[视频](https://youtu.be/maUWdyGCCh4)。 | 说明增益的释放瞬间和持续阶段要分开；属于未完成习作，不作为已解决的最佳案例，不将末段闪烁或持续时间带进本项目。 |
+
+此前 P01-S21 的手绘 aura 证据仍有效，可解释前景覆盖提升体积，但它是持续光环，且曾被适配成现有库；本轮不以重复它代替用户要求的新参考。尚无证据证明以上作品全部使用纯 idle，也未核验 DNF 的具体技能动作；此次推荐只针对效果覆盖和释放方法。
+
+制作轮补充：用户随后要求实施。浏览器在 S41 原始 GIF 成功取得站立、张臂伴随红色脚下轮廓与向上细束等离散画面，但未完成有序全程动态观察；不据此编造时序参数。S42/S43 视频仍未完成观看。工程首版依据 S21 已观察的前景覆盖/向上分离与 S42 的作者分层拆解，采用原创短促薄片/上升柔带；2D帧轮廓、时长和强度为项目适配。具体动作、资源、前后正常速度录制和验证记录归现有 VFX 活动任务，不能将实现完成写成参考观看或用户审美通过。
+
+## P01-S37–S39：贯阵弩手蓄力/发射的官方候选片段（2026-09-16）
+
+承接P01-D09。已通过HTTP读取下面三个Riot官方英雄页面，核对技能名、说明和页面实际引用的独立MP4；三个视频HEAD均返回200/video/mp4。没有下载远程媒体。浏览器中文入口发生地区重定向，页面和独立视频的浏览器操作均超时；本轮**没有成功观看动态、逐帧分析或读取作者制作拆解**。下表只区分官方文字支持的技能类型及待观察问题，不把预期视觉写成实际观察。
+
+| 编号 | 官方来源和片段 | 已核对的文字事实 | 供用户确认/后续观察的重点 |
+| --- | --- | --- | --- |
+| P01-S37 | [Lux官方页](https://www.leagueoflegends.com/en-us/champions/lux/)；[R Final Spark独立短片](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0099/ability_0099_R1.mp4) | 官方说明聚集能量后发射光束，对范围内目标造成伤害。 | 作为聚能后直线光束的候选；需实际观察方向预告、源端聚能、亮度峰值及光束出现/消退，不能据文字声称具体颜色/宽度/时长。 |
+| P01-S38 | [Varus官方页](https://www.leagueoflegends.com/en-us/champions/varus/)；[Q Piercing Arrow独立短片](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0110/ability_0110_Q1.mp4) | 官方说明准备后射出强力一击，准备越久射程和伤害越高。 | 作为蓄力弓箭/贯穿投射物候选；重点确认用户是否要可辨识的飞行前端、尾迹和沿路命中。项目不因此采用原作的可变蓄力/射程/伤害规则。 |
+| P01-S39 | [Xerath官方页](https://www.leagueoflegends.com/en-us/champions/xerath/)；[Q Arcanopulse独立短片](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0101/ability_0101_Q1.mp4) | 官方说明发射长距离能量光束，伤害命中的所有目标。 | 作为奥术能量束的候选，比较其源端动作和光束形体；当前页面短说明不提供预警/充能亮度的精确变化。 |
+
+页面中的原作附加效果不进入ES01玩法。跨阶段亮度、发射物长度/速度、线宽、判定时刻及素材层次均待动态观察和项目适配。本轮没有原作纹理/shader/粒子实现证据，没有生产样板或审美验收。浏览器面板打开Varus片段的请求返回queued，不能据此称用户已看到或播放器已成功播放。
+
+## P01-S34：英雄位移的身体动作与空间参考（2026-09-12）
+
+用户要求把冲锋、跳跃、闪现、击退、拉拽和聚怪做进具体英雄。本轮先读取官方英雄页公开媒体，再查看六段视频各自每 0.25 秒的完整阶段图；这属于参考观察，不是本项目运行或审美验收。页面与精确媒体链接保存在 `.godot/displacement-reference/sources.json`，原视频、阶段图与完整制作说明同目录。
+
+| 动作／来源 | 实际观察 | 本项目适配、分层与边界 |
+|---|---|---|
+| 冲锋：[Gragas E](https://www.leagueoflegends.com/en-us/champions/gragas/)／[官方片段](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0079/ability_0079_E1.mp4) | 约 0.75–1.0 秒身体朝目标快速前冲；1.25 秒接触处尘屑出现，目标头顶控制标记独立延续。 | 以移动者脚点为中心、沿起点到权威终点的地面线推进，现有跑动帧为主；接触或碰阻停止，实际命中与后续控制各自消费事实。可复用接触 `impact`，不以拖尾伪造额外路径。 |
+| 跳跃：[Tristana W](https://www.leagueoflegends.com/en-us/champions/tristana/)／[官方片段](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0018/ability_0018_W1.mp4) | 约 1.25 秒起点地面亮、角色明显升离地面；1.5 秒在目标上方，1.75 秒落点产生径向冲击，角色之后留在落点旁。 | 地面根节点沿真实路径，只有角色 sprite 上升、越顶、下降，选择位置与血条留在地面；身体护盾／状态使用独立身体挂点跟随高度。`4p(1-p)×高度` 是项目解析弧，不是原作公式；实际落地可用既有 `burst`。不复制火箭燃焰、不声称有专门起跳骨骼帧。 |
+| 闪现：[Katarina E](https://www.leagueoflegends.com/en-us/champions/katarina/)／[官方片段](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0055/ability_0055_E1.mp4) | 1.25 秒仍在远点，1.5 秒已在敌人近旁，两处变化分离；粗采样未见持续行走的中间身体，不能据此证明精确消隐帧数。 | 闪现语义来自当前用户要求：短前摇后完成事实当帧 snap 至合法终点，清除走路插值，途中没有身体扫过。原有 `teleport` 的前后壳层适用，必须按真实起手／Fired 事件播放，不能用它的自动 0.42 秒前摇延迟玩法换位。壳层制作依据另见 S33。 |
+| 击退：[Tristana R](https://www.leagueoflegends.com/en-us/champions/tristana/)／[官方片段](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0018/ability_0018_R1.mp4) | 约 1.0 秒炮口亮，1.25 秒接触，1.5 秒目标沿远离施放者方向快速后退；接触碎屑留后散。 | 移动者是受击目标，方向为施法来源到受击者；地面权威推离线配持有的受击姿态，碰阻提前停下。复用真实命中 `impact`，不凭参考炮弹给当前近身盾击添加远程弹道。 |
+| 拉拽：[Blitzcrank Q](https://www.leagueoflegends.com/en-us/champions/blitzcrank/)／[官方片段](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0053/ability_0053_Q1.mp4) | 0.75 秒端头和链向外伸，1.0 秒接触远处目标，1.25 秒目标回到施放者近侧、链缩短；控制标记随后独立保持。 | 目标脚点沿向内地面线移动，停在施放者附近合法空位，不能覆盖其身体；施法、牵引、到达／取消分开，受击者不翻成主动往回跑。当前未制作实体钩索素材，先以实际牵引／受击姿态表达，不把汲取光束换色冒充铁链。 |
+| 聚怪：[Orianna R](https://www.leagueoflegends.com/en-us/champions/orianna/)／[官方片段](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0061/ability_0061_R1.mp4) | 约 0.75 秒以球体为中心出现提示，1.0 秒球体亮，1.25 秒不同方向目标同时向该中心移动，1.5 秒已聚在近处；施放者仍在右侧。 | 原作使用独立球体中心；HC36 当前稿明确固定在施放者施放时地面位置，施放者不动。目标分别沿自身径向向中心附近空位靠拢，保留身体间隔。既有 `wind_vortex` 的旋卷体分层可服务固定中心，特效本身不选择／搬运敌人，范围取同一玩法查询。 |
+
+实现适配：`BattleDisplacementCue` 保留本次起点／终点、开始 tick、总 tick 与进度，事件位置为当前实际地面位置。一般移动仅在已收到的相邻权威采样间插值，完成采样也走完后清理；闪现及暂停单步直接采样权威位置。跳跃受控后的 `Cancelled` 只取消落地收益，`Finished` 前仍沿安全下降继续；死亡、离场和身份重建沿既有清理路径。真实 simulationSpeed 为界面倍率乘 0.8，暂停冻结；减少动态压低附加弧高，不改变逻辑位移。角色根缩放只应用一次，身体特效和地面特效分别注入挂点，地面阴影若内容本来拥有则不抬高；当前英雄没有新增阴影素材。
+
+当前绑定：闪现实际接入共享 `teleport`，按起手事实开启，成功换位发送 Fired／Impact 进入双端收尾，取消直接移除；前摇倍率按其 authored CastDuration 与位移 tick 时长计算。冲锋、跳跃、击退成功结束后用共享 `impact` 显示局部接触，在非暂停状态等待末段插值的一个 tick，使光点随可见抵达；它不充当范围圈。聚怪实际接入共享 `wind_vortex`，以施放时冻结的 EffectCenter 和真实查询半径播放；同次施法多个移动者共用一实例，全部结束／取消后释放。没有复制特效场景或按英雄 id 特判。盾壳与持续身体状态逐渲染帧读取身体挂点，地面状态继续读取脚点。终局进入结果停留前统一清除位移插值、角色高度、旋风组和待播接触，不能因逻辑 scope 清账而让角色留在半空。
+
+素材与未知：本轮没有生成新角色姿态、残影、钩索或全屏光效，只组合既有跑动／施法／受击帧与语义匹配的共享效果。原作内部 mesh、shader、精确缓动、位移时长和无敌／地形规则未由本次观察确定，项目数值不是原作事实。依用户“不用验证”的当前边界，未构建、启动 Godot、运行测试或录制当前战斗；代码实现和参考阶段图不等于观感通过。
+
+## P01-S36：主动施法者短光（2026-09-16）
+
+用户要求远程技能的施法者也应有简短反馈。复用 S33 已观察的 [Gangplank W 官方演示](https://www.leagueoflegends.com/en-us/champions/gangplank/)中“腰腹局部亮起、少量延后细尘”的身体端分层，以及现有 `arcane_missile.tscn` 源端独立亮点轨道的制作方式。参考本身是净化；这里只借鉴局部身体亮度与细尘层次，不声称其动作就是远程施法，也不复制上掠光弧或净化含义。
+
+项目适配：中心为可见身体挂点，平面为朝向镜头的 sprite，无地面范围／攻击朝向；在成功主动施法事实当帧开始，约 0.03 秒起亮、0.32 秒主体结束，六枚光点在 0.035 秒后以短距离向外散开并轻微上浮，0.48 秒全部清理。局部浅蓝白柔光负责识别施法者，细光点负责短促释放；不伪造前摇或延迟技能结算。采用共享 `surface.tres`＋`element_sparkle.gdshader` 的柔光和 `ElementDust.tscn` 点粒子，不需新图，不用多边形线框，不混用目标治疗加号或向内聚集的回蓝效果。该时长、数量与色彩是项目适配值，不是对参考的逐帧测量。正式战斗与预览共用 `spell_cast` 资源与共享时钟。
+
+## P01-S33：常用动作扩充与日漫造型复核（2026-09-12）
+
+- **已观察的动作资料**：[岩刺](https://realtimevfx.com/t/vfx-spike-attack-riot-style-using-popcorn-fx/802) 为地表先行、依次爆刺、碎块收尾；[风卷分层](https://realtimevfx.com/t/thermal-amp-sketch-12/4700) 与 [制作说明](https://realtimevfx.com/t/veer-sketch-12/4776) 为窄根宽顶偏心风体、独立顶环/风裙/碎尘，作者说明 mesh、panning noise、alpha erosion、vertex offset。[束缚](https://realtimevfx.com/t/harry-halis-alisavakis-sketch-25-root/9683) 作者说明预弯曲圆柱UV生长与尖端收窄，实际片段为脚边根圈长出后固定。[2D传送](https://realtimevfx.com/t/2d-teleportation-unity/4170) 可见分块壳层、亮峰和独立余屑，未展示完整角色位移。
+- **进攻细分**：[Athena突刺](https://realtimevfx.com/t/wip-help-athena-thrust-how-to-strengthen-the-motion/21161) 观察尖锋快速贯出后制动、尾形消退，作者/评论讨论后向光痕过长的问题；[连结电弧](https://realtimevfx.com/t/unity-vfx-chain-lightning-effect/27281) 观察真实端点连接、接点短亮、余电收尾。官方 [Katarina](https://www.leagueoflegends.com/en-us/champions/katarina/) R 片段观察来源中心持续短弧与独立范围；项目不引入参考的小刀目标或新命中。官方 [Fiddlesticks](https://www.leagueoflegends.com/en-us/champions/fiddlesticks/) W 观察保持的两端暗红链接和末端脉冲，无法从阶段图证明原作颗粒方向；项目 Target→Source 明确作为汲取语义适配。
+- **辅助与状态**：官方 [Soraka](https://www.leagueoflegends.com/en-us/champions/soraka/) E 观察头顶独立封声符号；[Gangplank](https://www.leagueoflegends.com/en-us/champions/gangplank/) W 观察腰腹亮、侧向上掠光弧和延后细尘。取其小范围身体净化，不复制角色吃橘子或扩为大光柱。奥术抛射/治疗加号/持续冰封复用既有抛物线、用户认可的独立治疗粒子与 S24 生长/碎裂分层，持续冰封另设保持阶段，不复用爆裂到期。
+- **日漫美术，只作静态依据**：实际查看 [《地狱乐》12话剧照](https://www.jigokuraku.com/story/) 的粗根细枝/负空间，[《鬼灭之刃》3话剧照](https://kimetsu.com/anime/risshihen/story/?story=3) 的岩体大明暗与局部低频纹理，[《钢之炼金术师》2003版官网](https://www.hagaren.jp/story/) 1–2话的硬面阴影与独立光层。没有看过对应整集或连续动画，不作时序证据；无法访问的其他日漫不列作已参考。由此修正岩柱晶体般长直剪影，改厚重、不对称断块；藤蔓采用粗细分面与独立弱光，拒绝写实密纹和固定雾团。
+- **项目适配与证据边界**：16项的具体时长、数量、颜色是项目参数。连轰/雷暴是有固定落点的视觉节奏，只消费 Source/Target/Radius，不自动寻找/制造多个真实受击者。没有角色位移、回复、伤害或新状态逻辑。参考媒体只用于研究，不成为运行资产；运行纹理由内置生图提供原始RGBA。详细观察、阶段图和制作前动作说明保存在当前任务 visualizations 的 library-expansion/research-offense 与 research-controls（含 anime-direction.md）。实现、验证和恢复见活动任务。
+
+## P01-S32：嘲讽范围与受控标记（2026-09-12）
+
+- [Riot 官方加里奥页面](https://www.leagueoflegends.com/en-us/champions/galio/)与页面公开 [W 演示](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0003/ability_0003_W1.mp4)：已下载研究用视频并拆看约 7 秒的 14 个阶段。约 1–2.5 秒可见施放者为中心的圆形边界逐渐扩大；约 3 秒释放、范围波收尾，目标身上出现独立红橙色环状控制标记，目标靠近施放者后标记仍保留，约 5.5 秒已消失。只是所观察片段，不推定版本数值、内部 shader 或精确控制时长。
+- 范围层采用该片的中心／地面圆形边界和瞬时释放波关系；持续负面状态采用“独立于范围圈、跟随受控目标”的关系。HC03 当前即时施放，不引入原作蓄力、伤害、角色动作或资产；将目标标记适配为头顶四瓣怒意符号，属于本项目造型选择，不能声称官方演示就是该符号。
+- 制作分工复用已查证 P01-S12 的主次／范围准确／预备主体消退原则和 S31 小型符号独立运动拆解：本次新增独立怒意贴图，范围边界／声压回波分别用局部 shader，持续符号用共享时钟驱动；不将整套效果画成一张图。范围读取实际查询半径；瞬时效果冻结施放点，持续效果跟随权威状态和可见单位位置。具体阶段／数值见现有 VFX 活动任务。
+- 研究材料在 `.godot/taunt-vfx/reference/galio-w.mp4`、`galio-*.png`，仅作参考，不进入运行时资源。浏览器搜索超时后读取官方公开页面及其直接媒体，未声称完成其他搜索结果的动态观察。
+
 ## 2026-09-11：整批素材修订的项目适配与渲染证据
 
 - 本轮沿用 S17、S19、S21、S23–27、S29–31 已有动作拆解与此前用户反馈；没有新增商业视频观察，也不把新素材外观称为参考原作实现。生图提供独立组件，现有轨道、网格和生命周期承担运动。
@@ -135,3 +240,25 @@
 - 项目适配：weaken 原有运动即从头顶下沉，本次替换难辨能量滴为双下压符印，头肩两侧错峰下落、局部亮边经过、末段碎散，紫色细尘作为弱次层；不采用参考旋转太阳，不宣称原片有双箭头。符印是新生成的独立纹理，运动/材质/生命周期由共享轨道承担，移除召唤法阵复用。
 - 已检索 weaken/curse/debuff/status effect，并查看 [Jukerlaw 第 10 楼](https://realtimevfx.com/t/jukerlaw-vfx-sketchbook/24801/10) 107 帧咒力 GIF，实际为旋转焰团，不适用下沉虚弱，未采用；时间牢笼、黏液减速、大型吸魂光束同样排除。不把搜索结果标题当制作依据。
 - 原文、参考 GIF/阶段及前后录制在 remaining-study/weak-topic-*.json、slow-symbol-reference*、curse-reference*、weaken-*。未下载参考工程或复制第三方资源到运行时。
+
+## P01-S35：高频战斗声音与听觉主次（2026-09-15）
+
+用户担心增加受击音会造成密集噪声，询问成熟自走棋尤其云顶。已读取 Riot 官方 [The Frequencies of Folklore](https://www.leagueoflegends.com/en-us/news/dev/the-frequencies-of-folklore/)（2020-08-11）：瑞文设计师学习高频连招后强调声音起音部分，避免连招变成杂音；蛇女因低冷却高频施法，降低刺耳玻璃质感并重新平衡；提莫普攻与 Q 用不同响度及音高区分可读性。以上是《英雄联盟》灵魂莲华皮肤音效作者说明，不是 TFT 专项，未试听文章嵌入音频，不据此声称云顶采用某个并发数／压低比例／受击筛选算法。
+
+TFT 专项检索包括 Teamfight Tactics sound design audio mixing combat Riot 及精确短语。Google 返回需要 JS、DDG 验证、Bing 返回无关内容、Audiokinetic 403，未获得可核实的 TFT 战斗混音实现资料。不得将常见游戏音频策略包装成云顶内部事实。
+
+本项目静态证据：FeedbackAudio.tscn 的 melee_swing／melee_hit／arrow_release／arrow_hit 均为 -7 dB、同组最小间隔 0.08 秒／最多 2 声部；FeedbackAudio 为固定 12 声部及优先级抢占。按组限流不等于整场节奏／听觉层级；相同标称 dB 也不保证感知等响。现有命中反馈已经存在，不需要再叠一层全员通用受伤声。以上仅核查，没有修改运行时或重新进行听感验收。
+# P01-S40：ES01 / ES04 实际动作观察与本项目拆层（2026-09-16）
+
+同日P01-D13修正：用户要求完整贯穿飞行和简单擦伤，否定通用命中水波。复用本条已经观察的沿轴前进／目标独立短闪，以及P01-S12方向性、主次分层和快速收尾原则；项目动作设为受击身体中心的两道错位斜痕，约0.04秒划出，0.18–0.22秒消退，两枚碎光沿短路径分离，最迟0.28秒收净。采用独立scratch shader与authored SpriteTrack，不使用扩散环／地面范围，不生成整套效果图片。末段飞行和命中特效按可见弹道对齐，具体当前录制见敌人任务；数字／划痕形体均为用户要求下的项目适配，未将它们冒充原作内部实现。
+
+同日P01-D12修正：用户否定下文首版“金属箭头”的素材适配，要求独立发光箭。沿用已观察的Varus Q聚光→尖锐前端飞行→依次命中动作依据，ES01改为独立shader的金白亮芯／发光尖头与渐淡尾迹；中心、平面、轨迹及阶段不变。正式场景已移除普通箭图集，正常速度前后录制见敌人任务最新段。下文金属箭身是被覆盖的首版选择，不是现行要求，也不是原作制作方式。
+
+已通过本地参考播放器直接嵌入官方远端视频，正常速度循环观察并按 0.18–0.36 秒采样；未下载/复制原作素材。原先直接视频页的控件读取超时已绕开，P01-S37–S39 的“尚未观察”状态由本条补齐。
+
+- [Lux R 官方视频](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0099/ability_0099_R1.mp4)：实际观察到施法者前方先出现细长方向线及平行边缘，源端聚光明显增强；随后同一轴线全长同时亮起粗白芯和外晕，快速收窄消失，目标端短闪保留更久。没有飞行箭头，不能用缓慢生长长度的光条代替释放。原作贴图、shader 和粒子内部实现未知。
+- [Varus Q 官方视频](https://lol.dyn.riotcdn.net/x/videos/champion-abilities/0110/ability_0110_Q1.mp4)：实际观察到弓前聚光、箭头形体形成、角色持弓蓄力；释放后有独立尖锐前端沿一条轴线前进，先后穿过前后目标，各目标出现短闪，深色/紫色条带尾迹随后消散。该片段没有可确认的整条敌方地面危险条；本项目添加此条来自用户明确要求，不称其为原作机制。
+
+项目适配（非原作参数）：源端取身体挂点，方向条取地面同一条逻辑射线；长度受战场边界/地形截断，宽度读取技能半径。1.2 秒先低亮方向预警，源端光核渐亮、少量光点向内汇聚；物理箭保持金属箭头+窄金色尾迹，魔法光束用全长白芯/青蓝外晕并在 0.35 秒内收尾。箭按实际碰撞播放命中，光束按单次释放事实播放命中。
+
+分层素材与实现：既有箭头图集只用于金属箭身；256 方形载体+独立条带/径向 shader 分别表达地面指示、光核、光束，既有单光点素材用于内聚粒子。几何形状、长度、宽度和轨迹由共享播放器与注入投影计算；不将整套动作画成一张图，不复用横扫刀痕。暂停、倍速与减少动态使用共享时钟；后者保留渐亮和方向，减少粒子运动。

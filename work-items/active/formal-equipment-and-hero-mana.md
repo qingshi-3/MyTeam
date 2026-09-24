@@ -1,5 +1,30 @@
 # 正式流程：装备体验与英雄独立法力
 
+## 当前：取消奖励后的重复配装页（2026-09-15）
+
+用户指出截图中的“选择已完成＋配装＋继续旅程”页已经被英雄界面覆盖，要求取消。已删除 RewardScreen 的结果／装备子树及 ShowResolved／ShowClaimed 配装状态；领取、招募及共用非商店选择在成功提交后直接经过 ShowTower 继续流程，失败保留当前选择与错误提示，终局保存重试保留。装备统一在现有“英雄与装备”和备战英雄管理界面调整；原子发放、存档格式与装备归属未变。
+
+低并发构建 0 警告／0 错误。新增 `tests/RewardContinueInputSmoke.tscn` 用正式 GameRoot、隔离存档、渲染 SubViewport 和实际鼠标输入验证：继续未领取奖励、锁定测试存档造成保存失败后保留机会、解除锁后重试仅发一次装备、领取直接到路线页且不多升一层、从英雄界面看见新装备、招募后直接返回且只增一英雄／一层。输出 `REWARD_CONTINUE_INPUT_OK`；日志 `.godot/ui-review/reward-continue-input.log` 中一次 Access denied 是有意注入的保存失败。已查看 `reward-return-to-tower.png` 与 `reward-in-hero-manager.png`；未运行战斗或整塔流程，未改真实存档，未提交推送。旧共享小型配装组件仍供已有隔离拖放检查使用，正式奖励页已无绑定。
+
+## 装备拖放与停用受击动作（2026-09-15）
+
+用户明确要求取消受击动画，并指出装备应通过拖动赋予。本批主交互改为库存图标→英雄／具体槽位，已有装备可拖回库存卸下；棋盘与后备英雄接收第一空槽，满槽提示选择具体槽替换，不能随机覆盖。点击用于查看，不继续作为鼠标装备主流程。实验室无限原型库沿自身配置语义，拖回原型库移除本次配置；正式Run原子装备命令／所有权／不丢物和持久化保持。
+
+主责负责受击动画停用、文档、串行编译和验收；equipment_drag_ui负责共享装备UI与实验室、真实拖放专项；board_equipment_drop负责正式部署棋盘／英雄名册投放。只在main、保留既有未提交内容，不提交推送，不使用Computer Use，不改真实存档。验收使用引擎真实鼠标拖放与隔离测试状态，本批授权覆盖必要交互检查；下文历史“不运行”不覆盖此新任务。
+
+受击只取消动画姿势和排队：伤害事实、血条／飘字、命中声音及技能强制位移照常，击退／拉拽不借用hit姿势。原始动画帧资产保留。本批已实现并完成针对性检查，玩家手感待体验。
+
+### 本批结果与证据
+
+- 正式配装共享组件、部署棋盘／名册和实验室已接入原生拖放。点击只查看；拖入英雄第一空槽，具体槽位可替换，正式旧装备回包；拖回背包空白处或已有物品图标都可卸下。英雄姓名与肖像均可投放。保留 Ctrl+Enter／Delete 键盘路径。库存图标改成上图下名。
+- 正式 Run 和 Lab 分别验证拖动物品的作用域及当前上下文，拒绝跨局旧拖动；正式命令保存失败保留原归属，实验室沿无限原型库配置语义。装备和阵型拖动使用不同载荷。
+- `dotnet build my-team.csproj -maxcpucount:2 -v:minimal`：0 警告／0 错误。
+- `tests/NoHitAnimationSmoke.tscn` 实际运行通过：重复受伤不改 idle／move／attack／cast 帧或排入受击，弓箭定时释放进度、血量显示、位移朝向锁及死亡终态保持。日志：`.godot/ui-review/no-hit-animation.log`。
+- `tests/EquipmentDragInputSmoke.tscn` 使用内存存档和 `Input.ParseInputEvent` 真实鼠标输入运行通过：点击只查看、穿戴、替换回包、肖像与姓名转交、空白与图标卸下、取消、保存失败回滚、跨局拒绝；实际部署棋盘连续三次穿戴、满槽拒绝、英雄换位；实际实验室配置与卸下。日志：`.godot/ui-review/equipment-drag-input.log`，最终错误日志为空。
+- 查看 1600×900 的共享面板、正式部署和实验室渲染：`.godot/ui-review/equipment-drag-replacement.png`、`equipment-drag-deployment-board.png`、`equipment-drag-lab.png`；本批图标名称完整、穿戴反馈可见。军团／奖励页复用组件，但本批没有分别操作这两个入口，也未做多分辨率或完整爬塔。
+- 检查中修复库存图标截断父级卸下投放；测试的鼠标移动与松手同位置同步，避免系统指针刷新干扰命中。棋盘装备高亮改为绘制覆盖，不改命中布局；没有把输入注入的不稳定误记为已证实的产品规则缺陷。
+- 真实存档未读写，无提交／推送；旧装备机制深化仍待后续，本批不认领该设计工作。玩家体验步骤见 `docs/testcases/formal-equipment-and-hero-mana.md`。
+
 Status: Implemented — Compilation Passed; Player Experience Pending
 
 ## 用户目标与边界

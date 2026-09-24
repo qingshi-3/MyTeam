@@ -22,7 +22,7 @@ A central content failure to avoid is pretending every hero is a build core. If 
 
 ## Population And Formation
 
-- A run starts below its mature formation size and grows its current population through ordinary run progression. The production compatibility baseline currently authors initial population `7` while granting four initial roster heroes; this preserves the former starting-hero-plus-six deployment capability without inventing a population reward cadence. The value remains authored balance data rather than a permanent landmark, and the later growth curve is not yet fixed.
+- A run starts below its mature formation size and grows its current population through ordinary run progression. The production compatibility baseline retains initial population `7` and now grants the two designed heroes (the selected hero plus the other companion), following the explicitly authorized roster cleanup. This does not adopt a new starting-selection flow or population reward cadence. These values remain authored test data rather than permanent landmarks, and the later growth curve is not yet fixed.
 - Every persistent hero consumes exactly `1` population, regardless of hero tier or rarity.
 - Whether heroes use tier/rarity progression remains undecided. If adopted, its availability, complexity and responsibility implications need explicit design; it never changes the accepted one-population cost. Existing content labels do not settle that choice.
 - `10` is the conventional ordinary endgame formation ceiling. It is a growth destination, not the starting formation size and not a guaranteed body count in every run.
