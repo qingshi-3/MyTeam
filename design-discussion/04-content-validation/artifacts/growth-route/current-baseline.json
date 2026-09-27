@@ -1,0 +1,126 @@
+{
+  "title": "当前正式征程与MX职业属性基线",
+  "status": "current_implementation_baseline",
+  "capturedAt": "2026-09-27",
+  "scope": "记录当前实现事实，供后续成长路线设计使用；不是未来方案或平衡结论。",
+  "campaign": {
+    "regionCount": 3,
+    "floorsPerRegion": 5,
+    "totalFloors": 15,
+    "regions": [
+      { "id": "region_ember_foundry", "name": "余烬铸层" },
+      { "id": "region_gloam_crypt", "name": "幽暮墓层" },
+      { "id": "region_crown_engine", "name": "冠冕机层" }
+    ],
+    "regularFloorsPerRegion": 4,
+    "bossLocalFloorIndex": 4,
+    "regularOptionsPerFloor": 3,
+    "rotation": ["combat", "recruitment", "event", "elite", "shop", "rest"],
+    "rotationStride": 2,
+    "floorSeedStride": 7,
+    "opportunityGroups": [
+      {
+        "options": ["combat", "event", "shop"],
+        "floorsOfferedPerRegion": 2,
+        "selectionRule": "choose_one"
+      },
+      {
+        "options": ["recruitment", "elite", "rest"],
+        "floorsOfferedPerRegion": 2,
+        "selectionRule": "choose_one"
+      }
+    ],
+    "offeredOccurrencesWholeRun": {
+      "combat": 6,
+      "elite": 6,
+      "recruitment": 6,
+      "shop": 6,
+      "event": 6,
+      "rest": 6,
+      "boss": 3
+    },
+    "battleCount": {
+      "minimum": 3,
+      "maximum": 15,
+      "minimumReason": "跳过全部可选普通/精英战，仅进行每区强制Boss战。",
+      "maximumReason": "12个普通楼层均选择战斗，再进行3场Boss战。"
+    },
+    "nonCombatAdvanceNodes": ["recruitment", "shop", "event", "rest"],
+    "lossProgression": {
+      "combatAdvances": true,
+      "eliteAdvances": true,
+      "bossEndsRun": true,
+      "lossGrantsCombatReward": false
+    }
+  },
+  "economyAndRunHealth": {
+    "startingGold": 16,
+    "initialRunHealth": 100,
+    "maximumRunHealth": 100,
+    "victoryGold": { "combat": 7, "elite": 12, "boss": 18 },
+    "defeatRunHealthLoss": { "combat": 20, "elite": 30, "boss": 0 },
+    "bossDefeatSemantics": "Boss失败直接终局，因此没有数值扣血后继续。",
+    "event": {
+      "riskySuccessChance": 0.65,
+      "riskySuccessGold": 18,
+      "riskyFailureGold": 0,
+      "safeGold": 6
+    },
+    "rest": {
+      "choices": [
+        { "kind": "recover_run_health", "amount": 25, "condition": "run_health_below_maximum" },
+        { "kind": "gain_gold", "amount": 8 }
+      ]
+    },
+    "choiceCounts": { "recruitment": 3, "shop": 3, "combatReward": 3 },
+    "combatReward": {
+      "kind": "free_item_choice",
+      "onVictory": true,
+      "terminalFinalBossCreatesOffer": false
+    },
+    "shop": {
+      "repeatableWithinOffer": true,
+      "itemPriceMinimum": 10,
+      "itemPriceMaximum": 34
+    }
+  },
+  "recruitment": {
+    "openingCandidateCount": 6,
+    "openingSelectionCount": 2,
+    "regularChoiceCount": 3,
+    "ownedHeroesExcluded": true,
+    "tiers": [
+      { "tier": 1, "heroCount": 4 },
+      { "tier": 2, "heroCount": 5 },
+      { "tier": 3, "heroCount": 6 },
+      { "tier": 4, "heroCount": 2 }
+    ],
+    "stages": [
+      { "floorIndexMin": 0, "floorIndexMax": 2, "weights": [65, 35, 0, 0] },
+      { "floorIndexMin": 3, "floorIndexMax": 5, "weights": [35, 45, 20, 0] },
+      { "floorIndexMin": 6, "floorIndexMax": 9, "weights": [15, 30, 45, 10] },
+      { "floorIndexMin": 10, "floorIndexMax": 14, "weights": [0, 15, 50, 35] }
+    ]
+  },
+  "mxProfessionBaselines": [
+    { "id": "guard", "name": "护卫", "unitCount": 7, "maxHealth": 400, "attackDamage": 10, "spellPower": 0, "armor": 8, "attackCooldownSeconds": 1.5, "attacksPerSecond": 0.666667 },
+    { "id": "fighter", "name": "斗士", "unitCount": 8, "maxHealth": 300, "attackDamage": 20, "spellPower": 0, "armor": 4, "attackCooldownSeconds": 1.3, "attacksPerSecond": 0.769231 },
+    { "id": "ranger", "name": "射手", "unitCount": 8, "maxHealth": 175, "attackDamage": 22, "spellPower": 0, "armor": 1, "attackCooldownSeconds": 1.2, "attacksPerSecond": 0.833333 },
+    { "id": "assassin", "name": "突袭者", "unitCount": 5, "maxHealth": 200, "attackDamage": 24, "spellPower": 0, "armor": 1, "attackCooldownSeconds": 1.1, "attacksPerSecond": 0.909091 },
+    { "id": "mage", "name": "术士", "unitCount": 8, "maxHealth": 185, "attackDamage": 12, "spellPower": 0, "armor": 1, "attackCooldownSeconds": 1.6, "attacksPerSecond": 0.625 },
+    { "id": "support", "name": "祝祷者", "unitCount": 7, "maxHealth": 235, "attackDamage": 12, "spellPower": 0, "armor": 2, "attackCooldownSeconds": 1.5, "attacksPerSecond": 0.666667 },
+    { "id": "summoner", "name": "统御者", "unitCount": 6, "maxHealth": 210, "attackDamage": 10, "spellPower": 0, "armor": 2, "attackCooldownSeconds": 1.5, "attacksPerSecond": 0.666667 }
+  ],
+  "damageMitigation": {
+    "normalDamageFormula": "max(1, rawDamage * 100 / (100 + armor * 7))",
+    "trueDamageBypassesArmor": true,
+    "sharedModifiersAndShieldsStillApplyToTrueDamage": true,
+    "negativeArmorBehavior": "公式直接使用有效护甲；本基线未另行确认有效护甲的下限。"
+  },
+  "knownDataAnomalies": [
+    "49名MX的SpellPower均未显式写入，运行时使用UnitDefinition默认值0；这不是已确定的术士/祝祷者成长预算。",
+    "职业内部基础生命、攻击、防御、攻速完全同模；双职业单位仍按资源中的主基准模板取值。",
+    "最短3战是实现允许的节点选择边界，不表示该路线已经通过经济、成长或通关验证。",
+    "旧英雄/士兵战后恢复字段仍存在，但当前默认营火提供全局生命恢复或金币。"
+  ]
+}

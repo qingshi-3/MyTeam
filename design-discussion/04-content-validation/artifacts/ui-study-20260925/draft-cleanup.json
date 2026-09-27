@@ -1,0 +1,77 @@
+[
+  {
+    "RelativePath": "01-recruitment.png",
+    "SHA256": "512B70E0469D52F7A72476A0550282C8C273A9E7872732B0F4601164087B5474",
+    "Bytes": 2711075
+  },
+  {
+    "RelativePath": "01-recruitment-v2.png",
+    "SHA256": "48D8B0E484F660F9BAE7C4E4967398000D211F34741A921E7BD0040A205CEDBB",
+    "Bytes": 2235908
+  },
+  {
+    "RelativePath": "02-equipment.png",
+    "SHA256": "7D9D14FE5EB063639D2CF8F58982AF8C69273E43811CD3EC83506E4673F3B20D",
+    "Bytes": 2610246
+  },
+  {
+    "RelativePath": "03-rewards.png",
+    "SHA256": "21B416114E6D24148C0C16456F131CAC2131EA7D57EF5785FD8809480A8BBCDF",
+    "Bytes": 2641327
+  },
+  {
+    "RelativePath": "04-keyword-icons.png",
+    "SHA256": "65DD6B611BBB19E4D18543322B2219A936A91DA27A707681CE6BC71FF12E2A76",
+    "Bytes": 2123172
+  },
+  {
+    "RelativePath": "prompts.json",
+    "SHA256": "FDA738E8B4D59B7C9E50C6D337E68A974C98F4B1B4FCF83FEB931F6D251BD253",
+    "Bytes": 19470
+  },
+  {
+    "RelativePath": "prompts-recruitment-v2.json",
+    "SHA256": "171137DBB58D3CCDCC0750CF83496898DC572A1CD668592A68D403A48E7E1A60",
+    "Bytes": 10636
+  },
+  {
+    "RelativePath": "attribute-layout-options/a-integrated-card.png",
+    "SHA256": "E8FB7BCF7E2070D90CCE60D625098C38D22A28E3A4A48287C56E20800E507612",
+    "Bytes": 1986532
+  },
+  {
+    "RelativePath": "attribute-layout-options/b-side-rail.png",
+    "SHA256": "63D8A05D8AABFE2E7A80022F31324FA9621C6D4FA4C7B0D6838FEA2611FFFEE9",
+    "Bytes": 1956292
+  },
+  {
+    "RelativePath": "attribute-layout-options/c-hero-workbench.png",
+    "SHA256": "CAE94DE25A91F1FA572CDC2616F003E11B48C6ADFFF72D2081951AAA57A5DDC0",
+    "Bytes": 1935784
+  },
+  {
+    "RelativePath": "attribute-layout-options/c-independent-panels.png",
+    "SHA256": "A8644A78340FA04B37C59C32DD521735980C8CB1E4C3F94849C18A0B9EF6BED9",
+    "Bytes": 1824356
+  },
+  {
+    "RelativePath": "attribute-layout-options/c-avatar-list-frame.png",
+    "SHA256": "D24528841E1377E31B72082F877A3B9AC581E16CA07F5079B0A2DFAAFA1776D4",
+    "Bytes": 1910247
+  },
+  {
+    "RelativePath": "attribute-layout-options/prompts.json",
+    "SHA256": "F32411207A0D982B0DB7E20B5BD8817B38EC0093207CE66B28304C8ECA36F1DB",
+    "Bytes": 24568
+  },
+  {
+    "RelativePath": "attribute-layout-options/c-independent-edit.json",
+    "SHA256": "77AE8C6457658A9AFD34BCC29974282300DD4ABB23895AD5F2B67AE793FCC4AB",
+    "Bytes": 3648
+  },
+  {
+    "RelativePath": "attribute-layout-options/c-avatar-list-frame-edit.json",
+    "SHA256": "7019913E829BC3249EEF7C27829CF8FF179A80852434CC5C5E6E838CEEA56981",
+    "Bytes": 3144
+  }
+]

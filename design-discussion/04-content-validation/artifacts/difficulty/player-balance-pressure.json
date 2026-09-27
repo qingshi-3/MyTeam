@@ -1,0 +1,4436 @@
+[
+  {
+    "Team": "scatter-a",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 236,
+    "Survivors": 2,
+    "HealthLeft": 0.062,
+    "EnemyHealthLeft": 0,
+    "Digest": "e701b159dcbe5d1f8d318356f3c1f4946fe896aea0daa29ba4bf09f63cb7dadc"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 209,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.264,
+    "Digest": "ba47a7e6de77142173bb4e63e26e798629547814f9257c388844b1003082bb33"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 226,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.258,
+    "Digest": "f64a0ec3681ed83a9b3e49de3310b69fba5737f397bae695de03f075622d2070"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 209,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.518,
+    "Digest": "8b91ec27175d90830804156bad2266136657e3a97a576b33542345d2e35cbed3"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 239,
+    "Survivors": 1,
+    "HealthLeft": 0.128,
+    "EnemyHealthLeft": 0,
+    "Digest": "f6bac32c5747071b630c4b4793ecc0cf07fbfd2bc9b483a49525d3632220c526"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 208,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.298,
+    "Digest": "89854612fb804ee37dc65c7e909e4246e41a6be0b008a3c7cf31c32cb56e6981"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 191,
+    "Survivors": 3,
+    "HealthLeft": 0.213,
+    "EnemyHealthLeft": 0,
+    "Digest": "b2c745bc3ff7bc0c54b2cb7645cac21c35a14354887dfeda1a73561dc05db01c"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 290,
+    "Survivors": 3,
+    "HealthLeft": 0.207,
+    "EnemyHealthLeft": 0,
+    "Digest": "8eb3898e45a5b5c38afb742863a45c21e7c461be48d1cb8c82363fb70fbc8523"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 213,
+    "Survivors": 3,
+    "HealthLeft": 0.207,
+    "EnemyHealthLeft": 0,
+    "Digest": "3a146042f193d86de57617faa2a969615a7d807c7fff256ba78f850b1810e555"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 371,
+    "Survivors": 2,
+    "HealthLeft": 0.395,
+    "EnemyHealthLeft": 0,
+    "Digest": "ca46764f3ca116d666caad3438a0c714a42e3e1020ac5f3fc7d3a4c661de3b55"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 200,
+    "Survivors": 3,
+    "HealthLeft": 0.191,
+    "EnemyHealthLeft": 0,
+    "Digest": "5af17993d6cd36f4a5823fa5626a4b6dbc9d3e27720231907b7829803556e472"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 306,
+    "Survivors": 3,
+    "HealthLeft": 0.31,
+    "EnemyHealthLeft": 0,
+    "Digest": "6af048bcbcf876f79abcfdb4ab0f59861e70da20438b86c513a51c3dd211e280"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 178,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.341,
+    "Digest": "239b9d3b2f9810aa1972f790b06afd1b15c9dbf82aad09c9367a4fa2b226c186"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 162,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.421,
+    "Digest": "af665de5c10f3b98d7b43a014961e545713b69b90c60361cbde9ca01d1549b4e"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 136,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.623,
+    "Digest": "ebf7efd06af31e831f25871c16d181732e49aa20b6244659d36d071e32887fd1"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 151,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.675,
+    "Digest": "6cfd0b8f7c2894c6da94c1af29e3c373bf3a734008ef1f2033a5141408bc3117"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 146,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.395,
+    "Digest": "99e9a7395f8a270c509a54da8e41b36f46dd7c1ccaa9f58a680415b54eed293c"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 176,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.42,
+    "Digest": "29c6d6b5c3a844a1aec0aae4d1c686ea62b9ff3303020b591f900d8ba79ba6cd"
+  },
+  {
+    "Team": "poison",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 207,
+    "Survivors": 3,
+    "HealthLeft": 0.563,
+    "EnemyHealthLeft": 0,
+    "Digest": "eef05cc063518f6e5ceae38a0fd72b6e14d397f0b6ec7142597db72fe299810b"
+  },
+  {
+    "Team": "poison",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 231,
+    "Survivors": 2,
+    "HealthLeft": 0.22,
+    "EnemyHealthLeft": 0,
+    "Digest": "ba71d42f4a3a066e1ca4d862f27c426e6d203f01b6f3d458a2d13cb76106f4a6"
+  },
+  {
+    "Team": "poison",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 222,
+    "Survivors": 3,
+    "HealthLeft": 0.585,
+    "EnemyHealthLeft": 0,
+    "Digest": "fcac980ecac5a11d83eb80c4aa2786f8098eed28536e46c86a06b3765aba9ca5"
+  },
+  {
+    "Team": "poison",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 163,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.462,
+    "Digest": "a0a5597a5b20a64cb0f059e08c01152edd1860ea85c44a881ecbe824ef3ecfe8"
+  },
+  {
+    "Team": "poison",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 186,
+    "Survivors": 4,
+    "HealthLeft": 0.696,
+    "EnemyHealthLeft": 0,
+    "Digest": "d8bf3f7f6788080e147300dd0fb2ed70cfbb4a8ccb5ae9065a5e69b42b8009c6"
+  },
+  {
+    "Team": "poison",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 158,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.163,
+    "Digest": "345e82bc848d02e0906be216c52055b0801325dd724e6550e574857549da0585"
+  },
+  {
+    "Team": "summon",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 180,
+    "Survivors": 3,
+    "HealthLeft": 0.633,
+    "EnemyHealthLeft": 0,
+    "Digest": "b03504c73932eedb18b7999c855d4383cb93ab149c6061fa616e08bf66d7e303"
+  },
+  {
+    "Team": "summon",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 202,
+    "Survivors": 3,
+    "HealthLeft": 0.584,
+    "EnemyHealthLeft": 0,
+    "Digest": "6351ffa55262949604547ffe527af2c2637c50541bac8e32a3e9ea7eb8d4d8ed"
+  },
+  {
+    "Team": "summon",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 193,
+    "Survivors": 3,
+    "HealthLeft": 0.646,
+    "EnemyHealthLeft": 0,
+    "Digest": "b5577054f00db5481d979651e839692be7278d5b950db9de0386afbbc39d41b4"
+  },
+  {
+    "Team": "summon",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 238,
+    "Survivors": 3,
+    "HealthLeft": 0.646,
+    "EnemyHealthLeft": 0,
+    "Digest": "b0e1e259b578dd67fa5894cb8e5dcd67fe0f4c3c6d9688cde566736b983ae99d"
+  },
+  {
+    "Team": "summon",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 187,
+    "Survivors": 3,
+    "HealthLeft": 0.633,
+    "EnemyHealthLeft": 0,
+    "Digest": "ea364718ceefadc59e56e29b00e0e2b06980d59b718fcf52e3bdf1f7631efe64"
+  },
+  {
+    "Team": "summon",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 231,
+    "Survivors": 3,
+    "HealthLeft": 0.62,
+    "EnemyHealthLeft": 0,
+    "Digest": "876b22264d3946c744113947b5349073bbca7990e73bd1b8d5dcdd729e2d3c1c"
+  },
+  {
+    "Team": "winter",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 261,
+    "Survivors": 2,
+    "HealthLeft": 0.231,
+    "EnemyHealthLeft": 0,
+    "Digest": "556c5b621c3c74809c2e1ae55ab2593be1790e007427d54736e37225d88575ce"
+  },
+  {
+    "Team": "winter",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 145,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.381,
+    "Digest": "011c6ae6849308bf74d30b7573ed379ad44ffb69def3c43b4ddf7aea1484776c"
+  },
+  {
+    "Team": "winter",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 175,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.342,
+    "Digest": "b3617a08761cc2fa1a7b29b951db3842f7abc6012cd800cd5f01b1934180751a"
+  },
+  {
+    "Team": "winter",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 157,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.667,
+    "Digest": "ca5ff03c7313abb506cd9fea75d5e481f8e2a679ff61a962dc804d269fc06b62"
+  },
+  {
+    "Team": "winter",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 219,
+    "Survivors": 3,
+    "HealthLeft": 0.33,
+    "EnemyHealthLeft": 0,
+    "Digest": "37ac18a1dc0b153c971900fde907f1f1d241478519354bc140d6f1965622d935"
+  },
+  {
+    "Team": "winter",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 210,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.192,
+    "Digest": "7cbb8b792fa40187d8290d14c38c0e84b1f1d7f5473699c3d553d4e71be5594d"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 139,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.32,
+    "Digest": "0c89156e4702ea4b56218af62c3fb404bee72358575f6a32cb3c86e402869e0f"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 160,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.413,
+    "Digest": "fda9a455dad8338225c9cafa6946e0f958b1db7b0cf74063937fb0b202e83a8b"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 156,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.498,
+    "Digest": "a598c2145cf3850e34ddba02b276463edeb0c4984da63778144e7e95bc53e4ff"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 177,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.608,
+    "Digest": "534c00ff82005f82689931ea0497f78bb7a0dba9ed49692c082d606fbba67ebe"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 176,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.244,
+    "Digest": "63a23fad71a8eb32a05b0f463e4651949c9b3e42a3ace8789c32957ca33b2a60"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 209,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.259,
+    "Digest": "2d89a5be744d351905150d0b89bf0afcd318fee7a1bde5af8dc9c61c84d4b02b"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 175,
+    "Survivors": 3,
+    "HealthLeft": 0.542,
+    "EnemyHealthLeft": 0,
+    "Digest": "f7eb1d4ee49ac5d992735ab352b1c2c0d87a9d20f88ad92a054c63b627876ebe"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 229,
+    "Survivors": 3,
+    "HealthLeft": 0.231,
+    "EnemyHealthLeft": 0,
+    "Digest": "c79b33af5c448b843626b4f74aabe3795c99c32b0d3321468277c52616e316cd"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 212,
+    "Survivors": 3,
+    "HealthLeft": 0.534,
+    "EnemyHealthLeft": 0,
+    "Digest": "40594eeeb084a3fc7297111bc1d5da538f491fc7fd3a9f19774fb6719b1a6aa9"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 452,
+    "Survivors": 1,
+    "HealthLeft": 0.141,
+    "EnemyHealthLeft": 0,
+    "Digest": "1c04e8010cb64f2dccaa9a9bcec8c900b8d393fd75e09cb931ffa84c292241c5"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 9,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u906D\u9047\u6218 \u00B7 \u63A0\u593A\u8005\u5149\u9635",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_carrion",
+      "enemy_es04_prism_caster",
+      "enemy_hexer"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 176,
+    "Survivors": 3,
+    "HealthLeft": 0.555,
+    "EnemyHealthLeft": 0,
+    "Digest": "7fa0fef4f98866078866f55e0f4a4a9d9540983efdd5e53bd369ad61a0ef7228"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 9,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 4,
+    "ItemBudget": 60,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u5E7D\u66AE\u5893\u5C42\u7CBE\u82F1\u6218 \u00B7 \u51B2\u9635\u4E0E\u5492\u706B",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee03_trample_brute",
+      "enemy_blood_reaver",
+      "enemy_blood_reaver",
+      "enemy_hexer",
+      "enemy_hexer",
+      "enemy_carrion"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 223,
+    "Survivors": 3,
+    "HealthLeft": 0.371,
+    "EnemyHealthLeft": 0,
+    "Digest": "781fa0d0f00c45a8884a63f109526f664f1f3251fa529bb0a23c6f401ced29cf"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 261,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.622,
+    "Digest": "19bc3d02b4779e4acfa055f6b56645c3544a647616a2072edf4a68e6d39851b4"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 255,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.695,
+    "Digest": "a304d7b0166f4cfaebb4b5cdeb79a4ff5b1800288bc6f863e12aa75b8436dc58"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 241,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.59,
+    "Digest": "4fd83d0ad2b9cca07645be9db4b9c399938684a3991cf2e6232cb3d68d4a4d86"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 223,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.626,
+    "Digest": "df742b4745e3be83c669a71f674dfa94b405927e6cd8f218a7415204335d65b4"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 293,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.551,
+    "Digest": "391134bab3aed01d71b7eba68f52d3f7528b4bd86da5044d932505409e51f2df"
+  },
+  {
+    "Team": "scatter-a",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 259,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.674,
+    "Digest": "a2fe04e1c7f07c806930a04ab2da6970b9968d626ca93b966400947909e79587"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 268,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.319,
+    "Digest": "069b0bcaec56b613ea29b57e7137e34ce6de4c88ca89fe39d6fac97961a0ef53"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 252,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.548,
+    "Digest": "b9df374017d3ea0854897094826f793c751bfe465dbb9eec205442d767f05fa3"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 256,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.36,
+    "Digest": "f14c0477b1dc9e7031152f78b2cb3d84e0c61b8a74ff1cc90bda9ae4f6adcd94"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 249,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.468,
+    "Digest": "6fba6324ae9c55bd4c4ce5b927ccbca3a61bb659ab0f1970e993b072abc39ed2"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 296,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.472,
+    "Digest": "318c06e49130c7d80e1deade5c0a8ff4f6c9866563d609603589b2f9a0f586ae"
+  },
+  {
+    "Team": "scatter-b",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc15_shield_grower",
+      "hc01_crossbow",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc20_blood_drummer"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 282,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.576,
+    "Digest": "f80626936eac3f30b2a6cf14d4180dd2554e4d0cc4f3435db9931ca8565fa853"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm",
+      "1:field_focus",
+      "3:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 255,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.501,
+    "Digest": "7649d37d8a7cfbd1a8cd81c0a08ecf4cd988d5bb0ad723ad21927eb54c9ed7f1"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm",
+      "1:field_focus",
+      "3:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 237,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.673,
+    "Digest": "7a133bb89fbfd47093e4cd6b22e39c1ec7ed2fe24deac04a638b6b8b460d0339"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm",
+      "1:field_focus",
+      "3:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 248,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.438,
+    "Digest": "9d412bdfc3b38a4e6073a54a9c7ce4703b48a5969de1a4cdc9cfbc0ac361d6bf"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm",
+      "1:field_focus",
+      "3:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 237,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.56,
+    "Digest": "465936dc714492bded883ab0755e3af278f6e10b25739f13de5a4a5a1377474e"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm",
+      "1:field_focus",
+      "3:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 241,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.476,
+    "Digest": "997e5a1b69a1ce14ddf65b80d093b940aa4b275d1a81264ec3ed8061d1037051"
+  },
+  {
+    "Team": "attack-pair",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc09_breach_scribe",
+      "hc18_healing_reader",
+      "hc39_hook_machine"
+    ],
+    "Equipment": [
+      "1:ne10_swift_gloves",
+      "2:ne01_mana_charm",
+      "1:field_focus",
+      "3:ne01_mana_charm"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 228,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.594,
+    "Digest": "09533cd6a2be34249aed5dd1c078e0e1fb5b9f42a683c3dbc343a380c46de592"
+  },
+  {
+    "Team": "poison",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 350,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.254,
+    "Digest": "82ebac57aaca41a7eb978c02e3c9b1c091c5286cee7fa14de35104d5f7e3a94a"
+  },
+  {
+    "Team": "poison",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 390,
+    "Survivors": 4,
+    "HealthLeft": 0.484,
+    "EnemyHealthLeft": 0,
+    "Digest": "a318e946b52dfd17b59d0e964229e26a092e28da69b35968a86a757b7767503b"
+  },
+  {
+    "Team": "poison",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 262,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.222,
+    "Digest": "17192d280bb65d748f2c422c0874be5d78de96a6e58b2d21f423f701f85f6de1"
+  },
+  {
+    "Team": "poison",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 219,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.466,
+    "Digest": "dbb676caff7676af1c1575f519d419df4479efa792aee8d164ffc79d516b57ac"
+  },
+  {
+    "Team": "poison",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 291,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.239,
+    "Digest": "cfb38f1b894945756586d9f9544d314f32e6a5ed02aefedd516320cb80a13e3e"
+  },
+  {
+    "Team": "poison",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc18_healing_reader",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 287,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.36,
+    "Digest": "99665b6e8a6ad4218840f03c5c9665359b71dffa1d2cf2a461cb31f32a82283b"
+  },
+  {
+    "Team": "summon",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 374,
+    "Survivors": 3,
+    "HealthLeft": 0.541,
+    "EnemyHealthLeft": 0,
+    "Digest": "2d4387c8a9e3999d0dcb08016b65df6c35df1fdad569840ff4f462c27bee887b"
+  },
+  {
+    "Team": "summon",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 556,
+    "Survivors": 2,
+    "HealthLeft": 0.3,
+    "EnemyHealthLeft": 0,
+    "Digest": "ebc3ec405a0df96622a791c84e7b088f75042cb1faf89c4c8b3056e2bece607f"
+  },
+  {
+    "Team": "summon",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 371,
+    "Survivors": 3,
+    "HealthLeft": 0.541,
+    "EnemyHealthLeft": 0,
+    "Digest": "b8af70b00bf393949491faa847c93d401bd372889ce7fa4f967daa9675345017"
+  },
+  {
+    "Team": "summon",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 457,
+    "Survivors": 2,
+    "HealthLeft": 0.313,
+    "EnemyHealthLeft": 0,
+    "Digest": "23999216d78b3557725fff4e2db0a9a5587dfd723d112729f0512e5fded637db"
+  },
+  {
+    "Team": "summon",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 467,
+    "Survivors": 3,
+    "HealthLeft": 0.524,
+    "EnemyHealthLeft": 0,
+    "Digest": "ffa91a1de30c20100eb3ce91c5fdd4475e7e6b9aa0aab1a2abc59cae015f570c"
+  },
+  {
+    "Team": "summon",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc25_death_provider",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 590,
+    "Survivors": 2,
+    "HealthLeft": 0.248,
+    "EnemyHealthLeft": 0,
+    "Digest": "a1c3f87b5b5fb85163772b14f364747e46d3fc9898ba1e322940564d9ba42d65"
+  },
+  {
+    "Team": "winter",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 196,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.649,
+    "Digest": "869f00a03d4a14f431a2d5b7f4f95e8ef4d700bc049f6a002738af80f5f568da"
+  },
+  {
+    "Team": "winter",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 178,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.739,
+    "Digest": "0fb887e0acbadeb55d9319fcd3835b2378333ceb7fde8364ee14b184a51ce79a"
+  },
+  {
+    "Team": "winter",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 188,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.437,
+    "Digest": "3c5ee472571dbc4101704bada76f4947021f4d693d14badc92136932f6598ff0"
+  },
+  {
+    "Team": "winter",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 183,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.622,
+    "Digest": "477eee26d93c3a7a08c4c6b5ab017b5e6b597f44d3fa7b2a9549e54eefd73a1d"
+  },
+  {
+    "Team": "winter",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 275,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.339,
+    "Digest": "d64fa90075fac3ac70e1a69b2d367db22a75661f6819e5a03919a8fa08c4473e"
+  },
+  {
+    "Team": "winter",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:ne10_winter_badge",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 218,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.482,
+    "Digest": "6030480c516b8946aa180e834e4e8434dd6c0a886959d0cbcfd8aa6fd9abf7ab"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves",
+      "0:field_focus",
+      "3:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 166,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.795,
+    "Digest": "b088d159e9a68aee92b58f5fb8132d2a738e38bd91690b9bfe66f153abd5403b"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves",
+      "0:field_focus",
+      "3:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 172,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.828,
+    "Digest": "69ff2b12111b0ef6dfe6e045c0a7b67a286168882c2c02e784e6e394932d6d94"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves",
+      "0:field_focus",
+      "3:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 175,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.574,
+    "Digest": "a9ae6475fc603f29289143a515b8f024c43a6ba7a79e19ca2c3966286c462f0b"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves",
+      "0:field_focus",
+      "3:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 166,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.678,
+    "Digest": "5ee459391fff174fb124fbc45c3e18c8f7d75f2f1faf28fd28d5faa785ec811f"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves",
+      "0:field_focus",
+      "3:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 223,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.546,
+    "Digest": "ec1366bfbbda99316b7d1623ef4e4f690bfdde861d8adf3bd32eb87aad2aa886"
+  },
+  {
+    "Team": "winter-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne01_mana_charm",
+      "1:ne10_swift_gloves",
+      "0:field_focus",
+      "3:ne10_swift_gloves"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 163,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.693,
+    "Digest": "179ecc5f2314c4105304634549abdf140997a7e0c65b6e84a3e92ea8da90ab39"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc30_armor_broadcaster"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:vanguard_insignia"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 304,
+    "Survivors": 5,
+    "HealthLeft": 0.803,
+    "EnemyHealthLeft": 0,
+    "Digest": "7400d0e077705ea6fcc431af795ad27d615e7aa63399a7e2ca58d3b0ff4f22ed"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc30_armor_broadcaster"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:vanguard_insignia"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 538,
+    "Survivors": 4,
+    "HealthLeft": 0.727,
+    "EnemyHealthLeft": 0,
+    "Digest": "c713f5ed74539badec6fc969b5ab7067a9e1c9efa98ae47176af7329642feb64"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc30_armor_broadcaster"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:vanguard_insignia"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 303,
+    "Survivors": 4,
+    "HealthLeft": 0.463,
+    "EnemyHealthLeft": 0,
+    "Digest": "016b2ddd09d81c5e0bd12aa769d0638f60d9a3a7d87ce2ba5760741f6f92d527"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc30_armor_broadcaster"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:vanguard_insignia"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 499,
+    "Survivors": 3,
+    "HealthLeft": 0.534,
+    "EnemyHealthLeft": 0,
+    "Digest": "b1c6620b9a7299399608bb524993243118f63d237055bb5768781b777eb138db"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc30_armor_broadcaster"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:vanguard_insignia"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 292,
+    "Survivors": 5,
+    "HealthLeft": 0.544,
+    "EnemyHealthLeft": 0,
+    "Digest": "33707f6a288ce8c8369c08b9ec0c33d30e32e7ae1a5f86357b75b0b3815c1173"
+  },
+  {
+    "Team": "winter-formed",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc30_armor_broadcaster"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "3:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "0:vanguard_insignia"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 467,
+    "Survivors": 4,
+    "HealthLeft": 0.661,
+    "EnemyHealthLeft": 0,
+    "Digest": "9dc9a8d8a79a4a9a7fe94da1f3b5cbd29236bc523645a047b02ba610439de57d"
+  },
+  {
+    "Team": "population-only",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 7,
+    "ItemBudget": 78,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc26_ash_returner"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 259,
+    "Survivors": 7,
+    "HealthLeft": 0.62,
+    "EnemyHealthLeft": 0,
+    "Digest": "4f558d547eb62cb2a23b1d07be3a56d5e586916897d376ad8b8ed312f397e8eb"
+  },
+  {
+    "Team": "population-only",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 7,
+    "ItemBudget": 78,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc26_ash_returner"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 408,
+    "Survivors": 6,
+    "HealthLeft": 0.55,
+    "EnemyHealthLeft": 0,
+    "Digest": "53cc8c116ce9f5d8ecfe447cd0a0c163b96a5535e4d385f4705004716eaf8275"
+  },
+  {
+    "Team": "population-only",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 7,
+    "ItemBudget": 78,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc26_ash_returner"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 314,
+    "Survivors": 5,
+    "HealthLeft": 0.306,
+    "EnemyHealthLeft": 0,
+    "Digest": "bd3a13f8aa5cac9812b338307ca0eb31139d55549535e333b74fbf71544e69a5"
+  },
+  {
+    "Team": "population-only",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 7,
+    "ItemBudget": 78,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc26_ash_returner"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 474,
+    "Survivors": 4,
+    "HealthLeft": 0.148,
+    "EnemyHealthLeft": 0,
+    "Digest": "2192f7a14c4d7fd4a75eb3dc3ad1039f9c9c87618d6bace1b1b887b85072327d"
+  },
+  {
+    "Team": "population-only",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 7,
+    "ItemBudget": 78,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc26_ash_returner"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 425,
+    "Survivors": 4,
+    "HealthLeft": 0.169,
+    "EnemyHealthLeft": 0,
+    "Digest": "c84980e577537d3ab220cce06c28b9de2c219bd0dc537fe5ce71699cd0094b68"
+  },
+  {
+    "Team": "population-only",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 7,
+    "ItemBudget": 78,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc01_crossbow",
+      "hc15_shield_grower",
+      "hc20_blood_drummer",
+      "hc39_hook_machine",
+      "hc38_grit_brawler",
+      "hc26_ash_returner"
+    ],
+    "Equipment": [
+      "0:ne10_swift_gloves",
+      "2:field_focus",
+      "1:vanguard_insignia"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 526,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.272,
+    "Digest": "f61033662168d95387024e0c9e85f1c7d1b9307afa57940c2f0537789f459dc9"
+  },
+  {
+    "Team": "winter-efficient",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "1:field_focus",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 210,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.598,
+    "Digest": "bd144ad5136b4a26644d4a7b51a26ba2347d525548b99fed7147ae252d38f449"
+  },
+  {
+    "Team": "winter-efficient",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "1:field_focus",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 178,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.703,
+    "Digest": "0de5c8cddcf5deada6b5b03133a5e1fa040dd824312a705cb7c01008d4b6ce81"
+  },
+  {
+    "Team": "winter-efficient",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "1:field_focus",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 200,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.379,
+    "Digest": "dce03662a5fe6025d8269e6878c29779877ca5742a55c87862ab966f53e35f30"
+  },
+  {
+    "Team": "winter-efficient",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "1:field_focus",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 183,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.584,
+    "Digest": "043e8e0f5de804c40259aec8f929548a5c39abf32b5db1bd609ffd46d3c56816"
+  },
+  {
+    "Team": "winter-efficient",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "1:field_focus",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 299,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.215,
+    "Digest": "85cdb4a7497a4c5ca608e389a2fc31ce3ec7a6237383b67a190353da05684e0d"
+  },
+  {
+    "Team": "winter-efficient",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc23_frost_historian",
+      "hc01_crossbow",
+      "hc18_healing_reader",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "2:ne10_winter_badge",
+      "1:ne10_swift_gloves",
+      "1:field_focus",
+      "3:ne10_winter_badge"
+    ],
+    "Relic": "item_ne10_control_shelter",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 253,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.352,
+    "Digest": "cb1a8232618e5092d58113a17a77fbfa27565449239c3501f9676efded82a83f"
+  },
+  {
+    "Team": "poison-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc20_blood_drummer",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 300,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.267,
+    "Digest": "257dd5dc0e813e88f9c5968be1d03c80a50e359246a9ae906422d9675d315eda"
+  },
+  {
+    "Team": "poison-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc20_blood_drummer",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 392,
+    "Survivors": 4,
+    "HealthLeft": 0.164,
+    "EnemyHealthLeft": 0,
+    "Digest": "ad57a9775d5f305f0df6f83fef8b615ac5e515d6403c3642cbe8721e9a6b15f8"
+  },
+  {
+    "Team": "poison-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc20_blood_drummer",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 193,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.282,
+    "Digest": "6d72bcea29025b38f8e62f6928481f5a7f62178de92952ddf52efed34f9e0faf"
+  },
+  {
+    "Team": "poison-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc20_blood_drummer",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 179,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.477,
+    "Digest": "36289d797bbdfd093ee007562b75dd63ebdf1acf66fcf47036f005c1d4955305"
+  },
+  {
+    "Team": "poison-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc20_blood_drummer",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 228,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.273,
+    "Digest": "0cd1f69d3dd83d6b4df08222fcb50f988d866cdc8e5e534ab8ef8ae8a1465808"
+  },
+  {
+    "Team": "poison-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc08_poison_keeper",
+      "hc20_blood_drummer",
+      "hc15_shield_grower",
+      "hc09_breach_scribe"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "0:vanguard_insignia",
+      "1:field_focus"
+    ],
+    "Relic": "item_ne01_opening_bulwark",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 206,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.517,
+    "Digest": "d255255ccb40910e6463ccd50da0464ae5103543dbb26700c1a31d4125e0106d"
+  },
+  {
+    "Team": "summon-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc38_grit_brawler",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 455,
+    "Survivors": 3,
+    "HealthLeft": 0.518,
+    "EnemyHealthLeft": 0,
+    "Digest": "b631adcdbc58c34fde43d5f858ff3d444c8ce2ae3b55e65d5673f750f361c918"
+  },
+  {
+    "Team": "summon-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 1776,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc38_grit_brawler",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_healing_beacon",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 375,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.427,
+    "Digest": "ecec3e6fcd29ef1484484841c5d5c55a59d7e76692c330e7a88f35fb8d76c30f"
+  },
+  {
+    "Team": "summon-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc38_grit_brawler",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 345,
+    "Survivors": 3,
+    "HealthLeft": 0.316,
+    "EnemyHealthLeft": 0,
+    "Digest": "c1bac94f94a9a69c06985a09268f630bf610227428fb692704fe5deb10f4818f"
+  },
+  {
+    "Team": "summon-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 2026,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc38_grit_brawler",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_hazard_pulse",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 398,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.207,
+    "Digest": "280ec5bb7dfc815d31a89a6a45a19b6ce36f32e2cd0faa885ac856aa7a1e1225"
+  },
+  {
+    "Team": "summon-missing",
+    "Floor": 14,
+    "Kind": "Combat",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc38_grit_brawler",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u906D\u9047\u6218 \u00B7 \u91CD\u536B\u8D2F\u5149",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_ice_blade",
+      "enemy_es04_prism_caster",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerVictory",
+    "Ticks": 464,
+    "Survivors": 2,
+    "HealthLeft": 0.278,
+    "EnemyHealthLeft": 0,
+    "Digest": "f0116623926d56ad0656780ea7e053a4f9c9ff161594e08d3db0c7f879f97c17"
+  },
+  {
+    "Team": "summon-missing",
+    "Floor": 14,
+    "Kind": "Elite",
+    "Seed": 9173,
+    "Heroes": 5,
+    "ItemBudget": 96,
+    "Roster": [
+      "hc03_iron_guard",
+      "hc38_grit_brawler",
+      "hc24_swarm_keeper",
+      "hc18_healing_reader",
+      "hc07_death_echo"
+    ],
+    "Equipment": [
+      "1:ne01_mana_charm",
+      "2:ne01_mana_charm",
+      "3:ne01_mana_charm",
+      "4:ne01_mana_charm"
+    ],
+    "Relic": "item_ne02_bone_vigor",
+    "Encounter": "\u51A0\u5195\u673A\u5C42\u7CBE\u82F1\u6218 \u00B7 \u6362\u4F4D\u706B\u7F51",
+    "Rule": "rule_narrow_lanes",
+    "Enemies": [
+      "enemy_ee09_swap_envoy",
+      "enemy_scale_brute",
+      "enemy_scale_brute",
+      "enemy_es04_prism_caster",
+      "enemy_ice_blade",
+      "enemy_wyrm",
+      "enemy_ice_hawker"
+    ],
+    "Outcome": "PlayerDefeat",
+    "Ticks": 306,
+    "Survivors": 0,
+    "HealthLeft": 0,
+    "EnemyHealthLeft": 0.468,
+    "Digest": "e4b9085813a2ecbb85142b196704cb66268bd90fbd35b0e987a5afda7bae67f3"
+  }
+]

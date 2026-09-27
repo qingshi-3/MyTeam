@@ -1,0 +1,23 @@
+Godot Engine v4.7.stable.mono.official.5b4e0cb0f - https://godotengine.org
+
+TRAIT_MATRIX_MATCHUP_PROGRESS 9
+TRAIT_MATRIX_MATCHUP_PROGRESS 18
+TRAIT_MATRIX_MATCHUP_PROGRESS 27
+TRAIT_MATRIX_MATCHUP_PROGRESS 36
+TRAIT_MATRIX_MATCHUP_PROGRESS 45
+TRAIT_MATRIX_MATCHUP_PROGRESS 54
+TRAIT_MATRIX_MATCHUP_PROGRESS 63
+TRAIT_MATRIX_MATCHUP_PROGRESS 72
+TRAIT_MATRIX_MATCHUP_FAILED System.ArgumentNullException: Value cannot be null. (Parameter 'key')
+   at System.Collections.Immutable.Requires.FailArgumentNullException(String parameterName)
+   at System.Collections.Immutable.ImmutableDictionary`2.Remove(TKey key)
+   at TowerAutobattler.Battle.BattleSimulation.MatrixDisplacementFinished(CombatSourceRef origin) in C:\Users\qs\godot\my-team\src\Battle\BattleMatrixAbilities.cs:line 382
+   at TowerAutobattler.Battle.BattleSimulation.FinishDisplacement(DisplacementMotion motion, BattleUnitState mover, Single progress) in C:\Users\qs\godot\my-team\src\Battle\BattleDisplacements.cs:line 311
+   at TowerAutobattler.Battle.BattleSimulation.AdvanceDisplacements(Dictionary`2 previousPositions) in C:\Users\qs\godot\my-team\src\Battle\BattleDisplacements.cs:line 232
+   at TowerAutobattler.Battle.BattleSimulation.Step() in C:\Users\qs\godot\my-team\src\Battle\BattleSimulation.cs:line 315
+   at TraitMatrixValidationSupport.Observe(CompiledGamePackage package, BattleConfig config, Int32 limit, Action`1 setup, Action`1 afterStep) in C:\Users\qs\godot\my-team\tests\TraitMatrixValidationSupport.cs:line 104
+   at TraitMatrixMatchupDiagnostics._Ready() in C:\Users\qs\godot\my-team\tests\TraitMatrixMatchupDiagnostics.cs:line 43
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2535)
+ERROR: 2 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

@@ -1,0 +1,26 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+C:\Users\qs\godot\my-team\tests\GrowthRunContractSmoke.cs(74,25): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthWorkbenchInputSmoke.cs(51,21): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthWorkbenchInputSmoke.cs(55,21): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthWorkbenchInputSmoke.cs(59,63): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthWorkbenchInputSmoke.cs(63,21): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthRunContractSmoke.cs(166,13): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthJourneyDiagnostics.cs(92,32): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthJourneyDiagnostics.cs(151,21): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+  my-team -> C:\Users\qs\godot\my-team\.godot\mono\temp\bin\Debug\my-team.dll
+
+已成功生成。
+
+C:\Users\qs\godot\my-team\tests\GrowthRunContractSmoke.cs(74,25): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthWorkbenchInputSmoke.cs(51,21): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthWorkbenchInputSmoke.cs(55,21): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthWorkbenchInputSmoke.cs(59,63): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthWorkbenchInputSmoke.cs(63,21): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthRunContractSmoke.cs(166,13): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthJourneyDiagnostics.cs(92,32): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+C:\Users\qs\godot\my-team\tests\GrowthJourneyDiagnostics.cs(151,21): warning CS8602: 解引用可能出现空引用。 [C:\Users\qs\godot\my-team\my-team.csproj]
+    8 个警告
+    0 个错误
+
+已用时间 00:00:04.60

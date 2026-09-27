@@ -1,0 +1,45 @@
+{
+  "status": "candidate_assumptions_not_balanced",
+  "floors": 15,
+  "usableCompletionFloors": 14,
+  "benefitTiming": "node_completion_benefits_apply_from_next_floor",
+  "finalSettlementBenefitUsable": false,
+  "growth": {
+    "rates": [0.03, 0.04, 0.06],
+    "recommendedStartingRate": 0.04,
+    "availabilityRule": "target must have joined before the checked floor; producer must also have joined when source count is positive; source count zero ignores producer availability",
+    "producerCounts": [0, 1, 2, 3],
+    "checkFloors": [5, 10, 15],
+    "lateJoinAfterNodes": [4, 9, 12, 14],
+    "namedProducerJoinAfterNodes": { "full": 0, "early": 2, "middle": 7 },
+    "fixedWindowProxy": {
+      "teamSize": 6,
+      "coreWeights": [1, 2, 3],
+      "producerOutputFractions": [0.4, 0.6, 0.8],
+      "completedWindows": [4, 9, 14]
+    }
+  },
+  "defenseExample": { "maxHealth": 400, "armor": 8, "armorCoefficient": 0.07, "increase": 0.56 },
+  "route": {
+    "regularPatternPerRegion": ["B", "R", "B", "R"],
+    "permutationSensitivityPatterns": [["B", "R", "B", "R"], ["R", "B", "R", "B"]],
+    "regions": 3,
+    "B": ["combat", "event", "shop"],
+    "R": ["recruitment", "elite", "rest"],
+    "bossFloors": [5, 10, 15],
+    "startingGold": 16,
+    "gold": { "combat": 7, "elite": 12, "boss": 18, "safeEvent": 6, "restGold": 8 },
+    "openingRoster": 2,
+    "deploymentCap": 10,
+    "rewardAssumption": "all_selected_battles_win",
+    "finalBossItemReward": false
+  },
+  "materials": {
+    "grantPerUsableCompletedNode": 1,
+    "costSensitivity": [4, 5, 6],
+    "recommendedCost": 4,
+    "maxUpgradesPerHero": 1,
+    "upgradeResult": "one_high_tier_unit_from_three_choices",
+    "upgradeGoldCost": 0
+  }
+}

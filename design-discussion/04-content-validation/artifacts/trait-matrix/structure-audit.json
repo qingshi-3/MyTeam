@@ -1,0 +1,255 @@
+{
+  "sourceSha256": "be48788fe40f805d198d0b04de7d12bd4a804c13169002e6438f9f8b560cb201",
+  "uniqueUnits": 49,
+  "appearances": 59,
+  "emptyCells": 20,
+  "tiers": 39,
+  "candidateRedesigns": 24,
+  "newRoles": 25,
+  "axes": [
+    {
+      "name": "护卫",
+      "members": 7,
+      "lowTierMembers": 5,
+      "maxThreshold": 4,
+      "rawMaxTierSubsets": 35
+    },
+    {
+      "name": "斗士",
+      "members": 8,
+      "lowTierMembers": 6,
+      "maxThreshold": 6,
+      "rawMaxTierSubsets": 28
+    },
+    {
+      "name": "射手",
+      "members": 8,
+      "lowTierMembers": 7,
+      "maxThreshold": 4,
+      "rawMaxTierSubsets": 70
+    },
+    {
+      "name": "突袭者",
+      "members": 6,
+      "lowTierMembers": 2,
+      "maxThreshold": 4,
+      "rawMaxTierSubsets": 15
+    },
+    {
+      "name": "术士",
+      "members": 8,
+      "lowTierMembers": 2,
+      "maxThreshold": 6,
+      "rawMaxTierSubsets": 28
+    },
+    {
+      "name": "祝祷者",
+      "members": 7,
+      "lowTierMembers": 5,
+      "maxThreshold": 3,
+      "rawMaxTierSubsets": 35
+    },
+    {
+      "name": "统御者",
+      "members": 6,
+      "lowTierMembers": 3,
+      "maxThreshold": 4,
+      "rawMaxTierSubsets": 15
+    },
+    {
+      "name": "霜羽",
+      "members": 8,
+      "lowTierMembers": 4,
+      "maxThreshold": 6,
+      "rawMaxTierSubsets": 28
+    },
+    {
+      "name": "棘毒",
+      "members": 8,
+      "lowTierMembers": 5,
+      "maxThreshold": 6,
+      "rawMaxTierSubsets": 28
+    },
+    {
+      "name": "灰烬",
+      "members": 7,
+      "lowTierMembers": 4,
+      "maxThreshold": 5,
+      "rawMaxTierSubsets": 21
+    },
+    {
+      "name": "亡契",
+      "members": 8,
+      "lowTierMembers": 4,
+      "maxThreshold": 6,
+      "rawMaxTierSubsets": 28
+    },
+    {
+      "name": "构装",
+      "members": 8,
+      "lowTierMembers": 4,
+      "maxThreshold": 6,
+      "rawMaxTierSubsets": 28
+    },
+    {
+      "name": "血誓",
+      "members": 7,
+      "lowTierMembers": 4,
+      "maxThreshold": 5,
+      "rawMaxTierSubsets": 21
+    },
+    {
+      "name": "星辉",
+      "members": 8,
+      "lowTierMembers": 4,
+      "maxThreshold": 5,
+      "rawMaxTierSubsets": 56
+    }
+  ],
+  "builds": [
+    {
+      "name": "七人霜毒",
+      "population": 7,
+      "units": [
+        "MX01",
+        "MX03",
+        "MX05",
+        "MX36",
+        "MX06",
+        "MX07",
+        "MX10"
+      ],
+      "counts": {
+        "guard": 2,
+        "frost": 4,
+        "ranger": 2,
+        "support": 2,
+        "assassin": 1,
+        "poison": 4
+      }
+    },
+    {
+      "name": "六人混合射手",
+      "population": 6,
+      "units": [
+        "MX03",
+        "MX23",
+        "MX32",
+        "MX48",
+        "MX01",
+        "MX21"
+      ],
+      "counts": {
+        "ranger": 4,
+        "frost": 2,
+        "construct": 2,
+        "astral": 1,
+        "guard": 2
+      }
+    },
+    {
+      "name": "六人星辉术士",
+      "population": 6,
+      "units": [
+        "MX04",
+        "MX09",
+        "MX14",
+        "MX33",
+        "MX31",
+        "MX34"
+      ],
+      "counts": {
+        "mage": 4,
+        "frost": 1,
+        "poison": 1,
+        "ember": 1,
+        "astral": 3,
+        "guard": 1,
+        "support": 1
+      }
+    },
+    {
+      "name": "六人亡契召唤",
+      "population": 6,
+      "units": [
+        "MX20",
+        "MX16",
+        "MX19",
+        "MX39",
+        "MX25",
+        "MX15"
+      ],
+      "counts": {
+        "summoner": 3,
+        "death": 4,
+        "guard": 2,
+        "support": 1,
+        "construct": 2,
+        "ember": 1
+      }
+    },
+    {
+      "name": "六人血誓构装",
+      "population": 6,
+      "units": [
+        "MX26",
+        "MX30",
+        "MX40",
+        "MX21",
+        "MX22",
+        "MX43"
+      ],
+      "counts": {
+        "fighter": 3,
+        "blood": 3,
+        "support": 2,
+        "construct": 4,
+        "guard": 2
+      }
+    },
+    {
+      "name": "七人血誓四斗",
+      "population": 7,
+      "units": [
+        "MX26",
+        "MX30",
+        "MX40",
+        "MX21",
+        "MX22",
+        "MX43",
+        "MX49"
+      ],
+      "counts": {
+        "fighter": 4,
+        "blood": 3,
+        "support": 2,
+        "construct": 4,
+        "guard": 2
+      }
+    },
+    {
+      "name": "八人无桥霜毒",
+      "population": 8,
+      "units": [
+        "MX01",
+        "MX02",
+        "MX03",
+        "MX05",
+        "MX06",
+        "MX07",
+        "MX09",
+        "MX10"
+      ],
+      "counts": {
+        "guard": 2,
+        "frost": 4,
+        "fighter": 1,
+        "ranger": 2,
+        "support": 2,
+        "poison": 4,
+        "mage": 1
+      }
+    }
+  ],
+  "scope": "静态结构校验；组合数量不代表同强度、不代表正式供给可达或模拟通过。"
+}

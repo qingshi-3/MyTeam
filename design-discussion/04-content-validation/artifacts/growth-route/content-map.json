@@ -1,0 +1,1171 @@
+{
+  "title": "职业 × 体系成长路线内容映射（Agent建议）",
+  "status": "Agent建议；未确认、未实现、未实测",
+  "source": {
+    "path": "../trait-matrix/plan.json",
+    "note": "沿用原49位置、名称、阶位、双轴标签与战斗职责；原计划及其独立验证包属于历史设计证据，不据旧status推断当前实现状态。"
+  },
+  "constraints": [
+    "保留7职业×7体系战斗骨架；职业与体系仍是双轴，不建立运营第三羁绊。",
+    "不统一给所有单位增加运营技能；普通单位可受益于培养，但不强制自产。",
+    "新增发展效果必须占用原单位技能预算，不额外赠送完整技能。",
+    "MX36–42为可替代的跨体系桥接，MX43–45为职业桥接，MX46为纯体系战斗位，MX48–49为无体系单轴功能位。",
+    "多标签单位在矩阵各对应格重复显示，但身份与每个标签的羁绊贡献不增加。"
+  ],
+  "class_responsibilities": [
+    {
+      "id": "guard",
+      "name": "护卫",
+      "responsibility": "承担第一轮压力，把防护传给需要时间的队友。"
+    },
+    {
+      "id": "fighter",
+      "name": "斗士",
+      "responsibility": "靠前线承伤进入持续反击窗口。"
+    },
+    {
+      "id": "ranger",
+      "name": "射手",
+      "responsibility": "保护连续命中，换取稳定的单点突破。"
+    },
+    {
+      "id": "assassin",
+      "name": "突袭者",
+      "responsibility": "通过单位自身接敌手段，快速处理受损目标。"
+    },
+    {
+      "id": "mage",
+      "name": "术士",
+      "responsibility": "以施法次数与技能窗口兑现输出。"
+    },
+    {
+      "id": "support",
+      "name": "祝祷者",
+      "responsibility": "提高治疗／护盾效率，并用短防护覆盖脆弱窗口。"
+    },
+    {
+      "id": "summoner",
+      "name": "统御者",
+      "responsibility": "组织临时单位补员，让召唤成为可投入的战斗资源。"
+    }
+  ],
+  "system_responsibilities": [
+    {
+      "id": "frost",
+      "name": "霜羽",
+      "responsibility": "控制并为队伍争取时间。"
+    },
+    {
+      "id": "poison",
+      "name": "棘毒",
+      "responsibility": "以持续伤害支撑长战。"
+    },
+    {
+      "id": "ember",
+      "name": "灰烬",
+      "responsibility": "按顺序铺垫并集中爆发。"
+    },
+    {
+      "id": "death",
+      "name": "亡契",
+      "responsibility": "把损失转成第二波资源。"
+    },
+    {
+      "id": "construct",
+      "name": "构装",
+      "responsibility": "分配保护并利用护盾窗口。"
+    },
+    {
+      "id": "blood",
+      "name": "血誓",
+      "responsibility": "经营危险血线的进攻窗口。"
+    },
+    {
+      "id": "astral",
+      "name": "星辉",
+      "responsibility": "组织技能周期与施法顺序。"
+    }
+  ],
+  "reworked_ids": [
+    "MX10",
+    "MX15",
+    "MX19",
+    "MX25",
+    "MX30",
+    "MX47"
+  ],
+  "common_missing_validation": [
+    "有效整备的统一定义、触发时点、重复触发与防刷规则。",
+    "永久产物／成长的保存、离队、回退、替换、叠加和失败语义。",
+    "各产出相对通用材料升阶、装备、羁绊与单位原技能预算的强度份额。",
+    "运营单位在前中后期的供给概率、启动成本、回报延迟及新人追赶。",
+    "产出来源、归属、目标与使用记录的系统接口和玩家可读反馈。",
+    "同一预算下的连续旅程样例；原独立验证包不覆盖这些新增成长效果。",
+    "MX36–42 在所有相关阵容中均须有不依赖桥接位的替代成型路径与实际供给验证。",
+    "新效果与原技能如何取舍，避免以运营能力为由额外赠送一套完整战斗技能。"
+  ],
+  "units": [
+    {
+      "id": "MX01",
+      "name": "冻原盾卫",
+      "tier": 1,
+      "classes": [
+        "guard"
+      ],
+      "systems": [
+        "frost"
+      ],
+      "current_role": "前排启动",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX02",
+      "name": "裂冰斗士",
+      "tier": 2,
+      "classes": [
+        "fighter"
+      ],
+      "systems": [
+        "frost"
+      ],
+      "current_role": "控制兑现",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX03",
+      "name": "寒羽游侠",
+      "tier": 1,
+      "classes": [
+        "ranger"
+      ],
+      "systems": [
+        "frost"
+      ],
+      "current_role": "持续命中",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX04",
+      "name": "雪幕术士",
+      "tier": 3,
+      "classes": [
+        "mage"
+      ],
+      "systems": [
+        "frost"
+      ],
+      "current_role": "多目标控制供给",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX05",
+      "name": "雪灯医者",
+      "tier": 2,
+      "classes": [
+        "support"
+      ],
+      "systems": [
+        "frost"
+      ],
+      "current_role": "控制转防护",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX06",
+      "name": "荆甲卫",
+      "tier": 1,
+      "classes": [
+        "guard"
+      ],
+      "systems": [
+        "poison"
+      ],
+      "current_role": "防守上毒",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX07",
+      "name": "淬毒弩手",
+      "tier": 1,
+      "classes": [
+        "ranger"
+      ],
+      "systems": [
+        "poison"
+      ],
+      "current_role": "稳定单点毒源",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX08",
+      "name": "萃毒猎手",
+      "tier": 3,
+      "classes": [
+        "assassin"
+      ],
+      "systems": [
+        "poison"
+      ],
+      "current_role": "毒层终结",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX09",
+      "name": "疫雾术士",
+      "tier": 2,
+      "classes": [
+        "mage"
+      ],
+      "systems": [
+        "poison"
+      ],
+      "current_role": "扩散与叠层",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX10",
+      "name": "药藤师",
+      "tier": 2,
+      "classes": [
+        "support"
+      ],
+      "systems": [
+        "poison"
+      ],
+      "current_role": "毒转防护",
+      "disposition": "rework",
+      "proposed_development": "定向培养：每次有效整备选择一名合法友军，使其获得可跨战保留的棘毒方向成长；成长应强化持续伤害／长战接口，并占用药藤师原有技能预算，不额外白送一套完整战斗技能。",
+      "compatible_outputs": [
+        "指定友军的棘毒方向永久成长",
+        "可被棘毒长战阵容使用的定向培养机会"
+      ],
+      "missing_validation": [
+        "有效整备的判定与每阶段可触发次数",
+        "合法目标范围及能否选择自身",
+        "具体成长属性、叠加方式与常规可达范围",
+        "换下或失去药藤师后既有成长如何保留",
+        "原毒转防护能力被替换或压缩到何种程度"
+      ]
+    },
+    {
+      "id": "MX11",
+      "name": "炉刃武士",
+      "tier": 1,
+      "classes": [
+        "fighter"
+      ],
+      "systems": [
+        "ember"
+      ],
+      "current_role": "近战铺垫",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX12",
+      "name": "火羽炮手",
+      "tier": 2,
+      "classes": [
+        "ranger"
+      ],
+      "systems": [
+        "ember"
+      ],
+      "current_role": "技能补印记",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX13",
+      "name": "烬步客",
+      "tier": 2,
+      "classes": [
+        "assassin"
+      ],
+      "systems": [
+        "ember"
+      ],
+      "current_role": "带印记目标收割",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX14",
+      "name": "焚城术士",
+      "tier": 3,
+      "classes": [
+        "mage"
+      ],
+      "systems": [
+        "ember"
+      ],
+      "current_role": "集中引爆",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX15",
+      "name": "薪火牧者",
+      "tier": 1,
+      "classes": [
+        "summoner"
+      ],
+      "systems": [
+        "ember"
+      ],
+      "current_role": "补员与铺垫",
+      "disposition": "rework",
+      "proposed_development": "法术生产：每次有效整备推进并产出一份可保存、可在后续战斗使用的战斗法术；“每次直接产出”与“累计进度后产出”保留为待比较样例，占用薪火牧者原有技能预算。",
+      "compatible_outputs": [
+        "可保存的战斗法术",
+        "战斗法术生产进度（若采用进度制）"
+      ],
+      "missing_validation": [
+        "直接产出与进度生产的节奏样例比较",
+        "法术池、品质、持有上限与保存期限",
+        "使用时点、目标规则与消耗语义",
+        "重复整备及无效整备的防刷边界",
+        "召唤／铺垫战斗能力被替换或压缩到何种程度"
+      ]
+    },
+    {
+      "id": "MX16",
+      "name": "守冢骑士",
+      "tier": 1,
+      "classes": [
+        "guard"
+      ],
+      "systems": [
+        "death"
+      ],
+      "current_role": "死亡循环前排",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX17",
+      "name": "残誓武士",
+      "tier": 2,
+      "classes": [
+        "fighter"
+      ],
+      "systems": [
+        "death"
+      ],
+      "current_role": "损失后反扑",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX18",
+      "name": "渡魂刃",
+      "tier": 3,
+      "classes": [
+        "assassin"
+      ],
+      "systems": [
+        "death"
+      ],
+      "current_role": "击杀与魂屑衔接",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX19",
+      "name": "引魂灯使",
+      "tier": 2,
+      "classes": [
+        "support"
+      ],
+      "systems": [
+        "death"
+      ],
+      "current_role": "亡语支援",
+      "disposition": "rework",
+      "proposed_development": "后来核心供给：围绕亡契的损失与庇护关系，在满足有效条件后产出可供后续获得、选择或投入的核心；占用引魂灯使原有技能预算，不把核心供给附加在完整亡语支援之上。",
+      "compatible_outputs": [
+        "供后来阶段使用的核心候选或核心取得机会",
+        "与损失后第二波相容的庇护型产物"
+      ],
+      "missing_validation": [
+        "“后来”的阶段边界与触发条件",
+        "核心的定义、候选池、取得方式与持有上限",
+        "是否必须发生真实损失以及如何避免主动送死成为最优解",
+        "核心是否绑定亡契或允许跨体系使用",
+        "遗灯／代触发能力被替换或压缩到何种程度"
+      ]
+    },
+    {
+      "id": "MX20",
+      "name": "白骨司祭",
+      "tier": 1,
+      "classes": [
+        "summoner"
+      ],
+      "systems": [
+        "death"
+      ],
+      "current_role": "持续死亡供给",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX21",
+      "name": "铆盾卫",
+      "tier": 1,
+      "classes": [
+        "guard"
+      ],
+      "systems": [
+        "construct"
+      ],
+      "current_role": "开场抗压",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX22",
+      "name": "碎盾锤",
+      "tier": 2,
+      "classes": [
+        "fighter"
+      ],
+      "systems": [
+        "construct"
+      ],
+      "current_role": "护盾转输出",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX23",
+      "name": "机弩手",
+      "tier": 1,
+      "classes": [
+        "ranger"
+      ],
+      "systems": [
+        "construct"
+      ],
+      "current_role": "受保护持续输出",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX24",
+      "name": "磁轨术士",
+      "tier": 3,
+      "classes": [
+        "mage"
+      ],
+      "systems": [
+        "construct"
+      ],
+      "current_role": "护盾与贯穿衔接",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX25",
+      "name": "工蜂监工",
+      "tier": 2,
+      "classes": [
+        "summoner"
+      ],
+      "systems": [
+        "construct"
+      ],
+      "current_role": "临时防护供给",
+      "disposition": "rework",
+      "proposed_development": "永久改装：每次有效整备选择一名合法队友，为其安装可跨战保留的构装改装；改装服务保护分配或护盾窗口，并占用工蜂监工原有技能预算。",
+      "compatible_outputs": [
+        "指定队友的永久构装改装",
+        "可分配给队伍的保护型成长"
+      ],
+      "missing_validation": [
+        "有效整备定义及每阶段触发次数",
+        "合法目标、重复改装、替换与互斥规则",
+        "改装的具体候选、叠加方式与常规可达范围",
+        "改装是否随目标离队而回收或消失",
+        "工蜂召唤／护盾修补能力被替换或压缩到何种程度"
+      ]
+    },
+    {
+      "id": "MX26",
+      "name": "血誓狂战",
+      "tier": 1,
+      "classes": [
+        "fighter"
+      ],
+      "systems": [
+        "blood"
+      ],
+      "current_role": "低血持续输出",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX27",
+      "name": "血弦弓手",
+      "tier": 2,
+      "classes": [
+        "ranger"
+      ],
+      "systems": [
+        "blood"
+      ],
+      "current_role": "远程风险输出",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX28",
+      "name": "赤刃猎手",
+      "tier": 1,
+      "classes": [
+        "assassin"
+      ],
+      "systems": [
+        "blood"
+      ],
+      "current_role": "收割续战",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX29",
+      "name": "裂脉术士",
+      "tier": 3,
+      "classes": [
+        "mage"
+      ],
+      "systems": [
+        "blood"
+      ],
+      "current_role": "承伤换爆发",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX30",
+      "name": "血契祭司",
+      "tier": 2,
+      "classes": [
+        "support"
+      ],
+      "systems": [
+        "blood"
+      ],
+      "current_role": "生命资源转移",
+      "disposition": "rework",
+      "proposed_development": "二选一培养：每次有效整备为一名合法队友选择进攻或生存方向的可跨战成长，使血线经营产生明确取舍；占用血契祭司原有技能预算。",
+      "compatible_outputs": [
+        "指定队友的进攻方向永久成长",
+        "指定队友的生存方向永久成长"
+      ],
+      "missing_validation": [
+        "有效整备定义与选择频率",
+        "合法目标以及同一目标能否混选两条路线",
+        "两条路线的具体成长、叠加方式与常规可达范围",
+        "生存成长是否削弱血誓危险血线窗口",
+        "治疗／生命转移能力被替换或压缩到何种程度"
+      ]
+    },
+    {
+      "id": "MX31",
+      "name": "星幕守卫",
+      "tier": 1,
+      "classes": [
+        "guard"
+      ],
+      "systems": [
+        "astral"
+      ],
+      "current_role": "保护施法启动",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX32",
+      "name": "星轨射手",
+      "tier": 2,
+      "classes": [
+        "ranger"
+      ],
+      "systems": [
+        "astral"
+      ],
+      "current_role": "普攻与施法接力",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX33",
+      "name": "共鸣术士",
+      "tier": 1,
+      "classes": [
+        "mage"
+      ],
+      "systems": [
+        "astral"
+      ],
+      "current_role": "技能循环起点",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX34",
+      "name": "星泉祈者",
+      "tier": 2,
+      "classes": [
+        "support"
+      ],
+      "systems": [
+        "astral"
+      ],
+      "current_role": "法力循环续航",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX35",
+      "name": "星灵织者",
+      "tier": 3,
+      "classes": [
+        "summoner"
+      ],
+      "systems": [
+        "astral"
+      ],
+      "current_role": "召唤与施法连接",
+      "disposition": "retain",
+      "proposed_development": "保留现有战斗职责与接口；可接受其他单位提供的培养，但不要求自身生产运营资源或永久成长。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX36",
+      "name": "霜毒斥候",
+      "tier": 3,
+      "classes": [
+        "assassin"
+      ],
+      "systems": [
+        "frost",
+        "poison"
+      ],
+      "current_role": "双体系桥接",
+      "disposition": "retain",
+      "proposed_development": "保留现有跨体系战斗桥接职责；该位置只能提供可选组合捷径，相关体系必须存在不依赖此位置的替代成型路径。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证",
+        "桥接位可替代性与实际供给仍需验证"
+      ]
+    },
+    {
+      "id": "MX37",
+      "name": "疫焰使役者",
+      "tier": 3,
+      "classes": [
+        "summoner"
+      ],
+      "systems": [
+        "poison",
+        "ember"
+      ],
+      "current_role": "持续与爆发桥接",
+      "disposition": "retain",
+      "proposed_development": "保留现有跨体系战斗桥接职责；该位置只能提供可选组合捷径，相关体系必须存在不依赖此位置的替代成型路径。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证",
+        "桥接位可替代性与实际供给仍需验证"
+      ]
+    },
+    {
+      "id": "MX38",
+      "name": "余烬司魂者",
+      "tier": 4,
+      "classes": [
+        "mage"
+      ],
+      "systems": [
+        "ember",
+        "death"
+      ],
+      "current_role": "死亡转技能爆发",
+      "disposition": "retain",
+      "proposed_development": "保留现有跨体系战斗桥接职责；该位置只能提供可选组合捷径，相关体系必须存在不依赖此位置的替代成型路径。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证",
+        "桥接位可替代性与实际供给仍需验证"
+      ]
+    },
+    {
+      "id": "MX39",
+      "name": "冥铸守门人",
+      "tier": 3,
+      "classes": [
+        "guard"
+      ],
+      "systems": [
+        "death",
+        "construct"
+      ],
+      "current_role": "召唤损失转防护",
+      "disposition": "retain",
+      "proposed_development": "保留现有跨体系战斗桥接职责；该位置只能提供可选组合捷径，相关体系必须存在不依赖此位置的替代成型路径。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证",
+        "桥接位可替代性与实际供给仍需验证"
+      ]
+    },
+    {
+      "id": "MX40",
+      "name": "赤炉破阵者",
+      "tier": 3,
+      "classes": [
+        "fighter"
+      ],
+      "systems": [
+        "construct",
+        "blood"
+      ],
+      "current_role": "低血与护盾桥接",
+      "disposition": "retain",
+      "proposed_development": "保留现有跨体系战斗桥接职责；该位置只能提供可选组合捷径，相关体系必须存在不依赖此位置的替代成型路径。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证",
+        "桥接位可替代性与实际供给仍需验证"
+      ]
+    },
+    {
+      "id": "MX41",
+      "name": "祈血星使",
+      "tier": 4,
+      "classes": [
+        "support"
+      ],
+      "systems": [
+        "blood",
+        "astral"
+      ],
+      "current_role": "生命与法力桥接",
+      "disposition": "retain",
+      "proposed_development": "保留现有跨体系战斗桥接职责；该位置只能提供可选组合捷径，相关体系必须存在不依赖此位置的替代成型路径。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证",
+        "桥接位可替代性与实际供给仍需验证"
+      ]
+    },
+    {
+      "id": "MX42",
+      "name": "极光唤灵者",
+      "tier": 3,
+      "classes": [
+        "summoner"
+      ],
+      "systems": [
+        "astral",
+        "frost"
+      ],
+      "current_role": "控制与施法桥接",
+      "disposition": "retain",
+      "proposed_development": "保留现有跨体系战斗桥接职责；该位置只能提供可选组合捷径，相关体系必须存在不依赖此位置的替代成型路径。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证",
+        "桥接位可替代性与实际供给仍需验证"
+      ]
+    },
+    {
+      "id": "MX43",
+      "name": "构装卫师",
+      "tier": 3,
+      "classes": [
+        "guard",
+        "support"
+      ],
+      "systems": [
+        "construct"
+      ],
+      "current_role": "双职业防护桥接",
+      "disposition": "retain",
+      "proposed_development": "保留现有职业桥接战斗职责；双职业仍各贡献1点，不产生额外成长轴。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX44",
+      "name": "霜弦咏者",
+      "tier": 4,
+      "classes": [
+        "ranger",
+        "mage"
+      ],
+      "systems": [
+        "frost"
+      ],
+      "current_role": "普攻与施法双职业",
+      "disposition": "retain",
+      "proposed_development": "保留现有职业桥接战斗职责；双职业仍各贡献1点，不产生额外成长轴。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX45",
+      "name": "幽刃斗将",
+      "tier": 4,
+      "classes": [
+        "fighter",
+        "assassin"
+      ],
+      "systems": [
+        "death"
+      ],
+      "current_role": "承伤反扑与收割桥接",
+      "disposition": "retain",
+      "proposed_development": "保留现有职业桥接战斗职责；双职业仍各贡献1点，不产生额外成长轴。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX46",
+      "name": "棘核寄生体",
+      "tier": 2,
+      "classes": [],
+      "systems": [
+        "poison"
+      ],
+      "current_role": "无职业的毒层功能位",
+      "disposition": "retain",
+      "proposed_development": "保留纯体系战斗功能位；无职业不获得补偿性数值，也不承担运营产出。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX47",
+      "name": "星界观测者",
+      "tier": 4,
+      "classes": [],
+      "systems": [
+        "astral"
+      ],
+      "current_role": "无职业的技能放大位",
+      "disposition": "rework",
+      "proposed_development": "技能方案培养：在有效整备中为一名合法友军推进或选择可跨战保留的技能方案，使其技能周期出现方向性变化；占用星界观测者原有技能预算。",
+      "compatible_outputs": [
+        "指定友军的技能方案选择或进度",
+        "可跨战保留的技能周期调整"
+      ],
+      "missing_validation": [
+        "方案是替换、强化还是分支选择",
+        "候选生成、重选、锁定与回退规则",
+        "合法目标及同一技能可接受的培养次数",
+        "与法力、回响和施法计数的边界",
+        "原下一次主动强化能力被替换或压缩到何种程度"
+      ]
+    },
+    {
+      "id": "MX48",
+      "name": "铁弩佣兵",
+      "tier": 1,
+      "classes": [
+        "ranger"
+      ],
+      "systems": [],
+      "current_role": "无体系的射手替补",
+      "disposition": "retain",
+      "proposed_development": "保留单轴、无体系战斗功能位；用于职业构筑与自身功能，不因少一轴获得额外奖励。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    },
+    {
+      "id": "MX49",
+      "name": "游历决斗士",
+      "tier": 2,
+      "classes": [
+        "fighter"
+      ],
+      "systems": [],
+      "current_role": "无体系的斗士替补",
+      "disposition": "retain",
+      "proposed_development": "保留单轴、无体系战斗功能位；用于职业构筑与自身功能，不因少一轴获得额外奖励。",
+      "compatible_outputs": [
+        "现有战斗职责",
+        "来自其他单位的合法培养收益"
+      ],
+      "missing_validation": [
+        "原战斗接口与未来培养产物的兼容性仍需验证"
+      ]
+    }
+  ]
+}
