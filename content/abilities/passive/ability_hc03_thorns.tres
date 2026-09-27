@@ -14,6 +14,6 @@ TargetQuery = SubResource("owner")
 script = ExtResource("script")
 StableId = "ability_hc03_thorns"
 DisplayName = "荆棘甲"
-Description = "被普攻命中：反伤，造成自身当前防御 100% 的伤害。"
+Description = "被普攻命中时，对攻击者造成当前防御 100% 的伤害。"
 ActivationKind = 3
 Operations = [SubResource("grant")]

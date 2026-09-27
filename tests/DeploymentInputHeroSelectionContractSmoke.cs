@@ -513,7 +513,7 @@ public partial class DeploymentInputHeroSelectionContractSmoke : Node
                 instance.InstanceId,
                 definition.DisplayName,
                 definition.Description,
-                instance.HealthRatio,
+                definition.MaxHealth,
                 definition.Role,
                 definition.AttackRange,
                 true,

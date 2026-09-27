@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="gain"]
+script = ExtResource("operation")
+Kind = 29
+Target = 0
+Amount = 16
+Attribute = 0
+[sub_resource type="Resource" id="reaction"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 9
+SourceRelation = 1
+TargetRelation = 4
+TargetCondition = 8
+OncePerBattle = true
+Effects = Array[ExtResource("operation")]([SubResource("gain")])
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx01_permanent_frost_growth"
+DisplayName = "冻土积层"
+Description = "每场首次成功冻结敌人后，永久获得16点最大生命；本场立即生效。"
+ActivationKind = 1
+Trigger = 1
+MaxUses = 1
+Operations = [SubResource("reaction")]

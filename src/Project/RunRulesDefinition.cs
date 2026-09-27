@@ -6,6 +6,11 @@ namespace TowerAutobattler.Project;
 [GlobalClass]
 public partial class RunRulesDefinition : Resource
 {
+    [Export] public int InitialRunHealth { get; set; } = 100;
+    [Export] public int MaximumRunHealth { get; set; } = 100;
+    [Export] public int CombatDefeatHealthLoss { get; set; } = 20;
+    [Export] public int EliteDefeatHealthLoss { get; set; } = 30;
+    [Export] public int RestRunHealthRecovery { get; set; } = 25;
     [Export] public int OrdinaryPopulationCap { get; set; } = 10;
     [Export] public int PhysicalDeploymentCeiling { get; set; } = 18;
     [Export] public int ReserveCapacity { get; set; } = 3;

@@ -1,0 +1,56 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/UI/CompactDetailFact.cs" id="Script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/DetailExplanationTooltip.tscn" id="Hint"]
+[ext_resource type="Resource" path="res://content/ui/combat_keywords.tres" id="Vocabulary"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/card-attack-stat.png" id="Mount"]
+
+[sub_resource type="SystemFont" id="Numerals"]
+font_names = PackedStringArray("Georgia", "Cambria")
+font_weight = 700
+
+[node name="CardAttackStat" type="Button"]
+custom_minimum_size = Vector2(88, 88)
+theme_type_variation = &"CardStat"
+script = ExtResource("Script")
+ExplanationTooltip = ExtResource("Hint")
+Vocabulary = ExtResource("Vocabulary")
+ShowIcon = false
+UseSemanticColor = false
+
+[node name="Mount" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("Mount")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FactValue" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 13.0
+offset_right = -5.0
+offset_top = 35.0
+offset_bottom = 75.0
+mouse_filter = 2
+theme_override_fonts/font = SubResource("Numerals")
+theme_override_font_sizes/font_size = 25
+theme_override_colors/font_color = Color(0.98, 0.94, 0.82, 1)
+theme_override_colors/font_outline_color = Color(0.16, 0.09, 0.04, 1)
+theme_override_constants/outline_size = 4
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FactIcon" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+mouse_filter = 2
+
+[node name="FactCaption" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+mouse_filter = 2

@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 7
+Target = 10
+Key = "astral-growth"
+Amount = 1
+Maximum = 5
+MaxTargets = 3
+
+[sub_resource type="Resource" id="op_3"]
+script = ExtResource("operation")
+Kind = 13
+Target = 10
+Attribute = 1
+Amount = 0
+DurationTicks = 100
+MaxTargets = 3
+Key = "astral-growth"
+CounterRatio = 2
+CounterOnTarget = true
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 7
+SourceRelation = 3
+TargetRelation = 0
+CooldownTicks = 5
+Effects = Array[ExtResource("operation")]([SubResource("op_2"), SubResource("op_3")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx35_p"
+DisplayName = "星灵织者·被动"
+Description = "其他友军消耗法力施法时，使至多3只星灵各获得2点攻击，最多叠加5次；冷却0.5秒。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1")]

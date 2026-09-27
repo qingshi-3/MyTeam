@@ -18,7 +18,7 @@ void fragment() {
     float radial=UV.y;
     float outer=exp(-pow((radial-.88)/.025,2.0));
     float inner=smoothstep(.0,.40,radial)*(1.0-smoothstep(.78,1.0,radial));
-    float shape=(outer*.98+inner*(.10+grain*grain*.35));
+    float shape=(outer*.98+inner*(.08+grain*grain*.30)*(0.6+head*.65));
     float tips=smoothstep(0.0,.075,UV.x)*(1.0-smoothstep(.96,1.0,UV.x));
     vec3 color=mix(vec3(.72,.52,.29),vec3(1.0,.88,.63),radial);
     color=mix(color,vec3(1.0,.98,.90),outer*.90+head*.08);

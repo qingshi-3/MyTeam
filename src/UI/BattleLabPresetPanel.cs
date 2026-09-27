@@ -7,7 +7,7 @@ using TowerAutobattler.BattleLab;
 namespace TowerAutobattler.UI;
 
 // Owns the preset browser, not the editable session or persistence transaction.
-public partial class BattleLabPresetPanel : Control
+public partial class BattleLabPresetPanel : Control, IUiMotionHost
 {
     public event Action<string>? LoadRequested;
     public event Action<string>? SaveRequested;
@@ -22,6 +22,8 @@ public partial class BattleLabPresetPanel : Control
     private Button _load = null!, _save = null!, _restore = null!, _close = null!;
 
     public bool IsOpen => IsVisibleInTree();
+    public Func<bool> ReduceUiMotion { get; set; } = () => false;
+    private UiPopupMotion? _motion;
 
     public override void _Ready()
     {
@@ -34,6 +36,7 @@ public partial class BattleLabPresetPanel : Control
         _save = GetNode<Button>("%SavePresetButton");
         _restore = GetNode<Button>("%RestoreDefaultButton");
         _close = GetNode<Button>("%ClosePresetsButton");
+        _motion = new UiPopupMotion(GetNode<Control>("Center/Dialog"), GetNode<Control>("Dim"), () => ReduceUiMotion());
         _search.TextChanged += OnSearchChanged;
         _choices.ItemSelected += OnSelected;
         _choices.ItemActivated += OnActivated;
@@ -45,6 +48,7 @@ public partial class BattleLabPresetPanel : Control
 
     public void Bind(BattleLabPresetStore? store, Func<string, string> unitName)
     {
+        _motion?.Reset();
         _store = store;
         _unitName = unitName;
         _returnFocus = null;
@@ -57,11 +61,18 @@ public partial class BattleLabPresetPanel : Control
         _returnFocus = returnFocus;
         RefreshChoices(activePresetName);
         Show();
+        _motion?.Open();
         _search.GrabFocus();
     }
 
     public void Close()
     {
+        _motion!.Close(FinishClose);
+    }
+
+    private void FinishClose()
+    {
+        _motion?.Reset();
         Hide();
         if (IsInstanceValid(_returnFocus) && _returnFocus!.IsVisibleInTree())
             _returnFocus.GrabFocus();
@@ -80,6 +91,7 @@ public partial class BattleLabPresetPanel : Control
 
     public override void _Input(InputEvent inputEvent)
     {
+        if (IsOpen && _motion?.IsClosing == true) { GetViewport().SetInputAsHandled(); return; }
         if (!IsOpen || inputEvent is not InputEventKey { Pressed: true, Echo: false } key) return;
         if (key.Keycode == Key.Escape)
         {
@@ -115,7 +127,9 @@ public partial class BattleLabPresetPanel : Control
         {
             if (query.Length > 0 && !name.Contains(query, StringComparison.OrdinalIgnoreCase)) continue;
             _names.Add(name);
-            _choices.AddItem($"{(_store?.BuiltIns.ContainsKey(name) == true ? "内置" : "我的")} · {name}");
+            var builtIn = _store?.BuiltIns.ContainsKey(name) == true;
+            _choices.AddItem($"{(builtIn ? "内置" : "我的")} · " +
+                (builtIn ? BattleLabScreenController.PlayerFacingPresetName(name) : name));
             _choices.SetItemTooltip(_choices.ItemCount - 1, _store?.BuiltInDescription(name) ?? string.Empty);
         }
         var selected = _names.IndexOf(preferred ?? _store?.DefaultPresetName ?? string.Empty);
@@ -133,8 +147,7 @@ public partial class BattleLabPresetPanel : Control
         var players = preset.Units.Where(unit => unit.Side == BattleLabSide.Player).ToArray();
         var heroes = players.GroupBy(unit => unit.ContentId).Select(group =>
             _unitName(group.Key) + (group.Count() > 1 ? $" ×{group.Count()}" : string.Empty));
-        var text = $"自由实验 · " +
-            $"A 队 {players.Length} / B 队 {preset.Units.Count - players.Length} · 种子 {preset.Seed}\n" +
+        var text = $"A 队 {players.Length} / B 队 {preset.Units.Count - players.Length} · 种子 {preset.Seed}\n" +
             string.Join("、", heroes) + " · 载入可撤销";
         var description = _store.BuiltInDescription(name);
         ShowFeedback(text + (string.IsNullOrWhiteSpace(description) ? "" : "\n" + description));
@@ -158,6 +171,7 @@ public partial class BattleLabPresetPanel : Control
 
     public override void _ExitTree()
     {
+        _motion?.Dispose();
         _search.TextChanged -= OnSearchChanged;
         _choices.ItemSelected -= OnSelected;
         _choices.ItemActivated -= OnActivated;
@@ -169,5 +183,13 @@ public partial class BattleLabPresetPanel : Control
         _unitName = id => id;
         _returnFocus = null;
         _names.Clear();
+    }
+
+    public override void _Notification(int what)
+    {
+        if (what == NotificationVisibilityChanged && Visible && !IsVisibleInTree())
+        {
+            FinishClose();
+        }
     }
 }

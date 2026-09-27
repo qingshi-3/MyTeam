@@ -15,19 +15,20 @@ public partial class RosterHeroCard : Button
     public event Action<string, int, string>? EquipmentDropped;
     public event Action<EquipmentSlotButton, string>? EquipmentInspected;
     public event Action<EquipmentSlotButton, bool, string>? KeyboardEquipment;
+    public event Action<DetailExplainButton>? FactInspected;
     public Func<Variant, EquipmentDropEvaluation>? EvaluateDrop { get; set; }
     public Func<string, bool>? CanReceiveItem { get; set; }
-    private string _normalStyle = "SecondaryButton";
+    private string _normalStyle = "RosterCard";
     private Control _margin = null!;
-    private UnitInfoCard _information = null!;
+    private WorkbenchHeroSummary _information = null!;
     public override void _Ready()
     {
         _margin = GetNode<Control>("Margin");
         _margin.MinimumSizeChanged += RefreshMinimumSize;
         Pressed += SelectCard;
         MouseExited += ClearHighlight;
-        _information = GetNode<UnitInfoCard>("%Information");
-        _information.Activated += SelectCard;
+        _information = GetNode<WorkbenchHeroSummary>("%Information");
+        _information.FactInspected += InspectFact;
         _information.ForwardDrag(Callable.From<Vector2, Variant, bool>((p, data) => _CanDropData(p, data)),
             Callable.From<Vector2, Variant>((p, data) => _DropData(p, data)));
         for (var index = 0; index < 3; index++)
@@ -39,14 +40,17 @@ public partial class RosterHeroCard : Button
         }
     }
     public void Bind(RunApplication app, RosterHeroInstanceDto hero, UnitDefinition definition,
-        UnitSnapshot baseline, PreparedUnitDetails? prepared, bool selected, string selectedEquipmentId)
+        UnitInformation model, string selectedEquipmentId)
     {
         HeroId = hero.InstanceId;
-        _normalStyle = selected ? "SelectedButton" : "SecondaryButton";
+        _normalStyle = "RosterCard";
         ThemeTypeVariation = _normalStyle;
-        var model = new UnitInformation(hero.InstanceId, definition, baseline, prepared, hero.HealthRatio);
         var deployed = app.ActiveRun!.Deployment.Contains(hero.InstanceId);
-        GetNode<UnitInfoCard>("%Information").Bind(model, $"{(deployed ? "出战" : "后备")} · {hero.Rank} 阶");
+        _information.Bind(model);
+        GetNode<Label>("%HeroRank").Text = FormatRank(hero.Rank);
+        GetNode<TextureRect>("%DeployedIcon").Visible = deployed;
+        GetNode<TextureRect>("%ReserveIcon").Visible = !deployed;
+        AccessibilityName = $"{definition.DisplayName} · {hero.Rank} 阶 · {(deployed ? "出战" : "后备")}";
         for (var index = 0; index < 3; index++)
         {
             var slot = GetNode<EquipmentSlotButton>("%Slot" + index);
@@ -60,28 +64,35 @@ public partial class RosterHeroCard : Button
                     "拖到另一英雄或装备槽转交；拖回背包卸下。Delete 卸下。"));
             else BattleLabHoverHint.Bind(slot, null);
         }
-        var contributions = (baseline.TraitContributions.IsDefault ? [] : baseline.TraitContributions)
+        var contributions = (model.Baseline.TraitContributions.IsDefault ? [] : model.Baseline.TraitContributions)
             .Concat(hero.Equipment.SelectMany(item => app.Content.Graph.ResolveEquipment(item.ContentId).TraitContributions))
             .GroupBy(trait => trait.TraitId).Select(group =>
                 $"{(app.Content.Graph.TryGetTrait(group.Key, out var trait) ? trait.DisplayName : group.Key)} +{group.Sum(value => value.Value)}").ToArray();
         BattleLabHoverHint.Bind(this, new BattleLabTooltipInfo(definition.DisplayName,
-            $"{(deployed ? "出战" : "后备")} · {hero.Rank} 阶 · " + (prepared is null ? "基础属性（未计装备与开战加成）" : "准备属性（已计开战加成）"),
+            $"{(deployed ? "出战" : "后备")} · {hero.Rank} 阶 · " + model.Context,
             Stats: model.AllAttributesText(),
             Loadout: contributions.Length == 0 ? "羁绊：无" : "羁绊贡献（含装备）\n" + string.Join("、", contributions),
             Hint: "整卡可选择；拖入装备装入首个空槽。装备满时拖到具体槽位替换。技能与装备悬停查看各自完整效果。"));
         RefreshMinimumSize();
     }
+    internal static string FormatRank(int rank) => rank switch
+    {
+        1 => "I", 2 => "II", 3 => "III", 4 => "IV", 5 => "V",
+        _ => rank.ToString(System.Globalization.CultureInfo.InvariantCulture)
+    };
     private void RefreshMinimumSize()
     {
         // Button does not derive its native minimum from child containers. Publish the
-        // composed content's minimum explicitly, including the authored 12px insets.
+        // composed content's minimum explicitly, including the authored frame insets.
         var content = _margin.GetCombinedMinimumSize();
-        CustomMinimumSize = new Vector2(Math.Max(274, content.X + 24), Math.Max(466, content.Y + 24));
+        CustomMinimumSize = new Vector2(
+            Math.Max(360, content.X + _margin.OffsetLeft - _margin.OffsetRight),
+            Math.Max(720, content.Y + _margin.OffsetTop - _margin.OffsetBottom));
     }
     public override void _ExitTree()
     {
         if (IsInstanceValid(_margin)) _margin.MinimumSizeChanged -= RefreshMinimumSize;
-        if (IsInstanceValid(_information)) _information.Activated -= SelectCard;
+        if (IsInstanceValid(_information)) _information.FactInspected -= InspectFact;
         Pressed -= SelectCard;
         MouseExited -= ClearHighlight;
     }
@@ -89,7 +100,11 @@ public partial class RosterHeroCard : Button
     {
         if (!EquipmentSlotButton.TryEquipmentId(data, out _)) return false;
         var evaluation = EvaluateDrop?.Invoke(data) ?? EquipmentDropEvaluation.Reject("当前不可更换。");
-        ThemeTypeVariation = evaluation.Allowed ? "EquipmentSlotValid" : "EquipmentSlotInvalid";
+        ThemeTypeVariation = evaluation.Allowed ? "RosterCardDropValid" : "RosterCardDropInvalid";
+        var hint = GetNode<Label>("DropHint");
+        hint.Text = evaluation.Allowed ? "放入装备" : "不可装备";
+        hint.Visible = true;
+        UiDragVisual.Aim(data, this, evaluation.Allowed);
         return evaluation.Allowed;
     }
     public override void _DropData(Vector2 atPosition, Variant data)
@@ -99,6 +114,11 @@ public partial class RosterHeroCard : Button
         ClearHighlight();
     }
     public override void _Notification(int what) { if (what == NotificationDragEnd) ClearHighlight(); }
-    private void ClearHighlight() => ThemeTypeVariation = _normalStyle;
+    private void ClearHighlight()
+    {
+        ThemeTypeVariation = _normalStyle;
+        GetNode<Label>("DropHint").Hide();
+    }
     private void SelectCard() => Selected?.Invoke(HeroId);
+    private void InspectFact(DetailExplainButton source) => FactInspected?.Invoke(source);
 }

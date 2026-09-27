@@ -131,7 +131,7 @@ public sealed partial class BattleSimulation
         var towardTarget = target.Position - owner.Position;
         var direction = towardTarget.LengthSquared() > .000001f ? towardTarget.Normalized() :
             owner.Team == 0 ? Vector2.Right : Vector2.Left;
-        var preferred = operation.BehindTarget ? direction : -direction;
+        var preferred = (operation.BehindTarget ? direction : -direction).Rotated(operation.LandingAngleRadians);
         var separation = owner.BodyRadius + target.BodyRadius + BattlefieldSpace.BodyClearance + operation.StopDistance;
         // Prefer the requested side, then nearby angular alternatives. Do not teleport to an arbitrary
         // free cell elsewhere on the board when the target has no legal nearby landing circle.
@@ -275,6 +275,8 @@ public sealed partial class BattleSimulation
         _movement?.ReleaseUnit(mover.RuntimeId);
         if (mover.Alive) mover.Mode = BattleUnitMode.Seeking;
         EmitDisplacement(motion, mover, progress, true);
+        try
+        {
         if (motion.Cancelled || !mover.Alive) return;
         var source = _units.First(unit => unit.RuntimeId == motion.SourceId);
         if (!source.Alive || source.Team != motion.SourceTeam || mover.Team != motion.MoverTeam) return;
@@ -288,10 +290,25 @@ public sealed partial class BattleSimulation
         foreach (var target in targets)
         {
             var damage = Math.Max(0, operation.ImpactDamage + source.Damage * operation.AttackRatio);
-            if (damage > 0) ApplyDamage(source.RuntimeId, source, target, damage, motion.Origin, operation.DamageType);
+            if (damage > 0)
+            {
+                var vitality = target.Health + target.Shield;
+                ApplyDamage(source.RuntimeId, source, target, damage, motion.Origin, operation.DamageType);
+                var damageClass = DamageClassFor(motion.Origin);
+                if (damageClass == CombatDamageClass.ActiveSkill)
+                    PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.SkillHitLanded,
+                        motion.Origin, source.RuntimeId, target.RuntimeId, TickIndex,
+                        EffectiveValue: Math.Max(0, vitality - target.Health - target.Shield),
+                        Cell: ToCombatCell(target.Cell), Position: ToCombatPoint(target.Position),
+                        DamageType: operation.DamageType, DamageClass: damageClass,
+                        ActionId: motion.Origin.InstanceId));
+            }
             if (target.Alive && operation.ImpactStatus is { } status)
                 _statusScope.Apply(status, source.RuntimeId, target.RuntimeId, TickIndex);
+            if (target.Alive) MatrixDisplacementArrived(source, target, motion.Origin);
         }
+        }
+        finally { MatrixDisplacementFinished(motion.Origin); }
     }
 
     private void EmitDisplacement(DisplacementMotion motion, BattleUnitState mover, float progress, bool finished) =>

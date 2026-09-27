@@ -31,6 +31,8 @@ public partial class BattleLabAppFlowContractSmoke : Node
 
             var screens = root.GetNode<AppScreenHost>("Screens");
             Require(screens.MainMenu.Visible, "main menu visible after bootstrap");
+            if (!screens.MainMenu.GetNode<Control>("Center/Panel/Menu/BattleLabButton").IsVisibleInTree())
+                await Click(screens.MainMenu.GetNode<Control>("Center/Panel/Menu/ToolsButton"));
             await Click(screens.MainMenu.GetNode<Control>("Center/Panel/Menu/BattleLabButton"));
             Require(screens.BattleLab.Visible && screens.BattleLab.CurrentSnapshot is not null,
                 "real main-menu Battle Lab entry");
@@ -57,6 +59,8 @@ public partial class BattleLabAppFlowContractSmoke : Node
             await Click(screens.BattleLab.GetNode<Control>("%BackButton"));
             Require(screens.MainMenu.Visible && !screens.BattleLab.Visible && !screens.Battle.HasActiveBattle,
                 "real Battle Lab exit returns to main menu without retained runtime");
+            if (!screens.MainMenu.GetNode<Control>("Center/Panel/Menu/BattleLabButton").IsVisibleInTree())
+                await Click(screens.MainMenu.GetNode<Control>("Center/Panel/Menu/ToolsButton"));
             await Click(screens.MainMenu.GetNode<Control>("Center/Panel/Menu/BattleLabButton"));
             Require(screens.BattleLab.Visible &&
                     screens.BattleLab.CurrentSnapshot?.CanonicalDigest == before,

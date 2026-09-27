@@ -10,4 +10,7 @@ public sealed record HeroSelectionViewModel(
     string RuleTitle,
     string RuleDescription,
     UnitSnapshot? Snapshot = null,
-    int RecruitmentTier = 0);
+    int RecruitmentTier = 0)
+{
+    public bool AlwaysShowRule { get; init; }
+}

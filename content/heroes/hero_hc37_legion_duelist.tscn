@@ -24,7 +24,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "勇毅反击"
-RuleDescription = "决斗锁定近战对手 4 秒，双方只攻击彼此且不能发动主动。每承受 3 次普攻，反击当前近战目标并按实际生命伤害的 80% 回复。"
+RuleDescription = "决斗锁定近战对手 4 秒，双方只攻击彼此且不能发动主动。每承受 3 次普攻，反击当前近战目标并按实际生命伤害的 60% 回复。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 13
+Target = 0
+Attribute = 4
+Amount = 8
+DurationTicks = 40
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 2
+Target = 21
+Amount = 40
+DurationTicks = 30
+ExcludeSelf = true
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx16_a"
+DisplayName = "守冢骑士·主动"
+Description = "自身获得8点护甲，持续4秒；最近的另一名召唤者获得40点护盾，持续3秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1"), SubResource("op_2")]

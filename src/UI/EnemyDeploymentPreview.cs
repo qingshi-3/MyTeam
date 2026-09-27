@@ -28,7 +28,7 @@ public partial class EnemyDeploymentPreview : Button
         CacheNodes();
         InstanceId = model.InstanceId;
         BodyRadius = model.BodyRadius;
-        _portrait.FitVisibleArtwork = model.BodyRadius > .5f;
+        _portrait.FitVisibleArtwork = true;
         _portrait.Bind(model.Portrait, SemanticIcons.Catalog.ResolveIcon(
             SemanticIconKeys.Responsibility(model.Role)));
         _enemyBadge.Texture = SemanticIcons.Catalog.ResolveIcon(

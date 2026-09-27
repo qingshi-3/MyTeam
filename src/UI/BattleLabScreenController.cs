@@ -11,8 +11,10 @@ using TowerAutobattler.Traits;
 
 namespace TowerAutobattler.UI;
 
-public partial class BattleLabScreenController : Control
+public partial class BattleLabScreenController : Control, IUiMotionHost
 {
+    public Func<bool> ReduceUiMotion { get; set; } = () => false;
+    private UiDragVisual? _dragMotion;
     [Signal] public delegate void BackRequestedEventHandler();
     [Signal] public delegate void StartRequestedEventHandler();
     [Export] public PackedScene LibraryCardScene { get; set; } = null!;
@@ -49,7 +51,7 @@ public partial class BattleLabScreenController : Control
     private OptionButton _unitFilter = null!, _placementTeam = null!;
     private OptionButton _relicChoice = null!, _existingRelicChoice = null!;
     private SpinBox _relicStacks = null!;
-    private Label _libraryEmpty = null!, _modeBanner = null!, _status = null!, _facts = null!;
+    private Label _libraryEmpty = null!, _status = null!, _facts = null!;
     private Label _placementHint = null!, _unitTitle = null!, _inspectorDetails = null!, _teamFacts = null!;
     private Label _readiness = null!, _equipmentNotApplicable = null!;
     private CombatRichText _inspector = null!;
@@ -90,12 +92,13 @@ public partial class BattleLabScreenController : Control
         _equipmentOwner = GetNode<Label>("%EquipmentOwner");
         _libraryPopup.Closed += OnLibraryClosed;
         _detailsPopup.Closed += OnDetailsClosed;
+        _libraryPopup.CancelActiveInteraction = CancelPointerDrag;
+        _detailsPopup.CancelActiveInteraction = CancelPointerDrag;
         _detailTabs = GetNode<TabContainer>("%DetailTabs");
         _unitSearch = GetNode<LineEdit>("%UnitSearch");
         _libraryEmpty = GetNode<Label>("%LibraryEmpty");
         _unitFilter = GetNode<OptionButton>("%UnitFilter");
         _seed = GetNode<LineEdit>("%Seed");
-        _modeBanner = GetNode<Label>("%ModeBanner");
         _status = GetNode<Label>("%Status");
         _facts = GetNode<Label>("%Facts");
         _placementHint = GetNode<Label>("%PlacementHint");
@@ -388,6 +391,7 @@ public partial class BattleLabScreenController : Control
         _selectedPrototype = string.Empty; _selectedInstanceId = string.Empty;
         _dragContentId = contentId; _dragInstanceId = string.Empty; _dragSide = side; _dragging = true;
         foreach (var card in _cards) card.SetSelected(false);
+        BeginDragVisual(_cards.FirstOrDefault(card => card.ContentId == contentId && card.Side == side), contentId);
         _placementHint.Text = $"拖入{SideName(side)} {UnitName(contentId)} · 释放到合法空格";
         RefreshDropStates(GetViewport().GetMousePosition());
     }
@@ -397,6 +401,7 @@ public partial class BattleLabScreenController : Control
         if (_session?.TryGet(instanceId, out var unit) != true) return;
         _selectedPrototype = string.Empty; _selectedInstanceId = instanceId;
         _dragContentId = unit.ContentId; _dragInstanceId = instanceId; _dragSide = unit.Side; _dragging = true;
+        BeginDragVisual(_cells.Values.FirstOrDefault(cell => cell.InstanceId == instanceId), unit.ContentId);
         _placementHint.Text = $"移动{SideName(unit.Side)} {UnitName(unit.ContentId)} · 可交换；拖回单位库可移除";
         RefreshDropStates(GetViewport().GetMousePosition());
     }
@@ -413,11 +418,16 @@ public partial class BattleLabScreenController : Control
             { ResetDrag(); RefreshAll("位置未改变。", true); return; }
             result = string.IsNullOrEmpty(instanceId)
                 ? _session.AddAndPlace(_dragContentId, _dragSide, target.Key) : _session.Move(instanceId, target.Key);
-            if (result.Succeeded) _selectedInstanceId = result.InstanceId;
+            if (result.Succeeded)
+            {
+                _selectedInstanceId = result.InstanceId;
+                if (IsInstanceValid(_dragMotion)) _dragMotion!.CommitTo(target.Value);
+            }
         }
         else if (!string.IsNullOrEmpty(instanceId) && OriginLibraryContains(position))
         {
             var removed = _session.Recall(instanceId);
+            if (removed && IsInstanceValid(_dragMotion)) _dragMotion!.CommitTo(_libraryPane);
             ResetDrag(); RecordChange(before, "移除单位");
             RefreshAll(removed ? "单位已移除，可撤销。" : "单位已经不在战场。", removed); return;
         }
@@ -430,6 +440,7 @@ public partial class BattleLabScreenController : Control
     {
         if (_session is null) return;
         _footprints.ShowDrag(null);
+        if (IsInstanceValid(_dragMotion)) _dragMotion!.ClearAim();
         foreach (var (coordinate, cell) in _cells)
         {
             var prototype = new BattleLabUnitConfiguration(string.IsNullOrEmpty(_dragInstanceId) ? "lab-preview" : _dragInstanceId,
@@ -439,18 +450,43 @@ public partial class BattleLabScreenController : Control
             cell.ShowDropState(evaluation.Succeeded, evaluation.SwappedInstanceId is not null);
             if (!ToolContains(mousePosition) && cell.GetGlobalRect().HasPoint(mousePosition) &&
                 _content?.TryGetUnit(_dragContentId, out var content) == true)
+            {
                 _footprints.ShowDrag(new DeploymentBodyPreview(_dragInstanceId, coordinate,
                     content.Definition.BodyRadius, (int)_dragSide), evaluation.Succeeded);
+                if (IsInstanceValid(_dragMotion)) _dragMotion!.AimAt(cell, evaluation.Succeeded, evaluation.SwappedInstanceId is not null);
+            }
         }
+        if (OriginLibraryContains(mousePosition) && IsInstanceValid(_dragMotion))
+            _dragMotion!.AimAt(_libraryPane, !string.IsNullOrEmpty(_dragInstanceId));
         MouseDefaultCursorShape = (!ToolContains(mousePosition) && _cells.Values.Any(cell => cell.GetGlobalRect().HasPoint(mousePosition))) ||
             OriginLibraryContains(mousePosition) ? CursorShape.PointingHand : CursorShape.Forbidden;
     }
     private void ResetDrag()
     {
+        if (IsInstanceValid(_dragMotion)) _dragMotion!.Release();
+        _dragMotion = null;
         if (IsInstanceValid(_footprints)) _footprints.ShowDrag(null);
         _dragging = false; _dragContentId = string.Empty; _dragInstanceId = string.Empty;
         MouseDefaultCursorShape = CursorShape.Arrow;
         foreach (var cell in _cells.Values) if (IsInstanceValid(cell)) cell.ClearDropState();
+    }
+
+    private bool CancelPointerDrag()
+    {
+        if (!_dragging) return false;
+        ResetDrag();
+        RefreshAll("", true);
+        return true;
+    }
+
+    private void BeginDragVisual(Control? source, string contentId)
+    {
+        if (source is null || _content?.TryGetUnit(contentId, out var unit) != true) return;
+        if (IsInstanceValid(_dragMotion)) _dragMotion!.Release();
+        var preview = GD.Load<PackedScene>("res://scenes/ui/components/HeroDragPreview.tscn").Instantiate<Control>();
+        preview.GetNode<UnitPortrait>("Layout/Portrait").Bind(unit.Definition.Portrait, unit.Definition.Icon);
+        preview.GetNode<Label>("Layout/Name").Text = unit.DisplayName;
+        _dragMotion = UiDragVisual.Lift(source, preview, () => ReduceUiMotion(), keepTargetVisible: true);
     }
     private void ClearSelection()
     {
@@ -471,6 +507,15 @@ public partial class BattleLabScreenController : Control
         RefreshAll("", true);
     }
     private static string SideName(BattleLabSide side) => side == BattleLabSide.Player ? "A 队" : "B 队";
+
+    internal static string PlayerFacingPresetName(string name)
+    {
+        var separator = name.IndexOf('·');
+        if (separator < 0) return name;
+        var prefix = name[..separator].Trim();
+        return prefix.Length == 4 && char.IsLetter(prefix[0]) && char.IsLetter(prefix[1]) &&
+            char.IsDigit(prefix[2]) && char.IsDigit(prefix[3]) ? name[(separator + 1)..].Trim() : name;
+    }
 
     private void RefreshAll(string feedback, bool success)
     {
@@ -504,10 +549,10 @@ public partial class BattleLabScreenController : Control
                     _derived.Units.GetValueOrDefault(unit.InstanceId), _derived, _content));
             else cell.SetInspection(null);
         }
-        _modeBanner.Text = "自由实验 · 全部单位可放入任意队伍，无人口与部署区域限制";
         var preset = string.IsNullOrEmpty(_activePresetName) ? "自定义配置" : _activePresetName;
         if (snapshot.CanonicalDigest != _presetDigest) preset += " · 已修改";
-        _presetPanel.SetSummary(preset);
+        _presetPanel.SetSummary(_presetStore?.BuiltIns.ContainsKey(_activePresetName) == true
+            ? PlayerFacingPresetName(preset) : preset);
         _facts.Text = $"A 队 {_derived.PlayerCount}　B 队 {_derived.EnemyCount}";
         _status.Text = string.IsNullOrWhiteSpace(feedback) ? "" : (success ? "✓ " : "! ") + feedback;
         _readiness.Text = _derived.IsReady ? "配置就绪" : string.Join("；", _derived.RejectionReasons);
@@ -809,10 +854,11 @@ public partial class BattleLabScreenController : Control
     private void EquipDragged(string id, int slot)
     {
         if (_session is null) return;
-        Edit("拖动装备", () => id.StartsWith("catalog:", StringComparison.Ordinal)
+        if (Edit("拖动装备", () => id.StartsWith("catalog:", StringComparison.Ordinal)
                 ? _session.Equip(_selectedInstanceId, slot, id[8..])
                 : _session.MoveEquipment(id, _selectedInstanceId, slot),
-            "装备已配置；可拖回装备库移除。", "无法放入该槽位，原配置保持不变。");
+            "装备已配置；可拖回装备库移除。", "无法放入该槽位，原配置保持不变。"))
+            UiDragVisual.Committed(GetViewport(), id);
     }
     private bool CanEquipOnUnit(string instanceId, Variant data)
     {
@@ -829,8 +875,9 @@ public partial class BattleLabScreenController : Control
         var owner = _session?.Units.FirstOrDefault(unit => unit.Equipment.Any(item => item.InstanceId == id));
         var item = owner?.Equipment.FirstOrDefault(value => value.InstanceId == id);
         if (owner is null || item is null) return;
-        Edit("拖回装备库", () => _session!.RemoveEquipment(owner.InstanceId, item.SlotIndex),
-            "已移除装备配置；装备库仍可重复取用。", "无法移除装备，原配置保持不变。");
+        if (Edit("拖回装备库", () => _session!.RemoveEquipment(owner.InstanceId, item.SlotIndex),
+            "已移除装备配置；装备库仍可重复取用。", "无法移除装备，原配置保持不变。"))
+            UiDragVisual.Committed(GetViewport(), id);
     }
     private void InspectEquipment(string contentId)
     {
@@ -880,8 +927,8 @@ public partial class BattleLabScreenController : Control
         if (IsInstanceValid(_relicChoice)) _relicChoice.ItemSelected -= OnBuildChoiceSelected;
         if (IsInstanceValid(_existingRelicChoice)) _existingRelicChoice.ItemSelected -= OnBuildChoiceSelected;
         if (IsInstanceValid(_detailTabs)) _detailTabs.TabChanged -= OnDetailTabChanged;
-        if (IsInstanceValid(_libraryPopup)) _libraryPopup.Closed -= OnLibraryClosed;
-        if (IsInstanceValid(_detailsPopup)) _detailsPopup.Closed -= OnDetailsClosed;
+        if (IsInstanceValid(_libraryPopup)) { _libraryPopup.Closed -= OnLibraryClosed; _libraryPopup.CancelActiveInteraction = null; }
+        if (IsInstanceValid(_detailsPopup)) { _detailsPopup.Closed -= OnDetailsClosed; _detailsPopup.CancelActiveInteraction = null; }
         if (IsInstanceValid(_boardCenter)) _boardCenter.Resized -= ResizeBoard;
         Resized -= ResizeLayout;
         foreach (var card in _cards)

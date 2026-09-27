@@ -1,0 +1,10 @@
+[gd_scene format=3]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_SmokeTile001.png" id="smoke"]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_UV_Distortion_002.png" id="flow"]
+[ext_resource type="Shader" path="res://scenes/vfx/action_mote.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+shader_parameter/flow = ExtResource("flow")
+[node name="Mote" type="Sprite2D"]
+texture = ExtResource("smoke")
+material = SubResource("material")

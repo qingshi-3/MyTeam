@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "三相使 · 固定被动"
-RuleDescription = "普攻命中后，每一种不同负面状态额外造成 10 伤害；同类层数不冒充种类。"
+RuleDescription = "普攻命中后，目标每有一种负面状态便额外受到 10 伤害；同种状态只计一次。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

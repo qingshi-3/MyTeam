@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 24
+Target = 1
+Count = 5
+AttackRatio = 0.55
+Amount = 0.45
+MaxTargets = 3
+Range = 7
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx03_a"
+DisplayName = "寒羽游侠·主动"
+Description = "连续射出5箭，每箭造成55%攻击伤害，最多攻击3名敌人。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1")]

@@ -14,6 +14,7 @@ public partial class UnitContentRoot : Node2D
     public event System.Action<FeedbackSound>? AnimationSoundRequested;
 
     [Export] public UnitDefinition Definition { get; set; } = null!;
+    [Export] public TowerAutobattler.Vfx.RockBarrierVisual? BarrierVisual { get; set; }
 
     public string RuntimeId { get; private set; } = string.Empty;
     public int Team { get; private set; }
@@ -90,6 +91,7 @@ public partial class UnitContentRoot : Node2D
         _motion?.BindTarget(this);
         _animation?.ResetPresentation();
         if (Definition is not null) _animation?.BindReadability(Definition, team);
+        _healthView?.SetTeam(team);
         _healthView?.SetHealth(currentHealth, maxHealth);
         LifecycleState = ContentLifecycleState.Bound;
     }
@@ -168,7 +170,9 @@ public partial class UnitContentRoot : Node2D
         _motion?.SetPaused(paused);
         _animation?.SetPaused(paused);
         _healthView?.SetPaused(paused);
-        if (_defeatTween is null) return;
+        if(BarrierVisual is not null)BarrierVisual.Paused=paused;
+        // Defeated actors can remain in the presentation scope after their fade completes.
+        if (_defeatTween is null || !_defeatTween.IsValid()) return;
         if (paused) _defeatTween.Pause();
         else _defeatTween.Play();
     }
@@ -190,9 +194,10 @@ public partial class UnitContentRoot : Node2D
     {
         if (IsActive) AnimationSoundRequested?.Invoke(sound);
     }
-    public void BeginAttackPresentation(BattleAttackTiming timing) => _animation?.BeginTimedAttack(timing);
+    public void BeginAttackPresentation(BattleAttackTiming timing, string actionCue = "attack") => _animation?.BeginTimedAttack(timing, actionCue);
     public void CancelAttackPresentation() => _animation?.CancelTimedAttack();
-    public void StepAttackPresentation(float seconds) => _animation?.StepTimedAttack(seconds);
+    public void StepAttackPresentation(float seconds)
+    { _animation?.StepTimedAttack(seconds);BarrierVisual?.Advance(seconds); }
     public void CompleteAttackWindup(float releaseProgress) => _animation?.CompleteTimedWindup(releaseProgress);
 
     public void SetPresentationSpeed(float speedScale, float simulationSpeed = 1)
@@ -200,6 +205,7 @@ public partial class UnitContentRoot : Node2D
         _motion?.SetSpeedScale(speedScale);
         _motion?.SetSimulationSpeed(simulationSpeed);
         _animation?.SetCombatSpeed(simulationSpeed);
+        if(BarrierVisual is not null)BarrierVisual.PlaybackSpeed=simulationSpeed;
     }
 
     // Compatibility entry point for focused animation probes. Production composition uses the

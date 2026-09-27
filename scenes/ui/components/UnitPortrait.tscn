@@ -1,6 +1,20 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/UI/UnitPortrait.cs" id="1"]
+[ext_resource type="Shader" path="res://scenes/ui/components/portrait_medallion.gdshader" id="IllustrationShader"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/portrait-stone-ring.png" id="StoneRing"]
+[ext_resource type="Shader" path="res://scenes/ui/components/portrait_stone_ring.gdshader" id="RingShader"]
+[ext_resource type="Shader" path="res://scenes/ui/components/portrait_recess.gdshader" id="RecessShader"]
+
+[sub_resource type="ShaderMaterial" id="IllustrationWindow"]
+resource_local_to_scene = true
+shader = ExtResource("IllustrationShader")
+
+[sub_resource type="ShaderMaterial" id="RingMaterial"]
+shader = ExtResource("RingShader")
+
+[sub_resource type="ShaderMaterial" id="RecessMaterial"]
+shader = ExtResource("RecessShader")
 
 [node name="UnitPortrait" type="Control"]
 custom_minimum_size = Vector2(72, 72)
@@ -14,6 +28,16 @@ mouse_filter = 2
 clip_contents = true
 script = ExtResource("1")
 
+[node name="PortraitRecess" type="ColorRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+material = SubResource("RecessMaterial")
+
 [node name="PortraitSprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 centered = false
@@ -26,3 +50,27 @@ layout_mode = 0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
+
+[node name="PortraitIllustration" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+material = SubResource("IllustrationWindow")
+texture_filter = 4
+layout_mode = 0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 0
+
+[node name="PortraitFrame" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture_filter = 4
+texture = ExtResource("StoneRing")
+material = SubResource("RingMaterial")
+expand_mode = 1
+stretch_mode = 0

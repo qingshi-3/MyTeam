@@ -7,7 +7,7 @@
 script = ExtResource("r1")
 Id = "hero_hc35_hook_hunter"
 DisplayName = "铁钩猎手"
-Description = "HC35／MV05 测试稿。开场满蓝。将 5 格内最远的非 Boss 敌人向自己拉近至多 4 格，各自保留身体和落点间距；造成 20 加 80% 攻击力的伤害并眩晕 1 秒。 被动：普攻命中带有至少一种负面状态的目标时，追加 25% 攻击力的伤害。 数值为测试暂值。"
+Description = "将远处敌人拉到身前并眩晕，对带有负面状态的敌人造成额外伤害。"
 Portrait = ExtResource("r0")
 IsHero = true
 Role = 1

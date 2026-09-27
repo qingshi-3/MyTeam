@@ -60,6 +60,9 @@
 [ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-freeze.svg" id="Keyword_freeze"]
 [ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-armor.svg" id="Keyword_armor"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/icons/critical-chance.svg" id="critical_chance"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/critical-damage.svg" id="critical_damage"]
+
 [sub_resource type="Resource" id="health"]
 script = ExtResource("1")
 Key = &"health"
@@ -420,6 +423,18 @@ Key = &"keyword.true-damage"
 Icon = ExtResource("KeywordTrueDamage")
 PresentationRole = &"SecondaryLabel"
 
+[sub_resource type="Resource" id="critical_chance"]
+script = ExtResource("1")
+Key = &"critical_chance"
+Icon = ExtResource("critical_chance")
+PresentationRole = &"SecondaryLabel"
+
+[sub_resource type="Resource" id="critical_damage"]
+script = ExtResource("1")
+Key = &"critical_damage"
+Icon = ExtResource("critical_damage")
+PresentationRole = &"SecondaryLabel"
+
 [resource]
 script = ExtResource("2")
-Entries = [SubResource("health"), SubResource("damage"), SubResource("shield"), SubResource("healing"), SubResource("mana"), SubResource("tactical_point"), SubResource("gold"), SubResource("time"), SubResource("kills"), SubResource("deaths"), SubResource("hero"), SubResource("melee"), SubResource("ranged"), SubResource("risk"), SubResource("loot"), SubResource("reach"), SubResource("role_vanguard"), SubResource("role_fighter"), SubResource("role_ranged"), SubResource("role_support"), SubResource("role_assassin"), SubResource("role_summoner"), SubResource("role_artillery"), SubResource("role_boss"), SubResource("faction_order"), SubResource("faction_desert"), SubResource("faction_undead"), SubResource("faction_beast"), SubResource("faction_machine"), SubResource("faction_frost"), SubResource("faction_neutral"), SubResource("faction_enemy"), SubResource("tower_combat"), SubResource("tower_elite"), SubResource("tower_recruitment"), SubResource("tower_shop"), SubResource("tower_event"), SubResource("tower_rest"), SubResource("tower_boss"), SubResource("status_frost"), SubResource("status_freeze"), SubResource("status_attack_speed"), SubResource("control_resistance"), SubResource("attack"), SubResource("spell_power"), SubResource("keyword_critical"), SubResource("keyword_attack_speed"), SubResource("keyword_follow_up"), SubResource("keyword_taunt"), SubResource("keyword_stun"), SubResource("keyword_thorns"), SubResource("keyword_lifesteal"), SubResource("keyword_overheal"), SubResource("keyword_dodge"), SubResource("keyword_poison"), SubResource("keyword_death_blast"), SubResource("keyword_freeze"), SubResource("keyword_armor"), SubResource("keyword_deathrattle"), SubResource("keyword_true_damage")]
+Entries = [SubResource("critical_chance"), SubResource("critical_damage"), SubResource("health"), SubResource("damage"), SubResource("shield"), SubResource("healing"), SubResource("mana"), SubResource("tactical_point"), SubResource("gold"), SubResource("time"), SubResource("kills"), SubResource("deaths"), SubResource("hero"), SubResource("melee"), SubResource("ranged"), SubResource("risk"), SubResource("loot"), SubResource("reach"), SubResource("role_vanguard"), SubResource("role_fighter"), SubResource("role_ranged"), SubResource("role_support"), SubResource("role_assassin"), SubResource("role_summoner"), SubResource("role_artillery"), SubResource("role_boss"), SubResource("faction_order"), SubResource("faction_desert"), SubResource("faction_undead"), SubResource("faction_beast"), SubResource("faction_machine"), SubResource("faction_frost"), SubResource("faction_neutral"), SubResource("faction_enemy"), SubResource("tower_combat"), SubResource("tower_elite"), SubResource("tower_recruitment"), SubResource("tower_shop"), SubResource("tower_event"), SubResource("tower_rest"), SubResource("tower_boss"), SubResource("status_frost"), SubResource("status_freeze"), SubResource("status_attack_speed"), SubResource("control_resistance"), SubResource("attack"), SubResource("spell_power"), SubResource("keyword_critical"), SubResource("keyword_attack_speed"), SubResource("keyword_follow_up"), SubResource("keyword_taunt"), SubResource("keyword_stun"), SubResource("keyword_thorns"), SubResource("keyword_lifesteal"), SubResource("keyword_overheal"), SubResource("keyword_dodge"), SubResource("keyword_poison"), SubResource("keyword_death_blast"), SubResource("keyword_freeze"), SubResource("keyword_armor"), SubResource("keyword_deathrattle"), SubResource("keyword_true_damage")]

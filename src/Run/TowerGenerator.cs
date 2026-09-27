@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Project;
 
@@ -43,6 +44,19 @@ public sealed class TowerGenerator(CompiledCampaign campaign)
         var count = encounter.BaseEnemyCount + (encounter.AddRegionIndexToCount ? regionIndex : 0);
         var random = new DeterministicRandom(
             run.Seed ^ (ulong)(run.FloorIndex + 1) * 0x9E3779B9UL ^ (ulong)encounter.SeedSalt);
+        if (!encounter.Compositions.IsDefaultOrEmpty)
+        {
+            var localFloor = run.FloorIndex % campaign.FloorsPerRegion;
+            var candidates = encounter.Compositions.Where(candidate => candidate.MinLocalFloor <= localFloor &&
+                localFloor <= candidate.MaxLocalFloor).ToArray();
+            if (candidates.Length == 0) throw new InvalidOperationException("No composition covers this floor.");
+            var composition = candidates[random.NextInt(0, candidates.Length)];
+            var floorRule = encounter.FloorRulePool.ContentIds[random.NextInt(0, encounter.FloorRulePool.ContentIds.Length)];
+            return new EncounterPlan(encounter.Title(region.DisplayName) + " · " + composition.DisplayName,
+                floorRule, composition.EnemyIds, encounter.NodeType == TowerNodeType.Boss,
+                encounter.NodeType == TowerNodeType.Elite, encounter.StableId, encounter.NodeType)
+            { CompositionId = composition.StableId, EnemyCells = composition.Cells };
+        }
         if (!encounter.AlternateLeadEnemyIds.IsDefaultOrEmpty)
         {
             var variant = random.NextInt(0, encounter.AlternateLeadEnemyIds.Length+1);

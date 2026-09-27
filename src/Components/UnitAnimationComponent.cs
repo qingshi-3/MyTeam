@@ -20,6 +20,9 @@ public partial class UnitAnimationComponent : Node2D
     // Content without a cast clip can use its neutral pose alongside source VFX.
     // This pose yields to the next real action instead of queuing a second cast.
     [Export] public bool UseNeutralSkillFallback { get; set; }
+    // Optional skill clips, keyed by presentation cue. Values are one-based strike
+    // frames; authored frame durations shape each side of the authoritative release.
+    [Export] public Godot.Collections.Dictionary<string, int> TimedActionReleaseFrames { get; set; } = new();
     [Export] public float DefeatActionWindowSeconds { get; set; } = .8f;
     [Export] public float DefeatHoldSeconds { get; set; } = .24f;
     [Export] public float DefeatFadeSeconds { get; set; } = .32f;
@@ -41,6 +44,9 @@ public partial class UnitAnimationComponent : Node2D
     private float _retainedMovePhase;
     private bool _timedAttack;
     private bool _freshTimedAttack;
+    private float _timedReleaseProgress;
+    private float _authoredReleaseProgress;
+    private bool _timedReleased;
     private float _combatSpeed = 1;
     private string _displacementCue = string.Empty;
     private float _displacementElevation;
@@ -172,7 +178,7 @@ public partial class UnitAnimationComponent : Node2D
 
     // A release-driven attack replaces queued decorative actions; queuing it behind
     // an old one-shot would separate the bow pose from the authoritative launch again.
-    public void BeginTimedAttack(BattleAttackTiming timing)
+    public void BeginTimedAttack(BattleAttackTiming timing, string actionCue = "attack")
     {
         if (IsTerminal || _sprite?.SpriteFrames is null || !string.IsNullOrEmpty(_displacementCue)) return;
         CaptureMovePhase();
@@ -180,9 +186,21 @@ public partial class UnitAnimationComponent : Node2D
         _freshTimedAttack = true;
         _state = PlaybackState.OneShot;
         _pendingCue = string.Empty;
-        _activeLogicalCue = "attack";
-        var resolved = Resolve("attack");
-        ConfigureActionPlayback("attack", resolved, timing.PlaybackSeconds);
+        var hasSkillClip = TimedActionReleaseFrames.TryGetValue(actionCue, out var releaseFrame) &&
+            Frames.HasAnimation(actionCue) && releaseFrame > 1 && releaseFrame <= Frames.GetFrameCount(actionCue);
+        _activeLogicalCue = hasSkillClip ? "skill_cast" : "attack";
+        var resolved = Resolve(hasSkillClip ? actionCue : "attack");
+        ConfigureActionPlayback(_activeLogicalCue, resolved, timing.PlaybackSeconds);
+        _timedReleaseProgress = Mathf.Clamp(timing.ReleaseProgress, .001f, .999f);
+        _authoredReleaseProgress = 0;
+        _timedReleased = false;
+        if (hasSkillClip)
+        {
+            var unitsBeforeRelease = 0f;
+            for (var frame = 0; frame < releaseFrame - 1; frame++)
+                unitsBeforeRelease += Frames.GetFrameDuration(resolved, frame);
+            _authoredReleaseProgress = unitsBeforeRelease / (ActiveAuthoredSeconds * (float)Frames.GetAnimationSpeed(resolved));
+        }
         _remaining = ActivePlaybackSeconds;
         PlayResolved(resolved, restart: true);
         SampleTimedAttack();
@@ -211,7 +229,8 @@ public partial class UnitAnimationComponent : Node2D
     public void CompleteTimedWindup(float releaseProgress)
     {
         if (!_timedAttack || _paused) return;
-        _remaining = Math.Min(_remaining, ActivePlaybackSeconds * (1 - releaseProgress));
+        _timedReleased = true;
+        _remaining = Math.Min(_remaining, ActivePlaybackSeconds * (1 - (_authoredReleaseProgress > 0 ? _timedReleaseProgress : releaseProgress)));
         _freshTimedAttack = false;
         SampleTimedAttack();
     }
@@ -219,6 +238,15 @@ public partial class UnitAnimationComponent : Node2D
     private void SampleTimedAttack()
     {
         var progress = Mathf.Clamp(1 - _remaining / ActivePlaybackSeconds, 0, .999999f);
+        if (_authoredReleaseProgress > 0)
+        {
+            // Never show the strike before the release fact, even if presentation
+            // reaches the windup boundary a frame ahead of the simulation tick.
+            progress = !_timedReleased
+                ? Math.Min(progress / _timedReleaseProgress, .9999f) * _authoredReleaseProgress
+                : Mathf.Lerp(_authoredReleaseProgress, 1, Mathf.Clamp(
+                    (progress - _timedReleaseProgress) / (1 - _timedReleaseProgress), 0, .999999f));
+        }
         var animation = _sprite.Animation;
         var frameUnits = progress * ActiveAuthoredSeconds * (float)_sprite.SpriteFrames.GetAnimationSpeed(animation) + .00001f;
         for (var frame = 0; frame < ActiveFrameCount; frame++)
@@ -303,6 +331,7 @@ public partial class UnitAnimationComponent : Node2D
         }
         if (IsTerminal) return;
         if (!string.IsNullOrEmpty(_displacementCue)) return;
+        if (_timedAttack && _authoredReleaseProgress > 0 && PresentationCuePolicy.IsAction(cue)) return;
         if (PresentationCuePolicy.IsAction(cue))
         {
             if (_state == PlaybackState.OneShot && !UsesNeutralSkillPose(cue) && !UsesNeutralSkillPose(_activeLogicalCue))
@@ -332,6 +361,8 @@ public partial class UnitAnimationComponent : Node2D
     {
         if (_state is not (PlaybackState.OneShot or PlaybackState.Defeated)) return;
         _remaining -= seconds;
+        if (_timedAttack && _authoredReleaseProgress > 0 && !_timedReleased)
+            _remaining = Math.Max(_remaining, ActivePlaybackSeconds * (1 - _timedReleaseProgress));
         if (_timedAttack) SampleTimedAttack();
         if (_remaining > 0) return;
         _timedAttack = false;

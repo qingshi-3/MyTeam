@@ -5,16 +5,16 @@
 script = ExtResource("operation")
 Range = 7
 Radius = 0.16
-Speed = 10
+Speed = 20
 WindupTicks = 3
-ReturnTicks = 6
+ReturnTicks = 3
 AttackRatio = 1
 ExcludeBoss = true
 [resource]
 script = ExtResource("ability")
 StableId = "ability_hc39_a"
 DisplayName = "动力飞钩"
-Description = "锁定 7 格内最远敌人的方向，起手 0.3 秒后射出飞钩。沿途首名敌人承受攻击力 100% 的伤害，并在 0.6 秒内拖至身前合法空位。飞钩会被敌方前排阻挡；首领受伤但不被拉动。"
+Description = "向 7 格内最远敌人射出飞钩，对沿途首名敌人造成攻击力 100% 的伤害并拖至身前空位。飞钩会被前排阻挡；首领只受伤害。"
 ActivationKind = 1
 Trigger = 5
 ManaCost = 90

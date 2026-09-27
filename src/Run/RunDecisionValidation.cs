@@ -22,6 +22,7 @@ public static class RunDecisionValidation
             RunOperationKind.Recruit => operation.Amount is > 0 and <= 64 && recruitable(operation.ContentId),
             RunOperationKind.GrantItem => operation.Amount is > 0 and <= 64 && item(operation.ContentId),
             RunOperationKind.GrantPopulation => operation.Amount > 0,
+            RunOperationKind.RecoverRunHealth => operation.Amount > 0,
             RunOperationKind.IncreasePopulationCap => operation.Amount > 0 && !string.IsNullOrWhiteSpace(operation.SourceId),
             _ => true
         };

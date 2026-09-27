@@ -1,0 +1,76 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitDefinition.cs" id="definition"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitCountingPolicySpec.cs" id="counting"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitBreakpointSpec.cs" id="tier"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitMechanicSpec.cs" id="mechanic"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="modifier"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="magnitude"]
+
+[sub_resource type="Resource" id="counting"]
+script = ExtResource("counting")
+DeploymentPolicy = 1
+TemporaryUnitPolicy = 0
+DuplicateContentPolicy = 2
+CountEquipment = true
+CountExplicitExtra = false
+
+[sub_resource type="Resource" id="mechanic0"]
+script = ExtResource("mechanic")
+Kind = 11
+Amount = 0.1
+DurationTicks = 60
+
+[sub_resource type="Resource" id="tier0"]
+script = ExtResource("tier")
+MinValue = 2
+MaxValue = 3
+DisplayStyle = "TraitTierOne"
+TargetPolicy = 1
+AttributeModifiers = []
+Mechanics = [SubResource("mechanic0")]
+
+[sub_resource type="Resource" id="mechanic1"]
+script = ExtResource("mechanic")
+Kind = 11
+Amount = 0.18
+DurationTicks = 60
+Secondary = 0.3
+CooldownTicks = 30
+
+[sub_resource type="Resource" id="tier1"]
+script = ExtResource("tier")
+MinValue = 4
+MaxValue = 5
+DisplayStyle = "TraitTierTwo"
+TargetPolicy = 1
+AttributeModifiers = []
+Mechanics = [SubResource("mechanic1")]
+
+[sub_resource type="Resource" id="mechanic2"]
+script = ExtResource("mechanic")
+Kind = 11
+Amount = 0.26
+DurationTicks = 60
+Secondary = 0.3
+CooldownTicks = 30
+Extra = 0.2
+Enabled = true
+
+[sub_resource type="Resource" id="tier2"]
+script = ExtResource("tier")
+MinValue = 6
+MaxValue = 999
+DisplayStyle = "TraitTierThree"
+TargetPolicy = 1
+AttributeModifiers = []
+Mechanics = [SubResource("mechanic2")]
+
+[resource]
+script = ExtResource("definition")
+StableId = "mx_construct"
+DisplayName = "构装"
+SemanticIconKey = "trait.construct"
+CountingPolicy = SubResource("counting")
+Breakpoints = [SubResource("tier0"), SubResource("tier1"), SubResource("tier2")]
+

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TowerRegionDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/Project/TowerRegionDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/growth/encounters/encounter_crown_combat.tres" id="2"]
+[ext_resource type="Resource" path="res://content/growth/encounters/encounter_crown_elite.tres" id="3"]
+[ext_resource type="Resource" path="res://content/growth/encounters/encounter_crown_boss.tres" id="4"]
+
+[resource]
+script = ExtResource("1")
+Id = "region_crown_engine"
+DisplayName = "冠冕机层"
+Description = "野兽与冰誓者守卫塔顶主宰的结界。"
+AccentColor = Color(0.25, 0.72, 0.86, 1)
+Encounters = Array[EncounterDefinition]([ExtResource("2"), ExtResource("3"), ExtResource("4")])

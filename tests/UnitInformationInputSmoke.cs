@@ -55,11 +55,11 @@ public partial class UnitInformationInputSmoke : Control
             Require(compact.GetNode<Label>("%AttributeContext").Text.Contains("准备") &&
                 baseline.GetNode<Label>("%Context").Text.Contains("基础"), "value contexts stay explicit");
             var vitals = detail.GetNode<UnitVitals>("%Vitals");
-            Require(vitals.GetNode<ProgressBar>("%HealthGauge").Value == 73 &&
-                vitals.GetNode<ProgressBar>("%ManaGauge").Value == 25 &&
-                vitals.GetNode<Label>("%HealthValue").Text.Contains("+盾 12"), "actual preparation health, mana and shield are preserved");
+            Require(vitals.GetNode<Label>("%HealthValue").Text == $"生命上限 {attributes[CombatAttribute.MaxHealth]:0.#}" &&
+                vitals.GetNode<ProgressBar>("%ManaGauge").Value == 25,
+                "unit properties show modified maximum health, not transient health/shield, and preserve starting mana");
             Require(model.Skills.Count(skill => skill.Name == "连续命中成长") == 1 &&
-                model.Skills.Single(skill => skill.Name == "连续命中成长").Body.Contains("换目标保层"), "component skill uses effective snapshot and is not duplicated");
+                model.Skills.Single(skill => skill.Name == "连续命中成长").Body.Contains("更换目标时保留加成"), "component skill uses effective snapshot and is not duplicated");
             await Capture("shared-views");
 
             _step = "compact keyboard details";
@@ -117,9 +117,25 @@ public partial class UnitInformationInputSmoke : Control
             Require(!detail.GetNode<Control>("%Explanation").Visible && detail.GetNode<FoldableContainer>("%SecondaryAttributes").Folded &&
                 detail.GetNode<ScrollContainer>("%DetailsScroll").ScrollVertical == 0, "new identity resets detail reading state");
             Require(baseline.GetNode<UnitVitals>("%Vitals").GetNode<Control>("%ManaFact").Visible, "another instance retains its mana");
+
+            _step = "swap description";
+            Require(package.Content.TryGet("enemy_ee09_swap_envoy", out var swapEntry), "published swap envoy available");
+            var swapDefinition = (UnitDefinition)swapEntry.Definition;
+            var swapSnapshot = BattleSetupFactory.Snapshot(swapEntry, package.Content);
+            var swap = new UnitInformation(swapDefinition.Id, swapDefinition, swapSnapshot);
+            detail.Bind(swap);
+            await Frames(3);
+            Require(swap.Skills.Length == 1 && swap.Skills[0].Body == "短暂标记后，与最远的敌人交换位置。",
+                "swap envoy exposes the concise authored description");
+            var swapSkill = detail.GetNode<Control>("%SkillList").GetChildren().OfType<UnitSkillSummary>().Single();
+            await Click(swapSkill.GetNode<Button>("%SkillHeader"));
+            Require(detail.GetNode<CombatRichText>("%ExplanationText").Text.Contains("短暂标记后，与最远的敌人交换位置。"),
+                "real skill input opens the concise swap description");
+            await Capture("swap-description");
+
             compact.QueueFree(); host.QueueFree(); opening.QueueFree();
             await Frames(3);
-            GD.Print("UNIT_INFORMATION_INPUT_OK base-prepared-copy skills health-mana-shield mouse keyboard focus independent-state host-action rebind teardown");
+            GD.Print("UNIT_INFORMATION_INPUT_OK base-prepared-copy skills maximum-health starting-mana mouse keyboard focus independent-state host-action rebind teardown");
         }
         catch (Exception error)
         {

@@ -1,32 +1,22 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://src/UI/RunOfferChoiceCard.cs" id="Card"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="Portrait"]
 [ext_resource type="Script" path="res://src/UI/CombatRichText.cs" id="RichCopy"]
 [ext_resource type="Resource" path="res://content/ui/combat_keywords.tres" id="Vocabulary"]
 
-[sub_resource type="StyleBoxFlat" id="CardPanel"]
-bg_color = Color(0.047, 0.067, 0.083, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.52, 0.43, 0.24, 0.75)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_left = 10
-corner_radius_bottom_right = 10
-content_margin_left = 18.0
-content_margin_top = 16.0
-content_margin_right = 18.0
-content_margin_bottom = 16.0
+[ext_resource type="PackedScene" path="res://scenes/ui/components/CardFeaturedSkill.tscn" id="Skill"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/health.svg" id="HealthIcon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-attack.svg" id="AttackIcon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-armor.svg" id="ArmorIcon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/time.svg" id="TimeIcon"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/hero.svg" id="StarIcon"]
 
-[sub_resource type="StyleBoxFlat" id="ArtworkPanel"]
-bg_color = Color(0.078, 0.108, 0.13, 1)
-corner_radius_top_left = 7
-corner_radius_top_right = 7
-corner_radius_bottom_left = 7
-corner_radius_bottom_right = 7
+[ext_resource type="PackedScene" path="res://scenes/ui/components/CardAttackStat.tscn" id="AttackMount"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/CardHealthStat.tscn" id="HealthMount"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/reach.svg" id="RangeIcon"]
+
+[sub_resource type="StyleBoxEmpty" id="ArtworkPanel"]
 
 [sub_resource type="StyleBoxEmpty" id="QuietButton"]
 content_margin_left = 0.0
@@ -38,29 +28,148 @@ content_margin_bottom = 6.0
 custom_minimum_size = Vector2(280, 360)
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_styles/panel = SubResource("CardPanel")
+theme_type_variation = &"TavernCardPanel"
+texture_filter = 2
 script = ExtResource("Card")
 
 [node name="Layout" type="VBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 9
+theme_override_constants/separation = 3
 
-[node name="Artwork" type="PanelContainer" parent="Layout"]
+[node name="Artwork" type="Control" parent="Layout"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 156)
 mouse_filter = 2
-theme_override_styles/panel = SubResource("ArtworkPanel")
 
 [node name="Portrait" parent="Layout/Artwork" instance=ExtResource("Portrait")]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 custom_minimum_size = Vector2(0, 0)
 FitVisibleArtwork = true
+PreferIllustration = true
+FullIllustration = true
+StoneFrame = true
+IllustrationBottomOcclusion = 30.0
+
+[node name="OpportunityIcon" type="TextureRect" parent="Layout/Artwork"]
+visible = false
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 32.0
+offset_bottom = 32.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ArtTitle" type="Label" parent="Layout/Artwork"]
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -52.0
+offset_left = 42.0
+offset_right = -42.0
+mouse_filter = 2
+theme_type_variation = &"CardName"
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PrimaryAttack" parent="Layout/Artwork" instance=ExtResource("AttackMount")]
+layout_mode = 1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_right = 72.0
+offset_top = -78.0
+offset_bottom = 10.0
+
+[node name="PrimaryHealth" parent="Layout/Artwork" instance=ExtResource("HealthMount")]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_right = 14.0
+offset_top = -68.0
+offset_bottom = 16.0
+
+[node name="ArtIdentity" type="Control" parent="Layout/Artwork"]
+layout_mode = 1
+anchor_right = 1.0
+offset_top = 16.0
+offset_bottom = 44.0
+mouse_filter = 2
+
+[node name="TierSymbols" type="HBoxContainer" parent="Layout/Artwork/ArtIdentity"]
+layout_mode = 0
+offset_left = 20.0
+offset_right = 84.0
+offset_bottom = 28.0
+mouse_filter = 1
+theme_override_constants/separation = 6
+
+[node name="Star" type="TextureRect" parent="Layout/Artwork/ArtIdentity/TierSymbols"]
+layout_mode = 2
+custom_minimum_size = Vector2(18, 18)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("StarIcon")
+modulate = Color(0.85, 0.70, 0.39, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Tier" type="Label" parent="Layout/Artwork/ArtIdentity/TierSymbols"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.85, 0.70, 0.39, 1)
+
+[node name="RoleSymbols" type="HBoxContainer" parent="Layout/Artwork/ArtIdentity"]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_right = -20.0
+offset_bottom = 28.0
+alignment = 2
+mouse_filter = 1
+theme_override_constants/separation = 10
+
+[node name="Role" type="TextureRect" parent="Layout/Artwork/ArtIdentity/RoleSymbols"]
+layout_mode = 2
+custom_minimum_size = Vector2(22, 22)
+size_flags_vertical = 4
+mouse_filter = 2
+modulate = Color(0.84, 0.80, 0.67, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Delivery" type="TextureRect" parent="Layout/Artwork/ArtIdentity/RoleSymbols"]
+layout_mode = 2
+custom_minimum_size = Vector2(22, 22)
+size_flags_vertical = 4
+mouse_filter = 2
+modulate = Color(0.84, 0.80, 0.67, 1)
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Title" type="Label" parent="Layout"]
 layout_mode = 2
-theme_type_variation = &"ChoiceTitle"
-theme_override_font_sizes/font_size = 25
+theme_type_variation = &"PaperTitle"
+theme_override_font_sizes/font_size = 24
 text = "候选名称"
+horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="Identity" type="Label" parent="Layout"]
@@ -68,91 +177,157 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
 theme_override_font_sizes/font_size = 15
 text = "英雄"
+horizontal_alignment = 1
 autowrap_mode = 2
+
+[node name="DetailHeading" type="Label" parent="Layout"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"PaperTitle"
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
 
 [node name="Stats" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Health" type="VBoxContainer" parent="Layout/Stats"]
+[node name="Health" type="HBoxContainer" parent="Layout/Stats"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 0
-tooltip_text = "基础最大生命；当前入队生命与战后恢复依照本次领取规则。"
+theme_override_constants/separation = 5
+alignment = 1
+tooltip_text = "基础生命上限；每场战斗满血入场，装备与开战加成见整备详情。"
+
+[node name="Icon" type="TextureRect" parent="Layout/Stats/Health"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 20)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("HealthIcon")
+modulate = Color(0.70, 0.82, 0.63, 1)
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Value" type="Label" parent="Layout/Stats/Health"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.44, 0.85, 0.65, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.70, 0.82, 0.63, 1)
+theme_override_font_sizes/font_size = 20
 text = "0"
 mouse_filter = 2
 
-[node name="Caption" type="Label" parent="Layout/Stats/Health"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
-theme_override_font_sizes/font_size = 13
-text = "生命"
-mouse_filter = 2
 
-[node name="Damage" type="VBoxContainer" parent="Layout/Stats"]
+[node name="Damage" type="HBoxContainer" parent="Layout/Stats"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 0
+theme_override_constants/separation = 5
+alignment = 1
 tooltip_text = "基础攻击力；普攻伤害还会受到防御与技能效果影响。"
+
+[node name="Icon" type="TextureRect" parent="Layout/Stats/Damage"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 20)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("AttackIcon")
+modulate = Color(1, 0.43, 0.35, 1)
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Value" type="Label" parent="Layout/Stats/Damage"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.68, 0.40, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.43, 0.35, 1)
+theme_override_font_sizes/font_size = 20
 text = "0"
 mouse_filter = 2
 
-[node name="Caption" type="Label" parent="Layout/Stats/Damage"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
-theme_override_font_sizes/font_size = 13
-text = "攻击"
-mouse_filter = 2
 
-[node name="Armor" type="VBoxContainer" parent="Layout/Stats"]
+[node name="Armor" type="HBoxContainer" parent="Layout/Stats"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 0
+theme_override_constants/separation = 5
+alignment = 1
 tooltip_text = "基础防御，降低受到的伤害。"
+
+[node name="Icon" type="TextureRect" parent="Layout/Stats/Armor"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 20)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("ArmorIcon")
+modulate = Color(0.64, 0.76, 0.87, 1)
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Value" type="Label" parent="Layout/Stats/Armor"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.5, 0.77, 0.95, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.64, 0.76, 0.87, 1)
+theme_override_font_sizes/font_size = 16
 text = "0"
 mouse_filter = 2
 
-[node name="Caption" type="Label" parent="Layout/Stats/Armor"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
-theme_override_font_sizes/font_size = 13
-text = "防御"
-mouse_filter = 2
 
-[node name="AttackRate" type="VBoxContainer" parent="Layout/Stats"]
+[node name="AttackRate" type="HBoxContainer" parent="Layout/Stats"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 0
+theme_override_constants/separation = 5
+alignment = 1
 tooltip_text = "基础每秒普攻次数。攻速增益会缩短实际攻击间隔。"
+
+[node name="Icon" type="TextureRect" parent="Layout/Stats/AttackRate"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 20)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("TimeIcon")
+modulate = Color(0.91, 0.87, 0.76, 1)
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Value" type="Label" parent="Layout/Stats/AttackRate"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.83, 0.51, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.91, 0.87, 0.76, 1)
+theme_override_font_sizes/font_size = 16
 text = "0"
 mouse_filter = 2
 
-[node name="Caption" type="Label" parent="Layout/Stats/AttackRate"]
+
+[node name="Range" type="HBoxContainer" parent="Layout/Stats"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.72, 0.75, 1)
-theme_override_font_sizes/font_size = 13
-text = "攻速/秒"
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+alignment = 1
+tooltip_text = "基础射程，单位为格；近战从身体外沿计算。"
+
+[node name="Icon" type="TextureRect" parent="Layout/Stats/Range"]
+layout_mode = 2
+custom_minimum_size = Vector2(20, 20)
+size_flags_vertical = 4
 mouse_filter = 2
+texture = ExtResource("RangeIcon")
+modulate = Color(0.64, 0.76, 0.87, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Layout/Stats/Range"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.64, 0.76, 0.87, 1)
+theme_override_font_sizes/font_size = 16
+text = "0"
+mouse_filter = 2
+
+
+[node name="Skills" type="VBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Active" parent="Layout/Skills" instance=ExtResource("Skill")]
+layout_mode = 2
+Category = "主动"
+
+[node name="Passive" parent="Layout/Skills" instance=ExtResource("Skill")]
+layout_mode = 2
+Category = "被动"
+custom_minimum_size = Vector2(100, 22)
 
 [node name="BodyScroll" type="ScrollContainer" parent="Layout"]
 layout_mode = 2
@@ -165,6 +340,11 @@ focus_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 13
+
+[node name="DetailTitle" type="Label" parent="Layout/BodyScroll/Body"]
+layout_mode = 2
+theme_type_variation = &"HeroIdentity"
+autowrap_mode = 2
 
 [node name="Active" type="RichTextLabel" parent="Layout/BodyScroll/Body"]
 layout_mode = 2
@@ -202,17 +382,6 @@ selection_enabled = true
 script = ExtResource("RichCopy")
 Vocabulary = ExtResource("Vocabulary")
 
-[node name="DetailsButton" type="Button" parent="Layout/BodyScroll/Body"]
-layout_mode = 2
-size_flags_horizontal = 0
-focus_mode = 2
-toggle_mode = true
-text = "属性与规则  ▾"
-theme_override_font_sizes/font_size = 15
-theme_override_colors/font_color = Color(0.69, 0.78, 0.83, 1)
-theme_override_styles/normal = SubResource("QuietButton")
-tooltip_text = "展开额外属性、条件代价和词条释义。不会领取或购买。"
-
 [node name="Details" type="RichTextLabel" parent="Layout/BodyScroll/Body"]
 visible = false
 layout_mode = 2
@@ -233,9 +402,26 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 15
 autowrap_mode = 2
 
-[node name="ConfirmButton" type="Button" parent="Layout"]
-custom_minimum_size = Vector2(0, 46)
+[node name="Footer" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DetailsButton" type="Button" parent="Layout/Footer"]
+layout_mode = 2
+custom_minimum_size = Vector2(78, 44)
+size_flags_horizontal = 0
+focus_mode = 2
+toggle_mode = true
+text = "属性与规则  ▾"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.69, 0.78, 0.83, 1)
+theme_override_styles/normal = SubResource("QuietButton")
+tooltip_text = "展开额外属性、条件代价和词条释义。不会领取或购买。"
+
+[node name="ConfirmButton" type="Button" parent="Layout/Footer"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"PrimaryButton"
 focus_mode = 2
 text = "领取"

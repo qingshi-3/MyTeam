@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 1
+Target = 7
+Amount = 60
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 13
+Target = 20
+Attribute = 1
+Amount = -8
+DurationTicks = 25
+TargetCondition = 1
+Range = 3
+MaxTargets = 4
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx10_a"
+DisplayName = "药藤师·主动"
+Description = "治疗生命比例最低的友方单位60点；其3格内至多4名带棘毒敌人降低8点攻击，持续2.5秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1"), SubResource("op_2")]

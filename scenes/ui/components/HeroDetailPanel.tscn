@@ -17,28 +17,31 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="UnitDetails" parent="Layout" instance=ExtResource("Details")]
+PreferIllustration = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RulePanel" type="PanelContainer" parent="Layout"]
+[node name="RulePanel" type="FoldableContainer" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 2
+title = "军团规则"
+folded = true
+theme_type_variation = &"BattleLabFold"
 
-[node name="Layout" type="VBoxContainer" parent="Layout/RulePanel"]
+[node name="RuleScroll" type="ScrollContainer" parent="Layout/RulePanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
-theme_override_constants/separation = 3
+size_flags_horizontal = 3
+horizontal_scroll_mode = 3
+follow_focus = true
 
-[node name="RuleName" type="Label" parent="Layout/RulePanel/Layout"]
+[node name="RuleCopy" type="RichTextLabel" parent="Layout/RulePanel/RuleScroll"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"HeroIdentity"
-theme_override_font_sizes/font_size = 18
-text = "军团规则"
-
-[node name="RuleCopy" type="RichTextLabel" parent="Layout/RulePanel/Layout"]
-unique_name_in_owner = true
-layout_mode = 2
+size_flags_horizontal = 3
 theme_override_font_sizes/normal_font_size = 15
 theme_override_font_sizes/bold_font_size = 15
 text = "军团规则说明"

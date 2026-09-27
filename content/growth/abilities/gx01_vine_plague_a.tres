@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="op"]
+script = ExtResource("operation")
+Kind = 5
+Target = 4
+Amount = 6
+Key = "gx01_vine_plague-shield-spent"
+AttackRatio = 1.4
+Range = 7
+Radius = 2
+MaxTargets = 5
+ContentId = "matrix_spirit_plague"
+DurationTicks = 60
+
+[resource]
+script = ExtResource("ability")
+StableId = "gx01_vine_plague_a"
+DisplayName = "GX01 蔓疫织者·战术"
+Description = "向棘毒层数最高的敌群施加棘毒，并放大主目标的现有棘毒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+Operations = [SubResource("op")]

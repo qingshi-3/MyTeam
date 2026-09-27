@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="op"]
+script = ExtResource("operation")
+Kind = 10
+Target = 0
+Amount = 0.3
+Key = "gx04_phase_anchor-shield-spent"
+AttackRatio = 1.4
+Range = 7
+Radius = 2
+MaxTargets = 5
+ContentId = "matrix_spirit_plague"
+DurationTicks = 60
+[sub_resource type="Resource" id="near"]
+script = ExtResource("operation")
+Kind = 2
+Target = 8
+Range = 2.5
+MaxTargets = 3
+Amount = 36
+DurationTicks = 30
+[resource]
+script = ExtResource("ability")
+StableId = "gx04_phase_anchor_a"
+DisplayName = "GX04 稳相锚卫·战术"
+Description = "消耗30%当前护盾，为2.5格内至多3名友方单位（可包含自身）提供36点护盾，持续3秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+Operations = [SubResource("op"), SubResource("near")]

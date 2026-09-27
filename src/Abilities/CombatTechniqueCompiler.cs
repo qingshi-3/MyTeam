@@ -24,7 +24,7 @@ public static partial class AbilityDefinitionCompiler
                 new CompiledDuelOperation(d.DurationTicks, d.BreakDistance),
             CounterattackAbilityOperationSpec c when c.HitsRequired is > 0 and <= 20 && B(c.AttackRatio, 0, 10) && B(c.LifestealRatio, 0, 5) =>
                 new CompiledCounterattackOperation(c.HitsRequired, c.AttackRatio, c.LifestealRatio),
-            GritStorageAbilityOperationSpec g when !string.IsNullOrWhiteSpace(g.CounterKey) && g.WindowTicks is > 0 and <= 300 && B(g.MaximumHealthRatio, .01f, 1) =>
+            GritStorageAbilityOperationSpec g when !string.IsNullOrWhiteSpace(g.CounterKey) && g.WindowTicks is >= 0 and <= 300 && B(g.MaximumHealthRatio, .01f, 1) =>
                 new CompiledGritStorageOperation(g.CounterKey, g.WindowTicks, g.MaximumHealthRatio),
             GritPunchAbilityOperationSpec p when !string.IsNullOrWhiteSpace(p.CounterKey) &&
                 B(p.CriticalHealthRatio, .01f, .99f) && B(p.LowHealthRatio, .01f, 1) && p.CriticalHealthRatio < p.LowHealthRatio &&

@@ -19,8 +19,19 @@ public partial class VfxHookTrack : Node2D, IVfxTrack, IVfxSpatialTrack
         var delta = target - source;
         var direction = delta.IsZeroApprox() ? Vector2.Right : delta.Normalized();
         Cable.Transform = Shadow.Transform = stageToInstance;
-        Cable.Points = Shadow.Points = [source, target];
-        Cable.Width = 2.5f * stage.UnitScale; Shadow.Width = 6 * stage.UnitScale;
+        var end=target-direction*Mathf.Min(22*stage.UnitScale,delta.Length());
+        var points=new Vector2[17];
+        // The rope's endpoints remain exact; a little weight between them avoids
+        // a rigid ruler, and straightens naturally on short retraction segments.
+        float sag=Mathf.Min(5*stage.UnitScale,delta.Length()*.015f);
+        for(int i=0;i<points.Length;i++)
+        {
+            float u=i/(float)(points.Length-1);
+            points[i]=source.Lerp(end,u)+Vector2.Down*Mathf.Sin(u*Mathf.Pi)*sag;
+        }
+        Cable.Points = Shadow.Points = points;
+        Cable.Width = 7.5f * stage.UnitScale; Shadow.Width = 9 * stage.UnitScale;
+        Cable.Visible=Shadow.Visible=delta.Length()>24*stage.UnitScale;
         Head.Transform = stageToInstance * new Transform2D(direction.Angle(), Vector2.One * stage.UnitScale, 0, target);
         for (var i = 0; i < _joints.Length; i++)
         {

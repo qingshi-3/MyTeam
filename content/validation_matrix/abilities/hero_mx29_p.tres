@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 7
+Target = 0
+Key = "pain"
+Amount = 0
+Maximum = 120
+EventRatio = 1
+ClearOnDeath = true
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 3
+SourceRelation = 4
+TargetRelation = 1
+MinimumEventValue = 0.001
+Effects = Array[ExtResource("operation")]([SubResource("op_2")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx29_p"
+DisplayName = "裂脉术士·被动"
+Description = "储存敌人实际造成的生命损失，最多120点；死亡时清空。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1")]

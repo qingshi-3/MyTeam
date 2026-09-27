@@ -7,6 +7,7 @@ StableId = "returning_blade"
 DisplayName = "往返旋刃"
 Scene = ExtResource("scene")
 Duration = 1.0
+ReleaseDuration = 0.7
 Persistent = true
 Ground = false
 UsesRadius = true

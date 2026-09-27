@@ -14,7 +14,10 @@ namespace TowerAutobattler.Battle;
 public sealed partial class BattleSimulation
 {
     private sealed record DuelLease(string Source, string Target, int SourceTeam, int TargetTeam, int EndTick, float BreakDistance);
-    private sealed record GritSample(int Expires, float Amount);
+    private sealed record GritSample(int Expires, float Amount)
+    {
+        public bool ActiveAt(int tick) => Expires == 0 || Expires > tick;
+    }
     private sealed record GritLedger(string Owner, string Key, ImmutableArray<GritSample> Samples);
     private sealed record TimedShield(string Owner, int Expires, float Remaining);
     private sealed record PunchCast(string Owner, int Team, Vector2 Start, Vector2 End, int StartTick,
@@ -81,7 +84,7 @@ public sealed partial class BattleSimulation
 
     private float CurrentGrit(BattleUnitState owner, string key) =>
         _techniques.Grit.TryGetValue(CounterAddress(owner,key,false),out var ledger)
-            ? ledger.Samples.Where(s => s.Expires > TickIndex).Sum(s => s.Amount) : 0;
+            ? ledger.Samples.Where(s => s.ActiveAt(TickIndex)).Sum(s => s.Amount) : 0;
 
     private void ExecuteTechnique(CompiledCombatTechniqueOperation op, BattleUnitState owner,
         ImmutableArray<string> targets, CompiledAbilityDefinition ability)
@@ -112,10 +115,10 @@ public sealed partial class BattleSimulation
             case CompiledGritStorageOperation storage:
                 var address = CounterAddress(owner,storage.CounterKey,false);
                 var samples = _techniques.Grit.TryGetValue(address,out var ledger)
-                    ? ledger.Samples.Where(s=>s.Expires>TickIndex).ToImmutableArray() : [];
+                    ? ledger.Samples.Where(s=>s.ActiveAt(TickIndex)).ToImmutableArray() : [];
                 var room = Math.Max(0,owner.MaxHealth*storage.MaximumHealthRatio-samples.Sum(s=>s.Amount));
                 var added = Math.Min(room,_abilityTriggerEvent!.EffectiveValue);
-                if (added > 0) samples=samples.Add(new(TickIndex+storage.WindowTicks,added));
+                if (added > 0) samples=samples.Add(new(storage.WindowTicks == 0 ? 0 : TickIndex+storage.WindowTicks,added));
                 _techniques = _techniques with { Grit = _techniques.Grit.SetItem(address,new(owner.RuntimeId,storage.CounterKey,samples)) };
                 WriteCounter(owner,storage.CounterKey,samples.Sum(s=>s.Amount));
                 RefreshGritActionRequests(owner);
@@ -139,9 +142,7 @@ public sealed partial class BattleSimulation
                 var stored = CurrentGrit(owner,punch.CounterKey);
                 _techniques = _techniques with { Grit = _techniques.Grit.Remove(CounterAddress(owner,punch.CounterKey,false)) };
                 WriteCounter(owner,punch.CounterKey,0);
-                var shield = ApplyShield(owner.RuntimeId,owner,stored,origin);
-                if (shield > 0)
-                    _techniques = _techniques with { Shields = _techniques.Shields.Add(new(owner.RuntimeId,TickIndex+punch.ShieldTicks,shield)) };
+                MatrixApplyTimedShield(owner.RuntimeId, owner.RuntimeId, stored, punch.ShieldTicks, origin);
                 var direction = (victim.Position-owner.Position).Normalized();
                 var travel = direction*punch.Range;
                 var terrain = BattlefieldSpace.FirstTerrainHitFraction(owner.Position,travel,punch.Radius,Width,Height,c=>_config.FloorRule.CanOccupy(c));
@@ -200,7 +201,7 @@ public sealed partial class BattleSimulation
             foreach(var pair in _techniques.Grit.OrderBy(p=>p.Key,StringComparer.Ordinal).ToArray())
             {
                 var owner=TechniqueUnit(pair.Value.Owner);
-                var samples=pair.Value.Samples.Where(s=>s.Expires>TickIndex && owner is {Alive:true}).ToImmutableArray();
+                var samples=pair.Value.Samples.Where(s=>s.ActiveAt(TickIndex) && owner is {Alive:true}).ToImmutableArray();
                 _techniques=_techniques with {Grit=samples.IsEmpty?_techniques.Grit.Remove(pair.Key):
                     _techniques.Grit.SetItem(pair.Key,pair.Value with {Samples=samples})};
                 if(owner is not null)WriteCounter(owner,pair.Value.Key,samples.Sum(s=>s.Amount));

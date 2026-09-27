@@ -8,6 +8,10 @@ namespace TowerAutobattler.UI;
 
 public partial class UnitDetailView : PanelContainer
 {
+    [Export] public bool PreferIllustration { get; set; }
+    [Export] public bool ShowPortrait { get; set; } = true;
+    [Export] public bool ShowName { get; set; } = true;
+    [Export(PropertyHint.Range, "1,4,1")] public int CoreStatColumns { get; set; } = 4;
     private string _identity = "";
     private PackedScene _factScene = null!;
     private PackedScene _skillScene = null!;
@@ -25,6 +29,7 @@ public partial class UnitDetailView : PanelContainer
         _skillScene = GD.Load<PackedScene>("res://scenes/ui/components/UnitSkillSummary.tscn");
         _vitals = GetNode<UnitVitals>("%Vitals");
         _stats = GetNode<UnitCoreStats>("%CoreStats");
+        _stats.Columns = Math.Clamp(CoreStatColumns, 1, 4);
         _closeExplanation = GetNode<Button>("%CloseExplanation");
         _vitals.ExplanationRequested += ShowExplanation;
         _stats.ExplanationRequested += ShowExplanation;
@@ -44,10 +49,14 @@ public partial class UnitDetailView : PanelContainer
     {
         var identity = model.Identity;
         var definition = model.Definition;
-        GetNode<UnitPortrait>("%Portrait").Bind(definition.Portrait, definition.Icon);
+        var portrait = GetNode<UnitPortrait>("%Portrait");
+        portrait.PreferIllustration = PreferIllustration;
+        portrait.Visible = ShowPortrait;
+        portrait.Bind(definition.Portrait, definition.Icon);
         GetNode<Label>("%UnitName").Text = definition.DisplayName;
+        GetNode<Label>("%UnitName").Visible = ShowName;
         var contextLabel = GetNode<Label>("%Context");
-        contextLabel.Text = model.Context.Split('（')[0].Trim();
+        contextLabel.Text = model.ContextCaption;
         contextLabel.TooltipText = model.Context;
         var description = GetNode<Label>("%Description");
         description.Text = RunOfferDetailText.UnitSummary(definition);

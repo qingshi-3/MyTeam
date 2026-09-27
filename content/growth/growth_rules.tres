@@ -1,0 +1,368 @@
+[gd_resource type="Resource" script_class="GrowthRulesDefinition" format=3]
+[ext_resource type="Script" path="res://src/Growth/GrowthRulesDefinition.cs" id="rules"]
+[ext_resource type="Script" path="res://src/Growth/GrowthHeroDefinition.cs" id="hero_script"]
+[ext_resource type="Script" path="res://src/Growth/GrowthSpellDefinition.cs" id="spell_script"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx01_growth_ascended.tres" id="asc0"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx01_growth_base.tres" id="base0"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx02_ascended.tres" id="asc1"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx02.tres" id="base1"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx03_ascended.tres" id="asc2"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx03.tres" id="base2"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx04_ascended.tres" id="asc3"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx04.tres" id="base3"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx05_ascended.tres" id="asc4"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx05.tres" id="base4"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx10_ascended.tres" id="asc5"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx10.tres" id="base5"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx21_ascended.tres" id="asc6"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx21.tres" id="base6"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx22_ascended.tres" id="asc7"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx22.tres" id="base7"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx23_ascended.tres" id="asc8"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx23.tres" id="base8"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx24_ascended.tres" id="asc9"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx24.tres" id="base9"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx25_growth_ascended.tres" id="asc10"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx25_growth_base.tres" id="base10"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx30_ascended.tres" id="asc11"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx30.tres" id="base11"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx36_ascended.tres" id="asc12"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx36.tres" id="base12"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx39_ascended.tres" id="asc13"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx39.tres" id="base13"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx40_ascended.tres" id="asc14"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx40.tres" id="base14"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx42_ascended.tres" id="asc15"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx42.tres" id="base15"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx43_ascended.tres" id="asc16"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx43.tres" id="base16"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx44_ascended.tres" id="asc17"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx44.tres" id="base17"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx45_ascended.tres" id="asc18"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx45.tres" id="base18"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx46_ascended.tres" id="asc19"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx46.tres" id="base19"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx47_ascended.tres" id="asc20"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx47.tres" id="base20"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/hero_mx48_ascended.tres" id="asc21"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx48.tres" id="base21"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/gx01_vine_plague_ascended.tres" id="asc22"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/gx01_vine_plague_base.tres" id="base22"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/gx02_venom_walker_ascended.tres" id="asc23"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/gx02_venom_walker_base.tres" id="base23"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/gx03_array_gunner_ascended.tres" id="asc24"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/gx03_array_gunner_base.tres" id="base24"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/gx04_phase_anchor_ascended.tres" id="asc25"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/gx04_phase_anchor_base.tres" id="base25"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/spell_guard_formation.tres" id="spell_guard"]
+[ext_resource type="Resource" path="res://content/growth/loadouts/spell_gather_momentum.tres" id="spell_mana"]
+[sub_resource type="Resource" id="hero0"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx01"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx01_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "首次施加控制后，为附近友方单位提供短时护盾。"
+AscendedLoadout = ExtResource("asc0")
+BaseLoadout = ExtResource("base0")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero1"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx02"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx02_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc1")
+BaseLoadout = ExtResource("base1")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero2"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx03"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx03_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "更换目标不清空连续命中次数，并在开战时提高攻速。"
+AscendedLoadout = ExtResource("asc2")
+BaseLoadout = ExtResource("base2")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero3"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx04"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx04_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc3")
+BaseLoadout = ExtResource("base3")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero4"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx05"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx05_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "本场首次有友军施加控制后，为低生命友方单位提供短时护盾。"
+AscendedLoadout = ExtResource("asc4")
+BaseLoadout = ExtResource("base4")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero5"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx10"
+ProductionModes = PackedInt32Array(1)
+GrowthRate = 0.04
+AscensionId = "hero_mx10_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc5")
+BaseLoadout = ExtResource("base5")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero6"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx21"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx21_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时为自身和附近友方单位提供短时护盾。"
+AscendedLoadout = ExtResource("asc6")
+BaseLoadout = ExtResource("base6")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero7"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx22"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx22_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "施法消耗护盾后，为自身返还短时护盾。"
+AscendedLoadout = ExtResource("asc7")
+BaseLoadout = ExtResource("base7")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero8"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx23"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx23_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "本场首次被敌人击破护盾后，短时提高攻速。"
+AscendedLoadout = ExtResource("asc8")
+BaseLoadout = ExtResource("base8")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero9"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx24"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx24_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc9")
+BaseLoadout = ExtResource("base9")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero10"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx25"
+ProductionModes = PackedInt32Array(0, 1, 2)
+ResearchYield = 1
+GrowthRate = 0.04
+AscensionId = "hero_mx25_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战召唤一只短寿工蜂，并为附近友军提供短时护盾。"
+AscendedLoadout = ExtResource("asc10")
+BaseLoadout = ExtResource("base10")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero11"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx30"
+ProductionModes = PackedInt32Array(0, 1)
+GrowthRate = 0.04
+AscensionId = "hero_mx30_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc11")
+BaseLoadout = ExtResource("base11")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero12"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx36"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx36_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc12")
+BaseLoadout = ExtResource("base12")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero13"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx39"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx39_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc13")
+BaseLoadout = ExtResource("base13")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero14"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx40"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx40_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc14")
+BaseLoadout = ExtResource("base14")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero15"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx42"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx42_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc15")
+BaseLoadout = ExtResource("base15")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero16"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx43"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx43_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc16")
+BaseLoadout = ExtResource("base16")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero17"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx44"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx44_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc17")
+BaseLoadout = ExtResource("base17")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero18"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx45"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx45_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc18")
+BaseLoadout = ExtResource("base18")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero19"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx46"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx46_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc19")
+BaseLoadout = ExtResource("base19")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero20"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx47"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx47_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc20")
+BaseLoadout = ExtResource("base20")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero21"]
+script = ExtResource("hero_script")
+ContentId = "hero_mx48"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "hero_mx48_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc21")
+BaseLoadout = ExtResource("base21")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero22"]
+script = ExtResource("hero_script")
+ContentId = "gx01_vine_plague"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "gx01_vine_plague_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc22")
+BaseLoadout = ExtResource("base22")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero23"]
+script = ExtResource("hero_script")
+ContentId = "gx02_venom_walker"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "gx02_venom_walker_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc23")
+BaseLoadout = ExtResource("base23")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero24"]
+script = ExtResource("hero_script")
+ContentId = "gx03_array_gunner"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "gx03_array_gunner_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc24")
+BaseLoadout = ExtResource("base24")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="hero25"]
+script = ExtResource("hero_script")
+ContentId = "gx04_phase_anchor"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "gx04_phase_anchor_growth_ascension"
+AscensionName = "一次升阶"
+AscensionDescription = "开战时获得短时护盾。"
+AscendedLoadout = ExtResource("asc25")
+BaseLoadout = ExtResource("base25")
+MaterialCategory = "general"
+[sub_resource type="Resource" id="guard"]
+script = ExtResource("spell_script")
+StableId = "guard_formation"
+DisplayName = "护阵"
+Description = "指定英雄及其2.5格内至多2名友军，各获得相当于指定英雄本场生命上限15%的护盾，持续18秒。"
+ResearchCost = 4
+BattleLoadout = ExtResource("spell_guard")
+[sub_resource type="Resource" id="mana"]
+script = ExtResource("spell_script")
+StableId = "gather_momentum"
+DisplayName = "蓄势"
+Description = "指定英雄开战时获得25点启动法力。"
+ResearchCost = 4
+BattleLoadout = ExtResource("spell_mana")
+[resource]
+script = ExtResource("rules")
+StableId = "growth_rules_v1"
+Heroes = Array[Resource]([SubResource("hero0"), SubResource("hero1"), SubResource("hero2"), SubResource("hero3"), SubResource("hero4"), SubResource("hero5"), SubResource("hero6"), SubResource("hero7"), SubResource("hero8"), SubResource("hero9"), SubResource("hero10"), SubResource("hero11"), SubResource("hero12"), SubResource("hero13"), SubResource("hero14"), SubResource("hero15"), SubResource("hero16"), SubResource("hero17"), SubResource("hero18"), SubResource("hero19"), SubResource("hero20"), SubResource("hero21"), SubResource("hero22"), SubResource("hero23"), SubResource("hero24"), SubResource("hero25")])
+FirstDiscoveryPool = PackedStringArray("hero_mx04", "hero_mx24", "hero_mx36", "hero_mx39", "hero_mx40", "hero_mx42", "hero_mx43")
+AdvancedDiscoveryPool = PackedStringArray("hero_mx44", "hero_mx45", "hero_mx46", "hero_mx47", "hero_mx48", "gx01_vine_plague", "gx02_venom_walker", "gx03_array_gunner", "gx04_phase_anchor")
+Spells = Array[Resource]([SubResource("guard"), SubResource("mana")])
+MaterialsPerNode = 1
+AscensionCost = 4

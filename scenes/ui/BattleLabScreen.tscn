@@ -115,7 +115,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 36)
 theme_type_variation = &"CompactButton"
 text = "动画音效"
-tooltip_text = "试听所选单位的真实动画；按帧临时调整声音时机"
+tooltip_text = "预览所选单位的动画与音效"
 
 [node name="EquipmentDetailsButton" type="Button" parent="Margin/Root/Tools"]
 unique_name_in_owner = true
@@ -364,7 +364,7 @@ unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 38)
 theme_type_variation = &"BattleLabEntry"
-placeholder_text = "搜索单位、技能或编号"
+placeholder_text = "搜索名称或技能"
 expand_to_text_length = false
 
 [node name="UnitFilter" type="OptionButton" parent="LibraryPopup/LibraryPane/Inset/LibraryBox"]
@@ -713,14 +713,14 @@ theme_override_constants/v_separation = 6
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 36)
-text = "清空A 队"
+text = "清空 A 队"
 theme_type_variation = &"CompactButton"
 
 [node name="ClearEnemyButton" type="Button" parent="DetailsPopup/DetailPane/Inset/DetailBox/DetailTabs/SettingsPage/SettingsBox/BoardTools"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 36)
-text = "清空B 队"
+text = "清空 B 队"
 theme_type_variation = &"CompactButton"
 
 [node name="ClearAllButton" type="Button" parent="DetailsPopup/DetailPane/Inset/DetailBox/DetailTabs/SettingsPage/SettingsBox/BoardTools"]
@@ -730,13 +730,6 @@ custom_minimum_size = Vector2(0, 36)
 text = "清空单位"
 theme_type_variation = &"CompactButton"
 tooltip_text = "清空双方单位，保留团队遗物；可撤销"
-
-[node name="ModeBanner" type="Label" parent="DetailsPopup/DetailPane/Inset/DetailBox/DetailTabs/SettingsPage/SettingsBox"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "自由实验 · 无人口与部署区域限制"
-autowrap_mode = 2
-theme_type_variation = &"SecondaryLabel"
 
 [node name="SeedDivider" type="HSeparator" parent="DetailsPopup/DetailPane/Inset/DetailBox/DetailTabs/SettingsPage/SettingsBox"]
 layout_mode = 2

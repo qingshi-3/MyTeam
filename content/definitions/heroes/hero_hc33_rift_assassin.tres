@@ -7,7 +7,7 @@
 script = ExtResource("r1")
 Id = "hero_hc33_rift_assassin"
 DisplayName = "影隙刺客"
-Description = "HC33／MV03 测试稿。开场满蓝。闪现至 5 格内最远敌人的后侧合法位置，对原目标造成 180% 攻击力的伤害；不附带眩晕。 被动：每次成功启动自己的满蓝主动，获得 0.25 攻速与 20% 吸血，持续 3 秒。 数值为测试暂值。"
+Description = "闪现至远处敌人身后发动突袭，随后短暂提高攻速与吸血。"
 Portrait = ExtResource("r0")
 IsHero = true
 Role = 4

@@ -15,4 +15,5 @@ public partial class TraitBreakpointSpec : Resource
     [Export] public AttributeModifierSpec[] AttributeModifiers { get; set; } = [];
     [Export] public TraitTargetPolicy TargetPolicy { get; set; }
     [Export] public StatusDefinition[] GrantedStatuses { get; set; } = [];
+    [Export] public TraitMechanicSpec[] Mechanics { get; set; } = [];
 }

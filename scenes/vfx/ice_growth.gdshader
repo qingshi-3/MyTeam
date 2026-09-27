@@ -16,7 +16,7 @@ void fragment(){
     float chips=noise(UV*vec2(8.,15.))*.7+noise(UV*vec2(19.,31.))*.3;
     float dissolve=1.0-smoothstep(chips*.55,chips*.55+.42,fracture);
     float rim=pow(max(ice.r,max(ice.g,ice.b)),3.0);
-    float flash=exp(-pow((fracture-.12)/.10,2.0))*.85*motion_amount;
+    float flash=exp(-pow((fracture-.12)/.10,2.0))*.22*motion_amount;
     vec3 color=ice.rgb+vec3(.32,.62,.75)*rim*flash;
     float life=smoothstep(0.,.16,growth)*(1.-release);
     COLOR=vec4(color,pow(ice.a,1.65)*dissolve*life)*tint;

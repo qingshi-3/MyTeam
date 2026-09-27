@@ -17,7 +17,8 @@ public partial class RangedAttackLayer
         {
             var key=$"enemy:{fact.SourceRuntimeId}:{action.StartTick}:{action.Vfx}";
             if (fact.Type == "wall_raised") key += ":"+fact.TargetRuntimeId;
-            var context=new VfxContext(fact.Origin,fact.Position,action.Radius,TravelProgress:action.Stage=="release"?1:0,ConeAngleDegrees:action.AngleDegrees);
+            var context=new VfxContext(fact.Origin,fact.Position,action.Radius,TravelProgress:action.Stage=="release"?1:0,ConeAngleDegrees:action.AngleDegrees,
+                BodyProvidedByActor:fact.Type=="wall_raised");
             if (action.Stage=="end") { _player.End(key,VfxEndReason.ScopeEnded);_enemyVfxExpiry.Remove(key); }
             else if (action.Stage=="update") _player.UpdateContext(key,context);
             else
@@ -33,7 +34,7 @@ public partial class RangedAttackLayer
             }
             if(action.Stage=="end")
             {
-                _player.End(key+":released",VfxEndReason.ScopeEnded);
+                _player.End(key+":released",action.Vfx=="cone_breath"?VfxEndReason.Completed:VfxEndReason.ScopeEnded);
                 _enemyVfxExpiry.Remove(key+":released");
             }
         }

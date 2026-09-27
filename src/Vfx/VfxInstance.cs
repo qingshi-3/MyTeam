@@ -35,7 +35,7 @@ public partial class VfxInstance : Node2D
         Playback.UpdateContext(Context);
         Playback.Advance(seconds);
         _impact = Mathf.Max(0, _impact - seconds * 6);
-        if (_release >= 0) _release += seconds / .25f;
+        if (_release >= 0) _release += seconds / Mathf.Max(.01f, _definition.ReleaseDuration);
         Position = Context.TargetDisplayPosition ?? stage.Project(Context.Target, _definition.Ground);
         var size = Context.Radius > 0 ? stage.RadiusPixels(Context.Radius) * 2 : _definition.Size * stage.UnitScale;
         Scale = Vector2.One * size / 256;

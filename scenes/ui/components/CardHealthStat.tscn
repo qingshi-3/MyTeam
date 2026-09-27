@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/CardAttackStat.tscn" id="Base"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/card-health-stat.png" id="Health"]
+
+[node name="CardHealthStat" instance=ExtResource("Base")]
+custom_minimum_size = Vector2(84, 84)
+
+[node name="Mount" parent="." index="0"]
+texture = ExtResource("Health")
+
+[node name="FactValue" parent="." index="1"]
+offset_left = 9.0
+offset_right = -9.0
+offset_top = 20.0
+offset_bottom = 62.0
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_outline_color = Color(0.07, 0.10, 0.06, 1)

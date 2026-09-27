@@ -7,6 +7,7 @@ StableId = "cone_breath"
 DisplayName = "扇形吐息"
 Scene = ExtResource("scene")
 Duration = 1.0
+ReleaseDuration = 0.95
 Persistent = true
 Ground = true
 UsesRadius = true

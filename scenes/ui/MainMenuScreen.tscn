@@ -21,7 +21,7 @@ grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="Center"]
 theme_type_variation = &"ModalPanel"
-custom_minimum_size = Vector2(560, 560)
+custom_minimum_size = Vector2(560, 520)
 layout_mode = 2
 
 [node name="Menu" type="VBoxContainer" parent="Center/Panel"]
@@ -36,7 +36,7 @@ horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Center/Panel/Menu"]
 layout_mode = 2
-text = "六选二组队，征募伙伴，攻上三重高塔"
+text = "集结军团，攻上三重高塔"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="Center/Panel/Menu"]
@@ -55,32 +55,48 @@ custom_minimum_size = Vector2(0, 58)
 layout_mode = 2
 text = "继续征程"
 
+[node name="GrowthJourneyButton" type="Button" parent="Center/Panel/Menu"]
+theme_type_variation = &"SecondaryButton"
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "成长征程"
+
 [node name="SettingsButton" type="Button" parent="Center/Panel/Menu"]
 theme_type_variation = &"SecondaryButton"
-custom_minimum_size = Vector2(0, 58)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 text = "设置"
 
-[node name="BattleLabButton" type="Button" parent="Center/Panel/Menu"]
+[node name="ToolsButton" type="Button" parent="Center/Panel/Menu"]
 theme_type_variation = &"SecondaryButton"
-custom_minimum_size = Vector2(0, 58)
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+toggle_mode = true
+text = "练习与预览 ▾"
+
+[node name="BattleLabButton" type="Button" parent="Center/Panel/Menu"]
+visible = false
+theme_type_variation = &"SecondaryButton"
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "战斗实验室"
 
-[node name="QuitButton" type="Button" parent="Center/Panel/Menu"]
-theme_type_variation = &"SecondaryButton"
-custom_minimum_size = Vector2(0, 58)
-layout_mode = 2
-text = "退出"
-
 [node name="ExperienceSliceButton" type="Button" parent="Center/Panel/Menu"]
+visible = false
 theme_type_variation = &"SecondaryButton"
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-text = "玩法试验 · 两战短旅程"
+text = "两战练习"
 
 [node name="VfxPreviewButton" type="Button" parent="Center/Panel/Menu"]
+visible = false
 theme_type_variation = &"SecondaryButton"
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "特效预览室"
+
+[node name="QuitButton" type="Button" parent="Center/Panel/Menu"]
+theme_type_variation = &"SecondaryButton"
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+text = "退出"

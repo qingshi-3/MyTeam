@@ -438,7 +438,7 @@ PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Se
 [sub_resource type="Resource" id="ee09"]
 script = ExtResource("2")
 DisplayName = "EE09 · 换位妖使 · 机制试战"
-Description = "标记最远合法敌人并互换位置，自身同样暴露。可调整前后排位置，观察两端保护关系。"
+Description = "短暂标记后，与最远的敌人交换位置。可调整前后排位置，观察换位后的保护关系。"
 PresetJson = "{\"SchemaVersion\": 1, \"Mode\": 1, \"CurrentPopulation\": 8, \"Seed\": 2026091902, \"FloorRuleId\": \"rule_clear\", \"PrimaryHeroInstanceId\": \"lab-unit-1\", \"Units\": [{\"InstanceId\": \"lab-unit-1\", \"ContentId\": \"hero_hc03_iron_guard\", \"Side\": 0, \"X\": 3, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-2\", \"ContentId\": \"hero_hc01_crossbow\", \"Side\": 0, \"X\": 1, \"Y\": 1, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-3\", \"ContentId\": \"hero_hc18_healing_reader\", \"Side\": 0, \"X\": 1, \"Y\": 3, \"Equipment\": [], \"RetainAttackStacks\": false}, {\"InstanceId\": \"lab-unit-4\", \"ContentId\": \"enemy_ee09_swap_envoy\", \"Side\": 1, \"X\": 6, \"Y\": 2, \"Equipment\": [], \"RetainAttackStacks\": false}], \"Relics\": []}"
 
 [sub_resource type="Resource" id="eb01"]

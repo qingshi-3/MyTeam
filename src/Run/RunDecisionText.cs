@@ -34,6 +34,7 @@ public static class RunDecisionText
     public static string Condition(CompiledRunCondition condition, Func<string, string> contentName) => condition.Kind switch
     {
         RunConditionKind.GoldAtLeast => $"持有至少 {condition.Amount} 金币",
+        RunConditionKind.RunHealthBelowMaximum => "全局生命未满",
         RunConditionKind.RosterHealthAtLeast => $"全队每名英雄生命不低于 {Percent(condition.Ratio)}",
         RunConditionKind.HasContent => $"拥有 {contentName(condition.ContentId)} × {condition.Amount}（含已穿戴）",
         RunConditionKind.PopulationBelowCap => "当前人口低于人口上限",
@@ -44,6 +45,7 @@ public static class RunDecisionText
     public static string Operation(CompiledRunOperation operation, Func<string, string> contentName, bool cost = false) => operation.Kind switch
     {
         RunOperationKind.GainGold => $"获得 {operation.Amount} 金币",
+        RunOperationKind.RecoverRunHealth => $"恢复 {operation.Amount} 全局生命（不超过上限）",
         RunOperationKind.SpendGold => $"支付 {operation.Amount} 金币",
         RunOperationKind.GrantItem => $"获得 {contentName(operation.ContentId)} × {operation.Amount}",
         RunOperationKind.Recruit => $"{contentName(operation.ContentId)} × {operation.Amount} 加入队伍",

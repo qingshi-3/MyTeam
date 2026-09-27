@@ -482,7 +482,7 @@ public partial class UiSmoke : Node
 
         root.Flow.ShowRecruitment();
         var scroll = root.GetNode<ScrollContainer>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll");
-        var choices = root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices");
+        var choices = root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices");
         var card = choices.GetChildren().OfType<UnitChoiceCard>().Single(choice => choice.StableId == "soldier_abyss_crawler");
         if (!card.SearchText.Contains("亡灵", StringComparison.Ordinal) || !card.SearchText.Contains("野兽", StringComparison.Ordinal) ||
             card.SearchText.Contains("soldier", StringComparison.Ordinal) || card.SearchText.Contains("undead", StringComparison.Ordinal) ||
@@ -491,7 +491,7 @@ public partial class UiSmoke : Node
         if (choices.GetChildCount() != 3 || choices.GetChildren().OfType<UnitChoiceCard>().Any(choice =>
                 choice.CustomMinimumSize.Y is < 170 or > 174 || choice.Portrait.CustomMinimumSize.X is < 104 or > 108))
             throw new InvalidOperationException("recruitment did not author three compact unit rows with 106px portraits");
-        if (!scroll.IsAncestorOf(root.GetNode("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices")) ||
+        if (!scroll.IsAncestorOf(root.GetNode("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices")) ||
             scroll.IsAncestorOf(root.GetNode("Screens/RecruitmentScreen/Center/Panel/Layout/ContinueButton")) ||
             scroll.IsAncestorOf(root.GetNode("Screens/RecruitmentScreen/Center/Panel/Layout/ConvertButton")))
             throw new InvalidOperationException("recruitment scroll ownership moved the fixed bottom actions");
@@ -504,7 +504,7 @@ public partial class UiSmoke : Node
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         var ordinary = root.GetNode<Control>("Screens/RewardScreen");
         var ordinaryPanel = ordinary.GetNode<PanelContainer>("Center/Panel");
-        var ordinaryChoices = ordinary.GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/Choices");
+        var ordinaryChoices = ordinary.GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices");
         var ordinaryCards = ordinaryChoices.GetChildren().OfType<ChoiceCard>().ToArray();
         var viewport = GetViewport().GetVisibleRect();
         var ordinaryScroll = ordinary.GetNode<ScrollContainer>("Center/Panel/Layout/OfferBody/ChoiceScroll");
@@ -521,7 +521,7 @@ public partial class UiSmoke : Node
             ?? throw new InvalidOperationException("recruitment has no independent authored screen");
         var recruitmentPanel = recruitment.GetNode<PanelContainer>("Center/Panel");
         var recruitmentScroll = recruitment.GetNode<ScrollContainer>("Center/Panel/Layout/OfferBody/ChoiceScroll");
-        var recruitmentChoices = recruitment.GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/Choices");
+        var recruitmentChoices = recruitment.GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices");
         if (!recruitment.Visible || ordinary.Visible ||
             !viewport.Encloses(recruitmentPanel.GetGlobalRect()) ||
             recruitmentChoices.GetChildren().OfType<UnitChoiceCard>().Count() != 3 ||

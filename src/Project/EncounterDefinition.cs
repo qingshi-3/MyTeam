@@ -19,4 +19,7 @@ public partial class EncounterDefinition : Resource
     [Export] public float EnemyHealthMultiplier { get; set; } = 1;
     [Export] public float EnemyDamageMultiplier { get; set; } = 1;
     [Export] public BossTimelineDefinition? BossTimeline { get; set; }
+    [Export] public float[] LocalHealthMultipliers { get; set; } = [];
+    [Export] public float[] LocalDamageMultipliers { get; set; } = [];
+    [Export] public EncounterCompositionDefinition[] Compositions { get; set; } = [];
 }

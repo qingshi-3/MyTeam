@@ -1,7 +1,34 @@
 [gd_resource type="Theme" format=3 uid="uid://tpy8it3enlul"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/reference-panel.png" id="TavernWood"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/reference-primary.png" id="TavernPrimary"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/reference-secondary.png" id="TavernSecondary"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/parchment.png" id="TavernPaper"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/reference-card.png" id="CardSlab"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/reference-name-ribbon.png" id="NameRibbon"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/card-equipment-socket.png" id="CardSocketSkin"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/workbench-details.png" id="Workbenchdetails"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/workbench-list.png" id="Workbenchlist"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/workbench-equipment-tray.png" id="WorkbenchTray"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/workbench-skill-socket.png" id="WorkbenchSocket"]
+
+[sub_resource type="SystemFont" id="WorkbenchReadingFont"]
+font_names = PackedStringArray("SimSun", "Noto Serif SC")
+font_weight = 400
+
+[sub_resource type="SystemFont" id="WorkbenchNumberFont"]
+font_names = PackedStringArray("Georgia", "Times New Roman")
+font_weight = 400
+
 [sub_resource type="SystemFont" id="CombatBoldFont"]
 font_names = PackedStringArray("Microsoft YaHei", "Noto Sans CJK SC")
+font_weight = 700
+
+[sub_resource type="SystemFont" id="TavernTitleFont"]
+font_names = PackedStringArray("Noto Serif CJK SC", "Source Han Serif SC", "SimSun")
 font_weight = 700
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_badge"]
@@ -9,140 +36,96 @@ content_margin_left = 6.0
 content_margin_top = 3.0
 content_margin_right = 6.0
 content_margin_bottom = 3.0
-bg_color = Color(0.06, 0.085, 0.1, 0.92)
+bg_color = Color(0.115, 0.091, 0.068, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.24, 0.33, 0.38, 0.9)
+border_color = Color(0.38, 0.29, 0.18, 0.9)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_button_disabled"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.07, 0.085, 0.095, 0.72)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.16, 0.19, 0.21, 0.8)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="StyleBox_button_disabled"]
+texture = ExtResource("TavernSecondary")
+region_rect = Rect2(1, 18, 254, 47)
+texture_margin_left = 12.0
+content_margin_left = 24.0
+texture_margin_top = 9.0
+content_margin_top = 10.0
+texture_margin_right = 12.0
+content_margin_right = 24.0
+texture_margin_bottom = 10.0
+content_margin_bottom = 12.0
+modulate_color = Color(0.49, 0.49, 0.47, 0.85)
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_button_focus"]
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.78, 0.32, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
+[sub_resource type="StyleBoxTexture" id="StyleBox_button_hover"]
+texture = ExtResource("TavernSecondary")
+region_rect = Rect2(1, 18, 254, 47)
+texture_margin_left = 12.0
+content_margin_left = 24.0
+texture_margin_top = 9.0
+content_margin_top = 10.0
+texture_margin_right = 12.0
+content_margin_right = 24.0
+texture_margin_bottom = 10.0
+content_margin_bottom = 12.0
+modulate_color = Color(1.13, 1.10, 1.02, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_button_hover"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.15, 0.21, 0.245, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.86, 0.67, 0.25, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="StyleBox_button_normal"]
+texture = ExtResource("TavernSecondary")
+region_rect = Rect2(1, 18, 254, 47)
+texture_margin_left = 12.0
+content_margin_left = 24.0
+texture_margin_top = 9.0
+content_margin_top = 10.0
+texture_margin_right = 12.0
+content_margin_right = 24.0
+texture_margin_bottom = 10.0
+content_margin_bottom = 12.0
+modulate_color = Color(1, 1, 1, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_button_normal"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.105, 0.15, 0.18, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.25, 0.34, 0.39, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_button_pressed"]
-content_margin_left = 10.0
-content_margin_top = 7.0
-content_margin_right = 10.0
-content_margin_bottom = 5.0
-bg_color = Color(0.065, 0.095, 0.115, 1)
-border_width_left = 1
-border_width_top = 2
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.95, 0.73, 0.27, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="StyleBox_button_pressed"]
+texture = ExtResource("TavernSecondary")
+region_rect = Rect2(1, 18, 254, 47)
+texture_margin_left = 12.0
+content_margin_left = 24.0
+texture_margin_top = 9.0
+content_margin_top = 10.0
+texture_margin_right = 12.0
+content_margin_right = 24.0
+texture_margin_bottom = 10.0
+content_margin_bottom = 12.0
+modulate_color = Color(0.82, 0.83, 0.82, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_compact_disabled"]
 content_margin_left = 7.0
 content_margin_top = 4.0
 content_margin_right = 7.0
 content_margin_bottom = 4.0
-bg_color = Color(0.065, 0.075, 0.085, 0.7)
+bg_color = Color(0.115, 0.091, 0.068, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.14, 0.17, 0.19, 0.8)
+border_color = Color(0.38, 0.29, 0.18, 0.9)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_compact_focus"]
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.78, 0.32, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-expand_margin_left = 1.0
-expand_margin_top = 1.0
-expand_margin_right = 1.0
-expand_margin_bottom = 1.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_compact_hover"]
 content_margin_left = 7.0
 content_margin_top = 4.0
 content_margin_right = 7.0
 content_margin_bottom = 4.0
-bg_color = Color(0.135, 0.19, 0.22, 1)
+bg_color = Color(0.115, 0.091, 0.068, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.82, 0.64, 0.24, 1)
+border_color = Color(0.38, 0.29, 0.18, 0.9)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -153,12 +136,12 @@ content_margin_left = 7.0
 content_margin_top = 4.0
 content_margin_right = 7.0
 content_margin_bottom = 4.0
-bg_color = Color(0.09, 0.13, 0.155, 1)
+bg_color = Color(0.115, 0.091, 0.068, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.22, 0.3, 0.35, 1)
+border_color = Color(0.38, 0.29, 0.18, 0.9)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -169,110 +152,100 @@ content_margin_left = 7.0
 content_margin_top = 5.0
 content_margin_right = 7.0
 content_margin_bottom = 3.0
-bg_color = Color(0.055, 0.08, 0.1, 1)
+bg_color = Color(0.115, 0.091, 0.068, 0.96)
 border_width_left = 1
 border_width_top = 2
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.92, 0.71, 0.27, 1)
+border_color = Color(0.38, 0.29, 0.18, 0.9)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_context_sidebar"]
-bg_color = Color(0.035, 0.055, 0.07, 0.97)
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.135, 0.12, 0.105, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.25, 0.36, 0.43, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.28)
-shadow_size = 4
+border_color = Color(0.34, 0.30, 0.25, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_danger_disabled"]
-content_margin_left = 10.0
+[sub_resource type="StyleBoxFlat" id="StyleBox_hero_drag_preview"]
+content_margin_left = 6.0
 content_margin_top = 6.0
-content_margin_right = 10.0
+content_margin_right = 6.0
 content_margin_bottom = 6.0
-bg_color = Color(0.18, 0.105, 0.1, 0.72)
+bg_color = Color(0.135, 0.12, 0.105, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.29, 0.18, 0.17, 0.82)
+border_color = Color(0.34, 0.30, 0.25, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
-corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_danger_focus"]
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.53, 0.43, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_danger_hover"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.49, 0.14, 0.115, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.93, 0.42, 0.34, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
 corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_danger_normal"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.34, 0.105, 0.09, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.62, 0.22, 0.18, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="StyleBox_danger_disabled"]
+texture = ExtResource("TavernSecondary")
+region_rect = Rect2(1, 18, 254, 47)
+texture_margin_left = 12.0
+content_margin_left = 24.0
+texture_margin_top = 9.0
+content_margin_top = 10.0
+texture_margin_right = 12.0
+content_margin_right = 24.0
+texture_margin_bottom = 10.0
+content_margin_bottom = 12.0
+modulate_color = Color(0.45, 0.32, 0.29, 0.85)
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_danger_pressed"]
-content_margin_left = 10.0
-content_margin_top = 7.0
-content_margin_right = 10.0
-content_margin_bottom = 5.0
-bg_color = Color(0.23, 0.055, 0.05, 1)
-border_width_left = 1
-border_width_top = 2
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 0.48, 0.39, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="StyleBox_danger_hover"]
+texture = ExtResource("TavernSecondary")
+region_rect = Rect2(1, 18, 254, 47)
+texture_margin_left = 12.0
+content_margin_left = 24.0
+texture_margin_top = 9.0
+content_margin_top = 10.0
+texture_margin_right = 12.0
+content_margin_right = 24.0
+texture_margin_bottom = 10.0
+content_margin_bottom = 12.0
+modulate_color = Color(1, 0.65, 0.56, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_danger_normal"]
+texture = ExtResource("TavernSecondary")
+region_rect = Rect2(1, 18, 254, 47)
+texture_margin_left = 12.0
+content_margin_left = 24.0
+texture_margin_top = 9.0
+content_margin_top = 10.0
+texture_margin_right = 12.0
+content_margin_right = 24.0
+texture_margin_bottom = 10.0
+content_margin_bottom = 12.0
+modulate_color = Color(1, 0.65, 0.56, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_danger_pressed"]
+texture = ExtResource("TavernSecondary")
+region_rect = Rect2(1, 18, 254, 47)
+texture_margin_left = 12.0
+content_margin_left = 24.0
+texture_margin_top = 9.0
+content_margin_top = 10.0
+texture_margin_right = 12.0
+content_margin_right = 24.0
+texture_margin_bottom = 10.0
+content_margin_bottom = 12.0
+modulate_color = Color(1, 0.65, 0.56, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_deployment_drag"]
 bg_color = Color(0.035, 0.12, 0.18, 0.9)
@@ -325,22 +298,6 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_primary_focus"]
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.9, 0.58, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_deployment_swap"]
 bg_color = Color(0.2, 0.13, 0.035, 0.96)
@@ -403,12 +360,12 @@ content_margin_left = 9.0
 content_margin_top = 7.0
 content_margin_right = 9.0
 content_margin_bottom = 7.0
-bg_color = Color(0.035, 0.052, 0.066, 0.94)
+bg_color = Color(0.115, 0.091, 0.068, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.18, 0.27, 0.34, 1)
+border_color = Color(0.38, 0.29, 0.18, 0.9)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -430,113 +387,104 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_modal"]
-content_margin_left = 18.0
+[sub_resource type="StyleBoxTexture" id="StyleBox_modal"]
+texture = ExtResource("TavernWood")
+region_rect = Rect2(5, 5, 246, 244)
+texture_margin_left = 33.0
+content_margin_left = 36.0
+texture_margin_top = 33.0
+content_margin_top = 34.0
+texture_margin_right = 33.0
+content_margin_right = 36.0
+texture_margin_bottom = 33.0
+content_margin_bottom = 38.0
+modulate_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_notification"]
+content_margin_left = 14.0
 content_margin_top = 14.0
-content_margin_right = 18.0
+content_margin_right = 14.0
 content_margin_bottom = 14.0
-bg_color = Color(0.025, 0.04, 0.052, 0.99)
+bg_color = Color(0.115, 0.105, 0.095, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.52, 0.43, 0.22, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-shadow_color = Color(0, 0, 0, 0.42)
-shadow_size = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_notification"]
-bg_color = Color(0.105, 0.086, 0.035, 0.97)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.82, 0.63, 0.22, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 4
+border_color = Color(0.34, 0.30, 0.25, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
-bg_color = Color(0.035, 0.052, 0.066, 0.94)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.18, 0.27, 0.34, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBox_primary_disabled"]
 content_margin_left = 12.0
-content_margin_top = 7.0
+content_margin_top = 12.0
 content_margin_right = 12.0
-content_margin_bottom = 7.0
-bg_color = Color(0.22, 0.19, 0.13, 0.76)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.35, 0.31, 0.22, 0.85)
+content_margin_bottom = 12.0
+bg_color = Color(0.16, 0.145, 0.13, 1)
+border_width_left = 0
+border_width_top = 0
+border_width_right = 0
+border_width_bottom = 0
+border_color = Color(0.34, 0.30, 0.25, 1)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
-corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_primary_hover"]
-content_margin_left = 12.0
-content_margin_top = 7.0
-content_margin_right = 12.0
-content_margin_bottom = 7.0
-bg_color = Color(0.68, 0.48, 0.13, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 0.83, 0.4, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxEmpty" id="StyleBox_detail_section"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_primary_normal"]
-content_margin_left = 12.0
-content_margin_top = 7.0
-content_margin_right = 12.0
-content_margin_bottom = 7.0
-bg_color = Color(0.54, 0.37, 0.09, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.86, 0.65, 0.2, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="StyleBox_primary_disabled"]
+texture = ExtResource("TavernPrimary")
+region_rect = Rect2(1, 16, 254, 52)
+texture_margin_left = 27.0
+content_margin_left = 32.0
+texture_margin_top = 14.0
+content_margin_top = 12.0
+texture_margin_right = 27.0
+content_margin_right = 32.0
+texture_margin_bottom = 14.0
+content_margin_bottom = 14.0
+modulate_color = Color(0.49, 0.49, 0.47, 0.85)
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_primary_pressed"]
-content_margin_left = 12.0
-content_margin_top = 8.0
-content_margin_right = 12.0
-content_margin_bottom = 6.0
-bg_color = Color(0.39, 0.25, 0.055, 1)
-border_width_left = 1
-border_width_top = 2
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 0.8, 0.32, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxTexture" id="StyleBox_primary_hover"]
+texture = ExtResource("TavernPrimary")
+region_rect = Rect2(1, 16, 254, 52)
+texture_margin_left = 27.0
+content_margin_left = 32.0
+texture_margin_top = 14.0
+content_margin_top = 12.0
+texture_margin_right = 27.0
+content_margin_right = 32.0
+texture_margin_bottom = 14.0
+content_margin_bottom = 14.0
+modulate_color = Color(1.13, 1.10, 1.02, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_primary_normal"]
+texture = ExtResource("TavernPrimary")
+region_rect = Rect2(1, 16, 254, 52)
+texture_margin_left = 27.0
+content_margin_left = 32.0
+texture_margin_top = 14.0
+content_margin_top = 12.0
+texture_margin_right = 27.0
+content_margin_right = 32.0
+texture_margin_bottom = 14.0
+content_margin_bottom = 14.0
+modulate_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_primary_pressed"]
+texture = ExtResource("TavernPrimary")
+region_rect = Rect2(1, 16, 254, 52)
+texture_margin_left = 27.0
+content_margin_left = 32.0
+texture_margin_top = 14.0
+content_margin_top = 12.0
+texture_margin_right = 27.0
+content_margin_right = 32.0
+texture_margin_bottom = 14.0
+content_margin_bottom = 14.0
+modulate_color = Color(0.82, 0.83, 0.82, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_bar_background"]
 bg_color = Color(0.018, 0.03, 0.04, 1)
@@ -628,21 +576,21 @@ content_margin_left = 7.0
 content_margin_top = 5.0
 content_margin_right = 7.0
 content_margin_bottom = 5.0
-bg_color = Color(0.025, 0.042, 0.055, 0.9)
+bg_color = Color(0.115, 0.091, 0.068, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.14, 0.22, 0.28, 0.9)
+border_color = Color(0.38, 0.29, 0.18, 0.9)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_top_bar"]
-bg_color = Color(0.025, 0.042, 0.055, 0.98)
+bg_color = Color(0.115, 0.091, 0.068, 0.96)
 border_width_bottom = 2
-border_color = Color(0.34, 0.44, 0.5, 1)
+border_color = Color(0.38, 0.29, 0.18, 0.9)
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_scroll_thumb"]
 bg_color = Color(0.24, 0.32, 0.36, 1)
@@ -773,39 +721,413 @@ content_margin_top = 6.0
 content_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="EquipmentPanelValid"]
-bg_color = Color(0.08, 0.23, 0.20, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.38, 0.90, 0.70, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_left = 5
-corner_radius_bottom_right = 5
-content_margin_left = 1.0
-content_margin_right = 1.0
-content_margin_top = 1.0
-content_margin_bottom = 1.0
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.135, 0.12, 0.105, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.58, 0.67, 0.42, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
 
 [sub_resource type="StyleBoxFlat" id="EquipmentPanelInvalid"]
-bg_color = Color(0.26, 0.09, 0.10, 1)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.135, 0.12, 0.105, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.70, 0.39, 0.28, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxTexture" id="TavernCard"]
+texture = ExtResource("CardSlab")
+region_rect = Rect2(36, 72, 952, 1376)
+texture_margin_left = 0.0
+texture_margin_top = 0.0
+texture_margin_right = 0.0
+texture_margin_bottom = 0.0
+content_margin_left = 40.0
+content_margin_top = 30.0
+content_margin_right = 40.0
+content_margin_bottom = 24.0
+modulate_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxTexture" id="TavernPaperPanel"]
+texture = ExtResource("TavernPaper")
+texture_margin_left = 45.0
+content_margin_left = 26.0
+texture_margin_top = 45.0
+content_margin_top = 26.0
+texture_margin_right = 45.0
+content_margin_right = 26.0
+texture_margin_bottom = 45.0
+content_margin_bottom = 28.0
+modulate_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxTexture" id="TavernRoster"]
+texture = ExtResource("CardSlab")
+region_rect = Rect2(36, 72, 952, 1376)
+texture_margin_left = 0.0
+texture_margin_top = 0.0
+texture_margin_right = 0.0
+texture_margin_bottom = 0.0
+content_margin_left = 34.0
+content_margin_top = 38.0
+content_margin_right = 34.0
+content_margin_bottom = 34.0
+modulate_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxTexture" id="TavernRosterHover"]
+texture = ExtResource("CardSlab")
+region_rect = Rect2(36, 72, 952, 1376)
+texture_margin_left = 0.0
+texture_margin_top = 0.0
+texture_margin_right = 0.0
+texture_margin_bottom = 0.0
+content_margin_left = 34.0
+content_margin_top = 38.0
+content_margin_right = 34.0
+content_margin_bottom = 34.0
+modulate_color = Color(1.1, 1.07, 1.01, 1)
+
+[sub_resource type="StyleBoxFlat" id="CardScrollTrack"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.10, 0.085, 0.075, 0.7)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxFlat" id="CardScrollThumb"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+content_margin_top = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.57, 0.49, 0.35, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxTexture" id="TavernPaperRibbon"]
+texture = ExtResource("NameRibbon")
+region_rect = Rect2(21, 43, 468, 81)
+texture_margin_left = 48.0
+texture_margin_top = 15.0
+texture_margin_right = 48.0
+texture_margin_bottom = 25.0
+content_margin_left = 40.0
+content_margin_top = 4.0
+content_margin_right = 40.0
+content_margin_bottom = 18.0
+[sub_resource type="StyleBoxTexture" id="EquipmentSocket"]
+texture = ExtResource("CardSocketSkin")
+region_rect = Rect2(123, 132, 1008, 976)
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+modulate_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxTexture" id="EquipmentSocketHover"]
+texture = ExtResource("CardSocketSkin")
+region_rect = Rect2(123, 132, 1008, 976)
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+modulate_color = Color(1.15, 1.11, 1.04, 1)
+
+[sub_resource type="StyleBoxTexture" id="EquipmentSocketSelected"]
+texture = ExtResource("CardSocketSkin")
+region_rect = Rect2(123, 132, 1008, 976)
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+modulate_color = Color(1.17, 1.08, 0.86, 1)
+
+[sub_resource type="StyleBoxEmpty" id="PortraitIdentityBacking"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxEmpty" id="CardSkillNormal"]
+content_margin_left = 6.0
+content_margin_top = 0.0
+content_margin_right = 6.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="CardSkillHover"]
+content_margin_left = 6.0
+content_margin_top = 0.0
+content_margin_right = 6.0
+content_margin_bottom = 0.0
+bg_color = Color(0.75, 0.64, 0.45, 0.09)
+
+[sub_resource type="StyleBoxFlat" id="CardSkillPressed"]
+content_margin_left = 6.0
+content_margin_top = 0.0
+content_margin_right = 6.0
+content_margin_bottom = 0.0
+bg_color = Color(0.10, 0.08, 0.06, 0.15)
+
+[sub_resource type="StyleBoxFlat" id="CardEquipmentQuiet"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.64, 0.57, 0.43, 0.22)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_left = 20
+corner_radius_bottom_right = 20
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="CardEquipmentSelected"]
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+bg_color = Color(0.75, 0.64, 0.45, 0.09)
+border_width_bottom = 2
+border_color = Color(0.67, 0.57, 0.36, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="CardEquipmentValid"]
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+bg_color = Color(0.39, 0.58, 0.33, 0.18)
+border_width_bottom = 2
+border_color = Color(0.62, 0.79, 0.48, 1)
+
+[sub_resource type="StyleBoxFlat" id="CardEquipmentInvalid"]
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+bg_color = Color(0.68, 0.28, 0.20, 0.18)
+border_width_bottom = 2
+border_color = Color(0.84, 0.44, 0.30, 1)
+
+[sub_resource type="StyleBoxFlat" id="CardDropHint"]
+bg_color = Color(0.12, 0.105, 0.085, 0.94)
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxTexture" id="CardNameRibbon"]
+texture = ExtResource("NameRibbon")
+region_rect = Rect2(21, 43, 468, 81)
+content_margin_left = 28.0
+content_margin_top = 2.0
+content_margin_right = 28.0
+content_margin_bottom = 10.0
+modulate_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="CardStatQuiet"]
+
+[sub_resource type="StyleBoxFlat" id="CardStatHover"]
+bg_color = Color(0.75, 0.64, 0.45, 0.12)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxTexture" id="RosterCardDropValid"]
+texture = ExtResource("CardSlab")
+region_rect = Rect2(36, 72, 952, 1376)
+texture_margin_left = 0.0
+texture_margin_top = 0.0
+texture_margin_right = 0.0
+texture_margin_bottom = 0.0
+content_margin_left = 34.0
+content_margin_top = 38.0
+content_margin_right = 34.0
+content_margin_bottom = 34.0
+modulate_color = Color(1.04, 1.16, 0.95, 1)
+
+[sub_resource type="StyleBoxTexture" id="RosterCardDropInvalid"]
+texture = ExtResource("CardSlab")
+region_rect = Rect2(36, 72, 952, 1376)
+texture_margin_left = 0.0
+texture_margin_top = 0.0
+texture_margin_right = 0.0
+texture_margin_bottom = 0.0
+content_margin_left = 34.0
+content_margin_top = 38.0
+content_margin_right = 34.0
+content_margin_bottom = 34.0
+modulate_color = Color(1.13, 0.85, 0.77, 1)
+
+[sub_resource type="StyleBoxTexture" id="EquipmentSocketValid"]
+texture = ExtResource("CardSocketSkin")
+region_rect = Rect2(123, 132, 1008, 976)
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+modulate_color = Color(1.08, 1.22, 0.92, 1)
+
+[sub_resource type="StyleBoxTexture" id="EquipmentSocketInvalid"]
+texture = ExtResource("CardSocketSkin")
+region_rect = Rect2(123, 132, 1008, 976)
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+modulate_color = Color(1.2, 0.8, 0.72, 1)
+
+[sub_resource type="StyleBoxTexture" id="Workbenchdetails"]
+texture = ExtResource("Workbenchdetails")
+texture_margin_left = 0.0
+texture_margin_right = 0.0
+texture_margin_top = 0.0
+texture_margin_bottom = 0.0
+region_rect = Rect2(24, 26, 1238, 1164)
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+content_margin_left = 50.0
+content_margin_right = 42.0
+content_margin_top = 48.0
+content_margin_bottom = 30.0
+
+[sub_resource type="StyleBoxTexture" id="Workbenchlist"]
+texture = ExtResource("Workbenchlist")
+texture_margin_left = 0.0
+texture_margin_right = 0.0
+texture_margin_top = 0.0
+texture_margin_bottom = 0.0
+region_rect = Rect2(44, 28, 874, 1568)
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+content_margin_left = 20.0
+content_margin_right = 20.0
+content_margin_top = 20.0
+content_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxEmpty" id="WorkbenchOverlay"]
+content_margin_left = 22.0
+content_margin_right = 22.0
+content_margin_top = 14.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxEmpty" id="WorkbenchEmpty"]
+
+[sub_resource type="StyleBoxFlat" id="WorkbenchSelector"]
+bg_color = Color(0.16, 0.145, 0.12, 0)
+content_margin_left = 0.0
+content_margin_right = 0.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="WorkbenchSelectorSelected"]
+bg_color = Color(0.47, 0.35, 0.18, 0.23)
+border_width_left = 2
+border_color = Color(0.82, 0.66, 0.36, 0.75)
+content_margin_left = 0.0
+content_margin_right = 0.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="WorkbenchBag"]
+bg_color = Color(0.10, 0.09, 0.075, 0)
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxTexture" id="WorkbenchTray"]
+texture = ExtResource("WorkbenchTray")
+region_rect = Rect2(35, 240, 1956, 278)
+texture_margin_left = 0.0
+texture_margin_right = 0.0
+texture_margin_top = 0.0
+texture_margin_bottom = 0.0
+content_margin_left = 30.0
+content_margin_right = 24.0
+content_margin_top = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxTexture" id="WorkbenchSocket"]
+texture = ExtResource("WorkbenchSocket")
+region_rect = Rect2(112, 116, 1032, 1024)
+content_margin_left = 13.0
+content_margin_right = 13.0
+content_margin_top = 13.0
+content_margin_bottom = 13.0
+
+[sub_resource type="StyleBoxLine" id="WorkbenchHorizontalRule"]
+color = Color(0.65, 0.57, 0.43, 0.28)
+thickness = 1
+
+[sub_resource type="StyleBoxLine" id="WorkbenchVerticalRule"]
+color = Color(0.65, 0.57, 0.43, 0.28)
+thickness = 1
+vertical = true
+
+[sub_resource type="StyleBoxFlat" id="WorkbenchAttributeField"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.62, 0.54, 0.41, 0.21)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_left = 10
+corner_radius_bottom_right = 10
+corner_detail = 1
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="WorkbenchRankPlate"]
+bg_color = Color(0.12, 0.11, 0.095, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
 border_width_bottom = 3
-border_color = Color(0.95, 0.36, 0.38, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_left = 5
-corner_radius_bottom_right = 5
-content_margin_left = 1.0
-content_margin_right = 1.0
-content_margin_top = 1.0
-content_margin_bottom = 1.0
+border_color = Color(0.38, 0.34, 0.28, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+corner_detail = 1
+shadow_color = Color(0.035, 0.025, 0.02, 0.65)
+shadow_size = 2
+shadow_offset = Vector2(0, 2)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxEmpty" id="FocusOverlay"]
 
 [resource]
-default_font_size = 16
+default_font_size = 17
 RichTextLabel/fonts/bold_font = SubResource("CombatBoldFont")
 RichTextLabel/font_sizes/normal_font_size = 14
 RichTextLabel/font_sizes/bold_font_size = 14
@@ -823,15 +1145,15 @@ BattleLabTabs/styles/panel = SubResource("StyleBox_panel")
 BattleLabTabs/styles/tab_selected = SubResource("StyleBox_selected")
 BattleLabTabs/styles/tab_unselected = SubResource("StyleBox_compact_normal")
 BattleLabTabs/styles/tab_hovered = SubResource("StyleBox_compact_hover")
-BattleLabTabs/styles/tab_focus = SubResource("StyleBox_compact_focus")
+BattleLabTabs/styles/tab_focus = SubResource("FocusOverlay")
 BattleLabEntry/base_type = &"LineEdit"
 BattleLabEntry/styles/normal = SubResource("StyleBox_button_normal")
-BattleLabEntry/styles/focus = SubResource("StyleBox_button_focus")
+BattleLabEntry/styles/focus = SubResource("FocusOverlay")
 BattleLabEntry/styles/read_only = SubResource("StyleBox_button_disabled")
 BattleLabEntry/colors/font_placeholder_color = Color(0.58, 0.66, 0.72, 0.85)
 BattleLabPresetList/base_type = &"ItemList"
 BattleLabPresetList/styles/panel = SubResource("StyleBox_panel")
-BattleLabPresetList/styles/focus = SubResource("StyleBox_button_focus")
+BattleLabPresetList/styles/focus = SubResource("FocusOverlay")
 BattleLabPresetList/styles/selected = SubResource("StyleBox_selected")
 BattleLabPresetList/styles/selected_focus = SubResource("StyleBox_selected")
 BattleLabPresetList/styles/hovered = SubResource("StyleBox_button_hover")
@@ -843,18 +1165,18 @@ BattleLabFold/styles/title_panel = SubResource("StyleBox_compact_normal")
 BattleLabFold/styles/title_hover_panel = SubResource("StyleBox_compact_hover")
 BattleLabFold/styles/title_collapsed_panel = SubResource("StyleBox_compact_normal")
 BattleLabFold/styles/title_collapsed_hover_panel = SubResource("StyleBox_compact_hover")
-BattleLabFold/styles/focus = SubResource("StyleBox_compact_focus")
+BattleLabFold/styles/focus = SubResource("FocusOverlay")
 BadgePanel/base_type = &"PanelContainer"
 BadgePanel/styles/panel = SubResource("StyleBox_badge")
 Button/colors/font_color = Color(0.88, 0.92, 0.95, 1)
 Button/colors/font_disabled_color = Color(0.45, 0.49, 0.51, 1)
 Button/colors/font_hover_color = Color(1, 0.88, 0.45, 1)
 Button/colors/font_pressed_color = Color(1, 0.82, 0.34, 1)
-Button/styles/disabled = SubResource("StyleBox_button_disabled")
-Button/styles/focus = SubResource("StyleBox_button_focus")
-Button/styles/hover = SubResource("StyleBox_button_hover")
-Button/styles/normal = SubResource("StyleBox_button_normal")
-Button/styles/pressed = SubResource("StyleBox_button_pressed")
+Button/styles/disabled = SubResource("StyleBox_compact_disabled")
+Button/styles/focus = SubResource("FocusOverlay")
+Button/styles/hover = SubResource("StyleBox_compact_hover")
+Button/styles/normal = SubResource("StyleBox_compact_normal")
+Button/styles/pressed = SubResource("StyleBox_compact_pressed")
 ChoiceBody/base_type = &"Label"
 ChoiceBody/colors/font_color = Color(0.8, 0.85, 0.9, 1)
 ChoiceBody/font_sizes/font_size = 16
@@ -877,12 +1199,14 @@ SidebarRailSelectedButton/styles/hover = SubResource("StyleBox_sidebar_selected"
 SidebarRailSelectedButton/styles/pressed = SubResource("StyleBox_sidebar_selected")
 CompactButton/font_sizes/font_size = 14
 CompactButton/styles/disabled = SubResource("StyleBox_compact_disabled")
-CompactButton/styles/focus = SubResource("StyleBox_compact_focus")
+CompactButton/styles/focus = SubResource("FocusOverlay")
 CompactButton/styles/hover = SubResource("StyleBox_compact_hover")
 CompactButton/styles/normal = SubResource("StyleBox_compact_normal")
 CompactButton/styles/pressed = SubResource("StyleBox_compact_pressed")
 ContextSidebarPanel/base_type = &"PanelContainer"
 ContextSidebarPanel/styles/panel = SubResource("StyleBox_context_sidebar")
+HeroDragPreviewPanel/base_type = &"PanelContainer"
+HeroDragPreviewPanel/styles/panel = SubResource("StyleBox_hero_drag_preview")
 DamageValue/base_type = &"Label"
 DamageValue/colors/font_color = Color(1, 0.38, 0.34, 1)
 DamageValue/font_sizes/font_size = 18
@@ -892,7 +1216,7 @@ DangerButton/colors/font_disabled_color = Color(0.51, 0.42, 0.4, 1)
 DangerButton/colors/font_hover_color = Color(1, 1, 1, 1)
 DangerButton/colors/font_pressed_color = Color(1, 0.82, 0.78, 1)
 DangerButton/styles/disabled = SubResource("StyleBox_danger_disabled")
-DangerButton/styles/focus = SubResource("StyleBox_danger_focus")
+DangerButton/styles/focus = SubResource("FocusOverlay")
 DangerButton/styles/hover = SubResource("StyleBox_danger_hover")
 DangerButton/styles/normal = SubResource("StyleBox_danger_normal")
 DangerButton/styles/pressed = SubResource("StyleBox_danger_pressed")
@@ -901,43 +1225,43 @@ DangerValue/colors/font_color = Color(0.95, 0.18, 0.26, 1)
 DangerValue/font_sizes/font_size = 18
 DeploymentCellDrag/base_type = &"Button"
 DeploymentCellDrag/styles/disabled = SubResource("StyleBox_deployment_drag")
-DeploymentCellDrag/styles/focus = SubResource("StyleBox_compact_focus")
+DeploymentCellDrag/styles/focus = SubResource("FocusOverlay")
 DeploymentCellDrag/styles/hover = SubResource("StyleBox_deployment_drag")
 DeploymentCellDrag/styles/normal = SubResource("StyleBox_deployment_drag")
 DeploymentCellDrag/styles/pressed = SubResource("StyleBox_deployment_drag")
 DeploymentCellFailure/base_type = &"Button"
 DeploymentCellFailure/styles/disabled = SubResource("StyleBox_deployment_illegal")
-DeploymentCellFailure/styles/focus = SubResource("StyleBox_deployment_illegal")
+DeploymentCellFailure/styles/focus = SubResource("FocusOverlay")
 DeploymentCellFailure/styles/hover = SubResource("StyleBox_deployment_illegal")
 DeploymentCellFailure/styles/normal = SubResource("StyleBox_deployment_illegal")
 DeploymentCellFailure/styles/pressed = SubResource("StyleBox_deployment_illegal")
 DeploymentCellIllegal/base_type = &"Button"
 DeploymentCellIllegal/styles/disabled = SubResource("StyleBox_deployment_illegal")
-DeploymentCellIllegal/styles/focus = SubResource("StyleBox_danger_focus")
+DeploymentCellIllegal/styles/focus = SubResource("FocusOverlay")
 DeploymentCellIllegal/styles/hover = SubResource("StyleBox_deployment_illegal")
 DeploymentCellIllegal/styles/normal = SubResource("StyleBox_deployment_illegal")
 DeploymentCellIllegal/styles/pressed = SubResource("StyleBox_deployment_illegal")
 DeploymentCellLegal/base_type = &"Button"
 DeploymentCellLegal/styles/disabled = SubResource("StyleBox_deployment_legal")
-DeploymentCellLegal/styles/focus = SubResource("StyleBox_compact_focus")
+DeploymentCellLegal/styles/focus = SubResource("FocusOverlay")
 DeploymentCellLegal/styles/hover = SubResource("StyleBox_deployment_legal")
 DeploymentCellLegal/styles/normal = SubResource("StyleBox_deployment_legal")
 DeploymentCellLegal/styles/pressed = SubResource("StyleBox_deployment_legal")
 DeploymentCellSelected/base_type = &"Button"
 DeploymentCellSelected/styles/disabled = SubResource("StyleBox_selected")
-DeploymentCellSelected/styles/focus = SubResource("StyleBox_primary_focus")
+DeploymentCellSelected/styles/focus = SubResource("FocusOverlay")
 DeploymentCellSelected/styles/hover = SubResource("StyleBox_selected")
 DeploymentCellSelected/styles/normal = SubResource("StyleBox_selected")
 DeploymentCellSelected/styles/pressed = SubResource("StyleBox_selected")
 DeploymentCellSuccess/base_type = &"Button"
 DeploymentCellSuccess/styles/disabled = SubResource("StyleBox_deployment_legal")
-DeploymentCellSuccess/styles/focus = SubResource("StyleBox_deployment_legal")
+DeploymentCellSuccess/styles/focus = SubResource("FocusOverlay")
 DeploymentCellSuccess/styles/hover = SubResource("StyleBox_deployment_legal")
 DeploymentCellSuccess/styles/normal = SubResource("StyleBox_deployment_legal")
 DeploymentCellSuccess/styles/pressed = SubResource("StyleBox_deployment_legal")
 DeploymentCellSwap/base_type = &"Button"
 DeploymentCellSwap/styles/disabled = SubResource("StyleBox_deployment_swap")
-DeploymentCellSwap/styles/focus = SubResource("StyleBox_primary_focus")
+DeploymentCellSwap/styles/focus = SubResource("FocusOverlay")
 DeploymentCellSwap/styles/hover = SubResource("StyleBox_deployment_swap")
 DeploymentCellSwap/styles/normal = SubResource("StyleBox_deployment_swap")
 DeploymentCellSwap/styles/pressed = SubResource("StyleBox_deployment_swap")
@@ -984,7 +1308,7 @@ GoldValue/font_sizes/font_size = 18
 GridCellButton/base_type = &"Button"
 GridCellButton/font_sizes/font_size = 14
 GridCellButton/styles/disabled = SubResource("StyleBox_compact_disabled")
-GridCellButton/styles/focus = SubResource("StyleBox_compact_focus")
+GridCellButton/styles/focus = SubResource("FocusOverlay")
 GridCellButton/styles/hover = SubResource("StyleBox_compact_hover")
 GridCellButton/styles/normal = SubResource("StyleBox_compact_normal")
 GridCellButton/styles/pressed = SubResource("StyleBox_selected")
@@ -1012,7 +1336,7 @@ HeroLabel/colors/font_color = Color(1, 0.78, 0.3, 1)
 HeroLabel/font_sizes/font_size = 19
 ItemChoiceButton/base_type = &"Button"
 ItemChoiceButton/styles/disabled = SubResource("StyleBox_button_disabled")
-ItemChoiceButton/styles/focus = SubResource("StyleBox_primary_focus")
+ItemChoiceButton/styles/focus = SubResource("FocusOverlay")
 ItemChoiceButton/styles/hover = SubResource("StyleBox_button_hover")
 ItemChoiceButton/styles/normal = SubResource("StyleBox_report_card")
 ItemChoiceButton/styles/pressed = SubResource("StyleBox_selected")
@@ -1030,16 +1354,19 @@ ModalPanel/styles/panel = SubResource("StyleBox_modal")
 NotificationPanel/base_type = &"PanelContainer"
 NotificationPanel/styles/panel = SubResource("StyleBox_notification")
 PanelContainer/styles/panel = SubResource("StyleBox_panel")
+DetailSection/base_type = &"PanelContainer"
+DetailSection/styles/panel = SubResource("StyleBox_detail_section")
 PlayerLabel/base_type = &"Label"
 PlayerLabel/colors/font_color = Color(0.42, 0.72, 1, 1)
 PlayerLabel/font_sizes/font_size = 18
 PrimaryButton/base_type = &"Button"
-PrimaryButton/colors/font_color = Color(1, 0.96, 0.83, 1)
-PrimaryButton/colors/font_disabled_color = Color(0.53, 0.49, 0.4, 1)
-PrimaryButton/colors/font_hover_color = Color(1, 1, 1, 1)
-PrimaryButton/colors/font_pressed_color = Color(1, 0.94, 0.74, 1)
+PrimaryButton/font_sizes/font_size = 19
+PrimaryButton/colors/font_color = Color(0.17, 0.13, 0.095, 1)
+PrimaryButton/colors/font_disabled_color = Color(0.43, 0.42, 0.40, 1)
+PrimaryButton/colors/font_hover_color = Color(0.13, 0.085, 0.04, 1)
+PrimaryButton/colors/font_pressed_color = Color(0.13, 0.085, 0.04, 1)
 PrimaryButton/styles/disabled = SubResource("StyleBox_primary_disabled")
-PrimaryButton/styles/focus = SubResource("StyleBox_primary_focus")
+PrimaryButton/styles/focus = SubResource("FocusOverlay")
 PrimaryButton/styles/hover = SubResource("StyleBox_primary_hover")
 PrimaryButton/styles/normal = SubResource("StyleBox_primary_normal")
 PrimaryButton/styles/pressed = SubResource("StyleBox_primary_pressed")
@@ -1070,7 +1397,7 @@ ReportTabButton/colors/font_color = Color(0.58, 0.66, 0.72, 1)
 ReportTabButton/colors/font_pressed_color = Color(1, 0.88, 0.58, 1)
 ReportTabButton/font_sizes/font_size = 14
 ReportTabButton/styles/disabled = SubResource("StyleBox_compact_disabled")
-ReportTabButton/styles/focus = SubResource("StyleBox_compact_focus")
+ReportTabButton/styles/focus = SubResource("FocusOverlay")
 ReportTabButton/styles/hover = SubResource("StyleBox_compact_hover")
 ReportTabButton/styles/normal = SubResource("StyleBox_compact_normal")
 ReportTabButton/styles/pressed = SubResource("StyleBox_selected")
@@ -1089,7 +1416,7 @@ SectionTitleLabel/font_sizes/font_size = 17
 SelectedButton/base_type = &"Button"
 SelectedButton/colors/font_color = Color(1, 0.9, 0.6, 1)
 SelectedButton/styles/disabled = SubResource("StyleBox_button_disabled")
-SelectedButton/styles/focus = SubResource("StyleBox_primary_focus")
+SelectedButton/styles/focus = SubResource("FocusOverlay")
 SelectedButton/styles/hover = SubResource("StyleBox_selected")
 SelectedButton/styles/normal = SubResource("StyleBox_selected")
 SelectedButton/styles/pressed = SubResource("StyleBox_selected")
@@ -1105,8 +1432,8 @@ TacticalPointValue/base_type = &"Label"
 TacticalPointValue/colors/font_color = Color(0.32, 0.67, 1, 1)
 TacticalPointValue/font_sizes/font_size = 18
 TitleLabel/base_type = &"Label"
-TitleLabel/colors/font_color = Color(1, 0.84, 0.42, 1)
-TitleLabel/font_sizes/font_size = 24
+TitleLabel/colors/font_color = Color(0.98, 0.87, 0.65, 1)
+TitleLabel/font_sizes/font_size = 32
 TopBarPanel/base_type = &"PanelContainer"
 TopBarPanel/styles/panel = SubResource("StyleBox_top_bar")
 TraitIdentity/base_type = &"Label"
@@ -1146,3 +1473,194 @@ LifeStealValue/font_sizes/font_size = 18
 AttackSpeedValue/base_type = &"Label"
 AttackSpeedValue/colors/font_color = Color(1, 0.77, 0.35, 1)
 AttackSpeedValue/font_sizes/font_size = 18
+
+TitleLabel/fonts/font = SubResource("TavernTitleFont")
+TitleLabel/colors/font_shadow_color = Color(0.04, 0.025, 0.015, 0.9)
+TitleLabel/constants/shadow_offset_y = 1
+TitleLabel/constants/shadow_offset_x = 1
+Button/colors/font_shadow_color = Color(0.03, 0.02, 0.015, 0.9)
+Button/constants/shadow_offset_y = 2
+Label/colors/font_color = Color(0.91, 0.87, 0.76, 1)
+TavernCardPanel/base_type = &"PanelContainer"
+TavernCardPanel/styles/panel = SubResource("TavernCard")
+CardScrollBar/base_type = &"VScrollBar"
+CardScrollBar/styles/scroll = SubResource("CardScrollTrack")
+CardScrollBar/styles/scroll_focus = SubResource("CardScrollTrack")
+CardScrollBar/styles/grabber = SubResource("CardScrollThumb")
+CardScrollBar/styles/grabber_highlight = SubResource("CardScrollThumb")
+CardScrollBar/styles/grabber_pressed = SubResource("CardScrollThumb")
+ParchmentPanel/base_type = &"PanelContainer"
+ParchmentPanel/styles/panel = SubResource("TavernPaperPanel")
+RosterCard/base_type = &"Button"
+RosterCard/styles/normal = SubResource("TavernRoster")
+RosterCard/styles/hover = SubResource("TavernRoster")
+RosterCard/styles/pressed = SubResource("TavernRoster")
+PaperTitle/base_type = &"Label"
+PaperTitle/fonts/font = SubResource("TavernTitleFont")
+PaperTitle/colors/font_color = Color(0.18, 0.12, 0.075, 1)
+PaperTitle/font_sizes/font_size = 28
+PaperBody/base_type = &"Label"
+PaperBody/colors/font_color = Color(0.23, 0.17, 0.11, 1)
+PaperBody/font_sizes/font_size = 18
+
+PaperTitle/styles/normal = SubResource("TavernPaperRibbon")
+PortraitIdentity/base_type = &"Label"
+PortraitIdentity/styles/normal = SubResource("PortraitIdentityBacking")
+CardDropHint/base_type = &"Label"
+CardDropHint/styles/normal = SubResource("CardDropHint")
+RosterCardSelected/base_type = &"RosterCard"
+RosterCardSelected/styles/normal = SubResource("TavernRosterHover")
+RosterCardSelected/styles/hover = SubResource("TavernRosterHover")
+RosterCardSelected/styles/pressed = SubResource("TavernRosterHover")
+RosterCardSelected/styles/focus = SubResource("FocusOverlay")
+SecondaryButton/styles/normal = SubResource("StyleBox_button_normal")
+SecondaryButton/styles/hover = SubResource("StyleBox_button_hover")
+SecondaryButton/styles/pressed = SubResource("StyleBox_button_pressed")
+SecondaryButton/styles/disabled = SubResource("StyleBox_button_disabled")
+SecondaryButton/styles/focus = SubResource("FocusOverlay")
+PrimaryButton/colors/font_focus_color = Color(0.17, 0.13, 0.095, 1)
+
+EquipmentSocket/base_type = &"Button"
+EquipmentSocket/styles/normal = SubResource("EquipmentSocket")
+EquipmentSocket/styles/hover = SubResource("EquipmentSocketHover")
+EquipmentSocket/styles/pressed = SubResource("EquipmentSocketSelected")
+EquipmentSocket/styles/disabled = SubResource("EquipmentSocket")
+EquipmentSocket/styles/focus = SubResource("FocusOverlay")
+EquipmentSocketSelected/base_type = &"EquipmentSocket"
+EquipmentSocketSelected/styles/normal = SubResource("EquipmentSocketSelected")
+EquipmentSocketSelected/styles/hover = SubResource("EquipmentSocketSelected")
+InspectionFact/base_type = &"CompactButton"
+InspectionFact/styles/normal = SubResource("StyleBox_compact_normal")
+InspectionFact/styles/hover = SubResource("StyleBox_compact_hover")
+InspectionFact/styles/pressed = SubResource("StyleBox_compact_pressed")
+
+CardName/base_type = &"PaperTitle"
+CardName/styles/normal = SubResource("CardNameRibbon")
+CardSkill/base_type = &"Button"
+CardSkill/styles/normal = SubResource("CardSkillNormal")
+CardSkill/styles/hover = SubResource("CardSkillNormal")
+CardSkill/styles/pressed = SubResource("CardSkillPressed")
+CardSkill/styles/disabled = SubResource("CardSkillNormal")
+CardSkill/styles/focus = SubResource("FocusOverlay")
+CardStat/base_type = &"InspectionFact"
+CardStat/styles/normal = SubResource("CardStatQuiet")
+CardStat/styles/hover = SubResource("CardStatQuiet")
+CardStat/styles/pressed = SubResource("CardStatQuiet")
+CardStat/styles/focus = SubResource("FocusOverlay")
+EquipmentSocket/colors/font_color = Color(0.68, 0.61, 0.47, 1)
+
+CardEquipment/base_type = &"Button"
+CardEquipment/styles/normal = SubResource("CardEquipmentQuiet")
+CardEquipment/styles/hover = SubResource("CardSkillHover")
+CardEquipment/styles/pressed = SubResource("CardEquipmentSelected")
+CardEquipment/styles/disabled = SubResource("CardEquipmentQuiet")
+CardEquipment/styles/focus = SubResource("FocusOverlay")
+CardEquipment/colors/font_color = Color(0.62, 0.57, 0.47, 1)
+CardEquipmentSelected/base_type = &"CardEquipment"
+CardEquipmentSelected/styles/normal = SubResource("CardEquipmentSelected")
+CardEquipmentSelected/styles/hover = SubResource("CardEquipmentSelected")
+CardEquipmentValid/base_type = &"CardEquipment"
+CardEquipmentValid/styles/normal = SubResource("CardEquipmentValid")
+CardEquipmentValid/styles/hover = SubResource("CardEquipmentValid")
+CardEquipmentValid/styles/pressed = SubResource("CardEquipmentValid")
+CardEquipmentInvalid/base_type = &"CardEquipment"
+CardEquipmentInvalid/styles/normal = SubResource("CardEquipmentInvalid")
+CardEquipmentInvalid/styles/hover = SubResource("CardEquipmentInvalid")
+CardEquipmentInvalid/styles/pressed = SubResource("CardEquipmentInvalid")
+
+RosterCardDropValid/base_type = &"RosterCard"
+RosterCardDropValid/styles/normal = SubResource("RosterCardDropValid")
+RosterCardDropValid/styles/hover = SubResource("RosterCardDropValid")
+RosterCardDropValid/styles/pressed = SubResource("RosterCardDropValid")
+
+RosterCardDropInvalid/base_type = &"RosterCard"
+RosterCardDropInvalid/styles/normal = SubResource("RosterCardDropInvalid")
+RosterCardDropInvalid/styles/hover = SubResource("RosterCardDropInvalid")
+RosterCardDropInvalid/styles/pressed = SubResource("RosterCardDropInvalid")
+
+EquipmentSocketValid/base_type = &"EquipmentSocket"
+EquipmentSocketValid/styles/normal = SubResource("EquipmentSocketValid")
+EquipmentSocketValid/styles/hover = SubResource("EquipmentSocketValid")
+EquipmentSocketValid/styles/pressed = SubResource("EquipmentSocketValid")
+
+EquipmentSocketInvalid/base_type = &"EquipmentSocket"
+EquipmentSocketInvalid/styles/normal = SubResource("EquipmentSocketInvalid")
+EquipmentSocketInvalid/styles/hover = SubResource("EquipmentSocketInvalid")
+EquipmentSocketInvalid/styles/pressed = SubResource("EquipmentSocketInvalid")
+
+WorkbenchOverlay/base_type = &"PanelContainer"
+WorkbenchOverlay/styles/panel = SubResource("WorkbenchOverlay")
+WorkbenchList/base_type = &"PanelContainer"
+WorkbenchList/styles/panel = SubResource("Workbenchlist")
+WorkbenchDetails/base_type = &"PanelContainer"
+WorkbenchDetails/styles/panel = SubResource("Workbenchdetails")
+WorkbenchBag/base_type = &"PanelContainer"
+WorkbenchBag/styles/panel = SubResource("WorkbenchBag")
+RosterSelector/base_type = &"Button"
+RosterSelector/styles/normal = SubResource("WorkbenchSelector")
+RosterSelector/styles/hover = SubResource("WorkbenchSelectorSelected")
+RosterSelector/styles/pressed = SubResource("WorkbenchSelectorSelected")
+RosterSelector/styles/focus = SubResource("FocusOverlay")
+RosterSelectorSelected/base_type = &"RosterSelector"
+RosterSelectorSelected/styles/normal = SubResource("WorkbenchSelectorSelected")
+RosterSelectorSelected/styles/hover = SubResource("WorkbenchSelectorSelected")
+WorkbenchEquipment/base_type = &"EquipmentSocket"
+WorkbenchEquipment/styles/normal = SubResource("EquipmentSocket")
+WorkbenchEquipment/styles/hover = SubResource("EquipmentSocketHover")
+WorkbenchEquipment/styles/pressed = SubResource("EquipmentSocketSelected")
+WorkbenchEquipment/styles/disabled = SubResource("EquipmentSocket")
+WorkbenchEquipment/styles/focus = SubResource("FocusOverlay")
+WorkbenchEquipmentSelected/base_type = &"WorkbenchEquipment"
+WorkbenchEquipmentSelected/styles/normal = SubResource("EquipmentSocketSelected")
+WorkbenchEquipmentValid/base_type = &"WorkbenchEquipment"
+WorkbenchEquipmentValid/styles/normal = SubResource("EquipmentSocketValid")
+WorkbenchEquipmentValid/styles/hover = SubResource("EquipmentSocketValid")
+WorkbenchEquipmentInvalid/base_type = &"WorkbenchEquipment"
+WorkbenchEquipmentInvalid/styles/normal = SubResource("EquipmentSocketInvalid")
+WorkbenchEquipmentInvalid/styles/hover = SubResource("EquipmentSocketInvalid")
+
+WorkbenchTitle/base_type = &"TitleLabel"
+WorkbenchTitle/colors/font_color = Color(0.94, 0.90, 0.82, 1)
+WorkbenchReport/base_type = &"ScrollContainer"
+WorkbenchReport/styles/panel = SubResource("Workbenchdetails")
+
+WorkbenchRank/base_type = &"Label"
+WorkbenchRank/fonts/font = SubResource("TavernTitleFont")
+WorkbenchRank/font_sizes/font_size = 35
+WorkbenchRank/colors/font_color = Color(0.94, 0.86, 0.71, 1)
+WorkbenchRank/colors/font_shadow_color = Color(0.11, 0.09, 0.075, 0.9)
+WorkbenchRank/constants/shadow_offset_x = 1
+WorkbenchRank/constants/shadow_offset_y = 2
+WorkbenchRank/constants/outline_size = 2
+WorkbenchRank/colors/font_outline_color = Color(0.12, 0.09, 0.07, 1)
+WorkbenchBody/base_type = &"Label"
+WorkbenchBody/fonts/font = SubResource("WorkbenchReadingFont")
+WorkbenchBody/font_sizes/font_size = 18
+WorkbenchBody/colors/font_color = Color(0.83, 0.79, 0.71, 1)
+WorkbenchValue/base_type = &"Label"
+WorkbenchValue/fonts/font = SubResource("WorkbenchNumberFont")
+WorkbenchValue/font_sizes/font_size = 19
+WorkbenchValue/colors/font_color = Color(0.95, 0.92, 0.85, 1)
+WorkbenchGroup/base_type = &"WorkbenchTitle"
+WorkbenchGroup/font_sizes/font_size = 20
+WorkbenchSkillName/base_type = &"WorkbenchTitle"
+WorkbenchSkillName/font_sizes/font_size = 22
+WorkbenchTray/base_type = &"PanelContainer"
+WorkbenchTray/styles/panel = SubResource("WorkbenchTray")
+WorkbenchSkillSocket/base_type = &"PanelContainer"
+WorkbenchSkillSocket/styles/panel = SubResource("WorkbenchSocket")
+WorkbenchAttributeField/base_type = &"PanelContainer"
+WorkbenchAttributeField/styles/panel = SubResource("WorkbenchAttributeField")
+WorkbenchHorizontalRule/base_type = &"HSeparator"
+WorkbenchHorizontalRule/styles/separator = SubResource("WorkbenchHorizontalRule")
+WorkbenchHorizontalRule/constants/separation = 4
+WorkbenchVerticalRule/base_type = &"VSeparator"
+WorkbenchVerticalRule/styles/separator = SubResource("WorkbenchVerticalRule")
+WorkbenchVerticalRule/constants/separation = 4
+WorkbenchRankPlate/base_type = &"PanelContainer"
+WorkbenchRankPlate/styles/panel = SubResource("WorkbenchRankPlate")
+LineEdit/styles/focus = SubResource("FocusOverlay")
+TextEdit/styles/focus = SubResource("FocusOverlay")
+ItemList/styles/focus = SubResource("FocusOverlay")
+TabBar/styles/tab_focus = SubResource("FocusOverlay")
+TabContainer/styles/tab_focus = SubResource("FocusOverlay")

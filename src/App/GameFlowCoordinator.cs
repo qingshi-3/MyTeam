@@ -61,6 +61,7 @@ public sealed class GameFlowCoordinator : IDisposable
     {
         if (_connected) return;
         _screens.MainMenu.NewRunRequested += ShowHeroSelection;
+        _screens.GrowthChanged += RefreshGrowth;
         _screens.MainMenu.ContinueRequested += ContinueRun;
         _screens.MainMenu.BattleLabRequested += ShowBattleLab;
         _screens.MainMenu.SettingsRequested += ShowSettings;
@@ -102,6 +103,7 @@ public sealed class GameFlowCoordinator : IDisposable
         _application()?.SetEquipmentEditingLocked(false);
         if (!_connected) return;
         _screens.MainMenu.NewRunRequested -= ShowHeroSelection;
+        _screens.GrowthChanged -= RefreshGrowth;
         _screens.MainMenu.ContinueRequested -= ContinueRun;
         _screens.MainMenu.BattleLabRequested -= ShowBattleLab;
         _screens.MainMenu.SettingsRequested -= ShowSettings;
@@ -271,7 +273,8 @@ public sealed class GameFlowCoordinator : IDisposable
         if (!string.IsNullOrEmpty(run.TerminalCompletionId))
         {
             var victory = run.TerminalVictory;
-            if (App.ResumeTerminalCompletion()) ShowResult(victory ? "登塔成功" : "征程结束", "终局记录已安全保存。");
+            var summary = run.LastBattleConsequence is { } consequence ? RunHealthText.Consequence(consequence) : "终局记录已安全保存。";
+            if (App.ResumeTerminalCompletion()) ShowResult(victory ? "登塔成功" : "征程结束", summary);
             else
             {
                 _screens.Reward.ShowTerminalFailure("终局记录尚未保存，原征程已保留；修复存储问题后可重试，不会重复发放胜利奖励。");
@@ -283,10 +286,16 @@ public sealed class GameFlowCoordinator : IDisposable
         if (run.PendingNode) { OpenSelectedNode(); return; }
         _screens.Tower.Bind(App, _presentation.ChoiceCard, _presentation.SemanticIcons);
         Show(AppScreenId.Tower);
+        if (run.Growth?.PendingDiscovery is not null) _screens.OpenGrowthWorkbench();
     }
 
     private void SelectNode(TowerNodeType type)
     {
+        if (App.ActiveRun?.Growth?.PendingDiscovery is not null)
+        {
+            _screens.OpenGrowthWorkbench();
+            return;
+        }
         if (App.SelectNode(type)) OpenSelectedNode();
     }
 
@@ -311,7 +320,7 @@ public sealed class GameFlowCoordinator : IDisposable
                 Show(AppScreenId.Event);
                 break;
             case TowerNodeType.Rest:
-                _screens.Rest.Bind(App.Rules);
+                _screens.Rest.Bind(App.Rules, run.CurrentRunHealth, run.MaximumRunHealth);
                 Show(AppScreenId.Rest);
                 break;
         }
@@ -362,19 +371,42 @@ public sealed class GameFlowCoordinator : IDisposable
     private void StartBattle()
     {
         if (_encounter is null) return;
+        if (App.ActiveRun?.Growth?.PendingDiscovery is not null)
+        {
+            _screens.OpenGrowthWorkbench();
+            return;
+        }
         ResetPendingBattleFlow();
-        var config = App.BuildBattleConfig(_encounter);
-        App.SetEquipmentEditingLocked(true);
         try
         {
+            // The facade validates the complete configuration before paying for a preset.
+            var begin = App.TryBeginGrowthBattle(_encounter);
+            if (!begin.Succeeded)
+            {
+                _screens.Deployment.ShowMessage(begin.Message, true);
+                return;
+            }
+            var config = App.BuildBattleConfig(_encounter);
+            App.SetEquipmentEditingLocked(true);
             Show(AppScreenId.Battle);
             _screens.Battle.StartBattle(App.Content, config, _encounter.Title, App.Settings.DefaultBattleSpeed);
+            _screens.Battle.BindRunHealth(App.ActiveRun!.CurrentRunHealth, App.ActiveRun.MaximumRunHealth);
         }
-        catch
+        catch (Exception exception)
         {
+            _screens.Battle.StopBattle();
             App.SetEquipmentEditingLocked(false);
-            throw;
+            ShowDeployment();
+            _screens.Deployment.ShowMessage("战斗未能启动，可重试；已保存的法术不会重复消耗。" + exception.Message, true);
         }
+    }
+
+    private void RefreshGrowth()
+    {
+        // Rebind the underlying page without dismissing the workbench/focus scope.
+        if (_screens.Deployment.Visible && _encounter is not null) _screens.Deployment.Bind(App, _encounter);
+        if (_screens.Tower.Visible) _screens.Tower.Bind(App, _presentation.ChoiceCard, _presentation.SemanticIcons);
+        _screens.BindEquipmentManagement(App);
     }
 
     internal void AcceptBattleResult(BattleResult result)
@@ -401,7 +433,9 @@ public sealed class GameFlowCoordinator : IDisposable
         if (!resolution.Accepted)
         {
             _pendingSettlementMessage = resolution.Failure == RunBattleResolutionFailure.PersistenceFailed
-                ? "战斗结果暂未保存，军团状态没有改变。请重试结算。"
+                ? !string.IsNullOrEmpty(App.ActiveRun?.TerminalCompletionId)
+                    ? "终局结果已暂存，征程归档尚未完成。请重试结算，不会重复扣血或发奖。"
+                    : "战斗结果暂未保存，军团状态没有改变。请重试结算。"
                 : "战斗结算暂未完成，军团状态没有改变。请重试结算。";
             if (_battleReportShown)
                 _screens.BattleReport.ShowSettlementRetry(_pendingSettlementMessage);
@@ -413,9 +447,10 @@ public sealed class GameFlowCoordinator : IDisposable
         _pendingSettlementMessage = string.Empty;
         if (resolution.Outcome != BattleOutcome.PlayerVictory)
         {
-            _postBattleRoute = PostBattleRoute.Failure;
-            _pendingResultTitle = "征程失败";
-            _pendingResultSummary = $"军团止步于第 {Math.Max(1, App.Meta.HighestRegion)} 区。\n战斗摘要：{PlayerFacingText.DescribeBattleOutcome(resolution.Outcome)}，耗时 {_pendingBattleResult.Ticks * BattleTiming.TickSeconds:0.0} 秒。";
+            _postBattleRoute = resolution.ActiveRun is not null ? PostBattleRoute.Continue : PostBattleRoute.Failure;
+            _pendingResultTitle = "征程结束";
+            _pendingResultSummary = resolution.Consequence is { } consequence
+                ? RunHealthText.Consequence(consequence) : "本次征程已结束。";
         }
         else if (_pendingFinalBoss)
         {
@@ -443,6 +478,7 @@ public sealed class GameFlowCoordinator : IDisposable
         _battleReportShown = true;
         Show(AppScreenId.BattleReport);
         _screens.BattleReport.Bind(_pendingBattleResult, _pendingEncounterTitle, App.Content);
+        if (_battleResolutionCommitted) _screens.BattleReport.BindRunConsequence(_pendingBattleResolution?.Consequence);
         if (!_battleResolutionCommitted)
             _screens.BattleReport.ShowSettlementRetry(_pendingSettlementMessage);
     }
@@ -458,6 +494,7 @@ public sealed class GameFlowCoordinator : IDisposable
         if (!_battleResolutionCommitted && !TryResolvePendingBattle()) return;
         _battleReportContinued = true;
         if (_postBattleRoute == PostBattleRoute.Reward) ShowCombatReward();
+        else if (_postBattleRoute == PostBattleRoute.Continue) ShowTower();
         else ShowResult(_pendingResultTitle, _pendingResultSummary);
     }
 
@@ -530,7 +567,7 @@ public sealed class GameFlowCoordinator : IDisposable
 
     private void ResolveRest(bool takeGold)
     {
-        ResolveRunChoice(takeGold ? "gold" : "recover");
+        ResolveRunChoice(takeGold ? "gold" : "recover_run_health");
     }
 
     private void ShowPendingOffer()
@@ -581,6 +618,7 @@ public sealed class GameFlowCoordinator : IDisposable
     {
         App.Settings.MasterVolume = intent.MasterVolume;
         App.Settings.DefaultBattleSpeed = intent.DefaultBattleSpeed;
+        App.Settings.ReduceUiMotion = intent.ReduceUiMotion;
         App.SaveSettings();
         ShowMainMenu();
     }
@@ -617,5 +655,5 @@ public sealed class GameFlowCoordinator : IDisposable
         _battleReportContinued = false;
     }
 
-    private enum PostBattleRoute { None, Reward, Success, Failure }
+    private enum PostBattleRoute { None, Reward, Continue, Success, Failure }
 }

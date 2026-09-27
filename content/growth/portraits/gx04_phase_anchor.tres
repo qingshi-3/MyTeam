@@ -1,0 +1,23 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="r0"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f3_dervish/frames.tres" id="r1"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f3_dervish.png" id="illustration"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/cutouts/f3_dervish.png" id="card_illustration"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "gx04_phase_anchor"
+Frames = ExtResource("r1")
+AnimationName = &"idle"
+FrameIndex = 0
+Zoom = 2
+OffsetRatio = Vector2(0, 0.05)
+Illustration = ExtResource("illustration")
+CardIllustration = ExtResource("card_illustration")
+CardIllustrationFocus = Vector2(0.5, 0.4)
+CardIllustrationZoom = 1.2
+IllustrationFocus = Vector2(0.5, 0.24)
+IllustrationZoom = 1

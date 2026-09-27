@@ -1,0 +1,20 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://tests/SixActionsVfxReview.cs" id="script"]
+[ext_resource type="Script" path="res://src/Vfx/VfxPlayer.cs" id="player"]
+[ext_resource type="Resource" path="res://content/vfx/catalog.tres" id="catalog"]
+[node name="SixActionsVfxReview" type="Node2D"]
+script = ExtResource("script")
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1060.0
+offset_bottom = 480.0
+color = Color(0.075,0.095,0.125,1)
+[node name="Floor" type="ColorRect" parent="."]
+offset_left = 35.0
+offset_right = 1025.0
+offset_top = 352.0
+offset_bottom = 353.0
+color = Color(0.22,0.27,0.32,0.3)
+[node name="Player" type="Node2D" parent="."]
+z_index = 2
+script = ExtResource("player")
+Catalog = ExtResource("catalog")

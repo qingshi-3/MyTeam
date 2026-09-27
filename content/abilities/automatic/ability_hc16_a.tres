@@ -25,7 +25,7 @@ Action = 7
 TargetQuery = SubResource("s0")
 Amount = 0
 Terms = [SubResource("s1")]
-Minimum = 40
+Minimum = 30
 Maximum = 1e+20
 Every = 1
 
@@ -83,7 +83,7 @@ DamageType = 0
 script = ExtResource("r0")
 StableId = "ability_hc16_a"
 DisplayName = "碎盾轰击"
-Description = "当前盾至少 40 时消费全部护盾，对周围 1.5 格敌人造成耗盾量 80% 的伤害。"
+Description = "护盾至少为 30 时，消耗全部护盾，对周围 1.5 格敌人造成消耗量 80% 的伤害。"
 ActivationKind = 1
 Trigger = 5
 ManaCost = 60

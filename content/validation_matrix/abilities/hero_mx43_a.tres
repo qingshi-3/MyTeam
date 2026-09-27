@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 2
+Target = 8
+Amount = 35
+DurationTicks = 30
+Range = 3
+MaxTargets = 3
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx43_a"
+DisplayName = "构装卫师·主动"
+Description = "为3格内至多3名友方单位提供35点护盾，持续3秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1")]

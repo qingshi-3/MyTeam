@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 17
+Target = 0
+ContentId = "matrix_spirit_bone"
+Count = 2
+Maximum = 3
+DurationTicks = 100
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx20_a"
+DisplayName = "白骨司祭·主动"
+Description = "召唤2只持续10秒的骷髅；最多同时拥有3只。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1")]

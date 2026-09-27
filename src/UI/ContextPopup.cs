@@ -7,7 +7,7 @@ namespace TowerAutobattler.UI;
 
 // Authored overlay host: information windows block the background, tool windows
 // leave the board reachable for native drag/drop. Neither participates in board layout.
-public partial class ContextPopup : Control
+public partial class ContextPopup : Control, IUiMotionHost
 {
     [Export] public NodePath PanelPath { get; set; } = "Panel";
     [Export] public NodePath BackdropPath { get; set; } = "Backdrop";
@@ -15,7 +15,10 @@ public partial class ContextPopup : Control
     [Export] public bool Blocking { get; set; } = true;
     [Export] public bool FullViewport { get; set; }
     public event Action? Closed;
+    public Func<bool>? CancelActiveInteraction { get; set; }
     public bool IsOpen => IsVisibleInTree();
+    public Func<bool> ReduceUiMotion { get; set; } = () => false;
+    private UiPopupMotion? _motion;
     private Control _panel = null!;
     private Control _backdrop = null!;
     private Button _close = null!;
@@ -29,6 +32,7 @@ public partial class ContextPopup : Control
         _panel = GetNode<Control>(PanelPath);
         _backdrop = GetNode<Control>(BackdropPath);
         _close = GetNode<Button>(CloseButtonPath);
+        _motion = new UiPopupMotion(_panel, _backdrop, () => ReduceUiMotion());
         MouseFilter = MouseFilterEnum.Ignore;
         _backdrop.MouseFilter = MouseFilterEnum.Stop;
         _close.Pressed += Close;
@@ -48,21 +52,38 @@ public partial class ContextPopup : Control
 
     public void Open(Control? opener = null)
     {
-        if (_opened && IsVisibleInTree()) { _backdrop.Visible = Blocking; return; }
+        if (_opened && IsVisibleInTree())
+        {
+            _backdrop.Visible = Blocking;
+            if (_motion?.IsClosing == true) { _motion.Open(); _close.GrabFocus(); }
+            return;
+        }
         foreach (var node in GetTree().GetNodesInGroup(PopupGroup))
-            if (node is ContextPopup other && other != this && other.IsOpen) other.Close();
+            if (node is ContextPopup other && other != this && other.IsOpen) other.CloseImmediately();
         _opener = opener ?? GetViewport().GuiGetFocusOwner();
         BattleLabHoverHint.HideAll(true);
         _opened = true;
         _backdrop.Visible = Blocking;
         if (FullViewport) FitViewport();
         Show();
+        _motion?.Open();
         _close.GrabFocus();
     }
 
     public void Close()
     {
+        BattleLabHoverHint.HideAll(true);
+        if (!_opened || !IsVisibleInTree()) { CloseImmediately(); return; }
+        CancelActiveInteraction?.Invoke();
+        _moving = false;
+        _motion!.Close(CloseImmediately);
+    }
+
+    public void CloseImmediately()
+    {
+        _motion?.Reset();
         if (!_opened) { Hide(); return; }
+        CancelActiveInteraction?.Invoke();
         _opened = false;
         _moving = false;
         Hide();
@@ -83,6 +104,11 @@ public partial class ContextPopup : Control
     public override void _Input(InputEvent input)
     {
         if (!IsOpen) return;
+        if (_motion?.IsClosing == true)
+        {
+            if (Blocking) GetViewport().SetInputAsHandled();
+            return;
+        }
         // Tool windows can be moved aside to expose any deployment cell. The title
         // band belongs to the window; item drags below it keep their native path.
         if (!Blocking && input is InputEventMouseButton { ButtonIndex: MouseButton.Left } mouse)
@@ -114,7 +140,7 @@ public partial class ContextPopup : Control
         {
             // First Esc cancels an in-flight item; the second closes the window.
             if (GetViewport().GuiIsDragging()) GetViewport().GuiCancelDrag();
-            else Close();
+            else if (CancelActiveInteraction?.Invoke() != true) Close();
             GetViewport().SetInputAsHandled();
         }
         else if (Blocking && key.Keycode == Key.Tab)
@@ -134,11 +160,12 @@ public partial class ContextPopup : Control
 
     public override void _Notification(int what)
     {
-        if (what == NotificationVisibilityChanged && _opened && !IsVisibleInTree()) Close();
+        if (what == NotificationVisibilityChanged && _opened && !IsVisibleInTree()) CloseImmediately();
     }
 
     public override void _ExitTree()
     {
+        _motion?.Dispose();
         if (FullViewport) GetViewport().SizeChanged -= FitViewport;
         _close.Pressed -= Close;
         _backdrop.GuiInput -= BackdropInput;

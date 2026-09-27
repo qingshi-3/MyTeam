@@ -7,6 +7,7 @@ using TowerAutobattler.Content;
 using TowerAutobattler.Run;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Project;
+using TowerAutobattler.Growth;
 
 namespace TowerAutobattler.UI;
 
@@ -53,16 +54,17 @@ public partial class HeroSelectScreen : Control
     }
 
     public void Bind(ContentRegistry content, MetaProgressDto meta)
-        => BindContent(content, meta.UnlockedHeroIds, null);
+        => BindContent(content, meta.UnlockedHeroIds, null, null);
 
     public void BindOpening(RunApplication app)
     {
         var opening = app.ActiveRun?.OpeningRecruitment ?? throw new InvalidOperationException("Missing opening draft.");
-        BindContent(app.Content, opening.CandidateIds, app.Project.Campaign.RecruitmentSupply);
+        BindContent(app.Content, opening.CandidateIds, app.Project.Campaign.RecruitmentSupply, app.GrowthRules);
         RefreshOpening(opening);
     }
 
-    private void BindContent(ContentRegistry content, IReadOnlyCollection<string> eligible, CompiledRecruitmentSupply? supply)
+    private void BindContent(ContentRegistry content, IReadOnlyCollection<string> eligible, CompiledRecruitmentSupply? supply,
+        CompiledGrowthRules? growthRules)
     {
         var heroes = new List<HeroSelectionViewModel>();
         var entries = supply is null ? content.Catalog.Heroes.AsEnumerable() : eligible.Select(id =>
@@ -74,17 +76,25 @@ public partial class HeroSelectScreen : Control
             try
             {
                 var rule = root.HeroRule;
+                var snapshot = BattleSetupFactory.Snapshot(definition, root.Behavior,
+                    root.AbilityLoadout?.Resolve(content.Graph), content.Graph) with
+                    {
+                        AttackHitGrowth = root.AttackHitGrowth?.Snapshot()
+                    };
+                var growth = GrowthPresentation.Project(entry.StableId, snapshot, growthRules);
+                var ruleTitle = growth.HasGrowthPlan ? growth.Title : rule?.RuleTitle ?? string.Empty;
+                var legacyRule = snapshot.AbilityLoadout is null && snapshot.AttackHitGrowth is null
+                    ? rule?.RuleDescription ?? string.Empty : string.Empty;
+                var ruleDescription = string.Join("\n\n", new[] { growth.Description, legacyRule }
+                    .Where(text => !string.IsNullOrWhiteSpace(text)));
                 heroes.Add(new HeroSelectionViewModel(
                     entry.StableId,
                     definition,
                     eligible.Contains(entry.StableId),
-                    rule?.RuleTitle ?? string.Empty,
-                    rule?.RuleDescription ?? string.Empty,
-                    BattleSetupFactory.Snapshot(definition, root.Behavior,
-                        root.AbilityLoadout?.Resolve(content.Graph), content.Graph) with
-                    {
-                        AttackHitGrowth = root.AttackHitGrowth?.Snapshot()
-                    }, supply?.TierOf(entry.StableId) ?? 0));
+                    ruleTitle,
+                    ruleDescription,
+                    growth.Snapshot, supply?.TierOf(entry.StableId) ?? 0)
+                { AlwaysShowRule = growth.HasGrowthPlan });
             }
             finally { root.Free(); }
         }
@@ -137,13 +147,17 @@ public partial class HeroSelectScreen : Control
         _opening = opening;
         _confirm.Visible = true;
         _confirm.Disabled = opening.SelectedIds.Length != CompiledRecruitmentSupply.OpeningSelectionCount;
-        _status.Text = $"已选 {opening.SelectedIds.Length} / 2" + (opening.SelectedIds.IsEmpty ? "" :
-            "　" + string.Join("、", opening.SelectedIds.Select(id => _models[id].Definition.DisplayName)));
-        _hint.Text = "从这六名英雄中选择两名。再次点击可取消，确认后进入首战备战。";
+        _status.Text = $"已选 {opening.SelectedIds.Length} / 2";
+        _hint.Text = string.Empty;
+        _hint.Visible = false;
         RefreshSelectionState();
     }
 
-    public void ShowOpeningError(string message) => _hint.Text = message;
+    public void ShowOpeningError(string message)
+    {
+        _hint.Text = message;
+        _hint.Visible = true;
+    }
 
     private void RefreshSelectionState()
     {
@@ -159,7 +173,7 @@ public partial class HeroSelectScreen : Control
         Preview(stableId);
         if (_opening is null) return;
         if (_opening.SelectedIds.Length >= 2 && !_opening.SelectedIds.Contains(stableId))
-        { ShowOpeningError("已选满两名；先取消其中一名，再选择新的英雄。右侧仍可查看技能。"); return; }
+        { ShowOpeningError("已选满两名，请先取消一名。"); return; }
         OpeningHeroToggled?.Invoke(stableId);
     }
 

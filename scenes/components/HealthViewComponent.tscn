@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/Components/HealthViewComponent.cs" id="1"]
 [ext_resource type="Theme" path="res://content/ui/skill_progress_theme.tres" id="SkillTheme"]
@@ -14,19 +14,22 @@ border_color = Color(0.3, 0.36, 0.42, 0.9)
 [sub_resource type="StyleBoxFlat" id="health_fill"]
 bg_color = Color(0.3, 0.82, 0.46, 1)
 
+[sub_resource type="StyleBoxFlat" id="enemy_health_fill"]
+bg_color = Color(0.72, 0.29, 0.3, 1)
+border_width_left = 3
+border_color = Color(0.94, 0.78, 0.7, 1)
+
 [sub_resource type="StyleBoxFlat" id="shield_fill"]
 bg_color = Color(0.78, 0.86, 0.93, 1)
 
-[node name="HealthViewComponent" type="Node2D" node_paths=PackedStringArray("Bar", "ManaBar", "ShieldBar", "ReadyMarker", "ResourceMarker", "StatusText", "StatusIcon", "CastName")]
+[node name="HealthViewComponent" type="Node2D" node_paths=PackedStringArray("Bar", "ManaBar", "ShieldBar", "StatusIcon")]
 script = ExtResource("1")
 Bar = NodePath("ProgressBar")
 ManaBar = NodePath("ManaBar")
 ShieldBar = NodePath("ShieldBar")
-ReadyMarker = NodePath("ReadyMarker")
-ResourceMarker = NodePath("ResourceMarker")
-StatusText = NodePath("StatusText")
 StatusIcon = NodePath("StatusIcon")
-CastName = NodePath("CastName")
+AllyHealthFill = SubResource("health_fill")
+EnemyHealthFill = SubResource("enemy_health_fill")
 
 [node name="ProgressBar" type="ProgressBar" parent="."]
 offset_left = -30.0
@@ -52,17 +55,6 @@ step = 0.0
 theme = ExtResource("SkillTheme")
 theme_type_variation = &"SkillMana"
 
-[node name="ResourceMarker" type="Label" parent="."]
-visible = false
-offset_left = -46.0
-offset_top = -56.0
-offset_right = -32.0
-offset_bottom = -40.0
-mouse_filter = 2
-theme_override_font_sizes/font_size = 10
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 1)
-theme_override_constants/outline_size = 3
-
 [node name="ShieldBar" type="ProgressBar" parent="."]
 visible = false
 offset_left = -30.0
@@ -75,48 +67,12 @@ step = 0.0
 theme_override_styles/background = SubResource("bar_background")
 theme_override_styles/fill = SubResource("shield_fill")
 
-[node name="ReadyMarker" type="Label" parent="."]
-visible = false
-offset_left = 32.0
-offset_top = -60.0
-offset_right = 66.0
-offset_bottom = -44.0
-mouse_filter = 2
-theme_override_font_sizes/font_size = 12
-theme_override_colors/font_color = Color(0.5, 0.8, 1, 1)
-text = "满蓝"
-
 [node name="StatusIcon" type="TextureRect" parent="."]
 visible = false
-offset_left = -34.0
+offset_left = -7.0
 offset_top = -44.0
-offset_right = -20.0
+offset_right = 7.0
 offset_bottom = -30.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-
-[node name="StatusText" type="Label" parent="."]
-visible = false
-offset_left = -18.0
-offset_top = -46.0
-offset_right = 72.0
-offset_bottom = -29.0
-mouse_filter = 2
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.83, 0.93, 1, 1)
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 1)
-theme_override_constants/outline_size = 4
-
-[node name="CastName" type="Label" parent="."]
-visible = false
-offset_left = -68.0
-offset_top = -110.0
-offset_right = 68.0
-offset_bottom = -90.0
-horizontal_alignment = 1
-mouse_filter = 2
-theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.65, 0.83, 1, 1)
-theme_override_colors/font_outline_color = Color(0.02, 0.04, 0.08, 1)
-theme_override_constants/outline_size = 5

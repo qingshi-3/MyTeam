@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 7
+Target = 0
+Key = "shield-speed"
+Amount = 1
+Maximum = 8
+ResetOnTargetChange = true
+
+[sub_resource type="Resource" id="op_3"]
+script = ExtResource("operation")
+Kind = 13
+Target = 0
+Attribute = 3
+Amount = 0
+DurationTicks = 15
+Key = "shield-speed"
+CounterRatio = 0.025
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 1
+SourceRelation = 1
+TargetRelation = 4
+OwnerCondition = 6
+Effects = Array[ExtResource("operation")]([SubResource("op_2"), SubResource("op_3")])
+
+[sub_resource type="Resource" id="op_5"]
+script = ExtResource("operation")
+Kind = 7
+Target = 0
+Key = "shield-speed"
+Amount = -1
+Maximum = 8
+
+[sub_resource type="Resource" id="op_6"]
+script = ExtResource("operation")
+Kind = 13
+Target = 0
+Attribute = 3
+Amount = 0
+DurationTicks = 15
+Key = "shield-speed"
+CounterRatio = 0.025
+
+[sub_resource type="Resource" id="op_4"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 0
+SourceRelation = 0
+TargetRelation = 0
+IntervalTicks = 10
+OwnerCondition = 7
+Effects = Array[ExtResource("operation")]([SubResource("op_5"), SubResource("op_6")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx23_p"
+DisplayName = "机弩手·被动"
+Description = "持盾时连续命中同一目标会提高攻速，每层2.5%，最多8层；失去护盾后每秒减少1层。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1"), SubResource("op_4")]

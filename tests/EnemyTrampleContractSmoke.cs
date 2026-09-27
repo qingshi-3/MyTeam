@@ -8,6 +8,7 @@ using TowerAutobattler.BattleLab;
 using TowerAutobattler.Composition;
 using TowerAutobattler.Components;
 using TowerAutobattler.Content;
+using TowerAutobattler.Growth;
 using TowerAutobattler.Project;
 using TowerAutobattler.Run;
 using TowerAutobattler.UI;
@@ -24,6 +25,12 @@ public partial class EnemyTrampleContractSmoke : Node
             Require(package.Content.TryGet("enemy_ee03_trample_brute", out var entry), "published giant");
             var caster = BattleSetupFactory.Snapshot(entry, package.Content) with
                 { Behavior = new(Stationary: true, DisableBasicAttacks: true), MaxHealth = 10000 };
+            var growthGate = await GrowthContentPackage.CreateReadyAsync(this);
+            var growth = growthGate.Package ?? throw new InvalidOperationException(string.Join(';', growthGate.Report.CoreErrors));
+            var focusedCase = OS.GetCmdlineUserArgs().FirstOrDefault(argument => argument.StartsWith("--case="))?[7..];
+            if (focusedCase is null or "roster") CheckGrowthRosterContacts(growth.Content);
+            if (focusedCase is null or "alternate") CheckAlternateSide(growth.Content);
+            if (focusedCase is null or "grounded") CheckGroundedDisplacement(package.Content);
             CheckManaCycle(caster, entry);
             using (var battle = new BattleSimulation(Config(caster)))
             {
@@ -71,6 +78,7 @@ public partial class EnemyTrampleContractSmoke : Node
             cramped.Spawns.Add(new(caster,1,new(8,1),"caster"));
             cramped.Spawns.Add(new(target,0,new(5,1),"blocked"));
             cramped.Spawns.Add(new(target,0,new(1,1),"far"));
+            cramped.Spawns.Add(new(target,1,new(5,2),"upper-wall"));
             using (var battle = new BattleSimulation(cramped))
             {
                 // Keep the lateral lane narrower than the calibrated body; the former 1.8-cell
@@ -78,6 +86,7 @@ public partial class EnemyTrampleContractSmoke : Node
                 Unit(battle,"caster").Position=new(8,.8f);
                 Unit(battle,"blocked").Position=new(5,.55f);
                 Unit(battle,"far").Position=new(1,.8f);
+                Unit(battle,"upper-wall").Position=new(5,1.35f);
                 Step(battle,45);
                 Require(Unit(battle,"caster").Position.X > 5 && Hits(battle)==1,
                     "wall prevents lateral clearing, charger stops safely without tunneling");
@@ -168,7 +177,8 @@ public partial class EnemyTrampleContractSmoke : Node
                 Require(owner.Trample is not null && owner.CurrentMana == 0,
                     "full mana starts the charge and spends the whole pool immediately");
                 presenter.RefreshCombatResources(owner.CurrentMana, owner.MaxMana, 0, [], true);
-                Require(view.ManaBar.Visible && view.ManaBar.Value == 0 && !view.ReadyMarker.Visible,
+                Require(view.ManaBar.Visible && view.ManaBar.Value == 0 &&
+                    view.GetNodeOrNull<Label>("ReadyMarker") is null,
                     "resource bar stays present and empties on the committed cast");
                 for (var tick = 0; tick < 60 && owner.Trample is not null; tick++)
                 {
@@ -203,6 +213,92 @@ public partial class EnemyTrampleContractSmoke : Node
             Step(battle, 1);
             Require(owner.CurrentMana == 0 && owner.Trample is not null, "cast starts when control ends");
         }
+    }
+    private static void CheckGrowthRosterContacts(ContentRegistry content)
+    {
+        foreach (var heroId in new[] { "hero_mx01", "gx04_phase_anchor", "hero_hc03_iron_guard" })
+        {
+            var battle = GrowthContactBattle(content, heroId);
+            using (battle)
+            {
+                var hero = Unit(battle, "hero");
+                var charger = Unit(battle, "caster");
+                var contactX = hero.Position.X;
+                Step(battle, 45);
+                Require(Math.Abs(hero.Position.Y - 2) > .1f && charger.Position.X < contactX - charger.BodyRadius,
+                    $"growth roster contact clears and charger continues: hero={heroId}, heroPos={hero.Position}, chargerPos={charger.Position}");
+                Require(battle.CombatEvents.Count(e => e.Kind == BattleCombatEventKind.SkillHitLanded &&
+                    e.TargetRuntimeId == hero.RuntimeId) == 1, "growth roster target takes exactly one trample hit: " + heroId);
+            }
+        }
+    }
+    private static void CheckAlternateSide(ContentRegistry content)
+    {
+        using var battle = GrowthContactBattle(content, "hero_mx01", new Vector2(4, 2.2f),
+            ("blocker", "hero_hc03_iron_guard", new Vector2(4, 3), 0));
+        var hero = Unit(battle, "hero");
+        var charger = Unit(battle, "caster");
+        Step(battle, 45);
+        Require(hero.Position.Y < 1.9f && charger.Position.X < 3,
+            $"blocked preferred side retries open opposite side: heroPos={hero.Position}, blockerPos={Unit(battle,"blocker").Position}, chargerPos={charger.Position}");
+    }
+    private static void CheckGroundedDisplacement(ContentRegistry content)
+    {
+        using var battle = GrowthContactBattle(content, "hero_hc31_breach_lancer", new Vector2(5, 2),
+            ("charge-target", "enemy_rust_guard", new Vector2(5, 1), 1));
+        var hero = Unit(battle, "hero");
+        hero.CurrentMana = 0;
+        Step(battle, 21);
+        hero.CurrentMana = hero.MaxMana;
+        Step(battle, 1);
+        Require(battle.PendingEvents.Any(e => e.Type == "displacement" && e.TargetRuntimeId == hero.RuntimeId &&
+                e.Displacement is { Finished: false } && e.Displacement.Kind == DisplacementKind.Charge),
+            "HC31 has an active grounded charge before EE03 contact");
+        var contactX = hero.Position.X;
+        Step(battle, 23);
+        Require(Math.Abs(hero.Position.Y - 2) > .1f && Unit(battle, "caster").Position.X < contactX - .7f,
+            $"trample takes over grounded displacement and continues: heroPos={hero.Position}, chargerPos={Unit(battle,"caster").Position}");
+        Require(battle.PendingEvents.Any(e => e.Type == "displacement" && e.TargetRuntimeId == hero.RuntimeId &&
+                e.Displacement is { Kind: DisplacementKind.Charge, Finished: true, Cancelled: true }),
+            "superseded grounded displacement is cancelled");
+    }
+    private static BattleSimulation GrowthContactBattle(ContentRegistry content, string heroId,
+        Vector2? heroPosition = null, params (string RuntimeId, string ContentId, Vector2 Position, int Team)[] extras)
+    {
+        Require(content.TryGet("enemy_ee03_trample_brute", out var casterEntry), "growth publishes EE03");
+        var caster = BattleSetupFactory.Snapshot(casterEntry, content) with
+            { Behavior = new(Stationary: true, DisableBasicAttacks: true), MaxHealth = 10000 };
+        var hero = PlayerSnapshot(content, heroId) with
+            { Behavior = new(Stationary: true, DisableBasicAttacks: true), MaxHealth = 10000 };
+        var config = new BattleConfig
+        {
+            Seed = 20260927, FloorRule = new ClearFloorRuleRuntime("trample_growth", "常规", ""),
+            HeroRule = HeroRuleSnapshot.Neutral,
+            Spawns = [new(caster, 1, new(8, 2), "caster"), new(hero, 0, new(4, 2), "hero")]
+        };
+        foreach (var extra in extras)
+        {
+            Require(content.TryGet(extra.ContentId, out var extraEntry), "content publishes fixture body " + extra.ContentId);
+            config.Spawns.Add(new(BattleSetupFactory.Snapshot(extraEntry, content) with
+                { Behavior = new(Stationary: true, DisableBasicAttacks: true), MaxHealth = 10000 }, extra.Team,
+                BattlefieldSpace.PositionToCell(extra.Position), extra.RuntimeId));
+        }
+        var battle = new BattleSimulation(config);
+        Unit(battle, "hero").Position = heroPosition ?? new Vector2(4, 2);
+        foreach (var extra in extras) Unit(battle, extra.RuntimeId).Position = extra.Position;
+        return battle;
+    }
+    private static UnitSnapshot PlayerSnapshot(ContentRegistry content, string contentId)
+    {
+        if (content.TryGet(contentId, out var entry)) return BattleSetupFactory.Snapshot(entry, content);
+        Require(contentId == "hero_hc31_breach_lancer", "content publishes player hero " + contentId);
+        var definition = GD.Load<UnitDefinition>("res://content/definitions/heroes/hero_hc31_breach_lancer.tres");
+        var authored = GD.Load<AbilityLoadoutDefinition>("res://content/abilities/loadouts/loadout_hero_hc31_breach_lancer.tres");
+        var compiled = AbilityDefinitionCompiler.CompileLoadout(authored,
+            status => status is null ? null : content.Graph.ResolveStatus(status.StableId));
+        Require(definition is not null && compiled.Loadout is not null && !compiled.Report.HasCoreErrors,
+            "retained HC31 definition and loadout compile for grounded displacement fixture");
+        return BattleSetupFactory.Snapshot(definition!, abilityLoadout: compiled.Loadout);
     }
     public static BattleConfig Config(UnitSnapshot caster,bool fail=false)=>new()
     {

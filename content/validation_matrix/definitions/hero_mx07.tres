@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/validation_matrix/portraits/hero_mx07.tres" id="portrait"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="trait"]
+
+[sub_resource type="Resource" id="t0"]
+script = ExtResource("trait")
+TraitId = "mx_ranger"
+Value = 1
+
+[sub_resource type="Resource" id="t1"]
+script = ExtResource("trait")
+TraitId = "mx_poison"
+Value = 1
+
+[resource]
+script = ExtResource("script")
+Id = "hero_mx07"
+DisplayName = "淬毒弩手"
+Description = "持续向单个敌人施加棘毒的射手。"
+Portrait = ExtResource("portrait")
+IsHero = true
+Role = 2
+Faction = 6
+MaxHealth = 175
+AttackDamage = 22
+Armor = 1
+AttackCooldown = 1.2
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.35
+MaxMana = 70
+StartingMana = 20
+ManaPerSecond = 5
+ManaPerAttack = 10
+Tags = Array[StringName]([&"hero", &"matrix_validation", &"ranger"])
+TraitContributions = [SubResource("t0"), SubResource("t1")]

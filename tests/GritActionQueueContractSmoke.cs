@@ -23,7 +23,7 @@ public partial class GritActionQueueContractSmoke : Node
             Run(hero);
             Require(package.Content.TryGet("hero_hc26_ash_returner", out var reviver), "published revival fixture");
             CheckRevival(hero, BattleSetupFactory.Snapshot(reviver, package.Content));
-            GD.Print("GRIT_ACTION_QUEUE_OK no-mana,full-grit,thresholds,coalescing,ordered-recovery,independent-units,control,expiry,rollback,revival-once,determinism");
+            GD.Print("GRIT_ACTION_QUEUE_OK no-mana,full-grit,thresholds,coalescing,ordered-recovery,independent-units,control,retention,rollback,revival-once,determinism");
             GetTree().Quit();
         }
         catch (Exception error) { GD.PrintErr("GRIT_ACTION_QUEUE_FAILED " + error); GetTree().Quit(1); }
@@ -98,9 +98,24 @@ public partial class GritActionQueueContractSmoke : Node
             Unit(battle).DisabledTicks = 100; Step(battle, 4);
             Require(battle.DescribeBattleResources("hero").Contains("怒劲 500"), "grit cap survives control");
             Step(battle, 61);
-            Require(battle.DescribeBattleResources("hero").Contains("怒劲 0"), "grit samples expire independently");
+            Require(battle.DescribeBattleResources("hero").Contains("怒劲 500"), "full grit survives the old six-second expiry while controlled");
             Unit(battle).DisabledTicks = 0; Step(battle, 5);
-            Require(Charges(battle).Length == 0, "expired full-grit-only request is removed before release");
+            Require(Charges(battle).Length == 1 && Unit(battle).Shield == 500,
+                "retained full-grit request casts on release from control and consumes its ledger");
+        }
+        using (var battle = Create(hero, new Probe(c =>
+               {
+                   var unit = c.Units.Single(u => u.RuntimeId == "hero");
+                   if (c.Tick is 1 or 82 or 164 or 246 or 328)
+                   { c.Damage("front", unit, 100); c.Heal(unit, 100); }
+               })))
+        {
+            Step(battle, 327);
+            Require(Charges(battle).Length == 0 && battle.DescribeBattleResources("hero").Contains("怒劲 400"),
+                "sparse hits separated by more than six seconds accumulate despite full healing");
+            Step(battle, 8);
+            Require(Charges(battle).Length == 1 && Releases(battle).Length == 1,
+                "healed brawler eventually releases a real punch from accumulated damage");
         }
         CheckShieldAndCancellation(hero);
         CheckIndependentQueues(hero, punch);

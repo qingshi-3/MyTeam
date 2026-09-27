@@ -10,6 +10,11 @@ public partial class UnitPortrait : Control
     [Export(PropertyHint.Range, "0.1,1.5,0.05")] public float UiPlaybackScale { get; set; } = .75f;
     [Export] public bool ContextMirrorHorizontal { get; set; }
     [Export] public bool FitVisibleArtwork { get; set; }
+    [Export] public bool PreferIllustration { get; set; }
+    [Export] public bool FullIllustration { get; set; }
+    [Export] public bool StoneFrame { get; set; }
+    [Export(PropertyHint.Range, "0.5,3,0.05")] public float IllustrationZoomMultiplier { get; set; } = 1f;
+    [Export(PropertyHint.Range, "0,64,1")] public float IllustrationBottomOcclusion { get; set; }
 
     // Resources are shared, but these derived layout caches neither edit them nor keep them alive.
     private static readonly ConditionalWeakTable<Texture2D, TextureArtworkBounds> TextureBounds = new();
@@ -17,6 +22,9 @@ public partial class UnitPortrait : Control
 
     private AnimatedSprite2D _sprite = null!;
     private TextureRect _fallback = null!;
+    private TextureRect _illustration = null!;
+    private TextureRect _frame = null!;
+    private ColorRect _recess = null!;
     private UnitPortraitDefinition? _definition;
     private Texture2D? _layoutTexture;
     private bool _hasPlayablePortrait;
@@ -25,6 +33,8 @@ public partial class UnitPortrait : Control
     public bool HasAuthoredPortrait => _definition?.ResolveTexture() is not null;
     public bool IsPortraitPlaying => _sprite?.IsPlaying() == true;
     public int CurrentFrame => _sprite?.Frame ?? 0;
+    public bool IsShowingIllustration => _illustration?.Visible == true;
+    public float IllustrationTopInset => StoneFrame && _definition is not null ? Size.Y * .04f : 0;
 
     public override void _Ready()
     {
@@ -46,11 +56,27 @@ public partial class UnitPortrait : Control
     {
         CacheNodes();
         _definition = definition;
+        _frame.Visible = _recess.Visible = StoneFrame && definition is not null;
+        _illustration.Texture = PreferIllustration
+            ? definition?.CardIllustration ?? definition?.Illustration
+            : null;
+        _illustration.Visible = _illustration.Texture is not null;
+        if (_illustration.Material is ShaderMaterial material)
+        {
+            material.SetShaderParameter("focal_point", FullIllustration
+                ? definition?.CardIllustrationFocus ?? new Vector2(.5f, .4f)
+                : definition?.IllustrationFocus ?? new Vector2(.5f, .32f));
+            material.SetShaderParameter("portrait_zoom", FullIllustration
+                ? definition?.CardIllustrationZoom ?? 1.2f : (definition?.IllustrationZoom ?? 1f) * IllustrationZoomMultiplier);
+            material.SetShaderParameter("full_illustration", FullIllustration);
+            material.SetShaderParameter("stone_frame", StoneFrame && definition is not null);
+            material.SetShaderParameter("bottom_occlusion", IllustrationBottomOcclusion);
+        }
         _layoutTexture = definition?.ResolveTexture();
-        _hasPlayablePortrait = _layoutTexture is not null && definition?.Frames is not null;
+        _hasPlayablePortrait = !_illustration.Visible && _layoutTexture is not null && definition?.Frames is not null;
         _sprite.Stop();
         _sprite.Visible = _hasPlayablePortrait;
-        _fallback.Texture = _hasPlayablePortrait ? null : fallback;
+        _fallback.Texture = _hasPlayablePortrait || _illustration.Visible ? null : fallback;
         var effectiveFlipHorizontal = (definition?.FlipHorizontal ?? false) ^ ContextMirrorHorizontal;
         _fallback.FlipH = effectiveFlipHorizontal;
         _fallback.Visible = _fallback.Texture is not null;
@@ -74,6 +100,17 @@ public partial class UnitPortrait : Control
 
     private void ApplyLayout()
     {
+        if (_illustration?.Visible == true && Size.X > 0 && Size.Y > 0)
+        {
+            _illustration.Size = FullIllustration ? Size : new Vector2(Mathf.Min(Size.X, Size.Y * 1.3f), Size.Y);
+            _illustration.Position = (Size - _illustration.Size) * .5f;
+            if (_illustration.Material is ShaderMaterial material)
+            {
+                material.SetShaderParameter("window_aspect", _illustration.Size.X / _illustration.Size.Y);
+                material.SetShaderParameter("window_size", _illustration.Size);
+            }
+            return;
+        }
         if (_layoutTexture is null || Size.X <= 0 || Size.Y <= 0) return;
         Vector2 sourceSize = _layoutTexture.GetSize();
         if (sourceSize.X <= 0 || sourceSize.Y <= 0) return;
@@ -84,7 +121,8 @@ public partial class UnitPortrait : Control
             if (bounds.Size.X <= 0 || bounds.Size.Y <= 0) bounds = new Rect2(Vector2.Zero, sourceSize);
             // Full-art consumers intentionally replace the authored close-up zoom and offset.
             // One union for the entire idle animation prevents breathing/bobbing from pumping scale.
-            var fitScale = Mathf.Min(Size.X / bounds.Size.X, Size.Y / bounds.Size.Y) * .96f;
+            var fitScale = Mathf.Min(Size.X / bounds.Size.X, Size.Y / bounds.Size.Y) *
+                (StoneFrame && _definition is not null ? .67f : .96f);
             var fitPosition = (Size - bounds.Size * fitScale) * .5f - bounds.Position * fitScale;
             _sprite.Scale = Vector2.One * fitScale;
             _sprite.Position = fitPosition;
@@ -188,5 +226,8 @@ public partial class UnitPortrait : Control
     {
         _sprite ??= GetNode<AnimatedSprite2D>("%PortraitSprite");
         _fallback ??= GetNode<TextureRect>("%PortraitFallback");
+        _illustration ??= GetNode<TextureRect>("%PortraitIllustration");
+        _frame ??= GetNode<TextureRect>("%PortraitFrame");
+        _recess ??= GetNode<ColorRect>("%PortraitRecess");
     }
 }

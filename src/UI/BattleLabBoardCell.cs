@@ -22,6 +22,7 @@ public partial class BattleLabBoardCell : Button
         _dropMark.Text = allowed ? "装" : "×";
         _dropMark.Visible = true;
         ThemeTypeVariation = allowed ? "EquipmentSlotValid" : "EquipmentSlotInvalid";
+        UiDragVisual.Aim(data, this, allowed);
         return allowed;
     }
     public override void _DropData(Vector2 atPosition, Variant data)

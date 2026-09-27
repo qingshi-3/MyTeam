@@ -269,7 +269,7 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
                 if (particles.Where((p,i) => visibleBefore[i] && p.Visible && p.Position != positions[i]).Any())
                     throw new Exception($"{definition.StableId}: reduced-motion particle still travels.");
                 player.End("library", VfxEndReason.Completed);
-                player.Advance(.3f);
+                player.Advance(definition.ReleaseDuration + .05f);
                 player.ReducedMotion = false;
             }
             if (player.ActiveCount != 0 || GodotObject.IsInstanceValid(instance))
@@ -867,8 +867,6 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
         foreach(var control in new[] { "CastSpeed", "MotionSpeed", "ParticleSize", "Density", "Width" })
             if(Math.Abs(preview.GetNode<HSlider>("%"+control).Value-1)>.001)
                 throw new Exception($"Preview default {control} disagrees with invocation defaults.");
-        if(Math.Abs(preview.GetNode<HSlider>("%FlightTime").Value-.78)>.001)
-            throw new Exception("Preview flight default disagrees with authored duration.");
         void Select(string id)
         {
             int index = player.Catalog.Effects.Select(effect => effect.StableId).ToList().IndexOf(id);
@@ -882,6 +880,25 @@ public partial class VfxShaderPreview : Node2D, IVfxStage
                 player._Process(1.0 / 60);
             }
         }
+        Select("arcane_missile");
+        if(Math.Abs(preview.GetNode<HSlider>("%FlightTime").Value-player.Catalog.Find("arcane_missile").FlightDuration)>.001)
+            throw new Exception("Switching effect did not restore its authored flight duration.");
+        Select("ground_fissure");
+        if(Math.Abs(preview.GetNode<HSlider>("%Radius").Value-.28)>.001)
+            throw new Exception("Narrow fissure inherited another effect's radius.");
+        Tick(12);
+        if(player.GetChild<VfxInstance>(0).Context.TravelProgress is not null)
+            throw new Exception("Automatic external action is stuck at preparation progress.");
+        Select("projectile");
+        var arrowStart=player.GetChild<VfxInstance>(0).Context.Target;
+        Tick(10);
+        var arrowMoved=player.GetChild<VfxInstance>(0).Context.Target;
+        if(arrowMoved.X<=arrowStart.X)throw new Exception("Preview arrow did not travel.");
+        player.Paused=true;Tick(10);
+        if(player.GetChild<VfxInstance>(0).Context.Target!=arrowMoved)throw new Exception("Paused preview arrow kept travelling.");
+        player.Paused=false;
+        Select("duel_mark");
+        if(player.GetChild<VfxInstance>(0).Context.Radius!=0)throw new Exception("Foot marker incorrectly uses an area radius.");
         Select("shield");
         ulong originalId = player.GetChild<VfxInstance>(0).GetInstanceId();
         Tick(540);

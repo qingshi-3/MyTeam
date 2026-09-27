@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 7
+Target = 0
+Key = "cloud-radius"
+Amount = 1
+Maximum = 4
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 2
+SourceRelation = 1
+TargetRelation = 4
+TargetCondition = 1
+Effects = Array[ExtResource("operation")]([SubResource("op_2")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx09_p"
+DisplayName = "疫雾术士·被动"
+Description = "技能命中带棘毒的敌人时，扩大下一次毒云范围，最多叠加4次。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1")]

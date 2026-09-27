@@ -1,0 +1,11 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/RockBarrierVisual.cs" id="script"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/rock_barrier_pillar.tscn" id="pillar"]
+[node name="RockBarrierVisual" type="Node2D" node_paths=PackedStringArray("Pillars")]
+script = ExtResource("script")
+Pillars = [NodePath("Left"), NodePath("Center"), NodePath("Right")]
+ArcDepth = 0.18
+ForwardOffset = 0.18
+[node name="Left" parent="." instance=ExtResource("pillar")]
+[node name="Center" parent="." instance=ExtResource("pillar")]
+[node name="Right" parent="." instance=ExtResource("pillar")]

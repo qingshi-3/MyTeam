@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 2
+Target = 19
+Amount = 18
+DurationTicks = 30
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 13
+SourceRelation = 2
+TargetRelation = 4
+CounterThreshold = 3
+CooldownTicks = 30
+PerTargetCooldown = true
+Effects = Array[ExtResource("operation")]([SubResource("op_2")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx10_p"
+DisplayName = "药藤师·被动"
+Description = "敌人达到3层棘毒时，为正被其攻击的友方单位提供18点护盾；每名受益者独立冷却3秒。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1")]

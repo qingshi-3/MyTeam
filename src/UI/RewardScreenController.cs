@@ -25,7 +25,7 @@ public partial class RewardScreenController : Control
     {
         _title = GetNode<Label>("Center/Panel/Layout/Title");
         _hint = GetNode<Label>("Center/Panel/Layout/Hint");
-        _choices = GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/Choices");
+        _choices = GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices");
         _offerBody = GetNode<Control>("Center/Panel/Layout/OfferBody");
         _convert = GetNode<Button>("Center/Panel/Layout/ConvertButton");
         _continue = GetNode<Button>("Center/Panel/Layout/ContinueButton");
@@ -48,7 +48,7 @@ public partial class RewardScreenController : Control
         _offerBody.Visible = true;
         _continue.Visible = true;
         _title.Text = "征募新兵";
-        _hint.Text = "比较能力，选择一位加入队伍。";
+        _hint.Text = "选择一位加入队伍。";
         RunOfferCardBinder.SyncContent(_choices, app, app.RecruitmentChoices().Select(entry => entry.StableId),
             icons, OnChoice, "招募");
         var conversion = CurrentHeroConversion(app);
@@ -94,10 +94,12 @@ public partial class RewardScreenController : Control
         _claimed = false;
         _offerBody.Visible = true;
         _title.Text = offer.DisplayName;
-        _hint.Text = "比较候选内容，再按卡片下方按钮确认。";
+        _hint.Text = "选择一项带走。";
+        if (offer.Kind == TowerAutobattler.Project.RunOfferKind.Rest)
+            _hint.Text = $"全局生命 {app.ActiveRun!.CurrentRunHealth}/{app.ActiveRun.MaximumRunHealth} · 恢复生命与领取金币只能选择一项。";
         if (offer.Kind == TowerAutobattler.Project.RunOfferKind.Recruitment)
             _hint.Text = offer.Choices.IsEmpty ? "本阶段已无可招募的新英雄，可以继续前进。" :
-                $"第 {app.ActiveRun!.FloorIndex + 1} 层 · 本阶段的新英雄候选，已排除队伍与后备中持有的英雄。";
+                "选择一名英雄加入队伍。";
         RunOfferCardBinder.Sync(_choices, app, choiceTemplate, itemTemplate, icons, OnChoice);
         _convert.Visible = false;
         _continue.Visible = offer.AllowSkip;

@@ -70,9 +70,10 @@ public sealed class RelicRunScope : IDisposable
             AggregateModifiers(snapshots));
     }
 
-    public RelicRunApplyResult Apply(RelicBattleTransitionResult transition)
+    public RelicRunApplyResult Apply(RelicBattleTransitionResult transition,
+        RelicBattleCompletionReason expectedReason = RelicBattleCompletionReason.PlayerVictory)
     {
-        var validation = ValidateCore(transition, RelicBattleCompletionReason.PlayerVictory, out var ordered);
+        var validation = ValidateCore(transition, expectedReason, out var ordered);
         if (!validation.Succeeded) return validation;
 
         _appliedTransitions.Add(transition.TransitionId);

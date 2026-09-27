@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/UI/CardSkillButton.cs" id="Script"]
+
+[node name="CardSkillButton" type="Button"]
+custom_minimum_size = Vector2(100, 22)
+size_flags_horizontal = 3
+theme_type_variation = &"CardSkill"
+script = ExtResource("Script")
+
+[node name="Face" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 0
+
+[node name="Lines" type="HBoxContainer" parent="Face"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Category" type="TextureRect" parent="Face/Lines"]
+layout_mode = 2
+custom_minimum_size = Vector2(18, 18)
+size_flags_vertical = 4
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Face/Lines"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94, 0.88, 0.74, 1)
+theme_override_font_sizes/font_size = 15
+text = "技能名称"
+text_overrun_behavior = 3
+clip_text = true

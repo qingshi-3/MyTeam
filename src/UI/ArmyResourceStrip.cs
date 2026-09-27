@@ -4,7 +4,7 @@ namespace TowerAutobattler.UI;
 
 public partial class ArmyResourceStrip : HBoxContainer
 {
-    private SemanticChip _heroHealth = null!;
+    private SemanticChip _heroes = null!;
     private SemanticChip _deployed = null!;
     private SemanticChip _reserve = null!;
     private SemanticChip _items = null!;
@@ -12,7 +12,7 @@ public partial class ArmyResourceStrip : HBoxContainer
 
     public override void _Ready()
     {
-        _heroHealth = GetNode<SemanticChip>("%HeroHealth");
+        _heroes = GetNode<SemanticChip>("%Heroes");
         _deployed = GetNode<SemanticChip>("%Deployed");
         _reserve = GetNode<SemanticChip>("%Reserve");
         _items = GetNode<SemanticChip>("%Items");
@@ -21,7 +21,8 @@ public partial class ArmyResourceStrip : HBoxContainer
 
     public void Bind(ArmyOverviewViewModel model)
     {
-        _heroHealth.Bind(SemanticIconKeys.Hero, model.RosterHealthRatio.ToString("P0"), "HeroIdentity");
+        GetNode<RunHealthDisplay>("%RunHealth").Bind(model.CurrentRunHealth, model.MaximumRunHealth);
+        _heroes.Bind(SemanticIconKeys.Hero, $"英雄 {model.RosterCount}", "HeroIdentity");
         _deployed.Bind(SemanticIconKeys.Melee, $"{model.Deployed}/{model.CurrentPopulation}", "PlayerLabel");
         _reserve.Bind(SemanticIconKeys.Ranged, model.Reserve.ToString(), "RangeValue");
         _items.Bind(SemanticIconKeys.Loot, model.ItemCount.ToString(), "PlayerLabel");

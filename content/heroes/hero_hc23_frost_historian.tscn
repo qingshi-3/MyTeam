@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "霜羽猎手 · 固定被动"
-RuleDescription = "普攻和技能箭命中先加 1 层寒意，再以 20% + 每层寒意 5% 的概率冰冻 0.8 秒。寒意每层减速 3%。"
+RuleDescription = "普攻和技能箭命中有 25% 概率冰冻 0.8 秒；霜羽同盟达到 2／4 名成员时，概率提高至 35%／50%。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

@@ -22,7 +22,12 @@ public sealed record CompiledTraitBreakpoint(
     ImmutableArray<CompiledAttributeModifier> AttributeModifiers,
     string Fingerprint,
     TraitTargetPolicy TargetPolicy = TraitTargetPolicy.AllTeam,
-    ImmutableArray<CompiledStatusDefinition> GrantedStatuses = default);
+    ImmutableArray<CompiledStatusDefinition> GrantedStatuses = default,
+    ImmutableArray<CompiledTraitMechanic> Mechanics = default);
+
+public sealed record CompiledTraitMechanic(
+    TraitMechanicKind Kind, float Amount, float Secondary, float Threshold, float Extra,
+    int Count, int Limit, int DurationTicks, int CooldownTicks, bool Enabled, string SummonContentId);
 
 public sealed record CompiledTraitDefinition(
     string StableId,

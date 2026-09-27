@@ -39,7 +39,7 @@ Risk = 1
 script = ExtResource("2")
 Type = 5
 TitlePattern = "营火"
-DescriptionPattern = "恢复英雄与士兵，或领取少量军费。"
+DescriptionPattern = "恢复全局生命，或整理战利品领取军费。"
 
 [sub_resource type="Resource" id="Boss"]
 script = ExtResource("2")

@@ -249,6 +249,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                     this,
                     config.TacticalCommands);
             ExecuteInitialGrantEffects();
+            TraitMechanicsInitialize();
+            BindMatrixAbilityEvents();
             // Typed setup starts here. Legacy BattleEvent/digest publication remains in its
             // historical position after configured setup mutations and battle-start abilities.
             PublishCombat(new BattleCombatEventDraft(
@@ -304,6 +306,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         {
             AdvanceBattleLifecycles();
             AdvanceTechniques();
+            TraitMechanicsAdvance();
+            AdvanceMatrixAbilities();
             AdvanceEnemyActions();
             DrainAbilityReactions();
             var previousPositions = _units.ToDictionary(unit => unit.RuntimeId, unit => unit.Position, StringComparer.Ordinal);
@@ -451,7 +455,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(_digest.ToString()))).ToLowerInvariant();
         var units = _terminalUnitReports.IsDefault ? BuildUnitReports() : _terminalUnitReports;
         return new BattleResult(Outcome, TickIndex, hash, units, GoldSpent, SuccessfulTacticalCommandUses,
-            _relicScope?.Transition, _config.Identity);
+            _relicScope?.Transition, _config.Identity, _permanentGains);
     }
 
     private ImmutableArray<BattleUnitReportSnapshot> BuildUnitReports() =>
@@ -823,6 +827,11 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                         return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "没有合法的位移目标或落点。");
                     operations.Add(new ResolvedAbilityOperation(operationIndex, operation, displacementTargets, 0));
                     break;
+                case CompiledMatrixOperation matrix:
+                    if (!PrepareMatrixOperation(matrix, owner, explicitTargetId, out var matrixTargets))
+                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "当前不满足技能的资源、状态或目标条件。");
+                    operations.Add(new ResolvedAbilityOperation(operationIndex, matrix, matrixTargets, 0));
+                    break;
                 case CompiledBattleValueOperation or CompiledConsumeStatusOperation or CompiledEchoOperation or CompiledLifecycleOperation:
                     if (!PrepareBattleOperation(operation,owner,explicitTargetId,out var battleTargets))
                         return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet,"当前不满足技能的资源、状态或目标条件。");
@@ -991,7 +1000,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         // Lock before effects so reflected/reactive damage cannot refill this cast. Any failed
         // operation restores mana, recovery and visuals together with all other world state.
         var manaSpent = manaSkill ? BattleHeroMana.Spend(owner, plan.Tick, plan.Ability.CooldownTicks) : 0;
+        var actionId = BeginAbilityAction(owner.RuntimeId, plan.Ability);
+        TraitMechanicsBeginAbility(owner.RuntimeId, actionId, manaSkill && manaSpent > 0);
         var facts = ImmutableArray.CreateBuilder<string>();
+        var successfulSummonOperations = new HashSet<int>();
         foreach (var resolved in plan.Operations.OrderBy(operation => operation.OperationIndex))
         {
             // Initial preflight validated all targets. A preceding operation may now have
@@ -1026,6 +1038,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                 case CompiledBattleValueOperation or CompiledConsumeStatusOperation or CompiledEchoOperation or CompiledLifecycleOperation:
                     ExecuteBattleOperation(resolved,plan,owner);
                     facts.Add($"BattleOperation:{resolved.OperationIndex}");
+                    break;
+                case CompiledMatrixOperation:
+                    ExecuteMatrixOperation(resolved, plan, owner);
+                    facts.Add($"MatrixOperation:{resolved.OperationIndex}");
                     break;
                 case CompiledProjectileSequenceAbilityOperation sequence:
                     owner.ProjectileSequence = new ProjectileSequenceState(sequence,
@@ -1113,9 +1129,25 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                                 plan.SourceId))
                             throw new InvalidOperationException("Prepared ability summon failed during commit.");
                         facts.Add($"Summon:{profile.ContentId}:{reservation.PositionX:R},{reservation.PositionY:R}");
+                        successfulSummonOperations.Add(resolved.OperationIndex);
                     }
                     break;
             }
+        }
+
+        // Resolve optional trait copies after all reserved summons, so a bonus cannot occupy
+        // another operation's committed landing spot. The first success consumes eligibility
+        // even when the authored living cap or available space prevents the extra body.
+        foreach (var operationIndex in successfulSummonOperations.OrderBy(index => index))
+        {
+            if (!TraitMechanicsExtraSummon(owner.RuntimeId)) break;
+            var summon = (CompiledSummonAbilityOperation)plan.Ability.Operations[operationIndex];
+            var living = _units.Count(unit => unit.Alive && unit.IsTemporary && unit.Team == owner.Team &&
+                (!summon.LimitPerOwner || unit.SummonerRuntimeId == owner.RuntimeId));
+            if (summon.MaximumLivingTemporaryUnits > 0 && living >= summon.MaximumLivingTemporaryUnits) continue;
+            var profile = ResolveSummonProfile(summon, owner)!;
+            SpawnTemporaryNear(profile, owner.Team, owner.Position, summon.HealthMultiplier,
+                summon.DamageMultiplier, plan.SourceId);
         }
 
         GoldSpent += plan.GoldCost;
@@ -1136,9 +1168,11 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                     sourceVfx: plan.Ability.Presentation?.CastVfx ?? "");
             }
         }
-        if (manaSkill)
+        if (manaSkill && manaSpent > 0)
             PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.ManaSkillResolved,
-                AbilityOrigin(plan.Ability,plan.OwnerId),plan.SourceId,plan.OwnerId,plan.Tick,SubjectStableId:plan.Ability.StableId));
+                AbilityOrigin(plan.Ability,plan.OwnerId),plan.SourceId,plan.OwnerId,plan.Tick,
+                RequestedValue:manaSpent,AppliedValue:manaSpent,EffectiveValue:manaSpent,
+                SubjectStableId:plan.Ability.StableId,ActionId:actionId));
         PublishCombat(new BattleCombatEventDraft(
             BattleCombatEventKind.AbilityResolved,
             AbilityOrigin(plan.Ability, plan.OwnerId),
@@ -1147,7 +1181,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             plan.Tick,
             Cell: ToCombatCell(owner.Cell),
             Position: ToCombatPoint(owner.Position),
-            SubjectStableId: plan.Ability.StableId));
+            SubjectStableId: plan.Ability.StableId, ActionId: actionId));
         resolution.Commit();
         return new AbilityCommitResult(true, AbilityActivationFailure.None, string.Empty, facts.ToImmutable(), manaSpent);
     }
@@ -1292,38 +1326,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             return;
         }
 
-        if (unit.HealingPower > 0 && DuelOpponent(unit) is null)
-        {
-            var wounded = Allies(unit.Team).Where(ally => ally != unit && ally.Health < ally.MaxHealth)
-                .OrderBy(ally => ally.Health / ally.MaxHealth).ThenBy(ally => ally.RuntimeId, StringComparer.Ordinal).ToArray();
-            var protectedAlly = _movement!.SelectTarget(unit, wounded);
-            if (protectedAlly is not null)
-            {
-                SetActionTarget(unit, protectedAlly);
-                unit.LastActionKind = BattleActionKind.Heal;
-                if (BattlefieldSpace.IsWithinReach(unit, protectedAlly, unit.AttackRange) && HasLineAccess(unit, protectedAlly))
-                {
-                    _movement.ReleaseGoal(unit.RuntimeId);
-                    if (unit.AttackCooldown == 0)
-                    {
-                        var requestedHealing = unit.HealingPower;
-                        HealLiving(unit.RuntimeId, protectedAlly, requestedHealing);
-                        BattleHeroMana.OnAttack(unit, TickIndex);
-                        unit.AttackCooldown = unit.EffectiveAttackTicks;
-                        unit.Mode = BattleUnitMode.Casting;
-                        unit.WaitingTicks = 0;
-                        // Basic healing occupies the ordinary attack slot; only an ability
-                        // resolution requests the active skill pose and source feedback.
-                        Emit("heal", unit.RuntimeId, protectedAlly.RuntimeId, requestedHealing, protectedAlly.Position, "attack");
-                    }
-                    else unit.Mode = BattleUnitMode.Recovering;
-                }
-                else if (unit.MoveCooldown == 0) _movement.QueueMove(unit);
-                else unit.Mode = BattleUnitMode.Seeking;
-                return;
-            }
-        }
-
+        // Basic actions always attack. Healing is an authored ability/effect; a positive
+        // healing attribute must not silently replace the unit's ordinary attack slot.
         var target = SelectTarget(unit);
         if (target is null)
         {
@@ -1436,7 +1440,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     }
 
     // Shared impact rules execute only after an instant attack or an authoritative projectile collision.
-    private void ResolveAttackHit(BattleUnitState attacker, BattleUnitState target, float rawDamage, bool instantPiercing)
+    private void ResolveAttackHit(BattleUnitState attacker, BattleUnitState target, float rawDamage, bool instantPiercing, string actionId = "")
     {
         using var resolution = _combatPipeline.BeginAuthoritativeResolution();
         var source = ResolveCombatSource(attacker.RuntimeId, attacker);
@@ -1451,7 +1455,9 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         var chance = attacker.Attributes.GetValue(CombatAttribute.CriticalChance);
         var critical = chance > 0 && _random.NextFloat() < chance;
         if (critical) rawDamage *= attacker.Attributes.GetValue(CombatAttribute.CriticalDamage);
-        var damage = ApplyDamage(attacker.RuntimeId, attacker, target, rawDamage);
+        if (string.IsNullOrEmpty(actionId)) actionId = $"attack:{attacker.RuntimeId}:{_statistics[attacker.RuntimeId].AttackActions}";
+        var damage = ApplyDamage(attacker.RuntimeId, attacker, target, rawDamage,
+            damageClass: CombatDamageClass.BasicAttack, actionId: actionId);
         if (critical)
             PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.CriticalHit,source,attacker.RuntimeId,target.RuntimeId,
                 TickIndex,RequestedValue:rawDamage,EffectiveValue:damage));
@@ -1470,7 +1476,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             EffectiveValue: damage,
             Cell: ToCombatCell(target.Cell),
             Position: ToCombatPoint(target.Position),
-            CurrentStacks: (int)Math.Min(int.MaxValue,ReadCounter(attacker,"_basic_hits"))));
+            CurrentStacks: (int)Math.Min(int.MaxValue,ReadCounter(attacker,"_basic_hits")),
+            DamageClass:CombatDamageClass.BasicAttack, ActionId:actionId));
         if (attacker.Definition.SplashRadius > 0)
             Emit("vfx", attacker.RuntimeId, target.RuntimeId, 0, target.Position, "",
                 vfx: new BattleVfxCue(BattleVfxPhase.Burst, "burst", attacker.Definition.SplashRadius));
@@ -1514,7 +1521,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     }
 
     private float ApplyDamage(string sourceRuntimeId, BattleUnitState? source, BattleUnitState target, float raw,
-        CombatSourceRef origin = default, EffectDamageType damageType = EffectDamageType.Normal)
+        CombatSourceRef origin = default, EffectDamageType damageType = EffectDamageType.Normal,
+        CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "")
     {
         if (!target.Alive) return 0;
         using var resolution = _combatPipeline.BeginAuthoritativeResolution();
@@ -1527,14 +1535,17 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         if (source is not null && source.Definition.Behavior.ExecuteHealthThreshold > 0 && target.Health / target.MaxHealth <= source.Definition.Behavior.ExecuteHealthThreshold)
             raw *= 1.5f;
         var combatSource = origin.IsSpecified ? origin : ResolveCombatSource(sourceRuntimeId, source);
+        if (damageClass == CombatDamageClass.Other) damageClass = DamageClassFor(combatSource);
+        if (string.IsNullOrEmpty(actionId) && combatSource.Kind == CombatSourceKind.Ability) actionId = combatSource.InstanceId;
         var creditedKiller = source ?? _units.FirstOrDefault(unit => unit.RuntimeId == sourceRuntimeId);
+        var sourceHealthRatio = creditedKiller is { MaxHealth: > 0 } ? creditedKiller.Health / creditedKiller.MaxHealth : -1;
         var calculated = _combatPipeline.Resolve(new BattleCombatCalculationRequest(
             BattleCombatCalculationKind.Damage,
             combatSource,
             sourceRuntimeId,
             target.RuntimeId,
             TickIndex,
-            Math.Max(0, raw), damageType));
+            Math.Max(0, raw), damageType, damageClass, actionId));
         raw = calculated.ResolvedAmount;
         var resistance = damageType switch
         {
@@ -1548,7 +1559,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         var resolvedDamage = damage;
         var absorbed = Math.Min(target.Shield, damage);
         target.Shield -= absorbed;
-        ConsumeTimedShields(target.RuntimeId, absorbed);
+        TraitMechanicsShieldConsumed(target, absorbed, creditedKiller is not null && creditedKiller.Team != target.Team, combatSource);
         if (absorbed > 0)
             Emit("vfx", sourceRuntimeId, target.RuntimeId, absorbed, target.Position, "",
                 vfx: new BattleVfxCue(target.Shield > 0 ? BattleVfxPhase.ShieldImpact : BattleVfxPhase.ShieldDepleted, "shield"));
@@ -1577,12 +1588,15 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             EffectiveValue: effectiveDamage,
             Cell: ToCombatCell(target.Cell),
             Position: ToCombatPoint(target.Position),
-            DamageType: damageType));
+            DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
         if (healthRemoved > 0)
             PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.HealthLost,combatSource,sourceRuntimeId,target.RuntimeId,
-                TickIndex,EffectiveValue:healthRemoved,DamageType:damageType));
+                TickIndex,EffectiveValue:healthRemoved,DamageType:damageType,DamageClass:damageClass,ActionId:actionId,
+                SourceHealthRatio:sourceHealthRatio,TargetHealthRatio:target.Health / target.MaxHealth));
         if (!target.Alive)
         {
+            MatrixBeforeDeath(target);
+            TraitMechanicsBeforeDeath(target);
             targetStatistics.DefeatTick ??= TickIndex;
             target.Mode = BattleUnitMode.Defeated;
             target.LastActionKind = BattleActionKind.None;
@@ -1598,7 +1612,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                 EffectiveValue: effectiveDamage,
                 Cell: ToCombatCell(target.Cell),
                 Position: ToCombatPoint(target.Position),
-                DamageType: damageType));
+                DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
             if (creditedKiller is not null)
                 PublishCombat(new BattleCombatEventDraft(
                     BattleCombatEventKind.UnitKilled,
@@ -1610,7 +1624,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                     EffectiveValue: effectiveDamage,
                     Cell: ToCombatCell(target.Cell),
                     Position: ToCombatPoint(target.Position),
-                    DamageType: damageType));
+                    DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
             CancelProjectileWindups(target);
             target.ProjectileSequence = null;
             Emit("defeated", sourceRuntimeId, target.RuntimeId, damage, target.Position, "defeated");
@@ -1781,6 +1795,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         // MaxHealth semantics; they do not heal recipients or replay the whole team's health.
         _units.Add(unit);
         _statistics.Add(unit.RuntimeId, new BattleUnitStatistics { JoinTick = TickIndex });
+        TraitMechanicsOnSummoned(unit);
         BattleHeroMana.Initialize(unit);
         _traitScope?.AddOwnerAndContributions(
             new TraitOwnerBinding(runtimeId, team, unit.Attributes),
@@ -1920,6 +1935,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             TickIndex,
             amount));
         var before = target.Health;
+        var beforeRatio = target.MaxHealth > 0 ? before / target.MaxHealth : 0;
         target.Health = Math.Min(target.MaxHealth, target.Health + calculated.ResolvedAmount);
         RefreshGritActionRequests(target);
         var effectiveHealing = target.Health - before;
@@ -1938,7 +1954,9 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             AppliedValue: calculated.ResolvedAmount,
             EffectiveValue: effectiveHealing,
             Cell: ToCombatCell(target.Cell),
-            Position: ToCombatPoint(target.Position)));
+            Position: ToCombatPoint(target.Position),
+            DamageClass: DamageClassFor(combatSource), ActionId: combatSource.InstanceId,
+            TargetHealthRatio: beforeRatio));
         resolution.Commit();
         return effectiveHealing;
     }
@@ -2124,6 +2142,9 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         });
         _mechanics = MechanicState.Empty;
         _techniques = TechniqueState.Empty;
+        TraitMechanicsComplete();
+        ClearMatrixAbilities();
+        _abilityActionIds = _abilityActionIds.Clear();
         _unitActionQueues = ImmutableDictionary<string, UnitActionQueue>.Empty;
         _enemyActions = new(ImmutableDictionary<string, EnemyCast>.Empty,ImmutableDictionary<int, BladeFlight>.Empty,ImmutableDictionary<string, BroodState>.Empty,[]);
         _displacements = _displacements.Clear();
@@ -2332,6 +2353,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         private readonly MechanicState _mechanicState;
         private readonly EnemyActionState _enemyActionState;
         private readonly TechniqueState _techniqueState;
+        private readonly TraitMechanicsState _traitMechanicsState;
+        private readonly MatrixAbilityState _matrixAbilitiesState;
+        private readonly long _abilityActionSequence;
+        private readonly ImmutableDictionary<string, string> _abilityActionIds;
         private readonly ImmutableDictionary<string, UnitActionQueue> _unitActionQueueState;
         private readonly ImmutableDictionary<string, DisplacementMotion> _displacementState;
         private readonly ulong _randomState;
@@ -2361,6 +2386,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         private readonly BattleOutcome _outcome;
         private readonly int _goldSpent;
         private readonly int _successfulTacticalCommandUses;
+        private readonly ImmutableArray<BattlePermanentGain> _permanentGains;
+        private readonly ImmutableHashSet<string> _permanentGainKeys;
         private bool _finished;
 
         internal BattleWorldStateCheckpoint(BattleSimulation owner)
@@ -2368,6 +2395,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             _owner = owner;
             _mechanicState = owner._mechanics;
             _techniqueState = owner._techniques;
+            _traitMechanicsState = owner._traitMechanics;
+            _matrixAbilitiesState = owner._matrixAbilities;
+            _abilityActionSequence = owner._abilityActionSequence;
+            _abilityActionIds = owner._abilityActionIds;
             _unitActionQueueState = owner._unitActionQueues;
             _enemyActionState = owner._enemyActions;
             _displacementState = owner._displacements;
@@ -2404,6 +2435,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             _outcome = owner.Outcome;
             _goldSpent = owner.GoldSpent;
             _successfulTacticalCommandUses = owner.SuccessfulTacticalCommandUses;
+            _permanentGains = owner._permanentGains;
+            _permanentGainKeys = owner._permanentGainKeys;
             // Status is last because beginning its world transaction is the only capture step
             // that changes runtime coordination state.
             _statusState = owner._statusScope.BeginWorldTransaction();
@@ -2452,6 +2485,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
 
             _owner._mechanics = _mechanicState;
             _owner._techniques = _techniqueState;
+            _owner._traitMechanics = _traitMechanicsState;
+            _owner._matrixAbilities = _matrixAbilitiesState;
+            _owner._abilityActionSequence = _abilityActionSequence;
+            _owner._abilityActionIds = _abilityActionIds;
             _owner._unitActionQueues = _unitActionQueueState;
             _owner._enemyActions = _enemyActionState;
             _owner._displacements = _displacementState;
@@ -2491,6 +2528,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             _owner.Outcome = _outcome;
             _owner.GoldSpent = _goldSpent;
             _owner.SuccessfulTacticalCommandUses = _successfulTacticalCommandUses;
+            _owner._permanentGains = _permanentGains;
+            _owner._permanentGainKeys = _permanentGainKeys;
         }
     }
 

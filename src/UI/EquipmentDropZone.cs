@@ -21,6 +21,7 @@ public partial class EquipmentDropZone : PanelContainer
         if (!EquipmentSlotButton.TryEquipmentId(data, out var id)) return false;
         var allowed = EquipmentSlotButton.HasScope(data, DragScope) && EquipmentSlotButton.HasContext(data, DragContext) && CanReceive?.Invoke(id) == true;
         ThemeTypeVariation = allowed ? "EquipmentDropValid" : "EquipmentDropInvalid";
+        UiDragVisual.Aim(data, this, allowed);
         return allowed;
     }
     public override void _DropData(Vector2 atPosition, Variant data)

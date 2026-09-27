@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 5
+Target = 13
+Amount = 1
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 1
+SourceRelation = 1
+TargetRelation = 4
+Effects = Array[ExtResource("operation")]([SubResource("op_2")])
+
+[sub_resource type="Resource" id="op_4"]
+script = ExtResource("operation")
+Kind = 5
+Target = 13
+Amount = 1
+
+[sub_resource type="Resource" id="op_3"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 2
+SourceRelation = 1
+TargetRelation = 4
+CooldownTicks = 0
+Effects = Array[ExtResource("operation")]([SubResource("op_4")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx07_p"
+DisplayName = "淬毒弩手·被动"
+Description = "普通攻击或技能命中时，给目标施加1层棘毒。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1"), SubResource("op_3")]

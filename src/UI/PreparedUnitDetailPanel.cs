@@ -8,6 +8,6 @@ namespace TowerAutobattler.UI;
 public partial class PreparedUnitDetailPanel : PanelContainer
 {
     public void Bind(string identity, UnitDefinition definition, UnitSnapshot snapshot,
-        string context, PreparedUnitDetails? prepared = null, float healthRatio = 1) =>
-        GetNode<UnitDetailView>("%UnitDetails").Bind(new UnitInformation(identity, definition, snapshot, prepared, healthRatio, context));
+        string context, PreparedUnitDetails? prepared = null) =>
+        GetNode<UnitDetailView>("%UnitDetails").Bind(new UnitInformation(identity, definition, snapshot, prepared, context));
 }

@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 7
+Target = 0
+Key = "focus"
+Amount = 1
+Maximum = 5
+ResetOnTargetChange = true
+
+[sub_resource type="Resource" id="op_3"]
+script = ExtResource("operation")
+Kind = 15
+Target = 0
+Amount = 0
+DurationTicks = 100
+Key = "focus"
+CounterRatio = 0.06
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 1
+SourceRelation = 1
+TargetRelation = 4
+Effects = Array[ExtResource("operation")]([SubResource("op_2"), SubResource("op_3")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx48_p"
+DisplayName = "铁弩佣兵·被动"
+Description = "连续命中同一敌人时积累专注，最多5层；每层使下一次普通攻击伤害提高6%，更换目标会清空层数。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1")]

@@ -11,5 +11,5 @@ void fragment() {
     float blade = min(segment(p,vec2(-.32,.32),vec2(.3,-.3)),segment(p,vec2(.32,.32),vec2(-.3,-.3)));
     float guard = min(segment(p,vec2(-.36,.1),vec2(-.1,.36)),segment(p,vec2(.36,.1),vec2(.1,.36)));
     float swords = 1.0 - smoothstep(.025,.055,min(blade,guard));
-    COLOR = vec4(1.0,.74,.24,max(ring*.75,swords)) * COLOR;
+    COLOR = vec4(.84,.65,.29,max(ring*.42,swords*.8)) * COLOR;
 }

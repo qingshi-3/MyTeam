@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "饕餮 · 固定被动"
-RuleDescription = "开战生成 2 个食饵，之后每 8 秒补 1 个，自己最多维持 2 个。"
+RuleDescription = "开战生成 2 个食饵，之后每 8 秒生成 1 个，最多同时拥有 2 个。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

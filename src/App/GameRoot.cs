@@ -5,6 +5,7 @@ using TowerAutobattler.Project;
 using TowerAutobattler.Run;
 using TowerAutobattler.UI;
 using TowerAutobattler.Audio;
+using TowerAutobattler.Growth;
 
 namespace TowerAutobattler.App;
 
@@ -20,6 +21,7 @@ public partial class GameRoot : Control
     private GameFlowCoordinator? _flow;
     private AppScreenHost _screens = null!;
     private UiFeedbackBinding? _uiFeedback;
+    private UiMotionBinding? _uiMotion;
 
     public ContentRegistry? Content => _app?.Content;
     internal GameFlowCoordinator Flow => _flow ??
@@ -28,11 +30,14 @@ public partial class GameRoot : Control
     protected virtual System.Threading.Tasks.Task<GamePackagePublicationResult> PublishPackageAsync() =>
         GamePackagePublisher.CreateReadyAsync(this, ProjectDefinition);
 
+    protected virtual CompiledGrowthRules? CreateGrowthRules(ContentRegistry content) => null;
+
     public override async void _Ready()
     {
         _screens = GetNode<AppScreenHost>(ScreenHostPath);
         var audio = GetNode<FeedbackAudio>("UiAudio");
         _uiFeedback = new UiFeedbackBinding(this, audio, _screens.MainMenu);
+        _uiMotion = new UiMotionBinding(this, () => _app?.Settings.ReduceUiMotion ?? false);
         var gate = await PublishPackageAsync();
         if (!GodotObject.IsInstanceValid(this) || !IsInsideTree()) return;
         if (gate.Package is not { } package)
@@ -44,25 +49,32 @@ public partial class GameRoot : Control
         var registry = package.Content;
         var project = package.Project;
         SemanticIcons.Configure(project.Presentation.SemanticIcons);
-        _app = new RunApplication(registry, new SaveService(SaveNamespace), project);
+        _app = new RunApplication(registry, new SaveService(SaveNamespace), project, growthRules: CreateGrowthRules(registry));
         _flow = new GameFlowCoordinator(() => _app, _screens, project.Presentation, () => GetTree().Quit(), audio.RequestUi);
         _flow.Start();
         _screens.MainMenu.ExperienceSliceRequested += OpenExperienceSlice;
         _screens.MainMenu.VfxPreviewRequested += OpenVfx;
+        _screens.MainMenu.GrowthJourneyRequested += OpenGrowthJourney;
+        _screens.MainMenu.BindJourney(_app.GrowthRules is not null);
     }
 
     public override void _ExitTree()
     {
+        _uiMotion?.Dispose();
+        _uiMotion = null;
         _uiFeedback?.Dispose();
         _uiFeedback = null;
         if (_screens is not null) _screens.MainMenu.ExperienceSliceRequested -= OpenExperienceSlice;
         if (_screens is not null) _screens.MainMenu.VfxPreviewRequested -= OpenVfx;
+        if (_screens is not null) _screens.MainMenu.GrowthJourneyRequested -= OpenGrowthJourney;
         _flow?.Dispose();
         _flow = null;
     }
 
     private void OpenExperienceSlice() => GetTree().ChangeSceneToFile("res://scenes/app/ExperienceSlice.tscn");
     private void OpenVfx() => GetTree().ChangeSceneToFile("res://scenes/app/VfxPreview.tscn");
+    private void OpenGrowthJourney() => GetTree().ChangeSceneToFile(_app?.GrowthRules is null
+        ? "res://scenes/app/GrowthGameRoot.tscn" : "res://scenes/app/GameRoot.tscn");
 
     private void ShowBootstrapFailure(string title, string summary)
     {

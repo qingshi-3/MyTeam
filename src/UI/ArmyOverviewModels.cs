@@ -10,7 +10,7 @@ using TowerAutobattler.Run;
 namespace TowerAutobattler.UI;
 
 public sealed record ArmyOverviewViewModel(
-    float RosterHealthRatio,
+    int RosterCount,
     int Deployed,
     int CurrentPopulation,
     int EffectivePopulationCap,
@@ -19,7 +19,11 @@ public sealed record ArmyOverviewViewModel(
     int Gold,
     IReadOnlyList<ArmyOverviewRowViewModel> RosterHeroes,
     IReadOnlyList<ArmyOverviewRowViewModel> Items,
-    IReadOnlyList<ArmyOverviewRowViewModel> TacticalCommands);
+    IReadOnlyList<ArmyOverviewRowViewModel> TacticalCommands)
+{
+    public int CurrentRunHealth { get; init; }
+    public int MaximumRunHealth { get; init; }
+}
 
 public sealed record ArmyOverviewRowViewModel(
     string Title,
@@ -64,7 +68,7 @@ public static class ArmyOverviewFactory
                 details,
                 state,
                 definition.Portrait, Role: definition.Role, IsHero: true,
-                Facts: [UnitSemanticFacts.Health(instance.HealthRatio.ToString("P0")),
+                Facts: [UnitSemanticFacts.Health($"上限 {definition.MaxHealth:0.#}"),
                     UnitSemanticFacts.Responsibility(definition.Role, includeLabel: false),
                     UnitSemanticFacts.Reach(definition.AttackRange, includeLabel: false)],
                 EquipmentSlots: Enumerable.Range(0, rules.EquipmentSlotCapacity).Select(slotIndex =>
@@ -107,11 +111,11 @@ public static class ArmyOverviewFactory
         var deployed = run.Deployment.Count(id => !string.IsNullOrEmpty(id));
         var reserve = Math.Max(0, run.Roster.Count - deployed);
         var population = RunPopulationPolicy.Evaluate(run, rules);
-        var averageHealth = run.Roster.Count == 0 ? 0 : run.Roster.Average(hero => hero.HealthRatio);
-        return new ArmyOverviewViewModel(averageHealth, deployed, population.CurrentPopulation,
+        return new ArmyOverviewViewModel(run.Roster.Count, deployed, population.CurrentPopulation,
             population.EffectivePopulationCap, reserve, run.Items.Count + run.EquipmentInventory.Count +
                 run.Roster.Sum(hero => hero.Equipment.Count), run.Gold,
-            rosterHeroes, items, tacticalCommands);
+            rosterHeroes, items, tacticalCommands)
+            { CurrentRunHealth = run.CurrentRunHealth, MaximumRunHealth = run.MaximumRunHealth };
     }
 
     private static CatalogEntry Required(ContentRegistry content, string id) =>
@@ -128,7 +132,8 @@ public static class ArmyOverviewFactory
             return string.Join('\n', new[]
             {
                 definition.Description,
-                rule is null ? string.Empty : $"{rule.RuleTitle}：{rule.RuleDescription}"
+                rule is null || root.AbilityLoadout is not null || root.AttackHitGrowth is not null
+                    ? string.Empty : $"{rule.RuleTitle}：{rule.RuleDescription}"
             }.Where(value => !string.IsNullOrWhiteSpace(value)));
         }
         finally

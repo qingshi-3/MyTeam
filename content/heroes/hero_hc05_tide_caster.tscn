@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "回潮术士 · 固定被动"
-RuleDescription = "自己完成原主动后返还 20 法力并获得 25 护盾。"
+RuleDescription = "主动施放完毕后返还 20 法力并获得 25 护盾。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

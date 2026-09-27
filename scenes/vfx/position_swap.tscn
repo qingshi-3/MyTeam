@@ -1,18 +1,52 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
 [ext_resource type="Script" path="res://src/Vfx/VfxEnemyActionTrack.cs" id="track"]
-[ext_resource type="Texture2D" path="res://assets/vfx/enemy-actions/swap_rune.svg" id="texture"]
+[ext_resource type="Script" path="res://src/Vfx/VfxMotePool.cs" id="pool"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/action_mote.tscn" id="mote"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_UV_Distortion_002.png" id="flow"]
+[ext_resource type="Texture2D" path="res://assets/vfx/enemy-actions/swap_rune.svg" id="rune"]
+[ext_resource type="Shader" path="res://scenes/vfx/swap_seal.gdshader" id="seal"]
+[ext_resource type="Shader" path="res://scenes/vfx/swap_veil.gdshader" id="veil"]
+[sub_resource type="ShaderMaterial" id="seal"]
+resource_local_to_scene = true
+shader = ExtResource("seal")
+
+[sub_resource type="ShaderMaterial" id="veil"]
+resource_local_to_scene = true
+shader = ExtResource("veil")
+shader_parameter/flow = ExtResource("flow")
 [node name="position_swap" type="Node2D"]
 script = ExtResource("root")
-[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces")]
+[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces", "Details", "Motes")]
 script = ExtResource("track")
 Kind = 2
 Surface = NodePath("Surface")
+Details = NodePath("Details")
+Motes = NodePath("Motes")
 Other = NodePath("Other")
 Link = NodePath("Link")
 [node name="Surface" type="Sprite2D" parent="Track"]
-texture = ExtResource("texture")
+texture = ExtResource("rune")
+texture_filter = 2
+material = SubResource("seal")
 [node name="Other" type="Sprite2D" parent="Track"]
-texture = ExtResource("texture")
+texture = ExtResource("rune")
+texture_filter = 2
+material = SubResource("seal")
 [node name="Link" type="Line2D" parent="Track"]
-default_color = Color(0.7,0.5,0.95,0.45)
+default_color = Color(0.57,0.55,0.9,0.6)
+antialiased = true
+[node name="Details" type="Node2D" parent="Track"]
+[node name="SourceVeil" type="Sprite2D" parent="Track/Details"]
+texture = ExtResource("surface")
+texture_filter = 2
+material = SubResource("veil")
+[node name="TargetVeil" type="Sprite2D" parent="Track/Details"]
+texture = ExtResource("surface")
+texture_filter = 2
+material = SubResource("veil")
+[node name="Motes" type="Node2D" parent="Track"]
+script = ExtResource("pool")
+ParticleScene = ExtResource("mote")
+Capacity = 64

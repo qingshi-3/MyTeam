@@ -15,7 +15,7 @@ public sealed record BattleProjectileState(
     float Radius, float Damage, float RemainingSeconds, int LaunchTick,
     int MaximumHits, ImmutableArray<string> HitIds, CombatSourceRef SkillOrigin = default,
     EffectDamageType DamageType = EffectDamageType.Normal, float SubsequentHitMultiplier = 1,
-    string VisualId = "projectile", bool ContinueAfterHitLimit = false);
+    string VisualId = "projectile", bool ContinueAfterHitLimit = false, string ActionId = "");
 
 public sealed partial class BattleSimulation
 {
@@ -37,7 +37,8 @@ public sealed partial class BattleSimulation
         var projectile = new BattleProjectileState(++_projectileSequence, source.RuntimeId, source.Team,
             source.Position, direction * definition.ProjectileSpeed, definition.ProjectileRadius,
             damage, definition.ProjectileLifetime, TickIndex,
-            !skillOrigin.IsSpecified && definition.Behavior.PiercingLine ? 2 : 1, [], skillOrigin, VisualId: source.ProjectileVisualId);
+            !skillOrigin.IsSpecified && definition.Behavior.PiercingLine ? 2 : 1, [], skillOrigin,
+            VisualId: source.ProjectileVisualId, ActionId: skillOrigin.IsSpecified ? skillOrigin.InstanceId : $"attack:{source.RuntimeId}:{_statistics[source.RuntimeId].AttackActions}");
         _projectiles.Add(projectile.Id, projectile);
         Emit("projectile_spawn", source.RuntimeId, target.RuntimeId, damage, projectile.Position, "",
             projectile.Id, projectile.Position + direction, sourceVfx: source.ProjectileVisualId);
@@ -89,7 +90,7 @@ public sealed partial class BattleSimulation
                         projectile.SkillOrigin, projectile.DamageType);
                 }
                 else if (projectile.HitIds.IsEmpty)
-                    ResolveAttackHit(source, collision.Unit, projectile.Damage, instantPiercing: false);
+                    ResolveAttackHit(source, collision.Unit, projectile.Damage, instantPiercing: false, actionId: projectile.ActionId);
                 else
                     ApplyDamage(source.RuntimeId, source, collision.Unit, projectile.Damage * .35f);
                 projectile = projectile with { HitIds = projectile.HitIds.Add(collision.Unit.RuntimeId) };

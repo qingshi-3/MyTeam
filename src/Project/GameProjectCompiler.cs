@@ -119,7 +119,7 @@ public static partial class GameProjectCompiler
                     context.Report.Error($"{regionSource}: encounter reference is null.");
                     continue;
                 }
-                var compiled = CompileEncounter(encounter, context);
+                var compiled = CompileEncounter(encounter, context, authored.FloorsPerRegion);
                 if (compiled is not null && !encounters.TryAdd(compiled.NodeType, compiled))
                     context.Report.Error($"{regionSource}: duplicate encounter binding for {compiled.NodeType}.");
             }
@@ -207,7 +207,7 @@ public static partial class GameProjectCompiler
 
     private static CompiledEncounter? CompileEncounter(
         EncounterDefinition authored,
-        CompilationContext context)
+        CompilationContext context, int floorsPerRegion)
     {
         var source = Source(authored);
         context.RegisterStableId(authored.StableId, authored);
@@ -235,6 +235,7 @@ public static partial class GameProjectCompiler
             : CompileBossTimeline(authored.BossTimeline, authored.LeadEnemyId, context);
         if (authored.NodeType == TowerNodeType.Boss && timeline is null)
             context.Report.Error($"{source}: boss encounter requires a valid boss timeline.");
+        var compositions = CompileEncounterCompositions(authored, context, floorsPerRegion);
         if (context.Report.HasCoreErrors || enemyPool is null || floorPool is null) return null;
         return new CompiledEncounter(
             authored.StableId,
@@ -246,7 +247,12 @@ public static partial class GameProjectCompiler
             authored.BaseEnemyCount,
             authored.AddRegionIndexToCount,
             authored.SeedSalt,
-            timeline, authored.EnemyHealthMultiplier, authored.EnemyDamageMultiplier, authored.AlternateLeadEnemyIds.ToImmutableArray());
+            timeline, authored.EnemyHealthMultiplier, authored.EnemyDamageMultiplier, authored.AlternateLeadEnemyIds.ToImmutableArray())
+        {
+            LocalHealthMultipliers = [.. authored.LocalHealthMultipliers],
+            LocalDamageMultipliers = [.. authored.LocalDamageMultipliers],
+            Compositions = compositions
+        };
     }
 
     private static CompiledBossTimeline? CompileBossTimeline(
@@ -316,6 +322,9 @@ public static partial class GameProjectCompiler
             authored.EliteBattleGold < 0 || authored.BossBattleGold < 0 || authored.RiskyEventSuccessGold < 0 ||
             authored.SafeEventGold < 0 || authored.RestGold < 0)
             report.Error($"{source}: capacities, choices, and economy values are invalid.");
+        if (authored.InitialRunHealth <= 0 || authored.MaximumRunHealth < authored.InitialRunHealth ||
+            authored.CombatDefeatHealthLoss <= 0 || authored.EliteDefeatHealthLoss <= 0 || authored.RestRunHealthRecovery <= 0)
+            report.Error($"{source}: Run health, defeat losses and recovery must be positive; initial health cannot exceed maximum.");
         if (authored.InitialPopulation < (long)authored.StarterRosterHeroCount + 1 ||
             authored.InitialPopulation > authored.OrdinaryPopulationCap)
             report.Error($"{source}: initial population must cover the selected hero plus starter roster and remain within the ordinary population cap.");
@@ -405,6 +414,11 @@ public static partial class GameProjectCompiler
             authored.RestGold,
             authored.InitialUnlockedHeroCount)
         {
+            InitialRunHealth = authored.InitialRunHealth,
+            MaximumRunHealth = authored.MaximumRunHealth,
+            CombatDefeatHealthLoss = authored.CombatDefeatHealthLoss,
+            EliteDefeatHealthLoss = authored.EliteDefeatHealthLoss,
+            RestRunHealthRecovery = authored.RestRunHealthRecovery,
             StartingHeroEconomy = catalog.Heroes.ToImmutableDictionary(entry => entry.StableId, entry =>
             {
                 var root = entry.Scene.Instantiate<UnitContentRoot>();

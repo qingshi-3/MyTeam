@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 0
+Target = 6
+AttackRatio = 1.4
+Range = 7
+Radius = 1.6
+MaxTargets = 8
+Key = "pain"
+CounterRatio = 0.3
+ConsumeCounter = true
+CounterConsumeRatio = 0.5
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx29_a"
+DisplayName = "裂脉术士·主动"
+Description = "消耗一半已储存的伤痛，对1.6格内敌人造成140%攻击伤害，并追加全部已储存伤痛30%的伤害。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1")]

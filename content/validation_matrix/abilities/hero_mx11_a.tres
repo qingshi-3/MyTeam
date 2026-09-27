@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 0
+Target = 23
+AttackRatio = 1.6
+Range = 2
+MaxTargets = 5
+Key = "blade-width"
+RadiusPerCounter = 0.15
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 8
+Target = 0
+Key = "blade-width"
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx11_a"
+DisplayName = "炉刃武士·主动"
+Description = "挥出火刃，对前方2格内至多5名敌人造成160%攻击伤害。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1"), SubResource("op_2")]

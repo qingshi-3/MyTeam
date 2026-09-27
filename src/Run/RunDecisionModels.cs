@@ -22,7 +22,7 @@ public sealed record CompiledRunOffer(string StableId, RunOfferKind Kind, string
 public sealed record PendingRunOffer(string OfferId, RunOfferKind Kind, string DisplayName,
     bool AllowSkip, bool Repeatable, int FloorIndex, int BattleNumber, ImmutableArray<CompiledRunChoice> Choices);
 public enum RunDecisionFailure { None, NoOffer, StaleOffer, UnknownChoice, NotEligible, InsufficientResources, InvalidOperation, PersistenceFailed }
-public enum RunChangeKind { Gold, Population, PopulationCap, HeroAdded, ItemAdded, HeroHealth }
+public enum RunChangeKind { Gold, Population, PopulationCap, HeroAdded, ItemAdded, HeroHealth, RunHealth }
 public sealed record RunDecisionChange(RunChangeKind Kind, string SubjectId, string ContentId, double Before, double After);
 public sealed record RunDecisionResult(bool Succeeded, RunDecisionFailure Failure, string Message, bool ChanceSucceeded = true)
 {

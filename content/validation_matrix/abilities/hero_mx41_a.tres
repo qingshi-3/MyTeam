@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 9
+Target = 0
+Amount = 0.06
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 3
+Target = 16
+Amount = 15
+MaxTargets = 2
+ExcludeSelf = true
+
+[sub_resource type="Resource" id="op_3"]
+script = ExtResource("operation")
+Kind = 1
+Target = 16
+Amount = 25
+MaxTargets = 2
+ExcludeSelf = true
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx41_a"
+DisplayName = "祈血星使·主动"
+Description = "消耗6%当前生命，为法力比例最低的至多2名其他友军各补充15点法力并治疗25点。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1"), SubResource("op_2"), SubResource("op_3")]

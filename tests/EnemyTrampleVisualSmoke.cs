@@ -23,6 +23,11 @@ public partial class EnemyTrampleVisualSmoke : Node
             var store=new BattleLabPresetStore(GD.Load<BattleLabPresetCatalog>("res://content/battle-lab/battle_lab_presets.tres"));
             var preset=store.BuiltIns.Single(p=>p.Key.StartsWith("EE03 ·",StringComparison.Ordinal));
             var config=new BattleLabPreparationAdapter(new BattleLabContentIndex(package)).Build(BattleLabPresetStore.ToSnapshot(preset.Value));
+            var heroIndex=config.Spawns.FindIndex(spawn=>spawn.Unit.ContentId=="hero_hc03_iron_guard");
+            var centerDummy=config.Spawns.FindIndex(spawn=>spawn.Unit.ContentId=="soldier_dummy_static" && spawn.Cell==new Vector2I(4,2));
+            Require(heroIndex>=0 && centerDummy>=0,"formal player hero and centerline fixture exist");
+            config.Spawns[heroIndex]=config.Spawns[heroIndex] with {Cell=new(4,2)};
+            config.Spawns[centerDummy]=config.Spawns[centerDummy] with {Cell=new(4,0)};
             // Isolate the action in the production preset; these overrides never touch a run/save.
             for(var i=0;i<config.Spawns.Count;i++)
                 config.Spawns[i]=config.Spawns[i] with {Unit=config.Spawns[i].Unit with

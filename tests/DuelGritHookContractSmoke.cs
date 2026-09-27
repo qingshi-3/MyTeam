@@ -107,12 +107,14 @@ public partial class DuelGritHookContractSmoke : Node
           Require(battle.PendingEvents.Any(e=>e.Type=="hook_end") && Unit(battle,"front").Position==before,"control cancels flight or live pull"); }
         using(var battle=new BattleSimulation(Config(hero,new ProbeRule(null,true))))
         { Step(battle,20);Require(!battle.PendingEvents.Any(e=>e.Type=="hook_start"),"wall excludes unreachable aim"); }
-        using(var battle=new BattleSimulation(Config(hero,new ProbeRule(c=>{if(c.Tick==6)c.Units.Single(u=>u.RuntimeId=="front").Position=new(2.5f,3);}))))
+        // Cross the first live sweep (now 2 units per tick), while both endpoints miss.
+        using(var battle=new BattleSimulation(Config(hero,new ProbeRule(c=>{if(c.Tick==5)c.Units.Single(u=>u.RuntimeId=="front").Position=new(2.5f,3);}))))
         {
             Unit(battle,"front").Position=new(2.5f,1);Step(battle,7);
             Require(battle.PendingEvents.Any(e=>e.Type=="hook_caught" && e.TargetRuntimeId=="front"),"relative sweep catches a body crossing between ticks");
         }
-        using(var battle=new BattleSimulation(Config(hero,new ProbeRule(c=>{if(c.Tick is 2 or 8)c.Damage("front",c.Units.Single(u=>u.RuntimeId=="hero"),100);}))))
+        using(var battle=new BattleSimulation(Config(hero,new ProbeRule(c=>
+              { if(c.Tick is 2 or 8) { var unit=c.Units.Single(u=>u.RuntimeId=="hero"); c.Damage("front",unit,unit.MaxHealth*.15f); } }))))
         {
             var a=Unit(battle,"hero");a.Health=a.MaxHealth*.4f;a.Attributes.SetBaseValue(CombatAttribute.Armor,0);Step(battle,3);var shield=a.Shield;
             Require(shield>0,$"low health shield activates: hp={a.Health}/{a.MaxHealth} shield={shield} events={string.Join(';',battle.CombatEvents.Select(e=>$"{e.Kind}:{e.Source.StableId}:{e.EffectiveValue}"))}");a.Shield=0;Step(battle,8);

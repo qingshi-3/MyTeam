@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
 [ext_resource type="Script" path="res://src/UI/RosterLoadoutView.cs" id="1"]
 [ext_resource type="Script" path="res://src/UI/EquipmentDropZone.cs" id="2"]
 [ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="3"]
-
+[ext_resource type="PackedScene" path="res://scenes/ui/components/RosterHeroCard.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/RosterHeroDetails.tscn" id="5"]
 [node name="RosterLoadoutView" type="Control"]
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -22,106 +23,170 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 12
-
-[node name="RosterCount" type="Label" parent="Layout"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-theme_override_colors/font_color = Color(0.63, 0.74, 0.78, 1)
-text = "英雄 · 拖动装备自由配装"
-mouse_filter = 2
+theme_override_constants/separation = 4
 
 [node name="Columns" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 18
+theme_override_constants/separation = 12
 
-[node name="RosterHeroScroll" type="ScrollContainer" parent="Layout/Columns"]
+[node name="RosterColumn" type="VBoxContainer" parent="Layout/Columns"]
+layout_mode = 2
+custom_minimum_size = Vector2(278, 0)
+theme_override_constants/separation = 8
+
+[node name="RosterCount" type="Label" parent="Layout/Columns/RosterColumn"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.88, 0.82, 0.69, 1)
+
+[node name="ListPanel" type="PanelContainer" parent="Layout/Columns/RosterColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+theme_type_variation = &"WorkbenchList"
+
+[node name="RosterHeroScroll" type="ScrollContainer" parent="Layout/Columns/RosterColumn/ListPanel"]
+unique_name_in_owner = true
+layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 follow_focus = true
 
-[node name="RosterHeroGrid" type="GridContainer" parent="Layout/Columns/RosterHeroScroll"]
+[node name="RosterHeroList" type="VBoxContainer" parent="Layout/Columns/RosterColumn/ListPanel/RosterHeroScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 2
+
+[node name="Inspection" type="HBoxContainer" parent="Layout/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="SelectedCard" parent="Layout/Columns/Inspection" instance=ExtResource("4")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
-columns = 3
-theme_override_constants/h_separation = 16
-theme_override_constants/v_separation = 18
+size_flags_stretch_ratio = 0.36
 
-[node name="InventoryColumn" type="VBoxContainer" parent="Layout/Columns"]
+[node name="DetailsPanel" type="PanelContainer" parent="Layout/Columns/Inspection"]
 layout_mode = 2
-custom_minimum_size = Vector2(308, 0)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.64
+theme_type_variation = &"WorkbenchDetails"
+
+[node name="Layout" type="VBoxContainer" parent="Layout/Columns/Inspection/DetailsPanel"]
+layout_mode = 2
 theme_override_constants/separation = 9
 
-[node name="RosterInventoryTitle" type="Label" parent="Layout/Columns/InventoryColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-theme_override_colors/font_color = Color(0.97, 0.81, 0.49, 1)
-text = "装备背包"
-mouse_filter = 2
-
-[node name="Hint" type="Label" parent="Layout/Columns/InventoryColumn"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "拖到英雄穿戴 · 拖回此处卸下"
-mouse_filter = 2
-
-[node name="RosterReturnZone" type="PanelContainer" parent="Layout/Columns/InventoryColumn"]
+[node name="HeroDetails" parent="Layout/Columns/Inspection/DetailsPanel/Layout" instance=ExtResource("5")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_type_variation = &"ContextSidebarPanel"
-script = ExtResource("2")
 
-[node name="BagLayout" type="VBoxContainer" parent="Layout/Columns/InventoryColumn/RosterReturnZone"]
+[node name="Bag" type="PanelContainer" parent="Layout/Columns/Inspection/DetailsPanel/Layout"]
+texture_filter = 4
+layout_mode = 2
+custom_minimum_size = Vector2(0, 108)
+theme_type_variation = &"WorkbenchTray"
+
+[node name="Content" type="HBoxContainer" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag"]
 layout_mode = 2
 mouse_filter = 2
+theme_override_constants/separation = 18
 
-[node name="RosterInventoryEmpty" type="Label" parent="Layout/Columns/InventoryColumn/RosterReturnZone/BagLayout"]
+[node name="Labels" type="VBoxContainer" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(180, 0)
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.42
+theme_override_constants/separation = 6
+
+[node name="RosterInventoryTitle" type="Label" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content/Labels"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-text = "背包暂无装备\n战利品与商店可获得\n\n也可拖回已装备物品"
-autowrap_mode = 2
-theme_override_font_sizes/font_size = 15
+text = "装备预览"
+theme_type_variation = &"WorkbenchTitle"
+theme_override_font_sizes/font_size = 24
 
-[node name="InventoryScroll" type="ScrollContainer" parent="Layout/Columns/InventoryColumn/RosterReturnZone/BagLayout"]
+[node name="Hint" type="Label" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content/Labels"]
+layout_mode = 2
+mouse_filter = 2
+visible = false
+text = "拖入穿戴 · 拖回卸下"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.74, 0.69, 0.58, 1)
+
+[node name="RosterItemName" type="Label" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content/Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+text = ""
+custom_minimum_size = Vector2(150, 0)
+autowrap_mode = 2
+theme_type_variation = &"WorkbenchBody"
+theme_override_font_sizes/font_size = 14
+
+[node name="RosterReturnZone" type="PanelContainer" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.58
+custom_minimum_size = Vector2(230, 0)
+theme_type_variation = &"WorkbenchBag"
+script = ExtResource("2")
+
+[node name="BagLayout" type="VBoxContainer" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content/RosterReturnZone"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="RosterInventoryEmpty" type="Label" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content/RosterReturnZone/BagLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+text = "拖入此处卸下装备"
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 13
+
+[node name="InventoryScroll" type="ScrollContainer" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content/RosterReturnZone/BagLayout"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 follow_focus = true
 mouse_filter = 1
 
-[node name="RosterInventory" type="HFlowContainer" parent="Layout/Columns/InventoryColumn/RosterReturnZone/BagLayout/InventoryScroll"]
+[node name="RosterInventory" type="HFlowContainer" parent="Layout/Columns/Inspection/DetailsPanel/Layout/Bag/Content/RosterReturnZone/BagLayout/InventoryScroll"]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-mouse_filter = 2
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 8
+alignment = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 6
 
 [node name="RosterFeedback" type="Label" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(0, 24)
-theme_override_font_sizes/font_size = 14
-text = "悬停查看属性、技能与装备详情 · 点击卡片选择英雄"
 mouse_filter = 2
+custom_minimum_size = Vector2(0, 20)
+theme_override_font_sizes/font_size = 13
+text = ""
 
 [node name="RosterEmpty" type="Label" parent="."]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
 offset_top = 80.0
 offset_right = 400.0
 offset_bottom = 120.0
 text = "当前没有英雄"
 mouse_filter = 2
-visible = false

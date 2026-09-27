@@ -8,9 +8,11 @@ using Godot;
 using TowerAutobattler.Attributes;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
+using TowerAutobattler.Composition;
 using TowerAutobattler.Domain;
 using TowerAutobattler.Equipment;
 using TowerAutobattler.Presentation;
+using TowerAutobattler.Project;
 
 public partial class BattleFloatingCueContractSmoke : Node
 {
@@ -26,7 +28,8 @@ public partial class BattleFloatingCueContractSmoke : Node
         BattleScreenController? screen = null;
         try
         {
-            var publication = await TestProjectFixture.PublishAsync(this);
+            var publication = await GamePackagePublisher.CreateReadyAsync(this,
+                GD.Load<GameProjectDefinition>("res://content/project/alpha_project.tres"));
             var content = publication.Package?.Content ?? throw new InvalidOperationException(
                 "production content publication failed: " + string.Join(" | ", publication.Report.CoreErrors));
             var template = GD.Load<PackedScene>("res://scenes/ui/components/BattleFloatingCue.tscn") ??
@@ -90,12 +93,15 @@ public partial class BattleFloatingCueContractSmoke : Node
                 GlobalPosition = targetPosition
             }, true);
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            var selected = screen.GetNode<Control>("%SelectedUnitPanel");
-            var selectedAction = selected.GetNode<Label>("Layout/UnitAction").Text;
-            var selectedStatuses = selected.GetNode<Label>("Layout/UnitStatuses").Text;
+            var selected = screen.GetNode<TowerAutobattler.UI.BattleInspectorDock>("%BattleInspectorDock").Details;
+            var selectedAction = selected.GetNode<Label>("%UnitAction").Text;
+            var selectedStatuses = string.Join(" ", selected.GetNode<GridContainer>("%StatusTiles").GetChildren()
+                .OfType<TowerAutobattler.UI.CombatFactTile>()
+                .Select(tile => tile.GetNode<Label>("%FactName").Text + " " + tile.GetNode<Label>("%FactValue").Text));
             if (!selected.Visible || !selectedAction.Contains("秒", StringComparison.Ordinal) ||
                 !selectedStatuses.Contains("冻结", StringComparison.Ordinal) ||
-                !selectedStatuses.Contains("秒", StringComparison.Ordinal))
+                !(selectedStatuses.Contains("秒", StringComparison.Ordinal) ||
+                  System.Text.RegularExpressions.Regex.IsMatch(selectedStatuses, @"\d+(?:\.\d+)?s\b")))
                 throw new InvalidOperationException(
                     "floating-cue overlay blocked real selection or replaced exact selected-unit Status details: " +
                     $"visible={selected.Visible}, action={selectedAction}, statuses={selectedStatuses}");
@@ -209,6 +215,17 @@ public partial class BattleFloatingCueContractSmoke : Node
 
     private static BattleConfig CueConfig(ContentRegistry content)
     {
+        if (!content.TryGet("hero_hc18_healing_reader", out var healerEntry))
+            throw new InvalidOperationException("production skill healer is missing");
+        var skillHealer = Unit("hero_hc18_healing_reader", "治疗者", true, 300, 0, 10);
+        var healerMana = ((UnitDefinition)healerEntry.Definition).MaxMana;
+        skillHealer = skillHealer with
+        {
+            AbilityLoadout = BattleSetupFactory.Snapshot(healerEntry, content).AbilityLoadout,
+            AttributeDefinition = AttributeDefinitionCompiler.WithBaseValues(skillHealer.AttributeDefinition!,
+                new Dictionary<CombatAttribute, float> { [CombatAttribute.MaxMana] = healerMana,
+                    [CombatAttribute.StartingMana] = healerMana })
+        };
         if (!content.Graph.TryGetEquipment("equipment_rimebrand", out var equipment))
             throw new InvalidOperationException("production Frost Equipment is missing");
         var equipmentInstance = new EquipmentBattleInstanceSnapshot(
@@ -228,11 +245,11 @@ public partial class BattleFloatingCueContractSmoke : Node
                 [equipmentInstance]),
             Spawns =
             [
-                new BattleSpawn(Unit("hero_banner_marshal", "霜痕持有者", true, 300, 10, 10), 0,
+                new BattleSpawn(Unit("hero_hc03_iron_guard", "霜痕持有者", true, 300, 10, 10), 0,
                     new Vector2I(1, 2), "a_cue_owner", IsPersistentRosterHero: true),
-                new BattleSpawn(Unit("hero_hour_arbiter", "治疗者", true, 300, 0, 10, 12), 0,
+                new BattleSpawn(skillHealer, 0,
                     new Vector2I(0, 4), "b_cue_healer", IsPersistentRosterHero: true),
-                new BattleSpawn(Unit("soldier_aegis_guard", "负伤友军", false, 300, 0, 10), 0,
+                new BattleSpawn(Unit("soldier_dummy_melee", "负伤友军", false, 300, 0, 10), 0,
                     new Vector2I(1, 4), "c_cue_wounded", .5f, IsPersistentRosterHero: true),
                 new BattleSpawn(Unit("enemy_crossbow", "状态目标", false, 1_000, 0, 10), 1,
                     new Vector2I(3, 2), "z_cue_target"),
@@ -249,7 +266,7 @@ public partial class BattleFloatingCueContractSmoke : Node
         HeroRule = Rule(),
         Spawns =
         [
-            new BattleSpawn(Unit("hero_banner_marshal", "安静英雄", true, 1_000, 0, .5f), 0,
+            new BattleSpawn(Unit("hero_hc03_iron_guard", "安静英雄", true, 1_000, 0, .5f), 0,
                 Vector2I.Zero, "quiet_player", IsPersistentRosterHero: true),
             new BattleSpawn(Unit("enemy_rust_guard", "安静敌人", false, 1_000, 0, .5f), 1,
                 new Vector2I(9, 5), "quiet_enemy")
@@ -263,7 +280,7 @@ public partial class BattleFloatingCueContractSmoke : Node
         HeroRule = Rule(),
         Spawns =
         [
-            new BattleSpawn(Unit("hero_banner_marshal", "终结者", true, 100, 100, 10), 0,
+            new BattleSpawn(Unit("hero_hc03_iron_guard", "终结者", true, 100, 100, 10), 0,
                 new Vector2I(1, 2), "terminal_player", IsPersistentRosterHero: true),
             new BattleSpawn(Unit("enemy_rust_guard", "终局敌人", false, 1, 0, 1), 1,
                 new Vector2I(2, 2), "terminal_enemy")

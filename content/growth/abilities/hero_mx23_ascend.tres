@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("operation")
+Kind = 13
+Target = 0
+Attribute = 3
+Amount = 0.18
+DurationTicks = 15
+[sub_resource type="Resource" id="reaction"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 5
+SourceRelation = 4
+TargetRelation = 1
+OncePerBattle = true
+Effects = Array[ExtResource("operation")]([SubResource("effect")])
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx23_growth_ascend"
+DisplayName = "稳压供弹"
+Description = "本场首次被敌人击破护盾后，获得18%攻速，持续1.5秒。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("reaction")]

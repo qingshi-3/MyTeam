@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "追刃客 · 固定被动"
-RuleDescription = "常驻 15% 暴击；普攻暴击后清零攻击等待，接下一次完整普攻。"
+RuleDescription = "暴击率增加 15%；普攻暴击后立即准备下一次普攻。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

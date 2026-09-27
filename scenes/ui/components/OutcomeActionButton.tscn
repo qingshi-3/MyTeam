@@ -36,9 +36,11 @@ theme_type_variation = &"ChoiceTitle"
 text = "行动"
 
 [node name="Facts" type="HFlowContainer" parent="Margin/Layout"]
+custom_minimum_size = Vector2(360, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/h_separation = 14
+alignment = 2
 
 [node name="OutcomeFact1" parent="Margin/Layout/Facts" instance=ExtResource("2")]
 unique_name_in_owner = true

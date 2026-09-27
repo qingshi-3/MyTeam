@@ -12,7 +12,7 @@ script = ExtResource("r1")
 script = ExtResource("r2")
 Action = 2
 TargetQuery = SubResource("s0")
-Amount = 70
+Amount = 55
 Terms = []
 
 [sub_resource type="Resource" id="s2"]
@@ -30,7 +30,7 @@ RequiredTag = ""
 script = ExtResource("r2")
 Action = 2
 TargetQuery = SubResource("s2")
-Amount = 70
+Amount = 55
 Terms = []
 TargetPolicy = 5
 
@@ -38,10 +38,10 @@ TargetPolicy = 5
 script = ExtResource("r0")
 StableId = "ability_hc07_a"
 DisplayName = "护灯"
-Description = "为自身和身后最近友军各提供 70 护盾。"
+Description = "为自身和身后最近友军各提供 55 护盾。"
 ActivationKind = 1
 Trigger = 5
-ManaCost = 60
+ManaCost = 70
 CooldownTicks = 3
 IntervalTicks = 0
 MaxUses = 0

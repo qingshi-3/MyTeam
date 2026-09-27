@@ -35,14 +35,18 @@ public partial class TowerScreenController : Control
         var region = app.Tower.RegionFor(run.FloorIndex);
         _title.Text = region.DisplayName;
         _runInfo.Text = $"第 {run.FloorIndex + 1}/{app.Project.Campaign.TotalFloors} 层";
-        var models = app.CurrentOptions().Select(option => new ChoiceCardViewModel(
-            option.Type.ToString(),
-            option.Title,
-            option.Description,
-            $"风险 {option.Risk}",
-            Icon: icons.ResolveIcon(SemanticIconKeys.TowerNodeSemantic(option.Type)),
-            FooterVariation: "WarningLabel",
-            FooterSemanticKey: SemanticIconKeys.Risk)).ToArray();
+        var models = app.CurrentOptions().Select(option =>
+        {
+            var riskRule = RunHealthText.Risk(app.Rules, option.Type);
+            return new ChoiceCardViewModel(
+                option.Type.ToString(),
+                option.Title,
+                string.IsNullOrWhiteSpace(riskRule) ? option.Description : option.Description + "\n" + riskRule,
+                option.Risk > 0 ? $"风险 {option.Risk}" : string.Empty,
+                Icon: icons.ResolveIcon(SemanticIconKeys.TowerNodeSemantic(option.Type)),
+                FooterVariation: "WarningLabel",
+                FooterSemanticKey: option.Risk > 0 ? SemanticIconKeys.Risk : default);
+        }).ToArray();
         ChoiceCardListBinder.SyncChoices(_choices, models, choiceTemplate, OnChoice);
     }
 

@@ -24,4 +24,4 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "测试单位"
-RuleDescription = "测试用：500 生命、每秒一次远程普攻，单次 10 伤害，无技能和隐藏加成。"
+RuleDescription = "远程训练假人，只会进行普通攻击。"

@@ -8,23 +8,29 @@
 [ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/rock_barrier_visual.tscn" id="barrier"]
 
 
-[node name="enemy_rampart_segment" type="Node2D"]
+[node name="enemy_rampart_segment" type="Node2D" node_paths=PackedStringArray("BarrierVisual")]
 script = ExtResource("1")
 Definition = ExtResource("2")
+BarrierVisual = NodePath("VisualRoot/Barrier")
 
 [node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("motion")]
 
 [node name="VisualRoot" type="Node2D" parent="."]
 
 [node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("4")]
+visible = false
+modulate = Color(1, 1, 1, 0)
 Frames = ExtResource("3")
 VisualScale = 0.06
 position = Vector2(0, -30)
 
+[node name="Barrier" parent="VisualRoot" instance=ExtResource("barrier")]
+
 [node name="HealthViewComponent" parent="." instance=ExtResource("5")]
-position = Vector2(0, -65)
+position = Vector2(0, -119)
 
 [node name="UnitBehaviorComponent" parent="." instance=ExtResource("6")]
 

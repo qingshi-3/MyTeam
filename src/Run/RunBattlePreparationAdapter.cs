@@ -5,6 +5,7 @@ using System.Linq;
 using Godot;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
+using TowerAutobattler.Growth;
 using TowerAutobattler.Relics;
 using TowerAutobattler.TacticalCommands;
 
@@ -22,7 +23,8 @@ public static class RunBattlePreparationAdapter
         TacticalCommandBattlePreparation? tacticalCommands,
         BossTimelineSnapshot? bossTimeline,
         int availableDeploymentPopulation,
-        bool requireLegalFormation)
+        bool requireLegalFormation,
+        CompiledGrowthRules? growthRules = null)
     {
         ArgumentNullException.ThrowIfNull(content);
         ArgumentNullException.ThrowIfNull(run);
@@ -38,7 +40,8 @@ public static class RunBattlePreparationAdapter
                 hero.InstanceId,
                 hero.ContentId,
                 0,
-                hero.HealthRatio,
+                // Run battles start fresh; old saves may still contain a wound ratio.
+                1f,
                 false,
                 true,
                 deployed.Contains(hero.InstanceId),
@@ -46,7 +49,8 @@ public static class RunBattlePreparationAdapter
                     item.InstanceId,
                     item.ContentId,
                     item.OwnerHeroInstanceId,
-                    item.SlotIndex)).ToImmutableArray()));
+                    item.SlotIndex)).ToImmutableArray(),
+                Growth: ProjectGrowth(hero, growthRules, run.Growth)));
         for (var index = 0; index < encounter.EnemyIds.Count; index++)
             units.Add(new BattlePreparationUnitSource(
                 $"enemy-{index}",
@@ -100,15 +104,35 @@ public static class RunBattlePreparationAdapter
                 : BattlePlacementValidation.None);
     }
 
+    public static BattleUnitGrowth? ProjectGrowth(RosterHeroInstanceDto hero,
+        CompiledGrowthRules? rules, GrowthRunDto? runGrowth = null)
+    {
+        if (rules is null) return null;
+        rules.Heroes.TryGetValue(hero.ContentId, out var definition);
+        var loadout = string.IsNullOrEmpty(hero.Growth.AscensionId)
+            ? definition?.BaseLoadout : definition?.AscendedLoadout;
+        // Preview reads the selection; an already-started battle reads its paid snapshot.
+        var started = runGrowth?.PendingNode is { IsBattle: true } node ? node : null;
+        var spellId = started?.ConsumedSpellId ?? runGrowth?.EquippedSpellId ?? "";
+        var target = started?.SpellTargetInstanceId ?? runGrowth?.SpellTargetInstanceId ?? "";
+        var canUse = started is not null || runGrowth?.SpellInventory.GetValueOrDefault(spellId) > 0;
+        var spell = canUse && target == hero.InstanceId && rules.Spells.TryGetValue(spellId, out var selected)
+            ? selected.BattleLoadout : null;
+        return new BattleUnitGrowth(hero.Growth.AddedAttack, hero.Growth.AddedMaxHealth, loadout, spell);
+    }
+
     private static Vector2I[] ResolveEnemyCells(ContentRegistry content, EncounterPlan encounter,
         IBattleFloorRuleRuntime floor)
     {
-        var cells = encounter.EnemyIds.Select((_, i) => BattlefieldLayout.EnemyCells[i % BattlefieldLayout.EnemyCells.Length]).ToArray();
+        if (!encounter.EnemyCells.IsDefaultOrEmpty && encounter.EnemyCells.Length != encounter.EnemyIds.Count)
+            throw new InvalidOperationException("Encounter placement count does not match its enemies.");
+        var cells = encounter.EnemyCells.IsDefaultOrEmpty
+            ? encounter.EnemyIds.Select((_, i) => BattlefieldLayout.EnemyCells[i % BattlefieldLayout.EnemyCells.Length]).ToArray()
+            : encounter.EnemyCells.ToArray();
         var radii = encounter.EnemyIds.Select(id => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition unit
             ? unit.BodyRadius : BattlefieldSpace.DefaultBodyRadius).ToArray();
-        if (!radii.Any(radius => radius > .49f)) return cells;
-        // Reserve the large bodies first. The same resolved anchors drive the deployment preview and
-        // battle, so a formal encounter never relies on the simulator silently repairing its giant.
+        // Reserve large bodies first, then resolve even small anchors against terrain and prior bodies.
+        // Preview and battle share this result instead of relying on silent simulator relocation.
         var reserved = new List<int>();
         foreach (var index in Enumerable.Range(0, cells.Length).OrderByDescending(i => radii[i]).ThenBy(i => i))
         {

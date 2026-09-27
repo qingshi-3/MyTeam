@@ -21,4 +21,4 @@ Stationary = true
 DisableBasicAttacks = true
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "测试单位"
-RuleDescription = "测试用：5000 生命、零防御，原地承伤，不移动、不攻击、无技能。"
+RuleDescription = "高生命静止训练假人，不会移动或攻击。"

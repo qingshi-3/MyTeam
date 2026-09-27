@@ -442,6 +442,24 @@ public sealed class BattleStatusScope : IDisposable
 
     public void HandleOwnerDeath(string ownerId) => RemoveOwnerCore(ownerId, deathOnly: true);
 
+    // Precise removal for a transferred/consumed independently attributed layer. Other
+    // sources and timers remain untouched; the world transaction still owns rollback.
+    internal bool MatrixRemoveInstance(string instanceId, int tick)
+    {
+        EnsureNotMutating();
+        if (_transition is not null) return false;
+        return ExecuteTransactional(batch =>
+        {
+            var found = _instances.FirstOrDefault(pair => pair.Value.InstanceId == instanceId);
+            if (found.Value is null) return false;
+            _lastTick = Math.Max(_lastTick, tick);
+            batch.Owners.Add(found.Value.OwnerId);
+            RemoveInstance(found.Key, found.Value, StatusRemovalReason.OverflowConsumed, tick,
+                Snapshot(found.Value), batch);
+            return true;
+        });
+    }
+
     public void RemoveOwner(string ownerId) => RemoveOwnerCore(ownerId, deathOnly: false);
 
     public ImmutableArray<StatusRuntimeSnapshot> SnapshotOwner(string ownerId) => _instances.Values

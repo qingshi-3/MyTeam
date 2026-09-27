@@ -69,8 +69,9 @@ public sealed class RunRelicService
     public RelicRunApplyResult ApplyTransition(
         RelicRunKey runKey,
         IEnumerable<RunItemBinding> itemBindings,
-        RelicBattleTransitionResult transition) =>
-        WithScope(runKey, itemBindings, scope => scope.Apply(transition),
+        RelicBattleTransitionResult transition,
+        RelicBattleCompletionReason expectedReason = RelicBattleCompletionReason.PlayerVictory) =>
+        WithScope(runKey, itemBindings, scope => scope.Apply(transition, expectedReason),
             RelicRunCompletionReason.TransitionApplied);
 
     private static RelicRunApplyResult WithScope(

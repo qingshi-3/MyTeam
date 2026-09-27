@@ -216,8 +216,8 @@ public static class BattleLabTooltipFormatter
         var groups = AbilityGroups(snapshot.AbilityLoadout?.Abilities ?? []);
         if (!string.IsNullOrWhiteSpace(groups)) rows.Add(groups);
         if (snapshot.AttackHitGrowth is { } growth)
-            rows.Add($"被动 · 连续命中成长\n命中：攻速 +{growth.AttackSpeedPerHit:0.##}，无上限。\n" +
-                ((!growth.ResetOnTargetChange || retain) ? "换目标保层；" : "换目标清层；") + "战后清空。");
+            rows.Add($"被动 · 连续命中成长\n每次命中，攻速增加 {growth.AttackSpeedPerHit * 100:0.##}%，可无限叠加。\n" +
+                ((!growth.ResetOnTargetChange || retain) ? "更换目标时保留加成；" : "更换目标时清空加成；") + "战斗结束后清空。");
         return rows.Count == 0 ? fallback : string.Join("\n\n", rows);
     }
 

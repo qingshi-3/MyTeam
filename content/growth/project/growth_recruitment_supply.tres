@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="RecruitmentSupplyDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/RecruitmentSupplyDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Project/RecruitmentTierDefinition.cs" id="2"]
+[ext_resource type="Script" path="res://src/Project/RecruitmentStageDefinition.cs" id="3"]
+[sub_resource type="Resource" id="T1"]
+script = ExtResource("2")
+HeroIds = PackedStringArray("hero_mx01", "hero_mx03", "hero_mx21", "hero_mx23")
+[sub_resource type="Resource" id="T2"]
+script = ExtResource("2")
+HeroIds = PackedStringArray("hero_mx02", "hero_mx05", "hero_mx10", "hero_mx22", "hero_mx25", "hero_mx30")
+[sub_resource type="Resource" id="T3"]
+script = ExtResource("2")
+HeroIds = PackedStringArray("hero_mx04", "hero_mx24", "hero_mx36", "hero_mx39", "hero_mx40", "hero_mx42", "hero_mx43")
+[sub_resource type="Resource" id="T4"]
+script = ExtResource("2")
+HeroIds = PackedStringArray("hero_mx44", "hero_mx45", "hero_mx46", "hero_mx47", "hero_mx48", "gx01_vine_plague", "gx02_venom_walker", "gx03_array_gunner", "gx04_phase_anchor")
+[sub_resource type="Resource" id="S1"]
+script = ExtResource("3")
+StartFloorIndex = 0
+TierWeights = PackedInt32Array(60, 40, 0, 0)
+[sub_resource type="Resource" id="S2"]
+script = ExtResource("3")
+StartFloorIndex = 4
+TierWeights = PackedInt32Array(30, 40, 30, 0)
+[sub_resource type="Resource" id="S3"]
+script = ExtResource("3")
+StartFloorIndex = 9
+TierWeights = PackedInt32Array(0, 20, 45, 35)
+[resource]
+script = ExtResource("1")
+Tiers = Array[Resource]([SubResource("T1"), SubResource("T2"), SubResource("T3"), SubResource("T4")])
+OpeningTierWeights = PackedInt32Array(60, 40, 0, 0)
+Stages = Array[Resource]([SubResource("S1"), SubResource("S2"), SubResource("S3")])

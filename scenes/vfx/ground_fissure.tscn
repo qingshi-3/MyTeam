@@ -1,31 +1,78 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
 [ext_resource type="Script" path="res://src/Vfx/VfxEnemyActionTrack.cs" id="track"]
-[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="texture"]
-[ext_resource type="Texture2D" path="res://assets/vfx/library/rock-wedge-anime.png" id="piece"]
-[ext_resource type="Shader" path="res://scenes/vfx/enemy_fissure.gdshader" id="shader"]
-[sub_resource type="ShaderMaterial" id="material"]
-shader = ExtResource("shader")
+[ext_resource type="Script" path="res://src/Vfx/VfxMotePool.cs" id="pool"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/action_mote.tscn" id="mote"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_UV_Distortion_002.png" id="flow"]
+[ext_resource type="Texture2D" path="res://assets/vfx/library/rock-wedge-anime.png" id="stone"]
+[ext_resource type="Shader" path="res://scenes/vfx/ground_spike.gdshader" id="rockshader"]
+[ext_resource type="Shader" path="res://scenes/vfx/enemy_fissure.gdshader" id="crack"]
+[sub_resource type="ShaderMaterial" id="stone"]
+resource_local_to_scene = true
+shader = ExtResource("rockshader")
+
+[sub_resource type="ShaderMaterial" id="crack"]
+resource_local_to_scene = true
+shader = ExtResource("crack")
+
 [node name="ground_fissure" type="Node2D"]
 script = ExtResource("root")
-[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces")]
+[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces", "Details", "Motes")]
 script = ExtResource("track")
 Kind = 3
 Surface = NodePath("Surface")
+Details = NodePath("Details")
+Motes = NodePath("Motes")
 Pieces = NodePath("Pieces")
 [node name="Surface" type="Sprite2D" parent="Track"]
-texture = ExtResource("texture")
-material = SubResource("material")
+z_as_relative = false
+z_index = 0
+texture = ExtResource("surface")
+texture_filter = 2
+material = SubResource("crack")
 [node name="Pieces" type="Node2D" parent="Track"]
 [node name="Piece0" type="Sprite2D" parent="Track/Pieces"]
-texture = ExtResource("piece")
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
 [node name="Piece1" type="Sprite2D" parent="Track/Pieces"]
-texture = ExtResource("piece")
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
 [node name="Piece2" type="Sprite2D" parent="Track/Pieces"]
-texture = ExtResource("piece")
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
 [node name="Piece3" type="Sprite2D" parent="Track/Pieces"]
-texture = ExtResource("piece")
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
 [node name="Piece4" type="Sprite2D" parent="Track/Pieces"]
-texture = ExtResource("piece")
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
 [node name="Piece5" type="Sprite2D" parent="Track/Pieces"]
-texture = ExtResource("piece")
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
+[node name="Piece6" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
+[node name="Piece7" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
+[node name="Piece8" type="Sprite2D" parent="Track/Pieces"]
+texture = ExtResource("stone")
+texture_filter = 2
+material = SubResource("stone")
+[node name="Details" type="Node2D" parent="Track"]
+[node name="Unused" type="Sprite2D" parent="Track/Details"]
+texture = ExtResource("surface")
+texture_filter = 2
+[node name="Motes" type="Node2D" parent="Track"]
+script = ExtResource("pool")
+ParticleScene = ExtResource("mote")
+Capacity = 96

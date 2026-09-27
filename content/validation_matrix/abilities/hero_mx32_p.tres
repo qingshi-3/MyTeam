@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 27
+Target = 13
+AttackRatio = 0.55
+
+[sub_resource type="Resource" id="op_3"]
+script = ExtResource("operation")
+Kind = 8
+Target = 0
+Key = "double-shot"
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 1
+SourceRelation = 1
+TargetRelation = 4
+RequiredCounter = "double-shot"
+CounterThreshold = 1
+Effects = Array[ExtResource("operation")]([SubResource("op_2"), SubResource("op_3")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx32_p"
+DisplayName = "星轨射手·被动"
+Description = "施法后的第一次普通攻击会额外射出1箭，造成55%攻击伤害。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1")]

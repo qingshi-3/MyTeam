@@ -7,7 +7,7 @@
 script = ExtResource("r1")
 Id = "hero_hc36_cyclone_weaver"
 DisplayName = "风眼术士"
-Description = "HC36／MV06 测试稿。开场满蓝。牵引 3.6 格内最近的至多 5 名非 Boss 敌人，各向施法者附近不同合法位置靠拢至多 2.4 格；各造成 30 加 50% 攻击力的伤害并眩晕 0.4 秒。 被动：每 3 秒为自己 3.6 格内最近的两名其他友军各提供 25 护盾。 数值为测试暂值。"
+Description = "聚拢并眩晕附近敌人，同时定期为身边友军提供护盾。"
 Portrait = ExtResource("r0")
 IsHero = true
 Role = 3

@@ -34,7 +34,7 @@ public partial class SkillProgressContractSmoke : Node
             AddChild(_view); AddChild(_panel);
             CheckCatalog(); CheckMana(); CheckGrit(); CheckPeriodic(); CheckBrood(); CheckPhaseReplacement(); CheckLimitedTrigger();
             _panel.Free(); _view.Free();
-            GD.Print("SKILL_PROGRESS_OK all-published-both-teams; real-mana/grit/cadence; queued-critical; expiry; brood/phase; uses; read-purity; authored-HUD/detail-bindings; lifecycle");
+            GD.Print("SKILL_PROGRESS_OK all-published-both-teams; real-mana/grit/cadence; queued-critical; retention; brood/phase; uses; read-purity; authored-HUD/detail-bindings; lifecycle");
             GetTree().Quit();
         }
         catch (Exception error) { GD.PrintErr("SKILL_PROGRESS_FAILED " + error); GetTree().Quit(1); }
@@ -68,7 +68,8 @@ public partial class SkillProgressContractSmoke : Node
                 if (skills.Primary is { } primary)
                 {
                     Require(_view.ManaBar.Value == primary.Current && _view.ManaBar.MaxValue == primary.Maximum, "exact bound values");
-                    Require(_view.ResourceMarker.Visible && _view.ResourceMarker.Text.Length > 0, "noncolor resource identity");
+                    Require(_view.GetNodeOrNull<Label>("ResourceMarker") is null &&
+                        _view.GetNodeOrNull<Label>("ReadyMarker") is null, "overhead resource copy removed");
                     Require(_view.ManaBar.GetThemeStylebox("fill") ==
                         _panel.GetNode<ProgressBar>("%ManaBar").GetThemeStylebox("fill"), "shared authored style");
                 }
@@ -103,7 +104,12 @@ public partial class SkillProgressContractSmoke : Node
         var profile = Profile("hero_hc38_grit_brawler");
         using (var battle = new BattleSimulation(Config(profile, new Probe(context =>
                {
-                   if (context.Tick == 1) context.Damage("target", context.Units.Single(u => u.RuntimeId == "owner"), 250);
+                   if (context.Tick == 1)
+                   {
+                       var owner = context.Units.Single(u => u.RuntimeId == "owner");
+                       context.Damage("target", owner, 250);
+                       context.Heal(owner, 250);
+                   }
                }))))
         {
             var owner = Caster(battle); Normalize(owner); owner.DisabledTicks = 200;
@@ -111,11 +117,16 @@ public partial class SkillProgressContractSmoke : Node
             Step(battle, 2);
             Require(Primary(battle).Current == 250 && Primary(battle).Maximum == 500, "actual damage fills capped grit");
             Bind(battle, owner);
-            Require(_panel.GetNode<Button>("%UnitAbility").Visible && _view.ResourceMarker.Text == "怒", "conditional punch is active in detail and grit in HUD");
+            Require(_panel.GetNode<Button>("%UnitAbility").Visible && _view.ManaBar.Visible,
+                "conditional punch is active in detail and grit gauge in HUD");
             var current = Primary(battle);
             for (var i = 0; i < 10; i++) Require(Primary(battle) == current, "repeated reads do not advance grit");
             Step(battle, 65);
-            Require(Primary(battle).Current == 0, "expired damage disappears from actual gauge");
+            Require(Primary(battle).Current == 250,
+                "grit survives healing, waiting, control and the old expiry window");
+            owner.DisabledTicks = 0; owner.Health = 499; Step(battle, 1);
+            Require(Primary(battle).State == SkillProgressState.Casting && Primary(battle).Current == 0,
+                "retained grit is consumed only when the threshold cast starts");
         }
         using (var battle = new BattleSimulation(Config(profile)))
         {
@@ -127,7 +138,7 @@ public partial class SkillProgressContractSmoke : Node
             Step(battle, 12);
             Require(Primary(battle).Detail.Contains("濒死机会已用"), "once-only entitlement is actual runtime state");
             owner.Health = 0; Bind(battle, owner);
-            Require(!_view.ManaBar.Visible && !_view.ResourceMarker.Visible && !_view.ReadyMarker.Visible, "defeated overhead cleared");
+            Require(!_view.ManaBar.Visible && !_view.StatusIcon.Visible, "defeated overhead cleared");
             owner.Health = 300; Bind(battle, owner);
             Require(_view.ManaBar.Visible && Primary(battle).Detail.Contains("濒死机会已用"), "restored identity keeps used entitlement");
         }

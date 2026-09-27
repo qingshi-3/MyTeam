@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 13
+Target = 0
+Attribute = 3
+Amount = 0.25
+DurationTicks = 6
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 0
+SourceRelation = 0
+TargetRelation = 0
+IntervalTicks = 5
+OwnerCondition = 5
+HealthThreshold = 0.6
+Effects = Array[ExtResource("operation")]([SubResource("op_2")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx26_p"
+DisplayName = "血誓狂战·被动"
+Description = "生命低于60%时，攻速提高25%；生命恢复后解除。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1")]

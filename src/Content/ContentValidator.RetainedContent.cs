@@ -68,6 +68,10 @@ public static partial class ContentValidator
         {
             foreach (var dependency in AbilityDefinitionCompiler.EnemyActionDependencies(operation))
                 if (!activeUnitIds.Contains(dependency)) report.Error($"{ResourceLabel(ability)}: unavailable enemy action product: {dependency}");
+            if (operation is MatrixAbilityOperationSpec matrix)
+                foreach (var node in MatrixAbilityCompiler.Flatten(matrix).Where(node => node.Kind == MatrixOperationKind.Summon))
+                    if (!activeUnitIds.Contains(node.ContentId))
+                        report.Error($"{ResourceLabel(ability)}: unavailable matrix summon product: {node.ContentId}");
             var contentId = operation switch
             {
                 SummonAbilityOperationSpec summon => summon.SummonContentId,

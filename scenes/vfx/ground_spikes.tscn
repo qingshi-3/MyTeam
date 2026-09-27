@@ -13,6 +13,9 @@
 [ext_resource type="Shader" path="res://scenes/vfx/ground_fissure.gdshader" id="fissure_shader"]
 [sub_resource type="ShaderMaterial" id="stone_mat"]
 shader=ExtResource("stone_shader")
+shader_parameter/body_gain=0.93
+shader_parameter/arrival_gain=0.05
+shader_parameter/arrival_tint=Vector3(0.025,0.016,0.008)
 [sub_resource type="ShaderMaterial" id="fissure_mat"]
 shader=ExtResource("fissure_shader")
 [node name="GroundSpikes" type="Node2D"]

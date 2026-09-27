@@ -37,6 +37,7 @@ public partial class AppScreenHost : Control
     private readonly Dictionary<AppScreenId, Control> _screens = [];
     private ScreenRouter _router = null!;
     private ArmyOverviewController _armyOverview = null!;
+    public event Action? GrowthChanged;
 
     public MainMenuScreenController MainMenu { get; private set; } = null!;
     public HeroSelectScreen HeroSelection { get; private set; } = null!;
@@ -87,6 +88,9 @@ public partial class AppScreenHost : Control
         var armyOverview = GetNode<ArmyOverviewController>(ArmyOverviewPath);
         _armyOverview = armyOverview;
         _armyOverview.EquipmentChanged += RefreshEquipmentDisplay;
+        _armyOverview.GrowthChanged += RefreshGrowthDisplay;
+        _armyOverview.OpenChanged += Deployment.SetGlobalInspectionOpen;
+        Deployment.EquipmentOverlayChanged += _armyOverview.SetPageInspectionOpen;
         armyOverview.BindModalFocusScope(this);
         _router = new ScreenRouter(
             _screens.Values.ToArray(),
@@ -101,10 +105,16 @@ public partial class AppScreenHost : Control
     public override void _ExitTree()
     {
         if (_armyOverview is not null) _armyOverview.EquipmentChanged -= RefreshEquipmentDisplay;
+        if (_armyOverview is not null) _armyOverview.GrowthChanged -= RefreshGrowthDisplay;
+        if (_armyOverview is not null) _armyOverview.OpenChanged -= Deployment.SetGlobalInspectionOpen;
+        if (Deployment is not null && _armyOverview is not null)
+            Deployment.EquipmentOverlayChanged -= _armyOverview.SetPageInspectionOpen;
     }
 
     public void BindEquipmentManagement(RunApplication app) => _armyOverview.BindEquipmentManagement(app);
     private void RefreshEquipmentDisplay() => Deployment.RefreshEquipment();
+    private void RefreshGrowthDisplay() => GrowthChanged?.Invoke();
+    public void OpenGrowthWorkbench() => _armyOverview.OpenGrowthWorkbench();
 
     public void Show(
         AppScreenId id,

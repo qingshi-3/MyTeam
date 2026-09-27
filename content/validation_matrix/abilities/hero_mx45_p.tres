@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 7
+Target = 0
+Key = "revenge"
+Amount = 1
+Maximum = 4
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 3
+SourceRelation = 4
+TargetRelation = 1
+MinimumEventValue = 0.001
+Effects = Array[ExtResource("operation")]([SubResource("op_2")])
+
+[sub_resource type="Resource" id="op_4"]
+script = ExtResource("operation")
+Kind = 7
+Target = 0
+Key = "revenge"
+Amount = 1
+Maximum = 4
+
+[sub_resource type="Resource" id="op_3"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 8
+SourceRelation = 0
+TargetRelation = 3
+OncePerTarget = true
+Effects = Array[ExtResource("operation")]([SubResource("op_4")])
+
+[sub_resource type="Resource" id="op_6"]
+script = ExtResource("operation")
+Kind = 2
+Target = 0
+Amount = 30
+DurationTicks = 30
+
+[sub_resource type="Resource" id="op_5"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 8
+SourceRelation = 1
+TargetRelation = 4
+CooldownTicks = 10
+ActiveSkillOnly = true
+Effects = Array[ExtResource("operation")]([SubResource("op_6")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx45_p"
+DisplayName = "幽刃斗将·被动"
+Description = "受到敌人生命伤害或其他友军首次阵亡时获得1层复仇，最多4层；主动技能击杀敌人后获得30点护盾，持续3秒。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1"), SubResource("op_3"), SubResource("op_5")]

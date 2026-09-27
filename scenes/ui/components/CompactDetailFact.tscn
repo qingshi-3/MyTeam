@@ -7,7 +7,7 @@
 [node name="CompactDetailFact" type="Button"]
 custom_minimum_size = Vector2(76, 44)
 size_flags_horizontal = 3
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"InspectionFact"
 script = ExtResource("1")
 ExplanationTooltip = ExtResource("2")
 Vocabulary = ExtResource("3")

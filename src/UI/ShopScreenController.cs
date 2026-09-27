@@ -18,7 +18,7 @@ public partial class ShopScreenController : Control
     {
         _gold = GetNode<SemanticChip>("Margin/Layout/Gold");
         _status = GetNode<Label>("Margin/Layout/Status");
-        _choices = GetNode<Container>("Margin/Layout/OfferBody/ChoiceScroll/Choices");
+        _choices = GetNode<Container>("Margin/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices");
         _leave = GetNode<Button>("Margin/Layout/LeaveButton");
         _leave.Pressed += OnLeave;
     }
@@ -33,6 +33,7 @@ public partial class ShopScreenController : Control
     {
         var run = app.ActiveRun ?? throw new InvalidOperationException("No active run for shop screen.");
         _gold.Bind(SemanticIconKeys.Gold, run.Gold.ToString(), "GoldValue");
+        _gold.BindCaption("持有");
         _status.Text = string.Empty;
         RunOfferCardBinder.Sync(_choices, app, choiceTemplate, itemTemplate, icons, OnPurchase, shop: true);
     }

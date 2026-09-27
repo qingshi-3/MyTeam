@@ -2,7 +2,7 @@ using Godot;
 
 namespace TowerAutobattler.Project;
 
-public enum RunConditionKind { GoldAtLeast, RosterHealthAtLeast, HasContent, PopulationBelowCap, StartingHeroIs }
+public enum RunConditionKind { GoldAtLeast, RosterHealthAtLeast, HasContent, PopulationBelowCap, StartingHeroIs, RunHealthBelowMaximum }
 
 [GlobalClass]
 public partial class RunConditionDefinition : Resource

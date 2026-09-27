@@ -14,8 +14,8 @@ void fragment(){
     float time=age*motion_amount;
     float n=noise(vec2(x*11.-time*9.,UV.y*12.));
     float m=noise(vec2(x*23.-time*17.,UV.y*23.+3.));
-    float w=.025+pow(x,.8)*.36;
-    float center=.5+(n-.5)*.12*x;
+    float w=.021+pow(x,.72)*.41;
+    float center=.5+(n-.5)*.19*x;
     float side=abs(UV.y-center)/w;
     float body=1.-smoothstep(.47+n*.52,.62+n*.53,side);
     float breakup=mix(1.,smoothstep(.27,.48,n*.55+m*.45),smoothstep(.12,.65,x));
@@ -26,5 +26,5 @@ void fragment(){
     vec3 color=mix(vec3(.48,.035,.008),vec3(1.,.24,.015),smoothstep(.12,.55,heat));
     color=mix(color,vec3(1.,.76,.16),smoothstep(.56,.88,heat));
     float edge=(1.-smoothstep(.38,.88,x))*(1.-release);
-    COLOR=vec4(color,body*breakup*start*stop*edge)*layer_color;
+    COLOR=vec4(color,body*breakup*start*stop*edge*.85)*layer_color;
 }

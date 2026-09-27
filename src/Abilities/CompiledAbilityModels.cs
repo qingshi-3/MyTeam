@@ -15,7 +15,7 @@ public sealed record CompiledAbilityPresentation(
 public abstract record CompiledAbilityOperation;
 
 public sealed record CompiledProjectileSequenceAbilityOperation(int ShotCount, float AttackIntervalRatio,
-    float AttackDamageMultiplier, int MaxTargets = 1) : CompiledAbilityOperation;
+    float AttackDamageMultiplier, int MaxTargets = 1, float PerShotDamageIncrease = 0) : CompiledAbilityOperation;
 
 public sealed record CompiledEffectAbilityOperation(
     CompiledEffectBinding Binding,

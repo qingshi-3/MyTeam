@@ -1,12 +1,36 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
 [ext_resource type="Script" path="res://src/Vfx/VfxEnemyActionTrack.cs" id="track"]
-[ext_resource type="Texture2D" path="res://assets/vfx/enemy-actions/crossblade.svg" id="texture"]
+[ext_resource type="Script" path="res://src/Vfx/VfxMotePool.cs" id="pool"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/action_mote.tscn" id="mote"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_UV_Distortion_002.png" id="flow"]
+[ext_resource type="Texture2D" path="res://assets/vfx/enemy-actions/return-blade-painted.png" id="blade"]
+[ext_resource type="Shader" path="res://scenes/vfx/weapon_air.gdshader" id="air"]
+[sub_resource type="ShaderMaterial" id="airmat"]
+resource_local_to_scene = true
+shader = ExtResource("air")
+shader_parameter/grain = ExtResource("flow")
 [node name="returning_blade" type="Node2D"]
 script = ExtResource("root")
-[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces")]
+[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Surface", "Other", "Link", "Pieces", "Details", "Motes")]
 script = ExtResource("track")
 Kind = 1
 Surface = NodePath("Surface")
+Details = NodePath("Details")
+Motes = NodePath("Motes")
+[node name="Details" type="Node2D" parent="Track"]
+[node name="Ghost" type="Sprite2D" parent="Track/Details"]
+texture = ExtResource("blade")
+texture_filter = 2
+[node name="Air" type="Sprite2D" parent="Track/Details"]
+texture = ExtResource("surface")
+texture_filter = 2
+material = SubResource("airmat")
 [node name="Surface" type="Sprite2D" parent="Track"]
-texture = ExtResource("texture")
+texture = ExtResource("blade")
+texture_filter = 2
+[node name="Motes" type="Node2D" parent="Track"]
+script = ExtResource("pool")
+ParticleScene = ExtResource("mote")
+Capacity = 64

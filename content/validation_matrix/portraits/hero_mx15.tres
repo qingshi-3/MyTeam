@@ -1,0 +1,23 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="r0"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f4_crawler/frames.tres" id="r1"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f4_crawler.png" id="illustration"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/cutouts/f4_crawler.png" id="card_illustration"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "hero_mx15"
+Frames = ExtResource("r1")
+AnimationName = &"idle"
+FrameIndex = 0
+Zoom = 2
+OffsetRatio = Vector2(0, 0.05)
+Illustration = ExtResource("illustration")
+CardIllustration = ExtResource("card_illustration")
+CardIllustrationFocus = Vector2(0.61, 0.54)
+CardIllustrationZoom = 1.25
+IllustrationFocus = Vector2(0.58, 0.55)
+IllustrationZoom = 1

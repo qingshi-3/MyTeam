@@ -232,6 +232,8 @@ public partial class BattleLabBattleLifecycleContractSmoke : Node
             Require(root.Content is not null, "coordinator reset fixture bootstrap");
 
             var screens = root.GetNode<AppScreenHost>("Screens");
+            if (!screens.MainMenu.GetNode<Control>("Center/Panel/Menu/BattleLabButton").IsVisibleInTree())
+                await Click(screens.MainMenu.GetNode<Control>("Center/Panel/Menu/ToolsButton"));
             await Click(screens.MainMenu.GetNode<Control>("Center/Panel/Menu/BattleLabButton"));
             var digest = screens.BattleLab.CurrentSnapshot?.CanonicalDigest ??
                          throw new InvalidOperationException("coordinator reset Lab snapshot missing");

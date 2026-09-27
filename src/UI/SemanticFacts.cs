@@ -17,6 +17,8 @@ public static class SemanticIconKeys
     public static readonly StringName Damage = "damage";
     public static readonly StringName Attack = "attack";
     public static readonly StringName SpellPower = "spell_power";
+    public static readonly StringName CriticalChance = "critical_chance";
+    public static readonly StringName CriticalDamage = "critical_damage";
     public static readonly StringName LifeSteal = "keyword.lifesteal";
     public static readonly StringName Armor = "armor";
     public static readonly StringName ControlResistance = "control_resistance";

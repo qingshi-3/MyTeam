@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
+using TowerAutobattler.Growth;
 using TowerAutobattler.Project;
 using TowerAutobattler.Relics;
 using TowerAutobattler.TacticalCommands;
@@ -15,16 +16,19 @@ public sealed class RunBattlePreparationService
     private readonly CompiledGameProject _project;
     private readonly CompiledRunRules _rules;
     private readonly RunRelicService _relics;
+    private readonly CompiledGrowthRules? _growthRules;
 
     public RunBattlePreparationService(
         ContentRegistry content,
         CompiledGameProject project,
-        RunRelicService relics)
+        RunRelicService relics,
+        CompiledGrowthRules? growthRules = null)
     {
         _content = content ?? throw new ArgumentNullException(nameof(content));
         _project = project ?? throw new ArgumentNullException(nameof(project));
         _rules = project.RunRules;
         _relics = relics ?? throw new ArgumentNullException(nameof(relics));
+        _growthRules = growthRules;
     }
 
     public BattleConfig Build(ActiveRunDto run, EncounterPlan encounter, bool requireLegalFormation)
@@ -55,15 +59,18 @@ public sealed class RunBattlePreparationService
                 tacticalCommands,
                 bossTimeline,
                 RunPopulationPolicy.Evaluate(run, _rules).AvailableDeploymentPopulation,
-                requireLegalFormation);
+                requireLegalFormation, _growthRules);
             return BattlePreparationAssembler.Assemble(request with
             {
-                EnemyHealthMultiplier = compiledEncounter.EnemyHealthMultiplier,
-                EnemyDamageMultiplier = compiledEncounter.EnemyDamageMultiplier
+                EnemyHealthMultiplier = compiledEncounter.EnemyHealthMultiplier * LocalMultiplier(compiledEncounter.LocalHealthMultipliers, run),
+                EnemyDamageMultiplier = compiledEncounter.EnemyDamageMultiplier * LocalMultiplier(compiledEncounter.LocalDamageMultipliers, run)
             });
         }
         finally { rule.Free(); }
     }
+
+    private float LocalMultiplier(ImmutableArray<float> curve, ActiveRunDto run) =>
+        curve.IsDefaultOrEmpty ? 1 : curve[run.FloorIndex % _project.Campaign.FloorsPerRegion];
 
     public RelicRunApplyResult ValidateTransition(
         ActiveRunDto run,
@@ -73,8 +80,9 @@ public sealed class RunBattlePreparationService
 
     public RelicRunApplyResult ApplyTransition(
         ActiveRunDto run,
-        RelicBattleTransitionResult transition) =>
-        _relics.ApplyTransition(Key(run), Bindings(run), transition);
+        RelicBattleTransitionResult transition,
+        RelicBattleCompletionReason expectedReason = RelicBattleCompletionReason.PlayerVictory) =>
+        _relics.ApplyTransition(Key(run), Bindings(run), transition, expectedReason);
 
     private RelicRunKey Key(ActiveRunDto run) =>
         new(run.Seed, run.Roster[0].ContentId, run.FloorIndex, run.BattleNumber);

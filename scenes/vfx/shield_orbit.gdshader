@@ -21,10 +21,10 @@ void fragment() {
     float edge = exp(-pow((radius - 0.385) * 35.0, 2.0));
     float breakup = sin(angle * 13.0 + radius * 42.0) * 0.5 + 0.5;
     float dissolve = smoothstep(release * 1.25 - 0.25, release * 1.25 + 0.05, breakup);
-    vec3 light = body.rgb * 0.66 + vec3(0.25, 0.95, 0.8) * ripple * mix(0.4, 1.0, motion_amount);
+    vec3 light = body.rgb * 0.52 + vec3(0.25, 0.95, 0.8) * ripple * mix(0.4, 1.0, motion_amount);
     // A light continuous veil keeps the shell readable; clip only the source's
     // outer decorative flares, not the independently rendered orbit tracks.
     float shell_edge = 1.0 - smoothstep(0.475, 0.505, radius);
-    float alpha = body.a * 0.58 * shell_edge + dome + ripple * 0.32 + edge * impact * 0.15;
+    float alpha = body.a * 0.42 * shell_edge + dome + ripple * 0.24 + edge * impact * 0.15;
     COLOR = vec4(light, alpha * reveal * dissolve * (1.0 - release)) * layer_color;
 }

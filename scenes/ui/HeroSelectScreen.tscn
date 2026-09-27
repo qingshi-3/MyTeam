@@ -37,8 +37,8 @@ text = "组建开局队伍 · 六选二"
 
 [node name="OpeningHint" type="Label" parent="Margin/Layout"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
-text = "从这六名英雄中选择两名。再次点击可取消，确认后进入首战备战。"
 autowrap_mode = 2
 
 [node name="Content" type="HBoxContainer" parent="Margin/Layout"]

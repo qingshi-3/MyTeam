@@ -28,7 +28,7 @@ public static class RunOfferDetailText
         string title, string action, string rules, string notice, bool disabled, Texture2D? fallback = null)
     {
         if (!app.Content.TryGet(contentId, out var entry))
-            return new(id, title, "机会", null, fallback, false, "", "", "", "", "", "", rules, "", action, notice, disabled);
+            return new(id, title, "机会", null, fallback, false, "", "", "", "", "", "", rules, "", action, notice, disabled, IsOpportunity: true);
         if (entry.Definition is ItemDefinition item)
             return new(id, item.DisplayName,
                 $"{(item.ProductKind == ItemProductKind.Equipment ? "英雄装备" : "团队遗物")} · {PlayerFacingText.DescribeItemRarity(item.Rarity)}",
@@ -36,7 +36,8 @@ public static class RunOfferDetailText
         if (entry.Definition is not UnitDefinition definition)
             return new(id, title, "机会", null, fallback, false, "", "", "", "", "", "", rules, "", action, notice, disabled);
 
-        var snapshot = BattleSetupFactory.Snapshot(entry, app.Content);
+        var growth = GrowthPresentation.Project(contentId, BattleSetupFactory.Snapshot(entry, app.Content), app.GrowthRules);
+        var snapshot = growth.Snapshot;
         float Read(CombatAttribute attribute, float fallbackValue) => snapshot.AttributeDefinition?.Attributes
             .FirstOrDefault(value => value.Attribute == attribute)?.BaseValue ?? fallbackValue;
         var speed = Read(CombatAttribute.AttackSpeed, 1);
@@ -60,10 +61,13 @@ public static class RunOfferDetailText
         if (mana > 0 && snapshot.AbilityLoadout?.Abilities.Any(a => a.Trigger == AbilityTriggerKind.ManaFull) == true)
             extra += $"\n初始法力 {Read(CombatAttribute.StartingMana, definition.StartingMana):0.#} / {mana:0.#} · 满蓝自动施法" +
                 $"\n每秒回蓝 {Read(CombatAttribute.ManaPerSecond, definition.ManaPerSecond):0.#}　普攻回蓝 {Read(CombatAttribute.ManaPerAttack, definition.ManaPerAttack):0.#}";
+        if (!string.IsNullOrWhiteSpace(growth.Description)) extra += "\n\n" + growth.Title + "\n" + growth.Description;
         if (!string.IsNullOrWhiteSpace(rules)) extra += "\n\n" + rules;
         var role = PlayerFacingText.DescribeUnitRole(definition.Role);
         var delivery = snapshot.AttackDelivery == AttackDelivery.Melee ? "近战" : "远程";
         var tier = app.Project.Campaign.RecruitmentSupply?.TierOf(contentId) ?? 0;
+        var info = new UnitInformation(contentId, definition, snapshot);
+        string SkillNames(string category) => string.Join(" / ", info.Skills.Where(skill => skill.Category == category).Select(skill => skill.Name));
         return new(id, definition.DisplayName,
             (tier > 0 ? $"{tier} 阶 · " : "") + (role == delivery ? role : role + " · " + delivery),
             definition.Portrait, definition.Icon ?? fallback, true,
@@ -71,7 +75,12 @@ public static class RunOfferDetailText
             Read(CombatAttribute.AttackDamage, definition.AttackDamage).ToString("0.#"),
             Read(CombatAttribute.Armor, definition.Armor).ToString("0.#"),
             snapshot.Behavior.DisableBasicAttacks ? "—" : (1 / interval).ToString("0.##"),
-            active, passive, string.IsNullOrWhiteSpace(active + passive) ? UnitSummary(definition) : "", extra, action, notice, disabled);
+            active, passive, !string.IsNullOrWhiteSpace(growth.Description) ? growth.Description :
+                string.IsNullOrWhiteSpace(active + passive) ? UnitSummary(definition) : "", extra, action, notice, disabled,
+            SkillNames("主动"), SkillNames("被动"), tier,
+            SemanticIcons.Catalog.ResolveIcon(SemanticIconKeys.Responsibility(definition.Role)),
+            SemanticIcons.Catalog.ResolveIcon(snapshot.AttackDelivery == AttackDelivery.Melee ? SemanticIconKeys.Melee : SemanticIconKeys.Ranged),
+            Read(CombatAttribute.AttackRange, definition.AttackRange).ToString("0.##"));
     }
 
     private static string ItemRules(RunApplication app, ItemDefinition item)

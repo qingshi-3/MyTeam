@@ -15,6 +15,10 @@ public partial class DeploymentScreenController : Control
     public event Action? StartRequested;
     public event Action<FormationMoveCommand>? MoveRequested;
     public event Action<string>? WithdrawRequested;
+    public event Action<bool>? EquipmentOverlayChanged;
+    private readonly Dictionary<CanvasItem, Color> _inspectionChrome = [];
+    private bool _globalInspectionOpen;
+    private bool _chromeSuppressed;
 
     private Label _title = null!;
     private Label _encounter = null!;
@@ -22,6 +26,8 @@ public partial class DeploymentScreenController : Control
     private HBoxContainer _roster = null!;
     private Label _reserveCount = null!;
     private Label _emptyReserve = null!;
+    private Label _benchHint = null!;
+    private Control _benchBody = null!;
     private DeploymentBoard _board = null!;
     private PanelContainer _bench = null!;
     private Button _back = null!;
@@ -61,6 +67,8 @@ public partial class DeploymentScreenController : Control
         _roster = GetNode<HBoxContainer>("%RosterChoices");
         _reserveCount = GetNode<Label>("%ReserveCount");
         _emptyReserve = GetNode<Label>("%EmptyReserve");
+        _benchHint = GetNode<Label>("%Hint");
+        _benchBody = GetNode<Control>("%Body");
         _board = GetNode<DeploymentBoard>("%DeploymentBoard");
         _bench = GetNode<PanelContainer>("%ReserveBench");
         _back = GetNode<Button>("%BackButton");
@@ -71,6 +79,10 @@ public partial class DeploymentScreenController : Control
         _unitPicker = GetNode<OptionButton>("%InspectedUnit");
         _unitPopup = GetNode<ContextPopup>("%UnitDetailsPopup");
         _equipmentPopup = GetNode<ContextPopup>("%EquipmentPopup");
+        _equipmentPopup.VisibilityChanged += OnEquipmentOverlayVisibilityChanged;
+        foreach (var chrome in new CanvasItem[] { GetNode<CanvasItem>("Margin/Layout/Header"),
+                     GetNode<CanvasItem>("%RunRisk"), _bench, _status, GetNode<CanvasItem>("Margin/Layout/Actions") })
+            _inspectionChrome.Add(chrome, chrome.Modulate);
         _encounterPopup = GetNode<ContextPopup>("%EncounterPopup");
         _unitButton = GetNode<Button>("%UnitDetailsButton");
         _equipmentButton = GetNode<Button>("%EquipmentButton");
@@ -95,6 +107,8 @@ public partial class DeploymentScreenController : Control
 
     public override void _ExitTree()
     {
+        _equipmentPopup.VisibilityChanged -= OnEquipmentOverlayVisibilityChanged;
+        RestoreInspectionChrome();
         _equipmentPanel.EquipmentChanged -= OnEquipmentChanged;
         _unitPicker.ItemSelected -= OnUnitPicked;
         _board.EnemySelected -= OnEnemySelected;
@@ -113,6 +127,38 @@ public partial class DeploymentScreenController : Control
         _encounterButton.Pressed -= ToggleEncounter;
     }
 
+    public void SetGlobalInspectionOpen(bool open)
+    {
+        _globalInspectionOpen = open;
+        RefreshInspectionChrome();
+    }
+    private void OnEquipmentOverlayVisibilityChanged()
+    {
+        RefreshInspectionChrome();
+        EquipmentOverlayChanged?.Invoke(_equipmentPopup.IsOpen);
+    }
+    private void RefreshInspectionChrome()
+    {
+        var suppress = _globalInspectionOpen || _equipmentPopup.IsOpen;
+        if (suppress == _chromeSuppressed) return;
+        if (!suppress) { RestoreInspectionChrome(); return; }
+        // Keep layout occupied so the live board does not jump when its surrounding
+        // HUD disappears. Modal input/focus remains owned by the overlay.
+        foreach (var chrome in _inspectionChrome.Keys.ToArray())
+        {
+            _inspectionChrome[chrome] = chrome.Modulate;
+            chrome.Modulate = new Color(chrome.Modulate, 0);
+        }
+        _chromeSuppressed = true;
+    }
+    private void RestoreInspectionChrome()
+    {
+        if (!_chromeSuppressed) return;
+        foreach (var (chrome, color) in _inspectionChrome)
+            if (IsInstanceValid(chrome)) chrome.Modulate = color;
+        _chromeSuppressed = false;
+    }
+
     public void Bind(
         string title,
         string encounter,
@@ -122,6 +168,7 @@ public partial class DeploymentScreenController : Control
         int reserveCapacity)
     {
         _application = null;
+        GetNode<Label>("%RunRisk").Visible = false;
         _encounterPlan = null;
         _equipmentPanel.Visible = false;
         _equipmentButton.Disabled = true;
@@ -152,7 +199,7 @@ public partial class DeploymentScreenController : Control
             var definition = (UnitDefinition)Required(app, instance.ContentId).Definition;
             var slot = run.Deployment.IndexOf(instance.InstanceId);
             return new DeploymentUnitViewModel(instance.InstanceId, definition.DisplayName, definition.Description,
-                instance.HealthRatio, definition.Role, definition.AttackRange, true, slot,
+                definition.MaxHealth, definition.Role, definition.AttackRange, true, slot,
                 slot >= 0 ? BattlefieldLayout.PlayerDeploymentCells[slot] : null, definition.Portrait,
                 BuildFormationEvaluations(app, instance.InstanceId, config.FloorRule), definition.BodyRadius);
         }).ToArray();
@@ -163,6 +210,8 @@ public partial class DeploymentScreenController : Control
                 definition.Role, definition.AttackRange, spawn.Unit.IsBoss, definition.Portrait, spawn.Unit.BodyRadius);
         }).ToArray();
         Bind(encounter.Title, DescribeEncounter(app, encounter), config, pieces, enemies, app.Rules.ReserveCapacity);
+        GetNode<Label>("%RunRisk").Text = RunHealthText.Risk(app.Rules, encounter.NodeType);
+        GetNode<Label>("%RunRisk").Visible = true;
         _application = app;
         _encounterPlan = encounter;
         _equipmentEditing = equipmentEditing;
@@ -238,7 +287,11 @@ public partial class DeploymentScreenController : Control
 
         var reserveCount = reserves.Length;
         _reserveCount.Text = $"{reserveCount} / {_reserveCapacity}";
-        _emptyReserve.Visible = reserveCount == 0;
+        _benchBody.Visible = reserveCount > 0;
+        _emptyReserve.Visible = false;
+        _benchHint.Text = reserveCount == 0
+            ? "暂无后备英雄 · 拖回此处下场"
+            : "拖动英雄调整阵容";
         _bench.TooltipText = reserveCount >= _reserveCapacity
                 ? $"后备已满（{_reserveCapacity}/{_reserveCapacity}），无法撤回。"
                 : "将场上英雄拖到这里撤回后备，点击不会改变阵型。";
@@ -289,6 +342,7 @@ public partial class DeploymentScreenController : Control
         _selectedId = heroId;
         _inspectedId = heroId;
         OnEquipmentChanged();
+        UiDragVisual.Committed(GetViewport(), result.ItemId);
         ShowMessage($"已装入第 {result.SlotIndex + 1} 个装备槽。", false);
         if (_pieces.FirstOrDefault(piece => piece.InstanceId == heroId)?.Cell is { } cell)
             _board.FlashCell(cell, true);
@@ -363,7 +417,7 @@ public partial class DeploymentScreenController : Control
         if (definition is null || snapshot is null) return;
         var context = pieceModel is null ? "敌方 · 开战配置" :
             pieceModel.Cell is null ? "后备 · 基础属性（部署后计入战斗加成）" : "我方 · 开战配置（含装备与开场加成）";
-        _details.Bind(_inspectedId, definition, snapshot, context, prepared, pieceModel?.HealthRatio ?? 1);
+        _details.Bind(_inspectedId, definition, snapshot, context, prepared);
     }
 
     private void OnPieceDropped(string pieceId, Vector2I cell) => MoveRequested?.Invoke(CreateMove(pieceId, cell));
@@ -373,8 +427,10 @@ public partial class DeploymentScreenController : Control
         var values = data.AsGodotDictionary();
         if (!values.ContainsKey("piece_id")) return false;
         var id = values["piece_id"].AsString();
-        return _pieces.Any(piece => piece.InstanceId == id && piece.Cell is not null)
+        var allowed = _pieces.Any(piece => piece.InstanceId == id && piece.Cell is not null)
             && _pieces.Count(piece => piece.Cell is null) < _reserveCapacity;
+        UiDragVisual.Aim(data, _bench, allowed);
+        return allowed;
     }
     private void ReceiveWithdrawDrag(Variant data)
     {

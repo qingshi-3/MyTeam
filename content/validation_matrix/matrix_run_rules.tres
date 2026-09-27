@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="RunRulesDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/RunRulesDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_rally.tres" id="2"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_time_stop.tres" id="3"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_beast_roar.tres" id="4"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_blood_rush.tres" id="5"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_duel_focus.tres" id="6"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_overclock.tres" id="7"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_paid_reinforcement.tres" id="8"]
+[ext_resource type="Resource" path="res://content/tactical-commands/definitions/tactical_raise_dead.tres" id="9"]
+[ext_resource type="Script" path="res://src/Project/LegacyHeroTacticalCommandMapping.cs" id="10"]
+
+[resource]
+script = ExtResource("1")
+InitialRunHealth = 100
+MaximumRunHealth = 100
+CombatDefeatHealthLoss = 20
+EliteDefeatHealthLoss = 30
+RestRunHealthRecovery = 25
+StarterTacticalCommands = [ExtResource("2"), ExtResource("3")]
+VictoryHeroRecovery = 0.12
+VictorySoldierRecovery = 0.15
+MinimumVictoryHeroHealth = 0.15
+MinimumLivingSoldierHealth = 0.1
+RiskyEventSuccessChance = 0.65
+RestHeroHealing = 0.35
+RestSoldierHealing = 0.45
+
+StarterRosterHeroCount = 1
+InitialUnlockedHeroCount = 2
+
+InitialPopulation = 10
+OrdinaryPopulationCap = 10

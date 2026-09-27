@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 13
+Target = 0
+Attribute = 1
+Amount = 0
+DurationTicks = 2
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
+Target = 0
+Event = 0
+SourceRelation = 0
+TargetRelation = 0
+IntervalTicks = 20
+Effects = Array[ExtResource("operation")]([SubResource("op_2")])
+
+[resource]
+script = ExtResource("ability")
+StableId = "matrix_spirit_plague_p"
+DisplayName = "临时单位战斗行为"
+Description = "进行普通攻击。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("op_1")]

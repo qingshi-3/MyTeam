@@ -86,6 +86,9 @@ public partial class RunDecisionContractSmoke : Node
 
         var legacy = restored.ActiveRun;
         legacy.Version = 5;
+        legacy.CurrentRunHealth = -1;
+        legacy.MaximumRunHealth = -1;
+        legacy.LastBattleConsequence = null;
         legacy.PendingNode = true;
         legacy.SelectedNode = TowerNodeType.Rest;
         legacy.PendingOffer = null;

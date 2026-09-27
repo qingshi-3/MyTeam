@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="op"]
+script = ExtResource("operation")
+Kind = 2
+Target = 0
+Amount = 32
+DurationTicks = 30
+[resource]
+script = ExtResource("ability")
+StableId = "gx03_array_gunner_ascend"
+DisplayName = "GX03 阵列炮师·强化"
+Description = "开战时获得32点护盾，持续3秒。"
+ActivationKind = 1
+Trigger = 1
+MaxUses = 1
+Operations = [SubResource("op")]

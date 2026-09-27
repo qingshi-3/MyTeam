@@ -163,12 +163,39 @@ public static partial class TraitDefinitionCompiler
                 report.Error($"{breakpointLabel} display style is required.");
             if (!Enum.IsDefined(breakpoint.TargetPolicy)) report.Error($"{breakpointLabel}: invalid target policy.");
             var grants = StatusGrantCompiler.Compile(breakpoint.GrantedStatuses ?? [], resolveStatus, report, breakpointLabel);
+            var mechanics = ImmutableArray.CreateBuilder<CompiledTraitMechanic>();
+            foreach (var mechanic in breakpoint.Mechanics ?? [])
+            {
+                if (mechanic is null || !Enum.IsDefined(mechanic.Kind) ||
+                    !float.IsFinite(mechanic.Amount) || !float.IsFinite(mechanic.Secondary) ||
+                    !float.IsFinite(mechanic.Threshold) || !float.IsFinite(mechanic.Extra) ||
+                    mechanic.Amount < 0 || mechanic.Secondary < 0 || mechanic.Threshold < 0 || mechanic.Extra < 0 ||
+                    mechanic.Count < 0 || mechanic.Limit < 0 || mechanic.DurationTicks < 0 || mechanic.CooldownTicks < 0)
+                { report.Error($"{breakpointLabel}: invalid event mechanic."); continue; }
+                if (mechanic.Kind is TraitMechanicKind.RepeatedTargetAttack or TraitMechanicKind.ChillOnAttack or
+                        TraitMechanicKind.ActiveHitMarks or TraitMechanicKind.DeathResource or TraitMechanicKind.SharedCastResource &&
+                    mechanic.Count <= 0)
+                    report.Error($"{breakpointLabel}: event mechanic requires a positive count.");
+                if (mechanic.Kind == TraitMechanicKind.DamageTakenRamp && (mechanic.Threshold <= 0 || mechanic.Limit <= 0))
+                    report.Error($"{breakpointLabel}: damage ramp requires a positive threshold and limit.");
+                if (mechanic.Kind is TraitMechanicKind.HealthThresholdRescue or TraitMechanicKind.LowHealthLeech or
+                        TraitMechanicKind.WoundedTargetReward && mechanic.Threshold > 1)
+                    report.Error($"{breakpointLabel}: health ratio must not exceed one.");
+                if (mechanic.Kind == TraitMechanicKind.DeathResource && mechanic.Enabled &&
+                    (string.IsNullOrWhiteSpace(mechanic.SummonContentId) || !StableIdPattern.IsMatch(mechanic.SummonContentId)))
+                    report.Error($"{breakpointLabel}: death resource product requires a valid content id.");
+                mechanics.Add(new(mechanic.Kind, mechanic.Amount, mechanic.Secondary, mechanic.Threshold,
+                    mechanic.Extra, mechanic.Count, mechanic.Limit, mechanic.DurationTicks,
+                    mechanic.CooldownTicks, mechanic.Enabled, mechanic.SummonContentId));
+            }
+            if (mechanics.Select(m => m.Kind).Distinct().Count() != mechanics.Count)
+                report.Error($"{breakpointLabel}: duplicate event mechanic processor.");
 
             var modifiers = ImmutableArray.CreateBuilder<CompiledAttributeModifier>();
             var slots = new HashSet<(CombatAttribute Attribute, string SlotId)>();
             var authoredModifiers = breakpoint.AttributeModifiers ?? [];
-            if (authoredModifiers.Length == 0 && grants.IsEmpty)
-                report.Error($"{breakpointLabel} must declare an Attribute modifier or passive Status grant.");
+            if (authoredModifiers.Length == 0 && grants.IsEmpty && mechanics.Count == 0)
+                report.Error($"{breakpointLabel} must declare an Attribute modifier, passive Status grant, or event mechanic.");
             for (var modifierIndex = 0; modifierIndex < authoredModifiers.Length; modifierIndex++)
             {
                 var result = AttributeDefinitionCompiler.Compile(authoredModifiers[modifierIndex]);
@@ -197,7 +224,8 @@ public static partial class TraitDefinitionCompiler
                     breakpoint.MinValue,
                     breakpoint.MaxValue,
                     breakpoint.DisplayStyle,
-                    compiledModifiers, breakpoint.TargetPolicy, grants), breakpoint.TargetPolicy, grants));
+                    compiledModifiers, breakpoint.TargetPolicy, grants, mechanics.ToImmutable()), breakpoint.TargetPolicy, grants,
+                mechanics.ToImmutable()));
         }
 
         if (report.HasCoreErrors || authored.CountingPolicy is null) return null;
@@ -246,7 +274,10 @@ public static partial class TraitDefinitionCompiler
         string displayStyle,
         IEnumerable<CompiledAttributeModifier> modifiers,
         TraitTargetPolicy targetPolicy,
-        ImmutableArray<CompiledStatusDefinition> grants) => Hash(string.Join("|",
+        ImmutableArray<CompiledStatusDefinition> grants,
+        ImmutableArray<CompiledTraitMechanic> mechanics)
+    {
+        var canonical = string.Join("|",
         index,
         minValue,
         maxValue,
@@ -255,7 +286,14 @@ public static partial class TraitDefinitionCompiler
         string.Join(";", grants.Select(StatusDefinitionFingerprint.Compute)),
         string.Join(";", modifiers.Select(modifier =>
             $"{modifier.Attribute}:{modifier.Operation}:{Magnitude(modifier.Magnitude)}:" +
-            $"{modifier.Priority}:{modifier.SlotId}"))));
+            $"{modifier.Priority}:{modifier.SlotId}")));
+        // Adding an optional processor must not change existing authored content identity.
+        if (!mechanics.IsDefaultOrEmpty) canonical += "|mechanics:" + string.Join(";", mechanics.Select(m => string.Join(":", m.Kind,
+            m.Amount.ToString("R", CultureInfo.InvariantCulture), m.Secondary.ToString("R", CultureInfo.InvariantCulture),
+            m.Threshold.ToString("R", CultureInfo.InvariantCulture), m.Extra.ToString("R", CultureInfo.InvariantCulture),
+            m.Count, m.Limit, m.DurationTicks, m.CooldownTicks, m.Enabled, m.SummonContentId)));
+        return Hash(canonical);
+    }
 
     private static string Magnitude(CompiledAttributeMagnitude magnitude) => AttributeMagnitudeSupport.Fingerprint(magnitude);
 

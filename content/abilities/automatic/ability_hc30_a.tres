@@ -21,17 +21,17 @@ script = ExtResource("r2")
 script = ExtResource("r4")
 Action = 2
 TargetQuery = SubResource("s2")
-Amount = 60
+Amount = 50
 Terms = []
 
 [resource]
 script = ExtResource("r0")
 StableId = "ability_hc30_a"
 DisplayName = "山岳立旗"
-Description = "自身防御增加 16，持续 5 秒，并获得 60 护盾。"
+Description = "自身防御增加 12，持续 5 秒，并获得 50 护盾。"
 ActivationKind = 1
 Trigger = 5
-ManaCost = 60
+ManaCost = 80
 CooldownTicks = 3
 IntervalTicks = 0
 MaxUses = 0

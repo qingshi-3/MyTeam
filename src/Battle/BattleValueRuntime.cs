@@ -165,7 +165,10 @@ public sealed partial class BattleSimulation
                             if (healed > 0) Emit("heal",owner.RuntimeId,id,healed,target.Position,"heal");
                             break;
                         case BattleValueAction.Shield: ApplyShield(owner.RuntimeId,target,Math.Max(0,amount),origin); break;
-                        case BattleValueAction.Mana: target.CurrentMana = Math.Clamp(target.CurrentMana+amount,0,target.MaxMana); break;
+                        case BattleValueAction.Mana:
+                            if (amount > 0) BattleHeroMana.Gain(target, amount, TickIndex);
+                            else target.CurrentMana = Math.Clamp(target.CurrentMana + amount, 0, target.MaxMana);
+                            break;
                         case BattleValueAction.AddCounter: WriteCounter(target,value.CounterKey,ReadCounter(target,value.CounterKey,value.TeamShared)+amount,value.TeamShared); break;
                         case BattleValueAction.SetCounter: WriteCounter(target,value.CounterKey,amount,value.TeamShared); break;
                         case BattleValueAction.SetAttributeContribution:
@@ -174,7 +177,7 @@ public sealed partial class BattleSimulation
                         case BattleValueAction.ConsumeShield:
                             var spent = Math.Min(target.Shield,Math.Max(0,amount));
                             target.Shield -= spent;
-                            ConsumeTimedShields(target.RuntimeId,spent);
+                            TraitMechanicsShieldConsumed(target,spent,false,origin);
                             WriteCounter(owner,value.CounterKey,spent,value.TeamShared);
                             Emit("vfx",owner.RuntimeId,id,spent,target.Position,"",vfx:new BattleVfxCue(BattleVfxPhase.ShieldDepleted,"shield"));
                             break;

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="r0"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f6_frostbitehawker/frames.tres" id="r1"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f6_frostbitehawker.png" id="illustration"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/cutouts/f6_frostbitehawker.png" id="card_illustration"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "hero_mx44"
+Frames = ExtResource("r1")
+AnimationName = &"idle"
+FrameIndex = 0
+Zoom = 2
+OffsetRatio = Vector2(0, 0.05)
+Illustration = ExtResource("illustration")
+CardIllustration = ExtResource("card_illustration")
+CardIllustrationFocus = Vector2(0.5, 0.32)
+CardIllustrationZoom = 1.2
+IllustrationFocus = Vector2(0.5, 0.34)
+IllustrationZoom = 1.15

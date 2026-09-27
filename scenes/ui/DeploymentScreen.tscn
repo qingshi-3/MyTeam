@@ -65,6 +65,13 @@ theme_type_variation = &"SecondaryButton"
 text = "遭遇信息"
 tooltip_text = "查看敌军组成与楼层规则。"
 
+[node name="RunRisk" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"WarningLabel"
+autowrap_mode = 2
+
 [node name="BoardPanel" type="MarginContainer" parent="Margin/Layout"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -111,15 +118,17 @@ theme_type_variation = &"SecondaryLabel"
 text = "0 / 3"
 
 [node name="Hint" type="Label" parent="Margin/Layout/ReserveBench/Margin/Layout/Header"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"SecondaryLabel"
 theme_override_font_sizes/font_size = 14
-text = "拖到战场上阵 · 拖回这里下场"
+text = "拖动英雄调整阵容"
 horizontal_alignment = 2
 clip_text = true
 
 [node name="Body" type="MarginContainer" parent="Margin/Layout/ReserveBench/Margin/Layout"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 104)
 layout_mode = 2
 mouse_filter = 1
@@ -142,7 +151,7 @@ unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"SecondaryLabel"
-text = "备战席暂无英雄，可将场上英雄拖回这里。"
+text = "暂无后备英雄"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -175,6 +184,7 @@ layout_mode = 2
 text = "开始战斗"
 
 [node name="UnitDetailsPopup" type="Control" parent="."]
+z_index = 20
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -239,6 +249,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="EquipmentPopup" type="Control" parent="."]
+z_index = 20
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -268,7 +279,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"ModalPanel"
+theme_type_variation = &"WorkbenchOverlay"
 [node name="Layout" type="VBoxContainer" parent="EquipmentPopup/Panel"]
 layout_mode = 2
 theme_override_constants/separation = 8
@@ -280,13 +291,15 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"TitleLabel"
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 30
 text = "英雄与装备"
 
 [node name="Close" type="Button" parent="EquipmentPopup/Panel/Layout/Header"]
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "关闭"
+text = "×"
+custom_minimum_size = Vector2(42, 38)
+theme_override_font_sizes/font_size = 25
 
 [node name="EquipmentPage" type="VBoxContainer" parent="EquipmentPopup/Panel/Layout"]
 unique_name_in_owner = true
@@ -300,6 +313,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="EncounterPopup" type="Control" parent="."]
+z_index = 20
 unique_name_in_owner = true
 visible = false
 layout_mode = 1

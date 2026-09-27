@@ -24,4 +24,4 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "测试单位"
-RuleDescription = "测试用：800 生命、每秒一次近战普攻，单次 12 伤害，无技能和隐藏加成。"
+RuleDescription = "近战训练假人，只会进行普通攻击。"

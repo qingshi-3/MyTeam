@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/validation_matrix/portraits/hero_mx10.tres" id="portrait"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="trait"]
+
+[sub_resource type="Resource" id="t0"]
+script = ExtResource("trait")
+TraitId = "mx_support"
+Value = 1
+
+[sub_resource type="Resource" id="t1"]
+script = ExtResource("trait")
+TraitId = "mx_poison"
+Value = 1
+
+[resource]
+script = ExtResource("script")
+Id = "hero_mx10"
+DisplayName = "药藤师"
+Description = "用治疗和护盾保护队友的棘毒辅助。"
+Portrait = ExtResource("portrait")
+IsHero = true
+Role = 3
+Faction = 6
+MaxHealth = 235
+AttackDamage = 12
+Armor = 2
+AttackCooldown = 1.5
+AttackRange = 5.2
+AttackDelivery = 1
+ProjectileWindupSeconds = 0.35
+MaxMana = 70
+StartingMana = 20
+ManaPerSecond = 5
+ManaPerAttack = 10
+Tags = Array[StringName]([&"hero", &"matrix_validation", &"support"])
+TraitContributions = [SubResource("t0"), SubResource("t1")]

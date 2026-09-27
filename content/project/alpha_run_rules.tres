@@ -13,6 +13,11 @@
 
 [resource]
 script = ExtResource("1")
+InitialRunHealth = 100
+MaximumRunHealth = 100
+CombatDefeatHealthLoss = 20
+EliteDefeatHealthLoss = 30
+RestRunHealthRecovery = 25
 StarterTacticalCommands = [ExtResource("2"), ExtResource("3")]
 VictoryHeroRecovery = 0.12
 VictorySoldierRecovery = 0.15

@@ -63,7 +63,7 @@ public sealed record FormationMoveCommand(
 
 public static class ActiveRunFormationSchema
 {
-    public const int CurrentVersion = 6;
+    public const int CurrentVersion = 8;
     private const int LegacyDeploymentCapacity = 6;
 
     public static void InitializeVersion4(ActiveRunDto run)
@@ -80,6 +80,7 @@ public static class ActiveRunFormationSchema
     public static void InitializeVersion4(ActiveRunDto run, CompiledRunRules rules)
     {
         InitializeVersion4(run);
+        InitializeRunHealth(run, rules);
         run.EquippedTacticalCommandIds = ActiveRunTacticalCommandPolicy.StarterLoadout(rules);
     }
 
@@ -99,12 +100,33 @@ public static class ActiveRunFormationSchema
         if (run.Version == CurrentVersion)
             return run.LegacyHeroId is null && run.LegacyHeroHealthRatio == 0 &&
                    run.LegacyHeroCell is null && run.LegacyDeploymentCells is null;
+        if (run.Version == 7)
+        {
+            if (run.Roster is null || run.Roster.Any(hero => hero is null) || run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
+                run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null || run.Growth is not null)
+                return false;
+            foreach (var hero in run.Roster)
+                hero.Growth ??= new TowerAutobattler.Growth.HeroGrowthDto();
+            run.Version = CurrentVersion;
+            return true;
+        }
+        if (run.CurrentRunHealth != -1 || run.MaximumRunHealth != -1 || run.LastBattleConsequence is not null) return false;
+        // V6 already records offer entitlement and terminal settlement unambiguously.
+        if (run.Version == 6)
+        {
+            if (run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
+                run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null) return false;
+            InitializeRunHealth(run, rules);
+            run.Version = CurrentVersion;
+            return true;
+        }
         if (run.PendingOffer is not null || !string.IsNullOrEmpty(run.TerminalCompletionId) || run.TerminalVictory) return false;
         if (run.Version == 5)
         {
             if (run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
                 run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null) return false;
             run.Version = CurrentVersion;
+            InitializeRunHealth(run, rules);
             return true;
         }
         // V4 never had loose equipment. Accept only the unambiguous empty inventory
@@ -115,6 +137,7 @@ public static class ActiveRunFormationSchema
                 run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
                 run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null) return false;
             run.Version = CurrentVersion;
+            InitializeRunHealth(run, rules);
             return true;
         }
         if (run.Version is not (2 or 3) || string.IsNullOrWhiteSpace(run.LegacyHeroId) ||
@@ -190,11 +213,18 @@ public static class ActiveRunFormationSchema
         run.Deployment = migratedDeployment;
         run.EquippedTacticalCommandIds = migratedCommands;
         run.Version = CurrentVersion;
+        InitializeRunHealth(run, rules);
         run.LegacyHeroId = null;
         run.LegacyHeroHealthRatio = 0;
         run.LegacyHeroCell = null;
         run.LegacyDeploymentCells = null;
         return true;
+    }
+
+    private static void InitializeRunHealth(ActiveRunDto run, CompiledRunRules rules)
+    {
+        run.CurrentRunHealth = rules.InitialRunHealth;
+        run.MaximumRunHealth = rules.MaximumRunHealth;
     }
 
     public static List<string> EmptyDeployment() =>

@@ -1,0 +1,26 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="root"]
+[ext_resource type="Resource" path="res://content/validation_matrix/definitions/hero_mx48.tres" id="definition"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f1_ranged/frames.tres" id="frames"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="UnitMotionPresentationComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="UnitAnimationComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="HealthViewComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="UnitBehaviorComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/HeroRuleComponent.tscn" id="HeroRuleComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAbilityLoadoutComponent.tscn" id="UnitAbilityLoadoutComponent"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/hero_mx48.tres" id="loadout"]
+
+[node name="hero_mx48" type="Node2D"]
+script = ExtResource("root")
+Definition = ExtResource("definition")
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("UnitMotionPresentationComponent")]
+[node name="VisualRoot" type="Node2D" parent="."]
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("UnitAnimationComponent")]
+Frames = ExtResource("frames")
+[node name="HealthViewComponent" parent="." instance=ExtResource("HealthViewComponent")]
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("UnitBehaviorComponent")]
+[node name="HeroRuleComponent" parent="." instance=ExtResource("HeroRuleComponent")]
+RuleTitle = "技能规则"
+RuleDescription = "主动技能自动施放；被动技能满足条件时触发。"
+[node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("UnitAbilityLoadoutComponent")]
+Loadout = ExtResource("loadout")

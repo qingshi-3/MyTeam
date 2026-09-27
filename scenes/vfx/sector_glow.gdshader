@@ -13,5 +13,5 @@ void fragment() {
     float head=1.0-smoothstep(.015,.065,passed);
     float band=exp(-pow((UV.y-.90)/.09,2.0));
     float tips=smoothstep(0.0,.075,UV.x)*(1.0-smoothstep(.96,1.0,UV.x));
-    COLOR=vec4(1.0,.70,.32,band*(.38+head*.65)*born*fade*tips*(1.0-release)*mix(.3,1.0,motion_amount));
+    COLOR=vec4(1.0,.70,.32,band*(.20+head*.66)*born*fade*tips*(1.0-release)*mix(.3,1.0,motion_amount));
 }

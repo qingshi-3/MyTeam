@@ -11,7 +11,7 @@ script = ExtResource("r1")
 script = ExtResource("r2")
 Action = 3
 TargetQuery = SubResource("s0")
-Amount = 8
+Amount = 6
 Terms = []
 
 [sub_resource type="Resource" id="s2"]
@@ -21,14 +21,14 @@ script = ExtResource("r1")
 script = ExtResource("r2")
 Action = 2
 TargetQuery = SubResource("s2")
-Amount = 15
+Amount = 10
 Terms = []
 
 [resource]
 script = ExtResource("r0")
 StableId = "ability_hc12_p"
 DisplayName = "借隙"
-Description = "自己每成功对一名敌人施加行动控制，获得 8 法力和 15 护盾。"
+Description = "自己每成功对一名敌人施加行动控制，获得 6 法力和 10 护盾。"
 ActivationKind = 2
 Trigger = 18
 ManaCost = 0

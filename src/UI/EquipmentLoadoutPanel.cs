@@ -199,6 +199,7 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         EquipmentChanged?.Invoke();
         SetFeedback($"已穿戴 {label}" + (previous is null ? "" : $" · {ItemDefinition(previous.ContentId).DisplayName} 已回背包"), false);
         _slots[slot].GrabFocus();
+        UiDragVisual.Committed(GetViewport(), instanceId);
     }
 
     private void Remove(string instanceId)
@@ -214,6 +215,7 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         Refresh();
         EquipmentChanged?.Invoke();
         SetFeedback($"{ItemDefinition(item.ContentId).DisplayName} 已回背包", false);
+        UiDragVisual.Committed(GetViewport(), instanceId);
     }
 
     private EquipmentInstanceState? FindEquipment(string id) => _app?.ActiveRun is { } run

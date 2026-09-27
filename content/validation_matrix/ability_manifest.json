@@ -1,0 +1,2401 @@
+[
+  {
+    "id": "hero_mx01",
+    "planId": "MX01",
+    "role": "guard",
+    "stats": [
+      0,
+      400,
+      10,
+      8,
+      1.5,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Damage",
+        "Target": "CurrentEnemy",
+        "AttackRatio": 1.4
+      },
+      {
+        "Kind": "Shield",
+        "Target": "Self",
+        "Amount": 45,
+        "DurationTicks": 30
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Enemy",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "Chill",
+            "Target": "EventSource",
+            "Amount": 1
+          }
+        ],
+        "CooldownTicks": 15
+      }
+    ]
+  },
+  {
+    "id": "hero_mx02",
+    "planId": "MX02",
+    "role": "fighter",
+    "stats": [
+      1,
+      300,
+      20,
+      4,
+      1.3,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Damage",
+        "Target": "CurrentEnemy",
+        "AttackRatio": 1.7
+      },
+      {
+        "Kind": "Damage",
+        "Target": "CurrentEnemy",
+        "AttackRatio": 0.65,
+        "TargetCondition": "Controlled"
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "Self",
+            "Amount": 24,
+            "DurationTicks": 30
+          }
+        ],
+        "TargetCondition": "Frozen",
+        "OncePerTarget": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx03",
+    "planId": "MX03",
+    "role": "ranger",
+    "stats": [
+      2,
+      175,
+      22,
+      1,
+      1.2,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "SkillVolley",
+        "Target": "CurrentEnemy",
+        "Count": 5,
+        "AttackRatio": 0.55,
+        "Amount": 0.45,
+        "MaxTargets": 3,
+        "Range": 7
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "chill-chain",
+            "Amount": 1,
+            "Maximum": 3,
+            "ResetOnTargetChange": true
+          },
+          {
+            "Kind": "Chill",
+            "Target": "EventTarget",
+            "Amount": 1,
+            "RequiredCounter": "chill-chain",
+            "CounterThreshold": 3,
+            "ConsumeCounter": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx04",
+    "planId": "MX04",
+    "role": "mage",
+    "stats": [
+      6,
+      185,
+      12,
+      1,
+      1.6,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Delay",
+        "Target": "DenseEnemies",
+        "Range": 7,
+        "Radius": 1.6,
+        "Count": 3,
+        "DurationTicks": 4,
+        "IntervalTicks": 10,
+        "Effects": [
+          {
+            "Kind": "Damage",
+            "Target": "DenseEnemies",
+            "AttackRatio": 0.45,
+            "Range": 7,
+            "Radius": 1.6,
+            "MaxTargets": 8
+          },
+          {
+            "Kind": "Chill",
+            "Target": "CurrentEnemy",
+            "Amount": 1,
+            "Radius": 1.6,
+            "MaxTargets": 6
+          }
+        ]
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "SkillHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Mana",
+            "Target": "Self",
+            "Amount": 8
+          }
+        ],
+        "TargetCondition": "Chilled",
+        "OncePerAction": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx05",
+    "planId": "MX05",
+    "role": "support",
+    "stats": [
+      3,
+      235,
+      12,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Heal",
+        "Target": "LowestHealthAllies",
+        "Amount": 55
+      },
+      {
+        "Kind": "Shield",
+        "Target": "LowestHealthAllies",
+        "Amount": 25,
+        "DurationTicks": 30
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Control",
+        "SourceRelation": "Ally",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Heal",
+            "Target": "LowestHealthAllies",
+            "Amount": 18
+          }
+        ],
+        "Range": 3,
+        "CooldownTicks": 25,
+        "TargetCondition": "Frozen",
+        "OncePerTarget": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx06",
+    "planId": "MX06",
+    "role": "guard",
+    "stats": [
+      0,
+      400,
+      10,
+      8,
+      1.5,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Taunt",
+        "Target": "NearestEnemies",
+        "Range": 2.5,
+        "MaxTargets": 5,
+        "DurationTicks": 30
+      },
+      {
+        "Kind": "TimedAttribute",
+        "Target": "Self",
+        "Attribute": 4,
+        "Amount": 10,
+        "DurationTicks": 30
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Enemy",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "Poison",
+            "Target": "EventSource",
+            "Amount": 1
+          }
+        ],
+        "CooldownTicks": 20,
+        "PerTargetCooldown": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx07",
+    "planId": "MX07",
+    "role": "ranger",
+    "stats": [
+      2,
+      175,
+      22,
+      1,
+      1.2,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "SkillVolley",
+        "Target": "CurrentEnemy",
+        "Count": 3,
+        "AttackRatio": 0.75,
+        "Amount": 0.45,
+        "MaxTargets": 1,
+        "Range": 7
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Poison",
+            "Target": "EventTarget",
+            "Amount": 1
+          }
+        ]
+      },
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "SkillHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Poison",
+            "Target": "EventTarget",
+            "Amount": 1
+          }
+        ],
+        "CooldownTicks": 0
+      }
+    ]
+  },
+  {
+    "id": "hero_mx08",
+    "planId": "MX08",
+    "role": "assassin",
+    "stats": [
+      4,
+      200,
+      24,
+      1,
+      1.1,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "DashStrike",
+        "Target": "MostPoisonEnemies",
+        "AttackRatio": 1.1,
+        "Range": 4,
+        "DurationTicks": 4,
+        "Effects": [
+          {
+            "Kind": "ConsumePoison",
+            "Target": "CurrentEnemy",
+            "Count": 3,
+            "Key": "poison-spent"
+          },
+          {
+            "Kind": "Damage",
+            "Target": "CurrentEnemy",
+            "AttackRatio": 0,
+            "Key": "poison-spent",
+            "CounterRatio": 12,
+            "ConsumeCounter": true
+          }
+        ]
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "Self",
+            "Amount": 35,
+            "DurationTicks": 30
+          }
+        ],
+        "TargetCondition": "Poisoned",
+        "CooldownTicks": 10
+      }
+    ]
+  },
+  {
+    "id": "hero_mx09",
+    "planId": "MX09",
+    "role": "mage",
+    "stats": [
+      6,
+      185,
+      12,
+      1,
+      1.6,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Sequence",
+        "Target": "DenseEnemies",
+        "Range": 7,
+        "Radius": 1.5,
+        "MaxTargets": 1,
+        "Key": "cloud-radius",
+        "RadiusPerCounter": 0.15,
+        "Effects": [
+          {
+            "Kind": "Damage",
+            "Target": "DenseEnemies",
+            "AttackRatio": 0.7,
+            "Range": 7,
+            "Radius": 1.5,
+            "MaxTargets": 8,
+            "Key": "cloud-radius",
+            "RadiusPerCounter": 0.15
+          },
+          {
+            "Kind": "Poison",
+            "Target": "DenseEnemies",
+            "Amount": 2,
+            "Range": 7,
+            "Radius": 1.5,
+            "MaxTargets": 6,
+            "Key": "cloud-radius",
+            "RadiusPerCounter": 0.15
+          },
+          {
+            "Kind": "ScalePoison",
+            "Target": "CurrentEnemy",
+            "Amount": 0.4
+          }
+        ]
+      },
+      {
+        "Kind": "ClearCounter",
+        "Target": "Self",
+        "Key": "cloud-radius"
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "SkillHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "cloud-radius",
+            "Amount": 1,
+            "Maximum": 4
+          }
+        ],
+        "TargetCondition": "Poisoned"
+      }
+    ]
+  },
+  {
+    "id": "hero_mx10",
+    "planId": "MX10",
+    "role": "support",
+    "stats": [
+      3,
+      235,
+      12,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Heal",
+        "Target": "LowestHealthAllies",
+        "Amount": 60
+      },
+      {
+        "Kind": "TimedAttribute",
+        "Target": "NearWoundedAllyEnemies",
+        "Attribute": 1,
+        "Amount": -8,
+        "DurationTicks": 25,
+        "TargetCondition": "Poisoned",
+        "Range": 3,
+        "MaxTargets": 4
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "PoisonApplied",
+        "SourceRelation": "Ally",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "EventVictim",
+            "Amount": 18,
+            "DurationTicks": 30
+          }
+        ],
+        "CounterThreshold": 3,
+        "CooldownTicks": 30,
+        "PerTargetCooldown": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx11",
+    "planId": "MX11",
+    "role": "fighter",
+    "stats": [
+      1,
+      300,
+      20,
+      4,
+      1.3,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Damage",
+        "Target": "FrontEnemies",
+        "AttackRatio": 1.6,
+        "Range": 2,
+        "MaxTargets": 5,
+        "Key": "blade-width",
+        "RadiusPerCounter": 0.15
+      },
+      {
+        "Kind": "ClearCounter",
+        "Target": "Self",
+        "Key": "blade-width"
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "HealthLost",
+        "SourceRelation": "Enemy",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "blade-width",
+            "Amount": 1,
+            "Maximum": 4
+          }
+        ],
+        "MinimumEventValue": 0.001
+      }
+    ]
+  },
+  {
+    "id": "hero_mx12",
+    "planId": "MX12",
+    "role": "ranger",
+    "stats": [
+      2,
+      175,
+      22,
+      1,
+      1.2,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "LineDamage",
+        "Target": "CurrentEnemy",
+        "AttackRatio": 2,
+        "Range": 7,
+        "Radius": 0.35
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Mana",
+            "Target": "Self",
+            "Amount": 4
+          }
+        ],
+        "TargetCondition": "EmberMarked",
+        "CooldownTicks": 5
+      }
+    ]
+  },
+  {
+    "id": "hero_mx13",
+    "planId": "MX13",
+    "role": "assassin",
+    "stats": [
+      4,
+      200,
+      24,
+      1,
+      1.1,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "DashStrike",
+        "Target": "MostEmberEnemies",
+        "AttackRatio": 2,
+        "Range": 4,
+        "DurationTicks": 4,
+        "LandingSide": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "EmberDetonated",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "NextAttackBoost",
+            "Target": "Self",
+            "Amount": 0.35,
+            "DurationTicks": 100,
+            "Key": "next-attack"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx14",
+    "planId": "MX14",
+    "role": "mage",
+    "stats": [
+      6,
+      185,
+      12,
+      1,
+      1.6,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Delay",
+        "Target": "DenseEnemies",
+        "Range": 7,
+        "Radius": 2,
+        "DurationTicks": 8,
+        "Effects": [
+          {
+            "Kind": "Damage",
+            "Target": "DenseEnemies",
+            "AttackRatio": 2.4,
+            "Range": 7,
+            "Radius": 2,
+            "MaxTargets": 8
+          }
+        ]
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "SkillHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Mana",
+            "Target": "Self",
+            "Amount": 15
+          }
+        ],
+        "TargetCondition": "EmberMarked",
+        "Every": 2,
+        "OncePerAction": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx15",
+    "planId": "MX15",
+    "role": "summoner",
+    "stats": [
+      5,
+      210,
+      10,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Summon",
+        "Target": "Self",
+        "ContentId": "matrix_spirit_fire",
+        "Count": 1,
+        "Maximum": 3,
+        "DurationTicks": 100
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "OwnedSummon",
+        "Effects": [
+          {
+            "Kind": "Ember",
+            "Target": "EventNearbyEnemies",
+            "Amount": 1,
+            "Range": 1.5,
+            "MaxTargets": 5
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx16",
+    "planId": "MX16",
+    "role": "guard",
+    "stats": [
+      0,
+      400,
+      10,
+      8,
+      1.5,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "TimedAttribute",
+        "Target": "Self",
+        "Attribute": 4,
+        "Amount": 8,
+        "DurationTicks": 40
+      },
+      {
+        "Kind": "Shield",
+        "Target": "NearestSummoner",
+        "Amount": 40,
+        "DurationTicks": 30,
+        "ExcludeSelf": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "Ally",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "Self",
+            "Amount": 18,
+            "DurationTicks": 30,
+            "ShieldCap": 65
+          }
+        ],
+        "TemporaryOnly": true,
+        "Range": 3,
+        "CooldownTicks": 10
+      },
+      {
+        "Kind": "DeathGift",
+        "Target": "Self",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "NearestAllies",
+            "Amount": 35,
+            "DurationTicks": 35,
+            "ExcludeSelf": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx17",
+    "planId": "MX17",
+    "role": "fighter",
+    "stats": [
+      1,
+      300,
+      20,
+      4,
+      1.3,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Damage",
+        "Target": "NearestEnemies",
+        "AttackRatio": 1.6,
+        "Range": 2,
+        "MaxTargets": 5,
+        "Key": "death-power",
+        "CounterRatio": 7
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "OtherAlly",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "death-power",
+            "Amount": 1,
+            "Maximum": 5,
+            "TemporaryScale": 0.25
+          }
+        ],
+        "OncePerTarget": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx18",
+    "planId": "MX18",
+    "role": "assassin",
+    "stats": [
+      4,
+      200,
+      24,
+      1,
+      1.1,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "DashStrike",
+        "Target": "LowestHealthEnemies",
+        "AttackRatio": 1.9,
+        "Range": 4,
+        "DurationTicks": 4
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "OtherAlly",
+        "Effects": [
+          {
+            "Kind": "NextSkillBoost",
+            "Target": "Self",
+            "Amount": 0.35,
+            "DurationTicks": 300,
+            "Key": "next-skill"
+          }
+        ],
+        "CooldownTicks": 5
+      }
+    ]
+  },
+  {
+    "id": "hero_mx19",
+    "planId": "MX19",
+    "role": "support",
+    "stats": [
+      3,
+      235,
+      12,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Shield",
+        "Target": "LowestHealthAllies",
+        "Amount": 40,
+        "DurationTicks": 30,
+        "MaxTargets": 2
+      },
+      {
+        "Kind": "EchoDeathGift",
+        "Target": "LowestHealthAllies",
+        "MaxTargets": 2
+      }
+    ],
+    "p": [
+      {
+        "Kind": "DeathGift",
+        "Target": "Self",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "LowestHealthAllies",
+            "Amount": 35,
+            "DurationTicks": 35,
+            "ExcludeSelf": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx20",
+    "planId": "MX20",
+    "role": "summoner",
+    "stats": [
+      5,
+      210,
+      10,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Summon",
+        "Target": "Self",
+        "ContentId": "matrix_spirit_bone",
+        "Count": 2,
+        "Maximum": 3,
+        "DurationTicks": 100
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "Ally",
+        "Effects": [
+          {
+            "Kind": "Damage",
+            "Target": "EventNearbyEnemies",
+            "AttackRatio": 0,
+            "Range": 1.3,
+            "MaxTargets": 5,
+            "EventTargetHealthRatio": 0.2
+          }
+        ],
+        "TemporaryOnly": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx21",
+    "planId": "MX21",
+    "role": "guard",
+    "stats": [
+      0,
+      400,
+      10,
+      8,
+      1.5,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Shield",
+        "Target": "Self",
+        "Amount": 80,
+        "DurationTicks": 45
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ShieldBroken",
+        "SourceRelation": "Enemy",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "TimedAttribute",
+            "Target": "Self",
+            "Attribute": 4,
+            "Amount": 6,
+            "DurationTicks": 30
+          }
+        ],
+        "CooldownTicks": 30
+      }
+    ]
+  },
+  {
+    "id": "hero_mx22",
+    "planId": "MX22",
+    "role": "fighter",
+    "stats": [
+      1,
+      300,
+      20,
+      4,
+      1.3,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "ConsumeShield",
+        "Target": "Self",
+        "Amount": 0.5,
+        "Key": "shield-spent"
+      },
+      {
+        "Kind": "Damage",
+        "Target": "NearestEnemies",
+        "AttackRatio": 1.6,
+        "Range": 2,
+        "MaxTargets": 5,
+        "Key": "shield-spent",
+        "CounterRatio": 0.8,
+        "ConsumeCounter": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ShieldReceived",
+        "SourceRelation": "OtherAlly",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "shield-gifts",
+            "Amount": 1,
+            "Maximum": 5
+          },
+          {
+            "Kind": "TimedAttribute",
+            "Target": "Self",
+            "Attribute": 1,
+            "Amount": 0,
+            "DurationTicks": 1000,
+            "Key": "shield-gifts",
+            "CounterRatio": 2
+          }
+        ],
+        "MinimumEventValue": 0.001,
+        "CooldownTicks": 5
+      }
+    ]
+  },
+  {
+    "id": "hero_mx23",
+    "planId": "MX23",
+    "role": "ranger",
+    "stats": [
+      2,
+      175,
+      22,
+      1,
+      1.2,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "SkillVolley",
+        "Target": "CurrentEnemy",
+        "Count": 5,
+        "AttackRatio": 0.55,
+        "Amount": 0.45,
+        "MaxTargets": 1,
+        "Range": 7,
+        "EventRatio": 0.05
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "shield-speed",
+            "Amount": 1,
+            "Maximum": 8,
+            "ResetOnTargetChange": true
+          },
+          {
+            "Kind": "TimedAttribute",
+            "Target": "Self",
+            "Attribute": 3,
+            "Amount": 0,
+            "DurationTicks": 15,
+            "Key": "shield-speed",
+            "CounterRatio": 0.025
+          }
+        ],
+        "OwnerCondition": "Shielded"
+      },
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Tick",
+        "SourceRelation": "Any",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "shield-speed",
+            "Amount": -1,
+            "Maximum": 8
+          },
+          {
+            "Kind": "TimedAttribute",
+            "Target": "Self",
+            "Attribute": 3,
+            "Amount": 0,
+            "DurationTicks": 15,
+            "Key": "shield-speed",
+            "CounterRatio": 0.025
+          }
+        ],
+        "IntervalTicks": 10,
+        "OwnerCondition": "Unshielded"
+      }
+    ]
+  },
+  {
+    "id": "hero_mx24",
+    "planId": "MX24",
+    "role": "mage",
+    "stats": [
+      6,
+      185,
+      12,
+      1,
+      1.6,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "LineDamage",
+        "Target": "CurrentEnemy",
+        "AttackRatio": 2.2,
+        "Range": 7,
+        "Radius": 0.3
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "SkillHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "FrontAlly",
+            "Amount": 35,
+            "DurationTicks": 30
+          }
+        ],
+        "Every": 2,
+        "OncePerAction": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx25",
+    "planId": "MX25",
+    "role": "summoner",
+    "stats": [
+      5,
+      210,
+      10,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Summon",
+        "Target": "Self",
+        "ContentId": "matrix_spirit_drone",
+        "Count": 1,
+        "Maximum": 3,
+        "DurationTicks": 100
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "SummonHit",
+        "SourceRelation": "OwnedSummon",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "NearEventSourceAllies",
+            "Amount": 25,
+            "DurationTicks": 30
+          }
+        ],
+        "OncePerSource": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx26",
+    "planId": "MX26",
+    "role": "fighter",
+    "stats": [
+      1,
+      300,
+      20,
+      4,
+      1.3,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "PayHealth",
+        "Target": "Self",
+        "Amount": 0.1
+      },
+      {
+        "Kind": "DashStrike",
+        "Target": "NearestEnemies",
+        "AttackRatio": 1.3,
+        "Range": 4,
+        "DurationTicks": 4
+      },
+      {
+        "Kind": "TimedAttribute",
+        "Target": "Self",
+        "Attribute": 1,
+        "Amount": 10,
+        "DurationTicks": 40
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Tick",
+        "SourceRelation": "Any",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "TimedAttribute",
+            "Target": "Self",
+            "Attribute": 3,
+            "Amount": 0.25,
+            "DurationTicks": 6
+          }
+        ],
+        "IntervalTicks": 5,
+        "OwnerCondition": "LowHealth",
+        "HealthThreshold": 0.6
+      }
+    ]
+  },
+  {
+    "id": "hero_mx27",
+    "planId": "MX27",
+    "role": "ranger",
+    "stats": [
+      2,
+      175,
+      22,
+      1,
+      1.2,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "PayHealth",
+        "Target": "Self",
+        "Amount": 0.08
+      },
+      {
+        "Kind": "SkillVolley",
+        "Target": "CurrentEnemy",
+        "Count": 4,
+        "AttackRatio": 0.8,
+        "Amount": 0.45,
+        "MaxTargets": 1,
+        "Range": 7
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Tick",
+        "SourceRelation": "Any",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "TimedAttribute",
+            "Target": "Self",
+            "Attribute": 3,
+            "Amount": 0.2,
+            "DurationTicks": 6
+          }
+        ],
+        "IntervalTicks": 1,
+        "OwnerCondition": "LowHealth",
+        "TargetCondition": "Shielded",
+        "HealthThreshold": 0.6
+      }
+    ]
+  },
+  {
+    "id": "hero_mx28",
+    "planId": "MX28",
+    "role": "assassin",
+    "stats": [
+      4,
+      200,
+      24,
+      1,
+      1.1,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "DashStrike",
+        "Target": "LowestHealthEnemies",
+        "AttackRatio": 1.8,
+        "Range": 4,
+        "DurationTicks": 4
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Heal",
+            "Target": "Self",
+            "Amount": 0,
+            "OwnerHealthRatio": 0.12,
+            "Maximum": 45
+          }
+        ],
+        "CooldownTicks": 5
+      }
+    ]
+  },
+  {
+    "id": "hero_mx29",
+    "planId": "MX29",
+    "role": "mage",
+    "stats": [
+      6,
+      185,
+      12,
+      1,
+      1.6,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Damage",
+        "Target": "DenseEnemies",
+        "AttackRatio": 1.4,
+        "Range": 7,
+        "Radius": 1.6,
+        "MaxTargets": 8,
+        "Key": "pain",
+        "CounterRatio": 0.3,
+        "ConsumeCounter": true,
+        "CounterConsumeRatio": 0.5
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "HealthLost",
+        "SourceRelation": "Enemy",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "pain",
+            "Amount": 0,
+            "Maximum": 120,
+            "EventRatio": 1,
+            "ClearOnDeath": true
+          }
+        ],
+        "MinimumEventValue": 0.001
+      }
+    ]
+  },
+  {
+    "id": "hero_mx30",
+    "planId": "MX30",
+    "role": "support",
+    "stats": [
+      3,
+      235,
+      12,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "PayHealth",
+        "Target": "Self",
+        "Amount": 0.08
+      },
+      {
+        "Kind": "Heal",
+        "Target": "LowestHealthAllies",
+        "Amount": 55,
+        "MaxTargets": 2
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Healing",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Ally",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "EventTarget",
+            "Amount": 20,
+            "DurationTicks": 30
+          }
+        ],
+        "TargetCondition": "LowHealth",
+        "MinimumEventValue": 0.001,
+        "CooldownTicks": 1
+      }
+    ]
+  },
+  {
+    "id": "hero_mx31",
+    "planId": "MX31",
+    "role": "guard",
+    "stats": [
+      0,
+      400,
+      10,
+      8,
+      1.5,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Shield",
+        "Target": "Self",
+        "Amount": 60,
+        "DurationTicks": 30
+      },
+      {
+        "Kind": "Shield",
+        "Target": "NearestCaster",
+        "Amount": 30,
+        "DurationTicks": 30,
+        "ExcludeSelf": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ManaCast",
+        "SourceRelation": "OtherAlly",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "Self",
+            "Amount": 18,
+            "DurationTicks": 30
+          }
+        ],
+        "Range": 3,
+        "CooldownTicks": 20
+      }
+    ]
+  },
+  {
+    "id": "hero_mx32",
+    "planId": "MX32",
+    "role": "ranger",
+    "stats": [
+      2,
+      175,
+      22,
+      1,
+      1.2,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Damage",
+        "Target": "CurrentEnemy",
+        "AttackRatio": 2.3
+      },
+      {
+        "Kind": "NextAttackBoost",
+        "Target": "Self",
+        "Amount": 0.4,
+        "DurationTicks": 100,
+        "Key": "next-attack"
+      },
+      {
+        "Kind": "Counter",
+        "Target": "Self",
+        "Key": "double-shot",
+        "Amount": 1,
+        "Maximum": 1
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "ExtraShot",
+            "Target": "EventTarget",
+            "AttackRatio": 0.55
+          },
+          {
+            "Kind": "ClearCounter",
+            "Target": "Self",
+            "Key": "double-shot"
+          }
+        ],
+        "RequiredCounter": "double-shot",
+        "CounterThreshold": 1
+      }
+    ]
+  },
+  {
+    "id": "hero_mx33",
+    "planId": "MX33",
+    "role": "mage",
+    "stats": [
+      6,
+      185,
+      12,
+      1,
+      1.6,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Damage",
+        "Target": "CurrentEnemy",
+        "AttackRatio": 2.3
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ManaCast",
+        "SourceRelation": "OtherAlly",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "NextSkillBoost",
+            "Target": "Self",
+            "Amount": 0.3,
+            "DurationTicks": 300,
+            "Key": "next-skill"
+          }
+        ],
+        "Range": 3
+      }
+    ]
+  },
+  {
+    "id": "hero_mx34",
+    "planId": "MX34",
+    "role": "support",
+    "stats": [
+      3,
+      235,
+      12,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Heal",
+        "Target": "LowestHealthAllies",
+        "Amount": 55,
+        "MaxTargets": 2
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Healing",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Ally",
+        "Effects": [
+          {
+            "Kind": "Mana",
+            "Target": "LowestManaAllies",
+            "Amount": 8,
+            "ExcludeSelf": true
+          }
+        ],
+        "MinimumEventValue": 0.001,
+        "OncePerAction": true,
+        "ActiveSkillOnly": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx35",
+    "planId": "MX35",
+    "role": "summoner",
+    "stats": [
+      5,
+      210,
+      10,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Summon",
+        "Target": "Self",
+        "ContentId": "matrix_spirit_astral",
+        "Count": 1,
+        "Maximum": 3,
+        "DurationTicks": 100
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ManaCast",
+        "SourceRelation": "OtherAlly",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "OwnedSummons",
+            "Key": "astral-growth",
+            "Amount": 1,
+            "Maximum": 5,
+            "MaxTargets": 3
+          },
+          {
+            "Kind": "TimedAttribute",
+            "Target": "OwnedSummons",
+            "Attribute": 1,
+            "Amount": 0,
+            "DurationTicks": 100,
+            "MaxTargets": 3,
+            "Key": "astral-growth",
+            "CounterRatio": 2,
+            "CounterOnTarget": true
+          }
+        ],
+        "CooldownTicks": 5
+      }
+    ]
+  },
+  {
+    "id": "hero_mx36",
+    "planId": "MX36",
+    "role": "assassin",
+    "stats": [
+      4,
+      200,
+      24,
+      1,
+      1.1,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "DashStrike",
+        "Target": "MostPoisonEnemies",
+        "AttackRatio": 1.5,
+        "Range": 4,
+        "DurationTicks": 4,
+        "Effects": [
+          {
+            "Kind": "Chill",
+            "Target": "CurrentEnemy",
+            "Amount": 1
+          }
+        ]
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Poison",
+            "Target": "EventTarget",
+            "Amount": 2
+          }
+        ],
+        "TargetCondition": "Chilled",
+        "CooldownTicks": 20
+      }
+    ]
+  },
+  {
+    "id": "hero_mx37",
+    "planId": "MX37",
+    "role": "summoner",
+    "stats": [
+      5,
+      210,
+      10,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Summon",
+        "Target": "Self",
+        "ContentId": "matrix_spirit_plague",
+        "Count": 1,
+        "Maximum": 3,
+        "DurationTicks": 100
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "SummonHit",
+        "SourceRelation": "OwnedSummon",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Poison",
+            "Target": "EventTarget",
+            "Amount": 1
+          }
+        ]
+      },
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "OwnedSummon",
+        "Effects": [
+          {
+            "Kind": "Ember",
+            "Target": "EventNearbyEnemies",
+            "Amount": 1,
+            "Range": 1.5,
+            "MaxTargets": 5
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx38",
+    "planId": "MX38",
+    "role": "mage",
+    "stats": [
+      6,
+      185,
+      12,
+      1,
+      1.6,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Damage",
+        "Target": "DenseEnemies",
+        "AttackRatio": 2.1,
+        "Range": 7,
+        "Radius": 2,
+        "MaxTargets": 8
+      },
+      {
+        "Kind": "Ember",
+        "Target": "DenseEnemies",
+        "Amount": 1,
+        "Radius": 2,
+        "MaxTargets": 7,
+        "Key": "death-ember",
+        "CounterRatio": 0.5,
+        "ConsumeCounter": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "OtherAlly",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "death-ember",
+            "Amount": 1,
+            "Maximum": 4,
+            "TemporaryScale": 0.25
+          }
+        ],
+        "OncePerTarget": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx39",
+    "planId": "MX39",
+    "role": "guard",
+    "stats": [
+      0,
+      400,
+      10,
+      8,
+      1.5,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Shield",
+        "Target": "Self",
+        "Amount": 55,
+        "DurationTicks": 30
+      },
+      {
+        "Kind": "Shield",
+        "Target": "TemporaryAllies",
+        "Amount": 30,
+        "DurationTicks": 30,
+        "Range": 3,
+        "MaxTargets": 3
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "Self",
+            "Amount": 20,
+            "DurationTicks": 20
+          }
+        ],
+        "OncePerTarget": true,
+        "CooldownTicks": 10,
+        "Range": 3
+      }
+    ]
+  },
+  {
+    "id": "hero_mx40",
+    "planId": "MX40",
+    "role": "fighter",
+    "stats": [
+      1,
+      300,
+      20,
+      4,
+      1.3,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "ConsumeShield",
+        "Target": "Self",
+        "Amount": 0.4,
+        "Key": "shield-spent"
+      },
+      {
+        "Kind": "PayHealth",
+        "Target": "Self",
+        "Amount": 0.08
+      },
+      {
+        "Kind": "Damage",
+        "Target": "NearestEnemies",
+        "AttackRatio": 1.8,
+        "Range": 2,
+        "MaxTargets": 4,
+        "Key": "shield-spent",
+        "CounterRatio": 0.7,
+        "ConsumeCounter": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ShieldReceived",
+        "SourceRelation": "OtherAlly",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "NextAttackBoost",
+            "Target": "Self",
+            "Amount": 0.45,
+            "DurationTicks": 100,
+            "Key": "next-attack"
+          }
+        ],
+        "OwnerCondition": "LowHealth",
+        "OncePerBattle": true,
+        "MinimumEventValue": 0.001
+      }
+    ]
+  },
+  {
+    "id": "hero_mx41",
+    "planId": "MX41",
+    "role": "support",
+    "stats": [
+      3,
+      235,
+      12,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "PayHealth",
+        "Target": "Self",
+        "Amount": 0.06
+      },
+      {
+        "Kind": "Mana",
+        "Target": "LowestManaAllies",
+        "Amount": 15,
+        "MaxTargets": 2,
+        "ExcludeSelf": true
+      },
+      {
+        "Kind": "Heal",
+        "Target": "LowestManaAllies",
+        "Amount": 25,
+        "MaxTargets": 2,
+        "ExcludeSelf": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Healing",
+        "SourceRelation": "OtherAlly",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "NextSkillBoost",
+            "Target": "Self",
+            "Amount": 0.35,
+            "DurationTicks": 300,
+            "Key": "next-skill"
+          }
+        ],
+        "MinimumEventValue": 0.001
+      }
+    ]
+  },
+  {
+    "id": "hero_mx42",
+    "planId": "MX42",
+    "role": "summoner",
+    "stats": [
+      5,
+      210,
+      10,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "Summon",
+        "Target": "Self",
+        "ContentId": "matrix_spirit_aurora",
+        "Count": 1,
+        "Maximum": 3,
+        "DurationTicks": 100
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "SummonHit",
+        "SourceRelation": "OwnedSummon",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Chill",
+            "Target": "EventTarget",
+            "Amount": 1
+          }
+        ],
+        "CooldownTicks": 15,
+        "PerTargetCooldown": true
+      },
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ManaCast",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "ExtendSummon",
+            "Target": "OwnedSummons",
+            "DurationTicks": 20,
+            "Count": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx43",
+    "planId": "MX43",
+    "role": "guard",
+    "stats": [
+      0,
+      400,
+      10,
+      8,
+      1.5,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "Shield",
+        "Target": "NearestAllies",
+        "Amount": 35,
+        "DurationTicks": 30,
+        "Range": 3,
+        "MaxTargets": 3
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ShieldBroken",
+        "SourceRelation": "Enemy",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "Heal",
+            "Target": "NearestWoundedAlly",
+            "Amount": 35
+          }
+        ],
+        "CooldownTicks": 30
+      }
+    ]
+  },
+  {
+    "id": "hero_mx44",
+    "planId": "MX44",
+    "role": "ranger",
+    "stats": [
+      2,
+      175,
+      22,
+      1,
+      1.2,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "SkillVolley",
+        "Target": "CurrentEnemy",
+        "Count": 4,
+        "AttackRatio": 0.7,
+        "Amount": 0.5,
+        "Key": "spell-arrows",
+        "CounterRatio": 0.08,
+        "ConsumeCounter": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "spell-arrows",
+            "Amount": 1,
+            "Maximum": 4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx45",
+    "planId": "MX45",
+    "role": "fighter",
+    "stats": [
+      1,
+      300,
+      20,
+      4,
+      1.3,
+      0.25
+    ],
+    "a": [
+      {
+        "Kind": "DashStrike",
+        "Target": "LowestHealthEnemies",
+        "AttackRatio": 2,
+        "Range": 4,
+        "DurationTicks": 4,
+        "Key": "revenge",
+        "CounterRatio": 8,
+        "ConsumeCounter": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "HealthLost",
+        "SourceRelation": "Enemy",
+        "TargetRelation": "Owner",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "revenge",
+            "Amount": 1,
+            "Maximum": 4
+          }
+        ],
+        "MinimumEventValue": 0.001
+      },
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Any",
+        "TargetRelation": "OtherAlly",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "revenge",
+            "Amount": 1,
+            "Maximum": 4
+          }
+        ],
+        "OncePerTarget": true
+      },
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "Death",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "Self",
+            "Amount": 30,
+            "DurationTicks": 30
+          }
+        ],
+        "CooldownTicks": 10,
+        "ActiveSkillOnly": true
+      }
+    ]
+  },
+  {
+    "id": "hero_mx46",
+    "planId": "MX46",
+    "role": "support",
+    "stats": [
+      3,
+      235,
+      12,
+      2,
+      1.5,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "TransferPoison",
+        "Target": "OtherEnemy",
+        "Count": 3,
+        "Range": 6
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "PoisonTransferred",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Shield",
+            "Target": "Self",
+            "Amount": 25,
+            "DurationTicks": 30
+          }
+        ],
+        "CooldownTicks": 25
+      }
+    ]
+  },
+  {
+    "id": "hero_mx47",
+    "planId": "MX47",
+    "role": "mage",
+    "stats": [
+      6,
+      185,
+      12,
+      1,
+      1.6,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "NextSkillBoost",
+        "Target": "NearestBoostableCaster",
+        "Amount": 0.5,
+        "DurationTicks": 120,
+        "Key": "next-skill",
+        "ExcludeSelf": true
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "ManaCast",
+        "SourceRelation": "OtherAlly",
+        "TargetRelation": "Any",
+        "Effects": [
+          {
+            "Kind": "Mana",
+            "Target": "Self",
+            "Amount": 6
+          }
+        ],
+        "CooldownTicks": 15
+      }
+    ]
+  },
+  {
+    "id": "hero_mx48",
+    "planId": "MX48",
+    "role": "ranger",
+    "stats": [
+      2,
+      175,
+      22,
+      1,
+      1.2,
+      5.2
+    ],
+    "a": [
+      {
+        "Kind": "TimedAttribute",
+        "Target": "Self",
+        "Attribute": 1,
+        "Amount": 12,
+        "DurationTicks": 45
+      }
+    ],
+    "p": [
+      {
+        "Kind": "RegisterReaction",
+        "Target": "Self",
+        "Event": "AttackHit",
+        "SourceRelation": "Owner",
+        "TargetRelation": "Enemy",
+        "Effects": [
+          {
+            "Kind": "Counter",
+            "Target": "Self",
+            "Key": "focus",
+            "Amount": 1,
+            "Maximum": 5,
+            "ResetOnTargetChange": true
+          },
+          {
+            "Kind": "NextAttackBoost",
+            "Target": "Self",
+            "Amount": 0,
+            "DurationTicks": 100,
+            "Key": "focus",
+            "CounterRatio": 0.06
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero_mx49",
+    "planId": "MX49",
+    "role": "fighter",
+    "stats": [
+      1,
+      300,
+      20,
+      4,
+      1.3,
+      0.25
+    ],
+    "native": true,
+    "a": [],
+    "p": []
+  }
+]

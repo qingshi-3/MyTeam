@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "溢光祭司 · 固定被动"
-RuleDescription = "自己收到的过量治疗有 50% 转为自己的护盾；实际治疗量仍按原规则计入报告。"
+RuleDescription = "自己受到的过量治疗有 50% 转化为护盾。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

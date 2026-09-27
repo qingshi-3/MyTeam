@@ -7,7 +7,7 @@
 script = ExtResource("r1")
 Id = "hero_hc34_shockshield_guard"
 DisplayName = "震盾卫"
-Description = "HC34／MV04 测试稿。开场满蓝。将 2.2 格内最近的至多 3 名非 Boss 敌人向外推开至多 1.6 格，各造成 40 加 80% 攻击力的伤害并眩晕 0.6 秒。 被动：被普通攻击命中时获得 8 护盾，最多每秒触发一次。 数值为测试暂值。"
+Description = "推开并眩晕附近敌人，被普攻击中时还能获得护盾。"
 Portrait = ExtResource("r0")
 IsHero = true
 Role = 0

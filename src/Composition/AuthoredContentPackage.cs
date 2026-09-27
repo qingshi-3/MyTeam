@@ -27,4 +27,7 @@ internal sealed record AuthoredContentPackage(
     public IReadOnlyList<TacticalCommandDefinition?> TacticalCommands { get; init; } = [];
     public IReadOnlyList<PackedScene?> TacticalCommandScenes { get; init; } = [];
     public IReadOnlyList<TraitDefinition?> Traits { get; init; } = [];
+    // Explicit non-scene owners (for example, an authored ascension or spell recipe).
+    // This is a reference list, not an exemption from dependency/orphan validation.
+    public IReadOnlyList<AbilityLoadoutDefinition?> AdditionalLoadoutReferences { get; init; } = [];
 }

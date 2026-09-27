@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 0
+Target = 1
+AttackRatio = 1.4
+
+[sub_resource type="Resource" id="op_2"]
+script = ExtResource("operation")
+Kind = 2
+Target = 0
+Amount = 45
+DurationTicks = 30
+
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx01_a"
+DisplayName = "冻原盾卫·主动"
+Description = "盾击当前敌人，造成140%攻击伤害；自身获得45点护盾，持续3秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+MaxUses = 0
+Operations = [SubResource("op_1"), SubResource("op_2")]

@@ -93,9 +93,11 @@ public sealed partial class BattleSimulation
         if (target is null) { owner.ProjectileSequence = null; return; }
         SelectAttackChainTarget(owner, target);
         SetActionTarget(owner, target);
-        var damage = EffectiveDamage(owner) * sequence.Operation.AttackDamageMultiplier;
+        var priorShots = target.RuntimeId == sequence.TargetId ? sequence.ConsecutiveTargetShots : 0;
+        var multiplier = sequence.Operation.AttackDamageMultiplier + priorShots * sequence.Operation.PerShotDamageIncrease;
+        var damage = EffectiveDamage(owner) * multiplier;
         if (owner.Definition.ProjectileWindupSeconds > 0)
-            BeginProjectileWindup(owner, target, sequence.Origin, sequence.Operation.AttackDamageMultiplier, sequence.Operation.AttackIntervalRatio);
+            BeginProjectileWindup(owner, target, sequence.Origin, multiplier, sequence.Operation.AttackIntervalRatio);
         else
         {
             LaunchProjectile(owner, target, damage, sequence.Origin);
@@ -103,7 +105,8 @@ public sealed partial class BattleSimulation
         }
         owner.ProjectileSequence = sequence.RemainingShots == 1 ? null : sequence with
         {
-            RemainingShots = sequence.RemainingShots - 1, TargetId = target.RuntimeId
+            RemainingShots = sequence.RemainingShots - 1, TargetId = target.RuntimeId,
+            ConsecutiveTargetShots = priorShots + 1
         };
         owner.ManaLockedUntilTick = Math.Max(owner.ManaLockedUntilTick, TickIndex + 1);
     }

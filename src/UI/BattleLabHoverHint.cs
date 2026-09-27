@@ -91,6 +91,9 @@ public partial class BattleLabHoverHint : Node
     {
         if (!CanShow()) return;
         _delay ??= GetNode<Timer>("Delay");
+        // Focus/hover can arrive together. A repeated notification must not hide
+        // an already-visible hint and restart its delay (the observed blink).
+        if (_active == this && (_tooltip is { Visible: true } || !_delay.IsStopped())) return;
         // Children may already be exiting when a cell clears its drag state.
         if (!_delay.IsInsideTree()) return;
         HideAll();

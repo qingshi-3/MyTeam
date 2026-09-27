@@ -20,4 +20,4 @@ public sealed record CompiledLifecycleOperation(LifecycleAbilityKind Kind, Compi
 public sealed record CompiledDisplacementOperation(DisplacementKind Kind, CompiledEffectTargetQuery TargetQuery,
     float Distance, int DurationTicks, float StopDistance, bool BehindTarget, bool ExcludeBoss,
     float ImpactDamage, float AttackRatio, float ImpactRadius, EffectDamageType DamageType,
-    CompiledStatusDefinition? ImpactStatus, float ArcHeight) : CompiledAbilityOperation;
+    CompiledStatusDefinition? ImpactStatus, float ArcHeight, float LandingAngleRadians = 0) : CompiledAbilityOperation;

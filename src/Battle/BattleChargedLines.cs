@@ -110,7 +110,7 @@ public sealed partial class BattleSimulation
         RegisterGrowingHit(source, target);
         PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.SkillHitLanded, origin,
             source.RuntimeId, target.RuntimeId, TickIndex, RequestedValue: damage, AppliedValue: applied,
-            EffectiveValue: applied, DamageType: damageType));
+            EffectiveValue: applied, DamageType: damageType, DamageClass:DamageClassFor(origin), ActionId:origin.InstanceId));
     }
 
     private void CancelChargedLine(BattleUnitState owner)

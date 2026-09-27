@@ -1,13 +1,35 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://src/UI/RosterHeroCard.cs" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitInfoCard.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/WorkbenchHeroSummary.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/EquipmentSlotButton.tscn" id="3"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/icons/roster-deployed.svg" id="Deployed"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/roster-reserve.svg" id="Reserve"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/card-deployment-badge.png" id="StatusBadge"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/card-rank-medallion.png" id="RankBadge"]
+
+[sub_resource type="AtlasTexture" id="StatusBadge"]
+atlas = ExtResource("StatusBadge")
+region = Rect2(66, 72, 1060, 1180)
+
+[sub_resource type="AtlasTexture" id="RankBadge"]
+atlas = ExtResource("RankBadge")
+region = Rect2(40, 36, 1176, 1184)
+
+[sub_resource type="StyleBoxFlat" id="EquipmentRail"]
+draw_center = false
+border_width_top = 0
+border_color = Color(0.73, 0.65, 0.49, 0.20)
+content_margin_top = 2.0
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 0.0
+
 [node name="RosterHeroCard" type="Button"]
-custom_minimum_size = Vector2(274, 466)
+custom_minimum_size = Vector2(400, 720)
 size_flags_horizontal = 3
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"RosterCard"
 script = ExtResource("1")
 
 [node name="Margin" type="MarginContainer" parent="."]
@@ -15,41 +37,144 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 12.0
-offset_right = -12.0
-offset_bottom = -12.0
+offset_left = 34.0
+offset_top = 26.0
+offset_right = -34.0
+offset_bottom = -34.0
 mouse_filter = 2
 
 [node name="Layout" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 3
 
 [node name="Information" parent="Margin/Layout" instance=ExtResource("2")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Slots" type="HBoxContainer" parent="Margin/Layout"]
+[node name="Equipment" type="PanelContainer" parent="Margin/Layout"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 5
-[node name="Slot0" parent="Margin/Layout/Slots" instance=ExtResource("3")]
+theme_override_styles/panel = SubResource("EquipmentRail")
+
+[node name="Slots" type="HBoxContainer" parent="Margin/Layout/Equipment"]
+alignment = 1
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Slot0" parent="Margin/Layout/Equipment/Slots" instance=ExtResource("3")]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(72, 68)
-theme_override_constants/icon_max_width = 34
-theme_override_font_sizes/font_size = 12
-[node name="Slot1" parent="Margin/Layout/Slots" instance=ExtResource("3")]
+custom_minimum_size = Vector2(80, 64)
+InlinePresentation = true
+WorkbenchPresentation = true
+theme_type_variation = &"WorkbenchEquipment"
+theme_override_constants/icon_max_width = 44
+theme_override_font_sizes/font_size = 20
+[node name="Slot1" parent="Margin/Layout/Equipment/Slots" instance=ExtResource("3")]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(72, 68)
-theme_override_constants/icon_max_width = 34
-theme_override_font_sizes/font_size = 12
-[node name="Slot2" parent="Margin/Layout/Slots" instance=ExtResource("3")]
+custom_minimum_size = Vector2(80, 64)
+InlinePresentation = true
+WorkbenchPresentation = true
+theme_type_variation = &"WorkbenchEquipment"
+theme_override_constants/icon_max_width = 44
+theme_override_font_sizes/font_size = 20
+[node name="Slot2" parent="Margin/Layout/Equipment/Slots" instance=ExtResource("3")]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(72, 68)
-theme_override_constants/icon_max_width = 34
-theme_override_font_sizes/font_size = 12
+custom_minimum_size = Vector2(80, 64)
+InlinePresentation = true
+WorkbenchPresentation = true
+theme_type_variation = &"WorkbenchEquipment"
+theme_override_constants/icon_max_width = 44
+theme_override_font_sizes/font_size = 20
+
+[node name="DropHint" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.40
+anchor_right = 0.5
+anchor_bottom = 0.40
+offset_left = -64.0
+offset_top = -16.0
+offset_right = 64.0
+offset_bottom = 16.0
+mouse_filter = 2
+theme_type_variation = &"CardDropHint"
+theme_override_colors/font_color = Color(0.97, 0.90, 0.72, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeploymentBadge" type="TextureRect" parent="."]
+texture_filter = 4
+layout_mode = 0
+offset_left = 9.0
+offset_top = 8.0
+offset_right = 77.0
+offset_bottom = 84.0
+mouse_filter = 2
+texture = SubResource("StatusBadge")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RankBadge" type="TextureRect" parent="."]
+texture_filter = 4
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -86.0
+offset_right = -12.0
+offset_top = 9.0
+offset_bottom = 83.0
+mouse_filter = 2
+texture = SubResource("RankBadge")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HeroRank" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -81.0
+offset_right = -17.0
+offset_top = 9.0
+offset_bottom = 78.0
+mouse_filter = 2
+theme_type_variation = &"WorkbenchRank"
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "I"
+
+[node name="DeployedIcon" type="TextureRect" parent="."]
+texture_filter = 2
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 26.0
+offset_top = 25.0
+offset_right = 60.0
+offset_bottom = 59.0
+mouse_filter = 2
+texture = ExtResource("Deployed")
+modulate = Color(0.98, 0.92, 0.77, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ReserveIcon" type="TextureRect" parent="."]
+texture_filter = 2
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 26.0
+offset_top = 25.0
+offset_right = 60.0
+offset_bottom = 59.0
+mouse_filter = 2
+texture = ExtResource("Reserve")
+modulate = Color(0.98, 0.92, 0.77, 1)
+expand_mode = 1
+stretch_mode = 5

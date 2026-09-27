@@ -34,25 +34,38 @@ public static class RunOfferCardBinder
                 ItemDefinition item => item.Description,
                 _ => string.Empty
             };
-            var decision = choice with { Description = string.IsNullOrWhiteSpace(contentDescription)
+            // Generated default opportunities repeat their executable payoff as prose.
+            // Keep custom flavor, but show each generated consequence only once.
+            var generatedOpportunity = definition is null && offer.OfferId.EndsWith(
+                ":default_" + offer.Kind.ToString().ToLowerInvariant(), StringComparison.Ordinal);
+            var decision = choice with { Description = generatedOpportunity ? string.Empty : string.IsNullOrWhiteSpace(contentDescription)
                 ? choice.Description : choice.Description.Replace(contentDescription, string.Empty, StringComparison.Ordinal).Trim() };
-            var rules = RunDecisionText.Describe(decision, Name);
+            var rules = WithoutCostLine(RunDecisionText.Describe(decision, Name));
             var costs = choice.Costs.IsDefaultOrEmpty ? "" :
                 choice.Costs.All(cost => cost.Kind == RunOperationKind.SpendGold)
                     ? $"{choice.Costs.Sum(cost => cost.Amount)} 金币" : RunDecisionText.Costs(choice, Name);
             var action = shop ? "购买" : definition is UnitDefinition ? "招募" : definition is ItemDefinition ? "领取" : "选择";
             if (shop && choice.Costs.IsDefaultOrEmpty) action = "领取";
             var notice = costs;
-            if (choice.SuccessChance < 1)
-                notice = $"成功率 {choice.SuccessChance:P0}" + (costs.Length == 0 ? "" : $" · 无论成败支付 {costs}");
+            if (choice.SuccessChance < 1 && costs.Length > 0)
+                notice = $"无论成败支付 {costs}";
             if (!eligibility.Succeeded)
-                notice = eligibility.Message + (costs.Length == 0 ? "" : $"\n代价：{costs}");
+                notice = eligibility.Message;
+            var icon = choice.Operations.Any(operation => operation.Kind == RunOperationKind.RecoverRunHealth)
+                ? SemanticIconKeys.Health : choice.Operations.All(operation => operation.Kind == RunOperationKind.GainGold)
+                    ? SemanticIconKeys.Gold : SemanticIconKeys.Loot;
             return RunOfferDetailText.Card(app, choice.ContentId, choice.StableId, choice.DisplayName,
-                action, rules, notice, !eligibility.Succeeded, icons.ResolveIcon(SemanticIconKeys.Loot));
+                action, rules, notice, !eligibility.Succeeded, icons.ResolveIcon(icon));
         }).ToArray();
         SyncModels(parent, models, chosen);
         if (models.Length > 0) inspected?.Invoke(models[0].Title);
     }
+
+    private static string WithoutCostLine(string rules) => string.Join('\n',
+        rules.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Where(line => !line.StartsWith("代价：", StringComparison.Ordinal) &&
+                !line.StartsWith("代价（无论成败）：", StringComparison.Ordinal))
+            .Select(line => line.StartsWith("结果：", StringComparison.Ordinal) ? line[3..] : line));
 
     public static void SyncContent(Container parent, RunApplication app, IEnumerable<string> contentIds,
         SemanticIconCatalog icons, Action<string> chosen, string action)

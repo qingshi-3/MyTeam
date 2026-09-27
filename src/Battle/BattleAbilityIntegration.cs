@@ -94,8 +94,9 @@ public sealed partial class BattleSimulation
     private sealed record PendingAbilityReaction(string OwnerId, AbilityTriggerKind Trigger,
         string TargetId, int Tick, string ChainId, int Depth, bool PassiveGrant = false, BattleCombatEvent? Event = null, CompiledAbilityDefinition? Echo = null);
 
-    private static CombatSourceRef AbilityOrigin(CompiledAbilityDefinition ability, string ownerId) =>
-        new(CombatSourceKind.Ability, ability.StableId, ownerId, $"{ownerId}:{ability.StableId}");
+    private CombatSourceRef AbilityOrigin(CompiledAbilityDefinition ability, string ownerId) =>
+        new(CombatSourceKind.Ability, ability.StableId, ownerId,
+            _abilityActionIds.GetValueOrDefault(AbilityActionKey(ownerId, ability.StableId), $"{ownerId}:{ability.StableId}"));
 
     private string PassiveGrantId(string ownerId, string abilityId) =>
         $"ability:{_abilityScope!.ScopeId}:{ownerId}:{abilityId}";
@@ -169,7 +170,7 @@ public sealed partial class BattleSimulation
     // The combat subscriber only records intent. Execute after the enclosing world transaction
     // has completed, never inside a Status transaction or Effect drain. Each failed reaction
     // rolls back its own invocation while retaining the committed triggering combat fact.
-    private void DrainAbilityReactions()
+    private void DrainLegacyAbilityReactions()
     {
         if (_drainingAbilityReactions || _abilityScope is null) return;
         _drainingAbilityReactions = true;

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="r0"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f1_sister/frames.tres" id="r1"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f1_sister.png" id="illustration"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/cutouts/f1_sister.png" id="card_illustration"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "hero_mx08"
+Frames = ExtResource("r1")
+AnimationName = &"idle"
+FrameIndex = 0
+Zoom = 2
+OffsetRatio = Vector2(0, 0.05)
+Illustration = ExtResource("illustration")
+CardIllustration = ExtResource("card_illustration")
+CardIllustrationFocus = Vector2(0.5, 0.32)
+CardIllustrationZoom = 1.2
+IllustrationFocus = Vector2(0.62, 0.29)
+IllustrationZoom = 1.15

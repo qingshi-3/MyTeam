@@ -18,13 +18,14 @@ Definition = ExtResource("definition")
 [node name="VisualRoot" type="Node2D" parent="."]
 [node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("animation")]
 UseNeutralSkillFallback = true
+TimedActionReleaseFrames = Dictionary[String, int]({"grit_punch": 10})
 Frames = ExtResource("frames")
 [node name="HealthViewComponent" parent="." instance=ExtResource("health")]
 [node name="UnitBehaviorComponent" parent="." instance=ExtResource("behavior")]
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "怒劲"
-RuleDescription = "无蓝：满怒、跌破 50% 生命、低于 20% 生命触发重拳；濒死每战一次。动作完成后依次处理新触发，怒劲转为短盾和额外伤害。护盾承伤不积怒劲。"
+RuleDescription = "失去生命会积累怒劲。怒劲满、生命跌破 50% 或低于 20% 时发动重拳，消耗怒劲增加伤害并获得短暂护盾；濒死触发每战一次。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

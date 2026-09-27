@@ -7,8 +7,9 @@ using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
 
-public partial class DeploymentUnitCard : Button
+public partial class DeploymentUnitCard : Button, IUiMotionHost
 {
+    public Func<bool> ReduceUiMotion { get; set; } = () => false;
     public event Action<string>? UnitSelected;
     public string InstanceId { get; private set; } = string.Empty;
     public UnitPortrait Portrait { get; private set; } = null!;
@@ -49,14 +50,17 @@ public partial class DeploymentUnitCard : Button
 
     public void Bind(DeploymentUnitViewModel model, bool selected)
     {
+        var previousIdentity = InstanceId;
         InstanceId = model.InstanceId;
+        if (previousIdentity != InstanceId) UiDragVisual.Bound(this, InstanceId, "piece_id");
         Text = string.Empty;
         _normalStyle = selected ? "SelectedButton" : "SecondaryButton";
         ThemeTypeVariation = _normalStyle;
         Portrait.Bind(model.Portrait, Fallback(model.Role));
         _name.Text = $"{(model.IsHero ? "★ " : string.Empty)}{model.DisplayName}";
         _name.ThemeTypeVariation = model.IsHero ? "HeroIdentity" : "ChoiceTitle";
-        _health.Bind(UnitSemanticFacts.Health(model.HealthRatio.ToString("P0"), includeLabel: false));
+        _health.Bind(UnitSemanticFacts.Health(model.MaximumHealth.ToString("0.#"), includeLabel: false));
+        _health.TooltipText = "基础生命上限 · 每场战斗满血入场。";
         _role.Bind(UnitSemanticFacts.Responsibility(model.Role, includeLabel: false));
         _reach.Bind(UnitSemanticFacts.Reach(model.AttackRange, includeLabel: false));
         _state.Text = model.Cell is { } cell
@@ -83,20 +87,26 @@ public partial class DeploymentUnitCard : Button
     public override Variant _GetDragData(Vector2 atPosition)
     {
         if (string.IsNullOrWhiteSpace(InstanceId)) return default;
-        var preview = (Control)Duplicate();
-        preview.CustomMinimumSize = CustomMinimumSize;
-        preview.MouseFilter = MouseFilterEnum.Ignore;
-        SetDragPreview(preview);
-        return new Godot.Collections.Dictionary { ["piece_id"] = InstanceId };
+        var preview = GD.Load<PackedScene>("res://scenes/ui/components/HeroDragPreview.tscn").Instantiate<Control>();
+        preview.GetNode<UnitPortrait>("Layout/Portrait").Bind(Portrait.Definition);
+        preview.GetNode<Label>("Layout/Name").Text = _name.Text;
+        return UiDragVisual.Begin(this, preview, new Godot.Collections.Dictionary { ["piece_id"] = InstanceId },
+            () => ReduceUiMotion(), keepTargetVisible: true);
     }
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
     {
-        if (IsRosterDrag(data)) return RosterDropEvaluator?.Invoke(data) == true;
+        if (IsRosterDrag(data))
+        {
+            var allowed = RosterDropEvaluator?.Invoke(data) == true;
+            UiDragVisual.Aim(data, this, allowed);
+            return allowed;
+        }
         if (!EquipmentSlotButton.TryEquipmentId(data, out _)) return false;
         var evaluation = EquipmentDropEvaluator?.Invoke(data)
             ?? EquipmentDropEvaluation.Reject("当前不能更换装备。");
         ThemeTypeVariation = evaluation.Allowed ? "EquipmentSlotValid" : "EquipmentSlotInvalid";
+        UiDragVisual.Aim(data, this, evaluation.Allowed);
         return evaluation.Allowed;
     }
 

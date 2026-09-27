@@ -73,6 +73,8 @@ public partial class CurrentUiInputCapture : Node
             await Until(() => screens.MainMenu.IsVisibleInTree(), "return to main menu");
 
             Step("battle laboratory: library selection and independent side panels");
+            if (!screens.MainMenu.GetNode<Button>("Center/Panel/Menu/BattleLabButton").IsVisibleInTree())
+                await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/ToolsButton"));
             await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/BattleLabButton"));
             await Until(() => screens.BattleLab.IsVisibleInTree(), "battle laboratory opened");
             var lab = screens.BattleLab;
@@ -193,6 +195,8 @@ public partial class CurrentUiInputCapture : Node
     private async Task InspectDeploymentFootprints(AppScreenHost screens)
     {
         Step("footprints: large bodies use authored radius through real placement input");
+        if (!screens.MainMenu.GetNode<Button>("Center/Panel/Menu/BattleLabButton").IsVisibleInTree())
+            await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/ToolsButton"));
         await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/BattleLabButton"));
         var lab = screens.BattleLab;
         await Until(() => lab.IsVisibleInTree(), "laboratory open");
@@ -292,6 +296,8 @@ public partial class CurrentUiInputCapture : Node
     private async Task InspectTooltipIcons(AppScreenHost screens)
     {
         Step("tooltip icons: production laboratory");
+        if (!screens.MainMenu.GetNode<Button>("Center/Panel/Menu/BattleLabButton").IsVisibleInTree())
+            await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/ToolsButton"));
         await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/BattleLabButton"));
         await Until(() => screens.BattleLab.IsVisibleInTree(), "laboratory open");
         var lab = screens.BattleLab;

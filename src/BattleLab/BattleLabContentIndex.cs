@@ -169,6 +169,9 @@ public sealed class BattleLabContentIndex
             .Concat(package.Content.Graph.TacticalCommands.SelectMany(command => command.Ability.Operations));
         foreach (var operation in operations)
         {
+            if (operation is CompiledMatrixOperation matrix)
+                foreach (var node in MatrixAbilityCompiler.Flatten(matrix).Where(node => node.Kind == MatrixOperationKind.Summon))
+                    yield return node.ContentId;
             if (operation is CompiledEnemyAction action)
                 foreach (var dependency in action.ContentDependencies) yield return dependency;
             var contentId = operation switch

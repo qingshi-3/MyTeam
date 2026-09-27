@@ -3,6 +3,10 @@
 [ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="r0"]
 [ext_resource type="SpriteFrames" path="res://assets/donor-units/f6_general/frames.tres" id="r1"]
 
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f6_general.png" id="illustration"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/cutouts/f6_general.png" id="card_illustration"]
+
 [resource]
 script = ExtResource("r0")
 StableId = "hero_hc11_triad_weaver"
@@ -11,3 +15,9 @@ AnimationName = &"idle"
 FrameIndex = 0
 Zoom = 2
 OffsetRatio = Vector2(0, 0.05)
+Illustration = ExtResource("illustration")
+CardIllustration = ExtResource("card_illustration")
+CardIllustrationFocus = Vector2(0.55, 0.48)
+CardIllustrationZoom = 1.65
+IllustrationFocus = Vector2(0.55, 0.41)
+IllustrationZoom = 1.55

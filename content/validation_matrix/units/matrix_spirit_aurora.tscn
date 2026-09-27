@@ -1,0 +1,23 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Content/UnitContentRoot.cs" id="root"]
+[ext_resource type="Resource" path="res://content/validation_matrix/definitions/matrix_spirit_aurora.tres" id="definition"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f1_ranged/frames.tres" id="frames"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitMotionPresentationComponent.tscn" id="UnitMotionPresentationComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAnimationComponent.tscn" id="UnitAnimationComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/HealthViewComponent.tscn" id="HealthViewComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitBehaviorComponent.tscn" id="UnitBehaviorComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/HeroRuleComponent.tscn" id="HeroRuleComponent"]
+[ext_resource type="PackedScene" path="res://scenes/components/UnitAbilityLoadoutComponent.tscn" id="UnitAbilityLoadoutComponent"]
+[ext_resource type="Resource" path="res://content/validation_matrix/loadouts/matrix_spirit_aurora.tres" id="loadout"]
+
+[node name="matrix_spirit_aurora" type="Node2D"]
+script = ExtResource("root")
+Definition = ExtResource("definition")
+[node name="UnitMotionPresentationComponent" parent="." instance=ExtResource("UnitMotionPresentationComponent")]
+[node name="VisualRoot" type="Node2D" parent="."]
+[node name="UnitAnimationComponent" parent="VisualRoot" instance=ExtResource("UnitAnimationComponent")]
+Frames = ExtResource("frames")
+[node name="HealthViewComponent" parent="." instance=ExtResource("HealthViewComponent")]
+[node name="UnitBehaviorComponent" parent="." instance=ExtResource("UnitBehaviorComponent")]
+[node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("UnitAbilityLoadoutComponent")]
+Loadout = ExtResource("loadout")

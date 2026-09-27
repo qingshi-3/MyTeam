@@ -63,8 +63,8 @@ public partial class TacticalCommandSlot : Button
             return $"冷却 {slot.CooldownRemainingTicks * BattleTiming.TickSeconds:0.0} 秒";
         if (slot.MaxUses > 0 && slot.Uses >= slot.MaxUses)
             return $"次数 {slot.Uses}/{slot.MaxUses} · 已耗尽";
-        if (slot.MaxUses > 0) return $"次数 {slot.Uses}/{slot.MaxUses} · 可尝试";
-        return slot.CanAttempt ? "可尝试" : "资源不足 · 可查看原因";
+        var availability = slot.CanAttempt ? "可用" : "资源不足";
+        return slot.MaxUses > 0 ? $"次数 {slot.Uses}/{slot.MaxUses} · {availability}" : availability;
     }
 
     private void OnPressed()

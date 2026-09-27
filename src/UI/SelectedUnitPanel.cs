@@ -150,11 +150,9 @@ public partial class SelectedUnitPanel : PanelContainer
                 Abilities: item?.Description ?? "这个装备槽为空。在备战或队伍中穿戴装备。",
                 Hint: "点击在下方“效果说明”查看完整内容"));
         }
-        var teamTraits = state.TeamTraits.IsDefaultOrEmpty
-            ? "无激活层级"
-            : string.Join("、", state.TeamTraits.Select(item => item.Text));
-        _traits.Text = $"团队层级：{teamTraits}";
-        _traits.Visible = !state.TeamTraits.IsDefaultOrEmpty;
+        var teamTraits = state.TeamTraits.IsDefaultOrEmpty ? [] : state.TeamTraits.Where(item => item.Value > 0).ToArray();
+        _traits.Text = "羁绊：" + string.Join("、", teamTraits.Select(item => item.Text));
+        _traits.Visible = teamTraits.Length > 0;
         _action.Text = DescribeAction(state);
         _shield.Visible = state.Shield > 0;
         _shield.Bind("shield", $"{state.Shield:0}");
@@ -188,8 +186,8 @@ public partial class SelectedUnitPanel : PanelContainer
         _passiveDetails = BattleLabTooltipFormatter.AbilityGroups(passives);
         if (state.AttackGrowth is { } growth)
             _passiveDetails += (_passiveDetails.Length > 0 ? "\n\n" : "") +
-                $"被动 · 连续命中成长\n命中：攻速 +{growth.AttackSpeedPerHit:0.##}，无上限。\n" +
-                (growth.ResetOnTargetChange ? "切换目标时清空层数。" : "切换目标保留层数。") +
+                $"被动 · 连续命中成长\n每次命中，攻速增加 {growth.AttackSpeedPerHit * 100:0.##}%，可无限叠加。\n" +
+                (growth.ResetOnTargetChange ? "更换目标时清空加成；" : "更换目标时保留加成；") + "战斗结束后清空。" +
                 $"当前 {state.AttackHitStacks} 层。";
         _passive.Visible = _passiveDetails.Length > 0;
         _passive.Text = SkillTitle(_passiveDetails, "被动");

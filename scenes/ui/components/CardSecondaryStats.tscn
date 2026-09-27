@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitCoreStatsInline.tscn" id="Stats"]
+
+[node name="CardSecondaryStats" instance=ExtResource("Stats")]
+columns = 3
+
+[node name="DamageFact" parent="." index="0"]
+visible = false

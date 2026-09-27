@@ -6,10 +6,12 @@ using System.Security.Cryptography;
 using System.Text;
 using TowerAutobattler.Content;
 using TowerAutobattler.Project;
+using TowerAutobattler.Growth;
 
 namespace TowerAutobattler.Run;
 
-public sealed class RunDecisionService(ContentRegistry content, CompiledGameProject project, RunProgressionPersistenceService persistence)
+public sealed class RunDecisionService(ContentRegistry content, CompiledGameProject project, RunProgressionPersistenceService persistence,
+    GrowthRunService? growth = null)
 {
     public static RunOfferKind? KindFor(TowerNodeType type) => type switch
     {
@@ -57,7 +59,7 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
         if (run?.PendingOffer is not { } offer) return RunDecisionResult.Reject(RunDecisionFailure.NoOffer, "没有待处理的选择。");
         if (offer.OfferId != offerId) return RunDecisionResult.Reject(RunDecisionFailure.StaleOffer, "这个选择已失效，请查看当前机会。");
         if (!persistence.ValidateRun(run)) return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "当前征程状态无效，未作修改。");
-        offer = RunRecruitmentPolicy.VisibleOffer(run, offer);
+        offer = RunRecruitmentPolicy.VisibleOffer(run, RunOfferDefaults.RefreshHealthChoices(offer, project.RunRules));
         var working = persistence.CloneRun(run);
         var chanceSucceeded = true;
         if (choiceId is null)
@@ -86,6 +88,8 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
             working.PendingOffer = null;
             if (offer.Kind != RunOfferKind.CombatReward)
             {
+                if (growth is not null && !growth.SettleNode(working))
+                    return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "成长节点结算无效，选择、收益与推进均未提交。");
                 working.FloorIndex++;
                 working.PendingNode = false;
             }
@@ -106,6 +110,7 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
             var satisfied = condition.Kind switch
             {
                 RunConditionKind.GoldAtLeast => run.Gold >= condition.Amount,
+                RunConditionKind.RunHealthBelowMaximum => run.CurrentRunHealth < run.MaximumRunHealth,
                 RunConditionKind.RosterHealthAtLeast => run.Roster.All(hero => hero.HealthRatio >= condition.Ratio),
                 RunConditionKind.PopulationBelowCap => run.CurrentPopulation < RunPopulationPolicy.Evaluate(run, project.RunRules).EffectivePopulationCap,
                 RunConditionKind.StartingHeroIs => run.Roster.Count > 0 && run.Roster[0].ContentId == condition.ContentId,
@@ -115,7 +120,8 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
                     run.Roster.SelectMany(hero => hero.Equipment).Count(item => item.ContentId == condition.ContentId) >= condition.Amount,
                 _ => false
             };
-            if (!satisfied) return RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "尚未满足此选项的条件。");
+            if (!satisfied) return RunDecisionResult.Reject(RunDecisionFailure.NotEligible,
+                condition.Kind == RunConditionKind.RunHealthBelowMaximum ? "全局生命已满。" : "尚未满足此选项的条件。");
         }
         var preview = persistence.CloneRun(run);
         try
@@ -132,6 +138,8 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
         switch (operation.Kind)
         {
             case RunOperationKind.GainGold: run.Gold = checked(run.Gold + operation.Amount); return true;
+            case RunOperationKind.RecoverRunHealth:
+                run.CurrentRunHealth = RunHealthPolicy.Recover(run, operation.Amount); return true;
             case RunOperationKind.SpendGold:
                 if (run.Gold < operation.Amount) return false;
                 run.Gold -= operation.Amount; return true;
@@ -140,8 +148,9 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
                 // These primitive helpers edit a detached projection through a sink
                 // that never writes; only Resolve's outer commit may publish it.
                 var detached = new DetachedSave(run);
-                var detachedPersistence = new RunProgressionPersistenceService(content, detached, project);
-                var rewards = new RunRewardEconomyService(content, project, detachedPersistence, run);
+                var detachedPersistence = new RunProgressionPersistenceService(content, detached, project, growth?.Rules);
+                var detachedGrowth = new GrowthRunService(content, project, growth?.Rules, detachedPersistence);
+                var rewards = new RunRewardEconomyService(content, project, detachedPersistence, run, detachedGrowth);
                 for (var index = 0; index < operation.Amount; index++)
                     if (!(operation.Kind == RunOperationKind.Recruit ? rewards.Recruit(run, operation.ContentId) : rewards.GrantItem(run, operation.ContentId))) return false;
                 return true;
@@ -170,6 +179,8 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
     {
         var result = ImmutableArray.CreateBuilder<RunDecisionChange>();
         if (before.Gold != after.Gold) result.Add(new(RunChangeKind.Gold, "", "", before.Gold, after.Gold));
+        if (before.CurrentRunHealth != after.CurrentRunHealth)
+            result.Add(new(RunChangeKind.RunHealth, "", "", before.CurrentRunHealth, after.CurrentRunHealth));
         if (before.CurrentPopulation != after.CurrentPopulation) result.Add(new(RunChangeKind.Population, "", "", before.CurrentPopulation, after.CurrentPopulation));
         var oldCap = before.PopulationCapSources.Sum(source => (long)source.Amount);
         var newCap = after.PopulationCapSources.Sum(source => (long)source.Amount);

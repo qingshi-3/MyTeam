@@ -12,7 +12,7 @@ script = ExtResource("r1")
 script = ExtResource("r2")
 Action = 2
 TargetQuery = SubResource("s0")
-Amount = 40
+Amount = 35
 Terms = []
 
 [sub_resource type="Resource" id="s2"]
@@ -30,14 +30,14 @@ RequiredTag = ""
 script = ExtResource("r2")
 Action = 2
 TargetQuery = SubResource("s2")
-Amount = 40
+Amount = 35
 Terms = []
 
 [resource]
 script = ExtResource("r0")
 StableId = "ability_hc15_a"
 DisplayName = "接力盾"
-Description = "自身及最近一名友军各获得 40 护盾。"
+Description = "自身及最近一名友军各获得 35 护盾。"
 ActivationKind = 1
 Trigger = 5
 ManaCost = 60

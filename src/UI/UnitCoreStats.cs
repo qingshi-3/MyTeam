@@ -6,6 +6,7 @@ namespace TowerAutobattler.UI;
 public partial class UnitCoreStats : GridContainer
 {
     [Export] public bool FocusTooltip { get; set; }
+    [Export] public bool CompactSymbols { get; set; }
     public event Action<DetailExplainButton>? ExplanationRequested;
     private static readonly string[] Paths = ["%DamageFact", "%ArmorFact", "%AttackRateFact", "%RangeFact"];
     public override void _Ready()
@@ -31,7 +32,9 @@ public partial class UnitCoreStats : GridContainer
         {
             var fact = facts[i];
             var button = GetNode<CompactDetailFact>(Paths[i]);
-            button.Bind(fact.Icon, fact.Value, fact.Caption, fact.Explanation, fact.Tint);
+            button.Bind(fact.Icon, CompactSymbols ? fact.Value.Replace("/秒", "/s") : fact.Value,
+                fact.Caption, fact.Explanation, fact.Tint);
+            button.AccessibilityName = fact.Caption + " " + fact.Value;
             if (FocusTooltip) BattleLabHoverHint.Bind(button, new BattleLabTooltipInfo(fact.Caption, Stats: fact.Explanation));
         }
     }

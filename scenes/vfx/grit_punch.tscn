@@ -1,20 +1,87 @@
 [gd_scene format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
-[ext_resource type="Script" path="res://src/Vfx/VfxGritPunchTrack.cs" id="track"]
+[ext_resource type="Script" path="res://src/Vfx/VfxMotePool.cs" id="pool"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/action_mote.tscn" id="mote"]
 [ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
-[ext_resource type="Shader" path="res://scenes/vfx/grit_punch.gdshader" id="shader"]
-[sub_resource type="ShaderMaterial" id="material"]
-shader = ExtResource("shader")
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_Circle_G100.png" id="glow"]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_Star4_T002.png" id="star"]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_Aura_Windblast_002.png" id="wind"]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_Slash_Motion_001.png" id="slash"]
+[ext_resource type="Script" path="res://src/Vfx/VfxGritPunchTrack.cs" id="track"]
+[ext_resource type="Shader" path="res://scenes/vfx/grit_punch.gdshader" id="warning"]
+[ext_resource type="Shader" path="res://scenes/vfx/action_pressure.gdshader" id="pressure"]
+[sub_resource type="ShaderMaterial" id="ground"]
+shader = ExtResource("warning")
+[sub_resource type="ShaderMaterial" id="pressure_mat"]
+shader = ExtResource("pressure")
+shader_parameter/wind = ExtResource("wind")
+[sub_resource type="CanvasItemMaterial" id="add"]
+blend_mode = 1
 [node name="grit_punch" type="Node2D"]
 script = ExtResource("root")
-[node name="Layers" type="Node2D" parent="." node_paths=PackedStringArray("GroundStrip", "BodyStrip")]
+[node name="Layers" type="Node2D" parent="." node_paths=PackedStringArray("GroundStrip","BodyStrip","Glow","Flash","Streaks","Dust","Core")]
 script = ExtResource("track")
 Released = true
 GroundStrip = NodePath("Ground")
 BodyStrip = NodePath("Body")
+Glow = NodePath("Glow")
+Flash = NodePath("Flash")
+Core = NodePath("Core")
+Streaks = NodePath("Streaks")
+Dust = NodePath("Dust")
 [node name="Ground" type="Sprite2D" parent="Layers"]
 texture = ExtResource("surface")
-material = SubResource("material")
+material = SubResource("ground")
+[node name="Dust" type="Node2D" parent="Layers"]
+script = ExtResource("pool")
+ParticleScene = ExtResource("mote")
+Capacity = 32
+[node name="Glow" type="Sprite2D" parent="Layers"]
+texture = ExtResource("glow")
+material = SubResource("add")
 [node name="Body" type="Sprite2D" parent="Layers"]
 texture = ExtResource("surface")
-material = SubResource("material")
+material = SubResource("pressure_mat")
+[node name="Core" type="Sprite2D" parent="Layers"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Streaks" type="Node2D" parent="Layers"]
+[node name="Stroke0" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke1" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke2" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke3" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke4" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke5" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke6" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke7" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke8" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke9" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke10" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Stroke11" type="Sprite2D" parent="Layers/Streaks"]
+texture = ExtResource("slash")
+material = SubResource("add")
+[node name="Flash" type="Sprite2D" parent="Layers"]
+texture = ExtResource("star")
+material = SubResource("add")

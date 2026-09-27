@@ -7,7 +7,7 @@
 script = ExtResource("script")
 Id = "soldier_dummy_static"
 DisplayName = "承伤小兵假人"
-Description = "测试用：5000 生命、零防御，原地承伤，不移动、不攻击、无技能。"
+Description = "高生命静止训练假人，不会移动或攻击。"
 Portrait = ExtResource("portrait")
 IsHero = false
 IsEnemy = false

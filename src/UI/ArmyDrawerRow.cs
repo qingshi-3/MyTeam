@@ -1,4 +1,5 @@
 using Godot;
+using System.Linq;
 using TowerAutobattler.Content;
 
 namespace TowerAutobattler.UI;
@@ -54,10 +55,11 @@ public partial class ArmyDrawerRow : PanelContainer
             _equipmentSlots.RemoveChild(child);
             child.Free();
         }
-        _equipmentSlots.Visible = model.EquipmentSlots is not null;
+        _equipmentSlots.Visible = model.EquipmentSlots?.Any(item => item is not null) == true;
         if (model.EquipmentSlots is { } slots)
             for (var index = 0; index < slots.Count; index++)
             {
+                if (slots[index] is null) continue;
                 var tile = _equipmentTile.Instantiate<EquipmentSlotButton>();
                 _equipmentSlots.AddChild(tile);
                 tile.Bind(string.Empty, index, slots[index], false, false);

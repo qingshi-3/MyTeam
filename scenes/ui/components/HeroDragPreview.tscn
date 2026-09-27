@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
+
+[node name="HeroDragPreview" type="PanelContainer"]
+custom_minimum_size = Vector2(96, 96)
+mouse_filter = 2
+theme = ExtResource("1")
+theme_type_variation = &"HeroDragPreviewPanel"
+
+[node name="Layout" type="VBoxContainer" parent="."]
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Portrait" parent="Layout" instance=ExtResource("2")]
+custom_minimum_size = Vector2(64, 58)
+size_flags_vertical = 3
+FitVisibleArtwork = true
+
+[node name="Name" type="Label" parent="Layout"]
+mouse_filter = 2
+horizontal_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
+theme_override_font_sizes/font_size = 14

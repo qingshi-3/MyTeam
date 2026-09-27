@@ -42,6 +42,9 @@ public sealed record CompiledBossTimeline(
     string BossContentId,
     ImmutableArray<CompiledBossPhase> Phases);
 
+public sealed record CompiledEncounterComposition(string StableId, string DisplayName, int MinLocalFloor,
+    int MaxLocalFloor, ImmutableArray<string> EnemyIds, ImmutableArray<Vector2I> Cells);
+
 public sealed record CompiledEncounter(
     string StableId,
     TowerNodeType NodeType,
@@ -55,6 +58,9 @@ public sealed record CompiledEncounter(
     CompiledBossTimeline? BossTimeline,
     float EnemyHealthMultiplier = 1, float EnemyDamageMultiplier = 1, ImmutableArray<string> AlternateLeadEnemyIds = default)
 {
+    public ImmutableArray<float> LocalHealthMultipliers { get; init; } = [];
+    public ImmutableArray<float> LocalDamageMultipliers { get; init; } = [];
+    public ImmutableArray<CompiledEncounterComposition> Compositions { get; init; } = [];
     public string Title(string regionName) => TitlePattern.Replace("{region}", regionName);
 }
 
@@ -112,6 +118,11 @@ public sealed record CompiledRunRules(
     int InitialUnlockedHeroCount)
 {
     public ImmutableDictionary<string, CompiledStartingHeroEconomy> StartingHeroEconomy { get; init; } = ImmutableDictionary<string, CompiledStartingHeroEconomy>.Empty;
+    public int InitialRunHealth { get; init; } = 100;
+    public int MaximumRunHealth { get; init; } = 100;
+    public int CombatDefeatHealthLoss { get; init; } = 20;
+    public int EliteDefeatHealthLoss { get; init; } = 30;
+    public int RestRunHealthRecovery { get; init; } = 25;
 }
 
 public sealed record CompiledProjectPresentation(

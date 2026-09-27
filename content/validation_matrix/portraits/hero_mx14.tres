@@ -1,0 +1,23 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="r0"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f5_firebreather/frames.tres" id="r1"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f5_firebreather.png" id="illustration"]
+
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/cutouts/f5_firebreather.png" id="card_illustration"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "hero_mx14"
+Frames = ExtResource("r1")
+AnimationName = &"idle"
+FrameIndex = 0
+Zoom = 2
+OffsetRatio = Vector2(0, 0.05)
+Illustration = ExtResource("illustration")
+CardIllustration = ExtResource("card_illustration")
+CardIllustrationFocus = Vector2(0.53, 0.52)
+CardIllustrationZoom = 1.1
+IllustrationFocus = Vector2(0.5, 0.71)
+IllustrationZoom = 1

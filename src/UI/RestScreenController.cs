@@ -8,36 +8,39 @@ public partial class RestScreenController : Control
 {
     public event Action<bool>? ChoiceRequested;
 
-    private OutcomeActionButton _recover = null!;
     private OutcomeActionButton _gold = null!;
+    private OutcomeActionButton _recover = null!;
 
     public override void _Ready()
     {
-        _recover = GetNode<OutcomeActionButton>("Center/Panel/Layout/RecoverButton");
         _gold = GetNode<OutcomeActionButton>("Center/Panel/Layout/GoldButton");
-        _recover.Pressed += OnRecover;
         _gold.Pressed += OnGold;
+        _recover = GetNode<OutcomeActionButton>("Center/Panel/Layout/RecoverButton");
+        _recover.Pressed += OnRecover;
     }
 
     public override void _ExitTree()
     {
-        _recover.Pressed -= OnRecover;
         _gold.Pressed -= OnGold;
+        _recover.Pressed -= OnRecover;
     }
 
-    public void Bind(CompiledRunRules rules)
+    public void Bind(CompiledRunRules rules, int currentHealth = 0, int maximumHealth = 0)
     {
-        _recover.Bind("全军休整",
-            [new SemanticFact(SemanticIconKeys.Healing, $"英雄 +{rules.RestHeroHealing:P0}", "HealingValue"),
-                new SemanticFact(SemanticIconKeys.Health, $"士兵 +{rules.RestSoldierHealing:P0}", "HealthValue")],
-            $"英雄恢复 {rules.RestHeroHealing:P0}，所有士兵恢复 {rules.RestSoldierHealing:P0}，均不超过满生命。",
-            "PrimaryButton");
+        var healthFull = currentHealth >= maximumHealth;
+        _recover.Bind(healthFull ? "生命已满" : "休养整顿",
+            healthFull
+                ? []
+                : [new SemanticFact(SemanticIconKeys.Health, $"+{Math.Min(rules.RestRunHealthRecovery, maximumHealth - currentHealth)}", "HealthValue")],
+            healthFull ? "当前全局生命已满。" : "恢复全局生命。", "PrimaryButton");
+        _recover.Disabled = healthFull;
+        GetNode<Label>("Center/Panel/Layout/Description").Text = $"全局生命 {currentHealth}/{maximumHealth} · 恢复生命或领取金币，只能选择一项。";
         _gold.Bind("整理战利品",
             [new SemanticFact(SemanticIconKeys.Gold, $"+{rules.RestGold}", "GoldValue")],
-            $"获得 {rules.RestGold} 金币。",
-            "SecondaryButton");
+            "领取金币。",
+            "PrimaryButton");
     }
 
-    private void OnRecover() => ChoiceRequested?.Invoke(false);
     private void OnGold() => ChoiceRequested?.Invoke(true);
+    private void OnRecover() => ChoiceRequested?.Invoke(false);
 }

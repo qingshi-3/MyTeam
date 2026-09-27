@@ -20,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 [node name="Panel" type="PanelContainer" parent="Center"]
 theme_type_variation = &"ModalPanel"
-custom_minimum_size = Vector2(720, 440)
+custom_minimum_size = Vector2(720, 330)
 layout_mode = 2
 [node name="Layout" type="VBoxContainer" parent="Center/Panel"]
 layout_mode = 2
@@ -31,10 +31,9 @@ theme_type_variation = &"TitleLabel"
 text = "高塔营火"
 [node name="Description" type="Label" parent="Center/Panel/Layout"]
 layout_mode = 2
-size_flags_vertical = 3
 autowrap_mode = 2
-text = "营火提供一次整备机会。"
-[node name="RecoverButton" parent="Center/Panel/Layout" instance=ExtResource("1")]
-layout_mode = 2
+text = "整理沿途的战利品，补充下一段旅途的物资。"
 [node name="GoldButton" parent="Center/Panel/Layout" instance=ExtResource("1")]
+layout_mode = 2
+[node name="RecoverButton" parent="Center/Panel/Layout" instance=ExtResource("1")]
 layout_mode = 2

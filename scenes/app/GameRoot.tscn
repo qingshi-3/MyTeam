@@ -21,6 +21,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/BattleLabScreen.tscn" id="19"]
 [ext_resource type="PackedScene" path="res://scenes/audio/FeedbackAudio.tscn" id="audio"]
 
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/reference-background.png" id="tabletop"]
+
 [node name="GameRoot" type="Control" unique_id=257826745]
 layout_mode = 3
 anchors_preset = 15
@@ -34,7 +36,7 @@ ProjectDefinition = ExtResource("17")
 
 [node name="UiAudio" parent="." instance=ExtResource("audio")]
 
-[node name="Background" type="ColorRect" parent="." unique_id=962434456]
+[node name="Background" type="TextureRect" parent="." unique_id=962434456]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,7 +44,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.018, 0.032, 0.043, 1)
+texture = ExtResource("tabletop")
+texture_filter = 2
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Screens" type="Control" parent="." unique_id=325918878]
 layout_mode = 1

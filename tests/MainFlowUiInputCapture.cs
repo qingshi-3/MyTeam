@@ -19,6 +19,11 @@ public partial class MainFlowUiInputCapture : Node
     private readonly HashSet<string> _seen = [];
     private int _captures;
 
+    // Isolated mode renders and drives a dedicated viewport, without native mouse state.
+    private UiInputStage _stage = null!;
+    private bool IsolatedPointer => Array.Exists(OS.GetCmdlineUserArgs(), value => value == "--isolated-pointer");
+    private void WarpPointer(Vector2 point) => _stage.WarpPointer(point);
+
     public override async void _Ready()
     {
         var code = 0;
@@ -27,10 +32,12 @@ public partial class MainFlowUiInputCapture : Node
         {
             Require(DisplayServer.GetName() != "headless", "This input capture needs a rendered window.");
             GetWindow().Size = new Vector2I(1600, 900);
+            if (IsolatedPointer) GetWindow().Position = new Vector2I(-4000, -4000);
+            _stage = new UiInputStage(this, IsolatedPointer);
             DirAccess.MakeDirRecursiveAbsolute(ProjectSettings.GlobalizePath(Output));
             game = GD.Load<PackedScene>(ProjectSettings.GetSetting("application/run/main_scene").AsString()).Instantiate<GameRoot>();
             game.SaveNamespace = $"tests/main-flow-ui/{Guid.NewGuid():N}";
-            AddChild(game);
+            _stage.AddChild(game);
             var screens = game.GetNode<AppScreenHost>(game.ScreenHostPath);
             await Until(() => game.Content is not null && screens.MainMenu.IsVisibleInTree(), "production ready", 240);
             var content = game.Content!;
@@ -38,6 +45,8 @@ public partial class MainFlowUiInputCapture : Node
             var project = compiled.Project ?? throw new InvalidOperationException(string.Join(';', compiled.Report.CoreErrors));
             var army = game.GetNode<ArmyOverviewController>("ArmyOverview");
             var offersOnly = OS.GetCmdlineUserArgs().Contains("--offers-only");
+            if (offersOnly && OS.GetCmdlineUserArgs().Contains("--materials"))
+                await InspectMaterialNavigation(screens);
 
             if (!offersOnly)
             {
@@ -169,6 +178,11 @@ public partial class MainFlowUiInputCapture : Node
             army.Visible = false;
             if (!_seen.Contains("recruitment")) await OfferFixture(content, project, TowerNodeType.Recruitment);
             if (!_seen.Contains("shop")) await OfferFixture(content, project, TowerNodeType.Shop);
+            if (OS.GetCmdlineUserArgs().Contains("--health-rules"))
+            {
+                await OfferFixture(content, project, TowerNodeType.Rest);
+                await OfferFixture(content, project, TowerNodeType.Event);
+            }
             if (!_seen.Contains("reward")) await RewardPreviewFixture(content, project);
             GD.Print($"MAIN_FLOW_UI_INPUT_CAPTURE_OK captures={_captures} size=1600x900 normal-battle={(offersOnly ? "skipped-focused-offer-check" : "actual")} offer-fixtures=explicit save=unique-test-namespace path={Output}");
         }
@@ -183,9 +197,69 @@ public partial class MainFlowUiInputCapture : Node
         GetTree().Quit(code);
     }
 
+    private async Task InspectMaterialNavigation(AppScreenHost screens)
+    {
+        Step("material UI: production menu, press cancellation and reduced motion");
+        var settings = screens.MainMenu.GetNode<Button>("Center/Panel/Menu/SettingsButton");
+        await Capture("material-main-menu");
+        var point = settings.GetGlobalRect().GetCenter();
+        await MovePointer(point);
+        await ToSignal(GetTree().CreateTimer(.2), SceneTreeTimer.SignalName.Timeout);
+        Require(settings.Scale.X > 1, $"authored menu button responds to real hover: scale={settings.Scale}, hovered={settings.IsHovered()}, focus={settings.HasFocus()}, role={settings.ThemeTypeVariation}, mouse={_stage.Viewport.GetMousePosition()}, rect={settings.GetGlobalRect()}");
+        _stage.Push(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, ButtonMask = MouseButtonMask.Left, Pressed = true });
+        await ToSignal(GetTree().CreateTimer(.12), SceneTreeTimer.SignalName.Timeout);
+        Require(settings.Scale.X < 1, "held press depresses the real button");
+        await Capture("material-held-press");
+        var away = new Vector2(20, 20);
+        await MovePointer(away);
+        _stage.Push(new InputEventMouseButton { Position = away, GlobalPosition = away, ButtonIndex = MouseButton.Left, Pressed = false });
+        await ToSignal(GetTree().CreateTimer(.2), SceneTreeTimer.SignalName.Timeout);
+        Require(screens.MainMenu.IsVisibleInTree() && settings.Scale.X >= 1, "release outside cancels action and restores press transform");
+        await Click(settings);
+        await Until(() => screens.Settings.IsVisibleInTree(), "settings opens by button");
+        var reduce = screens.Settings.GetNode<CheckButton>("Center/Panel/Layout/ReduceMotion");
+        var save = screens.Settings.GetNode<Button>("Center/Panel/Layout/SaveButton");
+        await Click(reduce);
+        Require(reduce.ButtonPressed, "reduce motion toggles through native input");
+        await Capture("material-settings");
+        await Click(save);
+        await Until(() => screens.MainMenu.IsVisibleInTree(), "settings save returns to menu");
+        await MovePointer(settings.GetGlobalRect().GetCenter());
+        await ToSignal(GetTree().CreateTimer(.2), SceneTreeTimer.SignalName.Timeout);
+        Require(settings.Scale.IsEqualApprox(Vector2.One), "reduced motion keeps hovered button stationary");
+        await Click(settings);
+        Require(reduce.ButtonPressed, "saved setting survives screen rebind");
+        await Click(reduce);
+        await Click(save);
+        await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/NewRunButton"));
+        await Until(() => screens.HeroSelection.IsVisibleInTree(), "current six-choose-two opens");
+        var candidates = Descendants<HeroLibraryTile>(screens.HeroSelection).Where(tile => tile.IsVisibleInTree()).ToArray();
+        Require(candidates.Length == 6, "current opening offer has six real candidates");
+        foreach (var candidate in candidates)
+        {
+            Bounds(candidate, "opening candidate remains fully visible");
+            var portrait = candidate.GetNode<UnitPortrait>("%HeroPortrait");
+            var artShare = (portrait.Size.Y - 2 * portrait.IllustrationTopInset) / candidate.Size.Y;
+            Require(artShare >= .60f, $"opening hero artwork occupies at least 3/5 of card height: {artShare:P1}");
+            GD.Print($"HERO_ART_SHARE opening={candidate.GetNode<Label>("%HeroName").Text} visible-height={artShare:P1}");
+        }
+        await Click(candidates[0]);
+        await Click(candidates[0]);
+        Require(screens.HeroSelection.GetNode<Button>("%ConfirmOpening").Disabled,
+            "activating a selected large-art candidate again cancels selection");
+        await Click(candidates[0]);
+        await Click(candidates[1]);
+        var confirm = screens.HeroSelection.GetNode<Button>("%ConfirmOpening");
+        Require(!confirm.Disabled, "two actual candidate clicks enable confirmation");
+        await Capture("material-opening-selection");
+        await Click(confirm);
+        await Until(() => screens.Deployment.IsVisibleInTree(), "confirmed opening enters production deployment");
+        await Capture("material-opening-deployment");
+    }
+
     private async Task ResolveNormalOffer(RewardScreenController screen)
     {
-        var choices = screen.GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/Choices").GetChildren().OfType<RunOfferChoiceCard>().Where(card => !card.ConfirmButton.Disabled && !card.IsQueuedForDeletion()).ToArray();
+        var choices = screen.GetNode<Container>("Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices").GetChildren().OfType<RunOfferChoiceCard>().Where(card => !card.ConfirmButton.Disabled && !card.IsQueuedForDeletion()).ToArray();
         if (choices.Length > 0)
         {
             await Click(choices[0].ConfirmButton);
@@ -203,7 +277,7 @@ public partial class MainFlowUiInputCapture : Node
         Bounds(screen.GetNode<Control>(root + "OfferBody"), name + " body");
         var next = screen.GetNode<Control>(root + "ContinueButton");
         if (next.IsVisibleInTree()) Bounds(next, name + " continue");
-        await InspectCards(screen.GetNode<Container>(root + "OfferBody/ChoiceScroll/Choices"), name, app);
+        await InspectCards(screen.GetNode<Container>(root + "OfferBody/ChoiceScroll/CardCanvas/Choices"), name, app);
     }
 
     private async Task InspectShop(ShopScreenController screen, string name, RunApplication? app = null)
@@ -211,7 +285,7 @@ public partial class MainFlowUiInputCapture : Node
         var root = "Margin/Layout/";
         Bounds(screen.GetNode<Control>(root + "OfferBody"), name + " body");
         Bounds(screen.GetNode<Control>(root + "LeaveButton"), name + " leave");
-        await InspectCards(screen.GetNode<Container>(root + "OfferBody/ChoiceScroll/Choices"), name, app);
+        await InspectCards(screen.GetNode<Container>(root + "OfferBody/ChoiceScroll/CardCanvas/Choices"), name, app);
     }
 
     private async Task InspectCards(Container cards, string name, RunApplication? app)
@@ -222,6 +296,14 @@ public partial class MainFlowUiInputCapture : Node
         {
             Bounds(card, name + " candidate " + card.TitleText);
             Bounds(card.ConfirmButton, name + " explicit confirm");
+            if (card.IsUnit && !card.DetailsExpanded)
+            {
+                var artwork = card.GetNode<Control>("Layout/Artwork/Portrait");
+                var ribbon = card.GetNode<Control>("Layout/Artwork/ArtTitle");
+                var share = (artwork.Size.Y - ((UnitPortrait)artwork).IllustrationTopInset - ribbon.Size.Y) / card.Size.Y;
+                Require(share >= .60f, $"hero art excluding name ribbon must occupy at least 3/5 of the card height: {share:P1}");
+                GD.Print($"HERO_ART_SHARE offer={card.TitleText} visible-height={share:P1}");
+            }
         }
         if (choices.Length >= 3)
             Require(choices[0].GetGlobalRect().End.X <= choices[1].GlobalPosition.X + 2 &&
@@ -231,6 +313,14 @@ public partial class MainFlowUiInputCapture : Node
         var unchanged = app is null ? null : JsonSerializer.Serialize(app.ActiveRun);
         await Capture(name);
         var first = choices.FirstOrDefault(card => card.DetailsButton.IsVisibleInTree()) ?? choices[0];
+        if (first.IsUnit)
+        {
+            await Click(first.GetNode<Control>("Layout/Artwork/PrimaryHealth"));
+            Require(first.DetailsExpanded, "heart stat opens inspection rather than claiming the unit");
+            if (app is not null) Require(JsonSerializer.Serialize(app.ActiveRun) == unchanged, "primary stat inspection is read-only");
+            await Click(first.DetailsButton);
+            Require(!first.DetailsExpanded, "stat inspection returns to the same card face");
+        }
         var stats = first.GetNode<Control>("Layout/Stats");
         var inspectionSurface = stats.IsVisibleInTree() ? stats : first.GetNode<Control>("Layout/Artwork");
         await MovePointer(inspectionSurface.GetGlobalRect().GetCenter());
@@ -242,7 +332,22 @@ public partial class MainFlowUiInputCapture : Node
             GD.Print("MAIN_FLOW_DETAILS_NOT_APPLICABLE " + name + " (candidate has no additional rules)");
             return;
         }
-        await RevealByWheel(first.BodyScroll, first.DetailsButton);
+        Bounds(first.DetailsButton, "details entry stays outside the body scroll");
+        if (first.IsUnit)
+        {
+            var sizeBeforeInspection = first.Size;
+            await Click(first.GetNode<Button>("Layout/Skills/Active"));
+            Require(first.DetailsExpanded && first.BodyScroll.ScrollVertical == 0 &&
+                !first.GetNode<Control>("Layout/Artwork").IsVisibleInTree(),
+                "skill button opens full rules at the top in place of the large illustration");
+            Require((first.Size - sizeBeforeInspection).Length() < 2, "skill inspection preserves card dimensions");
+            Require(first.DetailsButton.HasFocus(), "skill inspection transfers focus to its visible return control");
+            await Capture(name + "-skill-details");
+            await KeyPress(Key.Space);
+            Require(!first.DetailsExpanded && first.GetNode<Control>("Layout/Artwork").IsVisibleInTree(),
+                "keyboard return restores the large illustration after skill inspection");
+            if (app is not null) Require(JsonSerializer.Serialize(app.ActiveRun) == unchanged, "skill inspection never recruits");
+        }
         await Click(first.DetailsButton);
         Require(first.DetailsExpanded, "details button opens local explanation");
         if (app is not null) Require(JsonSerializer.Serialize(app.ActiveRun) == unchanged, "opening skill/attribute details does not alter the run");
@@ -303,6 +408,32 @@ public partial class MainFlowUiInputCapture : Node
                 await Click(screen.GetNode<Button>("Margin/Layout/LeaveButton"));
                 Require(left, "fixture shop real leave click");
             }
+            else if (type is TowerNodeType.Rest or TowerNodeType.Event)
+            {
+                var screen = GD.Load<PackedScene>("res://scenes/ui/RewardScreen.tscn").Instantiate<RewardScreenController>();
+                host.AddChild(screen);
+                screen.BindOffer(app, project.Presentation.ChoiceCard, project.Presentation.ItemChoiceCard, project.Presentation.SemanticIcons);
+                RunDecisionResult? resolved = null;
+                screen.ChoiceRequested += choice =>
+                {
+                    resolved = app.ResolveOffer(app.PendingOffer!.OfferId, choice);
+                    if (resolved.Succeeded) screen.Hide();
+                    else screen.ShowDecisionMessage(resolved.Message);
+                };
+                await Frames(4);
+                var cards = Descendants<RunOfferChoiceCard>(screen).ToArray();
+                Require(cards.Length == 2, "health-rule offer contains recovery/gold or safe/risky choices");
+                await InspectOffer(screen, type == TowerNodeType.Rest ? "fixture-rest" : "fixture-event", app);
+                var choiceId = type == TowerNodeType.Rest ? "gold" : "risky";
+                var gold = app.ActiveRun!.Gold;
+                var health = app.ActiveRun.Roster.Select(hero => hero.HealthRatio).ToArray();
+                await Click(cards.Single(card => card.StableId == choiceId).ConfirmButton);
+                Require(resolved is { Succeeded: true } && app.PendingOffer is null && !screen.Visible,
+                    "real confirm resolves the rest/event and closes its offer");
+                var expectedGold = type == TowerNodeType.Rest ? app.Rules.RestGold : resolved!.ChanceSucceeded ? app.Rules.RiskyEventSuccessGold : 0;
+                Require(app.ActiveRun.Gold == gold + expectedGold && app.ActiveRun.Roster.Select(hero => hero.HealthRatio).SequenceEqual(health),
+                    "rest/event applies displayed gold and does not alter roster health");
+            }
             else
             {
                 var screen = GD.Load<PackedScene>("res://scenes/ui/RecruitmentScreen.tscn").Instantiate<RewardScreenController>();
@@ -324,8 +455,13 @@ public partial class MainFlowUiInputCapture : Node
                 await ResolveNormalOffer(screen);
                 Require(app.ActiveRun.Roster.Count > rosterBefore, "only explicit recruitment confirm adds a hero");
                 screen.Visible = false;
-                await ArmyFixture(app, host);
-                await DeploymentFixture(app, host);
+                // Focused material/offer review does not execute obsolete drawer
+                // fixtures; the current roster has its own real drag-input check.
+                if (!OS.GetCmdlineUserArgs().Contains("--materials") && !OS.GetCmdlineUserArgs().Contains("--offers-only"))
+                {
+                    await ArmyFixture(app, host);
+                    await DeploymentFixture(app, host);
+                }
             }
         }
         finally { host.QueueFree(); app.AbandonRun(); await Frames(2); }
@@ -362,13 +498,14 @@ public partial class MainFlowUiInputCapture : Node
         var originalHost = host.Size;
         var before = JsonSerializer.Serialize(app.ActiveRun);
         var outer = screen.GetNode<ScrollContainer>("Center/Panel/Layout/OfferBody/ChoiceScroll");
-        var grid = outer.GetNode<GridContainer>("Choices");
+        var grid = outer.GetNode<GridContainer>("CardCanvas/Choices");
         try
         {
             // Resize the real logical viewport as well as the native window; the
             // project's 1600-wide canvas stretch alone would only shrink the image.
             window.ContentScaleSize = new Vector2I(900, 900);
             window.Size = new Vector2I(900, 900);
+            _stage.Resize(new Vector2I(900, 900));
             host.Size = new Vector2(900, 900);
             await Frames(6);
             Require(grid.Columns is 1 or 2, "narrow production grid adapts to one or two columns");
@@ -380,7 +517,7 @@ public partial class MainFlowUiInputCapture : Node
                 Require(available.Encloses(card.GetGlobalRect()), "first-row narrow candidate fits its scrolling viewport");
                 Require(available.Encloses(card.ConfirmButton.GetGlobalRect()), "first-row fixed confirm remains in the scrolling viewport");
             }
-            GD.Print($"MAIN_FLOW_NARROW size={GetViewport().GetVisibleRect().Size} columns={grid.Columns} candidates={cards.Length}");
+            GD.Print($"MAIN_FLOW_NARROW size={_stage.Viewport.GetVisibleRect().Size} columns={grid.Columns} candidates={cards.Length}");
             await Capture("fixture-recruitment-narrow-grid");
             // Target the outer scrollbar itself so wheel input cannot be consumed
             // by a card's independent skill-text scroll area.
@@ -390,14 +527,14 @@ public partial class MainFlowUiInputCapture : Node
             {
                 var point = bar.GetGlobalRect().GetCenter();
                 await MovePointer(point);
-                Input.ParseInputEvent(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.WheelDown, Pressed = true, Factor = 3 });
-                Input.ParseInputEvent(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.WheelDown, Pressed = false });
+                _stage.Push(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.WheelDown, Pressed = true, Factor = 3 });
+                _stage.Push(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.WheelDown, Pressed = false });
                 await Frames(2);
             }
             var last = cards[^1];
             Require(outer.GetGlobalRect().Grow(3).Encloses(last.GetGlobalRect()), "last narrow candidate can be reached by outer wheel input");
             Require(last.DetailsButton.IsVisibleInTree(), "last recruitment candidate has details to inspect");
-            await RevealByWheel(last.BodyScroll, last.DetailsButton);
+            Bounds(last.DetailsButton, "last details entry stays visible");
             var expanded = last.DetailsExpanded;
             await Click(last.DetailsButton);
             Require(last.DetailsExpanded != expanded, "last narrow candidate detail button receives the real click");
@@ -409,6 +546,7 @@ public partial class MainFlowUiInputCapture : Node
         {
             window.ContentScaleSize = originalScale;
             window.Size = originalWindow;
+            _stage.Resize(originalWindow);
             host.Size = originalHost;
             await Frames(6);
         }
@@ -507,7 +645,7 @@ public partial class MainFlowUiInputCapture : Node
     private Control FixtureHost()
     {
         var host = new Control { Size = new Vector2(1600, 900), Theme = GD.Load<Theme>("res://content/ui/RealmTheme.tres") };
-        AddChild(host);
+        _stage.AddChild(host);
         return host;
     }
 
@@ -518,7 +656,7 @@ public partial class MainFlowUiInputCapture : Node
         Require(tabs.CurrentTab == index, $"real tab click selects {index} on {tabs.GetPath()}");
     }
 
-    private void Bounds(Control control, string label) => Require(control.IsVisibleInTree() && GetViewport().GetVisibleRect().Grow(2).Encloses(control.GetGlobalRect()), $"{label} outside viewport: {control.GetGlobalRect()}");
+    private void Bounds(Control control, string label) => Require(control.IsVisibleInTree() && _stage.Viewport.GetVisibleRect().Grow(2).Encloses(control.GetGlobalRect()), $"{label} outside viewport: {control.GetGlobalRect()}");
     private async Task RevealByWheel(ScrollContainer scroll, Control target)
     {
         for (var count = 0; count < 60; count++)
@@ -529,8 +667,8 @@ public partial class MainFlowUiInputCapture : Node
             var direction = point.Y > view.End.Y ? MouseButton.WheelDown : MouseButton.WheelUp;
             var position = scroll.GetGlobalRect().GetCenter();
             await MovePointer(position);
-            Input.ParseInputEvent(new InputEventMouseButton { Position = position, GlobalPosition = position, ButtonIndex = direction, Pressed = true, Factor = 2 });
-            Input.ParseInputEvent(new InputEventMouseButton { Position = position, GlobalPosition = position, ButtonIndex = direction, Pressed = false });
+            _stage.Push(new InputEventMouseButton { Position = position, GlobalPosition = position, ButtonIndex = direction, Pressed = true, Factor = 2 });
+            _stage.Push(new InputEventMouseButton { Position = position, GlobalPosition = position, ButtonIndex = direction, Pressed = false });
             await Frames(2);
         }
         throw new InvalidOperationException("Input cannot reveal " + target.GetPath());
@@ -543,43 +681,43 @@ public partial class MainFlowUiInputCapture : Node
             if (bar.Value >= bar.MaxValue - bar.Page - 1) return;
             await MovePointer(scroll.GetGlobalRect().GetCenter());
             var point = scroll.GetGlobalRect().GetCenter();
-            Input.ParseInputEvent(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.WheelDown, Pressed = true, Factor = 3 });
-            Input.ParseInputEvent(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.WheelDown, Pressed = false });
+            _stage.Push(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.WheelDown, Pressed = true, Factor = 3 });
+            _stage.Push(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.WheelDown, Pressed = false });
             await Frames(2);
         }
         throw new InvalidOperationException("Scroll end not reachable: " + scroll.GetPath());
     }
     private async Task Click(Control control)
     {
-        Require(control.IsVisibleInTree() && GetViewport().GetVisibleRect().HasPoint(control.GetGlobalRect().GetCenter()), "click target hidden/outside: " + control.GetPath());
+        Require(control.IsVisibleInTree() && _stage.Viewport.GetVisibleRect().HasPoint(control.GetGlobalRect().GetCenter()), "click target hidden/outside: " + control.GetPath());
         GD.Print("MAIN_FLOW_CLICK " + control.GetPath());
         await ClickPoint(control.GetGlobalRect().GetCenter());
     }
     private async Task ClickPoint(Vector2 point)
     {
         await MovePointer(point);
-        Input.ParseInputEvent(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, ButtonMask = MouseButtonMask.Left, Pressed = true });
-        Input.ParseInputEvent(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, Pressed = false });
+        _stage.Push(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, ButtonMask = MouseButtonMask.Left, Pressed = true });
+        _stage.Push(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, Pressed = false });
         await Frames(3);
     }
     private async Task MovePointer(Vector2 point)
     {
-        Input.WarpMouse(point);
+        WarpPointer(point);
         await Frames(1);
-        Input.ParseInputEvent(new InputEventMouseMotion { Position = point, GlobalPosition = point });
+        _stage.Push(new InputEventMouseMotion { Position = point, GlobalPosition = point });
         await Frames(1);
     }
     private async Task KeyPress(Key key)
     {
-        Input.ParseInputEvent(new InputEventKey { Keycode = key, PhysicalKeycode = key, Pressed = true });
-        Input.ParseInputEvent(new InputEventKey { Keycode = key, PhysicalKeycode = key, Pressed = false });
+        _stage.Push(new InputEventKey { Keycode = key, PhysicalKeycode = key, Pressed = true });
+        _stage.Push(new InputEventKey { Keycode = key, PhysicalKeycode = key, Pressed = false });
         await Frames(2);
     }
     private async Task Capture(string name)
     {
         await Frames(2);
         var path = ProjectSettings.GlobalizePath($"{Output}/after-{name}.png");
-        Require(GetViewport().GetTexture().GetImage().SavePng(path) == Error.Ok, "save screenshot: " + path);
+        Require(_stage.Viewport.GetTexture().GetImage().SavePng(path) == Error.Ok, "save screenshot: " + path);
         _captures++;
         GD.Print("MAIN_FLOW_CAPTURE " + path);
     }

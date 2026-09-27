@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="AbilityLoadoutDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/validation_matrix/abilities/matrix_spirit_aurora_p.tres" id="p"]
+[resource]
+script = ExtResource("script")
+Abilities = [ExtResource("p")]

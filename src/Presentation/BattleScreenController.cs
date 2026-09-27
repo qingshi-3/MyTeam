@@ -152,6 +152,7 @@ public partial class BattleScreenController : Control
 
     public void StartBattle(ContentRegistry content, BattleConfig config, string title, float defaultSpeed = 1f)
     {
+        BindRunHealth(0, 0);
         ResetEndSequence();
         ClearPresenters(replacement: true);
         try
@@ -194,8 +195,18 @@ public partial class BattleScreenController : Control
         }
     }
 
+    public void BindRunHealth(int current, int maximum) => GetNode<RunHealthDisplay>("%RunHealth").Bind(current, maximum);
+
     public void SetLabControlsVisible(bool visible)
     {
+        _collisionToggle.Visible = visible;
+        _attackRangeToggle.Visible = visible;
+        if (!visible)
+        {
+            _collisionToggle.SetPressedNoSignal(false);
+            _attackRangeToggle.SetPressedNoSignal(false);
+            RefreshGeometry();
+        }
         _step.Visible = visible;
         _reset.Visible = visible;
         _returnToConfiguration.Visible = visible;
@@ -327,13 +338,27 @@ public partial class BattleScreenController : Control
             if (fact.AttackTiming is { } timing)
             {
                 actor.FaceToward(_board.LogicalToLocal(fact.Position));
-                actor.BeginAttackPresentation(timing);
+                actor.BeginAttackPresentation(timing, fact.Line?.ReleaseVfx ?? "attack");
                 timedAttackOwners.Add(fact.SourceRuntimeId);
             }
             else if (fact.Type == "line_release") actor.CompleteAttackWindup(fact.Line?.ReleaseProgress ?? .8f);
             else if (fact.Type == "blade_release") actor.CompleteAttackWindup(FindState(fact.SourceRuntimeId)!.Definition.AttackReleaseProgress);
             else if (released) actor.CompleteAttackWindup(FindState(fact.SourceRuntimeId)!.Definition.AttackReleaseProgress);
             else actor.CancelAttackPresentation();
+        }
+        foreach(var group in events.Where(e=>e.Type=="wall_raised").GroupBy(e=>e.SourceRuntimeId))
+        {
+            var walls=group.ToArray();
+            var tangent=walls.Length>1?(walls[^1].Position-walls[0].Position).Normalized():Vector2.Down;
+            var forward=new Vector2(tangent.Y,-tangent.X);
+            for(int i=0;i<walls.Length;i++)
+            {
+                var fact=walls[i];EnsurePresenter(fact.TargetRuntimeId);
+                if(!_presenters.TryGetValue(fact.TargetRuntimeId,out var actor) || actor.BarrierVisual is null)continue;
+                var foot=_board.LogicalToLocal(fact.Position);
+                actor.BarrierVisual.Begin((_board.LogicalToLocal(fact.Position+tangent)-foot)/actor.Scale.X,
+                    (_board.LogicalToLocal(fact.Position+forward)-foot)/actor.Scale.X,i-(walls.Length-1)*.5f,_paused);
+            }
         }
         _rangedAttackLayer.Present(events, _paused);
         if (_simulation is not null && !events.Any(e => e.Type == "battle_finished"))
@@ -606,9 +631,9 @@ public partial class BattleScreenController : Control
         }
         var selected = snapshot.Units.FirstOrDefault(unit => unit.RuntimeId == _selectedRuntimeId);
         _geometryReadout.Text = selected is null ? "" : $"{selected.DisplayName} · 直径 {selected.BodyRadius * 2:0.##} 格 · 普攻 {selected.AttackReach:0.##} 格";
-        // Diagnostic mode displays the actual committed positions instead of allowing interpolation
-        // lag to separate an actor from its collision circle. It never writes simulation state.
-        SnapPresentersToAuthority();
+        // Geometry remains an authority snapshot while actors keep their ordinary presentation
+        // interpolation. A small visual offset between a circle and its actor is therefore expected.
+        // Paused single-step owns the explicit authority snap before reaching this refresh.
         _geometry.Bind(snapshot, _board.CurrentProjection, _selectedRuntimeId,
             _collisionToggle.ButtonPressed, _attackRangeToggle.ButtonPressed);
     }

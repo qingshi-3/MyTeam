@@ -4,7 +4,7 @@
 [resource]
 script = ExtResource("def")
 StableId = "flamethrower"
-PreviewNote = "已撤回胶状焰团，恢复上一版喷流与离体火焰；此版本仍待后续优化"
+PreviewNote = "窄根连续供给，下游火体膨开、火团分离；断流向前传递，余火与烟尘独立退去"
 DisplayName = "烈焰吐息"
 Scene = ExtResource("scene")
 Duration = 1.45

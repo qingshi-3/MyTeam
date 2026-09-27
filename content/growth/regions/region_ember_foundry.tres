@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TowerRegionDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/Project/TowerRegionDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/growth/encounters/encounter_ember_combat.tres" id="2"]
+[ext_resource type="Resource" path="res://content/growth/encounters/encounter_ember_elite.tres" id="3"]
+[ext_resource type="Resource" path="res://content/growth/encounters/encounter_ember_boss.tres" id="4"]
+
+[resource]
+script = ExtResource("1")
+Id = "region_ember_foundry"
+DisplayName = "余烬铸层"
+Description = "狭路、铁卫与仍在运转的炉膛。"
+AccentColor = Color(0.92, 0.42, 0.2, 1)
+Encounters = Array[EncounterDefinition]([ExtResource("2"), ExtResource("3"), ExtResource("4")])

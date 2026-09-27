@@ -453,6 +453,11 @@ public static partial class ContentValidator
         {
             foreach (var dependency in AbilityDefinitionCompiler.EnemyActionDependencies(operation))
                 if (!(graph.ValidUnitContentIds ?? graph.ValidContentIds).Contains(dependency)) report.Error($"{ResourceLabel(ability)}: unavailable enemy action product: {dependency}");
+            if (operation is MatrixAbilityOperationSpec matrix)
+                foreach (var dependency in MatrixAbilityCompiler.Flatten(matrix)
+                             .Where(node => node.Kind == MatrixOperationKind.Summon).Select(node => node.ContentId))
+                    if (!(graph.ValidUnitContentIds ?? graph.ValidContentIds).Contains(dependency))
+                        report.Error($"{ResourceLabel(ability)}: unavailable matrix summon product: {dependency}");
             var contentId = operation switch
             {
                 SummonAbilityOperationSpec summon => summon.SummonContentId,
@@ -658,6 +663,11 @@ public static partial class ContentValidator
             StringComparer.Ordinal);
         var activeUnitIds = catalog.AllEntries().Where(entry => entry?.Definition is UnitDefinition)
             .Select(entry => entry.StableId).ToHashSet(StringComparer.Ordinal);
+        foreach (var trait in compilation.Definitions)
+        foreach (var tier in trait.Breakpoints)
+        foreach (var mechanic in tier.Mechanics.IsDefault ? [] : tier.Mechanics)
+            if (!string.IsNullOrEmpty(mechanic.SummonContentId) && !activeUnitIds.Contains(mechanic.SummonContentId))
+                report.Error($"{trait.StableId}: unavailable trait summon product: {mechanic.SummonContentId}");
         foreach (var entry in CatalogEntriesForValidation(catalog).Where(entry => entry?.Definition is UnitDefinition))
         {
             var unit = (UnitDefinition)entry.Definition;

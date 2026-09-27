@@ -27,6 +27,10 @@ public static class ActiveRunConfigurationValidator
             run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null ||
             run.Deployment.Any(id => id is null))
             return false;
+        if (!RunHealthPolicy.ValidConsequence(run.LastBattleConsequence) ||
+            run.MaximumRunHealth <= 0 || run.CurrentRunHealth < 0 || run.CurrentRunHealth > run.MaximumRunHealth ||
+            run.CurrentRunHealth == 0 && (string.IsNullOrEmpty(run.TerminalCompletionId) || run.TerminalVictory))
+            return false;
         if (!RunPopulationPolicy.Validate(run, rules) ||
             !ActiveRunTacticalCommandPolicy.Validate(run, rules, content.Graph) ||
             run.Deployment.Count != rules.PhysicalDeploymentCeiling)

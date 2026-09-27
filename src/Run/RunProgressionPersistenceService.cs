@@ -6,6 +6,7 @@ using TowerAutobattler.Content;
 using TowerAutobattler.Equipment;
 using TowerAutobattler.Project;
 using TowerAutobattler.Relics;
+using TowerAutobattler.Growth;
 
 namespace TowerAutobattler.Run;
 
@@ -17,16 +18,19 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
     private readonly IRunSaveService _save;
     private readonly CompiledGameProject _project;
     private readonly CompiledRunRules _rules;
+    private readonly CompiledGrowthRules? _growthRules;
 
     public RunProgressionPersistenceService(
         ContentRegistry content,
         IRunSaveService save,
-        CompiledGameProject project)
+        CompiledGameProject project,
+        CompiledGrowthRules? growthRules = null)
     {
         _content = content ?? throw new ArgumentNullException(nameof(content));
         _save = save ?? throw new ArgumentNullException(nameof(save));
         _project = project ?? throw new ArgumentNullException(nameof(project));
         _rules = project.RunRules;
+        _growthRules = growthRules;
         Meta = save.LoadMeta();
         Settings = save.LoadSettings();
         EnsureMetaDefaults();
@@ -61,7 +65,20 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
                     : "当前活动征程含旧 schema 残留或非法结构，已拒绝载入；Meta 与设置保持不变。");
             return null;
         }
-        if (requiresPublication && loaded.PendingNode && RunDecisionService.KindFor(loaded.SelectedNode) is not null)
+        if (stored.Version == 7 && _growthRules is not null && loaded.Growth is null)
+        {
+            loaded.Growth = new GrowthRunDto { RulesId = _growthRules.StableId };
+            if (loaded.PendingNode && RunDecisionService.KindFor(loaded.SelectedNode) is not null)
+                loaded.Growth.PendingNode = new GrowthNodeSnapshotDto
+                {
+                    FloorIndex = loaded.FloorIndex,
+                    BattleNumber = loaded.BattleNumber,
+                    IsBattle = false,
+                    ParticipantInstanceIds = [],
+                    Assignments = []
+                };
+        }
+        if (stored.Version < 6 && loaded.PendingNode && RunDecisionService.KindFor(loaded.SelectedNode) is not null)
         {
             // Before v6, applying a noncombat reward and consuming its node were
             // separate saves. PendingNode cannot prove whether its reward was
@@ -156,7 +173,8 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
 
     public bool ValidateRun(ActiveRunDto run)
         => run is not null && RunFormationPolicy.Validate(run, _rules) &&
-           ActiveRunConfigurationValidator.Validate(run, _content, _project);
+           ActiveRunConfigurationValidator.Validate(run, _content, _project) &&
+           new GrowthRunService(_content, _project, _growthRules, this).Validate(run);
 
     private void EnsureMetaDefaults()
     {
@@ -196,6 +214,9 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
     {
         Version = source.Version,
         Seed = source.Seed,
+        CurrentRunHealth = source.CurrentRunHealth,
+        MaximumRunHealth = source.MaximumRunHealth,
+        LastBattleConsequence = source.LastBattleConsequence,
         OpeningRecruitment = source.OpeningRecruitment,
         Roster = source.Roster is null
             ? null!
@@ -207,6 +228,15 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
                     ContentId = unit.ContentId,
                     HealthRatio = unit.HealthRatio,
                     Rank = unit.Rank,
+                    Growth = unit.Growth is null ? null! : new HeroGrowthDto
+                    {
+                        AddedAttack = unit.Growth.AddedAttack,
+                        AddedMaxHealth = unit.Growth.AddedMaxHealth,
+                        AscensionId = unit.Growth.AscensionId,
+                        ProductionMode = unit.Growth.ProductionMode,
+                        ProductionTargetInstanceId = unit.Growth.ProductionTargetInstanceId,
+                        History = unit.Growth.History is null ? null! : unit.Growth.History.Select(gain => gain is null ? null! : CloneGain(gain)).ToList()
+                    },
                     Equipment = unit.Equipment is null
                         ? null!
                         : unit.Equipment.Select(item => item is null
@@ -270,6 +300,25 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         PendingOffer = source.PendingOffer,
         TerminalCompletionId = source.TerminalCompletionId,
         TerminalVictory = source.TerminalVictory,
+        Growth = source.Growth is null ? null! : new GrowthRunDto
+        {
+            RulesId = source.Growth.RulesId,
+            Materials = source.Growth.Materials,
+            CategoryMaterials = source.Growth.CategoryMaterials is null ? null! : new Dictionary<string, int>(source.Growth.CategoryMaterials, StringComparer.Ordinal),
+            Research = source.Growth.Research,
+            SpellInventory = source.Growth.SpellInventory is null ? null! : new Dictionary<string, int>(source.Growth.SpellInventory, StringComparer.Ordinal),
+            EquippedSpellId = source.Growth.EquippedSpellId,
+            SpellTargetInstanceId = source.Growth.SpellTargetInstanceId,
+            PendingDiscovery = source.Growth.PendingDiscovery is null ? null : new GrowthDiscoveryDto
+            {
+                OfferId = source.Growth.PendingDiscovery.OfferId,
+                UpgradedHeroInstanceId = source.Growth.PendingDiscovery.UpgradedHeroInstanceId,
+                CandidateIds = source.Growth.PendingDiscovery.CandidateIds is null ? null! : [.. source.Growth.PendingDiscovery.CandidateIds]
+            },
+            PendingNode = CloneNode(source.Growth.PendingNode),
+            LastSettledFloorIndex = source.Growth.LastSettledFloorIndex,
+            History = source.Growth.History is null ? null! : source.Growth.History.Select(value => value is null ? null! : CloneSettlement(value)).ToList()
+        },
         LegacyHeroId = source.LegacyHeroId,
         LegacyHeroHealthRatio = source.LegacyHeroHealthRatio,
         LegacyHeroCell = source.LegacyHeroCell?.Clone(),
@@ -283,6 +332,9 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         var copy = Clone(source);
         target.Version = copy.Version;
         target.Seed = copy.Seed;
+        target.CurrentRunHealth = copy.CurrentRunHealth;
+        target.MaximumRunHealth = copy.MaximumRunHealth;
+        target.LastBattleConsequence = copy.LastBattleConsequence;
         target.OpeningRecruitment = copy.OpeningRecruitment;
         target.Roster = copy.Roster;
         target.CurrentPopulation = copy.CurrentPopulation;
@@ -299,9 +351,35 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         target.PendingOffer = copy.PendingOffer;
         target.TerminalCompletionId = copy.TerminalCompletionId;
         target.TerminalVictory = copy.TerminalVictory;
+        target.Growth = copy.Growth;
         target.LegacyHeroId = copy.LegacyHeroId;
         target.LegacyHeroHealthRatio = copy.LegacyHeroHealthRatio;
         target.LegacyHeroCell = copy.LegacyHeroCell;
         target.LegacyDeploymentCells = copy.LegacyDeploymentCells;
     }
+
+    private static GrowthGainDto CloneGain(GrowthGainDto gain) => new()
+    {
+        FloorIndex = gain.FloorIndex, BattleNumber = gain.BattleNumber,
+        ProducerInstanceId = gain.ProducerInstanceId, TargetInstanceId = gain.TargetInstanceId,
+        Mode = gain.Mode, Amount = gain.Amount, AbilityId = gain.AbilityId, Source = gain.Source
+    };
+
+    private static GrowthNodeSnapshotDto? CloneNode(GrowthNodeSnapshotDto? node) => node is null ? null : new()
+    {
+        FloorIndex = node.FloorIndex, BattleNumber = node.BattleNumber, IsBattle = node.IsBattle,
+        ParticipantInstanceIds = node.ParticipantInstanceIds is null ? null! : [.. node.ParticipantInstanceIds],
+        Assignments = node.Assignments is null ? null! : node.Assignments.Select(value => value is null ? null! : new GrowthAssignmentDto
+        {
+            ProducerInstanceId = value.ProducerInstanceId, TargetInstanceId = value.TargetInstanceId, Mode = value.Mode
+        }).ToList(),
+        ConsumedSpellId = node.ConsumedSpellId, SpellTargetInstanceId = node.SpellTargetInstanceId
+    };
+
+    private static GrowthSettlementDto CloneSettlement(GrowthSettlementDto settlement) => new()
+    {
+        FloorIndex = settlement.FloorIndex, BattleNumber = settlement.BattleNumber,
+        IsBattle = settlement.IsBattle, MaterialsGranted = settlement.MaterialsGranted,
+        Gains = settlement.Gains is null ? null! : settlement.Gains.Select(gain => gain is null ? null! : CloneGain(gain)).ToList()
+    };
 }

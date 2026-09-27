@@ -51,7 +51,7 @@ public partial class HeroLibraryTile : Button
     public void SetOpeningState(int tier, bool selected)
     {
         ThemeTypeVariation = selected ? "SelectedButton" : "CompactButton";
-        _state.Text = $"{tier} 阶 · {(selected ? "✓ 已选择" : "未选择")}";
+        _state.Text = selected ? $"{tier} 阶 · ✓ 已选择" : $"{tier} 阶";
         _state.ThemeTypeVariation = selected ? "HeroIdentity" : "SecondaryLabel";
         TooltipText = selected ? "点击取消选择" : "点击查看并选择；最多选择两名";
     }

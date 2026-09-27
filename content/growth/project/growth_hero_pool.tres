@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="1"]
+[resource]
+script = ExtResource("1")
+StableId = "pool_growth_heroes"
+Kind = 0
+ContentIds = PackedStringArray("hero_mx01", "hero_mx02", "hero_mx03", "hero_mx04", "hero_mx05", "hero_mx10", "hero_mx21", "hero_mx22", "hero_mx23", "hero_mx24", "hero_mx25", "hero_mx30", "hero_mx36", "hero_mx39", "hero_mx40", "hero_mx42", "hero_mx43", "hero_mx44", "hero_mx45", "hero_mx46", "hero_mx47", "hero_mx48", "gx01_vine_plague", "gx02_venom_walker", "gx03_array_gunner", "gx04_phase_anchor")

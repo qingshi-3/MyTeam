@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "山岳旗手 · 固定被动"
-RuleDescription = "向 2.5 格内其他友军持续广播自身非广播来源防御的 35%；离开范围或来源倒下立即撤销。"
+RuleDescription = "2.5 格内其他友军获得自身基础防御 35% 的防御；离开范围或自己倒下时失效。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

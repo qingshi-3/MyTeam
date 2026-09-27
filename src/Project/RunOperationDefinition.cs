@@ -2,7 +2,7 @@ using Godot;
 
 namespace TowerAutobattler.Project;
 
-public enum RunOperationKind { GainGold, SpendGold, GrantItem, Recruit, RecoverRoster, GrantPopulation, IncreasePopulationCap }
+public enum RunOperationKind { GainGold, SpendGold, GrantItem, Recruit, RecoverRoster, GrantPopulation, IncreasePopulationCap, RecoverRunHealth }
 public enum RunRosterTarget { All, StartingHero, OtherHeroes }
 
 [GlobalClass]

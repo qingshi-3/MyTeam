@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="op"]
+script = ExtResource("operation")
+Kind = 10
+Target = 0
+Amount = 0.35
+Key = "gx03_array_gunner-shield-spent"
+AttackRatio = 1.4
+Range = 7
+Radius = 2
+MaxTargets = 5
+ContentId = "matrix_spirit_plague"
+DurationTicks = 60
+[sub_resource type="Resource" id="line"]
+script = ExtResource("operation")
+Kind = 25
+Target = 1
+AttackRatio = 1.6
+Range = 8
+MaxTargets = 5
+Key = "gx03_array_gunner-shield-spent"
+CounterRatio = 0.6
+ConsumeCounter = true
+[resource]
+script = ExtResource("ability")
+StableId = "gx03_array_gunner_a"
+DisplayName = "GX03 阵列炮师·战术"
+Description = "消耗35%当前护盾，对前方至多5名敌人发射贯穿射线。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 1
+Operations = [SubResource("op"), SubResource("line")]

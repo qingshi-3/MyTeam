@@ -5,6 +5,7 @@ using Godot;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
 using TowerAutobattler.Domain;
+using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
 
@@ -124,14 +125,23 @@ public partial class BattleReportScreen : Control
             _ => "EnemyTitleLabel"
         };
         _encounter.Text = encounterName;
-        _duration.Bind(Icon(SemanticIconKeys.Time), $"模拟时长 {result.Ticks * BattleTiming.TickSeconds:0.0} 秒", "SecondaryLabel");
+        _duration.Bind(Icon(SemanticIconKeys.Time), $"战斗时长 {result.Ticks * BattleTiming.TickSeconds:0.0} 秒", "SecondaryLabel");
         _commandMeta.Bind(
             SemanticIconKeys.Gold,
-            $"战术指令 {result.SuccessfulTacticalCommandUses} 次 · 指令金币 {result.GoldSpent}",
+            $"战术指令 {result.SuccessfulTacticalCommandUses} 次 · 消耗金币 {result.GoldSpent}",
             "GoldValue");
         BindComparison();
         BindPage();
         _overviewTab.GrabFocus();
+    }
+
+    public void BindRunConsequence(RunBattleConsequence? consequence)
+    {
+        if (consequence is null) return;
+        _settlementMessage.Text = RunHealthText.Consequence(consequence);
+        _settlementMessage.Visible = true;
+        _settlementMessage.ThemeTypeVariation = consequence.Outcome == BattleOutcome.PlayerVictory ? "SecondaryLabel" : "WarningLabel";
+        _continue.Text = consequence.RunEnded ? "查看征程结果" : consequence.Outcome == BattleOutcome.PlayerVictory ? "领取战利品" : "继续前进";
     }
 
     public void ShowSettlementRetry(string message)
@@ -140,6 +150,7 @@ public partial class BattleReportScreen : Control
             ? "战斗结算暂未完成，请重试。"
             : message;
         _settlementMessage.Visible = true;
+        _settlementMessage.ThemeTypeVariation = "WarningLabel";
         _continue.Text = "重试结算";
         _continue.Disabled = false;
         _continueReported = false;
@@ -177,10 +188,13 @@ public partial class BattleReportScreen : Control
     {
         ClearLeaderboard();
         _emptyState.Visible = false;
+        var matchups = BattleReportViewModels.BuildCoreMatchups(_result!);
         _overviewComparison.Bind(
             model.PlayerTeam,
             model.EnemyTeam,
-            BattleReportViewModels.BuildCoreMatchups(_result!));
+            matchups);
+        _overviewComparison.GetNode<Control>("%HealingCoreMatchup").Visible =
+            !matchups.First(matchup => matchup.Dimension == BattleReportDimension.Healing).BothSidesZero;
         _playerRosterStrip.Bind("我方阵容", RosterModels(model.PlayerRoster));
         _enemyRosterStrip.Bind("敌方阵容", RosterModels(model.EnemyRoster));
     }
@@ -197,7 +211,7 @@ public partial class BattleReportScreen : Control
         if (model.ShowHealingEmptyState)
         {
             SelectedRuntimeId = null;
-            _emptyStateText.Text = $"{SideName(_team)}没有产生有效治疗\n切换到“战局总览”仍可查看双方结论与完整阵容。";
+            _emptyStateText.Text = $"{SideName(_team)}没有产生有效治疗";
             return;
         }
 

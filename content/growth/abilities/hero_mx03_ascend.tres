@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="reaction"]
+script = ExtResource("operation")
+Kind = 13
+Target = 0
+Attribute = 3
+Amount = 0.15
+DurationTicks = 35
+[resource]
+script = ExtResource("ability")
+StableId = "hero_mx03_growth_ascend"
+DisplayName = "追猎寒羽"
+Description = "开战时获得15%攻速，持续3.5秒；连续命中次数不会因更换目标而清零。"
+ActivationKind = 1
+Trigger = 1
+ManaCost = 0
+CooldownTicks = 1
+MaxUses = 1
+Operations = [SubResource("reaction")]

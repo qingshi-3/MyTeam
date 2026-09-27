@@ -1,0 +1,52 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="Script" path="res://src/UI/CompactDetailFact.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/DetailExplanationTooltip.tscn" id="2"]
+[ext_resource type="Resource" path="res://content/ui/combat_keywords.tres" id="3"]
+[node name="WorkbenchAttributeRow" type="Button"]
+custom_minimum_size = Vector2(170, 22)
+size_flags_horizontal = 3
+theme_type_variation = &"CardStat"
+script = ExtResource("1")
+ExplanationTooltip = ExtResource("2")
+Vocabulary = ExtResource("3")
+UseSemanticColor = false
+ShowIcon = false
+
+[node name="Layout" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 38.0
+offset_right = -62.0
+mouse_filter = 2
+theme_override_constants/separation = 7
+
+[node name="FactIcon" type="TextureRect" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(23, 23)
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FactCaption" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+visible = true
+size_flags_horizontal = 3
+theme_type_variation = &"WorkbenchBody"
+
+[node name="FactValue" type="Label" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 1
+custom_minimum_size = Vector2(82, 0)
+theme_type_variation = &"WorkbenchValue"
+horizontal_alignment = 1
+vertical_alignment = 1

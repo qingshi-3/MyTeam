@@ -74,7 +74,8 @@ public sealed partial class BattleSimulation
                     UnitActionRecovering(owner) ? SkillProgressState.Recovering :
                     HasQueuedUnitAction(owner, skill.StableId) ? SkillProgressState.Queued :
                     current >= maximum ? SkillProgressState.Ready : SkillProgressState.Building;
-                var detail = $"受伤储存，{storage.WindowTicks * BattleTiming.TickSeconds:0.#} 秒后逐笔衰减。";
+                var detail = storage.WindowTicks == 0 ? "生命承伤积怒，战内不自然流失；施放时消耗，死亡或战斗结束清空。" :
+                    $"受伤储存，{storage.WindowTicks * BattleTiming.TickSeconds:0.#} 秒后逐笔衰减。";
                 if (punch is not null)
                     detail += $"满怒 / 生命跌破 {punch.LowHealthRatio:P0} / 生命低于 {punch.CriticalHealthRatio:P0} 触发；濒死机会{(latch.CriticalUsed ? "已用" : "未用")}（每战一次）。" +
                         (HasQueuedUnitAction(owner, skill.StableId) ? "释放已排队，等待当前动作结束。" : "");

@@ -145,6 +145,7 @@ public static partial class TacticalCommandDefinitionCompiler
 
     private static string Operation(CompiledAbilityOperation operation) => operation switch
     {
+        CompiledMatrixOperation matrix => MatrixAbilityCompiler.Fingerprint(matrix),
         CompiledEffectAbilityOperation effect =>
             $"effect:{Binding(effect.Binding)}:{effect.InvocationValueSource}:" +
             effect.InvocationValueScale.ToString("R", CultureInfo.InvariantCulture),
@@ -183,7 +184,8 @@ public static partial class TacticalCommandDefinitionCompiler
             Number(line.Range), Number(line.Radius), line.ChargeTicks, Number(line.AttackMultiplier), line.MaximumHits,
             Number(line.SubsequentHitMultiplier), Number(line.ProjectileSpeed), line.HoldPosition, line.ChargeVfx, line.ReleaseVfx),
         CompiledProjectileSequenceAbilityOperation sequence =>
-            $"projectile-sequence:{sequence.ShotCount}:{Number(sequence.AttackIntervalRatio)}:{Number(sequence.AttackDamageMultiplier)}:{sequence.MaxTargets}",
+            $"projectile-sequence:{sequence.ShotCount}:{Number(sequence.AttackIntervalRatio)}:{Number(sequence.AttackDamageMultiplier)}:{sequence.MaxTargets}" +
+            (sequence.PerShotDamageIncrease == 0 ? string.Empty : $":increase:{Number(sequence.PerShotDamageIncrease)}"),
         CompiledBattleValueOperation value => string.Join(":",
             "battle-value", value.Action, Target(value.TargetQuery), value.TargetPolicy, Number(value.Amount),
             string.Join(",", value.Terms.Select(term => string.Join(";", term.Metric, term.Subject, term.Attribute,
@@ -199,7 +201,8 @@ public static partial class TacticalCommandDefinitionCompiler
             Number(displacement.ImpactDamage), Number(displacement.AttackRatio), Number(displacement.ImpactRadius),
             displacement.DamageType,
             displacement.ImpactStatus is { } impact ? StatusDefinitionFingerprint.Compute(impact) : "",
-            Number(displacement.ArcHeight)),
+            Number(displacement.ArcHeight)) + (displacement.LandingAngleRadians == 0 ? string.Empty :
+                $":landing-angle:{Number(displacement.LandingAngleRadians)}"),
         CompiledLifecycleOperation lifecycle => string.Join(":", "lifecycle", lifecycle.Kind,
             Target(lifecycle.TargetQuery), lifecycle.DelayTicks, lifecycle.DurationTicks,
             Number(lifecycle.HealthRatio), Number(lifecycle.AttackTransferRatio), lifecycle.SummonContentId,

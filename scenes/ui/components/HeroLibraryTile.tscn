@@ -6,7 +6,7 @@
 
 [node name="HeroLibraryTile" type="Button"]
 theme_type_variation = &"CompactButton"
-custom_minimum_size = Vector2(190, 164)
+custom_minimum_size = Vector2(190, 310)
 size_flags_horizontal = 3
 focus_mode = 2
 text = ""
@@ -31,22 +31,16 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="Identity" type="HBoxContainer" parent="Margin/Layout"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 9
-
-[node name="HeroPortrait" parent="Margin/Layout/Identity" instance=ExtResource("2")]
+[node name="HeroPortrait" parent="Margin/Layout" instance=ExtResource("2")]
+PreferIllustration = true
+FullIllustration = true
+StoneFrame = true
 unique_name_in_owner = true
-custom_minimum_size = Vector2(82, 82)
+custom_minimum_size = Vector2(0, 216)
 layout_mode = 2
+size_flags_vertical = 3
 
-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Identity"]
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="HeroName" type="Label" parent="Margin/Layout/Identity/Copy"]
+[node name="HeroName" type="Label" parent="Margin/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -54,9 +48,10 @@ mouse_filter = 2
 theme_type_variation = &"HeroIdentity"
 theme_override_font_sizes/font_size = 18
 text = "英雄名称"
-autowrap_mode = 2
+text_overrun_behavior = 3
+horizontal_alignment = 1
 
-[node name="HeroState" type="Label" parent="Margin/Layout/Identity/Copy"]
+[node name="HeroState" type="Label" parent="Margin/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2

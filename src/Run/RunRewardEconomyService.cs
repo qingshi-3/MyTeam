@@ -6,6 +6,7 @@ using TowerAutobattler.Content;
 using TowerAutobattler.Equipment;
 using TowerAutobattler.Project;
 using TowerAutobattler.Relics;
+using TowerAutobattler.Growth;
 
 namespace TowerAutobattler.Run;
 
@@ -15,17 +16,20 @@ public sealed class RunRewardEconomyService
     private readonly CompiledGameProject _project;
     private readonly CompiledRunRules _rules;
     private readonly RunProgressionPersistenceService _persistence;
+    private readonly GrowthRunService? _growth;
 
     public RunRewardEconomyService(
         ContentRegistry content,
         CompiledGameProject project,
         RunProgressionPersistenceService persistence,
-        ActiveRunDto? loadedRun)
+        ActiveRunDto? loadedRun,
+        GrowthRunService? growth = null)
     {
         _content = content ?? throw new ArgumentNullException(nameof(content));
         _project = project ?? throw new ArgumentNullException(nameof(project));
         _rules = project.RunRules;
         _persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
+        _growth = growth;
         _ = loadedRun;
     }
 
@@ -62,6 +66,7 @@ public sealed class RunRewardEconomyService
         // Population is authored independently from the number of heroes granted
         // at run start; production keeps the legacy hero-plus-six deployment capacity.
         run.CurrentPopulation = _rules.InitialPopulation;
+        _growth?.InitializeRun(run);
         return _persistence.ValidateRun(run) && _persistence.SaveActiveRun(run) ? run : null;
     }
 
@@ -71,6 +76,7 @@ public sealed class RunRewardEconomyService
         var run = new ActiveRunDto { Seed = seed == 0 ? 1UL : seed, Gold = _rules.StartingGold,
             CurrentPopulation = _rules.InitialPopulation };
         ActiveRunFormationSchema.InitializeVersion4(run, _rules);
+        _growth?.InitializeRun(run);
         var candidates = RecruitmentSupplySampler.Draw(supply, _project.Campaign.RecruitmentPool.ContentIds,
             supply.OpeningTierWeights, CompiledRecruitmentSupply.OpeningCandidateCount, $"{run.Seed:x16}:opening");
         run.OpeningRecruitment = new([.. candidates], []);
@@ -178,7 +184,7 @@ public sealed class RunRewardEconomyService
     {
         if (run?.PendingOffer is not { Kind: RunOfferKind.Recruitment } offer || run.Roster.Count == 0) return 0;
         var before = run.Gold;
-        var result = new RunDecisionService(_content, _project, _persistence).Resolve(run, offer.OfferId, "conversion_" + run.Roster[0].ContentId);
+        var result = new RunDecisionService(_content, _project, _persistence, _growth).Resolve(run, offer.OfferId, "conversion_" + run.Roster[0].ContentId);
         return result.Succeeded ? run.Gold - before : 0;
     }
 
@@ -209,13 +215,14 @@ public sealed class RunRewardEconomyService
     public void Rest(ActiveRunDto? run, bool takeGold)
     {
         if (run?.PendingOffer is { Kind: RunOfferKind.Rest } offer)
-            new RunDecisionService(_content, _project, _persistence).Resolve(run, offer.OfferId, takeGold ? "gold" : "recover");
+            new RunDecisionService(_content, _project, _persistence, _growth).Resolve(run, offer.OfferId,
+                takeGold ? "gold" : "recover_run_health");
     }
 
     public void ResolveEvent(ActiveRunDto? run, bool risky)
     {
         if (run?.PendingOffer is { Kind: RunOfferKind.Event } offer)
-            new RunDecisionService(_content, _project, _persistence).Resolve(run, offer.OfferId, risky ? "risky" : "safe");
+            new RunDecisionService(_content, _project, _persistence, _growth).Resolve(run, offer.OfferId, risky ? "risky" : "safe");
     }
 
     public void ApplyBattleVictory(
@@ -226,27 +233,18 @@ public sealed class RunRewardEconomyService
     {
         foreach (var state in result.Units.Where(unit => unit.Team == 0 && !unit.IsTemporary))
         {
-            var ratio = state.FinalHealth / state.MaxHealth;
             var instance = run.Roster.FirstOrDefault(unit => unit.InstanceId == state.SourceInstanceId);
             if (instance is null) continue;
-            var legacyHero = IsLegacyHeroContent(instance.ContentId);
-            instance.HealthRatio = state.Alive
-                ? Math.Max(
-                    legacyHero ? _rules.MinimumVictoryHeroHealth : _rules.MinimumLivingSoldierHealth,
-                    ratio)
-                : _rules.DefeatedSoldierHealth;
             if (!state.Alive)
                 for (var slot = 0; slot < run.Deployment.Count; slot++)
                     if (run.Deployment[slot] == instance.InstanceId)
                         run.Deployment[slot] = string.Empty;
         }
 
-        // A victory includes a short regroup. Casualties remain wounded and leave deployment.
+        // Keep the serialized compatibility field neutral. Casualties still leave deployment,
+        // but neither survivors nor reserves carry wounds into a later battle.
         foreach (var unit in run.Roster)
-            unit.HealthRatio = Math.Min(1f, unit.HealthRatio + LegacyRecovery(
-                unit,
-                _rules.VictoryHeroRecovery,
-                _rules.VictorySoldierRecovery));
+            unit.HealthRatio = 1f;
         run.BattleNumber++;
         run.Gold = Math.Max(0, run.Gold - result.GoldSpent);
         run.Gold += encounter.IsBoss
@@ -270,6 +268,7 @@ public sealed class RunRewardEconomyService
             InstanceId = fixedInstanceId ?? $"roster-hero-{sequence}",
             ContentId = contentId
         };
+        _growth?.InitializeHero(instance);
         run.Roster.Add(instance);
         return instance;
     }
@@ -341,9 +340,4 @@ public sealed class RunRewardEconomyService
         run.Deployment[slot] = instanceId;
     }
 
-    private float LegacyRecovery(RosterHeroInstanceDto unit, float heroValue, float rosterValue) =>
-        IsLegacyHeroContent(unit.ContentId) ? heroValue : rosterValue;
-
-    private bool IsLegacyHeroContent(string contentId) =>
-        _content.TryGet(contentId, out var entry) && entry.Definition is UnitDefinition { IsHero: true };
 }

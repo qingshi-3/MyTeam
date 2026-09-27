@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "拾骸者 · 固定被动"
-RuleDescription = "普攻命中生命不足 30% 的敌人时，再造成攻击力 50% 的伤害，帮助取得首具尸体。"
+RuleDescription = "普攻命中生命不足 30% 的敌人时，追加攻击力 50% 的伤害。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

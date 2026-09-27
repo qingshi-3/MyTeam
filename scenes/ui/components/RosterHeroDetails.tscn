@@ -1,0 +1,481 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/UI/RosterHeroDetails.cs" id="1"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/WorkbenchAttributeRow.tscn" id="2"]
+
+[ext_resource type="Script" path="res://src/UI/DetailExplainButton.cs" id="3"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/DetailExplanationTooltip.tscn" id="4"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/icons/roster-deployed.svg" id="OutputIcon"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/icons/health.svg" id="SurvivalIcon"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-dodge.svg" id="MovementIcon"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/icons/mana.svg" id="CastingIcon"]
+
+[node name="RosterHeroDetails" type="VBoxContainer"]
+texture_filter = 4
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+script = ExtResource("1")
+
+[node name="Header" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 66)
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 28
+
+[node name="Layout" type="HBoxContainer" parent="Header"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="VBoxContainer" parent="Header/Layout"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="HeroName" type="Label" parent="Header/Layout/Title"]
+layout_mode = 2
+mouse_filter = 2
+unique_name_in_owner = true
+theme_type_variation = &"WorkbenchTitle"
+theme_override_font_sizes/font_size = 40
+text_overrun_behavior = 3
+
+[node name="Context" type="Label" parent="Header/Layout/Title"]
+layout_mode = 2
+mouse_filter = 2
+unique_name_in_owner = true
+theme_type_variation = &"WorkbenchBody"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.64, 0.60, 0.52, 1)
+text_overrun_behavior = 3
+
+[node name="RankPlate" type="PanelContainer" parent="Header/Layout"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(62, 36)
+size_flags_vertical = 4
+theme_type_variation = &"WorkbenchRankPlate"
+
+[node name="DetailRank" type="Label" parent="Header/Layout/RankPlate"]
+layout_mode = 2
+mouse_filter = 2
+unique_name_in_owner = true
+theme_type_variation = &"WorkbenchRank"
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+text = "I"
+
+[node name="MainContent" type="ScrollContainer" parent="."]
+layout_mode = 2
+unique_name_in_owner = true
+mouse_filter = 0
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="Content" type="VBoxContainer" parent="MainContent"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 3
+
+[node name="TopLine" type="HSeparator" parent="MainContent/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchHorizontalRule"
+
+[node name="Skills" type="HBoxContainer" parent="MainContent/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Active" type="Button" parent="MainContent/Content/Skills"]
+layout_mode = 2
+unique_name_in_owner = true
+mouse_filter = 0
+custom_minimum_size = Vector2(272, 94)
+size_flags_horizontal = 3
+theme_type_variation = &"CardStat"
+script = ExtResource("3")
+ExplanationTooltip = ExtResource("4")
+
+[node name="Layout" type="HBoxContainer" parent="MainContent/Content/Skills/Active"]
+mouse_filter = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_right = -6.0
+theme_override_constants/separation = 12
+
+[node name="Socket" type="PanelContainer" parent="MainContent/Content/Skills/Active/Layout"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(82, 82)
+size_flags_vertical = 4
+theme_type_variation = &"WorkbenchSkillSocket"
+
+[node name="Art" type="TextureRect" parent="MainContent/Content/Skills/Active/Layout/Socket"]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MainContent/Content/Skills/Active/Layout"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 3
+
+[node name="Category" type="Label" parent="MainContent/Content/Skills/Active/Layout/Copy"]
+layout_mode = 2
+mouse_filter = 2
+text = "主动技能"
+theme_type_variation = &"WorkbenchBody"
+theme_override_font_sizes/font_size = 15
+
+[node name="Name" type="Label" parent="MainContent/Content/Skills/Active/Layout/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchSkillName"
+text_overrun_behavior = 3
+
+[node name="Body" type="Label" parent="MainContent/Content/Skills/Active/Layout/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchBody"
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 2
+max_lines_visible = 2
+text_overrun_behavior = 3
+
+[node name="Divider" type="VSeparator" parent="MainContent/Content/Skills"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchVerticalRule"
+
+[node name="Passive" type="Button" parent="MainContent/Content/Skills"]
+layout_mode = 2
+unique_name_in_owner = true
+mouse_filter = 0
+custom_minimum_size = Vector2(272, 94)
+size_flags_horizontal = 3
+theme_type_variation = &"CardStat"
+script = ExtResource("3")
+ExplanationTooltip = ExtResource("4")
+
+[node name="Layout" type="HBoxContainer" parent="MainContent/Content/Skills/Passive"]
+mouse_filter = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_right = -6.0
+theme_override_constants/separation = 12
+
+[node name="Socket" type="PanelContainer" parent="MainContent/Content/Skills/Passive/Layout"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(82, 82)
+size_flags_vertical = 4
+theme_type_variation = &"WorkbenchSkillSocket"
+
+[node name="Art" type="TextureRect" parent="MainContent/Content/Skills/Passive/Layout/Socket"]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MainContent/Content/Skills/Passive/Layout"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 3
+
+[node name="Category" type="Label" parent="MainContent/Content/Skills/Passive/Layout/Copy"]
+layout_mode = 2
+mouse_filter = 2
+text = "被动技能"
+theme_type_variation = &"WorkbenchBody"
+theme_override_font_sizes/font_size = 15
+
+[node name="Name" type="Label" parent="MainContent/Content/Skills/Passive/Layout/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchSkillName"
+text_overrun_behavior = 3
+
+[node name="Body" type="Label" parent="MainContent/Content/Skills/Passive/Layout/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchBody"
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 2
+max_lines_visible = 2
+text_overrun_behavior = 3
+
+[node name="SkillLine" type="HSeparator" parent="MainContent/Content"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchHorizontalRule"
+
+[node name="AttributesTitle" type="Label" parent="MainContent/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "属性详情"
+theme_type_variation = &"WorkbenchTitle"
+theme_override_font_sizes/font_size = 24
+
+[node name="AttributeField" type="PanelContainer" parent="MainContent/Content"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_vertical = 3
+theme_type_variation = &"WorkbenchAttributeField"
+
+[node name="Columns" type="HBoxContainer" parent="MainContent/Content/AttributeField"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="Left" type="VBoxContainer" parent="MainContent/Content/AttributeField/Columns"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Output" type="HBoxContainer" parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 30)
+theme_override_constants/separation = 10
+
+[node name="Icon" type="TextureRect" parent="MainContent/Content/AttributeField/Columns/Left/Output"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(28, 28)
+size_flags_vertical = 4
+texture = ExtResource("OutputIcon")
+modulate = Color(1, 0.79, 0.55, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="MainContent/Content/AttributeField/Columns/Left/Output"]
+layout_mode = 2
+mouse_filter = 2
+text = "输出"
+theme_type_variation = &"WorkbenchGroup"
+
+[node name="AttackDamage" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="SpellPower" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="AttackSpeed" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="CriticalChance" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="CriticalDamage" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="Gap" type="HSeparator" parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchHorizontalRule"
+custom_minimum_size = Vector2(0, 16)
+
+[node name="Movement" type="HBoxContainer" parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 30)
+theme_override_constants/separation = 10
+
+[node name="Icon" type="TextureRect" parent="MainContent/Content/AttributeField/Columns/Left/Movement"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(28, 28)
+size_flags_vertical = 4
+texture = ExtResource("MovementIcon")
+modulate = Color(0.87, 0.72, 0.51, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="MainContent/Content/AttributeField/Columns/Left/Movement"]
+layout_mode = 2
+mouse_filter = 2
+text = "行动"
+theme_type_variation = &"WorkbenchGroup"
+
+[node name="AttackRange" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="MoveSpeed" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="Divider" type="VSeparator" parent="MainContent/Content/AttributeField/Columns"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchVerticalRule"
+
+[node name="Right" type="VBoxContainer" parent="MainContent/Content/AttributeField/Columns"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Survival" type="HBoxContainer" parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 30)
+theme_override_constants/separation = 10
+
+[node name="Icon" type="TextureRect" parent="MainContent/Content/AttributeField/Columns/Right/Survival"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(28, 28)
+size_flags_vertical = 4
+texture = ExtResource("SurvivalIcon")
+modulate = Color(0.64, 0.80, 0.43, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="MainContent/Content/AttributeField/Columns/Right/Survival"]
+layout_mode = 2
+mouse_filter = 2
+text = "生存"
+theme_type_variation = &"WorkbenchGroup"
+
+[node name="MaxHealth" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="Armor" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="DodgeChance" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="ControlResistance" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="LifeSteal" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="Gap" type="HSeparator" parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"WorkbenchHorizontalRule"
+custom_minimum_size = Vector2(0, 16)
+
+[node name="Casting" type="HBoxContainer" parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 30)
+theme_override_constants/separation = 10
+
+[node name="Icon" type="TextureRect" parent="MainContent/Content/AttributeField/Columns/Right/Casting"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(28, 28)
+size_flags_vertical = 4
+texture = ExtResource("CastingIcon")
+modulate = Color(0.73, 0.42, 0.88, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="MainContent/Content/AttributeField/Columns/Right/Casting"]
+layout_mode = 2
+mouse_filter = 2
+text = "施法"
+theme_type_variation = &"WorkbenchGroup"
+
+[node name="MaxMana" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="StartingMana" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="ManaPerSecond" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="ManaPerAttack" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="ManaPerDamageRatio" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="ManaPerHitCap" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="HealingPower" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="Explanation" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+unique_name_in_owner = true
+visible = false
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="ExplanationTitle" type="Label" parent="Explanation"]
+layout_mode = 2
+mouse_filter = 2
+unique_name_in_owner = true
+theme_type_variation = &"WorkbenchTitle"
+theme_override_font_sizes/font_size = 24
+
+[node name="Scroll" type="ScrollContainer" parent="Explanation"]
+layout_mode = 2
+mouse_filter = 0
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ExplanationText" type="Label" parent="Explanation/Scroll"]
+layout_mode = 2
+mouse_filter = 2
+unique_name_in_owner = true
+size_flags_horizontal = 3
+autowrap_mode = 2
+theme_type_variation = &"WorkbenchBody"
+
+[node name="ExplanationClose" type="Button" parent="Explanation"]
+layout_mode = 2
+unique_name_in_owner = true
+mouse_filter = 0
+text = "返回属性"
+theme_type_variation = &"CompactButton"

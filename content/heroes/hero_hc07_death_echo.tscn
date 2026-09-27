@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "传灯狐 · 固定被动"
-RuleDescription = "每第三次普攻命中，代触发身后 3 格内最近友军明确可复制的亡语；对方保持存活。"
+RuleDescription = "每第三次普攻命中，触发身后 3 格内最近友军的可复制亡语；该友军不会因此死亡。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

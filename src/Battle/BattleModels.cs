@@ -42,7 +42,7 @@ public sealed record AttackHitGrowthSnapshot(float AttackSpeedPerHit, bool Reset
 
 public sealed record ProjectileSequenceState(CompiledProjectileSequenceAbilityOperation Operation,
     CombatSourceRef Origin, string TargetId, int RemainingShots, float IntervalProgress = 0,
-    ImmutableArray<string> TargetGroup = default);
+    ImmutableArray<string> TargetGroup = default, int ConsecutiveTargetShots = 0);
 
 public sealed record UnitBehaviorSnapshot(
     int SlowOnHitTicks = 0, float AdjacentArmorAura = 0, float AdjacentDamageAura = 0,
@@ -254,4 +254,5 @@ public sealed record BattleResult(
     int GoldSpent,
     int SuccessfulTacticalCommandUses = 0,
     RelicBattleTransitionResult? RelicTransition = null,
-    BattleIdentity? Identity = null);
+    BattleIdentity? Identity = null,
+    ImmutableArray<BattlePermanentGain> PermanentGains = default);

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://src/Presentation/BattleScreenController.cs" id="1"]
 [ext_resource type="Script" path="res://src/Presentation/BattleBoard.cs" id="2"]
@@ -11,6 +11,7 @@
 
 [ext_resource type="Script" path="res://src/UI/ContextPopup.cs" id="popup"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/BattleGeometryOverlay.tscn" id="geometry"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/RunHealthDisplay.tscn" id="health"]
 
 [node name="BattleScreen" type="Control"]
 layout_mode = 3
@@ -39,11 +40,26 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="BattleTitle" type="Label" parent="Margin/Layout"]
+[node name="Header" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+
+[node name="BattleTitle" type="Label" parent="Margin/Layout/Header"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "战斗"
+size_flags_horizontal = 3
+clip_text = true
+
+[node name="RunHealth" parent="Margin/Layout/Header" instance=ExtResource("health")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="InspectorRailSpace" type="Control" parent="Margin/Layout/Header"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="ViewControls" type="HBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
@@ -59,18 +75,20 @@ tooltip_text = "查看本场地形与特殊规则"
 
 [node name="CollisionToggle" type="Button" parent="Margin/Layout/ViewControls"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_type_variation = &"CompactButton"
 toggle_mode = true
-text = "○ 碰撞"
-tooltip_text = "实线为真实身体；虚线为空中投影，紫色叉圈为预留落点。地形显示完整阻挡格。\n开启时角色位置按战斗步对齐判定；暂停后可精确检查。点选单位切换观察，详情仍可从单位按钮打开。"
+text = "碰撞"
+tooltip_text = "查看身体、阻挡地形和预留落点。暂停后可逐步检查。"
 
 [node name="AttackRangeToggle" type="Button" parent="Margin/Layout/ViewControls"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_type_variation = &"CompactButton"
 toggle_mode = true
-text = "◎ 普攻范围"
+text = "普攻范围"
 tooltip_text = "黄色虚线为选中单位的身体半径＋普攻射程，触及目标身体即满足距离。连线数字为身体边缘间距与普攻射程；受地形阻挡时单独标记。\n只表示普攻空间条件，仍需满足前摇、冷却、控制等规则；技能范围各自独立。开启时点选单位只切换观察。"
 
 [node name="GeometryReadout" type="Label" parent="Margin/Layout/ViewControls"]
@@ -97,6 +115,7 @@ script = ExtResource("2")
 
 [node name="UnitsRoot" type="Node2D" parent="Margin/Layout/BattleArea/BattleBoard"]
 unique_name_in_owner = true
+z_index = 1
 
 [node name="BattleGeometryOverlay" parent="Margin/Layout/BattleArea/BattleBoard" instance=ExtResource("geometry")]
 unique_name_in_owner = true
@@ -154,7 +173,7 @@ visible = false
 custom_minimum_size = Vector2(112, 48)
 layout_mode = 2
 theme_type_variation = &"SecondaryButton"
-text = "单步 1 tick"
+text = "单步"
 
 [node name="ResetBattleButton" type="Button" parent="Margin/Layout/Hud/ControlRow"]
 unique_name_in_owner = true
@@ -179,10 +198,12 @@ size_flags_horizontal = 0
 
 [node name="BattleInspectorDock" parent="." instance=ExtResource("4")]
 unique_name_in_owner = true
+z_index = 50
 layout_mode = 1
 
 [node name="RulesPopup" type="Control" parent="."]
 unique_name_in_owner = true
+z_index = 50
 visible = false
 layout_mode = 1
 anchors_preset = 15

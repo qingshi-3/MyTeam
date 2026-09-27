@@ -29,7 +29,8 @@ public sealed record BattlePreparationUnitSource(
     bool IsTemporary,
     bool IsPersistentRosterHero,
     bool IsDeployed,
-    ImmutableArray<BattlePreparationEquipmentSource> Equipment, bool RetainAttackStacks = false);
+    ImmutableArray<BattlePreparationEquipmentSource> Equipment, bool RetainAttackStacks = false,
+    BattleUnitGrowth? Growth = null);
 
 // Placements are deliberately separate from sources. This preserves the
 // legacy Run `requireLegalFormation=false` contract, including duplicate
@@ -129,6 +130,7 @@ public static class BattlePreparationAssembler
                 throw new InvalidOperationException(
                     $"Battle preparation placement references a missing unit: {placement.UnitInstanceId}");
             var snapshot = SnapshotRequired(request.Content, source.ContentId, out var behaviorSummonId);
+            if (source.Growth is { } growthProjection) snapshot = growthProjection.Apply(snapshot);
             if (source.Team == 1)
                 snapshot = snapshot with { MaxHealth = snapshot.MaxHealth * request.EnemyHealthMultiplier,
                     Damage = snapshot.Damage * request.EnemyDamageMultiplier };
@@ -302,6 +304,11 @@ public static class BattlePreparationAssembler
                      CompiledSummonAbilityOperation summon => summon.SummonContentId,
                      CompiledLifecycleOperation { Kind: LifecycleAbilityKind.RaiseCorpse } corpse => corpse.SummonContentId,
                      _ => "" }).Concat(operations.OfType<CompiledEnemyAction>().SelectMany(action => action.ContentDependencies))
+                     .Concat(operations.OfType<CompiledMatrixOperation>().SelectMany(MatrixAbilityCompiler.Flatten)
+                         .Where(node => node.Kind == MatrixOperationKind.Summon).Select(node => node.ContentId))
+                     .Concat(content.Graph.Traits.SelectMany(trait => trait.Breakpoints)
+                         .SelectMany(tier => tier.Mechanics.IsDefault ? [] : tier.Mechanics)
+                         .Select(mechanic => mechanic.SummonContentId))
                      .Where(contentId => !string.IsNullOrWhiteSpace(contentId))
                      .Distinct(StringComparer.Ordinal)
                      .OrderBy(contentId => contentId, StringComparer.Ordinal))

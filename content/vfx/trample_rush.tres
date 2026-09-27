@@ -8,6 +8,7 @@ DisplayName = "冲阵 · 肩前气流与尘尾"
 PreviewNote = "锁向蓄势、持续推进；独立技能消费正式战斗的阶段事实。"
 Scene = ExtResource("scene")
 Duration = 1.5
+ReleaseDuration = 0.85
 CastDuration = 1.2
 Persistent = true
 Ground = true

@@ -95,12 +95,28 @@ public sealed partial class BattleSimulation
             var offset = (target.Position - cast.Start).Dot(normal);
             var side = Math.Abs(offset) > .02f ? Math.Sign(offset) : cast.HitIds.Count % 2 == 0 ? 1 : -1;
             var clearance = owner.BodyRadius + target.BodyRadius + BattlefieldSpace.BodyClearance + .08f;
-            var push = Math.Min(cast.Operation.SideDistance, Math.Max(.2f, clearance - Math.Abs(offset)));
             var from = target.Position;
-            var destination = ClipDisplacementTravel(target, from, from + normal * side * push);
-            if (IsDisplacing(target)) destination = from;
+            Vector2 SideDestination(int toward)
+            {
+                var push = Math.Min(cast.Operation.SideDistance, Math.Max(.2f, clearance - toward * offset));
+                return ClipDisplacementTravel(target, from, from + normal * toward * push);
+            }
+            bool ClearsCorridor(Vector2 position) => Math.Abs((position - cast.Start).Dot(normal)) >=
+                owner.BodyRadius + target.BodyRadius + BattlefieldSpace.BodyClearance * 2;
+            var destination = SideDestination(side);
+            // A blocked preferred side is not a blocked charge. Try the other side before
+            // accepting a partial shove; its entire path still respects bodies and terrain.
+            if (!ClearsCorridor(destination))
+            {
+                var alternative = SideDestination(-side);
+                if (ClearsCorridor(alternative)) destination = alternative;
+            }
             if (destination.DistanceSquaredTo(from) > .0001f)
             {
+                // A grounded trajectory does not make its body immovable. The shove takes
+                // ownership only once it can move, cancelling the old payoff and reservation.
+                CancelDisplacement(target.RuntimeId);
+                CancelEnemyAction(target.RuntimeId);
                 CancelTrample(target);
                 CancelChargedLine(target);
                 CancelProjectileWindups(target);

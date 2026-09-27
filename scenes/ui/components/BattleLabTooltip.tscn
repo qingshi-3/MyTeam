@@ -15,7 +15,7 @@ script = ExtResource("1")
 unique_name_in_owner = true
 custom_minimum_size = Vector2(396, 0)
 mouse_filter = 2
-theme_type_variation = &"ContextSidebarPanel"
+theme_type_variation = &"NotificationPanel"
 
 [node name="Margin" type="MarginContainer" parent="TooltipPanel"]
 layout_mode = 2

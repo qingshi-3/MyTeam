@@ -18,7 +18,7 @@ void fragment() {
     float breathing = 0.85 + 0.15 * sin(t * 6.2831853);
     float ripples = wave(r, fract(t)) + wave(r, fract(t + 0.5)) * 0.62;
     float fill = (1.0 - smoothstep(0.50, 0.95, r)) * 0.045;
-    float alpha = (edge * 0.42 + soft_edge + ripples * 0.18 + fill) * breathing;
+    float alpha = (edge * 0.27 + soft_edge * 0.6 + ripples * 0.12 + fill) * breathing;
     alpha *= smoothstep(0.0, 0.22, age) * (1.0 - smoothstep(0.97, 1.0, r)) * (1.0 - release);
     COLOR = vec4(mix(vec3(0.12, 0.67, 0.34), vec3(0.47, 1.0, 0.67), edge), alpha) * tint;
 }

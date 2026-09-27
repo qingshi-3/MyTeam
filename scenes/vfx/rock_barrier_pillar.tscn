@@ -1,0 +1,29 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/RockBarrierPillar.cs" id="script"]
+[ext_resource type="Texture2D" path="res://assets/vfx/enemy-actions/barrier-stone-matte.png" id="stone"]
+[node name="RockBarrierPillar" type="Node2D" node_paths=PackedStringArray("Sides", "Crown")]
+script = ExtResource("script")
+Sides = [NodePath("Face0"), NodePath("Face1"), NodePath("Face2"), NodePath("Face3"), NodePath("Face4"), NodePath("Face5")]
+Crown = NodePath("Crown")
+Footprint = PackedVector2Array(-0.48, -0.34, 0.29, -0.43, 0.51, -0.15, 0.44, 0.32, -0.26, 0.46, -0.53, 0.12)
+[node name="Face0" type="Polygon2D" parent="."]
+texture_filter = 4
+texture = ExtResource("stone")
+[node name="Face1" type="Polygon2D" parent="."]
+texture_filter = 4
+texture = ExtResource("stone")
+[node name="Face2" type="Polygon2D" parent="."]
+texture_filter = 4
+texture = ExtResource("stone")
+[node name="Face3" type="Polygon2D" parent="."]
+texture_filter = 4
+texture = ExtResource("stone")
+[node name="Face4" type="Polygon2D" parent="."]
+texture_filter = 4
+texture = ExtResource("stone")
+[node name="Face5" type="Polygon2D" parent="."]
+texture_filter = 4
+texture = ExtResource("stone")
+[node name="Crown" type="Polygon2D" parent="."]
+texture_filter = 4
+texture = ExtResource("stone")

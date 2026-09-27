@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="AbilityLoadoutDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/growth/abilities/hero_mx25_growth_drone.tres" id="a"]
+[ext_resource type="Resource" path="res://content/validation_matrix/abilities/hero_mx25_p.tres" id="p"]
+[ext_resource type="Resource" path="res://content/growth/abilities/hero_mx25_ascend.tres" id="growth"]
+[resource]
+script = ExtResource("script")
+Abilities = [ExtResource("a"), ExtResource("p"), ExtResource("growth")]

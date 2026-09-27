@@ -28,9 +28,18 @@ theme_override_constants/separation = 18
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "设置"
-[node name="VolumeLabel" type="Label" parent="Center/Panel/Layout"]
+[node name="VolumeHeader" type="HBoxContainer" parent="Center/Panel/Layout"]
 layout_mode = 2
+
+[node name="VolumeLabel" type="Label" parent="Center/Panel/Layout/VolumeHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "主音量"
+
+[node name="VolumeValue" type="Label" parent="Center/Panel/Layout/VolumeHeader"]
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+text = "80%"
 [node name="VolumeSlider" type="HSlider" parent="Center/Panel/Layout"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
@@ -51,6 +60,11 @@ popup/item_1/text = "x2"
 popup/item_1/id = 1
 popup/item_2/text = "x4"
 popup/item_2/id = 2
+[node name="ReduceMotion" type="CheckButton" parent="Center/Panel/Layout"]
+layout_mode = 2
+text = "减弱界面动效"
+tooltip_text = "关闭按钮的抬起与按压缩放；保留颜色、焦点和操作结果反馈。"
+
 [node name="SaveButton" type="Button" parent="Center/Panel/Layout"]
 theme_type_variation = &"PrimaryButton"
 custom_minimum_size = Vector2(0, 56)

@@ -26,7 +26,7 @@ Frames = ExtResource("frames")
 
 [node name="HeroRuleComponent" parent="." instance=ExtResource("rule")]
 RuleTitle = "晶盾剑士 · 固定被动"
-RuleDescription = "每点当前护盾提供 0.15% 暴击率，最多额外 60%；每个战斗步更新。"
+RuleDescription = "每点当前护盾提供 0.15% 暴击率，最多增加 60%。"
 
 [node name="UnitAbilityLoadoutComponent" parent="." instance=ExtResource("loadout_component")]
 Loadout = ExtResource("loadout")

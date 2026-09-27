@@ -43,7 +43,7 @@ public static class BattleHeroMana
         return spent;
     }
 
-    private static void Gain(BattleUnitState unit, float amount, int tick)
+    public static void Gain(BattleUnitState unit, float amount, int tick)
     {
         // Trample owns windup, travel and recovery; refill resumes only after that action exits.
         if (!unit.Alive || unit.Trample is not null || unit.ProjectileSequence is not null || unit.ProjectileWindups.Any(shot => shot.SkillOrigin.IsSpecified) ||

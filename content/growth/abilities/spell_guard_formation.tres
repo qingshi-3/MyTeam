@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="self"]
+script = ExtResource("operation")
+Kind = 2
+Target = 0
+OwnerHealthRatio = 0.15
+DurationTicks = 180
+[sub_resource type="Resource" id="near"]
+script = ExtResource("operation")
+Kind = 2
+Target = 8
+Range = 2.5
+MaxTargets = 2
+ExcludeSelf = true
+OwnerHealthRatio = 0.15
+DurationTicks = 180
+[resource]
+script = ExtResource("ability")
+StableId = "growth_spell_guard_formation"
+DisplayName = "护阵"
+Description = "指定英雄及其2.5格内至多2名友军，各获得相当于指定英雄本场生命上限15%的护盾，持续18秒。"
+ActivationKind = 1
+Trigger = 1
+MaxUses = 1
+Operations = [SubResource("self"), SubResource("near")]

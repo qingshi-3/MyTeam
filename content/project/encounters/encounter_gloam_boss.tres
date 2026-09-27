@@ -1,9 +1,20 @@
-[gd_resource type="Resource" script_class="EncounterDefinition" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="EncounterDefinition" format=3]
 
 [ext_resource type="Script" path="res://src/Project/EncounterDefinition.cs" id="1"]
 [ext_resource type="Resource" path="res://content/project/pools/pool_gloam_enemies.tres" id="2"]
 [ext_resource type="Resource" path="res://content/project/pools/pool_gloam_boss_rule.tres" id="3"]
 [ext_resource type="Resource" path="res://content/project/boss/timeline_shadow_boss.tres" id="4"]
+
+[ext_resource type="Script" path="res://src/Project/EncounterCompositionDefinition.cs" id="composition"]
+
+[sub_resource type="Resource" id="shadow"]
+script = ExtResource("composition")
+StableId = "gloam_boss_shadow"
+DisplayName = "召集与咒火"
+MinLocalFloor = 0
+MaxLocalFloor = 4
+EnemyIds = PackedStringArray("enemy_shadow_boss", "enemy_blood_reaver", "enemy_hexer", "enemy_hexer")
+Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(7, 4), Vector2i(9, 1), Vector2i(9, 4)])
 
 [resource]
 script = ExtResource("1")
@@ -15,5 +26,8 @@ FloorRulePool = ExtResource("3")
 LeadEnemyId = "enemy_shadow_boss"
 BaseEnemyCount = 3
 BossTimeline = ExtResource("4")
-EnemyHealthMultiplier = 1.35
-EnemyDamageMultiplier = 1.18
+EnemyHealthMultiplier = 1.6
+EnemyDamageMultiplier = 1.15
+LocalHealthMultipliers = PackedFloat32Array(1, 1, 1, 1, 1)
+LocalDamageMultipliers = PackedFloat32Array(1, 1, 1, 1, 1)
+Compositions = [SubResource("shadow")]

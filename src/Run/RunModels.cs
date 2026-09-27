@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using TowerAutobattler.Equipment;
+using TowerAutobattler.Growth;
 
 namespace TowerAutobattler.Run;
 
@@ -11,9 +12,11 @@ public sealed class RosterHeroInstanceDto
 {
     public string InstanceId { get; set; } = string.Empty;
     public string ContentId { get; set; } = string.Empty;
+    // Historical saves/operations retain this field; Run battle preparation always starts full.
     public float HealthRatio { get; set; } = 1f;
     public int Rank { get; set; } = 1;
     public List<EquipmentInstanceState> Equipment { get; set; } = [];
+    public HeroGrowthDto Growth { get; set; } = new();
 }
 
 public sealed class ItemInstanceDto
@@ -42,6 +45,10 @@ public sealed class ActiveRunDto
 {
     public int Version { get; set; } = ActiveRunFormationSchema.CurrentVersion;
     public ulong Seed { get; set; }
+    // Missing v7 fields are invalid, not an implicit full heal. Older schemas migrate explicitly.
+    public int CurrentRunHealth { get; set; } = -1;
+    public int MaximumRunHealth { get; set; } = -1;
+    public RunBattleConsequence? LastBattleConsequence { get; set; }
     public OpeningRecruitmentDto? OpeningRecruitment { get; set; }
     public List<RosterHeroInstanceDto> Roster { get; set; } = [];
     public int CurrentPopulation { get; set; } = 1;
@@ -59,6 +66,7 @@ public sealed class ActiveRunDto
     public PendingRunOffer? PendingOffer { get; set; }
     public string TerminalCompletionId { get; set; } = string.Empty;
     public bool TerminalVictory { get; set; }
+    public GrowthRunDto? Growth { get; set; }
 
     // Schema-v3 compatibility input only. A successful migration clears these
     // fields so current saves publish only the unified roster/formation model.
@@ -94,6 +102,7 @@ public sealed class SettingsDto
     public float MasterVolume { get; set; } = .8f;
     public float DefaultBattleSpeed { get; set; } = 1f;
     public bool ShowDamageNumbers { get; set; } = true;
+    public bool ReduceUiMotion { get; set; }
 }
 
 public enum ActiveRunLoadFailureKind
@@ -114,4 +123,8 @@ public sealed record EncounterPlan(
     bool IsBoss,
     bool IsElite,
     string EncounterId = "",
-    TowerNodeType NodeType = TowerNodeType.Combat);
+    TowerNodeType NodeType = TowerNodeType.Combat)
+{
+    public string CompositionId { get; init; } = string.Empty;
+    public ImmutableArray<Godot.Vector2I> EnemyCells { get; init; } = [];
+}

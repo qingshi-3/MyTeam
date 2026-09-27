@@ -161,7 +161,7 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
             if (flight.Ending && flight.Elapsed >= BattleTiming.TickSeconds && simulationSeconds > 0)
             {
                 _projectiles.Remove(id);
-                _player.End("projectile:" + id, VfxEndReason.ScopeEnded);
+                _player.End("projectile:" + id, flight.ImpactTail ? VfxEndReason.Completed : VfxEndReason.ScopeEnded);
                 continue;
             }
             flight.Elapsed = Math.Min(BattleTiming.TickSeconds, flight.Elapsed + Math.Max(0, simulationSeconds));
@@ -170,10 +170,20 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
             foreach (var hit in flight.Impacts.ToArray())
             {
                 if ((flight.Rendered - hit.Contact).Dot(flight.Direction) < -.0001f) continue;
-                _player.Play("impact", WithDisplayPosition(hit.TargetId, hit.Context));
+                PresentProjectileImpact(id, flight, hit);
                 flight.Impacts.Remove(hit);
             }
         }
+    }
+    private void PresentProjectileImpact(int id, ProjectileFlight flight, ProjectileImpact hit)
+    {
+        if (flight.ImpactTail)
+        {
+            // Use the collision point rather than following the already moving victim.
+            _player.UpdateContext("projectile:" + id, hit.Context with { Direction = flight.Direction });
+            _player.Impact("projectile:" + id);
+        }
+        else _player.Play("impact", WithDisplayPosition(hit.TargetId, hit.Context));
     }
     public void SynchronizeUnits(IEnumerable<BattleUnitState> units)
     {
@@ -259,7 +269,7 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
                 case "trample_end" when fact.Trample is { } ended:
                     _player.End($"trample:{fact.SourceRuntimeId}:{ended.StartTick}", VfxEndReason.ScopeEnded);
                     if (_trampleRush.Remove(fact.SourceRuntimeId, out var stopped))
-                        _player.End(stopped.Key, VfxEndReason.ScopeEnded);
+                        _player.End(stopped.Key, VfxEndReason.Completed);
                     break;
                 case "line_charge" when fact.Line is { } charge:
                     var chargeKey = $"line:{fact.SourceRuntimeId}:{charge.StartTick}";
@@ -289,9 +299,11 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
                     // Spawn supplies a point ahead of the projectile; later move facts only
                     // carry position. Preserve the launch heading until this entity ends.
                     var direction = (fact.Origin - fact.Position).Normalized();
+                    var visual = fact.Line?.ReleaseVfx ?? (string.IsNullOrEmpty(fact.SourceVfx) ? "projectile" : fact.SourceVfx);
+                    var impactTail = _player.Catalog.Find(visual).ProjectileImpactTail;
                     _projectiles[fact.EntityId] = new(fact.Position, direction,
-                        finishSegmentOnEnd: fact.Line?.Delivery == ChargedLineDelivery.Projectile);
-                    _player.Play(fact.Line?.ReleaseVfx ?? (string.IsNullOrEmpty(fact.SourceVfx) ? "projectile" : fact.SourceVfx), context with { Direction = direction }, projectile); break;
+                        finishSegmentOnEnd: impactTail || fact.Line?.Delivery == ChargedLineDelivery.Projectile, impactTail: impactTail);
+                    _player.Play(visual, context with { Direction = direction }, projectile); break;
                 case "projectile_move":
                     if (_projectiles.TryGetValue(fact.EntityId, out var flight))
                     {
@@ -305,8 +317,12 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
                 case "projectile_impact":
                     // Piercing flight is interpolated behind fixed-step facts. Show
                     // the scratch when its visible front reaches the contact point.
-                    if (!snap && _projectiles.TryGetValue(fact.EntityId, out var hitFlight) && hitFlight.FinishSegmentOnEnd)
-                        hitFlight.Impacts.Add(new(fact.Position, fact.TargetRuntimeId, context));
+                    if (_projectiles.TryGetValue(fact.EntityId, out var hitFlight) && hitFlight.FinishSegmentOnEnd)
+                    {
+                        var hit = new ProjectileImpact(fact.Position, fact.TargetRuntimeId, context);
+                        if (!snap) hitFlight.Impacts.Add(hit);
+                        else PresentProjectileImpact(fact.EntityId, hitFlight, hit);
+                    }
                     else _player.Play("impact", WithDisplayPosition(fact.TargetRuntimeId, context));
                     break;
                 case "projectile_end":
@@ -319,8 +335,8 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
                     }
                     else
                     {
-                        _projectiles.Remove(fact.EntityId);
-                        _player.End(projectile, VfxEndReason.ScopeEnded);
+                        _projectiles.Remove(fact.EntityId, out var stoppedFlight);
+                        _player.End(projectile, stoppedFlight?.ImpactTail == true ? VfxEndReason.Completed : VfxEndReason.ScopeEnded);
                     }
                     break;
                 case "beam":
@@ -362,11 +378,12 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
         _displacementImpacts.Clear();
     }
 
-    private sealed class ProjectileFlight(Vector2 position, Vector2 direction, bool finishSegmentOnEnd = false)
+    private sealed class ProjectileFlight(Vector2 position, Vector2 direction, bool finishSegmentOnEnd = false, bool impactTail = false)
     {
         public Vector2 From = position, To = position, Rendered = position;
         public readonly Vector2 Direction = direction;
         public readonly bool FinishSegmentOnEnd = finishSegmentOnEnd;
+        public readonly bool ImpactTail = impactTail;
         public bool Ending;
         public readonly List<ProjectileImpact> Impacts = [];
         public float Elapsed;

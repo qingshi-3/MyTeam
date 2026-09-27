@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="constant"]
 [sub_resource type="Resource" id="value"]
 script = ExtResource("constant")
-Value = 18
+Value = 12
 [sub_resource type="Resource" id="armor"]
 script = ExtResource("modifier")
 Attribute = 4

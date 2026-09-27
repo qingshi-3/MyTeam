@@ -1034,7 +1034,8 @@ public partial class RelicContractSmoke : Node
         }
     }
 
-    private static void ReactiveCounterRuntimeAndPersistence(ContentRegistry registry)
+    internal static void ReactiveCounterRuntimeAndPersistence(ContentRegistry registry,
+        RelicBattleCompletionReason reason = RelicBattleCompletionReason.PlayerVictory)
     {
         var authored = ReactiveDefinition(
             "fixture_reactive_runtime",
@@ -1110,7 +1111,7 @@ public partial class RelicContractSmoke : Node
             !effects.Any(effect => effect.StartsWith("reactive-b->", StringComparison.Ordinal)))
             throw new InvalidOperationException("typed Reactive Relic counters were not isolated or deterministic");
 
-        var transition = battle.Complete(RelicBattleCompletionReason.PlayerVictory);
+        var transition = battle.Complete(reason);
         if (transition.RemainingBattleInstances != 0 || transition.RemainingCounters != 0 ||
             transition.RemainingSubscriptions != 0 || transition.RemainingModifierHandles != 0 ||
             transition.ProjectedInstances.Any(instance =>
@@ -1120,7 +1121,7 @@ public partial class RelicContractSmoke : Node
             throw new InvalidOperationException("Reactive Relic completion did not reset Battle state or project Run counters");
         combat.Complete(BattleCombatCompletionReason.PlayerVictory, 3);
         attributes.Complete(AttributeScopeCompletionReason.BattleCompleted, 3);
-        var applied = run.Apply(transition);
+        var applied = run.Apply(transition, reason);
         if (!applied.Succeeded || stateA.Counters.Single(counter => counter.CounterId == "alive").Value != 2 ||
             stateB.Counters.Single(counter => counter.CounterId == "alive").Value != 2)
             throw new InvalidOperationException("authenticated Reactive Relic Run counters did not apply");

@@ -6,8 +6,10 @@ using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
 
-public partial class DeploymentCell : Button
+public partial class DeploymentCell : Button, IUiMotionHost
 {
+    public Func<bool> ReduceUiMotion { get; set; } = () => false;
+    private string _displayName = "";
     public event Action<Vector2I, string>? CellSelected;
     public event Action<string, Vector2I>? PieceDropped;
     public Vector2I Cell { get; private set; } = new(-1, -1);
@@ -97,6 +99,8 @@ public partial class DeploymentCell : Button
         _heroBadge ??= GetNode<TextureRect>("%HeroBadge");
         _roleBadge ??= GetNode<TextureRect>("%RoleBadge");
         _reachBadge ??= GetNode<TextureRect>("%ReachBadge");
+        var previousIdentity = PieceId;
+        _displayName = displayName;
         Cell = cell;
         PieceId = pieceId;
         IsLegalTarget = legalTarget;
@@ -109,8 +113,11 @@ public partial class DeploymentCell : Button
         var occupied = !string.IsNullOrEmpty(pieceId);
         _portrait.Visible = occupied;
         if (occupied)
+        {
+            _portrait.FitVisibleArtwork = true;
             _portrait.Bind(portrait, SemanticIcons.Catalog.ResolveIcon(
                 role is UnitRole.Ranged or UnitRole.Artillery ? SemanticIconKeys.Ranged : SemanticIconKeys.Melee));
+        }
         _heroBadge.Texture = SemanticIcons.Catalog.ResolveIcon(SemanticIconKeys.Hero);
         _heroBadge.Visible = occupied && isHero;
         _heroBadge.Modulate = new Color(1f, .82f, .25f);
@@ -129,6 +136,7 @@ public partial class DeploymentCell : Button
         Disabled = false;
         FocusMode = FocusModeEnum.All;
         RefreshVisualRole();
+        if (previousIdentity != PieceId) UiDragVisual.Bound(this, PieceId, "piece_id");
     }
 
     public void ApplyProjection(BattlefieldProjection projection)
@@ -144,10 +152,11 @@ public partial class DeploymentCell : Button
         if (string.IsNullOrWhiteSpace(PieceId)) return default;
         _dragSource = true;
         RefreshVisualRole();
-        var preview = (Control)Duplicate();
-        preview.MouseFilter = MouseFilterEnum.Ignore;
-        SetDragPreview(preview);
-        return new Godot.Collections.Dictionary { ["piece_id"] = PieceId };
+        var preview = GD.Load<PackedScene>("res://scenes/ui/components/HeroDragPreview.tscn").Instantiate<Control>();
+        preview.GetNode<UnitPortrait>("Layout/Portrait").Bind(_portrait.Definition);
+        preview.GetNode<Label>("Layout/Name").Text = _displayName;
+        return UiDragVisual.Begin(this, preview, new Godot.Collections.Dictionary { ["piece_id"] = PieceId },
+            () => ReduceUiMotion(), keepTargetVisible: true);
     }
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
@@ -157,6 +166,7 @@ public partial class DeploymentCell : Button
             _equipmentHover = _equipmentEvaluator?.Invoke(data)
                 ?? EquipmentDropEvaluation.Reject("当前不能更换装备。");
             RefreshVisualRole();
+            UiDragVisual.Aim(data, this, _equipmentHover.Value.Allowed);
             return _equipmentHover.Value.Allowed;
         }
         if (data.VariantType != Variant.Type.Dictionary) return false;
@@ -171,6 +181,7 @@ public partial class DeploymentCell : Button
                 : FormationEvaluation.Reject("该格当前不可部署。"));
         if (_dragHoverRequested is not null) _dragHoverRequested(this, evaluation);
         else SetDragHovered(evaluation);
+        UiDragVisual.Aim(data, this, evaluation?.IsValid == true, !string.IsNullOrEmpty(PieceId));
         return evaluation is not null;
     }
 

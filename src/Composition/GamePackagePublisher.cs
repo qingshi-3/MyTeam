@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using TowerAutobattler.Content;
@@ -96,7 +97,7 @@ public static class GamePackagePublisher
                 authoredPackage.Traits,
                 authoredPackage.TacticalCommands,
                 authoredPackage.TacticalCommandScenes,
-                projectLoadouts);
+                projectLoadouts.Concat(authoredPackage.AdditionalLoadoutReferences).ToArray());
         report.Merge(content.Report);
 
         GameProjectCompilationResult? compiledProject = null;

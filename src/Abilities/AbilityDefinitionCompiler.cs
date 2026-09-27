@@ -350,6 +350,8 @@ public static partial class AbilityDefinitionCompiler
         var operationLabel = $"{label}: operation[{index}]";
         switch (authored)
         {
+            case MatrixAbilityOperationSpec matrix:
+                return MatrixAbilityCompiler.Compile(matrix, label, report);
             case TrampleAbilityOperationSpec trample:
                 if (!float.IsFinite(trample.Range) || trample.Range is <= 0 or > 64 ||
                     !float.IsFinite(trample.Distance) || trample.Distance is <= 0 or > 32 ||

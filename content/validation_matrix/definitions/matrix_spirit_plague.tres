@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/validation_matrix/portraits/matrix_spirit_plague.tres" id="portrait"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="trait"]
+
+
+
+[resource]
+script = ExtResource("script")
+Id = "matrix_spirit_plague"
+DisplayName = "疫焰灵"
+Description = "临时召唤物，不占人口，也不提供羁绊。"
+Portrait = ExtResource("portrait")
+IsHero = false
+Role = 1
+Faction = 6
+MaxHealth = 65
+AttackDamage = 8
+Armor = 0
+AttackCooldown = 1.5
+AttackRange = 0.25
+AttackDelivery = 0
+ProjectileWindupSeconds = 0
+MaxMana = 0
+StartingMana = 0
+ManaPerSecond = 5
+ManaPerAttack = 10
+Tags = Array[StringName]([&"soldier", &"matrix_validation", &"fighter"])
+TraitContributions = []

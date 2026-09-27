@@ -21,7 +21,7 @@ public partial class VfxPreviewController : Control, IVfxStage
     private bool _loop = true;
     private float _castSpeed = 1, _motionSpeed = 1, _flightTime = .78f;
     private float _particleSize = 1, _density = 1, _width = 1, _progress;
-    private bool _eventMode, _manuallyEnded;
+    private bool _eventMode, _manuallyEnded, _sampleEnded;
     private SpriteFrames _defaultSourceFrames = null!;
     public float UnitScale => 1.7f;
     public Vector2 Project(Vector2 point, bool ground) => _stage.Size * .5f + point * 75 + (ground ? new Vector2(0, 35) : Vector2.Zero);
@@ -40,6 +40,7 @@ public partial class VfxPreviewController : Control, IVfxStage
         _list.ItemSelected += index =>
         {
             _selected = _visible[(int)index].StableId;
+            ApplyDefaults();
             Replay();
             _list.EnsureCurrentIsVisible();
         };
@@ -81,8 +82,17 @@ public partial class VfxPreviewController : Control, IVfxStage
         GetNode<Button>("%ContactCue").Pressed += () => _player.Signal("preview", VfxStartCue.Impact);
         GetNode<HSlider>("%Progress").ValueChanged += value =>
         {
+            bool phaseChanged = (_progress > .5f) != (value > .5);
             _progress = (float)value;
-            _player.UpdateContext("preview", PreviewContext(_player.Catalog.Find(_selected)));
+            var definition = _player.Catalog.Find(_selected);
+            if (_eventMode && VfxPreviewSample.Phased(_selected) && phaseChanged)
+            {
+                // Combat starts a new presentation phase when its release fact arrives.
+                // The manual preview must restart that phase's local clock as well.
+                _player.Clear(); _elapsed = 0; _sampleEnded = false;
+                _player.Play(_selected, PreviewContext(definition), "preview");
+            }
+            else _player.UpdateContext("preview", PreviewContext(definition));
         };
         GetNode<Button>("%Skill").Pressed += () =>
         {
@@ -97,17 +107,29 @@ public partial class VfxPreviewController : Control, IVfxStage
         };
         GetNode<Button>("%Reset").Pressed += () =>
         {
-            GetNode<HSlider>("%Radius").Value = 1.5;
-            GetNode<HSlider>("%Distance").Value = 3;
-            GetNode<HSlider>("%Heading").Value = 0;
-            GetNode<HSlider>("%Speed").Value = 1;
-            foreach (var name in new[] { "CastSpeed", "MotionSpeed", "ParticleSize", "Density", "Width" })
-                GetNode<HSlider>("%" + name).Value = 1;
-            GetNode<HSlider>("%FlightTime").Value = .78;
-            GetNode<CheckButton>("%EventMode").ButtonPressed = false;
+            ApplyDefaults();
+            _heading = 0; _castSpeed = _motionSpeed = _particleSize = _density = _width = 1;
+            _player.Speed = 1; _eventMode = false;
+            GetNode<HSlider>("%Heading").SetValueNoSignal(0);
+            foreach (var name in new[] { "Speed", "CastSpeed", "MotionSpeed", "ParticleSize", "Density", "Width" })
+                GetNode<HSlider>("%" + name).SetValueNoSignal(1);
+            GetNode<CheckButton>("%EventMode").SetPressedNoSignal(false);
+            Replay();
         };
         _list.GrabFocus();
+        ApplyDefaults();
         Replay();
+    }
+    private void ApplyDefaults()
+    {
+        var d = _player.Catalog.Find(_selected);
+        _radius = VfxPreviewSample.Radius(d);
+        _distance = VfxPreviewSample.Distance(d);
+        _flightTime = d.FlightDuration > 0 ? d.FlightDuration : VfxPreviewSample.Flight(d.StableId);
+        GetNode<HSlider>("%Radius").SetValueNoSignal(_radius);
+        GetNode<HSlider>("%Radius").Editable = _radius > 0;
+        GetNode<HSlider>("%Distance").SetValueNoSignal(_distance);
+        GetNode<HSlider>("%FlightTime").SetValueNoSignal(_flightTime);
     }
     private void Filter(string query)
     {
@@ -120,12 +142,13 @@ public partial class VfxPreviewController : Control, IVfxStage
     {
         _player.Clear(); _elapsed = 0;
         _manuallyEnded = false;
+        _sampleEnded = false;
         _progress = 0;
         GetNode<HSlider>("%Progress").SetValueNoSignal(0);
         var definition = _player.Catalog.Find(_selected);
         var source = GetNode<AnimatedSprite2D>("%SourceUnit");
         source.SpriteFrames = definition.PreviewFrames ?? _defaultSourceFrames;
-        source.Animation = "idle";
+        source.Animation = _selected == "trample_rush" && source.SpriteFrames.HasAnimation("move") ? "move" : "idle";
         source.Pause();
         source.SetFrameAndProgress(0, 0);
         PositionUnits();
@@ -136,11 +159,12 @@ public partial class VfxPreviewController : Control, IVfxStage
         foreach (var name in new[] { "Impact", "Break" })
             GetNode<Button>("%" + name).Disabled = !definition.ReactsToImpact;
         bool sequence = definition.FlightDuration > 0 || definition.CastDuration > 0;
-        GetNode<CheckButton>("%EventMode").Disabled = !sequence;
+        bool external = VfxPreviewSample.Phased(_selected) || VfxPreviewSample.Moving(_selected);
+        GetNode<CheckButton>("%EventMode").Disabled = !sequence && !external;
         GetNode<Button>("%Fired").Disabled = !sequence || !_eventMode;
         GetNode<Button>("%ContactCue").Disabled = !sequence || !_eventMode;
-        GetNode<HSlider>("%Progress").Editable = sequence && _eventMode;
-        GetNode<HSlider>("%FlightTime").Editable = definition.FlightDuration > 0;
+        GetNode<HSlider>("%Progress").Editable = (sequence || external) && _eventMode;
+        GetNode<HSlider>("%FlightTime").Editable = definition.FlightDuration > 0 || VfxPreviewSample.Moving(_selected);
         GetNode<HSlider>("%Width").Editable = definition.StretchBetween || definition.UsesWidth;
         GetNode<Label>("%CastSpeedLabel").Text = $"施法 {_castSpeed:0.00}×";
         GetNode<Label>("%MotionSpeedLabel").Text = $"流动 {_motionSpeed:0.00}×";
@@ -149,20 +173,28 @@ public partial class VfxPreviewController : Control, IVfxStage
         PositionUnits();
     }
     private Vector2 PreviewDirection => Vector2.FromAngle(Mathf.DegToRad(_heading));
-    private VfxContext PreviewContext(VfxDefinition definition) => new(-PreviewDirection * _distance / 2,
-        (definition.AtSource ? -1 : 1) * PreviewDirection * _distance / 2,
-        definition.Ground || definition.UsesRadius ? _radius : 0,
+    private VfxContext PreviewContext(VfxDefinition definition)
+    {
+        var g = VfxPreviewSample.Geometry(definition, PreviewDirection, _distance,
+            _eventMode && VfxPreviewSample.Moving(_selected) ? _progress * _flightTime : _elapsed, _flightTime);
+        return new(g.Source, g.Target, _radius,
         new(CastSpeed: _castSpeed, MotionSpeed: _motionSpeed, FlightDuration: definition.FlightDuration > 0 ? _flightTime : null,
             ParticleScale: _particleSize, Density: _density, WidthScale: _width,
             Timing: _eventMode && (definition.CastDuration > 0 || definition.FlightDuration > 0) ? VfxTimingMode.Events : VfxTimingMode.Automatic),
-        _progress, PreviewDirection, Body: definition.AtSource ? VfxBodyVisual.Capture(
+        _eventMode ? _progress : null, PreviewDirection, Body: definition.AtSource ? VfxBodyVisual.Capture(
             GetNode<AnimatedSprite2D>("%SourceUnit"), _player.GlobalTransform.AffineInverse()) : null);
+    }
     private void PositionUnits()
     {
-        // These are centered body sprites, not full unit roots. The production
-        // UnitAnimationComponent already offsets its sprite above the ground.
-        GetNode<Node2D>("%SourceUnit").Position = Project(-PreviewDirection * _distance / 2, false);
-        GetNode<Node2D>("%TargetUnit").Position = Project(PreviewDirection * _distance / 2, false);
+        var d = _player.Catalog.Find(_selected);
+        var g = VfxPreviewSample.Geometry(d, PreviewDirection, _distance,
+            _eventMode && VfxPreviewSample.Moving(_selected) ? _progress * _flightTime : _elapsed, _flightTime);
+        var source = GetNode<AnimatedSprite2D>("%SourceUnit");
+        var target = GetNode<AnimatedSprite2D>("%TargetUnit");
+        source.Position = Project(g.SourceUnit, false); target.Position = Project(g.TargetUnit, false);
+        source.Visible = VfxPreviewSample.SelfCentered(d) || VfxPreviewSample.Directional(d);
+        target.Visible = VfxPreviewSample.ShowTarget(d);
+        source.FlipH = PreviewDirection.X < 0; target.FlipH = PreviewDirection.X >= 0;
     }
     public override void _Process(double delta)
     {
@@ -176,11 +208,19 @@ public partial class VfxPreviewController : Control, IVfxStage
         // Recreating them periodically cuts the orbit and repeats the entrance.
         // After explicit End/Break, only an explicit Replay should restore one.
         var definition = _player.Catalog.Find(_selected);
-        if (definition.AtSource) _player.UpdateContext("preview", PreviewContext(definition));
+        _player.UpdateContext("preview", PreviewContext(definition));
+        float sampleEnd = VfxPreviewSample.EndAt(definition, _flightTime);
+        if (!_eventMode && !_sampleEnded && _elapsed >= sampleEnd)
+        {
+            _sampleEnded = true;
+            if (_selected == "acid_spit") _player.Impact("preview");
+            _player.End("preview", VfxEndReason.Completed);
+        }
         var parameters = PreviewContext(definition).Playback!;
         float duration = definition.Duration + (definition.CastDuration + definition.ActionSpan) * (1 / _castSpeed - 1)
             + (definition.FlightDuration > 0 ? _flightTime - definition.FlightDuration : 0);
-        if (_loop && !_manuallyEnded && !definition.Persistent && parameters.Timing == VfxTimingMode.Automatic &&
+        if (float.IsFinite(sampleEnd)) duration = sampleEnd + definition.ReleaseDuration;
+        if (_loop && !_manuallyEnded && (!definition.Persistent || float.IsFinite(sampleEnd)) && parameters.Timing == VfxTimingMode.Automatic &&
             _player.ActiveCount == 0 && _elapsed > Mathf.Max(1.6f, duration + .35f)) Replay();
         GetNode<Label>("%Clock").Text = $"{_elapsed:0.00} 秒  ·  {_player.Speed:0.00}×  ·  {_player.ActiveCount} 实例";
     }

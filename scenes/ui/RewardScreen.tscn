@@ -21,10 +21,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 48
-theme_override_constants/margin_top = 34
-theme_override_constants/margin_right = 48
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 42
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 56
 [node name="Panel" type="PanelContainer" parent="Center"]
 theme_override_styles/panel = SubResource("CanvasPanel")
 layout_mode = 2
@@ -33,10 +33,12 @@ layout_mode = 2
 theme_override_constants/separation = 12
 [node name="Title" type="Label" parent="Center/Panel/Layout"]
 layout_mode = 2
+horizontal_alignment = 1
 theme_type_variation = &"TitleLabel"
 text = "选择奖励"
 [node name="Hint" type="Label" parent="Center/Panel/Layout"]
 layout_mode = 2
+horizontal_alignment = 1
 autowrap_mode = 2
 text = "选择一项带走。"
 [node name="OfferBody" type="HBoxContainer" parent="Center/Panel/Layout"]
@@ -51,13 +53,20 @@ layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 3
 
-[node name="Choices" type="GridContainer" parent="Center/Panel/Layout/OfferBody/ChoiceScroll"]
+[node name="CardCanvas" type="MarginContainer" parent="Center/Panel/Layout/OfferBody/ChoiceScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="Choices" type="GridContainer" parent="Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas" node_paths=PackedStringArray("ScrollOwner")]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 18
 theme_override_constants/v_separation = 18
 columns = 3
 script = ExtResource("Grid")
+ScrollOwner = NodePath("../..")
 
 [node name="ConvertButton" type="Button" parent="Center/Panel/Layout"]
 theme_type_variation = &"SecondaryButton"

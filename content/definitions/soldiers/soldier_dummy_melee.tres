@@ -7,7 +7,7 @@
 script = ExtResource("script")
 Id = "soldier_dummy_melee"
 DisplayName = "近战小兵假人"
-Description = "测试用：800 生命、每秒一次近战普攻，单次 12 伤害，无技能和隐藏加成。"
+Description = "近战训练假人，只会进行普通攻击。"
 Portrait = ExtResource("portrait")
 IsHero = false
 IsEnemy = false

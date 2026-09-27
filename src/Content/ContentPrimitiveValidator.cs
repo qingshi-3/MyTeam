@@ -91,6 +91,7 @@ internal static class ContentPrimitiveValidator
                     if (displacement.ImpactStatus is { } impact && !statuses.ContainsKey(impact.StableId))
                         report.Error($"{ability.StableId}: unknown displacement impact status '{impact.StableId}'.");
                     break;
+                case CompiledMatrixOperation:
                 case CompiledEffectAbilityOperation:
                 case CompiledCooldownAbilityOperation:
                 case CompiledApplyStatusAbilityOperation:

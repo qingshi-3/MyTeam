@@ -1,0 +1,8 @@
+[gd_scene format=3]
+[ext_resource type="Texture2D" path="res://assets/vfx/dreams-circle/DCSD_SmokeTile001.png" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/acid_droplet.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+shader = ExtResource("shader")
+[node name="Drop" type="Sprite2D"]
+texture = ExtResource("surface")
+material = SubResource("material")

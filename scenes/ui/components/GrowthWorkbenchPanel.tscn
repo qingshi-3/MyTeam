@@ -1,0 +1,206 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/UI/GrowthWorkbenchPanel.cs" id="1"]
+
+[node name="GrowthWorkbenchPanel" type="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+script = ExtResource("1")
+
+[node name="Inventory" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"WorkbenchSubtitle"
+text = "通用材料 0 · 研究 0"
+
+[node name="PhaseHint" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="GrowthRules" type="FoldableContainer" parent="."]
+layout_mode = 2
+focus_mode = 2
+title = "成长规则"
+folded = true
+theme_type_variation = &"BattleLabFold"
+
+[node name="Rules" type="Label" parent="GrowthRules"]
+layout_mode = 2
+text = "生产按英雄初始属性计算并逐次累加，成长仅在本局有效。进入节点时，生产者与受益者需要已经上阵；满足条件后，战斗中阵亡不会取消本次收益。最终节点不产出。法术在战斗正式开始时消耗，预览与整备不会消耗库存。"
+autowrap_mode = 2
+theme_type_variation = &"SecondaryLabel"
+
+[node name="Scroll" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 3
+follow_focus = true
+
+[node name="Content" type="VBoxContainer" parent="Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="Production" type="PanelContainer" parent="Scroll/Content"]
+layout_mode = 2
+theme_type_variation = &"WorkbenchReport"
+
+[node name="Layout" type="VBoxContainer" parent="Scroll/Content/Production"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Scroll/Content/Production/Layout"]
+layout_mode = 2
+theme_type_variation = &"WorkbenchSectionTitle"
+text = "工坊分配"
+
+[node name="Selectors" type="HBoxContainer" parent="Scroll/Content/Production/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Producer" type="OptionButton" parent="Scroll/Content/Production/Layout/Selectors"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "生产者"
+
+[node name="ProductionMode" type="OptionButton" parent="Scroll/Content/Production/Layout/Selectors"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "培养方向"
+
+[node name="ProductionTarget" type="OptionButton" parent="Scroll/Content/Production/Layout/Selectors"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "受益英雄"
+
+[node name="ProductionPreview" type="Label" parent="Scroll/Content/Production/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="ApplyAssignment" type="Button" parent="Scroll/Content/Production/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+text = "保存分配"
+
+[node name="Ascension" type="PanelContainer" parent="Scroll/Content"]
+layout_mode = 2
+theme_type_variation = &"WorkbenchReport"
+
+[node name="Layout" type="VBoxContainer" parent="Scroll/Content/Ascension"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Scroll/Content/Ascension/Layout"]
+layout_mode = 2
+theme_type_variation = &"WorkbenchSectionTitle"
+text = "一次升阶"
+
+[node name="AscensionHero" type="OptionButton" parent="Scroll/Content/Ascension/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AscensionPreview" type="Label" parent="Scroll/Content/Ascension/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Ascend" type="Button" parent="Scroll/Content/Ascension/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+text = "升阶"
+
+[node name="DiscoverySection" type="PanelContainer" parent="Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"WorkbenchReport"
+
+[node name="Layout" type="VBoxContainer" parent="Scroll/Content/DiscoverySection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DiscoveryPrompt" type="Label" parent="Scroll/Content/DiscoverySection/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="DiscoveryChoices" type="VBoxContainer" parent="Scroll/Content/DiscoverySection/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Spells" type="PanelContainer" parent="Scroll/Content"]
+layout_mode = 2
+theme_type_variation = &"WorkbenchReport"
+
+[node name="Layout" type="VBoxContainer" parent="Scroll/Content/Spells"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="Scroll/Content/Spells/Layout"]
+layout_mode = 2
+theme_type_variation = &"WorkbenchSectionTitle"
+text = "研究法术"
+
+[node name="SpellRow" type="HBoxContainer" parent="Scroll/Content/Spells/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Spell" type="OptionButton" parent="Scroll/Content/Spells/Layout/SpellRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CraftSpell" type="Button" parent="Scroll/Content/Spells/Layout/SpellRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "兑换"
+
+[node name="SpellPreview" type="Label" parent="Scroll/Content/Spells/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="EquipRow" type="HBoxContainer" parent="Scroll/Content/Spells/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SpellTarget" type="OptionButton" parent="Scroll/Content/Spells/Layout/EquipRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EquipSpell" type="Button" parent="Scroll/Content/Spells/Layout/EquipRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "设为下场预案"
+
+[node name="UnequipSpell" type="Button" parent="Scroll/Content/Spells/Layout/EquipRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "清除预案"
+
+[node name="EquippedSpell" type="Label" parent="Scroll/Content/Spells/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="Message" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+autowrap_mode = 2
+
+[node name="GrowthLedger" type="Label" parent="Scroll/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 2

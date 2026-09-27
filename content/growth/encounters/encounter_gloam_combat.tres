@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="EncounterDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/EncounterDefinition.cs" id="1"]
+[ext_resource type="Resource" path="res://content/project/pools/pool_gloam_enemies.tres" id="2"]
+[ext_resource type="Resource" path="res://content/project/pools/pool_gloam_floor_rules.tres" id="3"]
+
+[ext_resource type="Script" path="res://src/Project/EncounterCompositionDefinition.cs" id="composition"]
+
+[sub_resource type="Resource" id="swarm"]
+script = ExtResource("composition")
+StableId = "gloam_combat_swarm"
+DisplayName = "尸群掩护"
+MinLocalFloor = 0
+MaxLocalFloor = 4
+EnemyIds = PackedStringArray("enemy_blood_reaver", "enemy_carrion", "enemy_carrion", "enemy_hexer", "enemy_hexer")
+Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(7, 1), Vector2i(7, 4), Vector2i(9, 2), Vector2i(9, 4)])
+
+[sub_resource type="Resource" id="beam"]
+script = ExtResource("composition")
+StableId = "gloam_combat_beam"
+DisplayName = "掠夺者光阵"
+MinLocalFloor = 0
+MaxLocalFloor = 4
+EnemyIds = PackedStringArray("enemy_blood_reaver", "enemy_blood_reaver", "enemy_carrion", "enemy_es04_prism_caster", "enemy_hexer")
+Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(7, 3), Vector2i(7, 4), Vector2i(9, 2), Vector2i(9, 4)])
+
+[resource]
+script = ExtResource("1")
+StableId = "encounter_gloam_combat"
+NodeType = 0
+TitlePattern = "{region}遭遇战"
+EnemyPool = ExtResource("2")
+FloorRulePool = ExtResource("3")
+BaseEnemyCount = 4
+LeadEnemyId = "enemy_es04_prism_caster"
+EnemyHealthMultiplier = 2.1875
+EnemyDamageMultiplier = 1.61
+LocalHealthMultipliers = PackedFloat32Array(1, 1.12, 1.28, 1.5, 1.5)
+LocalDamageMultipliers = PackedFloat32Array(1, 1.08, 1.18, 1.3, 1.3)
+Compositions = [SubResource("swarm"), SubResource("beam")]

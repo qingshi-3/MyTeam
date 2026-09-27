@@ -186,7 +186,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
             var rosterCount = app.ActiveRun.Roster.Count;
             root.Flow.ShowRecruitment();
             await ProcessFrames(2);
-            var recruitCard = root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices")
+            var recruitCard = root.GetNode<Container>("Screens/RecruitmentScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices")
                 .GetChildren().OfType<UnitChoiceCard>().FirstOrDefault()
                 ?? throw new InvalidOperationException("run-flow fixture has no recruitment card");
             await ActivateFocused(recruitCard);
@@ -196,7 +196,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
             var rewardItemCount = app.ActiveRun.Items.Count;
             root.Flow.ShowCombatReward();
             await ProcessFrames(2);
-            var rewardCard = root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/Choices")
+            var rewardCard = root.GetNode<Container>("Screens/RewardScreen/Center/Panel/Layout/OfferBody/ChoiceScroll/CardCanvas/Choices")
                 .GetChildren().OfType<ChoiceCard>().FirstOrDefault()
                 ?? throw new InvalidOperationException("run-flow fixture has no reward card");
             await Click(rewardCard);
@@ -486,7 +486,7 @@ public partial class GameUiInteractionReliabilityContractSmoke : Node
                 throw new InvalidOperationException("missing roster hero: " + instance.ContentId);
             var slot = run.Deployment.IndexOf(instance.InstanceId);
             pieces.Add(new DeploymentUnitViewModel(instance.InstanceId, definition.DisplayName, definition.Description,
-                instance.HealthRatio, definition.Role, definition.AttackRange, true, slot,
+                definition.MaxHealth, definition.Role, definition.AttackRange, true, slot,
                 slot >= 0 ? BattlefieldLayout.PlayerDeploymentCells[slot] : null, definition.Portrait));
         }
         return pieces;

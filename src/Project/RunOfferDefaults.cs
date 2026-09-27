@@ -10,6 +10,36 @@ namespace TowerAutobattler.Project;
 // as authored offers. Runtime never dispatches a rest/event-specific mutation.
 public static class RunOfferDefaults
 {
+    // Keep frozen opportunities and rewards. Retire hero-wound choices and extend an
+    // unclaimed legacy camp with the distinct Run-health choice, without save-on-read.
+    public static PendingRunOffer RefreshHealthChoices(PendingRunOffer offer, CompiledRunRules? rules = null)
+    {
+        if (offer.Kind == RunOfferKind.Rest && offer.OfferId.EndsWith(":default_rest", StringComparison.Ordinal))
+        {
+            var choices = offer.Choices.Where(choice => choice.StableId != "recover").ToImmutableArray();
+            if (rules is not null && choices.All(choice => choice.StableId != "recover_run_health"))
+                choices = choices.Add(RunHealthRecovery(rules));
+            return offer with { Choices = choices };
+        }
+        if (offer.Kind != RunOfferKind.Event || !offer.OfferId.EndsWith(":default_event", StringComparison.Ordinal))
+            return offer;
+        return offer with
+        {
+            Choices = offer.Choices.Select(choice => choice.StableId == "risky" &&
+                choice.FailureOperations.Any(operation => operation.Kind == RunOperationKind.RecoverRoster)
+                ? choice with
+                {
+                    Description = $"{choice.SuccessChance:P0} 概率获得 {choice.Operations.Where(operation => operation.Kind == RunOperationKind.GainGold).Sum(operation => operation.Amount)} 金币；失败无收益。",
+                    FailureOperations = choice.FailureOperations.Where(operation => operation.Kind != RunOperationKind.RecoverRoster).ToImmutableArray()
+                } : choice).ToImmutableArray()
+        };
+    }
+
+    private static CompiledRunChoice RunHealthRecovery(CompiledRunRules rules) =>
+        new("recover_run_health", "休养整顿", $"恢复 {rules.RestRunHealthRecovery} 全局生命，与领取军费二选一。",
+            [new(RunConditionKind.RunHealthBelowMaximum)], [],
+            [new(RunOperationKind.RecoverRunHealth, rules.RestRunHealthRecovery)], FailureOperations: []);
+
     public static CompiledCampaign WithDefaults(CompiledCampaign campaign, CompiledRunRules rules, Func<string, CatalogEntry> entry)
     {
         var offers = campaign.RunOffers.ToBuilder();
@@ -43,17 +73,15 @@ public static class RunOfferDefaults
         if (!offers.ContainsKey(RunOfferKind.Event))
             offers.Add(RunOfferKind.Event, new CompiledRunOffer("default_event", RunOfferKind.Event, "旅途抉择", true, false, null, default, 0,
             [
-                new("risky", "冒险开启", $"{rules.RiskyEventSuccessChance:P0} 概率获得 {rules.RiskyEventSuccessGold} 金币；失败损失 {rules.RiskyEventHealthLoss:P0} 生命比例。", [], [],
+                new("risky", "冒险开启", $"{rules.RiskyEventSuccessChance:P0} 概率获得 {rules.RiskyEventSuccessGold} 金币；失败无收益。", [], [],
                     [new(RunOperationKind.GainGold, rules.RiskyEventSuccessGold)], rules.RiskyEventSuccessChance,
-                    [new(RunOperationKind.RecoverRoster, Ratio: -rules.RiskyEventHealthLoss, MinimumHealthRatio: rules.RiskyEventMinimumHealth)]),
+                    []),
                 new("safe", "谨慎绕行", $"获得 {rules.SafeEventGold} 金币。", [], [], [new(RunOperationKind.GainGold, rules.SafeEventGold)], FailureOperations: [])
             ]));
         if (!offers.ContainsKey(RunOfferKind.Rest))
             offers.Add(RunOfferKind.Rest, new CompiledRunOffer("default_rest", RunOfferKind.Rest, "队伍休整", true, false, null, default, 0,
             [
-                new("recover", "全军休整", $"起始英雄恢复 {rules.RestHeroHealing:P0}，其余英雄恢复 {rules.RestSoldierHealing:P0}。", [], [],
-                    [new(RunOperationKind.RecoverRoster, Ratio: rules.RestHeroHealing, Target: RunRosterTarget.StartingHero),
-                     new(RunOperationKind.RecoverRoster, Ratio: rules.RestSoldierHealing, Target: RunRosterTarget.OtherHeroes)], FailureOperations: []),
+                RunHealthRecovery(rules),
                 new("gold", "整理战利品", $"获得 {rules.RestGold} 金币。", [], [], [new(RunOperationKind.GainGold, rules.RestGold)], FailureOperations: [])
             ]));
         return campaign with { RunOffers = offers.ToImmutable() };
