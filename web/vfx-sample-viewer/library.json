@@ -1,0 +1,537 @@
+[
+  {
+    "id": "rend",
+    "name": "交叉撕裂",
+    "group": "斩击与命中",
+    "status": "保留并复核",
+    "note": "保留前后两次交叉撕裂和相互叠接的余痕，避免缩短已确认的双击读感。",
+    "before": "library/before-rend.mp4",
+    "after": "library/after-rend.mp4"
+  },
+  {
+    "id": "burst",
+    "name": "范围冲击",
+    "group": "范围与空间",
+    "status": "保留并复核",
+    "note": "保留逐层扩散、逐层退去的冲击波；展示中心回到受击者脚下。",
+    "before": "library/before-burst.mp4",
+    "after": "library/after-burst.mp4"
+  },
+  {
+    "id": "shield",
+    "name": "守护屏障",
+    "group": "防护与状态",
+    "status": "本轮细化",
+    "note": "缩窄三条光轨与亮头，降低壳面亮度。护罩仍完整包住角色，受击时有独立涟漪。",
+    "before": "library/before-shield.mp4",
+    "after": "library/after-shield.mp4"
+  },
+  {
+    "id": "projectile",
+    "name": "默认箭矢",
+    "group": "投射与光束",
+    "status": "保留并复核",
+    "note": "保留普通箭矢的小尺寸，现在沿两端点飞行，暂停和单步可检查位置。",
+    "before": "library/before-projectile.mp4",
+    "after": "library/after-projectile.mp4"
+  },
+  {
+    "id": "beam",
+    "name": "能量束",
+    "group": "投射与光束",
+    "status": "本轮细化",
+    "note": "略加宽短光束，让束芯在常规尺寸下更清楚，保持迅速接通与快速收净。",
+    "before": "library/before-beam.mp4",
+    "after": "library/after-beam.mp4"
+  },
+  {
+    "id": "impact",
+    "name": "擦伤命中",
+    "group": "斩击与命中",
+    "status": "保留并复核",
+    "note": "保留小面积、短时间的擦击火花，避免普通命中变成大爆炸。",
+    "before": "library/before-impact.mp4",
+    "after": "library/after-impact.mp4"
+  },
+  {
+    "id": "heal",
+    "name": "治疗涌流",
+    "group": "治疗与能量",
+    "status": "已认可基准",
+    "note": "保留已认可的绿色加号，独立上浮、错开消失。",
+    "before": "library/before-heal.mp4",
+    "after": "library/after-heal.mp4"
+  },
+  {
+    "id": "firefall",
+    "name": "火球轰击",
+    "group": "火焰与元素",
+    "status": "保留并复核",
+    "note": "保留抛物线火球、接触火环与余烬，源端和目标同时入镜。",
+    "before": "library/before-firefall.mp4",
+    "after": "library/after-firefall.mp4"
+  },
+  {
+    "id": "cleave",
+    "name": "横扫斩击",
+    "group": "斩击与命中",
+    "status": "本轮细化",
+    "note": "保留施放者为圆心的180度横扫；减弱整片泛光，让亮度集中在向前推进的刃缘。",
+    "before": "library/before-cleave.mp4",
+    "after": "library/after-cleave.mp4"
+  },
+  {
+    "id": "lightning",
+    "name": "雷霆落击",
+    "group": "火焰与元素",
+    "status": "保留并复核",
+    "note": "保留已确认的分叉主干、短促补闪及落点碎光。",
+    "before": "library/before-lightning.mp4",
+    "after": "library/after-lightning.mp4"
+  },
+  {
+    "id": "frost",
+    "name": "冰霜爆裂",
+    "group": "火焰与元素",
+    "status": "本轮细化",
+    "note": "压低结晶破裂时的额外闪白，保留晶面、先长成再碎裂的层次。",
+    "before": "library/before-frost.mp4",
+    "after": "library/after-frost.mp4"
+  },
+  {
+    "id": "flamethrower",
+    "name": "烈焰吐息",
+    "group": "火焰与元素",
+    "status": "本轮细化",
+    "note": "旧喷焰加宽下游火体，打散火团并降低重叠不透明度；窄根开始供给，断流沿喷射方向传递。",
+    "before": "library/before-flamethrower.mp4",
+    "after": "library/after-flamethrower.mp4"
+  },
+  {
+    "id": "burn",
+    "name": "持续灼烧",
+    "group": "火焰与元素",
+    "status": "保留并复核",
+    "note": "保留此前反馈较好的轻量附着火焰，不重新堆厚火团遮住角色。",
+    "before": "library/before-burn.mp4",
+    "after": "library/after-burn.mp4"
+  },
+  {
+    "id": "poison",
+    "name": "腐蚀毒沼",
+    "group": "范围与空间",
+    "status": "本轮细化",
+    "note": "液斑边岸更不规则，内部明暗差缩小；鼓泡、破裂、小滴与涟漪保持独立。",
+    "before": "library/before-poison.mp4",
+    "after": "library/after-poison.mp4"
+  },
+  {
+    "id": "empower",
+    "name": "战意强化",
+    "group": "防护与状态",
+    "status": "本轮细化",
+    "note": "主光簇从9束减为7束，拉开主体与细余光的尺寸差，保留向上加速的强化动作。",
+    "before": "library/before-empower.mp4",
+    "after": "library/after-empower.mp4"
+  },
+  {
+    "id": "weaken",
+    "name": "虚弱侵蚀",
+    "group": "防护与状态",
+    "status": "保留并复核",
+    "note": "保留独立下压的小符号与错开的消失，状态标记保持轻量。",
+    "before": "library/before-weaken.mp4",
+    "after": "library/after-weaken.mp4"
+  },
+  {
+    "id": "stun",
+    "name": "眩晕星环",
+    "group": "防护与状态",
+    "status": "保留并复核",
+    "note": "保留头顶星点旋转，角色主体保持可见。",
+    "before": "library/before-stun.mp4",
+    "after": "library/after-stun.mp4"
+  },
+  {
+    "id": "summon",
+    "name": "召唤法阵",
+    "group": "范围与空间",
+    "status": "保留并复核",
+    "note": "保留脚下法阵与三层向上解体的能量，修正为召唤点居中展示。",
+    "before": "library/before-summon.mp4",
+    "after": "library/after-summon.mp4"
+  },
+  {
+    "id": "taunt_call",
+    "name": "嘲讽怒吼",
+    "group": "防护与状态",
+    "status": "保留并复核",
+    "note": "保留施放者脚下的实际怒吼范围，修正中心与默认半径，展示完整向外声压。",
+    "before": "library/before-taunt_call.mp4",
+    "after": "library/after-taunt_call.mp4"
+  },
+  {
+    "id": "taunted",
+    "name": "被嘲讽 · 怒意",
+    "group": "防护与状态",
+    "status": "保留并复核",
+    "note": "保留头顶独立怒意标记，与瞬时怒吼分开。",
+    "before": "library/before-taunted.mp4",
+    "after": "library/after-taunted.mp4"
+  },
+  {
+    "id": "arcane_missile",
+    "name": "奥术飞弹",
+    "group": "投射与光束",
+    "status": "保留并复核",
+    "note": "保留弧线弹道、源端亮点与命中余光；切换时恢复其自身飞行时长。",
+    "before": "library/before-arcane_missile.mp4",
+    "after": "library/after-arcane_missile.mp4"
+  },
+  {
+    "id": "piercing_thrust",
+    "name": "穿刺突击",
+    "group": "斩击与命中",
+    "status": "保留并复核",
+    "note": "保留尖端快速伸出、停住和余迹消退，改用近身距离展示。",
+    "before": "library/before-piercing_thrust.mp4",
+    "after": "library/after-piercing_thrust.mp4"
+  },
+  {
+    "id": "whirlwind",
+    "name": "回旋斩",
+    "group": "斩击与命中",
+    "status": "保留并复核",
+    "note": "保留围绕施放者的短弧旋击，展示以施放者居中。",
+    "before": "library/before-whirlwind.mp4",
+    "after": "library/after-whirlwind.mp4"
+  },
+  {
+    "id": "healing_field",
+    "name": "治疗领域",
+    "group": "治疗与能量",
+    "status": "本轮细化",
+    "note": "降低边圈与重复波纹的亮度，让场内独立治疗加号成为主体。",
+    "before": "library/before-healing_field.mp4",
+    "after": "library/after-healing_field.mp4"
+  },
+  {
+    "id": "frozen",
+    "name": "冰封状态",
+    "group": "火焰与元素",
+    "status": "本轮细化",
+    "note": "与冰晶共用的额外闪白减弱，保留冻结状态的晶体驻留。",
+    "before": "library/before-frozen.mp4",
+    "after": "library/after-frozen.mp4"
+  },
+  {
+    "id": "mana_restore",
+    "name": "法力汇聚",
+    "group": "治疗与能量",
+    "status": "保留并复核",
+    "note": "保留向身体收拢的蓝色碎光与收束点，避免与治疗上浮混淆。",
+    "before": "library/before-mana_restore.mp4",
+    "after": "library/after-mana_restore.mp4"
+  },
+  {
+    "id": "life_drain",
+    "name": "生命汲取",
+    "group": "治疗与能量",
+    "status": "保留并复核",
+    "note": "保留由目标向施法者输送的细粒与持续连接，两端角色完整展示。",
+    "before": "library/before-life_drain.mp4",
+    "after": "library/after-life_drain.mp4"
+  },
+  {
+    "id": "meteor_rain",
+    "name": "陨火连轰",
+    "group": "火焰与元素",
+    "status": "保留并复核",
+    "note": "保留错峰落下的多颗火球及各自落点，避免合并成单次大闪光。",
+    "before": "library/before-meteor_rain.mp4",
+    "after": "library/after-meteor_rain.mp4"
+  },
+  {
+    "id": "thunderstorm",
+    "name": "雷暴连击",
+    "group": "火焰与元素",
+    "status": "保留并复核",
+    "note": "保留范围内各自落下的雷击与独立余电，默认范围恢复为技能设定。",
+    "before": "library/before-thunderstorm.mp4",
+    "after": "library/after-thunderstorm.mp4"
+  },
+  {
+    "id": "wind_vortex",
+    "name": "风暴旋涡",
+    "group": "火焰与元素",
+    "status": "保留并复核",
+    "note": "保留窄根、宽顶、略弯曲的风柱，以及地面风裙与上升尘粒。",
+    "before": "library/before-wind_vortex.mp4",
+    "after": "library/after-wind_vortex.mp4"
+  },
+  {
+    "id": "ground_spikes",
+    "name": "裂地石柱",
+    "group": "火焰与元素",
+    "status": "本轮细化",
+    "note": "去掉岩面大幅提亮与黄色到达闪光，保留石块分面、错峰出土与碎屑。",
+    "before": "library/before-ground_spikes.mp4",
+    "after": "library/after-ground_spikes.mp4"
+  },
+  {
+    "id": "arc_lightning",
+    "name": "连结电弧",
+    "group": "火焰与元素",
+    "status": "保留并复核",
+    "note": "保留连接真实两端的分叉电弧，补齐源端角色展示。",
+    "before": "library/before-arc_lightning.mp4",
+    "after": "library/after-arc_lightning.mp4"
+  },
+  {
+    "id": "root_bind",
+    "name": "荆棘束缚",
+    "group": "防护与状态",
+    "status": "保留并复核",
+    "note": "保留从脚下生长、绕身收拢的两根荆棘及落脚光，维持植物质感。",
+    "before": "library/before-root_bind.mp4",
+    "after": "library/after-root_bind.mp4"
+  },
+  {
+    "id": "silence",
+    "name": "封声禁言",
+    "group": "防护与状态",
+    "status": "保留并复核",
+    "note": "保留头顶的禁言符号，控制大小避免遮挡面部。",
+    "before": "library/before-silence.mp4",
+    "after": "library/after-silence.mp4"
+  },
+  {
+    "id": "cleanse",
+    "name": "澄明净化",
+    "group": "防护与状态",
+    "status": "保留并复核",
+    "note": "保留腰部短亮、向上掠过的光弧与后续细尘。",
+    "before": "library/before-cleanse.mp4",
+    "after": "library/after-cleanse.mp4"
+  },
+  {
+    "id": "teleport",
+    "name": "折跃传送",
+    "group": "范围与空间",
+    "status": "保留并复核",
+    "note": "保留两端独立壳层与碎屑；预览修正为同一角色在释放时移到终点，残光各自退去。",
+    "before": "library/before-teleport.mp4",
+    "after": "library/after-teleport.mp4"
+  },
+  {
+    "id": "spell_cast",
+    "name": "施法短光",
+    "group": "投射与光束",
+    "status": "保留并复核",
+    "note": "保留短促源端施法亮点，区别于命中目标时的火花。",
+    "before": "library/before-spell_cast.mp4",
+    "after": "library/after-spell_cast.mp4"
+  },
+  {
+    "id": "piercing_arrow_charge",
+    "name": "贯穿箭 · 方向预警与蓄力",
+    "group": "投射与光束",
+    "status": "保留并复核",
+    "note": "保留前向范围提示和源端蓄力；展示时使用自身范围，避免继承其它技能半径。",
+    "before": "library/before-piercing_arrow_charge.mp4",
+    "after": "library/after-piercing_arrow_charge.mp4"
+  },
+  {
+    "id": "piercing_beam_charge",
+    "name": "贯穿光束 · 方向预警与蓄力",
+    "group": "投射与光束",
+    "status": "保留并复核",
+    "note": "保留前向光束提示和蓝色源端蓄力，和实发光束分开列出。",
+    "before": "library/before-piercing_beam_charge.mp4",
+    "after": "library/after-piercing_beam_charge.mp4"
+  },
+  {
+    "id": "piercing_beam",
+    "name": "贯穿光束 · 释放",
+    "group": "投射与光束",
+    "status": "保留并复核",
+    "note": "保留贯穿区域的瞬时光束及快速消退，两端同时展示。",
+    "before": "library/before-piercing_beam.mp4",
+    "after": "library/after-piercing_beam.mp4"
+  },
+  {
+    "id": "piercing_arrow",
+    "name": "贯阵重箭 · 飞行",
+    "group": "投射与光束",
+    "status": "保留并复核",
+    "note": "保留箭头与短尾，补上箭体飞行与到达后的收尾。",
+    "before": "library/before-piercing_arrow.mp4",
+    "after": "library/after-piercing_arrow.mp4"
+  },
+  {
+    "id": "cast_blood",
+    "name": "血鼓·血能释放",
+    "group": "治疗与能量",
+    "status": "保留并复核",
+    "note": "保留贴合施法者轮廓的血色能量，使用角色自身帧展示。",
+    "before": "library/before-cast_blood.mp4",
+    "after": "library/after-cast_blood.mp4"
+  },
+  {
+    "id": "cast_mend",
+    "name": "续命针·回春施法",
+    "group": "治疗与能量",
+    "status": "保留并复核",
+    "note": "保留贴合施法者轮廓的治疗辉光，使用角色自身帧展示。",
+    "before": "library/before-cast_mend.mp4",
+    "after": "library/after-cast_mend.mp4"
+  },
+  {
+    "id": "trample_warning",
+    "name": "冲阵 · 真实身体宽度预警",
+    "group": "近期技能",
+    "status": "保留并复核",
+    "note": "保留冲锋前的方向提示；同段展示起跑和冲锋，便于核对完整节奏。",
+    "before": "library/before-trample_warning.mp4",
+    "after": "crafted/animation-rush.mp4",
+    "detail": "crafted.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "trample_rush",
+    "name": "冲阵 · 肩前气流与尘尾",
+    "group": "近期技能",
+    "status": "已认可基准",
+    "note": "保留已认可的跑动、加宽肩侧气浪与沿路独立烟尘。",
+    "before": "library/before-trample_rush.mp4",
+    "after": "crafted/animation-rush.mp4",
+    "detail": "crafted.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "mechanical_hook",
+    "name": "动力飞钩 · 绳链与金属爪",
+    "group": "近期技能",
+    "status": "保留并复核",
+    "note": "保留已提速的出钩与回拖、金属爪和密实链条。",
+    "before": "library/before-mechanical_hook.mp4",
+    "after": "refined/feedback-mechanical_hook.mp4",
+    "detail": "refined.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "duel_mark",
+    "name": "决斗 · 双方剑徽",
+    "group": "防护与状态",
+    "status": "本轮细化",
+    "note": "剑徽和外圈降亮，实验室恢复正式脚下标记的尺寸，不再按区域半径放大。",
+    "before": "library/before-duel_mark.mp4",
+    "after": "library/after-duel_mark.mp4"
+  },
+  {
+    "id": "grit_charge",
+    "name": "蓄怒重拳 · 锁向蓄力",
+    "group": "近期技能",
+    "status": "已认可基准",
+    "note": "保留已认可重拳动作的蓄力段，与释放段合在同一条完整实录中。",
+    "before": "library/before-grit_charge.mp4",
+    "after": "crafted/animation-punch.mp4",
+    "detail": "crafted.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "grit_punch",
+    "name": "蓄怒重拳 · 前向冲击",
+    "group": "近期技能",
+    "status": "已认可基准",
+    "note": "保留已认可的慢蓄势、加速出拳、独立收势，以及匹配角色动作的特效节奏。",
+    "before": "library/before-grit_punch.mp4",
+    "after": "crafted/animation-punch.mp4",
+    "detail": "crafted.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "cone_breath",
+    "name": "扇形吐息",
+    "group": "近期技能",
+    "status": "已认可基准",
+    "note": "保留已认可喷火模板：口部蓄热、持续喷流、下游余火，前摇没有两条硬线。",
+    "before": "library/before-cone_breath.mp4",
+    "after": "crafted/polish-fire.mp4",
+    "detail": "crafted.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "returning_blade",
+    "name": "往返旋刃",
+    "group": "近期技能",
+    "status": "保留并复核",
+    "note": "保留金属四刃、自旋残影和世界空间短尾，按真实去回路径展示。",
+    "before": "library/before-returning_blade.mp4",
+    "after": "refined/after-returning_blade.mp4",
+    "detail": "refined.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "position_swap",
+    "name": "成对换位",
+    "group": "范围与空间",
+    "status": "保留并复核",
+    "note": "保留两端同步光缝、脚下印记与余屑，展示完整换位。",
+    "before": "library/before-position_swap.mp4",
+    "after": "refined/after-position_swap.mp4",
+    "detail": "refined.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "ground_fissure",
+    "name": "定向地裂",
+    "group": "近期技能",
+    "status": "保留并复核",
+    "note": "保留不规则裂缝及山体、烟尘一起缩放，完整页可查看0.5倍、1倍和2倍尺寸。",
+    "before": "library/before-ground_fissure.mp4",
+    "after": "refined/scale-normal-ground_fissure.mp4",
+    "detail": "refined.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "rock_raise",
+    "name": "岩体升起",
+    "group": "近期技能",
+    "status": "保留并复核",
+    "note": "保留哑光石材、俯侧视浅弧与身前间距修订；完整页可切换左右和斜向。",
+    "before": "library/before-rock_raise.mp4",
+    "after": "refined/clearance-rock_raise.mp4",
+    "detail": "refined.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  },
+  {
+    "id": "shell_break",
+    "name": "甲壳碎裂",
+    "group": "防护与状态",
+    "status": "本轮细化",
+    "note": "甲片改为不等大、不等速、错开剥离，按重力下落；材质压暗，减少整齐圆环感。",
+    "before": "library/before-shell_break.mp4",
+    "after": "library/after-shell_break.mp4"
+  },
+  {
+    "id": "claw_swipe",
+    "name": "横扫爪痕",
+    "group": "斩击与命中",
+    "status": "本轮细化",
+    "note": "爪痕沿挥击方向划出，亮刃先到、余痕随后侵蚀消散，替换整张贴片直接淡出。",
+    "before": "library/before-claw_swipe.mp4",
+    "after": "library/after-claw_swipe.mp4"
+  },
+  {
+    "id": "acid_spit",
+    "name": "酸液滴",
+    "group": "近期技能",
+    "status": "保留并复核",
+    "note": "保留黏稠弹体、实际接触飞溅和较大的地面液斑。",
+    "before": "library/before-acid_spit.mp4",
+    "after": "refined/feedback-acid_spit.mp4",
+    "detail": "refined.html",
+    "comparison": "沿用该技能最近一次完整动作实录；本轮保留其既有表现。"
+  }
+]

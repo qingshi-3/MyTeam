@@ -1,0 +1,95 @@
+[
+  {
+    "title": "喷火",
+    "samples": [
+      {
+        "name": "灼热吐息 · Searing Breath",
+        "kind": "efk",
+        "url": "blazeforge/VFX/EVFXForge11_05_SearingBreath.efkefc",
+        "fit": 0.28,
+        "duration": 2,
+        "note": "炉喉蜥候选：原样例可见定向火流、火星与大面积暗层。优先拆用火流；需核对暗层的源效果/混合原因、嘴部挂点、70°范围、三段供给和可中断收尾。不是即插即用。"
+      },
+      {
+        "name": "火焰圆阵 · 不作吐息",
+        "kind": "efk",
+        "url": "blazeforge/VFX/EVFXForge11_02_BlazeConjuration.efkefc",
+        "duration": 2,
+        "note": "圆阵形态，用作对照；不能仅因为同属火焰就替换喷吐动作。"
+      }
+    ]
+  },
+  {
+    "title": "蓄意轰拳",
+    "samples": [
+      {
+        "name": "突击重击 · Thrusting Stroke",
+        "kind": "efk",
+        "url": "strike/VFX/effects/EVFX03_08_ThrustingStroke.efkefc",
+        "rotation": [
+          0,
+          -30,
+          0
+        ],
+        "fit": 0.7,
+        "duration": 2,
+        "note": "优先试用释放层：可见定向亮条与接触爆点。需拆掉目标命中编排，挂到拳前，匹配0.6秒蓄力后3格长、1.6格宽的一次冲击。"
+      },
+      {
+        "name": "气功冲击 · Qi Blast",
+        "kind": "efk",
+        "url": "warrior-monk/VFX/EVFXParagon08_04_QiBlast.efkefc",
+        "fit": 0.65,
+        "duration": 3,
+        "note": "已看阶段：先聚成亮核，随后扩成球形气流。可研究蓄力层；不能把这颗气团直接当作3格长的单次拳劲。"
+      },
+      {
+        "name": "一二连击 · 对照",
+        "kind": "efk",
+        "url": "strike/VFX/effects/EVFX03_12_OneTwoStrike.efkefc",
+        "fit": 0.7,
+        "duration": 2,
+        "note": "双段打击对照。即便视觉好看，也不能直接代替只有一次伤害的重拳。"
+      },
+      {
+        "name": "环轨重击 · Orbital Smash",
+        "kind": "efk",
+        "url": "strike/VFX/effects/EVFX03_02_OrbitalSmash.efkefc",
+        "rotation": [
+          0,
+          -30,
+          0
+        ],
+        "fit": 0.45,
+        "duration": 3,
+        "note": "对照候选：核对中心与落击方向，不把目标点爆发当作向前贯出的拳劲。"
+      }
+    ]
+  },
+  {
+    "title": "冲锋的气流候选",
+    "samples": [
+      {
+        "name": "上扬阵风 · Lifting Gust",
+        "kind": "efk",
+        "url": "stormforge/VFX/EVFXForge05_06_LiftingGust.efkefc",
+        "rotation": [
+          15,
+          0,
+          0
+        ],
+        "fit": 0.7,
+        "duration": 3,
+        "note": "已看阶段：气带绕中心向上扬起，排除作为水平冲锋主体。起步烟尘/气环更适合看匹配表里的Dash作者演示。"
+      },
+      {
+        "name": "风系环身光 · Stormforge Aura",
+        "kind": "efk",
+        "url": "stormforge/VFX/EVFXForge05_09_StormforgeAura.efkefc",
+        "fit": 0.7,
+        "duration": 3,
+        "note": "环身气流候选。需核对是否可拆成前缘和后拖痕；整套光环不能直接当持续冲锋特效。"
+      }
+    ]
+  }
+]

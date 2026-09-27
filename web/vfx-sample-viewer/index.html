@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>免费成品特效 · 样例对比</title>
+<style>
+:root{color-scheme:dark;--paper:#20272d;--text:#edf0ed;--muted:#b3bdbf;--line:#49545b;--accent:#d6b77b}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--text);font:15px/1.65 "Microsoft YaHei UI","Microsoft YaHei",sans-serif}main{max-width:1400px;margin:auto;padding:32px}h1{font-size:29px;font-weight:600;letter-spacing:.02em;margin:0 0 8px}p{margin:0}header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:25px}header p{color:var(--muted)}.badge{color:var(--accent);white-space:nowrap}.toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:16px 0;border-block:1px solid var(--line);margin-bottom:24px}button,select{font:inherit;color:inherit;background:#333e46;border:1px solid #657079;border-radius:5px;padding:7px 12px;cursor:pointer}button:hover,select:hover{border-color:var(--accent)}button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.primary{background:var(--accent);color:#252b30;border-color:var(--accent)}label{display:inline-flex;align-items:center;gap:8px}.spacer{flex:1}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}article{min-width:0}h2{font-size:20px;margin:0 0 10px}.stage{height:320px;position:relative;overflow:hidden;background:#303b39;border:1px solid #52635f;border-radius:6px}.stage[data-bg="light"]{background:#aba99a}.stage[data-bg="black"]{background:#080b0f}.ground{position:absolute;left:8%;right:8%;top:70%;height:1px;background:#b4bca638}.actor{position:absolute;width:100px;height:100px;object-fit:contain;left:50%;top:50%;transform:translate(-50%,-40%);image-rendering:pixelated}.stage canvas{position:absolute;width:100%;height:100%;inset:0}.stage .loading{position:absolute;left:10px;bottom:8px;font-size:12px;color:#d9dfd9;z-index:3}.choice{display:block;width:100%;margin:12px 0 8px}.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;gap:8px}.note{margin-top:10px;min-height:65px;color:#d0d7d4;font-size:14px}.timeline{display:flex;gap:10px;align-items:center;margin-top:8px}.timeline input{width:100%;accent-color:var(--accent)}.time{font-size:12px;min-width:63px;font-variant-numeric:tabular-nums}.info{border-top:1px solid var(--line);margin-top:24px;padding-top:18px;color:var(--muted);font-size:13px}.info a{color:#d6bd8b}.info p+p{margin-top:7px}.error{color:#ffb3a8!important}.individual{padding:4px 10px;font-size:13px} @media(max-width:850px){main{padding:20px}.grid{grid-template-columns:1fr}.stage{height:330px}.note{min-height:0}header{display:block}.badge{display:block;margin-top:8px}}
+</style>
+<main>
+<header><div><h1>免费成品特效</h1><p>斩击、治疗与魔法爆发。先看动作，再决定用哪一套。</p></div><span class="badge">Dreams Circle 免费样例</span></header>
+<nav style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px"><a style="color:#d6bd8b" href="matches.html">英雄与技能匹配表</a><a style="color:#d6bd8b" href="?set=actions">喷火 · 重拳 · 冲锋候选</a><a style="color:#d6bd8b" href="/">斩击 · 治疗 · 爆发</a></nav>
+<div class="toolbar">
+<button id="replay" class="primary">全部重播</button><button id="pause">暂停</button>
+<label>速度 <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1× 原速</option><option value="2">2×</option></select></label>
+<label>尺寸 <select id="scale"><option value="0.65">小</option><option value="1" selected>中</option><option value="1.4">大</option></select></label>
+<label>背景 <select id="background"><option value="field">灰绿</option><option value="light">浅底</option><option value="black">暗底</option></select></label>
+<span class="spacer"></span><label><input id="loop" type="checkbox" checked>循环</label><label><input id="actor" type="checkbox" checked>角色参照</label>
+</div>
+<div id="cards" class="grid"></div>
+<div class="info">
+<p>PNG 样例：<a href="https://dreams-circle.itch.io/fa-01" target="_blank" rel="noreferrer">The Free Archives Vol.1</a> · 粒子样例：<a href="https://dreams-circle.itch.io/evfx-slash" target="_blank" rel="noreferrer">EVFX Slash</a>、<a href="https://dreams-circle.itch.io/evfx-medic" target="_blank" rel="noreferrer">EVFX Medic</a>、<a href="https://dreams-circle.itch.io/evfx-blazeforge" target="_blank" rel="noreferrer">EVFX Blazeforge</a></p>
+<p>动作候选：<a href="https://dreams-circle.itch.io/evfx-strike" target="_blank" rel="noreferrer">EVFX Strike</a>、<a href="https://dreams-circle.itch.io/evfx-warrior-monk" target="_blank" rel="noreferrer">EVFX Warrior Monk</a>、<a href="https://dreams-circle.itch.io/evfx-stormforge" target="_blank" rel="noreferrer">EVFX Stormforge</a></p>
+<p>The Free Archives / EVFX Slash / EVFX Medic / EVFX Blazeforge / EVFX Strike / EVFX Warrior Monk / EVFX Stormforge © Dreams Circle。免费样例允许商用和修改，需署名；不可单独转售或分发素材。</p>
+<p>此页保留原素材样例；喷火、重拳和冲锋的游戏适配结果见<a href="crafted.html">制作结果</a>。角色仅作尺寸参照；未模拟战场投影、伤害范围和多人叠加。播放保留样例动画，未添加目标闪白或音效。</p>
+</div>
+</main>
+<script src="/samples/runtime/effekseer.js"></script>
+<script type="module" src="viewer.js"></script>
+</html>

@@ -1,0 +1,694 @@
+{
+  "retrieved": "2026-09-25",
+  "sources": {
+    "fa01": "https://dreams-circle.itch.io/fa-01",
+    "slash": "https://dreams-circle.itch.io/evfx-slash",
+    "medic": "https://dreams-circle.itch.io/evfx-medic",
+    "blazeforge": "https://dreams-circle.itch.io/evfx-blazeforge",
+    "strike": "https://dreams-circle.itch.io/evfx-strike",
+    "warrior-monk": "https://dreams-circle.itch.io/evfx-warrior-monk",
+    "stormforge": "https://dreams-circle.itch.io/evfx-stormforge",
+    "runtime": "https://github.com/effekseer/EffekseerForWebGL/tree/master/docs"
+  },
+  "role": "local audition; not game integration",
+  "files": [
+    {
+      "path": "actor.png",
+      "sha256": "37c078812dd6639c7bf1c4a47f3b86b50079acfdc3f186bb3badc121846d031d",
+      "bytes": 500
+    },
+    {
+      "path": "blazeforge/EVFX_Blazeforge_Sample_Edition_Manual.txt",
+      "sha256": "b185429701d439d0ced900247ef5da499203a488642bec7d584cd7d758043e1e",
+      "bytes": 5037
+    },
+    {
+      "path": "blazeforge/VFX/EVFXForge11_02_BlazeConjuration.efkefc",
+      "sha256": "e4ba674407d0912090eccbd81ca627f590eb61230fc2316f8074e2276e911f43",
+      "bytes": 47113
+    },
+    {
+      "path": "blazeforge/VFX/EVFXForge11_05_SearingBreath.efkefc",
+      "sha256": "0b295f59e2060e7567644f891390352ec55025ea0c5613e5aa7dd90dfdf67ef2",
+      "bytes": 25145
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Aura_001.png",
+      "sha256": "d4ea029871dc4b9e71557028e60960e063177d70602c9e5da39bc0720c477be1",
+      "bytes": 49269
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Aura_004.png",
+      "sha256": "809fe0c290d62f8faaa4404dde3483ef6f0863c9366f5663b9bba685089ae4c3",
+      "bytes": 51846
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Aura_008.png",
+      "sha256": "d4be31198066d85303504d53b4857af43be4fc84af3d46b032c6ff0ed0fb1634",
+      "bytes": 104437
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Aura_008V.png",
+      "sha256": "aa953330cc861c7fccd4e29691d4b45838dd99dbee8cb8abe238393da1c03140",
+      "bytes": 132161
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Circle_G075.png",
+      "sha256": "e756e1642595f9596821b52f746c68fc3eac20af8746ea6afd68b749ce7f59c6",
+      "bytes": 22160
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Circle_G100.png",
+      "sha256": "66b23ce791c4260ed8e00b7155a9abe99be3fa91e2a3e8c81466e1dfce1bb735",
+      "bytes": 20726
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Glyph_M001.png",
+      "sha256": "c7f4881699ab6f83895f7dbe7b11217c7e9bc48b3f5cb87a28524fa395a685a6",
+      "bytes": 20638
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Glyph_Ring001.png",
+      "sha256": "5bd46562dbc37f4bc31bc5c9aab2c3e9980c2b778c7ca1b5bbbe884220eda583",
+      "bytes": 7596
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Glyph_Ring002.png",
+      "sha256": "2d322bcc8209dcfe4a8b6c1b64a5b8219282ca46d9cfca6d709d779fd7d6a8ca",
+      "bytes": 4925
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Glyph_Ring003.png",
+      "sha256": "4dc6ecc5e302fecd6cc9a8ecd0b8d61e0196783439846f523f624cc873a3657e",
+      "bytes": 3251
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Material_Embers_001.png",
+      "sha256": "e1488e386a7302ff02c83447ec79dabf02b2b2ecb8ca371f5c9071c5ad3012b5",
+      "bytes": 37519
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Material_Flame_002.png",
+      "sha256": "3147cdfa5a7cbd26d5321041e3371780ac7e58e476ad2b0d65d72e1059dc7df8",
+      "bytes": 194466
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Material_Flame_005.png",
+      "sha256": "dcd7a64e1bbdb50fdccc45f190bec32c1a662256784c795f1b16f369c177036d",
+      "bytes": 94030
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Material_FlameArray_001.png",
+      "sha256": "0fcad84a9210ba5f512dde92352e4aba2e7bbf7e6ca11d650fc6504433b26567",
+      "bytes": 237871
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Material_Stardust001.png",
+      "sha256": "1f90ba58ef79f6c26c1aff77465fad9663e14e7bb0008cdd802b91d09fef7e2d",
+      "bytes": 424595
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Oval_G100.png",
+      "sha256": "f18aba2d30bf080d66ae75bf1f70b838f19780506723b256e8a9c000e574f8c1",
+      "bytes": 11431
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_RocksArray_001.png",
+      "sha256": "4e3d6202b3ffe049052039fe3fd5970d4512b40f584d974fe5034083f0980349",
+      "bytes": 15559
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_SmokeTile001.png",
+      "sha256": "a8044e8d5f76ea8eafa607183d35ef0986a9ae07f18d40e3eaa0d75d28f3a3c8",
+      "bytes": 84895
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_Star4_T002.png",
+      "sha256": "158ce950cc6c5765148924ebca20e425fbe44d9e4a15a52621ce5ab5b7edee24",
+      "bytes": 17062
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_UV_Distortion_002.png",
+      "sha256": "e53cd9493f56e503d3f77e869743d09ba41670d2e6e3ab2791dedbe2be3ca7df",
+      "bytes": 343049
+    },
+    {
+      "path": "blazeforge/VFX/Texture/DCSD_UV_Distortion_004.png",
+      "sha256": "f000f6085463200bac2b98342e789bc5eaa83b623f640d1e33f8cacd0ee3d211",
+      "bytes": 210142
+    },
+    {
+      "path": "fa01/60FPS/60FPS_FA01_01_Slash.png",
+      "sha256": "87402456b170edcb99a7c1ab846f84251db5b6399e8ba26e5682c92d7add05f9",
+      "bytes": 575566
+    },
+    {
+      "path": "fa01/60FPS/60FPS_FA01_07_Cure.png",
+      "sha256": "ca02238522c4d5bb837d26031f0740a4cc5d9d8dd60bac9737462dbc8684409f",
+      "bytes": 2574555
+    },
+    {
+      "path": "fa01/60FPS/60FPS_FA01_10_Burst.png",
+      "sha256": "8be2a77eed23cbc3ea4ef5dca3a656ff4e01e4df698b843e444571655693569e",
+      "bytes": 2920325
+    },
+    {
+      "path": "fa01/FA01_Manual.txt",
+      "sha256": "9773c9fd2a8a35d0ff384112cd386b17238af379efdc1c34082c67e5bb60d4ba",
+      "bytes": 3399
+    },
+    {
+      "path": "medic/EVFX_Medic_Sample_Edition_Manual.txt",
+      "sha256": "1c7592dc7e23aa4804aeb8dbf461b3e705109c2deb95ef8b9b976c7b05206a17",
+      "bytes": 5024
+    },
+    {
+      "path": "medic/VFX/EVFXParagon10_01_MedicEmblem.efkefc",
+      "sha256": "2c90cf3d161bb2ce8008190b741b621cee8c4f71b724b13d9d5103eddbe07297",
+      "bytes": 26175
+    },
+    {
+      "path": "medic/VFX/EVFXParagon10_03_DiagnosticEye.efkefc",
+      "sha256": "a0950cdab0a8b0e913af6629d58f94b6b34295ebcafda83ba95166df089a542e",
+      "bytes": 23997
+    },
+    {
+      "path": "medic/VFX/Materials/Dissolve.efkmat",
+      "sha256": "fc6008b550e6785ab7ad3b9a93435100895eafd21aa085a795769a1bb1b534cc",
+      "bytes": 6332
+    },
+    {
+      "path": "medic/VFX/Materials/SMN_DoubleMaskedDissolve.efkmat",
+      "sha256": "190d87a5fbedac98915f9518c1a7829a2d3d6da1b9c53d03c56f9cdcdd251d45",
+      "bytes": 6564
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Aura_002.png",
+      "sha256": "dc18f5af2d0d8b6f3a712a396e4c4fad5fc3cee9d57c1a47283b13952697c1a7",
+      "bytes": 61535
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Circle_G050.png",
+      "sha256": "c0e1af0ef307592665ffae5e8f26eccfa10e611d9f904e3e59cffba1712ddf41",
+      "bytes": 21117
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Circle_G075.png",
+      "sha256": "e756e1642595f9596821b52f746c68fc3eac20af8746ea6afd68b749ce7f59c6",
+      "bytes": 22160
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Circle_G100.png",
+      "sha256": "66b23ce791c4260ed8e00b7155a9abe99be3fa91e2a3e8c81466e1dfce1bb735",
+      "bytes": 20726
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Circle_G100_Rainbow_002.png",
+      "sha256": "d33d05a2deff77f3ccad0c3d2301c73b55b3beabb0a95bfa6364ca85e89562c4",
+      "bytes": 47245
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Crest_Paragon10.png",
+      "sha256": "1bd77d21311c2beb97158101bfed55f0d505a48a4600a07395326589d348730b",
+      "bytes": 13349
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Crest_Paragon10_BlurMask.png",
+      "sha256": "82f3dffd07026a6ffdfbabb64916240036cdb9824e640c1d1abd6a82df4d035e",
+      "bytes": 22751
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Crest_Paragon10_Mask.png",
+      "sha256": "bb3356cbe1cfad508f9e91f98728ccab8a213eee339650dbd00733778838f42c",
+      "bytes": 13453
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Debris_001.png",
+      "sha256": "42a940658c3699f8e51427d74ca64082b3b3ac6e2826e6eb7f59d640e27f4685",
+      "bytes": 12490
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_GradientV_Scan.png",
+      "sha256": "c61a88ef37214b45c003c3c59514baec5568c845189134c01152399d6f278df0",
+      "bytes": 3430
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_GradientV_Wide.png",
+      "sha256": "15b75cadb344bb995e6e2a70ffabef990530da380ef3a2713693fd47c950c335",
+      "bytes": 7827
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Heart_001.png",
+      "sha256": "4e9f316c40dc65d8593bca59b9e1cb90681d2e39b22df60ed39205e86a69d35b",
+      "bytes": 17677
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Mask_Biorhythm.png",
+      "sha256": "40b9e220e964437d3dc28ec72d906a9baf649b1fd8765a2ddd0bdf1fcdffdf84",
+      "bytes": 10779
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Mask_Circle_G010.png",
+      "sha256": "2b6f409ae5112fa639901799a562a02ff234a753cf0bc3e10f2d700288f59e76",
+      "bytes": 11166
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Mask_Circle_G050.png",
+      "sha256": "2fc0d32031275b1b4520b2c3c8aa365684b97b56840795cfa02485d255f8f04d",
+      "bytes": 13508
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Mask_EKG.png",
+      "sha256": "d62042e03d18a67f8cf925e4bffc9577e22ba018be3fed13ac9bfce2ee16c341",
+      "bytes": 12547
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Material_BWSpots_001.png",
+      "sha256": "da63e77e7c24622d125c875f0a24ca948285a2b8e34c6c1da950f89fa39e151d",
+      "bytes": 488225
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Material_Flame_003.png",
+      "sha256": "826241b3d52fed2a9dd329bc217f706b0f378101f16343fa17a0309803b0469f",
+      "bytes": 189673
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Material_Flame_005.png",
+      "sha256": "dcd7a64e1bbdb50fdccc45f190bec32c1a662256784c795f1b16f369c177036d",
+      "bytes": 94030
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Material_Rainbow.png",
+      "sha256": "7317f4ed0a62a61513790d2d67b0a8d4f87518126dd7ffc877ad8aac0c214dd5",
+      "bytes": 204715
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Material_RainbowV.png",
+      "sha256": "1c5955cd89a6e4d5c307aec7d9bf9f6028c59e4ee90b8b85704447a03936f653",
+      "bytes": 208264
+    },
+    {
+      "path": "medic/VFX/Texture/DCSD_Material_Wireframe_001.png",
+      "sha256": "f328b0d6d843b22728a575d15af30d09721fc15e4c56e8cbf6c42063b6fef44f",
+      "bytes": 2815
+    },
+    {
+      "path": "png-animations.json",
+      "sha256": "b3efce82919fbaf9b4f85d85db9a4348fd309f2b8ef3d041d2e18bd143bef37e",
+      "bytes": 93345
+    },
+    {
+      "path": "runtime/effekseer.d.ts",
+      "sha256": "3c7a504cf26610aae8e9279c7ea1cf9fdc271f1410b1e731868dc431e42e288e",
+      "bytes": 17539
+    },
+    {
+      "path": "runtime/effekseer.js",
+      "sha256": "515bf5f0a5bc6c665e3d9884490f986518c3b3c382b8fe04de4ac07a8333b7ad",
+      "bytes": 216603
+    },
+    {
+      "path": "runtime/effekseer.wasm",
+      "sha256": "ad29bcee74521e6f103b30a4bab012ecd4b6cd57f06053e3cfe87af26f6ff775",
+      "bytes": 1201973
+    },
+    {
+      "path": "runtime/LICENSE",
+      "sha256": "9686573243a6e4732edef9e39ac1356371dc7f4a17d995bea32777e36463cb29",
+      "bytes": 1084
+    },
+    {
+      "path": "slash/EVFX_Slash_Sample_Edition_Manual.txt",
+      "sha256": "a83907c757ec1ba67dd1f50d72ac81b4e9b7ac600ffaff7d8a5b557f68d6f891",
+      "bytes": 4482
+    },
+    {
+      "path": "slash/VFX/effects/EVFX02_02_TwinEdge.efkefc",
+      "sha256": "b40a262113b77f2f5bd7c487222e403158c011be800856b460c830e4bc837db8",
+      "bytes": 14006
+    },
+    {
+      "path": "slash/VFX/effects/EVFX02_09_EruptionClaw.efkefc",
+      "sha256": "c919ec388ad6d0e199eab3639a46ede37ce05aa297c0dd08c5ed25de2e419a54",
+      "bytes": 33005
+    },
+    {
+      "path": "slash/VFX/effects/EVFX02_11_QuickBlade.efkefc",
+      "sha256": "3e78726e0c32405d68eb699fc10239dcd639913343b933425b2bafcf0b41a881",
+      "bytes": 10167
+    },
+    {
+      "path": "slash/VFX/effects/Model/DCBM_Sphere.efkmodel",
+      "sha256": "6cd8682b43cf80e9bba55cc0c444ed8e0a7e633d26fe62b25bbfe558b59ce6f6",
+      "bytes": 163224
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_Aura_002.png",
+      "sha256": "dc18f5af2d0d8b6f3a712a396e4c4fad5fc3cee9d57c1a47283b13952697c1a7",
+      "bytes": 61535
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_Aura_003.png",
+      "sha256": "0b6f4b731442f5fb7fee72c34b0ec7c6e9bdc281dd4a26b65a6ca19d7fb6d7fc",
+      "bytes": 108300
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_Aura_006.png",
+      "sha256": "78fb788b7252acb164fe10f80178a10efefc80b303afa5dd62376e3be18ff3f5",
+      "bytes": 63520
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_Circle_G050.png",
+      "sha256": "c0e1af0ef307592665ffae5e8f26eccfa10e611d9f904e3e59cffba1712ddf41",
+      "bytes": 21117
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_Circle_G075.png",
+      "sha256": "e756e1642595f9596821b52f746c68fc3eac20af8746ea6afd68b749ce7f59c6",
+      "bytes": 22160
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_Circle_G090.png",
+      "sha256": "bc440141fa04dcd68a14ff747c98ecdf83fd014615683fd5c1efa0731499a1ae",
+      "bytes": 21810
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_Circle_G100.png",
+      "sha256": "66b23ce791c4260ed8e00b7155a9abe99be3fa91e2a3e8c81466e1dfce1bb735",
+      "bytes": 20726
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_Slash_Motion_001.png",
+      "sha256": "bf5f7a966b3be8766cb8413c4d590e0883c53f4775d8a040a2dbb08cc7be5f13",
+      "bytes": 14506
+    },
+    {
+      "path": "slash/VFX/effects/Texture/DCSD_SlashTrail_003.png",
+      "sha256": "caa6f78254ed2d936f6670f3694114248ffd66f79a65e3d7351929c2f46f6bb8",
+      "bytes": 95066
+    },
+    {
+      "path": "stormforge/EVFX_Stormforge_Sample_Edition_Manual.txt",
+      "sha256": "1ceefcbbce39421bcf15da1c11d52d5165f9e47b20ff8c18c9a74fc02b3f39d6",
+      "bytes": 5033
+    },
+    {
+      "path": "stormforge/VFX/EVFXForge05_06_LiftingGust.efkefc",
+      "sha256": "2643968e85190356a8ce6c489529269dc310599296272c771899d7979cb82baa",
+      "bytes": 20560
+    },
+    {
+      "path": "stormforge/VFX/EVFXForge05_09_StormforgeAura.efkefc",
+      "sha256": "40451db961a945f7e6c721125c5fca90e875a7d067a4b5cadd792a9a9731565f",
+      "bytes": 19424
+    },
+    {
+      "path": "stormforge/VFX/Texture/DCSD_Aura_Windblast_001.png",
+      "sha256": "3c6927b190b458c25d71e7d942fb0f35132ed45dc23a1bdabbb917ebb478990a",
+      "bytes": 20738
+    },
+    {
+      "path": "stormforge/VFX/Texture/DCSD_Aura_Windblast_002.png",
+      "sha256": "3f48d92e882c364e967b6c60c9a544a68ce819c9cc4d8df15bfa94a246faea9f",
+      "bytes": 26281
+    },
+    {
+      "path": "stormforge/VFX/Texture/DCSD_Circle_G100.png",
+      "sha256": "66b23ce791c4260ed8e00b7155a9abe99be3fa91e2a3e8c81466e1dfce1bb735",
+      "bytes": 20726
+    },
+    {
+      "path": "stormforge/VFX/Texture/DCSD_Debris_001.png",
+      "sha256": "42a940658c3699f8e51427d74ca64082b3b3ac6e2826e6eb7f59d640e27f4685",
+      "bytes": 12490
+    },
+    {
+      "path": "stormforge/VFX/Texture/DCSD_SmokeTile001.png",
+      "sha256": "a8044e8d5f76ea8eafa607183d35ef0986a9ae07f18d40e3eaa0d75d28f3a3c8",
+      "bytes": 84895
+    },
+    {
+      "path": "stormforge/VFX/Texture/DCSD_UV_Distortion_001.png",
+      "sha256": "3aa5e0bdd16f7d01deae0a2f5e2d008f748d4f317fa744498812700a74bdec4e",
+      "bytes": 150206
+    },
+    {
+      "path": "strike/EVFX_Slash_Sample_Edition_Manual.txt",
+      "sha256": "a83907c757ec1ba67dd1f50d72ac81b4e9b7ac600ffaff7d8a5b557f68d6f891",
+      "bytes": 4482
+    },
+    {
+      "path": "strike/VFX/effects/EVFX03_02_OrbitalSmash.efkefc",
+      "sha256": "7a394d23179730751a57bd517a921836f8890d319cf5dc42c68c6bc187cbbfc0",
+      "bytes": 16101
+    },
+    {
+      "path": "strike/VFX/effects/EVFX03_08_ThrustingStroke.efkefc",
+      "sha256": "97f9ee70aa46db8e16b7600c97f3d71fc595795e70456fd7904aeecd11bd8852",
+      "bytes": 13897
+    },
+    {
+      "path": "strike/VFX/effects/EVFX03_12_OneTwoStrike.efkefc",
+      "sha256": "12eab9334f9414ff78aea6beadcf2cd7cadf1a4dadfb9a4cfc774129ba8acaf2",
+      "bytes": 14221
+    },
+    {
+      "path": "strike/VFX/effects/Model/DCBM_Sphere.efkmodel",
+      "sha256": "6cd8682b43cf80e9bba55cc0c444ed8e0a7e633d26fe62b25bbfe558b59ce6f6",
+      "bytes": 163224
+    },
+    {
+      "path": "strike/VFX/effects/Texture/DCSD_Aura_005.png",
+      "sha256": "c50009c6bb85d6cc11a43786f0b750e84e7d7ce2c14c3edf552ac00bdfe8f51a",
+      "bytes": 47134
+    },
+    {
+      "path": "strike/VFX/effects/Texture/DCSD_Aura_Windblast_002.png",
+      "sha256": "3f48d92e882c364e967b6c60c9a544a68ce819c9cc4d8df15bfa94a246faea9f",
+      "bytes": 26281
+    },
+    {
+      "path": "strike/VFX/effects/Texture/DCSD_Aura_Windblast_002B.png",
+      "sha256": "9256ac2db3a670c6869a645461095c32db1115526f9fe01da9dbc630b57b05f7",
+      "bytes": 23900
+    },
+    {
+      "path": "strike/VFX/effects/Texture/DCSD_Circle_G050.png",
+      "sha256": "c0e1af0ef307592665ffae5e8f26eccfa10e611d9f904e3e59cffba1712ddf41",
+      "bytes": 21117
+    },
+    {
+      "path": "strike/VFX/effects/Texture/DCSD_Circle_G100.png",
+      "sha256": "66b23ce791c4260ed8e00b7155a9abe99be3fa91e2a3e8c81466e1dfce1bb735",
+      "bytes": 20726
+    },
+    {
+      "path": "strike/VFX/effects/Texture/DCSD_Slash_Motion_001.png",
+      "sha256": "bf5f7a966b3be8766cb8413c4d590e0883c53f4775d8a040a2dbb08cc7be5f13",
+      "bytes": 14506
+    },
+    {
+      "path": "warrior-monk/EVFX_WarriorMonk_Sample_Edition_Manual.txt",
+      "sha256": "0d6641912429a78fb2bf807b25525891619d748b2730b9766a5ad7fb139ad266",
+      "bytes": 5060
+    },
+    {
+      "path": "warrior-monk/VFX/EVFXParagon08_01_WarriorMonkEmblem.efkefc",
+      "sha256": "2b023843fe47b4fbd07a6a4d1baf5c222770fd8fdf5766d5cce88c7aa7b3c5b8",
+      "bytes": 26177
+    },
+    {
+      "path": "warrior-monk/VFX/EVFXParagon08_04_QiBlast.efkefc",
+      "sha256": "660d35398a7ca58491d34ad4dbbe63d4f3289a4e906d2666ec2548206be50d9f",
+      "bytes": 32909
+    },
+    {
+      "path": "warrior-monk/VFX/Materials/Dissolve.efkmat",
+      "sha256": "fc6008b550e6785ab7ad3b9a93435100895eafd21aa085a795769a1bb1b534cc",
+      "bytes": 6332
+    },
+    {
+      "path": "warrior-monk/VFX/Materials/SMN_DoubleMaskedDissolve.efkmat",
+      "sha256": "190d87a5fbedac98915f9518c1a7829a2d3d6da1b9c53d03c56f9cdcdd251d45",
+      "bytes": 6564
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Aura_002.png",
+      "sha256": "dc18f5af2d0d8b6f3a712a396e4c4fad5fc3cee9d57c1a47283b13952697c1a7",
+      "bytes": 61535
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Aura_003.png",
+      "sha256": "0b6f4b731442f5fb7fee72c34b0ec7c6e9bdc281dd4a26b65a6ca19d7fb6d7fc",
+      "bytes": 108300
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Aura_008.png",
+      "sha256": "d4be31198066d85303504d53b4857af43be4fc84af3d46b032c6ff0ed0fb1634",
+      "bytes": 104437
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Aura_008V.png",
+      "sha256": "aa953330cc861c7fccd4e29691d4b45838dd99dbee8cb8abe238393da1c03140",
+      "bytes": 132161
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Aura_Windblast_002.png",
+      "sha256": "3f48d92e882c364e967b6c60c9a544a68ce819c9cc4d8df15bfa94a246faea9f",
+      "bytes": 26281
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Aura_Windblast_002B.png",
+      "sha256": "9256ac2db3a670c6869a645461095c32db1115526f9fe01da9dbc630b57b05f7",
+      "bytes": 23900
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Circle_G050.png",
+      "sha256": "c0e1af0ef307592665ffae5e8f26eccfa10e611d9f904e3e59cffba1712ddf41",
+      "bytes": 21117
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Circle_G090.png",
+      "sha256": "bc440141fa04dcd68a14ff747c98ecdf83fd014615683fd5c1efa0731499a1ae",
+      "bytes": 21810
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Circle_G100.png",
+      "sha256": "66b23ce791c4260ed8e00b7155a9abe99be3fa91e2a3e8c81466e1dfce1bb735",
+      "bytes": 20726
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Circle_G100_Rainbow_002.png",
+      "sha256": "d33d05a2deff77f3ccad0c3d2301c73b55b3beabb0a95bfa6364ca85e89562c4",
+      "bytes": 47245
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Crest_Paragon08.png",
+      "sha256": "df9d61a621ab2d1dd5cbaec0bc084521d93234150c133846d3d5c07206ae0828",
+      "bytes": 12656
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Crest_Paragon08_BlurMask.png",
+      "sha256": "875bd1f539977b184bd0ecf599715278247f304c12cffc72fabaa6924273f2a7",
+      "bytes": 41111
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Crest_Paragon08_Mask.png",
+      "sha256": "b503c88a4a3f80fea3285a1da832826d6d46cc60fe318559979881e598a841af",
+      "bytes": 15132
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Debris_001.png",
+      "sha256": "42a940658c3699f8e51427d74ca64082b3b3ac6e2826e6eb7f59d640e27f4685",
+      "bytes": 12490
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_GradientV_002.png",
+      "sha256": "9de5d423558b8aacd2719f9f74c62e74ec2c26310d072e99067780026bffd143",
+      "bytes": 4603
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Mask_Circle_G010.png",
+      "sha256": "2b6f409ae5112fa639901799a562a02ff234a753cf0bc3e10f2d700288f59e76",
+      "bytes": 11166
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Mask_Circle_G050.png",
+      "sha256": "2fc0d32031275b1b4520b2c3c8aa365684b97b56840795cfa02485d255f8f04d",
+      "bytes": 13508
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Mask_StarSoft.png",
+      "sha256": "21c0519c94c02e0e76db17f8f25f711db8f864f9f43fee5e9995773dfb0ba4aa",
+      "bytes": 11788
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Mask_StarSoftOutline.png",
+      "sha256": "4e93a80bdf0695f688ac5da19b097fc86e24a18a94b751e4e6d57bda0f5208a8",
+      "bytes": 16977
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_BWSpots_001.png",
+      "sha256": "da63e77e7c24622d125c875f0a24ca948285a2b8e34c6c1da950f89fa39e151d",
+      "bytes": 488225
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Cells_001.png",
+      "sha256": "4d5b92b4497366e86b89036323a308a73dfb7bf0e264a8e9d881bcc2022875d4",
+      "bytes": 278904
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Crystal_001.png",
+      "sha256": "69978bd4da7cf42dd7d580260d9b3e342b57246b1b37ea7783b0e2e41ecb2a88",
+      "bytes": 401509
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Flame_001.png",
+      "sha256": "5c2f200f5587c829f6b1a497911247c9b36ce0bbde87636dac7e1d32fe95e951",
+      "bytes": 153047
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Flame_003.png",
+      "sha256": "826241b3d52fed2a9dd329bc217f706b0f378101f16343fa17a0309803b0469f",
+      "bytes": 189673
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Flame_005.png",
+      "sha256": "dcd7a64e1bbdb50fdccc45f190bec32c1a662256784c795f1b16f369c177036d",
+      "bytes": 94030
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Rainbow.png",
+      "sha256": "7317f4ed0a62a61513790d2d67b0a8d4f87518126dd7ffc877ad8aac0c214dd5",
+      "bytes": 204715
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_RainbowV.png",
+      "sha256": "1c5955cd89a6e4d5c307aec7d9bf9f6028c59e4ee90b8b85704447a03936f653",
+      "bytes": 208264
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Stardust001.png",
+      "sha256": "1f90ba58ef79f6c26c1aff77465fad9663e14e7bb0008cdd802b91d09fef7e2d",
+      "bytes": 424595
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Stardust002.png",
+      "sha256": "d85cba1c896bb9a72be5c11a5717729f63fb460bc5384df95acc7525673fe526",
+      "bytes": 371002
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Water_002.png",
+      "sha256": "5e63e69d9fb262b9de2ca909a63984761e5745d7587e7ab2701b1dae6d85566c",
+      "bytes": 115322
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Material_Water_003.png",
+      "sha256": "859ebaab7eaf918ebf647bbcb94b6be140e822aafdf3a656cb8c27e057bc0a0c",
+      "bytes": 776654
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_Smoke001.png",
+      "sha256": "55d945737182b09ac2c2669760a4b8c3deb3711e65e03288ec334b18c19cabc4",
+      "bytes": 130950
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/DCSD_UV_Distortion_002.png",
+      "sha256": "e53cd9493f56e503d3f77e869743d09ba41670d2e6e3ab2791dedbe2be3ca7df",
+      "bytes": 343049
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/SMN_FadeGradientOI.png",
+      "sha256": "9417c4753c585e35c385facc8af1403877f5a668b662ee3981d8c1bb1680aca3",
+      "bytes": 75786
+    },
+    {
+      "path": "warrior-monk/VFX/Texture/SMN_FadeStyleCloudSmall.png",
+      "sha256": "d391747dfb22dc8c388e954b86f9f1f0e65b911016977375e30a1d99edd16a4b",
+      "bytes": 165349
+    }
+  ],
+  "sourceNotes": {
+    "strike": "The official Strike sample contains a manual labeled Slash. Original preserved unchanged; correct credit and terms are on the Strike product page."
+  }
+}

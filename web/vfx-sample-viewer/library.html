@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>全库特效 · 实验室</title>
+<link rel="stylesheet" href="library.css"></head><body><main>
+<header><div><span class="eyebrow">COMBAT EFFECTS / FULL LIBRARY</span><h1>特效实验室 · 全库对照</h1><p id="summary">正在加载特效目录…</p></div><nav><a href="crafted.html">三个动作基准 ↗</a><a href="refined.html">六项技能细节 ↗</a></nav></header>
+<div class="workspace"><aside><label for="search">查找特效</label><input id="search" type="search" placeholder="中文名称或技能编号" autocomplete="off"><div class="filters"><label>类型 <select id="category"><option value="">全部类型</option></select></label><label>记录 <select id="status"><option value="">全部记录</option><option>本轮细化</option><option>已认可基准</option><option>保留并复核</option></select></label></div><p id="count" aria-live="polite"></p><div id="list" aria-label="特效列表"></div></aside>
+<section aria-label="特效播放"><div class="title"><div><span id="tag" class="eyebrow"></span><h2 id="name"></h2></div><label>版本 <select id="version"><option value="after">当前版本</option><option value="before">修改前记录</option></select></label></div>
+<div class="stage"><video id="show" controls muted loop playsinline preload="metadata" aria-label="所选特效的游戏引擎实录"></video></div>
+<div class="controls"><button id="replay">从头播放</button><button id="pause">播放</button><label>速度 <select id="speed"><option value="1">正常速度</option><option value="0.5">0.5× 慢放</option></select></label><span id="media-state" aria-live="polite"></span></div>
+<p id="note" class="note"></p><p id="comparison" class="muted"></p><a id="detail" hidden>查看完整技能对照 ↗</a>
+</section></div><footer>游戏引擎实录，使用正式共享特效资源。当前版本与修改前记录可逐项查看；预览布局修正的条目在说明中标注。观感仍以实际播放和你的反馈为准。纹理署名：EVFX Blazeforge / Strike © Dreams Circle。</footer>
+</main><script type="module" src="library.js"></script></body></html>
