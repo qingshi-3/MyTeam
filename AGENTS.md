@@ -1,40 +1,59 @@
-# Project Agent Rules
+# 项目 Agent 规则
 
-This project is a Godot 4.7 .NET single-player tower-climbing hero-roster autobattler with independent tactical commands.
+本项目是使用 Godot 4.7 .NET 开发的单人爬塔游戏：玩家管理英雄阵容，战斗自动进行，同时可对单位下达独立战术指令。
 
-## Authority And Routing
+## 文档职责与入口
 
-- Player-facing rules live under `gameplay-design/`.
-- Runtime ownership, scene contracts, and data flow live under `system-design/`.
-- Long-form gameplay discussion lives under `design-discussion/`, separate from current authority. For these discussions, read `design-discussion/README.md`, `roadmap.md`, the current topic and relevant cross-topic issues before continuing; update the topic record and roadmap before handing off.
-- Discussion confirmation does not authorize implementation or incremental authority edits. Keep conclusions in the discussion area until the agreed integration review and user-confirmed merge; retain rejected/deferred decisions and do not treat research examples as rules.
-- Confirmed execution scope and resume state live under `work-items/active/`.
-- Test cases and manual QA live under `docs/testcases/`.
-- Keep this file limited to stable routing and hard constraints.
+- 面向玩家的玩法规则位于 `gameplay-design/`。
+- 运行时职责、场景接口约定和数据流位于 `system-design/`。
+- 长篇玩法讨论位于 `design-discussion/`，不属于当前正式规则。继续此类讨论前，先阅读 `design-discussion/README.md`、`design-discussion/roadmap.md`、当前专题及相关跨专题问题；交接前更新专题记录和路线图。
+- 讨论结论本身不自动授权实施或逐步修改正式规则。已有明确实施授权持续有效；没有获得整合授权时，结论保留在讨论区，待约定的整合评审和用户确认后再并入正式规则。保留被否决或延期的决定，不把调研示例当作项目规则。
+- 已确认的执行范围和恢复状态位于 `work-items/active/`。
+- 测试用例和手工验收说明位于 `docs/testcases/`。
+- 本文件只保留长期有效的执行原则、硬约束和文档入口；详细方法和历史记录留在现有专题。
 
-Before implementation, read the authority relevant to the changed behavior and an existing active work item when applicable. Small local changes do not require a new task document. Resolve intent from current evidence; material unresolved direction conflicts return to discussion.
+实施前，阅读与待改行为相关的正式规则和已有活动任务。小型局部修改无需新建任务文档。根据当前证据判断有效意图；会实质改变方向的冲突尚未解决时，返回讨论。
 
-## Stable Project Constraints
+## 项目约束
 
-- Develop only on `main`; do not create local development branches or use worktrees/alternate checkouts to bypass this constraint.
-- `D:\godot\rpg` is a read-only donor. Copy only explicitly selected assets or adapted patterns into this repository; never create runtime dependencies on external absolute paths.
-- Every concrete hero, soldier, enemy, and item is an independently instantiable `.tscn` scene that can be opened and tuned in isolation.
-- Static definitions may be referenced `.tres` resources. Mutable run or battle state must not be written into shared resources.
-- Build behavior through focused component scenes, explicit typed dependencies for commands/queries, and typed signals for events. Content scenes must not depend on hidden nodes in a level, battle, UI, or autoload composition root.
-- Prefer authored `.tscn`, `.tres`, `Theme`, and shader resources. Runtime code loads and binds them; it does not construct whole UI or content trees ad hoc.
-- Player-visible text defaults to Chinese. Stable ids, class names, field names, and enum values remain ASCII/English.
-- Use low-concurrency .NET builds (`-maxcpucount:2 -v:minimal`) and avoid unnecessary editor launches or repeated imports.
+- 只在 `main` 上开发；不得创建本地开发分支，也不得用 Git 工作树或其他检出目录绕过此约束。
+- `D:\godot\rpg` 仅作为只读素材来源。只可将明确选定的素材或经调整的实现模式复制到本仓库；运行时不得依赖仓库外的绝对路径。
+- 每个具体英雄、士兵、敌人和物品都必须是可独立实例化的 `.tscn` 场景，能够单独打开、调试和调整参数。
+- 静态定义可以存放在被引用的 `.tres` 资源中；可变的局内或战斗状态不得写入共享资源。
+- 用职责集中的组件场景构建行为。组件通过显式引用或类型接口执行命令和查询，通过类型化信号通知已发生的事件。内容场景不得隐式依赖关卡、战斗、界面或自动加载（`Autoload`）入口中的节点。
+- 优先使用预先制作的 `.tscn`、`.tres`、`Theme` 和着色器资源。运行时代码负责加载和绑定，不得临时构造整套界面或内容节点树。
+- 玩家可见文字默认使用中文；稳定 ID、类名、字段名和枚举值使用 ASCII/英文。
+- .NET 构建使用低并发和简洁日志：`-maxcpucount:2 -v:minimal`。避免不必要地启动编辑器或反复触发资源导入。
 
-## VFX Production
+## 界面制作
 
-- 制作或优化特效前，读取 [表现专题要求](design-discussion/02-foundation-models/combat-presentation/decisions.md) 及 [活动任务](work-items/active/combat-vfx-and-preview.md)；参考证据和详细方法留在该专题，不在此重复维护。
-- 每种待制作动作先检索具体演示与制作拆解，形成有来源的动作说明：中心、朝向、平面、范围、运动轨迹、阶段时序、视觉分层和素材规格。已有充分且适用的拆解可复用；技能名称、玩法介绍或通用教程不能代替动作依据。区分实际观察、作者说明、项目适配与未知项，缺少关键依据时继续查证，不猜着制作。
-- 先验证动作和空间关系，再制作美术与光效；简化运动验证不是最终交付。按动作选择贴图、网格、shader、粒子或动画，素材复用须匹配形状与运动语义，不能靠换色、改方向硬套。效果贴合用途比复杂或创新更重要。
-- 优化先定位表达、空间、时序或材质问题，再修改对应层；用同视角、同尺寸、正常速度的参考对照和前后动态录制核对结果。构建、生命周期检查、静态截图不能代替动作与观感验收，不把 Agent 自评记成用户认可。
-- 动作拆解、素材选择依据和动态验证记录归现有专题或活动任务，保持预览与正式游戏共用资源和播放路径；不为每次局部调整另建一套流程文档。
+- 用户认可的[灰石框](design-discussion/04-content-validation/artifacts/ui-study-20260925/user-approved-card.png)与已确认参考稿，是材质、构图和局部修订的基准。炉石与大巴扎参考应落实到具体形体、材料和动作，避免凭抽象印象堆叠元素。来源见 [Q25 证据](design-discussion/04-content-validation/evidence.md)，进度见[界面材质改造活动任务](work-items/active/ui-material-overhaul.md)。局部质感认可不扩大为整套布局、手感或达到参考作品品质的验收。
+- 造型优先采用厚重的大轮廓、宽倒角、凹槽、接触阴影和纹理简洁的大块表面，以柔光区分石材、金属、木材等材质。减少油亮的连续高光、零碎镶边和用噪点模拟的磨砂纹理，保留结构转折所需的亮面。
+- 按窗口、卡片、按钮、槽位和提示等不同尺寸与职责拆分资源。相关字段共用承载面，小字段不层层套框，并为文字保留稳定的安全边距。
+- 界面框架主导构图，立绘裁去背景后放入画面开窗。以立绘为主体的角色卡，其可见开窗高度至少占整卡 `3/5`；信息量允许时，以约 `3/4` 为参考目标。该比例不适用于微缩头像或独立详情页；圆头像保持等比，不拉伸成椭圆。
+- 信息表达优先使用符号和数值，相关属性成组呈现，法强、暴击等关联项不得遗漏。完整规则应能按需查看；关键状态还必须有形状、图标或文字线索，颜色不得成为唯一线索。
+- 先固定认可稿的布局和已认可部分，再拆分素材、接入工程并做局部修订。图片工具负责材质和装饰资源；文字和输入由预先制作的场景、`Theme` 与组件承担。九宫格只用于可平铺边框，不得拉伸不规则角石或头像。接入时检查分辨率、过滤、裁剪和边距，先排除接入损坏，再评价画稿质量。
+- 拖放按拿起、跟手、落下、取消分阶段设计，弹窗和按钮分别处理进入、退出及按压反馈。动效用克制的形变和投影表现重量，避免悬停时整面闪亮；优先复用 `UiPopupMotion`、`UiMotionBinding`、`UiDragVisual`。
+- 判定、命中和持久化由业务逻辑决定，动画负责呈现结果；操作确认成功后，才展示落下的完成反馈。处理减弱动效、打断、快速重复和清理路径。
 
-## Validation Responsibilities
+## 特效制作
 
-- Agents own foundational correctness through change-proportionate compilation, scope checks, and key rule checks. Retain risk-based automated checks for core collision, determinism, rollback, and similarly critical behavior.
-- Users own hands-on play, movement feel, interaction experience, and pacing or balance acceptance. Agents provide concise steps and observation points; real interaction checks must use real input paths, and pending manual checks must never be reported as passed.
-- By default, skip multi-resolution screenshot sweeps, full-run automated progression, broad regression, and duplicate independent reruns. Expand only on request, clear risk, failure, or insufficient evidence; the main agent reviews scope and credible executor evidence, then reruns only gaps.
+- 制作或优化特效前，阅读[表现专题要求](design-discussion/02-foundation-models/combat-presentation/decisions.md)和[活动任务](work-items/active/combat-vfx-and-preview.md)。参考证据、详细方法、动作拆解、素材选择依据和动态验证记录归入该专题或活动任务，不在本文件重复维护，也不为每次局部调整另建流程文档。
+- 每种待制作动作都要先检索具体演示和制作拆解，形成有来源的动作说明，覆盖中心、朝向、平面、范围、运动轨迹、阶段时序、视觉分层和素材规格。已有充分且适用的拆解可以复用；技能名称、玩法介绍或通用教程不能代替动作依据。明确区分实际观察、作者说明、项目适配和未知项；缺少关键依据时继续查证，不凭猜测制作。
+- 先验证动作与空间关系，再制作美术和光效；简化的运动验证不算最终交付。根据动作选择贴图、网格、着色器、粒子或动画。复用素材时，形状和运动语义必须匹配，不得仅靠换色或改变方向硬套。效果是否贴合用途优先于复杂度或新奇程度。
+- 成熟素材先拆层，再在 Godot 中组合和控制播放：分析主体、流动、烟尘和闪光的运动、混合方式与生命周期，选择有使用授权且符合动作需求的部件纹理，各层独立编排。主体形状应清楚，辅助光效和细小粒子不能抢占注意力。避免把完整效果烘成单张图片后只做缩放，或用通用线圈、强光堆叠代替动作设计。素材来源和授权记录随项目保留，拆解见 [P01-S49–S53](design-discussion/02-foundation-models/combat-presentation/evidence.md)。
+- 角色动作与特效共同编排。蓄意轰拳示范从既有连击中选择适合单次重击的帧段，组成独立技能动作，按蓄势、加速挥出和收势分段调速，并与普攻区分。释放帧与战斗系统实际发出的释放事件对齐；事件尚未发出时，动画停在挥出前。不得整段慢放连击，也不得为了迁就动画修改玩法时序。具体帧号和时长留在动作证据中，不作为通用参数。
+- 持续喷流以喷火为模板：效果从喷口附着点开始，喷火时喷口为口部，并沿锁定方向持续生成。主体流动、独立火舌、烟和余烬分层表现，前摇用局部聚热表达。伤害脉冲不得反复重启整段视觉。停止或取消时切断新供给，断流从源端向下游传递，已有火焰和烟雾分别按各自寿命结束。
+- 地面冲锋类位移以冲锋为参考：跑动与战斗系统的实际位移同步，连续位移采样不得反复重播跑步首帧。前缘气浪和肩侧风纹跟随当前身体，宽度适配体型。尘尾沿实际经过的路径生成并保留在世界位置；角色继续移动时不得拖走旧尘，停止移动后也停止生成新尘。该跑动规则不套用于瞬移、击退或跃迁。
+- 瞬时换位以位置交换为参考：两端成对准备，收到战斗系统的交换事件后，同时打开两端短暂遮罩或光缝，同步呈现角色的新位置，随后两端各自消散。区分准备、交换和余光，不添加暗示角色经过中途路径的飞行或拖尾。
+- 空间适配统一处理身体附着点、地面脚点、朝向和横版俯侧视投影。尺寸变化时，检查主体部件、宽高、偏移和粒子分布的整体关系；不得只放大范围或间距，却让单个部件保持原尺寸。视觉尺寸服从实际动作空间，不得反向改变伤害范围或碰撞。
+- 角色与特效共用表现时钟，由战斗系统的释放、位移、命中和结束事件驱动各阶段。每次动作都要明确由哪个组件管理，暂停和变速必须同步。取消后停止生成新粒子，已有粒子在规定寿命内消散；死亡或清场时，由所属组件按既有生命周期规则清理。预览必须复用正式资源和播放路径，不能另写角色平移或额外特效来美化演示。
+- 用户认可的重拳、喷火、冲锋和位置交换是后续参考基准，认可范围见表现专题 P01-D19／D23；重拳主要示范动作处理，不作为特效美术标杆。优化先判断问题属于表达、空间、时序还是材质，保留已认可部分，再修改对应层。
+
+## 验证职责
+
+- Agent 负责与改动风险相称的基础正确性验证，包括必要的编译、范围检查和关键规则检查。对核心碰撞、确定性、回滚及同类高风险行为，保留基于风险的自动检查。
+- Agent 负责按改动范围，使用实机真实内容和真实输入检查可见结果与关键交互。动效使用同视角、同尺寸、正常速度的录制，特效优化保留前后对照。稿图、构建成功、生命周期检查、静态截图、数据断言或直接触发信号，都不能代替交互与动态观感检查。
+- 当前隔离界面验收环境固定为 `960x540`；这只是测试环境，不是产品分辨率要求。验证期间不得移动用户正在使用的桌面鼠标，可以在隔离环境中执行输入验证。
+- 用户负责最终的观感、手感、交互体验、节奏和平衡验收。Agent 提供简洁的操作步骤和观察点，区分已完成的正确性检查、实际输入验证与仍待确认的体验项；未完成的手工验收不得写成通过，Agent 自评不得记作用户认可。
+- 默认不做多分辨率截图遍历、全流程自动推进、宽泛回归或重复的独立复跑。只有在用户要求、风险明确、出现失败或现有证据不足时才扩大范围。主 Agent 审查范围和可信的执行证据后，只补验缺口，不无理由重跑全部检查。

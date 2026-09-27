@@ -8,6 +8,11 @@
 
 | 事项 | 入口 | 当前边界 |
 | --- | --- | --- |
+| 成长征程与构装运营闭环 | [active/growth-and-composition-design.md](active/growth-and-composition-design.md) | 本次 goal 工程交付完成：独立 `GrowthGameRoot`、地区／遭遇、v8存档、26单位代表包、成长生产、一次升阶三选一、研究法术及MX01跨战成长已接通，Alpha不变；最终构建0警告0错误，合同、真实工坊输入、关键失败路径和连续路线通过。最终平衡与玩家体验待手动验收；49名全量重构不在本次范围。 |
+| 玩家单位数值与治疗／怒劲 | [active/player-unit-balance.md](active/player-unit-balance.md) | D57：普攻输出、技能治疗；怒劲战内保留；31名发布英雄逐名校准，敌我数据隔离与素材复用。固定对照及专项验证，最终节奏待试玩。 |
+| 敌人难度与构筑门槛 | [active/enemy-difficulty-and-build-gates.md](active/enemy-difficulty-and-build-gates.md) | 用户授权首轮曲线／敌阵模板与同投入实测；阶段成长、正式战斗／预览和生命结算对接，最终平衡待试玩。 |
+| 全局生命与败战续行 | [active/run-health-and-defeat-continuation.md](active/run-health-and-defeat-continuation.md) | R11-D02已实现：非Boss扣血续行、Boss败战终局、营火恢复、UI及v7存档；专项行为、真实输入与画面检查通过，旧通用夹具阻断已记录，初值平衡待试玩。 |
+| 物件化 UI 正式替换 | [active/ui-material-overhaul.md](active/ui-material-overhaul.md) | 用户授权按炉石／大巴扎线上品质目标持续替换真实 UI；透视调研、生产美术、共享组件、真实交互与渲染验证进行中。 |
 | 统一伤害与防御 | [active/unified-damage-defense.md](active/unified-damage-defense.md) | 普通伤害统一防御；公式因子保留攻击／法强，魔抗与双类伤害词条已清理。构建、相关行为与真实UI输入／渲染通过；技能系数不变，平衡待试玩。 |
 | 军团／瑟提／机器人三英雄 | [active/duel-grit-hook-heroes.md](active/duel-grit-hook-heroes.md) | HC37–HC39独立内容、决斗／怒劲／实体飞钩、正式招募与实验室已接入；专项机制与画面验证见任务，强度和观感待试玩。 |
 | 首批贯穿特色兵 | [active/enemy-piercing-skills.md](active/enemy-piercing-skills.md) | ES01飞行箭／ES04光束（现均为统一防御的普通伤害）、独立单位与技能／VFX、有限正式遭遇及地区数值已接入。构建、专项规则、正式渲染和暂停输入检查通过；观感与平衡待试玩。 |

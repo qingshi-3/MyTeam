@@ -1,6 +1,156 @@
 # 整局与首版内容规划：依据
 
+## 2026-09-27成长机会与候选供给模型
+
+用户在设计路径后要求执行。本轮实际交付在[成长推演包](artifacts/growth-route/README.md)，与下面的旧静态核查及297场战斗证据分开：
+
+- [当前代码／资产基线](artifacts/growth-route/baseline.md)：15层／三区、每区两组互斥节点各两次、普通招募最多6次，战斗3～15场；终局Boss前可用战斗机会仅2～14。金币／生命／物品与阶位权重均附代码来源。49名MX基础法强默认0，职业内基础面板同模。
+- [成长／路线算术](artifacts/growth-route/model-report.md)：枚举全部531,441种非Boss节点选择；新候选将普通培养按节点推进，终局前14次。比较3%／4%／6%固定增量、多源复利、晚入与防御换算、材料4／5／6份成本及四条合法资源轨迹。节点成长、材料供给和升阶发现是设计假设，不是从现行代码发现的功能；路径合法不代表能够战胜敌人。
+- [候选供给抽样](artifacts/growth-route/supply-report.md)：原49／扩展53两个测试池，各七体系×两种固定选法×5,000样本，合计140,000。原池15,031个样本在节点12的发现不足三项，占原池70,000样本21.47%；扩展池以四个T4身份补洞后本批不足归零，但各体系命中率明显重排。两池结果分别保留。固定标签贪心、全取招募、默认材料可支付及不模拟败战均为限制，不能代表正式17人招募池或玩家成功率。
+- 核查覆盖：脚本对机会时序、材料／人数守恒、终局收益排除、候选排重、已拥有排除与阶位限制进行检查。数值模型中未来未加入者不可当作已拥有的1倍单位，Boss检查点使用开战前快照。供给自检覆盖每个样本每次事件；确定性复跑输出一致。主责审查发现的上述时序／覆盖问题已修正，并修正文稿三选一、败战主体及重构角色技能预算口径。
+
+本轮未启动Godot、编译或运行新战斗模拟，未改运行内容或正式权威。4%及材料4份是下一步内容起测建议，不是已平衡结论；全体系映射与新样例不等于正式供给已接入。运行、实际操作和玩家节奏验收继续待具体可玩片段。
+
+## 2026-09-27新目标的代码与内容差距核查
+
+本轮只读静态核查，未构建、启动引擎或重新运行模拟。Agent分工为主责检查战斗／能力／UI与设计，gpt-5.6-sol盘点内容，复用既有矩阵验证Agent核对跨战状态及事务调用链。以下是代码接通程度，不是新功能体验验收。
+
+### 系统能力
+
+| 范围 | 现状及边界 | 代码依据 |
+| --- | --- | --- |
+| 战斗触发和能力构成 | 已有开战、死亡、受击、控制等真实触发；loadout是列表，只要求非空且至多一个满蓝技能，没有强制一主动一被动 | `src/Abilities/Authoring/AbilityDefinition.cs:13`、`AbilityDefinitionCompiler.cs:65`、`BattleAbilityScope.cs:99`、`src/Battle/BattleAbilityIntegration.cs:141` |
+| 光环与地图配合 | 相邻攻击／防御光环已有实际计算，矩阵另有护盾、状态、召唤、位移及羁绊机制；不能据此声称任意未来光环已能配置 | `src/Battle/BattleSimulation.cs:2044`及2057、`system-design/content-composition-foundation.md`矩阵／位移契约 |
+| UI能力表达 | 数据可有不同技能组合，但详情和招募仍按主动／被动分组、固定两个入口；运营效果和永久成长来源展示未接通 | `src/UI/UnitInformation.cs:46`、`RosterHeroDetails.cs:19`及60、`RunOfferChoiceCard.cs:11` |
+| 单位永久成长 | 战斗到Run结算已存在，遗物层数／充能／计数可跨战提交；英雄结果无永久成长载荷，名册无贡献账本，下场准备无相应投影 | `src/App/GameFlowCoordinator.cs:401`、`src/Run/RunNodeResolutionService.cs:80`、`src/Battle/BattleModels.cs:249`、`src/Run/RunModels.cs:10`、`RunBattlePreparationAdapter.cs:36` |
+| 材料升阶 | 缺材料库存、混付、目标升级、机制投影等整套流程。Rank目前是存储字段，未进入战斗准备，不能视为升阶已完成 | `src/Run/RunModels.cs:16`、`src/Project/RunOperationDefinition.cs:5`、`src/Run/RunDecisionValidation.cs:19` |
+| 高阶三选一 | 一般offer已有UI、冻结候选和副本事务，可复用；未接升阶触发的高阶英雄奖励、资格和领取状态 | `src/App/GameFlowCoordinator.cs:522`、`src/Run/RunDecisionService.cs:54`、`src/Project/RunOfferDefaults.cs:73` |
+| 运营与法术 | 有起始英雄战胜加金币特例，非通用单位产出。物品类型为装备／遗物，无独立法术持有、取得、消费及整备入口；战术指令可供效果执行参考，不等于法术系统 | `src/Run/RunRewardEconomyService.cs:247`、`src/Content/ItemDefinition.cs:6`、`src/Battle/BattleSimulation.cs:420` |
+| 保存与验证 | 已有先存副本再发布的事务、v7存档与确定性单战实验室；新增状态需纳入复制／保存／校验及结算。实验室保层只是战内换目标策略，不是升阶或跨战成长 | `src/Run/RunProgressionPersistenceService.cs:111`、`src/BattleLab/BattleLabPresetStore.cs:12`、`BattleLabPreparationAdapter.cs:35` |
+
+核心缺口是“战斗/整备事件→归属明确的局内收益→保存→下次战斗读取”的单位／资源流程，及其玩家入口，而不是缺少基础伤害或死亡事件。不能把状态直接写回共享Resource，也不能把战斗中标为永久的状态寿命等同于局内永久养成。
+
+### 内容与实际入口
+
+- 正式工程`content/project/alpha_project.tres:4`绑定alpha目录和征程。目录发布31名英雄（`content/catalogs/alpha_catalog.tres:106`），但当前开局与征程招募实际均引用17人测试池（`content/project/alpha_campaign.tres:18`、`content/project/pools/pool_build_test_heroes.tres:9`）；分阶配置为4+5+6+2（`alpha_recruitment_supply.tres:7`）。旧14人草稿不能当当前实数。
+- 正式有6装备、15遗物（`content/project/pools/pool_all_items.tres:9`及对应definitions目录）。正式Trait内容主要是霜羽同盟和凛冬盟约两份霜系资源，不是完整七职业七体系；主霜羽原生仅HC03/HC23及外部徽章贡献。现有普通战斗/亡语等角色不等于新增的整备经营角色。
+- 独立验证包有新增49名MX、6种临时单位、14条双轴羁绊39档，并保留31名HC目录，因此matrix catalog为80英雄；它没有把MX加入正式征程招募池。入口`scenes/app/ValidationMatrix.tscn`，内容见`content/validation_matrix/matrix_project.tres`／`matrix_catalog.tres:162`。
+- 霜羽、棘毒、构装验证包已有寒意／毒／护盾供给利用及跨体系桥接，说明不是仅有名册或标签。具体已有接口用于[首轮草案](content-drafts.md)，新增运营能力并未实现。
+- 材料机制升阶、运营单位体系、法术和单位跨战成长尚无完整发布内容。HC01保层开关是实验室能力样例，不能算全角色升阶内容。
+- 既有`artifacts/trait-matrix/validation/report.md:3`记录49MX全部出场、33队×3敌阵×3种子共297场及3次确定性回放；样本为固定阵容和零装备遗物，未包含自然招募、材料消费、经营产出或连续跨战成长。不是自然胜率或本轮目标已经验证；UI操作、观感和最终平衡仍待体验。
+
+结论：战斗底座与横向体系素材可复用，正式内容覆盖明显小于验证包；局内养成／运营与对应UI是较大的跨模块缺口。不给无统一口径的完成百分比，也不将本轮静态核查当实现完成。
+
+## Q26 既有成长路线回读（2026-09-27）
+
+补充只读核查 `02-foundation-models/equipment-model/decisions.md` M05-D01～D03、`trait-model/decisions.md` M03-D01、`relic-model/decisions.md` M06-D01～D03，以及 `03-run-mechanisms/supply-and-economy/` 的经济／商店奖励决定：装备品质升级、遗物累积、外部羁绊接入、多类别奖励和特定经济效果均有既有方向。内容决定中的印记／徽章理解不等于确认通用技能移植或所有成员自动取得核心原生技能。主责核查培养／人口，Sol只读核查物品／遗物／供给；未修改运行实现。
+
+核对 `03-run-mechanisms/roster-and-growth/hero-tiers/decisions.md` R01-D01、`cultivation/decisions.md` R02-D01～D03、`replacement-recovery/decisions.md` R03-D02～D03、`population/decisions.md` R05-D01：用户已确认机制升阶为主，允许不培养的羁绊位；固定／分配／专精／混合／随机候选是可接受培养空间而非初期全量承诺；通用与匹配类别材料可替代／混合支付；受限整体回退后可重选路径／重抽合法候选；普通人口容量默认开放、由节点招募推进实际人数。以上是已确认但未统一合并的讨论方向，不能因当前代码未实现而说成不存在或新提案。未新运行或修改游戏。
+
+## Q26 矩阵档位口径复核（2026-09-26）
+
+用户追问是否只剩人口、羁绊、站位。核对 `tests/TraitMatrixMatchupDiagnostics.cs` 的Stages／SelectTeams／Prepare、`TraitMatrixValidationSupport.Observe`、`content/validation_matrix/generate_content.mjs` 的roleStats与writeUnit，以及矩阵plan.json的阶位原则：5／6／10人口是不同队伍快照；T1～T4用于按供给阶位筛选角色，未对英雄做升星或T倍率；基础属性按职业模板；站位固定职责排序；零装备／遗物，步进观察不执行战术命令。羁绊档与原生技能联动已实装，但该采集没有覆盖完整征程成长或产品差异化。未新增模拟、运行修改或用户设计决定。
+
+## D57 玩家数值实施证据（2026-09-26）
+
+用户明确实施授权后，完成普攻输出／技能治疗、正式怒拳怒劲战内保留与31名可选英雄首轮数值校准。前后资源、角色职责说明、同框架裸装对照、阶段配置及失败结果集中在[玩家校准记录](artifacts/player-balance/README.md)。运行验证与恢复归[活动任务](../../work-items/active/player-unit-balance.md)。敌方95份玩法资源指纹未变；玩家侧收紧后，根据失败样本回调中后期遭遇倍率，没有改变敌方单位的独立定义／技能或复制美术资产。
+
+新版济世医师普攻不治疗，技能与法力参数按当前资源；怒劲不再有6秒过期。下方诊断是调整前证据，不能作为当前数值。固定样本不代表自然获取或玩家胜率，旧霜羽、棘毒晚区及部分攻击组合的弱项仍保留，不据成功配置宣称全部流派等强或平衡已获认可。
+
+## Q26 玩家单位／阵容成熟度核查（2026-09-26）
+
+本次只读核查代码及正式场景实际绑定资源，并记录讨论；未运行新模拟、启动引擎或改变玩法。静态代码可证明触发条件和取得入口，不能证明自然成型率、体感突变幅度或具体数值临界点。
+
+| 核查入口 | 当前事实与边界 |
+| --- | --- |
+| `src/Run/RunModels.cs`、`RunBattlePreparationAdapter.cs`、`src/Project/RunOperationDefinition.cs`，全局搜索Rank使用 | 名册Rank默认1，引用为初始化、正值校验、存档和UI；没有阶位驱动的战斗属性／能力演化。现有征程操作没有培养／技能升级。招募分阶控制候选供给，不会升级已持有英雄。 |
+| `src/Battle/BattlePreparationContracts.cs`、`src/BattleLab/BattleLabPreparationAdapter.cs`、`content/heroes/hero_hc01_crossbow.tscn` | 保层开关可将换目标清层关闭；实验室会传入，正式征程准备未传入，沿用false。资源标记可升阶不代表征程可取得。 |
+| `content/traits/definitions/`、`content/abilities/triggered/ability_ne10_chill_hit.tres` | 当前两份羁绊定义均以攻速加成为档位奖励，无GrantedStatuses。霜羽同盟+0.25／+0.65及寒羽25%／35%／50%已接入；徽章只加成员资格和攻速，不授予寒羽。引擎已有羁绊授予状态能力，不能据内容缺口认定需要新造底层。 |
+| `hero_hc08_poison_keeper.tscn`实际绑定的`loadout_ne01_hero_hc08_poison_keeper.tres`、`content/abilities/automatic/ability_ne01_poison_cloud.tres`、`src/Battle/BattleScaledStatusAbilities.cs` | 主目标毒层先加3，再追加当前层数的一半向下取整；忽略上限／其他事件时为S+3+floor((S+3)/2)。属于真实非线性战内积累，能力招募时已有；旧同名英雄的非NE01 loadout不是现行绑定。 |
+| `hero_hc25_death_provider.tscn`实际NE02 loadout、`ability_ne02_temporary_death_blast.tres`、`ability_ne02_owner_death_blast.tres`、`ability_hc07_p.tres`、`src/Battle/BattleValueRuntime.cs` | 临时小兵死亡按死者最大生命25%殉爆；英雄自身亡语可复制。传灯狐每第三次普攻命中，代触发身后3格内最近合格友军的可复制亡语，对方存活；受资格、站位与距离约束。传灯狐在正式招募T4，因此确有后续取得组合，但未验证每局可得。 |
+| `content/equipment/definitions/equipment_rimebrand.tres`、`status_rime_momentum.tres`、`status_frost.tres`、`src/Statuses/BattleStatusScope.cs` | 霜痕战刃命中叠自身攻速和目标霜痕，霜痕达到3层转冻结，存在持续时间窗口；是新增攻击行为，和NE10概率冻结分属两套效果，不可混称或保证任意持有者稳定冻结。 |
+| `content/statuses/status_ne10_control_shelter.tres`、`content/project/pools/pool_all_items.tres`、`alpha_campaign.tres` | 缚敌护符让成功施加行动控制的英雄取得12自身护盾；正式奖励／商店共用池含6装备和15遗物。多数装备增强基础属性，少数装备／遗物新增事件收益，不应统称全线性。 |
+
+判断沿D19／D20保留数值极致也可带来质变的设计空间。当前缺口在单位演化、配套成型阶段及取得过程；此前固定预算战斗样本只验证战力差距，不作为这些缺口已经解决的证据。
+
+### 济世医师与坦奶基础收益补查（2026-09-26）
+
+检索正式HC18场景／loadout、基础行动、法力、治疗事件与减伤路径，回应用户关于普攻治疗和基础强度的实际体验；未运行新的模拟或引擎，不把静态估算记作实测。
+
+- `content/definitions/heroes/hero_hc18_healing_reader.tres`：济世医师HealPower=16、AttackCooldown=1.2、AttackRange=5.2、MaxMana=60、StartingMana=20；正式T2供给包含该单位，开局及早期候选有T2权重，不属于后期专属内容。
+- `src/Battle/BattleSimulation.cs`的Act（约1295行）：存在受伤的非自身友军时选择治疗目标，合法范围与视线内按EffectiveAttackTicks调用HealLiving，并调用BattleHeroMana.OnAttack；治疗后返回，不同时进行普通伤害攻击。该通用路径由正HealingPower触发。攻速影响普疗间隔；法力施法恢复期间暂停普通行动。
+- `src/Content/UnitDefinition.cs`、`src/Battle/BattleHeroMana.cs`、`src/Domain/BattleTiming.cs`：未覆盖的默认值为自然回蓝5/秒、攻击回蓝10；固定步长0.1秒。`ability_hc18_a.tres`耗60法力、两目标各70、CooldownTicks=3，满蓝成功施法后清空法力并锁定3 ticks。16/1.2约13.3是排除技能恢复／移动／过量等因素的普疗纸面每秒量；60/(5+10/1.2)约4.5秒是忽略恢复和离散触发的回蓝估算，因此仅可描述技能循环约5秒级，不能报告为实测HPS或固定施法间隔。
+- `ability_hc18_p.tres`、`BattleAbilityIntegration.cs`、`BattleValueRuntime.cs`、HealLiving：所有正值HealingResolved均可触发，读取单次EffectiveValue乘0.6，对受益者附近2格最近敌人造成普通伤害。普疗也发布同一事件，不限主动技能；满血的无效恢复不产生该被动伤害，输出仍受敌方防御和目标资格影响。
+- `hero_hc03_iron_guard.tres`、实际绑定`ability_hc03_challenge.tres`／`status_hc03_guard.tres`、BattleSimulation伤害结算：铁甲卫480生命、基础防御12，技能防御+18持续3秒。普通伤害为max(1, raw×100/(100+7×防御))，对应12／30防御约46%／68%减伤。治疗恢复的是减伤后的生命缺口，故防御提高每点治疗可支撑的原始伤害；此为机制推导，尚未量化其对实际通关的独立贡献。
+
+## Q26 首轮实现的新增本地证据（2026-09-26）
+
+用户“推进”后完成现有内容的固定预算战斗校准：原始基线、参数迭代、最终矩阵及真实输入／画面记录统一归[难度校准](artifacts/difficulty/README.md)，活动范围见[任务](../../work-items/active/enemy-difficulty-and-build-gates.md)。本轮新增的是本项目实测，没有重新联网核验成熟游戏的当前补丁；下方既有研究与静态核查仍按其来源时间理解。三种完整配合与散搭的差距已在固定样本显现，玩家实际供给、整局节奏与接受度仍待试玩，不以样本数字冒充自然胜率。
+
+## Q26：现行难度结构与成熟游戏机制对照（2026-09-26）
+
+生命机制落地后再次静态核对：`TowerGenerator`仍按区域选择同一遭遇配置、领队后从池补员；`alpha_campaign`仍为三区×5层，`TowerNodeTableDefinition`每区第5层只给Boss，其余按6类、步长2取3项。既有敌方区域倍率未因生命实现自动变化。下表“休息给金币”是此前核查的时间点；当前默认营火已提供独立全局生命恢复／金币二选一，非Boss失败可扣生命续行且无胜利奖励，见R11-D02活动任务。此次未模拟、未新增原作研究；无法据现有配置宣称阶段胜率或最终倍率已校准。
+
+用户反馈：数值不均、节奏奇怪，有承伤和输出便能过关，没有对羁绊／成型度的检验。此次只读核查现行代码、配置、权威和既有研究；未启动游戏、读取玩家存档、运行模拟或联网复核原作。反馈是用户体验，配置是静态事实，两者不能合并为已测得胜率／因果。
+
+### 本地事实
+
+| 入口 | 核查结果 | 能支持与不能支持的判断 |
+| --- | --- | --- |
+| `src/Run/TowerGenerator.cs`、`content/project/encounters/` | 普通战人数为基础4＋区域索引，精英6＋索引；固定／可选领队后按区域池随机补员，地形规则另抽。同一区域各类遭遇使用相同阶段倍率，区域血量1／1.35／1.8、攻击1／1.18／1.4。 | 无额外的区内逐层血攻成长；具体模板和组合仍不同，不能把倍率当完整难度，更不能证明后区总战力只提高80%。 |
+| `src/Run/RunBattlePreparationService.cs`、`RunBattlePreparationAdapter.cs` | 遭遇倍率进入准备边界，玩家每战生命比例1；`RunRewardEconomyService.ApplyBattleVictory`把名册生命归一，阵亡者退出部署。 | 满血规则已经实施；战中死亡／治疗仍有意义，不应用旧伤势文档解释现状。 |
+| `content/project/alpha_campaign.tres`、`tower_node_table.tres`、`TowerNodeTableDefinition.cs` | 三区，每区5个节点，末节点Boss；普通候选按6项轮转、步长2取3项，形成战斗／事件／商店或招募／精英／休息的组合。 | 非Boss阶段存在非战斗推进，节点数不等于战斗次数；这说明校准须计入路线选择，不说明跳战一定更优。 |
+| `src/Project/RunOfferDefaults.cs`、`RunNodeResolutionService.cs` | 非终局胜利后给予物品选择；战斗额外给金币。休息给金币，事件失败无收益、不扣血。 | 绕战也放弃战利品，不能只比较金币宣布休息支配战斗。满血后需重审服务收益和节奏，不能偷偷恢复扣血。 |
+| `gameplay-design/tower-autobattler-core.md`、招募活动任务 | 有阶段招募、普通唯一；材料培养仍待实现，契合推荐／核心保底不属于已完成供给。 | 校准只计真实可得成长，不能用未来系统替当前队伍支付难度。 |
+| `content/relics/definitions/item_blood_chalice.tres`、`item_crimson_mail.tres` | 玩家英雄目标范围，分别提供15%吸血与生命×1.3。 | 是普适收益排查对象；缺少等投入真实战斗对照，不据静态数值判超标。 |
+
+### 既有研究回读
+
+入口为只读研究库 `web/game-mechanics-atlas/research/deep/mechanic-evidence.json`、`source-index.md`。本轮先按难度／curve／压力筛查，再读取尖塔、火车、云顶相关机制目录与以下完整证据字段；不是全库穷尽，也不是新增开发者访谈。
+
+- `ev-slay-the-spire-007-block-counter-package`、`023-power-skill-enemy-tests`：Nob的技能牌惩罚、觉醒者阶段内能力牌惩罚和Chosen污染是不同遭遇／环节检查。`020-card-offer-pivot-discipline`、`025-archetype-forcing-failure`提示实际供给与当前敌情约束体系；攻略意见不是总体行为统计。
+- `ev-monster-train-004-three-floor-battle-order`、`020-seraph-four-counter-packages`：空间与准备窗口、可预览终局变体的不同考题。`008-pact-shard-risk-budget`是DLC累计风险收益机制，不自动转为本项目全局碎片制度。
+- `ev-tft-001-economy-tempo`与`008-plug-in-threats`：稳定当前棋盘、未来成长与独立功能单位的关系；不移植版本具体运营回合，不把无羁绊英雄一律视为错误设计。
+- 原作来源分别是2.x历史Wiki、维护攻略及[Riot Monsters Attack! Learnings（2023）](https://teamfighttactics.leagueoflegends.com/en-us/news/dev/dev-teamfight-tactics-monsters-attack-learnings/)。原始URL及访问／版本限制均保留在研究源索引。本轮没有取得成熟游戏内部数值曲线、通用目标胜率或本项目匹配样本，不报告这些数据。
+
+方案归[Q26](content-outline.md)，既有Q10验证方法与Q14内容审阅继续适用，不把本次静态阅读写成平衡验收。
+
 ## Q25：炉石／大巴扎UI视觉参考的实际观察（2026-09-25）
+
+构图修订：再次查看炉石官方发现卡片，重点观察阶位角标、姓名纸条和不同轮廓主数值之间的空间关系。项目采用纸条两端连接攻击／生命的变体，而非复制原作布局或数值规则；两枚底托用项目已认可石框作材质参考生成，原生数字／输入保持。整备与招募的实际渲染和输入结果归活动任务；不能把本次实施判断记作用户对新构图的认可。
+
+符号化修订：重新查看下文官方炉石发现图与大巴扎技能选择截图，观察固定位置的属性数值、阶位星标和悬停解释。此次项目适配为心形生命值、星标阶位、出战／后备轮廓、主被动类别符号、无标签装备槽；采用项目既有语义图标并补充三个同规格 SVG，保留必要技能名称。没有将原作截图裁入产品，也未新增原作当前补丁或真实操作的证据。实施、输入检查及前后截图归活动任务和 runtime/README.md。
+
+D54 后续：每战满血规则已实际接入，整备与共同详情用生命上限值替换当前血量／进度线，保留连续信息面。实机检查包括新版卡面、完整详情、开局以及休息单金币／事件无扣血页面；图片与验证边界见运行 README。该记录不是新增原作调研，也不是整套品质已获认可。
+
+一体感修正实机核对：用户否定前版身份、生命、技能、装备各自重框的分隔方式。本次保留外石框／立绘石环／纸条，状态与生命共行、主被动各为无框文字行、三槽共用底部区域；招募同步技能与身份文字。已查看空槽、已装备、整卡投放、详情及招募／窄布局。构建、真实 GUI 配装和 offer 检查通过，日志见活动任务。当前可见图高／卡高为整备 61.3%、招募 60.2%，开局 64.1%（扣除环边和纸条的高度口径）。没有新生图；原小控件生成来源保留在 `card-controls-generation.json` 作为历史，技能牌和身份牌已移出运行主题。前版及最新 [运行结果](artifacts/ui-study-20260925/runtime/README.md) 保留对照，不据此报告整套品质达标。
+
+立绘合成纠偏：用户明确“立绘只是素材，UI 才是主体框架”。已用内置 imagegen 为 28 张当前使用图制作透明衍生图，显式接入 35 份英雄资源；大图以独立焦点／缩放裁入卡窗，下缘遮在名称纸条后，小头像也使用透明源并保持独立近景。原 PNG 保留，战斗继续像素动画。逐张查看真实卡片内取景与小头像对照，最终查看整备、招募、开局页面；构建、立绘回退／隔离行为和配装／offer 的真实 GUI 输入检查通过，见 [运行结果](artifacts/ui-study-20260925/runtime/README.md)。生成式提取有局部线条和尺寸漂移，不承诺逐像素原样；完整提示、来源哈希与检查状态归 `assets/portraits/illustrations/cutouts/generation.json`。这轮解决灰底贴片与取景合成，不代表整套已达到参考品质。
+
+大立绘实机核对：按用户恢复后的比例要求，招募／整备切为大图正面与完整详情切换，开局候选改为纵向大图。1600×900 下，扣掉名称纸条后的可见图高占整卡约 60.7%／61.7%，开局候选为 69.7%；这是高度比，非面积比。已查看角色正面、技能详情、次要属性、开局六选二及商品页渲染；引擎输入覆盖查看不提交、键盘返回、原生配装拖放与滚动。桌面事件曾干扰离屏窗口，现用独立 SubViewport 注入真实 GUI 事件隔离，局限与日志归[活动任务](../../work-items/active/ui-material-overhaul.md)。这轮扩大了人物展示并保留完整信息，不据此声称材质结合或整体品质已达到原作。
+
+立绘与卡框接入核对：用户再次将已生成石框指定为“有质感”的基准。实际问题在接入侧：低分辨率导入、穿过角石的九宫格切线和额外内部黑框削弱了原形体。现卡片按原分辨率完整区域缩放，窗口仍按独立九宫格适配。按用户选择接入已有立绘后，逐一查看 28 张当前使用图的原图／引擎裁剪对照，修正统一焦点导致的人形截头和兽形只露背部；35 名英雄已绑定，3 名缺图英雄保留像素回退。三件商店物品也已改透明背景。最新整备拖放、焦点／提示及 offer 实输入检查通过，截图归 [真实运行结果](artifacts/ui-study-20260925/runtime/README.md)。这证明接入与局部操作可用，未证明完整原速动态对照或与原作品质一致。
+
+继续落地观察：依据已查看的炉石发现界面名称纸条，使用内置 imagegen 制作独立透明纸条并替换原先压扁的方纸切片，提示保存在 `assets/ui/tavern/name-ribbon-generation-manifest.json`。正式商品卡改为有宽高上限的居中陈列，卡内滚动条加宽；实际检查招募、商店、展开详情、购买刷新及奖励预览，输入夹具通过。窗口卡框保留用户认可的石材画法与浅上沿。本段为 Agent 实施与检查记录，不新增用户对纸条或整套品质的认可。
+
+### 用户截图、文章与制作纠偏
+
+用户提供[炉石主菜单截图](artifacts/ui-study-20260925/user-hearthstone-reference.png)，要求直接依其材质画法制作。实际观察：宽厚灰棕木壳、深凹槽、灰紫浅色按钮面、宽金色倒角；木面纹路被概括为少量顺形色带，结构性亮边并未被全部删除。不能把“柔光／磨砂”自行改译为粗糙原木纹、布毛或噪声。用户否定 Agent 将同一大框套在所有层级的做法；运行资源现按大型窗口、卡片、内层信息、装备槽、提示拆分。用户认可灰石卡框，仅要求上沿弧度变浅，原认可图保存在同目录。
+
+已读取用户提供的[少数派《炉石传说 UI 浅析》](https://sspai.com/post/67194)（D5VA，2021-06-12）：实体物件隐喻、按压与声音反馈、统一材料画法、语义化效果和适度动态，支持本项目的分层设计判断。文章属于独立分析，不是官方制作技术文档，未据其“全 3D”表述推断原作内部全部 UI 的实现方式。
+
+本轮生产图通过内置 imagegen 生成并接入原生 Theme／场景；提示与源输出见 `assets/ui/tavern/*generation-manifest.json`。主菜单截图定义窗口／按钮的参考，官方发现图定义手持卡片的石质基底；两者不可混成一个通用框。旧试稿／调研状态保留在下文，不代表本轮仍然没有运行修改。
+
+### 正式替换：平面素材、体积和交互（2026-09-25）
+
+用户要求调研倾斜界面的实现，随后明确质感优先、倾斜可不做，并授权直接替换正式UI。实际读取Godot官方[Control](https://docs.godotengine.org/en/stable/classes/class_control.html)、[StyleBoxTexture](https://docs.godotengine.org/en/stable/classes/class_styleboxtexture.html)、[Viewports](https://docs.godotengine.org/en/stable/tutorials/rendering/viewports.html)和[CanvasGroup](https://docs.godotengine.org/en/stable/classes/class_canvasgroup.html)说明：
+
+- Control拥有位置、缩放、平面旋转与焦点／GUI输入；“平面内旋转”不等于三维透视。正常Control可继续使用原生点击、焦点和拖放。
+- StyleBoxTexture可把纹理拆成边角和中心适配尺寸，适用于正面画好的框体、纸和按钮。边角源尺寸与导入后像素尺寸必须一致，不能只把整张按钮拉扁。
+- SubViewport默认不会自动收到输入，通常由直接SubViewportContainer转发；若把其纹理再贴到变形表面上，不能假定显示像素与原始控件命中区域自动一致。
+- CanvasGroup会合成子节点绘制，并使用backbuffer；自定义shader会覆盖其内建合成，且与子节点clip_children有兼容限制。因此全屏shader透视不是这轮正面UI替换的必要条件。
+
+项目采用正面可复用素材：木框的侧厚／凹槽、纸张边缘、按钮倒角与静态接触阴影画入素材；实时文字、人物、属性、技能和输入保持控件；悬停／按压由局部可中断动画补充。这是项目实现选择，未取得炉石或大巴扎内部源文件，不能断言原作所有素材都“先画方正再代码倾斜”。本轮浏览器参考页超时；普通搜索结果相关性不足，未采用。一次候选GDC地址实际返回无关关卡设计演讲，已排除，不列为UI制作证据。前文官方截图与采样的版本／动态观察边界继续有效。
 
 承接D53，仅研究UI、图标与制作能力。回读现有语义图标任务的目录复用、信息层级和非颜色表达约束，并阅读imagegen、Godot UI／动效技能。没有按技能示例引入全局音效架构、改变布局或采用未经验证的技术细节。
 

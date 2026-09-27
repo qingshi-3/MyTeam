@@ -25,6 +25,15 @@ Passed with the production fix, together with `GameplayContractSmoke --movement-
 | Rollback restores cells and a cell-route request | Rollback restores continuous positions, goals, targets, requests, wait state, digest, and deterministic replay | `GameplayContractSmoke` spatial-rollback case |
 | Nearby side steering alone can clear a stationary allied formation | Route around an allied column, a crowded front and a column against the arena edge; preserve body clearance and attack the reachable target without pushing allies | `AlliedBodyNavigationContractSmoke`; `MeleeContactVisualSmoke --allied-blockers` for production rendering |
 | Presentation eases and restarts once per cell | Presentation follows ordered authority samples at their cadence, preserves terrain corners, bounds backlog, and owns one sustained travel state | `MovementPresentationContractSmoke` x1/x2/x4, 30 FPS, hitch, pause, turn, resize, and defeat cases |
+| Enabling collision or attack-range diagnostics snaps actors to each authority sample | Diagnostic circles show committed authority samples while actors keep their interpolation and move animation; toggling either overlay does not clear motion, while paused single-step still snaps explicitly | `BattleMovementRenderSmoke` real-input overlay cases |
+
+## Movement presentation fix (2026-09-27)
+
+`RefreshGeometry` no longer snaps presenters on each simulation tick. This previously cancelled their queued movement and returned the walk cue to idle whenever either diagnostic overlay was enabled. The overlay continues to show authoritative geometry; paused single-step retains its explicit snap.
+
+`BattleMovementRenderSmoke.tscn` uses real GUI input for an isolated Growth opening, pause/resume, x1/x2/x4 and both geometry overlays. It checks real sprite playback and intermediate rendered positions for current Growth, GX and Alpha content. The optional `--saved-roster-only` probe reconstructs the local Growth save in memory without writing it, then measures movement and the statistics panel. `MovementTickProfile.tscn` measures representative 6v6 simulation steps on open and narrow maps. Build and these focused probes passed. The older `MovementPresentationContractSmoke` was blocked before assertions by its frozen catalog's unregistered EB01/EB02 loadouts; this is not a passing regression result.
+
+Evidence: `.godot/ui-review/battle-movement/` contains the saved-roster measurements and a two-second, normal-speed rendered walking clip (`movement.mp4`). The current four-hero battle showed continuous walk playback for every moving participant; its five-second sample averaged 16.019ms with a 95.287ms peak and isolated frames above 33ms. The statistics-panel sample averaged 15.637ms with a 24.083ms peak. These samples did not reproduce sustained movement stalling with diagnostics off, and do not establish that every frame hitch is resolved. Player pacing and smoothness acceptance remain manual.
 
 ## Manual Acceptance
 
@@ -39,8 +48,11 @@ Passed with the production fix, together with `GameplayContractSmoke --movement-
 8. Kill a moving blocker and create a temporary summon in the same fight. Death must immediately release its body, target, and goal state. The summon must appear at a legal nonoverlapping continuous position or fail atomically.
 9. Repeat the same seed at x1, x2, x4, pause/resume, and Battle Lab single-step. Outcome, terminal tick, event order, digest, report positions, and damage facts must match. At 4x near 30 FPS, visible lag remains bounded and movement does not restart or flash at each 0.1-second sample.
 10. Resize between 1280×720 and 1600×900 while units move. The projection, selection, markers, character lift, and interpolation endpoints must resize together; the simulation result and logical positions must not change.
+11. During normal-speed movement, enable both “碰撞” and “普攻范围”. The diagnostic circles may lead the visible actor by the bounded presentation delay, but the actor must continue interpolating with its walk pose; turning either overlay on or off must not snap the actor or return it to idle. Pause and use Battle Lab single-step to confirm that this explicit step operation still aligns the actor and committed circle exactly.
 
 ## EE03 大体型分边冲锋（2026-09-19）
+
+- 2026-09-27：补真实玩家接触、优先侧受阻但反侧可用、旧地面位移被取消后继续冲锋，以及双侧无路安全停止。正式 Growth 内容通过 `GrowthContentPackage` 发布；视觉夹具让 HC03 位于冲锋线上，连续阶段帧见 `.godot/trample-review/player-contact/`。人工复核时重点观察：有可用侧路应被推开后继续冲，旧位移不能把目标拉回；只有两侧确实清不出空间才停止。
 
 - 2026-09-20当前资源机制：EE03仅一个满蓝主动，初始90／100、每秒12.5，普攻／受伤不回蓝。满蓝开始蓄力即清空，蓄力、冲锋、收招期间不回蓝，结束后恢复；无合法目标或受控保留满蓝。原专项新增非英雄法力池、资源条数值／可见绑定、主动分类、未满不放、完整动作锁、下一满蓝无隐藏冷却、缺目标／受控与资源回滚检查，无窗口通过，日志 `.godot/enemy-trample-mana.log`。资源条画面、节奏和操作待用户验收；下列视觉记录只证明之前的冲锋动作。
 
@@ -58,7 +70,7 @@ Passed with the production fix, together with `GameplayContractSmoke --movement-
 
 ### 怒拳无蓝条件与单位技能队列（2026-09-20）
 
-- 无窗口专项：`tests/GritActionQueueContractSmoke.tscn`。正式包加载后检查满怒／半血／20%边界、合并与依次施放、多个实例独立、濒死每战一次且复活不重置、取消／资源过期／盾清理／失败回滚与确定性。通过记录在`.godot/grit-action-queue.log`，不等于画面或手感验收。
+- 无窗口专项：`tests/GritActionQueueContractSmoke.tscn`。正式包加载后检查满怒／半血／20%边界、合并与依次施放、多个实例独立、濒死每战一次且复活不重置、取消／战内怒劲保留／盾清理／失败回滚与确定性。额外用间隔超过6秒且每次受伤后治满的输入确认仍能积满出拳。当前通过记录见玩家数值任务，不等于画面或手感验收。
 - 手动入口：实验室HC38。增加敌方输出，让第一次重拳开始后生命继续跌到20%以下；观察先完成第一拳和收势，再开始第二拳，持续低血量不会反复空放。另验证治疗回半血后重新跌破，以及同场两个怒拳各自施放。
 - 本轮不打开窗口或录屏，不自动扩展到全塔或其他英雄回归。
 
@@ -80,3 +92,9 @@ dotnet build my-team.csproj -maxcpucount:2 -v:minimal
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/BattleLabBattleLifecycleContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/AlphaRunSmoke.tscn
 ```
+
+
+三个动作表现检查（2026-09-25）：`tests/ThreeActionsVfxReview.tscn`使用当前catalog/player和三个正式角色，模拟正式阶段输入，不触碰存档。`--capture=<目录>`输出30 fps，`--left`检查左向，`--diagonal --light --reduced`检查斜投影/浅底/减少动态，`--solo=fire|punch|rush`仅用于单项放大展示。自动检查取消停止供给、已有颗粒继续存活、实际路径尘尾脱离人物、共享时钟、到期与Clear。正式事实/真实输入另由EnemyFiveVisualSmoke `--case=EE07`、DuelGritHookVisualSmoke `--hero=HC38`和EnemyTrampleVisualSmoke覆盖；HC38真实暂停/恢复复现了已结束死亡Tween的Play错误，IsValid守卫后同入口复验干净。关键帧和自动断言不构成美术接受，用户仍从战斗实验室相应预设体验。动态对照入口web/vfx-sample-viewer/crafted.html，证据归共享VFX活动任务。
+
+
+2026-09-25六项特效局部入口：`tests/SixActionsVfxReview.tscn`使用共享资源，支持`--effect=<id>`、`--capture=<path>`及`--left/--diagonal/--light/--reduced`。检查暂停、取消停供、释放清理；酸液另覆盖hit/miss、snap/插值、实际终点、余效与作用域清场。正式入口`EnemyFiveVisualSmoke -- --case=EE08,EE09,EB01,EB02`和`DuelGritHookVisualSmoke -- --hero=HC39`检查真实暂停输入、触发与清场；EB02夹具允许虫母破壳后正常接敌发酸，不改正式规则。观感对照入口`http://127.0.0.1:5187/refined.html`，不将自动检查记作用户审美验收。

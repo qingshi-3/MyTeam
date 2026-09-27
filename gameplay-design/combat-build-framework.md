@@ -6,7 +6,7 @@ Status: Accepted Rules And Confirmed Directions — See Per-Section Boundaries
 
 This document owns the long-term player-facing grammar for hero roles, build composition, population growth, population-based builds, and the `10 / 18 / 30` landmarks. The core game loop, combat rules, tactical commands, failure, and presentation contracts remain in `tower-autobattler-core.md`.
 
-Exact starting population, growth cadence, whether heroes have a tier/rarity progression model and its names/odds, reserve capacity, recruitment economy, trait breakpoints, and specific elemental/status families remain future design work unless this document explicitly fixes them. The 2026-09-06 directions below record product intent, not implementation completion.
+Exact starting population outside a named ruleset, reserve capacity, recruitment economy, trait breakpoints, and specific elemental/status families remain future design work unless this document explicitly fixes them. The Alpha ruleset still has no general hero tier/rarity progression. The separate Growth Journey below has one explicit, once-per-hero ascension and tiered discovery pools; that scoped mechanism does not establish a universal rarity ladder or offer odds for all content. The 2026-09-06 directions below record product intent, not implementation completion.
 
 ## Product Synthesis
 
@@ -24,7 +24,7 @@ A central content failure to avoid is pretending every hero is a build core. If 
 
 - A run starts below its mature formation size and grows its current population through ordinary run progression. The production compatibility baseline retains initial population `7` and now grants the two designed heroes (the selected hero plus the other companion), following the explicitly authorized roster cleanup. This does not adopt a new starting-selection flow or population reward cadence. These values remain authored test data rather than permanent landmarks, and the later growth curve is not yet fixed.
 - Every persistent hero consumes exactly `1` population, regardless of hero tier or rarity.
-- Whether heroes use tier/rarity progression remains undecided. If adopted, its availability, complexity and responsibility implications need explicit design; it never changes the accepted one-population cost. Existing content labels do not settle that choice.
+- Alpha heroes do not use a general tier/rarity progression. Growth Journey adds a single authored ascension to its supported representatives and a paid high-tier discovery choice; both still cost one population. Extending that mechanism or its tier labels to the full roster remains a separate decision.
 - `10` is the conventional ordinary endgame formation ceiling. It is a growth destination, not the starting formation size and not a guaranteed body count in every run.
 - The existing eighteen legal player candidate cells are the physical full-deployment ceiling. Deployment keeps one unit per legal cell; battle converts those cells to continuous starting positions and then enforces circular body occupancy.
 - Explicit heroes, abilities, equipment, or relics may spend real build opportunity to raise effective persistent population above the ordinary `10` ceiling. A high-roll population build may approach or fill all `18` legal cells.
@@ -83,6 +83,21 @@ Abilities, statuses, equipment, relics, hero roles, and tower rewards should spe
 
 特殊获得机会仍应接入通用的条件、目标、授予、效果和生命周期。这里没有承诺当前原语足以表达全部特殊内容；缺少能力时明确扩展模型，不能写具体内容 id 分支绕过契约。
 
+### Growth Journey 可调验证基线（2026-09-27）
+
+本批另设独立 `GrowthGameRoot`，沿用真实 15 层征程、敌阵、全局生命与战斗模拟，但使用独立内容包、地区／遭遇曲线和存档命名空间。它用于验证“构装工坊定向培养／研究”和霜羽战斗路线的完整取得过程，不改变 Alpha 的入口、内容池或存档。当前成长规则覆盖 26 名代表内容（含明确的高阶发现候选），不表示 49 名矩阵英雄已经完成全量成长重构。
+
+- 每完成一个非终局节点，符合该节点冻结参与名单的生产者结算一次。攻击或生命培养把受益友军内容原始攻击／原始生命的 `4%` 作为绝对值永久加到该友军；多次结算线性累加。研究模式改为研究 `+1`，同一次机会只选择三者之一。后备、新招募及未进入冻结名单的单位不追溯取得收益。
+- 每次非终局推进取得通用材料 `1`。一次升阶花费 `4`，同类别材料可替代通用材料；每名受支持英雄最多升阶一次，换用其明确机制能力配置。支付和升阶会同时冻结三个不同、未拥有的候选；不足三个则整次拒绝且不扣料。支付成功后必须从固定三选一领取，保存重载不重抽。
+- 研究 `4` 兑换一份本局法术。玩家可在整备预设一份法术和一个合法目标；预览、退出或取消整备不消耗。只有真实开始战斗的保存事务成功时才扣除。已冻结开战记录在启动异常后可重试，沿用同一法术与目标，不再次扣除，也不能借重试免费换配方。
+- 首批护阵给指定英雄及其2.5格内至多2名友军各授予指定英雄本场生命上限15%的护盾，持续18秒；蓄势给指定英雄25点启动法力。预设在一次真实消费后清空，下一战需重新选择。参数服务于不同战斗时机，不要求研究路线每战都用法术。
+- MX01 的首批战内永久机制是：本战首次成功施加冻结后永久获得 `16` 最大生命；当场及后续战斗使用该固定增量。资格每战冻结且最多触发一次，回存的是明确永久增量，不是临时状态层数。
+- 全局生命沿用正式败战规则：普通／精英败战或超时扣对应全局生命，剩余大于零则继续并失去胜利奖励；Boss 败战／超时直接终局。英雄每战仍按有效生命上限满血进入。
+
+以上 `4%`、`+1`、材料 `1`、升阶 `4`、研究兑换 `4` 和 MX01 `16` 都是当前可调验证基线，不是最终平衡验收结论。自然供给、路线强弱、机会密度和玩家取舍仍需连续征程诊断与试玩。
+
+成长征程保留首区过渡空间，二区逐渐提高承压要求并由第二Boss检验阵容投入，末区兼顾压力与战斗时长。机制升阶与羁绊完整的无生产者路线应仍可行；不能通过敌人调参强制所有玩家使用工坊。具体曲线和真实供给下的对照结果见[运行证据](../design-discussion/04-content-validation/artifacts/growth-route/runtime/README.md)，不把固定脚本通关率当成所有玩家的胜率。
+
 ### 待讨论、暂缓与保留意见
 
 - **9＋13 玩家介入**：合并研究，区别战前修改自动行为与战中战术操作；入口、频率和载体待定，不限定装备/卡牌。英雄自动法力施法不因此改回手动。现有两指令/三战术点仍是当前基线，修改前需明确决策。
@@ -139,11 +154,11 @@ Trait value may exceed physical body count only through explicit authored contri
 ## Deferred Design Decisions
 
 - future retuning of the authored initial-population baseline and the ordinary growth curve;
-- whether hero tier/rarity progression is adopted, then its names, availability stages, and offer odds;
+- Alpha 是否未来采用通用 tier/rarity 进程，以及它的名称、开放阶段和概率；Growth Journey 的一次升阶不自动回答此问题；
 - reserve capacity and reserve/deployment exchange rules;
 - recruitment prices, replacement value, and population-growth economy;
 - detailed elemental/status families and their reactions;
 - normal trait breakpoints and which traits can exceed body count;
 - hidden `30`-value achievement name, reward, discoverability, and secret transformations;
 - exact above-`10` source count, rarity, tuning, performance budget, and visual-density budget.
-- cultivation recovery, distillation, inheritance/evolution, run pool selection and risk/reward details listed above; their confirmed direction does not supply missing parameters.
+- 除本页 Growth Journey 可调基线外的培养回收、蒸馏、继承／分支进化、长期内容池筛选和风险收益细节；已确认方向不自动补齐这些参数。

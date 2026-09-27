@@ -10,6 +10,40 @@ The game is a single-player tower-climbing roguelite hero-roster autobattler. Th
 
 The main pleasure is seeing a deliberately constructed hero team operate across a readable spatial battlefield. It is not a traditional turn-by-turn tactics game, a PvP economy autobattler, a permanent troop-management game, or passive playback with no meaningful preparation or intervention.
 
+## 每战满血与战外生命展示
+
+2026-09-25 用户明确修改：单位不携带当前生命进入下一战，每场战斗按已计入装备、遗物、羁绊等开战静态加成后的生命上限满血入场。战斗中的伤害、治疗、护盾、死亡与复活仍按战斗规则结算；开战效果在初始化之后正常生效。阵亡单位沿用退出布阵的处理，重新部署后同样满血入场，不额外引入跨战伤势。
+
+战外单位属性面板、整备卡及详情只显示生命上限，不显示剩余比例、当前／最大值或血量进度条；战斗实时状态和战报仍显示实际生命事实。原英雄伤势恢复选项删除；2026-09-26 新增的全局生命恢复是独立资源，见下节。事件保留原成功率、成功金币及稳妥收益，失败无收益且不扣生命。
+
+## 玩家单位攻击、治疗与数值边界
+
+2026-09-26按用户明确实施要求：普通攻击对敌人输出，不再因治疗强度为正自动替换成治疗友军。济世医师、盈光祭司通过各自主动技能治疗，保留明确的治疗转伤害／过量治疗转盾及其他英雄已有吸血等技能效果。治疗技能照常检查法力、合法目标、范围与视线；满蓝但目标不合法不扣资源。
+
+玩家与敌方使用独立单位定义和需要分别调参的技能资源；相同外观复用贴图、动画、VFX与行为实现。当前31名发布英雄完成首轮逐名数值校准，17名现行征程池与7名保留库的开放范围不变。数值与验证边界见[玩家数值任务](../work-items/active/player-unit-balance.md)，不将首轮参数当作最终平衡。
+
+## 全局生命与败战续行
+
+2026-09-26 按用户实施授权接入 R11-D02。全局生命是独立局内资源，每战英雄满血与战中治疗均不重置或恢复它。首版初始／上限100，普通败战扣20，精英败战扣30；超时按同场次败战处理。数值由 RunRules 资源配置，属于待试玩校准的初值。
+
+非Boss败战后生命大于0则保留阵型并进入下一层，无胜利金币或战利品；已花费的战术指令金币及合法遗物状态照常结算。生命扣至0则征程结束。所有区域／最终Boss失败或超时，无论生命还剩多少都直接结束征程。胜利不扣全局生命，原胜利奖励与阵亡撤出部署规则保持；最终Boss胜利通关。
+
+默认营火提供恢复25全局生命（不超过上限）或原有金币收益的互斥选择；满血禁用恢复，也可放弃机会。普通战斗治疗不能回血到此资源。通用选择支持独立恢复操作供后续内容复用，当前不新增恢复物品、改事件概率或增加生命支出。
+
+路线与部署预告失败代价，征程资源栏及正式战斗显示全局生命；战报展示实际扣血、余量和下一步，终局区分Boss失败与生命耗尽。实验室不使用征程生命。敌人曲线的首轮校准见下节，生命初值与恢复成本仍待联合试玩。
+
+## 阶段难度与构筑检验（2026-09-26首轮）
+
+用户授权 D56 / Q26 首轮实施。15 层／三区保持；开局按两名英雄准备。前段允许过渡，首区 Boss 检查初步协作，中区逐步要求可持续的主配合，末区要求主配合与基本补短板，同时保留成型后的优势战。人数和零散装备应能帮助过渡，但不能作为稳定的后期通关保证。功能位与有效替代组合仍有价值，不把特定英雄名单或羁绊数量变为硬性入场条件。
+
+每种正式遭遇从有限的完整敌阵模板中选取，固定职责与初始站位，再按种子选择地形；不会读取玩家阵容来针对性加难。普通战突出一类压力，精英组合已见过的压力，Boss 保留原有技能与阶段。区内生命／攻击曲线与地区倍率相乘，初始人数由模板决定；具体参数和成员以 `content/project/encounters/` 为准。其范围是初始敌人的生命和攻击，不会把固定数值技能、护盾、召唤物等所有数值自动同比放大。
+
+部署与战斗显示同一敌阵名称、站位和实际属性。地形／大型身体导致位置冲突时，共用确定性合法落点解析。每战英雄满血、败战扣全局生命／丢失胜利奖励、Boss 败战直接终局保持；玩家可以用普通战失败换取调整机会，生命不能绕过 Boss 门槛。
+
+本轮霜羽同盟成员的攻速收益为 2 人 +0.25、4 人 +0.65；原先 +0.15／+0.30 的深层回报不足。只作用于贡献成员，同一成员不重复计数，徽章不额外赋予冰冻技能，冰冻概率与持续时间保持。通用装备／遗物本轮未削弱，未添加无羁绊惩罚、普遍免控或反套路遗物。
+
+可复现样本与供给边界见 `../design-discussion/04-content-validation/artifacts/difficulty/README.md`。这是首轮可玩参数，固定预算战斗结果不等于自然获取率／整局胜率，也不代表玩家节奏验收。
+
 ## 伤害、公式与统一防御
 
 2026-09-21 按 M04-D03 及用户“把现有的都修复掉”实施授权统一：伤害由具体公式产生；攻击、法强、生命、层数或固定值等只有被公式明确读取时才参与。它们是输入属性，伤害是计算结果，不另设物理／魔法攻击属性或双防。
@@ -35,7 +69,7 @@ Its charge telegraphs a fixed direction, then moves through the line while pushi
 - Every recruitable hero has a legible acquisition stage, immediate use, replacement condition, and build value. A visual asset or simple body is not promoted to roster content without those properties, and not every hero is presented as a build core.
 - Equipment remains attached to concrete roster heroes. Relics remain run-level authored content.
 - A battle continues while an original non-temporary player roster hero is alive or has a separately authored pending same-identity return. Borrowed enemy allegiance does not create roster membership. Defeat of the starting hero alone is not terminal; pending return waits for a legal position and remains subject to the normal battle time limit.
-- Individual defeat is terminal for that battle unless a separately authored resurrection says otherwise. Existing cross-floor health, recovery, replacement, and rest consequences remain; this contract does not add permadeath, wounds, manpower, or a casualty economy.
+- Individual defeat is terminal for that battle unless a separately authored resurrection says otherwise. Every Run battle starts at full hero health. Victory retains casualty removal from deployment; a continuing defeat preserves the prepared formation. This does not add permadeath, manpower, or a casualty economy.
 - The existing eighteen legal player cells are the physical deployment ceiling. Growth above the ordinary `10` ceiling becomes available only through explicit heroes, abilities, equipment, or relics that consume real build opportunity.
 
 Hero role hierarchy, shared build grammar, population scaling, explicit count bases, and the `10 / 18 / 30` landmarks are authoritative in `combat-build-framework.md`.
@@ -58,13 +92,13 @@ These are initial tuning weights. Each slot draws an allowed nonempty tier first
 
 ## Hero Mana And Automatic Skills
 
-所有有技能的单位都显示战斗技能状态，不按英雄、敌人或阵营过滤。头顶第二条优先显示主要技能的真实法力、怒劲或周期进度，空资源也保留；仅有条件／常驻被动的单位显示对应触发／生效状态，不虚构回蓝。颜色同时配简短文字标识，完整技能状态、触发条件及次数在点选详情中查看。满资源不保证立刻出手，控制、目标不合法或当前动作未完成时保留等待／排队信息。首领读取当前阶段技能；单位死亡隐藏头顶资源，返场恢复当前状态。显示本身不改变技能原有释放条件、数值或动作顺序。
+所有有技能的单位都提供真实技能状态，不按英雄、敌人或阵营过滤。头顶保留生命、护盾及主要技能的真实法力、怒劲或周期进度条；空资源也保留，不虚构回蓝。头顶不常驻“法／怒”“待释放”等文字，不飘技能名；控制或有害状态可显示一个简洁图标。资源类型、条件／常驻被动、等待／排队原因、状态层数与时长在点选详情中查看。满资源不保证立刻出手。首领读取当前阶段技能；单位死亡隐藏头顶资源，返场恢复当前状态。显示本身不改变技能原有释放条件、数值或动作顺序。
 
 The designed roster keeps HC01 连弩手 and HC03 铁甲卫 and adds HC04–HC30, one newly authored hero for each BC01–BC27 mechanism under the user's 2026-09-12 implementation authorization. Each new hero has a fixed mana skill and fixed passive; multiple event bindings may implement one passive. Three stationary, melee, and ranged laboratory dummies remain available on either side and are excluded from recruitment. HC02 and the old roster remain excluded. Names, numbers, exact submechanism choices, and full build supply are provisional; authoring does not certify balance or player acceptance. This batch's implementation and validation history is maintained in `../work-items/active/bc-hero-roster.md`; the current hero drafts are in `../design-discussion/04-content-validation/content-drafts.md`. Existing HC01/HC03 evidence remains separately recorded in `../work-items/active/designed-heroes-and-test-dummies.md`. Other G/M/R discussions have not been merged by this content pass.
 
 2026-09-19局部实施增加HC37军团斗士、HC38怒拳斗士、HC39铁钩机兵。军团以短时双向决斗配合受普攻反击吸血；怒拳以近期生命承伤积怒劲，消费为短盾和锁向范围重拳；机兵以实体飞钩抓沿途首敌，低血每战一次护盾提供容错。保持固定一主动一被动、自动施放、战后清理；军团与机兵使用满蓝条件，怒拳于2026-09-20改为下述无蓝条件。不迁入原作全部机制。当前暂定机兵为招募二档，军团／怒拳为三档，均有实验室专用预设；具体数值由各自技能资源维护，平衡与观感仍待试玩。实施与验证归`../work-items/active/duel-grit-hook-heroes.md`。
 
-HC38怒拳斗士无蓝：怒劲满、生命从50%及以上跌至50%以下、生命低于20%均能触发重拳。20%濒死每战一次，复活不重置；半血触发在生命恢复至50%及以上后可重置。每个单位独立保存条件技能请求，同一技能的待执行原因合并，等当前蓄力、释放和收势完整结束后再施放下一次；不覆盖正在执行的动作。施放时消费当前怒劲，零怒劲仍有基础伤害，无额外护盾。控制／缺少合法目标时等待，死亡清理队列，不把濒死阈值当作免死。
+HC38怒拳斗士无蓝：怒劲满、生命从50%及以上跌至50%以下、生命低于20%均能触发重拳。20%濒死每战一次，复活不重置；半血触发在生命恢复至50%及以上后可重置。每个单位独立保存条件技能请求，同一技能的待执行原因合并，等当前蓄力、释放和收势完整结束后再施放下一次；不覆盖正在执行的动作。2026-09-26按用户要求取消怒劲自然流失：实际生命承伤累计，上限最大生命50%，等待／受控／被治疗均不扣除；施放时消费，死亡或战斗结束清空。零怒劲仍有基础伤害，无额外护盾。控制／缺少合法目标时等待，死亡清理队列，不把濒死阈值当作免死。
 
 HC01 retains Battle-local uncapped attack-speed stacks, base target-switch reset, laboratory U01 retention, and a speed-linked three-arrow test volley without per-arrow basic mana. HC03 retains temporary nearby taunt and armor plus current-armor reflection of ordinary hits. New mechanics use explicit authored readers and payoffs: current shield, independent shield grants, actual health lost, actual healing, overhealing, current statuses, and Battle history are different inputs. The team's shared resonance is Battle-local content energy, separate from personal hero mana, tactical points, and Run currency; it has no benefit until an explicit ability spends it. No hero's ability counters, consumed bodies, controlled enemies, or accumulated battle attributes carry into the next battle.
 
@@ -74,7 +108,7 @@ HC01 retains Battle-local uncapped attack-speed stacks, base target-switch reset
 - Full mana attempts automatic casting, not a manual button. Action control, cast recovery, or no legal target preserves mana. Offensive single-target skills use a living enemy within attack reach and line access, retaining the current target when legal; healing skills select the lowest-health-ratio wounded ally in reach and line access, including self. Self-targeted skills do not require an enemy target.
 - A successful mana skill empties that hero's mana and enters its authored recovery window (at least one tick); ordinary attacks, movement and ordinary mana recovery pause in that window. Explicit authored post-cast mana-refund effects remain separate from ordinary recovery. Failed execution restores mana, recovery, effects and presentation facts together. Damage that kills a target skips later status/heal operations on that defeated target instead of recreating it.
 - Reused temporary-unit templates do not inherit the persistent hero mana cycle. Authored non-mana Boss/passive behavior remains its own mechanism.
-- Mana bars, ready markers, skill names and descriptions, equipment slots, shields, and status stacks/timing expose actual runtime facts. A cast flash is driven by a successful cast event, not inferred from a change in mana. Numerical tuning and player experience remain pending hands-on acceptance.
+- Resource bars, inspection details, equipment slots, shields, and status stacks/timing expose actual runtime facts. Cast effects are driven by successful cast events, not inferred from changes in mana. Numerical tuning and player experience remain pending hands-on acceptance.
 
 The 2026-09-12 displacement extension adds HC31–HC36 with fixed active/passive drafts for charge, leap, blink, knockback, pull and gathering. They use the same roster contract and laboratory; names, numbers and opening full mana are provisional. Scope and the explicit no-build/no-runtime-validation boundary are recorded in `../work-items/active/hero-displacement.md`.
 
@@ -101,7 +135,7 @@ Authored death effects distinguish consuming a temporary ally, using an eligible
 - Tactical commands primarily change targeting, position, tempo, protection, cleansing, devices, or explicit temporary reinforcement. A universally optimal raw-damage or healing button is not the intended baseline.
 - The tactical HUD keeps both equipped commands, generated effects, current/maximum tactical points, costs, success, cooldown/use facts, targets, and localized failure reasons visible. Pause and speed controls remain observation controls and never consume tactical points.
 - Recruitment presents gameplay-relevant faction and unit tags in Chinese. Multi-tag identity is retained (for example, an undead beast shows both traits), while technical catalog tags are not player-facing.
-- Unit behavior must be readable. Each roster hero has one primary responsibility and a small number of clear mechanics; complexity comes from combinations. Player roster heroes share a clear team/hero identity rather than one gold commander plus subordinate bodies, and every combat unit exposes a near/ranged marker derived from authoritative attack range. Reach up to 3 is near and reach above 3 is ranged, so 2.2/2.3 remain near while 3.5 is ranged. Clicking a visible combat unit opens inspection with its precise responsibility, reach, health, persistent/temporary identity, and current source where applicable.
+- Unit behavior must be readable. Each roster hero has one primary responsibility and a small number of clear mechanics; complexity comes from combinations. Battle units do not carry permanent foot role symbols or a hero star. Health-bar styling distinguishes sides, with an additional edge cap for enemy bars; selection and target feedback remain situational. Clicking a visible combat unit opens inspection with its precise responsibility, reach, health, persistent/temporary identity, and current source where applicable. Near/ranged classification remains available in details (reach up to 3 is near; above 3 is ranged).
 - Every living unit participates from the first simulation tick. A unit first takes any legal attack or heal available from its current continuous position; a newly attackable threat may interrupt a distant pursuit. Otherwise it chooses a reachable target by actual path cost to a legal engagement position, with role preferences and stable target hysteresis as secondary rules.
 - A healer protects a wounded ally only when a legal healing plan exists: the ally must be reachable and the eventual heal must satisfy range and line access. It tries other wounded allies when the lowest-health ally is illegal, heals or waits through cooldown for a valid protected ally, and joins ordinary combat when no legal wounded-ally plan exists.
 - Deployment is one unit per legal cell. At battle start each deployed cell center becomes the unit's initial continuous logical position; after that, units may move and stop anywhere inside legal battle space. Each living unit has an authored circular body radius; ordinary ground movement cannot pass through living ground bodies or blocked terrain. Explicit leap/blink exceptions follow the skill-displacement contract below. Strategic target identity and a reserved engagement position around that target are separate. Movement planning reads one tick-start snapshot and resolves deterministically without rigid-body bounce or push.
@@ -118,7 +152,7 @@ Authored death effects distinguish consuming a temporary ally, using an eligible
 - Roster heroes, enemies, bosses, and temporary units remain independent report entries with alive/defeated state, persistent/temporary identity, source attribution, and final facts. Temporary-unit rates use their actual join tick rather than whole-battle duration. Positive tied leaders may receive explainable highest-damage, highest-damage-taken, or highest-healing awards; an all-zero category grants none, and the report has no opaque composite rating or MVP formula.
 - Report damage counts only health and shield actually removed; overkill is excluded. Report healing counts only health actually restored; overheal is excluded. Concrete lethal sources receive kills, temporary units own independent statistics, and floor/environment contributions remain unowned rather than being falsely credited.
 - Each immutable unit result additionally records join tick, first terminal defeat tick, attack-action count, and effective healing-event count; the battle result records successful tactical-command uses. One attack action counts once even when splash or piercing affects several targets, one positive effective heal counts once for its credited source, and failed/zero-effective heals or commands count nothing. Active lifetime runs from join through first defeat or the result tick, clamps to at least one fixed simulation tick, and is the only divisor for report DPS/HPS. Positive target-side effective damage taken not reconciled to opposing credited unit damage may be labelled separately as environment damage but is never assigned to a unit.
-- The report continues to rewards after an ordinary victory, to run success after the final victory, and to run failure after defeat or timeout.
+- The report continues to rewards after an ordinary victory, to run success after the final victory, to the next floor after a non-Boss defeat/timeout with health remaining, or to run failure after Boss defeat/timeout or exhausted global health.
 
 ### Explicit Skill Displacement
 
@@ -153,7 +187,7 @@ Authored death effects distinguish consuming a temporary ally, using an eligible
 
 ### Current Run Baseline
 
-The complete Alpha contains three themed tower regions. Each region has a route containing combat, elite, recruitment, shop, event, rest, and boss opportunities. A run ends in a final boss victory or when no living non-temporary player roster hero remains after a battle.
+The complete Alpha contains three themed tower regions. Each region has a route containing combat, elite, recruitment, shop, event, rest, and boss opportunities. A run ends in final boss victory, Boss defeat/timeout, or exhaustion of global Run health; an ordinary battle loss may continue under the global-health rule above.
 
 Floor rules are visible before combat and are data-driven. The initial content must demonstrate at least:
 
@@ -167,7 +201,7 @@ Floor rules are visible before combat and are data-driven. The initial content m
 - 贯穿箭命中后继续沿锁定直线飞到地形／射程终点；当前2人伤害上限仅约束结算，不提前销毁箭。擦伤反馈在受击身体位置短促出现，与可见箭头接触对齐；不播放扩散水波。
 - ES01贯阵弩手与ES04贯光术士均使用独立于普攻的超远技能距离。先显示方向、源端逐渐充能，再沿开始时锁定的方向释放；目标移动不会转向。蓄力中受控、死亡或施法者位移／换队取消未释放技能。
 - 贯阵弩手发射有实际飞行时间的贯穿箭；贯光术士在释放瞬间造成一次直线伤害。当前共同初值为1.2战斗秒蓄力、最多2名目标，首个120%攻击力、第二个80%；这是专门技能配置，不覆盖普通贯穿弹的衰减规则。分散／错位站位和打断提供应对，不要求指定解题英雄。
-- 机制类别与阶段数值分开；基础兵在后期继续存在，通过独立遭遇生命／攻击倍率调整战力。首版仅在有限遭遇替换一名首位敌人，每场最多一名新增贯穿特色兵，不提高该场原有总人数。
+- 机制类别与阶段数值分开；基础兵在后期继续存在，通过独立遭遇生命／攻击倍率调整战力。原始接入采用有限遭遇替换首位敌人；当前出场与人数改由本节阶段难度规则下的完整敌阵模板维护，每场仍至多一名贯穿特色兵。
 - 内容数值和出场配置为可调测试基线，详见 `work-items/active/enemy-piercing-skills.md`；本批不固定整局类别配额，也不代表整局成长、难度或体系平衡已通过试玩。
 
 ## 五名机制精英与首领（2026-09-19 局部实施）
@@ -177,7 +211,7 @@ Floor rules are visible before combat and are data-driven. The initial content m
 - EE09 换位妖使：标记最远合法敌人，按双方当时的位置整体交换。任一完整身体落点无效或施法中断则双方不换，冷却仍消耗；换位本身不造成伤害。
 - EB01 岩垒督军：直径2.2格；普通近战→短时岩墙→窄线地裂→收招。墙有独立血量，阻挡身体和飞行物，普通自动攻击可拆除；地裂可以越过自己的墙。死亡／中断清墙，不永久封路。
 - EB02 裂壳虫母：半血时一次裂壳，直径2.4→1.4格并沿合法地面退开；血量、护盾、状态保留，期间仍受伤。之后使用酸液并产卵；卵约3秒孵化，卵与幼虫存活合计最多2，总计最多两批／4枚卵。母死取消未孵化卵，已孵化幼虫留场参与胜负清理。
-- 正式初始接入：首区精英在原贯阵弩手与EE07／EE08间选一名领队；末区精英在原贯光术士与EE09间选一名；中区EE03保持。首区／末区首领分别为EB01／EB02。原基础兵池与遭遇总人数保留；机制密度及数值为待试玩基线。
+- 首区／末区首领分别为EB01／EB02，中区保留幽影首领。当前精英组合由完整模板维护：首区贯阵弩手／EE07／EE08，中区冲阵配后排火力，末区换位火网或冲阵回刃。此项覆盖原先只随机替换领队的接入配置；机制密度及数值仍待试玩。
 - 五项均有战斗实验室预设。实现恢复与验收边界见 `work-items/active/enemy-five-elite-bosses.md`；不代表整局成长和构筑平衡已验收。
 
 ## 霜羽冰冻（2026-09-20 修订）
