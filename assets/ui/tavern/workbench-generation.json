@@ -1,0 +1,19 @@
+{
+  "reference": "design-discussion/04-content-validation/artifacts/ui-study-20260925/attribute-layout-options/c-compact-roster.png",
+  "method": "built-in imagegen; dedicated blank alpha panels; runtime text and controls",
+  "assets": [
+    {
+      "id": "details",
+      "prompt": "Production game UI asset, isolated on genuine transparent alpha, no screenshot, no characters, text, symbols or UI controls. Use the attached approved design as MATERIAL AND SILHOUETTE reference. Extract/recreate ONLY the blank large RIGHT-HAND grey-brown stone-framed details panel: a front-facing near-square rectangle with aspect ratio 1.05 wide to 1 high, slightly cut/chamfered corners, broad hand-painted matte grey-brown stone bevel, very restrained structural highlights, fine few stone seams, dark quiet opaque charcoal-brown center. Border is slim, about 3 percent width, lower and side borders same proportion. Four large corner stones and simple straight middle rails, no ornate metal, no wood, no glossy edges. Center is one uninterrupted flat dark painted surface, enough room for small runtime Chinese text. No internal dividers or equipment tray; those are separate runtime controls. Exact style of right panel in reference, not the central portrait card. Outer area beyond panel corners MUST be fully transparent; panel fills 98% of image, no background halo. Soft contact shadow within alpha only, keep shadow tight. No perspective. Asset should allow nine-slice rails, flat central portions of sides.",
+      "output": "assets/ui/tavern/workbench-details.png",
+      "generated_source": "C:/Users/qs/.codex/generated_images/01a0d48f-e4ad-7df0-930a-eff1417fdec1/exec-7356f018-237e-4ec5-8937-2d1670eace41.png"
+    },
+    {
+      "id": "list",
+      "prompt": "Production game UI asset, isolated on genuine transparent alpha, no screenshot, no characters, text, symbols or controls. Use attached approved design as MATERIAL reference. Create ONLY a blank narrow hero-list container: rectangular aspect ratio width 1 to height 1.7, restrained grey-brown hand-painted stone border with chamfered corners and straight middle rails. About3percent thick sideborder, lighter and thinner than hero card border. Dark matte charcoal brown continuous OPAQUE recessed interior. A few broad sculpted stone planes, soft painted highlights, clear but quiet volume; no shiny metal, no woodgrain, no glow, no fancy decorative corners, no internal lines. This will contain small portrait+name navigation rows. The left list frame of approved image is reference. Frame fills98percentcanvas, outside cut corners genuinely transparent with very small tight shadow only. No opaque overall background. Designed as9slice panel with clean straight rail middles.",
+      "output": "assets/ui/tavern/workbench-list.png",
+      "generated_source": "C:/Users/qs/.codex/generated_images/01a0d48f-e4ad-7df0-930a-eff1417fdec1/exec-36b79564-8a28-46fb-8f36-eea5f46462cb.png"
+    }
+  ],
+  "integration": "Use approved matching opaque component backgrounds; StyleBox region omits transparent outer padding. Panel-specific whole regions preserve corner silhouettes. No whole-screen backdrop."
+}

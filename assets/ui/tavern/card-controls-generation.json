@@ -1,0 +1,31 @@
+{
+  "date": "2026-09-25",
+  "tool": "built-in image_gen.imagegen",
+  "ring": {
+    "source": "C:/Users/qs/AppData/Local/Temp/codex-clipboard-9cbbb1d8-540f-454c-9b48-d883710167d5.png",
+    "file": "portrait-stone-ring.png",
+    "operation": "Exact copy. Runtime shader maps the original annulus into an inset oval.",
+    "sha256": "daa6c1413b43a90e35753eb5d6b578b5d42b25b18f102eb7a5ae1f2f726f5e83"
+  },
+  "assets": [
+    {
+      "key": "skill",
+      "prompt": "Use case: production game UI asset. The attached stone ring is MATERIAL AND LIGHTING REFERENCE ONLY; do not draw a ring. Generate ONE compact horizontal inset skill plaque for the same hand-painted fantasy card interface. Transparent RGBA background, canvas 1536x512. Centered plaque bounds approximately x=40..1496,y=65..447. Broad, quiet charcoal brown slate recessed face occupying 80 percent, shallow thick dull pewter / warm grey stone lip, small chamfered corners, restrained hand-painted bevel with soft upper-left light and deep contact shadow. Large simplified surfaces, no cracks or grain across the center, no gloss, no gemstones, no gold filigree, no glow. Top-down straight front view, symmetrical horizontal shape, designed for 9-slicing to a 155x42 pixel button containing two text lines supplied by code. NO TEXT, NO ICONS, no furniture, no scene, no multiple states. Keep border thickness subordinate to the supplied stone portrait ring.",
+      "generated": "C:/Users/qs/.codex/generated_images/01a0d48f-e4ad-7df0-930a-eff1417fdec1/exec-7b10a569-3797-438d-a715-4918ca468584.png",
+      "file": "card-skill-plaque.png"
+    },
+    {
+      "key": "socket",
+      "prompt": "Use case: production game UI asset. Attached stone ring is material/lighting reference ONLY. Create ONE square empty equipment socket for this same softly hand-painted fantasy UI, on genuine transparent RGBA background, 1024x1024 canvas. Socket fits centered bounds x=50..974 y=50..974. Quiet recessed near-black brown cavity with gentle soft shading and large empty center for an item icon. A restrained low thick beveled warm-grey stone surround reinforced by small dull bronze corner tabs. Tactile structure: upper inner contact shadow, slightly brighter lower inner bevel; no specular gloss, no gems, no glow, no grunge, no wood grain, no huge cracks. Chamfered corners, front-on orthographic view. The border takes less than 12 percent of total width on each side. It must remain legible at 58x58 pixels and visually subordinate to the large stone portrait ring. NO text, numbers, plus sign, equipment icons or other objects. One reusable empty socket only.",
+      "generated": "C:/Users/qs/.codex/generated_images/01a0d48f-e4ad-7df0-930a-eff1417fdec1/exec-7d77a923-7d25-426a-9cbd-f99b4057a313.png",
+      "file": "card-equipment-socket.png"
+    },
+    {
+      "key": "status",
+      "prompt": "Use case: production game UI asset. Attached stone ring is the material palette and soft-light reference ONLY. Create ONE small horizontal folded leather rank/status tab for the same warm-grey stone fantasy card UI. Genuine transparent RGBA background, 1536x512 canvas. Tab centered filling x=50..1486 y=65..447. Shape: a quiet desaturated warm umber leather strip with gently bevelled cut ends, two small restrained antique-bronze pins near left/right edges, shallow lip and soft contact shadow, wide empty flat center for two short Chinese words supplied by code. Hand-painted large clear forms; leather is smooth and matte, not shiny, not noisy; soft diffuse light from upper left. No scroll curls, no stone arch, no wood texture, no heraldry, no gems or gold trim, no glow. Front view, no perspective. Designed to display small at around 98x26 px. NO lettering, numbers or symbols. Only the single status tab, no surrounding UI.",
+      "generated": "C:/Users/qs/.codex/generated_images/01a0d48f-e4ad-7df0-930a-eff1417fdec1/exec-07e2d35a-6a55-4e51-b785-838072f5e75b.png",
+      "file": "card-status-tab.png"
+    }
+  ],
+  "review": "All 28 illustrated figures inspected in production card scenes. Roster empty/equipped and health states, recruitment, opening selection and drag-target feedback inspected. UI input and portrait lifecycle checks passed. Native drag preview names were checked through live control text; the isolated viewport screenshot excludes the outer preview. Individual asset styling has not been separately accepted by the user."
+}

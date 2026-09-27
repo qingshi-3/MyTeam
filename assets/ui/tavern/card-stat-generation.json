@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "assets/ui/tavern/reference-card.png",
+  "assets": [
+    {
+      "name": "attack",
+      "prompt": "Use case: stylized-concept. Production transparent PNG game UI component, NOT a screen mockup. The supplied image is a MATERIAL STYLE reference only: chunky hand-painted grey-brown stone, broad simplified planes, restrained soft lighting, grounded tactile weight. Create one small card stat mount in a square image, isolated on genuine alpha transparency. Front-facing orthographic; centered, occupy 86 percent of canvas. No text, letters, numerals, watermark, glow, sparkles, noisy texture, mirrored shine or glass. Must read clearly when rendered at 68 pixels. Keep the broad central area completely empty, quiet and dark enough for cream runtime digits. Decoration minimal, readable silhouette, subtle shadow close to object only. Object: an attack-number mount, one compact round warm ochre enamel/stone disk with a broad understated grey-brown bevel, matte amber/brown center, a short chunky grey sword diagonally rising from its upper-left shoulder. Sword occupies only the outer upper-left area, never crossing the central number area. No ornate scrollwork or outer rectangular tile. Hand-painted card-game stat token, seamlessly compatible with supplied stone card.",
+      "asset": "assets/ui/tavern/card-attack-stat.png",
+      "source": "exec-538bad0b-2a8c-4f2b-9e90-1cc2fc05821d.png"
+    },
+    {
+      "name": "health",
+      "prompt": "Use case: stylized-concept. Production transparent PNG game UI component, NOT a screen mockup. The supplied image is a MATERIAL STYLE reference only: chunky hand-painted grey-brown stone, broad simplified planes, restrained soft lighting, grounded tactile weight. Create one small card stat mount in a square image, isolated on genuine alpha transparency. Front-facing orthographic; centered, occupy 86 percent of canvas. No text, letters, numerals, watermark, glow, sparkles, noisy texture, mirrored shine or glass. Must read clearly when rendered at 68 pixels. Keep the broad central area completely empty, quiet and dark enough for cream runtime digits. Decoration minimal, readable silhouette, subtle shadow close to object only. Object: a life-number mount, one substantial HEART silhouette, muted deep sage green carved stone/enamel with a slim warm grey-brown rim following the heart outline. Two clear broad upper lobes and lower point; restrained lighter bevel at upper left, deep contact shadow at lower right. Center 65 percent is broad, flat, dark muted forest-sage for runtime cream digits. No extra ring, wings, filigree, symbols or outer rectangular tile. Hand-painted card-game stat token, seamlessly compatible with supplied stone card.",
+      "asset": "assets/ui/tavern/card-health-stat.png",
+      "source": "exec-4ad00514-3a4e-44cd-b8ed-36f1184115e8.png"
+    }
+  ]
+}

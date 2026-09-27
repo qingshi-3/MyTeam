@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-25",
+  "method": "built-in image_gen background-extraction",
+  "scope": "Preserve item object artwork; replace external navy backdrop with actual alpha. Original icons retained in parent directory.",
+  "items": [
+    {
+      "id": "equipment_vanguard_insignia",
+      "prompt": "Use case: background-extraction. Edit target: this existing game item icon. Remove ONLY the entire dark navy square backdrop OUTSIDE the object, replacing it with genuine transparent alpha. Preserve the original object's identity, silhouette, proportions, orientation, composition, painted colors, internal dark recesses, materials, brushwork, details and lighting. Do not redesign, repaint with a new style, add glow, add shadows outside, add scenery, add borders, or add text. Keep every pixel belonging to the object fully opaque; internal dark cavities are part of the object. Output one isolated object on actual RGBA transparency, no matte rectangle, no checkerboard illustration. Keep the complete object inside the square canvas with a small transparent margin. Subject: the same dark steel cuirass with broad gold V chevron and brown leather straps. Keep its black neck and armhole interiors opaque, and preserve the rivets and buckles.",
+      "original": "assets/ui/items/equipment_vanguard_insignia.png",
+      "output": "assets/ui/items/cutouts/equipment_vanguard_insignia.png",
+      "generatedSource": "exec-41593249-cb7c-4e4c-bfb9-6b4fdce018d3.png"
+    },
+    {
+      "id": "item_field_rations",
+      "prompt": "Use case: background-extraction. Edit target: this existing game item icon. Remove ONLY the entire dark navy square backdrop OUTSIDE the object, replacing it with genuine transparent alpha. Preserve the original object's identity, silhouette, proportions, orientation, composition, painted colors, internal dark recesses, materials, brushwork, details and lighting. Do not redesign, repaint with a new style, add glow, add shadows outside, add scenery, add borders, or add text. Keep every pixel belonging to the object fully opaque; internal dark cavities are part of the object. Output one isolated object on actual RGBA transparency, no matte rectangle, no checkerboard illustration. Keep the complete object inside the square canvas with a small transparent margin. Subject: the same brown leather ration bag containing round bread loaf, wrapped cheese wedge and tied cloth food pouch. Keep the entire bag, side cords, food and wrapping, preserving all silhouettes.",
+      "original": "assets/ui/items/item_field_rations.png",
+      "output": "assets/ui/items/cutouts/item_field_rations.png",
+      "generatedSource": "exec-bddb6b81-526a-4ac6-9eee-3d9e2e95e1c9.png"
+    },
+    {
+      "id": "item_commander_map",
+      "prompt": "Use case: background-extraction. Edit target: this existing game item icon. Remove ONLY the entire dark navy square backdrop OUTSIDE the object, replacing it with genuine transparent alpha. Preserve the original object's identity, silhouette, proportions, orientation, composition, painted colors, internal dark recesses, materials, brushwork, details and lighting. Do not redesign, repaint with a new style, add glow, add shadows outside, add scenery, add borders, or add text. Keep every pixel belonging to the object fully opaque; internal dark cavities are part of the object. Output one isolated object on actual RGBA transparency, no matte rectangle, no checkerboard illustration. Keep the complete object inside the square canvas with a small transparent margin. Subject: the same rolled parchment battle map with red and blue miniature troops and flags, mountain/river/bridge painting and red/blue arrows. Preserve the whole parchment including rolled corners and ALL pieces printed or standing on it. No new map symbols or text.",
+      "original": "assets/ui/items/item_commander_map.png",
+      "output": "assets/ui/items/cutouts/item_commander_map.png",
+      "generatedSource": "exec-c83f365e-c4f5-4035-bf2b-9589a451f2b5.png"
+    }
+  ]
+}

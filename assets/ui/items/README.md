@@ -7,3 +7,5 @@
 PNG保留完整生成源图。Godot无损导入到256px并生成mipmap，UI插画使用线性mipmap过滤；单位动画仍使用原本最近邻过滤。绑定入口为content/definitions/items各自的Icon；属性语义SVG继续用于属性说明，不作为这些物品的替代图。
 
 本批只更换美术，不表示新的物品机制已经实施。实际界面检查证据与音频接入归work-items/active/item-art-and-basic-audio.md。
+
+2026-09-25 UI 材质替换：先锋徽甲、行军口粮、战术地图已用内置 imagegen 提取透明背景，运行 Icon 改指向 `cutouts/`；父目录原图保留。独立主体直接显示在卡片石底上，不再带深蓝方形底色。完整提示与来源见 [透明图记录](cutouts/generation-manifest.json)。三件已在实际商店和整备中检查；本次不代表其余物品图标均已处理。

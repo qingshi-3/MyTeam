@@ -7,6 +7,7 @@ Icons made by **Lorc**, from [Game-icons.net](https://game-icons.net/), licensed
 | `keyword-thorns.svg` | [Shield reflect](https://game-icons.net/1x1/lorc/shield-reflect.html) | R1 — 反伤 |
 | `keyword-true-damage.svg` | [Pierced heart](https://game-icons.net/1x1/lorc/pierced-heart.html) | T2 — 真实伤害 |
 | `keyword-physical-damage.svg` | [Sword clash](https://game-icons.net/1x1/lorc/sword-clash.html) | P2 — 物理伤害 |
+| `roster-deployed.svg` | [Crossed swords](https://game-icons.net/1x1/lorc/crossed-swords.html) | 出战徽章与输出分组 |
 
 Adaptations: removed the solid black background and set the SVG intrinsic dimensions to 24×24 while preserving the original 512×512 viewBox and foreground paths. Game UI applies semantic tint. The gameplay meanings are this project's mappings, not additional claims by the original author.
 
@@ -26,3 +27,7 @@ On 2026-09-21 the user selected `111121` from the mature-game comparison, meanin
 | `keyword-armor.svg` | DF1 — LoL armor icon: inset shield, distinct from the existing peaked, half-filled shield resource icon |
 
 Reference evidence: [LoL UI elements and atlas coordinates](https://raw.communitydragon.org/latest/game/clientstates/gameplay/ux/lol/playerstats/uibase.cdtb.bin.json), [LoL atlas](https://raw.communitydragon.org/latest/game/assets/ux/lol/statspanel_atlas.png), [Master Yi passive](https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champions/11.json), [TFT UI elements](https://raw.communitydragon.org/latest/game/clientstates/gameplay/ux/tft/tftunitinfo/uibase.cdtb.bin.json), [TFT text-icon atlas](https://raw.communitydragon.org/latest/game/assets/ux/fonts/texticons.png). Research originals and the comparison remain in `.godot/ui-review/mature-game-icons/`; they are not production resources.
+
+2026-09-25: `skill-active.svg` (lightning), `skill-passive.svg` (ringed star), and `roster-reserve.svg` (bench) are project-authored 24×24 monochrome paths for card categories and roster state. They contain no third-party image pixels.
+
+2026-09-25: `critical-chance.svg` 与 `critical-damage.svg` 是项目自绘的暴击概率／倍率图标，通过共享 SemanticIconCatalog 解析；未使用第三方图像像素。

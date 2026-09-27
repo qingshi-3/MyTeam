@@ -1,0 +1,9 @@
+{
+  "date": "2026-09-25",
+  "tool": "built-in image_gen",
+  "reference": "Official Hearthstone card selection screenshot; cached hearthstone-shop.png, reference source recorded in Q25",
+  "purpose": "Dedicated blank card name ribbon. Does not modify user-approved stone card.",
+  "prompt": "Use case: stylized-concept. Asset type: one production game UI name ribbon, transparent PNG. Reference image: Hearthstone gameplay screenshot; follow ONLY the small beige name ribbons immediately below the three creature portraits. Generate ONE blank horizontal parchment name ribbon as a standalone asset, no text. Front-facing, straight readable central band, very slight three-dimensional bend, squared gently curled ends folding behind the band, broad simple painted planes, warm grey-beige and muted ochre shadows. Soft hand-painted material with very restrained smooth highlights, thick believable paper, exactly the reference's carved fantasy card accessory treatment. Central blank band occupies 78% width with generous uniform space for runtime Chinese title. The silhouette ratio should be approximately 6:1, occupying most of canvas width and vertically centered. Real alpha transparency everywhere outside the single ribbon, including below subtle tight contact shadow. Do not make a rectangular sheet, ragged ripped edges, fuzzy fibers, random noise, shiny metal, ornate trim, jewels, glow, broad curved arch, or extra objects. No text, no letters, no logo, no watermark. Keep only a single ribbon centered in a wide canvas.",
+  "source": "exec-c97ce830-af17-4caf-b4ce-25b44c75143f.png",
+  "asset": "reference-name-ribbon.png"
+}

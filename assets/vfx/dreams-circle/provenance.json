@@ -1,0 +1,44 @@
+[
+  {
+    "file": "DCSD_SmokeTile001.png",
+    "pack": "blazeforge",
+    "sha256": "a8044e8d5f76ea8eafa607183d35ef0986a9ae07f18d40e3eaa0d75d28f3a3c8",
+    "source": "web/vfx-sample-viewer/assets/blazeforge/VFX/Texture/DCSD_SmokeTile001.png"
+  },
+  {
+    "file": "DCSD_Material_Flame_002.png",
+    "pack": "blazeforge",
+    "sha256": "3147cdfa5a7cbd26d5321041e3371780ac7e58e476ad2b0d65d72e1059dc7df8",
+    "source": "web/vfx-sample-viewer/assets/blazeforge/VFX/Texture/DCSD_Material_Flame_002.png"
+  },
+  {
+    "file": "DCSD_UV_Distortion_002.png",
+    "pack": "blazeforge",
+    "sha256": "e53cd9493f56e503d3f77e869743d09ba41670d2e6e3ab2791dedbe2be3ca7df",
+    "source": "web/vfx-sample-viewer/assets/blazeforge/VFX/Texture/DCSD_UV_Distortion_002.png"
+  },
+  {
+    "file": "DCSD_Circle_G100.png",
+    "pack": "blazeforge",
+    "sha256": "66b23ce791c4260ed8e00b7155a9abe99be3fa91e2a3e8c81466e1dfce1bb735",
+    "source": "web/vfx-sample-viewer/assets/blazeforge/VFX/Texture/DCSD_Circle_G100.png"
+  },
+  {
+    "file": "DCSD_Star4_T002.png",
+    "pack": "blazeforge",
+    "sha256": "158ce950cc6c5765148924ebca20e425fbe44d9e4a15a52621ce5ab5b7edee24",
+    "source": "web/vfx-sample-viewer/assets/blazeforge/VFX/Texture/DCSD_Star4_T002.png"
+  },
+  {
+    "file": "DCSD_Aura_Windblast_002.png",
+    "pack": "strike",
+    "sha256": "3f48d92e882c364e967b6c60c9a544a68ce819c9cc4d8df15bfa94a246faea9f",
+    "source": "web/vfx-sample-viewer/assets/strike/VFX/effects/Texture/DCSD_Aura_Windblast_002.png"
+  },
+  {
+    "file": "DCSD_Slash_Motion_001.png",
+    "pack": "strike",
+    "sha256": "bf5f7a966b3be8766cb8413c4d590e0883c53f4775d8a040a2dbb08cc7be5f13",
+    "source": "web/vfx-sample-viewer/assets/strike/VFX/effects/Texture/DCSD_Slash_Motion_001.png"
+  }
+]

@@ -1,0 +1,580 @@
+{
+  "date": "2026-09-25",
+  "policy": "Explicit Resource references matched by current SpriteFrames path; older generation labels are historical. UI card opt-in only, battle animation unchanged.",
+  "bindings": [
+    {
+      "portrait": "content/portraits/heroes/hero_hc01_crossbow.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f1_ranged.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc03_iron_guard.tres",
+      "frames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "focus": [
+        0.62,
+        0.53
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png",
+      "card_focus": [
+        0.62,
+        0.52
+      ],
+      "card_zoom": 1.25
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc04_crit_duelist.tres",
+      "frames": "assets/donor-units/f2_melee/frames.tres",
+      "illustration": "assets/portraits/illustrations/f2_melee.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f2_melee.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc05_tide_caster.tres",
+      "frames": "assets/donor-units/f3_dunecaster/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dunecaster.png",
+      "focus": [
+        0.5,
+        0.22
+      ],
+      "zoom": 1.1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f3_dunecaster.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc06_surge_conductor.tres",
+      "frames": "assets/donor-units/f6_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_sister.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f6_sister.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc07_death_echo.tres",
+      "frames": "assets/donor-units/f2_lanternfox/frames.tres",
+      "illustration": "assets/portraits/illustrations/f2_lanternfox.png",
+      "focus": [
+        0.55,
+        0.59
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f2_lanternfox.png",
+      "card_focus": [
+        0.6,
+        0.6
+      ],
+      "card_zoom": 1.3
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc08_poison_keeper.tres",
+      "frames": "assets/donor-units/f4_darkspine/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_darkspine.png",
+      "focus": [
+        0.5,
+        0.56
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f4_darkspine.png",
+      "card_focus": [
+        0.53,
+        0.48
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc09_breach_scribe.tres",
+      "frames": "assets/donor-units/f2_spellthief/frames.tres",
+      "illustration": "assets/portraits/illustrations/f2_spellthief.png",
+      "focus": [
+        0.53,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f2_spellthief.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc10_ember_cashout.tres",
+      "frames": "assets/donor-units/f5_firebreather/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_firebreather.png",
+      "focus": [
+        0.5,
+        0.71
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f5_firebreather.png",
+      "card_focus": [
+        0.53,
+        0.52
+      ],
+      "card_zoom": 1.1
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc11_triad_weaver.tres",
+      "frames": "assets/donor-units/f6_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_general.png",
+      "focus": [
+        0.55,
+        0.41
+      ],
+      "zoom": 1.55,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f6_general.png",
+      "card_focus": [
+        0.55,
+        0.48
+      ],
+      "card_zoom": 1.65
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc12_control_clock.tres",
+      "frames": "assets/donor-units/f3_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_general.png",
+      "focus": [
+        0.5,
+        0.29
+      ],
+      "zoom": 1.3,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f3_general.png",
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.4
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc13_shield_crit.tres",
+      "frames": "assets/donor-units/f1_sunforgelancer/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sunforgelancer.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f1_sunforgelancer.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc14_stone_fist.tres",
+      "frames": "assets/donor-units/f5_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "focus": [
+        0.5,
+        0.42
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f5_tank.png",
+      "card_focus": [
+        0.57,
+        0.46
+      ],
+      "card_zoom": 1.1
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc15_shield_grower.tres",
+      "frames": "assets/donor-units/f1_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_tank.png",
+      "focus": [
+        0.5,
+        0.27
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f1_tank.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc16_shield_bomber.tres",
+      "frames": "assets/donor-units/f4_mech/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_mech.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f4_mech.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc17_pain_vessel.tres",
+      "frames": "assets/donor-units/f4_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_general.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f4_general.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc18_healing_reader.tres",
+      "frames": "assets/donor-units/f3_aymarahealer/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_aymarahealer.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.5,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f3_aymarahealer.png",
+      "card_focus": [
+        0.5,
+        0.37
+      ],
+      "card_zoom": 1.35
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc19_overheal_priest.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f1_sister.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc20_blood_drummer.tres",
+      "frames": "assets/donor-units/f4_bloodbaronette/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_bloodbaronette.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f4_bloodbaronette.png",
+      "card_focus": [
+        0.56,
+        0.38
+      ],
+      "card_zoom": 1.15
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc21_last_stand.tres",
+      "frames": "assets/donor-units/f5_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_general.png",
+      "focus": [
+        0.5,
+        0.28
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f5_general.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc22_dodge_assassin.tres",
+      "frames": "assets/donor-units/f6_freeblade/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_freeblade.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f6_freeblade.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc23_frost_historian.tres",
+      "frames": "assets/donor-units/f6_frostbitehawker/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "focus": [
+        0.5,
+        0.34
+      ],
+      "zoom": 1.15,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f6_frostbitehawker.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc24_swarm_keeper.tres",
+      "frames": "assets/donor-units/f4_crawler/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "focus": [
+        0.58,
+        0.55
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f4_crawler.png",
+      "card_focus": [
+        0.61,
+        0.54
+      ],
+      "card_zoom": 1.25
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc25_death_provider.tres",
+      "frames": "assets/donor-units/f5_spiritharvester/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_spiritharvester.png",
+      "focus": [
+        0.5,
+        0.52
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f5_spiritharvester.png",
+      "card_focus": [
+        0.5,
+        0.48
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc26_ash_returner.tres",
+      "frames": "assets/donor-units/f5_drogon/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_drogon.png",
+      "focus": [
+        0.45,
+        0.27
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f5_drogon.png",
+      "card_focus": [
+        0.43,
+        0.4
+      ],
+      "card_zoom": 1.1
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc27_ally_consumer.tres",
+      "frames": "assets/donor-units/f6_crystalbeetle/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_crystalbeetle.png",
+      "focus": [
+        0.56,
+        0.56
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f6_crystalbeetle.png",
+      "card_focus": [
+        0.58,
+        0.55
+      ],
+      "card_zoom": 1.1
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc28_corpse_raiser.tres",
+      "frames": "assets/donor-units/f4_bloodbaronette/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_bloodbaronette.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f4_bloodbaronette.png",
+      "card_focus": [
+        0.56,
+        0.38
+      ],
+      "card_zoom": 1.15
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc29_mind_binder.tres",
+      "frames": "assets/donor-units/f3_dervish/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dervish.png",
+      "focus": [
+        0.5,
+        0.24
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f3_dervish.png",
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc30_armor_broadcaster.tres",
+      "frames": "assets/donor-units/f1_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_general.png",
+      "focus": [
+        0.5,
+        0.23
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f1_general.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc31_breach_lancer.tres",
+      "frames": "assets/donor-units/f1_sunforgelancer/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sunforgelancer.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f1_sunforgelancer.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc32_sky_monk.tres",
+      "frames": "assets/donor-units/f3_dervish/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dervish.png",
+      "focus": [
+        0.5,
+        0.24
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f3_dervish.png",
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc33_rift_assassin.tres",
+      "frames": "assets/donor-units/f6_freeblade/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_freeblade.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f6_freeblade.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc34_shockshield_guard.tres",
+      "frames": "assets/donor-units/f1_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_tank.png",
+      "focus": [
+        0.5,
+        0.27
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f1_tank.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc35_hook_hunter.tres",
+      "frames": "assets/donor-units/f4_darkspine/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_darkspine.png",
+      "focus": [
+        0.5,
+        0.56
+      ],
+      "zoom": 1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f4_darkspine.png",
+      "card_focus": [
+        0.53,
+        0.48
+      ],
+      "card_zoom": 1.2
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc36_cyclone_weaver.tres",
+      "frames": "assets/donor-units/f3_dunecaster/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dunecaster.png",
+      "focus": [
+        0.5,
+        0.22
+      ],
+      "zoom": 1.1,
+      "card_illustration": "assets/portraits/illustrations/cutouts/f3_dunecaster.png",
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2
+    }
+  ],
+  "animationFallbacks": [
+    {
+      "portrait": "content/portraits/heroes/hero_hc37_legion_duelist.tres",
+      "animationKey": "f1_windbladecommander"
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc38_grit_brawler.tres",
+      "animationKey": "boss_solfist"
+    },
+    {
+      "portrait": "content/portraits/heroes/hero_hc39_hook_machine.tres",
+      "animationKey": "f1_invincibuddy"
+    }
+  ]
+}
