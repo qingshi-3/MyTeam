@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/basic_soul.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "basic_soul"
+DisplayName = "游魂弹"
+PreviewNote = "单个主魂核配两小游魂，尾迹按实际路径消散；仍是一枚弹体，不增加三次命中。"
+Scene = ExtResource("scene")
+Duration = 1.0
+ReleaseDuration = 0.16
+Persistent = true
+ReactsToImpact = true
+ProjectileImpactTail = true
+ExternalProjectile = true
+ProjectileContactVfx = "impact"
+FaceDirection = true
+Size = 32.0

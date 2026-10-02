@@ -11,6 +11,10 @@ public partial class VfxDefinition : Resource
     [Export] public bool ReactsToImpact { get; set; }
     // Physical projectiles may author their own hit aftermath in the same instance.
     [Export] public bool ProjectileImpactTail { get; set; }
+    [Export] public bool ExternalProjectile { get; set; }
+    [Export] public string ProjectileContactVfx { get; set; } = "";
+    // A target-local strike uses the hit recipient's feet, with no travel artwork.
+    [Export] public bool ProjectileContactAtTarget { get; set; }
     [Export] public PackedScene Scene { get; set; } = null!;
     [Export] public float Duration { get; set; } = .6f;
     // Opt-in natural tail for independently living particles; scope clear stays immediate.

@@ -24,5 +24,14 @@ public partial class VfxCatalog : Resource
                 !float.IsFinite(item.CastDuration) || item.CastDuration < 0 || !float.IsFinite(item.FlightDuration) || item.FlightDuration < 0 ||
                 !float.IsFinite(item.ActionSpan) || item.ActionSpan < 0 || item.Duration <= item.CastDuration + item.FlightDuration + item.ActionSpan)
                 throw new InvalidOperationException($"Invalid VFX catalog: {ResourcePath}");
+        foreach (var item in Effects)
+        {
+            if (item.ExternalProjectile && (!item.Persistent || !item.FaceDirection || !item.ProjectileImpactTail))
+                throw new InvalidOperationException($"Invalid external projectile VFX '{item.StableId}'.");
+            if (!string.IsNullOrEmpty(item.ProjectileContactVfx) && !ids.Contains(item.ProjectileContactVfx))
+                throw new InvalidOperationException($"Unknown projectile contact VFX '{item.ProjectileContactVfx}'.");
+            if (item.ProjectileContactAtTarget && (!item.ExternalProjectile || string.IsNullOrEmpty(item.ProjectileContactVfx)))
+                throw new InvalidOperationException($"Target-local projectile VFX '{item.StableId}' requires an external projectile and contact effect.");
+        }
     }
 }

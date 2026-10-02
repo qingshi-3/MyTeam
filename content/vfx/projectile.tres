@@ -7,7 +7,7 @@
 script = ExtResource("1")
 StableId = "projectile"
 DisplayName = "默认箭矢"
-PreviewNote = "普通远程与连射技能共用的箭矢；出手即显示，朝向随实际弹道，命中或失效后移除。"
+PreviewNote = "弓弩单位普攻与连射技能共用的实体箭矢；出手即显示，朝向随实际弹道，命中或失效后移除。"
 Scene = ExtResource("2")
 Duration = 1
 Persistent = true

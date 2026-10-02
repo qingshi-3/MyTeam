@@ -59,7 +59,7 @@ public partial class VfxPreviewController : Control, IVfxStage
             _player.Advance(1f / 30);
             _elapsed += 1f / 30;
         };
-        GetNode<Button>("%Impact").Pressed += () => _player.Impact("preview");
+        GetNode<Button>("%Impact").Pressed += PresentPreviewImpact;
         GetNode<Button>("%End").Pressed += () => { _manuallyEnded = true; _player.End("preview", VfxEndReason.Completed); };
         GetNode<Button>("%Break").Pressed += () => { _manuallyEnded = true; _player.End("preview", VfxEndReason.Depleted); };
         GetNode<Button>("%Return").Pressed += () => GetTree().ChangeSceneToFile("res://scenes/app/GameRoot.tscn");
@@ -159,12 +159,12 @@ public partial class VfxPreviewController : Control, IVfxStage
         foreach (var name in new[] { "Impact", "Break" })
             GetNode<Button>("%" + name).Disabled = !definition.ReactsToImpact;
         bool sequence = definition.FlightDuration > 0 || definition.CastDuration > 0;
-        bool external = VfxPreviewSample.Phased(_selected) || VfxPreviewSample.Moving(_selected);
+        bool external = VfxPreviewSample.Phased(_selected) || VfxPreviewSample.Moving(_player.Catalog.Find(_selected));
         GetNode<CheckButton>("%EventMode").Disabled = !sequence && !external;
         GetNode<Button>("%Fired").Disabled = !sequence || !_eventMode;
         GetNode<Button>("%ContactCue").Disabled = !sequence || !_eventMode;
         GetNode<HSlider>("%Progress").Editable = (sequence || external) && _eventMode;
-        GetNode<HSlider>("%FlightTime").Editable = definition.FlightDuration > 0 || VfxPreviewSample.Moving(_selected);
+        GetNode<HSlider>("%FlightTime").Editable = definition.FlightDuration > 0 || VfxPreviewSample.Moving(_player.Catalog.Find(_selected));
         GetNode<HSlider>("%Width").Editable = definition.StretchBetween || definition.UsesWidth;
         GetNode<Label>("%CastSpeedLabel").Text = $"施法 {_castSpeed:0.00}×";
         GetNode<Label>("%MotionSpeedLabel").Text = $"流动 {_motionSpeed:0.00}×";
@@ -176,7 +176,7 @@ public partial class VfxPreviewController : Control, IVfxStage
     private VfxContext PreviewContext(VfxDefinition definition)
     {
         var g = VfxPreviewSample.Geometry(definition, PreviewDirection, _distance,
-            _eventMode && VfxPreviewSample.Moving(_selected) ? _progress * _flightTime : _elapsed, _flightTime);
+            _eventMode && VfxPreviewSample.Moving(_player.Catalog.Find(_selected)) ? _progress * _flightTime : _elapsed, _flightTime);
         return new(g.Source, g.Target, _radius,
         new(CastSpeed: _castSpeed, MotionSpeed: _motionSpeed, FlightDuration: definition.FlightDuration > 0 ? _flightTime : null,
             ParticleScale: _particleSize, Density: _density, WidthScale: _width,
@@ -188,7 +188,7 @@ public partial class VfxPreviewController : Control, IVfxStage
     {
         var d = _player.Catalog.Find(_selected);
         var g = VfxPreviewSample.Geometry(d, PreviewDirection, _distance,
-            _eventMode && VfxPreviewSample.Moving(_selected) ? _progress * _flightTime : _elapsed, _flightTime);
+            _eventMode && VfxPreviewSample.Moving(_player.Catalog.Find(_selected)) ? _progress * _flightTime : _elapsed, _flightTime);
         var source = GetNode<AnimatedSprite2D>("%SourceUnit");
         var target = GetNode<AnimatedSprite2D>("%TargetUnit");
         source.Position = Project(g.SourceUnit, false); target.Position = Project(g.TargetUnit, false);
@@ -213,7 +213,7 @@ public partial class VfxPreviewController : Control, IVfxStage
         if (!_eventMode && !_sampleEnded && _elapsed >= sampleEnd)
         {
             _sampleEnded = true;
-            if (_selected == "acid_spit") _player.Impact("preview");
+            if (_selected == "acid_spit" || definition.ExternalProjectile) PresentPreviewImpact();
             _player.End("preview", VfxEndReason.Completed);
         }
         var parameters = PreviewContext(definition).Playback!;
@@ -223,6 +223,17 @@ public partial class VfxPreviewController : Control, IVfxStage
         if (_loop && !_manuallyEnded && (!definition.Persistent || float.IsFinite(sampleEnd)) && parameters.Timing == VfxTimingMode.Automatic &&
             _player.ActiveCount == 0 && _elapsed > Mathf.Max(1.6f, duration + .35f)) Replay();
         GetNode<Label>("%Clock").Text = $"{_elapsed:0.00} 秒  ·  {_player.Speed:0.00}×  ·  {_player.ActiveCount} 实例";
+    }
+
+    private void PresentPreviewImpact()
+    {
+        _player.Impact("preview");
+        var definition = _player.Catalog.Find(_selected);
+        if (!definition.ProjectileContactAtTarget) return;
+        var target = VfxPreviewSample.Geometry(definition, PreviewDirection, _distance, _elapsed, _flightTime).TargetUnit;
+        _player.Play(definition.ProjectileContactVfx, new(target, target));
+        _sampleEnded = true;
+        _player.End("preview", VfxEndReason.Completed);
     }
 
     private void AdvanceSource(float seconds)

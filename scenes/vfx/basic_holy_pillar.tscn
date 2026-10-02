@@ -1,0 +1,98 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/holy_pillar.gdshader" id="pillar"]
+[ext_resource type="Shader" path="res://scenes/vfx/holy_contact.gdshader" id="contact"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="glint_shader"]
+[sub_resource type="ShaderMaterial" id="body"]
+resource_local_to_scene = true
+shader = ExtResource("pillar")
+[sub_resource type="ShaderMaterial" id="foot"]
+resource_local_to_scene = true
+shader = ExtResource("contact")
+[sub_resource type="ShaderMaterial" id="glint"]
+resource_local_to_scene = true
+shader = ExtResource("glint_shader")
+shader_parameter/rays = 0.7
+shader_parameter/corona_strength = 0.08
+shader_parameter/tint = Color(1,0.92,0.62,0.62)
+[node name="basic_holy_pillar" type="Node2D"]
+script = ExtResource("root")
+[node name="Column" type="Sprite2D" parent="."]
+position = Vector2(0,-111)
+scale = Vector2(0.34,0.9)
+texture = ExtResource("surface")
+material = SubResource("body")
+script = ExtResource("track")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.36
+[node name="Contact" type="Sprite2D" parent="."]
+position = Vector2(0,1)
+scale = Vector2(0.34,0.13)
+texture = ExtResource("surface")
+material = SubResource("foot")
+script = ExtResource("track")
+ShaderLifecycle = true
+Delay = 0.035
+StartScale = 1.0
+EndScale = 1.0
+Duration = 0.22
+
+[node name="Glint0" type="Sprite2D" parent="."]
+position = Vector2(-36,-146)
+scale = Vector2(0.055,0.055)
+texture = ExtResource("surface")
+material = SubResource("glint")
+script = ExtResource("track")
+Delay = 0.07
+Duration = 0.18
+StartScale = 1.0
+EndScale = 0.2
+Travel = Vector2(0,28)
+MotionDuration = 0.18
+Opacity = 0.50
+
+[node name="Glint1" type="Sprite2D" parent="."]
+position = Vector2(33,-80)
+scale = Vector2(0.055,0.055)
+texture = ExtResource("surface")
+material = SubResource("glint")
+script = ExtResource("track")
+Delay = 0.09
+Duration = 0.18
+StartScale = 1.0
+EndScale = 0.2
+Travel = Vector2(0,28)
+MotionDuration = 0.18
+Opacity = 0.50
+
+[node name="Glint2" type="Sprite2D" parent="."]
+position = Vector2(-22,-35)
+scale = Vector2(0.055,0.055)
+texture = ExtResource("surface")
+material = SubResource("glint")
+script = ExtResource("track")
+Delay = 0.13
+Duration = 0.18
+StartScale = 1.0
+EndScale = 0.2
+Travel = Vector2(0,28)
+MotionDuration = 0.18
+Opacity = 0.50
+
+[node name="Glint3" type="Sprite2D" parent="."]
+position = Vector2(18,-191)
+scale = Vector2(0.055,0.055)
+texture = ExtResource("surface")
+material = SubResource("glint")
+script = ExtResource("track")
+Delay = 0.1
+Duration = 0.18
+StartScale = 1.0
+EndScale = 0.2
+Travel = Vector2(0,28)
+MotionDuration = 0.18
+Opacity = 0.50

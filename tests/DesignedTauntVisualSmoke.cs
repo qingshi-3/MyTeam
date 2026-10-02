@@ -129,7 +129,7 @@ public partial class DesignedTauntVisualSmoke : Node
         var cast = battle.PendingEvents.Single(fact => fact.Vfx?.EffectId == "taunt_call");
         Require(cast.Vfx!.Radius == 2.5f && cast.Origin == cast.Position, "one exact-range cue per cast");
         layer.SetClock(true, 1);
-        layer.SynchronizeUnits(battle.Units);
+        layer.SynchronizeUnits(battle.UnitViews);
         Require(layer.StatusVfxCount == 3, "actual status snapshot drives markers");
         player.ReducedMotion = true;
         player.Advance(.3f);
@@ -140,13 +140,13 @@ public partial class DesignedTauntVisualSmoke : Node
         player.ReducedMotion = false;
         var target = battle.Units.First(unit => unit.Statuses.Any(status => status.Behavior == StatusBehaviorKind.Taunt));
         var health = target.Health;
-        target.Health = 0; layer.SynchronizeUnits(battle.Units);
+        target.Health = 0; layer.SynchronizeUnits(battle.UnitViews);
         Require(layer.StatusVfxCount == 2, "recipient death clears its marker");
         target.Health = health;
-        layer.SynchronizeUnits(battle.Units);
+        layer.SynchronizeUnits(battle.UnitViews);
         Require(layer.StatusVfxCount == 3, "snapshot reconstruction restores current state");
         var source = battle.Units.Single(unit => unit.Team == 0);
-        source.Health = 0; layer.SynchronizeUnits(battle.Units);
+        source.Health = 0; layer.SynchronizeUnits(battle.UnitViews);
         Require(layer.StatusVfxCount == 0, "invalid taunt source clears force-target markers");
         layer.Clear();
     }

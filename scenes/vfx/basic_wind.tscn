@@ -1,0 +1,64 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBasicProjectileTrack.cs" id="track"]
+[ext_resource type="Resource" path="res://scenes/vfx/surface.tres" id="body"]
+[ext_resource type="Shader" path="res://scenes/vfx/basic_projectile.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+shader_parameter/shape = 3
+shader_parameter/tint = Color(0.56, 0.94, 0.77, 1)
+[sub_resource type="Gradient" id="gradient"]
+offsets = PackedFloat32Array(0, 0.35, 1)
+colors = PackedColorArray(1,1,1,1, 1,1,1,0.55, 1,1,1,0)
+[sub_resource type="GradientTexture2D" id="mote"]
+gradient = SubResource("gradient")
+width = 32
+height = 32
+fill = 1
+fill_from = Vector2(0.5,0.5)
+fill_to = Vector2(1,0.5)
+[node name="basic_wind" type="Node2D"]
+script = ExtResource("root")
+[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Core", "Trail")]
+script = ExtResource("track")
+Core = NodePath("Core")
+Trail = NodePath("Trail")
+Spin = 18.0
+TrailTint = Color(0.46, 0.85, 0.69, 0.3)
+TrailSize = Vector2(11, 4)
+[node name="Trail" type="Node2D" parent="Track"]
+[node name="Mote00" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote01" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote02" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote03" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote04" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote05" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote06" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote07" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote08" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote09" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Core" type="Sprite2D" parent="Track"]
+texture = ExtResource("body")
+texture_filter = 2
+material = SubResource("material")

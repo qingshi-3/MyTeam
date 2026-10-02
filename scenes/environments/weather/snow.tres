@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeatherPresentationStyle" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Presentation/WeatherPresentationStyle.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+DisplayName = "雪天"
+Description = "远近飞雪 · 石路薄霜"
+Overcast = 1.0
+SkyTint = Color(0.75, 0.82, 0.91, 1)
+Snow = 0.92
+SnowCover = 0.9
+Mist = 0.28
+Wind = 0.085

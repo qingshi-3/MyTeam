@@ -73,7 +73,7 @@ public partial class VisualCapture : Node
             var heroScreen = root.GetNode<HeroSelectScreen>("Screens/HeroSelectScreen");
             heroScreen.Preview("hero_gilded_factor");
             await CaptureCurrent("HeroSelectMerchant.png");
-            var lockedTile = root.GetNode<GridContainer>("Screens/HeroSelectScreen/Margin/Layout/Content/LibraryPanel/LibraryLayout/LibraryScroll/HeroLibrary")
+            var lockedTile = root.GetNode<HeroSelectScreen>("Screens/HeroSelectScreen").GetNode<GridContainer>("%HeroLibrary")
                 .GetChildren().OfType<HeroLibraryTile>().FirstOrDefault(tile => !tile.Unlocked);
             if (lockedTile is not null)
             {

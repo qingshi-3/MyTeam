@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/environments/SunlitCourtyard.tscn" id="courtyard"]
+
+[sub_resource type="Gradient" id="HeaderShade"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.025, 0.04, 0.03, 0.68, 0.025, 0.04, 0.03, 0)
+
+[sub_resource type="GradientTexture2D" id="HeaderTexture"]
+gradient = SubResource("HeaderShade")
+width = 8
+height = 128
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="FooterShade"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.025, 0.04, 0.03, 0, 0.025, 0.04, 0.03, 0.75)
+
+[sub_resource type="GradientTexture2D" id="FooterTexture"]
+gradient = SubResource("FooterShade")
+width = 8
+height = 128
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[node name="CourtyardBackdrop" instance=ExtResource("courtyard")]
+
+[node name="HeaderShade" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+offset_bottom = 110.0
+grow_horizontal = 2
+mouse_filter = 2
+texture_filter = 2
+texture = SubResource("HeaderTexture")
+expand_mode = 1
+
+[node name="FooterShade" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -135.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+texture_filter = 2
+texture = SubResource("FooterTexture")
+expand_mode = 1
+

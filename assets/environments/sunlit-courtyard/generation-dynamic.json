@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "created": "2026-09-30",
+  "assets": [
+    {
+      "file": "courtyard-albedo.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "sha256": "73720b854e6f9f64bc269327020c274086c9265ac01833d3e2494262e7bbcfec"
+    },
+    {
+      "file": "canopy-cookie.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "sha256": "b6516e9b8c3287c68c20219e0dda0be8da25a56303c155aa156e54450ec7077f"
+    }
+  ],
+  "prompt_file": "dynamic-prompts.md",
+  "source_asset": "courtyard.png",
+  "processing": "Original outputs copied without pixel editing; runtime albedo nearest sampling; light cookie linear sampling; dynamic movement in shaders"
+}

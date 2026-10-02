@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/basic_fire.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "basic_fire"
+DisplayName = "流焰火弹"
+PreviewNote = "纹理焰团、后流火纹与历史余烬；不增加灼烧、爆炸或范围伤害。"
+Scene = ExtResource("scene")
+Duration = 1.0
+ReleaseDuration = 0.16
+Persistent = true
+ReactsToImpact = true
+ProjectileImpactTail = true
+ExternalProjectile = true
+ProjectileContactVfx = "impact"
+FaceDirection = true
+Size = 32.0

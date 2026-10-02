@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="VfxCatalog" load_steps=46 format=3]
+[gd_resource type="Resource" script_class="VfxCatalog" load_steps=73 format=3]
 [ext_resource type="Script" path="res://src/Vfx/VfxCatalog.cs" id="1"]
 [ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
 [ext_resource type="Resource" path="res://content/vfx/rend.tres" id="2"]
@@ -59,6 +59,21 @@
 [ext_resource type="Resource" path="res://content/vfx/claw_swipe.tres" id="claw_swipe"]
 [ext_resource type="Resource" path="res://content/vfx/acid_spit.tres" id="acid_spit"]
 
+[ext_resource type="Resource" path="res://content/vfx/basic_bullet.tres" id="basic_bullet"]
+[ext_resource type="Resource" path="res://content/vfx/basic_arcane.tres" id="basic_arcane"]
+[ext_resource type="Resource" path="res://content/vfx/basic_water.tres" id="basic_water"]
+[ext_resource type="Resource" path="res://content/vfx/basic_fire.tres" id="basic_fire"]
+[ext_resource type="Resource" path="res://content/vfx/basic_ice.tres" id="basic_ice"]
+[ext_resource type="Resource" path="res://content/vfx/basic_poison.tres" id="basic_poison"]
+[ext_resource type="Resource" path="res://content/vfx/basic_soul.tres" id="basic_soul"]
+[ext_resource type="Resource" path="res://content/vfx/basic_wind.tres" id="basic_wind"]
+[ext_resource type="Resource" path="res://content/vfx/basic_blade.tres" id="basic_blade"]
+[ext_resource type="Resource" path="res://content/vfx/basic_prism_ray.tres" id="basic_prism_ray"]
+[ext_resource type="Resource" path="res://content/vfx/basic_hex_ray.tres" id="basic_hex_ray"]
+
+[ext_resource type="Resource" path="res://content/vfx/basic_holy_strike.tres" id="basic_holy_strike"]
+[ext_resource type="Resource" path="res://content/vfx/basic_holy_pillar.tres" id="basic_holy_pillar"]
+
 [resource]
 script = ExtResource("1")
-Effects = Array[ExtResource("def")]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("cleave"), ExtResource("lightning"), ExtResource("frost"), ExtResource("flamethrower"), ExtResource("burn"), ExtResource("poison"), ExtResource("empower"), ExtResource("weaken"), ExtResource("stun"), ExtResource("summon"), ExtResource("taunt_call"), ExtResource("taunted"), ExtResource("arcane_missile"), ExtResource("piercing_thrust"), ExtResource("whirlwind"), ExtResource("healing_field"), ExtResource("frozen"), ExtResource("mana_restore"), ExtResource("life_drain"), ExtResource("meteor_rain"), ExtResource("thunderstorm"), ExtResource("wind_vortex"), ExtResource("ground_spikes"), ExtResource("arc_lightning"), ExtResource("root_bind"), ExtResource("silence"), ExtResource("cleanse"), ExtResource("teleport"), ExtResource("spell_cast"), ExtResource("piercing_arrow_charge"), ExtResource("piercing_beam_charge"), ExtResource("piercing_beam"), ExtResource("piercing_arrow"), ExtResource("cast_blood"), ExtResource("cast_mend"), ExtResource("trample_rush"), ExtResource("trample_warning"), ExtResource("mechanical_hook"), ExtResource("duel_mark"), ExtResource("grit_charge"), ExtResource("grit_punch"), ExtResource("cone_breath"), ExtResource("returning_blade"), ExtResource("position_swap"), ExtResource("ground_fissure"), ExtResource("rock_raise"), ExtResource("shell_break"), ExtResource("claw_swipe"), ExtResource("acid_spit")])
+Effects = Array[ExtResource("def")]([ExtResource("basic_holy_strike"), ExtResource("basic_holy_pillar"), ExtResource("basic_bullet"), ExtResource("basic_arcane"), ExtResource("basic_water"), ExtResource("basic_fire"), ExtResource("basic_ice"), ExtResource("basic_poison"), ExtResource("basic_soul"), ExtResource("basic_wind"), ExtResource("basic_blade"), ExtResource("basic_prism_ray"), ExtResource("basic_hex_ray"), ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("cleave"), ExtResource("lightning"), ExtResource("frost"), ExtResource("flamethrower"), ExtResource("burn"), ExtResource("poison"), ExtResource("empower"), ExtResource("weaken"), ExtResource("stun"), ExtResource("summon"), ExtResource("taunt_call"), ExtResource("taunted"), ExtResource("arcane_missile"), ExtResource("piercing_thrust"), ExtResource("whirlwind"), ExtResource("healing_field"), ExtResource("frozen"), ExtResource("mana_restore"), ExtResource("life_drain"), ExtResource("meteor_rain"), ExtResource("thunderstorm"), ExtResource("wind_vortex"), ExtResource("ground_spikes"), ExtResource("arc_lightning"), ExtResource("root_bind"), ExtResource("silence"), ExtResource("cleanse"), ExtResource("teleport"), ExtResource("spell_cast"), ExtResource("piercing_arrow_charge"), ExtResource("piercing_beam_charge"), ExtResource("piercing_beam"), ExtResource("piercing_arrow"), ExtResource("cast_blood"), ExtResource("cast_mend"), ExtResource("trample_rush"), ExtResource("trample_warning"), ExtResource("mechanical_hook"), ExtResource("duel_mark"), ExtResource("grit_charge"), ExtResource("grit_punch"), ExtResource("cone_breath"), ExtResource("returning_blade"), ExtResource("position_swap"), ExtResource("ground_fissure"), ExtResource("rock_raise"), ExtResource("shell_break"), ExtResource("claw_swipe"), ExtResource("acid_spit")])

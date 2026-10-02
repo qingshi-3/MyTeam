@@ -76,6 +76,7 @@ public partial class UnitAnimationComponent : Node2D
         _sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         _readability = GetNode<UnitReadabilityComponent>("UnitReadabilityComponent");
         _sprite.SpriteFrames = Frames;
+        _readability.BindSprite(_sprite);
         _sprite.FrameChanged += OnAnimationFrameChanged;
         _sprite.AnimationLooped += OnAnimationLooped;
         _sprite.Scale = Vector2.One * VisualScale;
@@ -133,6 +134,8 @@ public partial class UnitAnimationComponent : Node2D
 
     public void ResetPresentation()
     {
+        _readability.ResetFeedback();
+        _readability.Paused = false;
         ClearFrameSoundPlayback();
         _state = PlaybackState.Looping;
         _baseCue = "idle";
@@ -159,6 +162,7 @@ public partial class UnitAnimationComponent : Node2D
 
     public void SetPaused(bool paused)
     {
+        _readability.Paused = paused;
         if (_paused == paused || _sprite is null) return;
         _paused = paused;
         if (_paused) _sprite.Pause();
@@ -171,6 +175,7 @@ public partial class UnitAnimationComponent : Node2D
 
     public void SetCombatSpeed(float speed)
     {
+        _readability.Speed = Math.Max(0, speed);
         _combatSpeed = Math.Max(.001f, speed);
         if (!string.IsNullOrEmpty(_displacementCue) && _sprite is not null)
             _sprite.SpeedScale = _combatSpeed;

@@ -1,0 +1,58 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxBasicProjectileTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://assets/vfx/ice-shard.png" id="body"]
+[sub_resource type="Gradient" id="gradient"]
+offsets = PackedFloat32Array(0, 0.35, 1)
+colors = PackedColorArray(1,1,1,1, 1,1,1,0.55, 1,1,1,0)
+[sub_resource type="GradientTexture2D" id="mote"]
+gradient = SubResource("gradient")
+width = 32
+height = 32
+fill = 1
+fill_from = Vector2(0.5,0.5)
+fill_to = Vector2(1,0.5)
+[node name="basic_ice" type="Node2D"]
+script = ExtResource("root")
+[node name="Track" type="Node2D" parent="." node_paths=PackedStringArray("Core", "Trail")]
+script = ExtResource("track")
+Core = NodePath("Core")
+Trail = NodePath("Trail")
+Spin = 0.0
+TrailTint = Color(0.36, 0.85, 1, 0.4)
+TrailSize = Vector2(6, 4)
+[node name="Trail" type="Node2D" parent="Track"]
+[node name="Mote00" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote01" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote02" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote03" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote04" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote05" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote06" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote07" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote08" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Mote09" type="Sprite2D" parent="Track/Trail"]
+texture = SubResource("mote")
+visible = false
+[node name="Core" type="Sprite2D" parent="Track"]
+texture = ExtResource("body")
+texture_filter = 2
+scale = Vector2(0.2,0.2)

@@ -13,6 +13,7 @@ namespace TowerAutobattler.Presentation;
 // Compatibility facade; all effect instances belong to the shared player.
 public partial class RangedAttackLayer : Node2D, IVfxStage
 {
+    [Signal] public delegate void UnitHitPresentedEventHandler(string runtimeId);
     [Export] public Vector2 BodyOffset { get; set; } = new(0, -22);
     private VfxPlayer _player = null!;
     private BattleBoard? _board;
@@ -177,15 +178,23 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
     }
     private void PresentProjectileImpact(int id, ProjectileFlight flight, ProjectileImpact hit)
     {
+        if (hit.Feedback) EmitSignal(SignalName.UnitHitPresented, hit.TargetId);
         if (flight.ImpactTail)
         {
             // Use the collision point rather than following the already moving victim.
             _player.UpdateContext("projectile:" + id, hit.Context with { Direction = flight.Direction });
             _player.Impact("projectile:" + id);
+            if (!string.IsNullOrEmpty(flight.ContactVisual))
+            {
+                var contact = hit.Context;
+                if (flight.ContactAtTarget && _board is not null && _displayPosition?.Invoke(hit.TargetId) is { } feet)
+                    contact = contact with { Target = _board.CurrentProjection.LocalToLogical(feet), TargetDisplayPosition = null };
+                _player.Play(flight.ContactVisual, contact);
+            }
         }
         else _player.Play("impact", WithDisplayPosition(hit.TargetId, hit.Context));
     }
-    public void SynchronizeUnits(IEnumerable<BattleUnitState> units)
+    public void SynchronizeUnits(IEnumerable<BattleUnitView> units)
     {
         var snapshot = units.ToArray();
         var active = new HashSet<string>(StringComparer.Ordinal);
@@ -228,6 +237,12 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
     }
     public void Present(IReadOnlyList<BattleEvent> events, bool snap)
     {
+        var damaged = events.Where(e => e.Type == "damage" && e.Value > 0)
+            .Select(e => (e.Tick, e.SourceRuntimeId, e.TargetRuntimeId)).ToHashSet();
+        var projectileContacts = events.Where(e => e.Type == "projectile_impact")
+            .Select(e => (e.Tick, e.SourceRuntimeId, e.TargetRuntimeId)).ToHashSet();
+        foreach (var hit in damaged.Where(hit => !projectileContacts.Contains(hit)))
+            EmitSignal(SignalName.UnitHitPresented, hit.TargetRuntimeId);
         foreach (var fact in events)
         {
             PresentTechnique(fact, snap);
@@ -300,9 +315,12 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
                     // carry position. Preserve the launch heading until this entity ends.
                     var direction = (fact.Origin - fact.Position).Normalized();
                     var visual = fact.Line?.ReleaseVfx ?? (string.IsNullOrEmpty(fact.SourceVfx) ? "projectile" : fact.SourceVfx);
-                    var impactTail = _player.Catalog.Find(visual).ProjectileImpactTail;
+                    var definition = _player.Catalog.Find(visual);
+                    var impactTail = definition.ProjectileImpactTail;
                     _projectiles[fact.EntityId] = new(fact.Position, direction,
-                        finishSegmentOnEnd: impactTail || fact.Line?.Delivery == ChargedLineDelivery.Projectile, impactTail: impactTail);
+                        finishSegmentOnEnd: impactTail || fact.Line?.Delivery == ChargedLineDelivery.Projectile,
+                        impactTail: impactTail, contactVisual: definition.ProjectileContactVfx,
+                        contactAtTarget: definition.ProjectileContactAtTarget);
                     _player.Play(visual, context with { Direction = direction }, projectile); break;
                 case "projectile_move":
                     if (_projectiles.TryGetValue(fact.EntityId, out var flight))
@@ -315,15 +333,29 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
                     }
                     break;
                 case "projectile_impact":
+                    if (_projectiles.TryGetValue(fact.EntityId, out var localFlight) && localFlight.ContactAtTarget)
+                    {
+                        // No visible flying body to wait for: the pillar starts on
+                        // the real hit fact, at the real recipient, including interception.
+                        PresentProjectileImpact(fact.EntityId, localFlight, new(fact.Position, fact.TargetRuntimeId, context,
+                            damaged.Contains((fact.Tick, fact.SourceRuntimeId, fact.TargetRuntimeId))));
+                        break;
+                    }
                     // Piercing flight is interpolated behind fixed-step facts. Show
                     // the scratch when its visible front reaches the contact point.
                     if (_projectiles.TryGetValue(fact.EntityId, out var hitFlight) && hitFlight.FinishSegmentOnEnd)
                     {
-                        var hit = new ProjectileImpact(fact.Position, fact.TargetRuntimeId, context);
+                        var hit = new ProjectileImpact(fact.Position, fact.TargetRuntimeId, context,
+                            damaged.Contains((fact.Tick, fact.SourceRuntimeId, fact.TargetRuntimeId)));
                         if (!snap) hitFlight.Impacts.Add(hit);
                         else PresentProjectileImpact(fact.EntityId, hitFlight, hit);
                     }
-                    else _player.Play("impact", WithDisplayPosition(fact.TargetRuntimeId, context));
+                    else
+                    {
+                        _player.Play("impact", WithDisplayPosition(fact.TargetRuntimeId, context));
+                        if (damaged.Contains((fact.Tick, fact.SourceRuntimeId, fact.TargetRuntimeId)))
+                            EmitSignal(SignalName.UnitHitPresented, fact.TargetRuntimeId);
+                    }
                     break;
                 case "projectile_end":
                     if (!snap && _projectiles.TryGetValue(fact.EntityId, out var ending) && ending.FinishSegmentOnEnd)
@@ -340,7 +372,8 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
                     }
                     break;
                 case "beam":
-                    _player.Play("beam", context);
+                    _player.Play(string.IsNullOrEmpty(fact.SourceVfx) || fact.SourceVfx == "projectile"
+                        ? "beam" : fact.SourceVfx, context);
                     _player.Play("impact", WithDisplayPosition(fact.TargetRuntimeId, context)); break;
                 case "heal": _player.Play("heal", context); break;
                 case "defeated":
@@ -378,18 +411,19 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
         _displacementImpacts.Clear();
     }
 
-    private sealed class ProjectileFlight(Vector2 position, Vector2 direction, bool finishSegmentOnEnd = false, bool impactTail = false)
+    private sealed class ProjectileFlight(Vector2 position, Vector2 direction, bool finishSegmentOnEnd = false, bool impactTail = false, string contactVisual = "", bool contactAtTarget = false)
     {
         public Vector2 From = position, To = position, Rendered = position;
         public readonly Vector2 Direction = direction;
         public readonly bool FinishSegmentOnEnd = finishSegmentOnEnd;
         public readonly bool ImpactTail = impactTail;
+        public readonly string ContactVisual = contactVisual;
+        public readonly bool ContactAtTarget = contactAtTarget;
         public bool Ending;
         public readonly List<ProjectileImpact> Impacts = [];
         public float Elapsed;
     }
 
     private sealed record DisplacementImpact(VfxContext Context, float RemainingSeconds);
-    private sealed record ProjectileImpact(Vector2 Contact, string TargetId, VfxContext Context);
+    private sealed record ProjectileImpact(Vector2 Contact, string TargetId, VfxContext Context, bool Feedback);
 }
-

@@ -1,0 +1,21 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/basic_ray.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="material"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+shader_parameter/shape = 1
+shader_parameter/tint = Color(0.75, 0.36, 0.95, 1)
+[node name="basic_hex_ray" type="Node2D"]
+script = ExtResource("root")
+[node name="Core" type="Sprite2D" parent="."]
+script = ExtResource("track")
+texture = ExtResource("surface")
+material = SubResource("material")
+position = Vector2(128,0)
+ShaderLifecycle = true
+Duration = 0.24
+StartScale = 1.0
+EndScale = 1.0

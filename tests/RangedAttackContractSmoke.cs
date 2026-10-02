@@ -14,13 +14,42 @@ public partial class RangedAttackContractSmoke : Node
             InterceptionAndPiercing();
             TerrainExpiryAndDeadTarget();
             DeterminismAndCleanup();
-            GD.Print("RANGED_ATTACK_CONTRACT_OK delayed,instant,swept,interception,piercing,terrain,expiry,dead-target,dead-source,determinism,cleanup");
+            VisualsDoNotChangeCombat();
+            GD.Print("RANGED_ATTACK_CONTRACT_OK delayed,instant,swept,interception,piercing,terrain,expiry,dead-target,dead-source,determinism,cleanup,visual-combat-parity");
             GetTree().Quit();
         }
         catch (Exception exception)
         {
             GD.PrintErr(exception);
             GetTree().Quit(1);
+        }
+    }
+
+    private static void VisualsDoNotChangeCombat()
+    {
+        foreach (var (delivery, visual) in new[]
+        {
+            (AttackDelivery.Projectile, "basic_fire"),
+            (AttackDelivery.Projectile, "basic_blade"),
+            (AttackDelivery.Projectile, "basic_holy_strike"),
+            (AttackDelivery.Beam, "basic_hex_ray")
+        })
+        {
+            using var original = Create(delivery);
+            using var styled = Create(delivery, visual: visual);
+            for (var tick = 0; tick < 40; tick++)
+            {
+                original.Step(); styled.Step();
+                Check(original.Units.Select(u => (u.Position, u.Health, u.Shield, u.CurrentMana, u.Mode))
+                    .SequenceEqual(styled.Units.Select(u => (u.Position, u.Health, u.Shield, u.CurrentMana, u.Mode))),
+                    "attack visual must not change positions, health, shields, mana or decisions");
+                Check(original.DrainEvents().Select(e => e with { SourceVfx = "" })
+                    .SequenceEqual(styled.DrainEvents().Select(e => e with { SourceVfx = "" })),
+                    "attack visual must not change authoritative event timing or results");
+                Check(original.Projectiles.Select(p => p with { VisualId = "" })
+                    .SequenceEqual(styled.Projectiles.Select(p => p with { VisualId = "" })),
+                    "attack visual must not change projectile geometry or damage");
+            }
         }
     }
 
@@ -114,11 +143,13 @@ public partial class RangedAttackContractSmoke : Node
     }
 
     private static BattleSimulation Create(AttackDelivery delivery, float speed = 8, float lifetime = 3,
-        bool extra = false, bool piercing = false, IBattleFloorRuleRuntime? floor = null, bool backupHero = false)
+        bool extra = false, bool piercing = false, IBattleFloorRuleRuntime? floor = null, bool backupHero = false,
+        string visual = "projectile")
     {
         var shooter = Unit("shooter", true) with
         {
             AttackDelivery = delivery, ProjectileSpeed = speed, ProjectileLifetime = lifetime,
+            AttackVisualId = visual,
             Behavior = new UnitBehaviorSnapshot(PiercingLine: piercing)
         };
         var config = new BattleConfig

@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "created": "2026-09-30",
+  "file": "courtyard.png",
+  "width": 1672,
+  "height": 941,
+  "sha256": "6b6603f6b7c8e4ddb7097f25569cbf8c83b32fab78dacd0425389129c9cb4e0c",
+  "reference_role": "User supplied pixel village image used for visual style and lighting reference only",
+  "prompt_file": "README.md",
+  "processing": "Original generated PNG copied without image editing; runtime TextureRect uses nearest filtering and aspect-cover"
+}

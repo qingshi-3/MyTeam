@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/basic_blade.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "basic_blade"
+DisplayName = "旋转飞刃"
+PreviewNote = "实体金属轮刃自转，淡影按实际飞行路径消退；普通攻击不增加返程。"
+Scene = ExtResource("scene")
+Duration = 1.0
+ReleaseDuration = 0.16
+Persistent = true
+ReactsToImpact = true
+ProjectileImpactTail = true
+ExternalProjectile = true
+ProjectileContactVfx = "impact"
+FaceDirection = true
+Size = 30.0

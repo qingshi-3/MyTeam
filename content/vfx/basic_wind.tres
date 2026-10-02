@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/basic_wind.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "basic_wind"
+DisplayName = "旋风刃"
+PreviewNote = "弯月风刃绕弹体中心旋转，短风痕留在经过处；不扩大碰撞或范围。"
+Scene = ExtResource("scene")
+Duration = 1.0
+ReleaseDuration = 0.16
+Persistent = true
+ReactsToImpact = true
+ProjectileImpactTail = true
+ExternalProjectile = true
+ProjectileContactVfx = "impact"
+FaceDirection = true
+Size = 33.0

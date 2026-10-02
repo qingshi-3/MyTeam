@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/basic_hex_ray.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "basic_hex_ray"
+DisplayName = "断续咒链"
+PreviewNote = "仅供原本即时结算的Beam普攻：释放时一次连通实际起终点，0.24秒收净；不改变伤害或增加持续脉冲。"
+Scene = ExtResource("scene")
+Duration = 0.26
+StretchBetween = true
+Size = 16.0

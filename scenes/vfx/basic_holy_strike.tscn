@@ -1,0 +1,4 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[node name="basic_holy_strike" type="Node2D"]
+script = ExtResource("root")

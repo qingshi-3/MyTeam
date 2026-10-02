@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/basic_holy_pillar.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "basic_holy_pillar"
+DisplayName = "圣光落柱"
+PreviewNote = "目标脚点上的竖直光柱；暖白主体、金色边缘与少量碎光独立收尾。"
+Scene = ExtResource("scene")
+Duration = 0.42
+ReleaseDuration = 0.16
+Size = 144.0
+Ground = true
+FlattenGround = false

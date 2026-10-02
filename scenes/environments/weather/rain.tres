@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="WeatherPresentationStyle" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Presentation/WeatherPresentationStyle.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+DisplayName = "雨天"
+Description = "细雨落地 · 湿石微光"
+Overcast = 1.0
+SkyTint = Color(0.62, 0.71, 0.79, 1)
+Rain = 0.66
+Wetness = 0.85
+Mist = 0.24
+Wind = 0.14

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/basic_ice.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "basic_ice"
+DisplayName = "冰晶飞刺"
+PreviewNote = "尖锐冰晶沿实际方向前进，少量碎冰余迹；不增加冰冻或减速。"
+Scene = ExtResource("scene")
+Duration = 1.0
+ReleaseDuration = 0.16
+Persistent = true
+ReactsToImpact = true
+ProjectileImpactTail = true
+ExternalProjectile = true
+ProjectileContactVfx = "impact"
+FaceDirection = true
+Size = 32.0

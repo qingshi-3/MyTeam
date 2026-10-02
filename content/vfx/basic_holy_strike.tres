@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/basic_holy_strike.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "basic_holy_strike"
+DisplayName = "牧师法杖 · 目标光柱"
+PreviewNote = "法杖出手后，圣光从上方降到实际受击敌人；原攻击规则与时序保持。"
+Scene = ExtResource("scene")
+Duration = 1.0
+ReleaseDuration = 0.16
+Persistent = true
+ReactsToImpact = true
+ProjectileImpactTail = true
+ExternalProjectile = true
+ProjectileContactVfx = "basic_holy_pillar"
+ProjectileContactAtTarget = true
+FaceDirection = true
+Size = 1.0
