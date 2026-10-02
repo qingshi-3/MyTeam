@@ -5,7 +5,6 @@
 
 [ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f1_sunforgelancer.png" id="illustration"]
 
-[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/cutouts/f1_sunforgelancer.png" id="card_illustration"]
 
 [resource]
 script = ExtResource("r1")
@@ -16,7 +15,6 @@ FrameIndex = 0
 Zoom = 2
 OffsetRatio = Vector2(0, 0.05)
 Illustration = ExtResource("illustration")
-CardIllustration = ExtResource("card_illustration")
 CardIllustrationFocus = Vector2(0.5, 0.32)
 CardIllustrationZoom = 1.2
 IllustrationFocus = Vector2(0.5, 0.25)

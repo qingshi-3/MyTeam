@@ -34,7 +34,7 @@ public partial class WorkbenchHeroSummary : VBoxContainer
             var button = _facts[i];
             button.Bind(fact.Icon, fact.Value.Replace("/秒", "/s"), fact.Caption, fact.Explanation);
             button.AccessibilityName = fact.Caption + " " + fact.Value;
-            BattleLabHoverHint.Bind(button, new BattleLabTooltipInfo(fact.Caption, Stats: fact.Explanation));
+            BattleLabHoverHint.Bind(button, new BattleLabTooltipInfo(fact.Caption, Stats: fact.Explanation, SingleEntry: true));
         }
     }
     public void ForwardDrag(Callable canDrop, Callable drop)

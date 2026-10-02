@@ -14,6 +14,66 @@
 
 ## 进度与恢复
 
+2026-10-01补齐游戏引用：用户反馈开局选人及多个页面仍显示旧图。确认上一轮只处理了旧英雄目录，默认GrowthGameRoot所复用的validation_matrix与growth目录仍有57份CardIllustration指向旧透明稿；已全部移除该覆盖，统一使用正式新PNG。另补齐已有同身份新图的敌人／士兵肖像引用，未提供对应新图的继续动画回退，战场动画不变。既有肖像检查扩展到全部运行肖像目录，避免再遗漏复用目录；真实默认主菜单的新局、六名候选选择／确认及英雄与装备入口已通过隔离输入核对，实际Texture读取新Illustration。旧32张画稿不重绘，完整路径、修前资源文本、取景同步、实机图与检查限制见[运行引用修正记录](../../design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json)。下方9月30日的完成记录仅覆盖当时旧英雄目录，不能据此认定默认成长模式已完整接入。
+
+2026-09-30剩余32张优化已接入：用户明确要求继续优化所有剩余立绘，沿用此前确认的强外轮廓、整齐发束、简洁衣褶与阴影、合理比例及按单位配色的低饱和柔光底。以内置 imagegen 逐张编辑，保留物种、性别、主色、标志装备和源图朝向；部分画稿补做描边、材质或比例修订。32张1024×1536完整PNG已覆盖正式路径，32份英雄肖像资源移除旧CardIllustration引用，复用既有Illustration回退；原先三张已采纳角色的图片哈希保持不变，战斗动画和运行代码未改。[前后对照、完整提示词与正式卡面](../../design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/index.html)以及输入副本、来源记录均已保存。低并发构建0警告0错误，单次批量导入与既有肖像检查通过；25种本轮有英雄绑定的外形在960×540隔离视口完成正式大卡／小肖像渲染及一次实际点击，另7张当前无英雄绑定。发现并定向调整沙丘施法者和灯笼狐的大卡取景，小肖像参数保持。检查范围与替换哈希见[接入记录](../../design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json)；未执行完整游戏流程，本轮新画稿最终审美仍待用户反馈。
+
+2026-09-29三张配色背景已接入：用户在蓝灰骑士试稿后确认不同单位可用不同配色，并要求实施。骑士复用蓝灰稿，共鸣使、济世医师以内置 imagegen 分别改为灰紫、灰绿柔光底，保留已采纳角色造型与描边。三张1024×1536完整PNG已覆盖正式路径，继续由原Illustration引用读取，不改取景参数或运行时代码；旧白底定稿仍在outline-pass。完成文件哈希、导入、960×540正式大卡与小肖像渲染及读取路径检查；本轮仅背景替换，没有重跑交互或完整流程。[三张成图、提示词和实机卡面](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/background-study/index.html)已保存，新背景最终观感待用户反馈。
+
+2026-09-29背景呈现试稿：用户认为透明抠图和白底均不好看，要求其他方案。以内置 imagegen 对已采纳骑士试做低饱和蓝灰柔光背景；使用相同正式卡片／小肖像组件及相同取景参数，在960×540隔离视口生成[白底与色底对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/background-study/index.html)。当前仅为背景方案预览，正式三张图片与资源引用未变，未记为用户认可或完整交互验收。
+
+2026-09-29三张定稿接入：用户明确“可以 就这三个了”，允许不抠图直接读取。山岳旗手使用身体比例修订稿，共鸣使与济世医师使用描边加强稿；三张正式PNG已替换，对应肖像资源撤去旧CardIllustration引用，复用现有Illustration回退，不新增运行逻辑。低并发构建0警告0错误，既有肖像检查通过，三张在960×540隔离视口完成真实大卡／小肖像渲染和各一次点击，实际读取原PNG。保留浅色背景与原有窗口裁剪，不等同完整游戏流程验收；[接入记录](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/runtime-replacement.json)及运行截图已保存。
+
+2026-09-29骑士身体比例修订：用户继续指出身体比例。以当前偏东亚面部稿为输入，内置 imagegen 调整头身、头肩与腿部关系，保留红发、金甲蓝衣及强描边；[同尺寸前后对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/knight-proportions-comparison.html)及提示词已保存。新稿1024×1536，已查看、复制哈希一致；提示词比例数值仅为目标，未记作实测。当前待反馈，未替换正式素材。
+
+2026-09-29骑士面部局部修订：用户要求脸更亚洲化。以指定红发金甲版本的描边稿为输入，内置 imagegen 局部调整眉眼、鼻梁与下颌，保留原造型、姿态和强轮廓；[脸部放大对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/knight-face-comparison.html)、完整提示词已保存。新稿1024×1536，已查看且复制哈希一致；待反馈，女性描边稿及正式素材未修改。
+
+2026-09-29三张描边加强：用户指定上传的红发金甲骑士版本为当前造型基准，暂停骑士其他设计方向；同时要求共鸣使和济世医师加深描边。以内置 imagegen 分别完成三张仅描边修订，保留造型与原有上色；[三张前后对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/index.html)、输入副本和完整提示词已保存。三张均1024×1536，已查看且复制哈希一致；本次描边强度待反馈，正式素材尚未替换，女性旧版认可／替换状态保留。
+
+2026-09-29山岳旗手画法回归：用户否定金甲回色稿，指出与已采纳女性画风不一致。以内置 imagegen 直接参考济世医师／共鸣使绘法，重做[金甲战袍骑士](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/mountain-standard/index.html)，保留此前认可的成熟头脸、黄甲蓝衣，调整衣甲轮廓与站姿，另收敛碎高光。1024×1536，已查看、复制哈希一致；并排展示女性参考，本稿审美与画风统一程度待用户判断，未替换正式素材。
+
+2026-09-29山岳旗手配色回调：用户认可上一版头脸，明确原单位黄色盔甲必须保留。内置 imagegen 以认可头脸所在图局部编辑，生成[金甲修订稿](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/mountain-standard/veteran-gold-v2.png)，保持简洁甲面与深色轮廓，恢复金黄甲和蓝披风。1024×1536，已查看且复制哈希一致；仅头脸此前获认可，本整图待反馈，未替换正式素材。
+
+2026-09-29山岳旗手整体重做：用户否定前两版骑士风格及描边，旧面部修订不再待选。本轮以内置 imagegen 生成[成熟钢甲骑士新稿](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/mountain-standard/index.html)，改为银灰重甲、深蓝披风、整齐短发、稳重拄剑姿态并加强外轮廓；参考及完整提示词随图保存。已查看1024×1536成图，复制哈希一致；当前待反馈，未替换正式素材。
+
+2026-09-29山岳旗手返修：用户否定此前油腻的面部与发型。已实际查看珀西瓦尔官方立绘，以其成年男性动漫五官作局部参考，内置 imagegen 重画为清爽青年骑士的脸与短发，保留身体、金甲和大剑；[修前／修后对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/mountain-standard/face-comparison.html)。新稿1024×1536，已查看、复制哈希一致，待反馈，正式素材未替换。此前“胡茬成熟脸”的处理已被否定，不沿用。
+
+2026-09-29男性试稿：按用户要求选择山岳旗手（`f1_general`），以原图及已采纳共鸣使为参考，内置 imagegen 生成一张[优化稿与对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/mountain-standard/index.html)。重点减少碎甲、饰件与杂乱披风，保留成熟男性形象；1024×1536，已查看、复制哈希一致，原图未变。当前待本张反馈，未去背景、替换或运行引擎。
+
+### 2026-09-29：济世医师采纳，逐张推进到共鸣使
+
+共鸣使已正式替换：用户明确“接受替换掉”，`after-outfit-v2.png` 已替换正式 `f6_sister.png`，内置 imagegen 重新生成并替换 `cutouts/f6_sister.png`；引用与导入设置保持。已备份旧原图／透明图，其他角色图片哈希未变，清单和总览已更新。两张资源实际重新导入后，正式卡片／小肖像定向渲染与隔离视口实际点击检查完成，证据及限制见[替换记录](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/replacement.json)。不把组件取景检查写成完整流程验收；源代码未改，未重建.NET。此状态覆盖下方待反馈记录，本轮未开始第三张。
+
+共鸣使最新返修：用户在浏览器批注指出服装缺乏穿搭逻辑。已将上衣与下摆归并为完整蓝色无袖长战衣，黑裤作为内层，红色腰封束腰、白毛披风外披，删除挂环与无来源的碎片；[新稿与修前对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/outfit-comparison.html)已保存。内置 imagegen 输出1024×1536，已查看，复制哈希一致，源35张未变。当前仍等待共鸣使反馈，未进入第三张或修改运行素材。
+
+用户明确“可以了 这张采纳了。进行下一张，一张一张来”，采纳[济世医师比例修正版](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/healer-pilot/after-proportions-v2.png)。本轮以其为画法与比例参考，选择共鸣使（`hero_hc06_surge_conductor` / `f6_sister`），内置 imagegen 两步完成[下一张与原图对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/README.md)。深色轮廓、短发与毛领、哑光裤装和人体比例为重点，身份与大型护臂保持。输出1024×1536，已目视查看、读取PNG规格并核对复制哈希，35张源立绘未变。当前只等待共鸣使反馈，不自动生成第三张；未替换运行资源，也未启动Godot。下方“济世医师待评价”属于采纳前历史。
+
+### 2026-09-29：整套绘法认可与济世医师单张试改
+
+最新反馈及修订：用户评价济世医师“好了不少了”，指出身体比例为当前缺陷。已以原试稿为输入，只针对头身、肩胯及腿部关系生成[比例修正版](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/healer-pilot/proportions.html)，保留上一版供对照；新稿1024×1536，已查看且复制哈希通过，待用户评价。比例数值为提示目标，不记作实测或用户验收；正式立绘及运行引用未替换。
+
+用户认可外轮廓加深、略粗后的质感，并明确“可以用这些一整套的方案来优化我们的立绘了，先拿其中一个试试水”。本轮采用线条层级、整齐发束、必要衣褶、连续布面、克制装饰与安静背景的组合；[通用提示词](../../outputs/imagegen/anime-style-transfer-20260929/shared-style.txt)保留适量体积，不继承此前整体极简平涂的失败方向。
+
+选择济世医师（`hero_hc18_healing_reader` / `f3_aymarahealer`），保留身份、白紫黑金配色、金环头饰、法杖及手势。内置 imagegen 两步完成[单张试改与对照](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/healer-pilot/README.md)。最终为1024×1536不透明PNG，已查看图像及浏览器对照，尺寸和复制哈希检查通过；原35张立绘哈希未变。当前仅交付独立试稿，未替换正式立绘、透明图或肖像引用，未启动Godot、导入或构建。新稿待用户判断，此前绘法认可不等于本张或游戏内卡面已验收。
+
+### 2026-09-29：琴参考定向收敛（待反馈）
+
+用户再次指出前两张油光发亮、头发杂乱，并提供琴立绘要求收敛。以该图为首要画法参考、上一轮双卡为身份和构图参考，内置 image_gen 完成一张[定向修订](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/jean-restrained-direction.png)：减少高光、碎发和碎装饰，保留满框／局部出框。完整提示和参考留在同目录。已查看结果并核对 1536×1024 RGB、复制哈希一致；男发仍有少量上挑轮廓，质量与审美等待用户判断。未替换正式素材或修改运行时，不启动引擎／导入。下节“两张待反馈”为此前阶段，现已被要求返修。
+
+### 2026-09-29：现代二游立绘参照小样（待反馈）
+
+用户授权多画风对照后，首轮四张被指出写实太强，第二轮三张仍未获认可，随后明确参照《原神》《鸣潮》。已实际查看 HoYoLAB 娜维娅／钟离对照图及鸣潮官方忌炎／今汐立绘，以图片参考输入内置 image_gen，完成两张新稿；完整提示、原件、来源及已否定记录见[小样索引](../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/README.md)。两张均 1536×1024 RGB，复制哈希一致，已查看结果，未运行引擎或替换正式素材。不能宣称画风已达要求；最终取舍待用户。
+
+用户另认可立绘满框／局部出框，而非认可其所截首轮图的画风。该构图与分层弹出单位 UI 的新倾向归 Q25 / D53 / UI14，不扩展成当前全量角色重绘或 UI 实施。下节保留最初仅诊断阶段。
+
+### 2026-09-29：造型与画风反馈（仅诊断）
+
+用户当前反馈及授权边界统一见[Q25 / D53](../../design-discussion/04-content-validation/decisions.md)：身份匹配尚可，但立绘单薄、质感不足、男性脸型同质化，轻浮画风不协调。下方 2026-09-12“精致日漫脸”等记录是当时制作方向，不得据其否定最新反馈；本轮没有批量重画授权，也不将 Agent 建议记为新风格已定。
+
+本轮只读查看现存卡框内 `runtime/card-art-1.png` 至 `card-art-4.png`，并查看 `f1_general`、`f3_dunecaster`、`f6_freeblade`、`f1_sunforgelancer` 原图。前者是既有裁切检查图，不冒充本轮最新 UI 截图。Agent 观察：白发剑士、黑金法师的尖下颌、细颈、纤细四肢和光洁脸面容易读成同一种美型人物；金甲统帅虽有胡茬，长脸和装饰化甲面仍压过成熟结构。人物／衣甲大量細边与碎高光，主体厚度、承重和材质明暗不够突出；相比之下部分兽形具明确大体块，不需要全部同级推翻。这是局部样本判断，不是逐张全量验收。
+
+候选方向尚待用户判断：角色脸型、年龄感、体态与职业个性分别设计；女性保留美感，男性允许英俊但不统一偶像脸。绘法倾向体块扎实、材质分明、明暗成组的风格化奇幻插画，让甲片有厚度、布料有重量，避免仅靠加暗、加噪点或加胡茬解释质感。下一步建议先用一名成熟男性与一名女性作卡框内小样，沿用角色身份和 UI 基准，再决定是否扩展；该建议未执行，未启动引擎／构建或修改图像。
+
 ### 狐面双刃刺客像素动画（已交付初版）
 
 用户要求以最终无袖短和服立绘制作轻盈刺客动画，纠正首轮平滑动漫风，明确要求参考现有单位的像素素材。风格参考为f2_melee（80×80图集帧）和f6_freeblade（100×100图集帧），新图身份采用f2_ranged.png最终立绘而非旧射手动画。动作接口沿用idle/move/attack/skill_cast/hit/defeated，左右翻转遵循UnitAnimationComponent；仅新增美术资源和预览，不自动绑定现行英雄或更改玩法。

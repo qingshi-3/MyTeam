@@ -1,0 +1,9 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/icons/unit-card/material-atlas.png" id="Atlas"]
+
+[resource]
+atlas = ExtResource("Atlas")
+region = Rect2(648, 642, 275, 255)
+filter_clip = true
+

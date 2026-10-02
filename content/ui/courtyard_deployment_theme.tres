@@ -1,0 +1,31 @@
+[gd_resource type="Theme" load_steps=3 format=3]
+
+[sub_resource type="StyleBoxFlat" id="QuietCell"]
+bg_color = Color(0.14, 0.16, 0.10, 0.13)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.95, 0.82, 0.50, 0.22)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="HoverCell"]
+bg_color = Color(0.24, 0.21, 0.10, 0.20)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.87, 0.52, 0.7)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[resource]
+GridCellButton/base_type = &"Button"
+GridCellButton/styles/normal = SubResource("QuietCell")
+GridCellButton/styles/hover = SubResource("HoverCell")
+GridCellButton/styles/disabled = SubResource("QuietCell")

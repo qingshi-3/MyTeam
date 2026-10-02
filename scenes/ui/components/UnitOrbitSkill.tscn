@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="Theme" path="res://content/ui/unit_card_relic_theme.tres" id="Theme"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/skill-medallion-mount.tres" id="Mount"]
+[node name="UnitOrbitSkill" type="Button"]
+texture_filter = 2
+custom_minimum_size = Vector2(68, 68)
+theme = ExtResource("Theme")
+theme_type_variation = &"RelicSkill"
+theme_override_constants/icon_max_width = 40
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+expand_icon = true
+
+[node name="Mount" type="TextureRect" parent="."]
+texture_filter = 4
+show_behind_parent = true
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("Mount")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Kind" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = -20.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.9, 0.8, 0.6, 1)

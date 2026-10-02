@@ -62,7 +62,7 @@ public partial class ContextPopupInputSmoke : Control
         var army = game.GetNode<ArmyOverviewController>("ArmyOverview");
         screens.BindEquipmentManagement(app);
         screens.Deployment.Bind(app, app.CurrentEncounter());
-        screens.Show(AppScreenId.Deployment, app.ActiveRun, app.Content, app.Rules);
+        screens.Show(AppScreenId.Deployment, app.Run, app.Content, app.Rules);
         await Frames(4);
         var resource = army.GetNode<Button>("%SummaryButton");
         var headerRect = resource.GetGlobalRect();
@@ -91,15 +91,15 @@ public partial class ContextPopupInputSmoke : Control
         // presentation transitions only, not simulated campaign progression.
         foreach (var id in new[] { AppScreenId.Tower, AppScreenId.Recruitment, AppScreenId.Shop, AppScreenId.Reward })
         {
-            screens.Show(id, app.ActiveRun, app.Content, app.Rules);
+            screens.Show(id, app.Run, app.Content, app.Rules);
             await Frames(2);
             Require(army.IsVisibleInTree() && screens.Screen(id).GlobalPosition.Y >= headerRect.End.Y,
                 "global header reserves a separate band for " + id);
         }
-        screens.Show(AppScreenId.Battle, app.ActiveRun, app.Content, app.Rules);
+        screens.Show(AppScreenId.Battle, app.Run, app.Content, app.Rules);
         await Frames(2);
         Require(!army.IsVisibleInTree() && screens.Battle.OffsetTop == 0, "battle restores full height without global army bar");
-        screens.Show(AppScreenId.Deployment, app.ActiveRun, app.Content, app.Rules);
+        screens.Show(AppScreenId.Deployment, app.Run, app.Content, app.Rules);
         await Frames(2);
         Require(screens.Deployment.OffsetTop == top, "returning to deployment does not accumulate header padding");
         game.QueueFree();
@@ -165,7 +165,7 @@ public partial class ContextPopupInputSmoke : Control
         var army = GD.Load<PackedScene>("res://scenes/ui/components/ArmyOverview.tscn").Instantiate<ArmyOverviewController>();
         AddChild(army);
         army.BindEquipmentManagement(app);
-        army.Bind(ArmyOverviewFactory.Build(app.ActiveRun!, app.Content, app.Rules));
+        army.Bind(ArmyOverviewFactory.Build(app.Run!, app.Content, app.Rules));
         await Frames(3);
         Require(!army.IsOpen, "army defaults closed");
         var opener = army.GetNode<Button>("%SummaryButton");

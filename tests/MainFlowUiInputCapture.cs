@@ -587,7 +587,7 @@ public partial class MainFlowUiInputCapture : Node
         var army = GD.Load<PackedScene>("res://scenes/ui/components/ArmyOverview.tscn").Instantiate<ArmyOverviewController>();
         host.AddChild(army);
         army.BindEquipmentManagement(app);
-        army.Bind(ArmyOverviewFactory.Build(app.ActiveRun!, app.Content, app.Rules));
+        army.Bind(ArmyOverviewFactory.Build(app.Run!, app.Content, app.Rules));
         await Frames(4);
         await Click(army.GetNode<Button>("%SummaryButton"));
         Require(army.IsOpen, "fixture army opens by real summary click");

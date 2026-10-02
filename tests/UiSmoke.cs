@@ -48,7 +48,7 @@ public partial class UiSmoke : Node
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
             var heroScreen = root.GetNode<HeroSelectScreen>("Screens/HeroSelectScreen");
             if (!heroScreen.Visible) throw new InvalidOperationException("hero navigation");
-            var heroTiles = root.GetNode<GridContainer>("Screens/HeroSelectScreen/Margin/Layout/Content/LibraryPanel/LibraryLayout/LibraryScroll/HeroLibrary")
+            var heroTiles = root.GetNode<HeroSelectScreen>("Screens/HeroSelectScreen").GetNode<GridContainer>("%HeroLibrary")
                 .GetChildren().OfType<HeroLibraryTile>().ToArray();
             var expectedHeroIds = root.Content.Catalog.Heroes.Select(entry => entry.StableId).Order(StringComparer.Ordinal).ToArray();
             var presentedHeroIds = heroTiles.Select(tile => tile.StableId).Order(StringComparer.Ordinal).ToArray();

@@ -31,7 +31,9 @@ public partial class RosterLoadoutInputSmoke : Control
         {
             Require(DisplayServer.GetName() != "headless", "rendered window required");
             GetWindow().Size = new Vector2I(1600, 900);
-            if (IsolatedPointer) GetWindow().Position = new Vector2I(-4000, -4000);
+            // An off-screen native host may stop presenting frames on macOS.
+            // Input still goes only to the isolated SubViewport.
+            if (IsolatedPointer) GetWindow().Position = new Vector2I(80, 80);
             _stage = new UiInputStage(this, IsolatedPointer);
             var gate = await GamePackagePublisher.CreateReadyAsync(this,
                 GD.Load<GameProjectDefinition>("res://content/project/alpha_project.tres"));
@@ -64,7 +66,7 @@ public partial class RosterLoadoutInputSmoke : Control
             var army = game.GetNode<ArmyOverviewController>("ArmyOverview");
             screens.BindEquipmentManagement(app);
             screens.Deployment.Bind(app, app.CurrentEncounter());
-            screens.Show(AppScreenId.Deployment, run, app.Content, app.Rules);
+            screens.Show(AppScreenId.Deployment, RunView.For(run), app.Content, app.Rules);
             await Frames(4);
 
             _step = "composed workbench";
@@ -95,18 +97,56 @@ public partial class RosterLoadoutInputSmoke : Control
             await Click(resource);
             Require(popup.IsOpen && !army.IsOpen, "covered resource entry cannot open a second window through manager");
             await Capture("fullscreen");
-            var details = view.GetNode<RosterHeroDetails>("%HeroDetails");
+            var orbit = view.GetNode<RosterHeroCard>("%SelectedCard").Orbit;
             var information = view.GetNode<RosterHeroCard>("%SelectedCard").GetNode<WorkbenchHeroSummary>("%Information");
-            var before = JsonSerializer.Serialize(run);
-            foreach (var attribute in Enum.GetValues<CombatAttribute>())
+            Require(!view.GetNode<RosterHeroCard>("%SelectedCard").HasNode("DetailsButton") && orbit.AlwaysVisible &&
+                view.Disclosure.IsOpen && view.Disclosure.Groups.All(group => group.IsVisibleInTree()),
+                "opening the manager immediately shows attributes, skills and slots without a details button");
+            await Hover(popup.GetNode<Button>("Panel/Layout/Header/Close"));
+            Require(view.Disclosure.Groups.All(group => group.IsVisibleInTree()) &&
+                information.GetNode<Control>("%Portrait").IsVisibleInTree(), "leaving the hero card never hides its information");
+            var core = information.GetNode<Control>("Artwork/CoreStats").GetGlobalRect();
+            var attackLeft = Fact(view, CombatAttribute.AttackDamage).GetNode<Control>("%FactIcon").GetGlobalRect().Position.X;
+            var healthRight = Fact(view, CombatAttribute.MaxHealth).GetNode<Control>("%FactValue").GetGlobalRect().End.X;
+            var spell = Fact(view, CombatAttribute.SpellPower);
+            var spellCenter = (spell.GetNode<Control>("%FactIcon").GetGlobalRect().Position.X +
+                spell.GetNode<Control>("%FactValue").GetGlobalRect().End.X) / 2;
+            Require(Math.Abs((attackLeft - core.Position.X) - (core.End.X - healthRight)) <= 2 &&
+                Math.Abs(spellCenter - core.GetCenter().X) <= 2, "attack and health have symmetric outer margins with spell power centered");
+            Require(orbit.GetNode<Control>("Right").GetChildren().OfType<CompactDetailFact>().All(fact =>
+                fact.GetNode<Control>("%FactValue").GetGlobalRect().End.X <= fact.GetNode<Control>("%FactIcon").GetGlobalRect().Position.X),
+                "right attributes place values before edge-aligned icons");
+            var frameCenter = view.GetNode<RosterHeroCard>("%SelectedCard").GetGlobalRect().GetCenter().X;
+            Require(orbit.GetNode<Control>("Left").GetGlobalRect().End.X < frameCenter &&
+                orbit.GetNode<Control>("Right").GetGlobalRect().Position.X > frameCenter,
+                "mirroring the right entries does not move their column across the card");
+            await Capture("always-visible");
+            var edgeShade = orbit.GetNode<Control>("EdgeShade");
+            Require(orbit.ShowEquipment && view.Disclosure.Groups.Count == 4 &&
+                Enumerable.Range(0, 3).All(index => orbit.Slot(index).IsVisibleInTree()),
+                "equipment management explicitly enables all three real equipment slots");
+            Require(edgeShade.ZAsRelative && orbit.ZIndex + edgeShade.ZIndex == 1 &&
+                information.GetNode<Control>("%HeroName").ZIndex > orbit.ZIndex + edgeShade.ZIndex,
+                "edge shade follows the modal canvas above art and below the name rail");
+            if (Array.Exists(OS.GetCmdlineUserArgs(), value => value == "--layout-only"))
             {
-                var fact = details.GetNode<CompactDetailFact>("%" + attribute);
+                await Frames(20);
+                var cardFrame = view.GetNode<RosterHeroCard>("%SelectedCard").GetNode<Control>("CardFrame").GetGlobalRect();
+                Require(view.Disclosure.Groups.All(group => cardFrame.Encloses(group.GetGlobalRect())),
+                    "all four groups settle inside the wider roster frame");
+                await Capture("inner-frame");
+                GD.Print("ROSTER_INNER_LAYOUT_OK real-open always-visible no-details-button symmetric-core mirrored-right inner-edges broad-frame");
+                GetTree().Quit(); return;
+            }
+            var before = JsonSerializer.Serialize(run);
+            foreach (var attribute in UnitCardOrbit.DisplayedAttributes.Append(CombatAttribute.StartingMana))
+            {
+                var fact = Fact(view, attribute);
                 Require(fact.IsVisibleInTree() && !string.IsNullOrWhiteSpace(fact.GetNode<Label>("%FactValue").Text),
-                    "complete attribute sheet includes zero values: " + attribute);
-                Require(details.GetNode<Control>("%MainContent").GetGlobalRect().Encloses(fact.GetGlobalRect()),
+                    "card includes displayed zero values: " + attribute);
+                Require(Card(view, view.SelectedHeroId).GetGlobalRect().Encloses(fact.GetGlobalRect()),
                     "every attribute is readable without clipping at reference viewport: " + attribute);
             }
-            Require(Descendants<CompactDetailFact>(details).Count() == 19, "exactly 19 unique attribute facts");
             // Explicit nonzero spell/critical values exercise presentation without altering
             // authored definitions, equipment rules, or the persistent run.
             var fixtureEntry = app.Content.TryGet(run.Roster[0].ContentId, out var found) ? found
@@ -117,14 +157,19 @@ public partial class RosterLoadoutInputSmoke : Control
             values[CombatAttribute.SpellPower] = 37;
             values[CombatAttribute.CriticalChance] = .275f;
             values[CombatAttribute.CriticalDamage] = 1.85f;
+            values[CombatAttribute.StartingMana] = 20;
+            values[CombatAttribute.MaxMana] = 60;
             var valueModel = new UnitInformation("value-fixture", (TowerAutobattler.Content.UnitDefinition)fixtureEntry.Definition,
                 fixtureBaseline, new PreparedUnitDetails(fixtureBaseline, values, values[CombatAttribute.MaxHealth], 0));
-            information.Bind(valueModel); details.Bind(valueModel);
+            information.Bind(valueModel); orbit.Bind(valueModel);
             await Frames(3);
+            Require(orbit.Fact(CombatAttribute.MaxMana).GetNode<Label>("%FactValue").Text == "60" &&
+                orbit.Fact(CombatAttribute.StartingMana).GetNode<Label>("%FactValue").Text == "20",
+                "starting mana and maximum mana occupy separate rows");
             foreach (var (attribute, expected) in new[] { (CombatAttribute.SpellPower, "37"),
                          (CombatAttribute.CriticalChance, "27.5%"), (CombatAttribute.CriticalDamage, "185%") })
                 Require(information.GetNode<CompactDetailFact>("%" + attribute).GetNode<Label>("%FactValue").Text == expected
-                    && details.GetNode<CompactDetailFact>("%" + attribute).GetNode<Label>("%FactValue").Text == expected,
+                    && Fact(view, attribute).GetNode<Label>("%FactValue").Text == expected,
                     "nonzero spell power and distinct critical values agree: " + attribute);
             await Click(Selector(view, heroA));
 
@@ -135,26 +180,27 @@ public partial class RosterLoadoutInputSmoke : Control
             await Click(Selector(view, heroA));
             await KeyPress(Key.Space);
             Require(view.SelectedHeroId == heroA && Card(view, heroA).HeroId == heroA, "focused selector activates by keyboard");
+            Require(view.Disclosure.Groups.All(group => group.IsVisibleInTree()), "switching heroes preserves the visible information");
             Require(JsonSerializer.Serialize(run) == before, "hero inspection changes no persistent state");
             await Click(Item(view, blade));
             await Click(Slot(view, heroA, 0));
             Require(JsonSerializer.Serialize(run) == before, "item and slot inspection do not equip");
 
             _step = "inventory equips and replaces";
-            var initialArmor = details.GetNode<CompactDetailFact>("%Armor").GetNode<Label>("%FactValue").Text;
+            var initialArmor = orbit.Fact(CombatAttribute.Armor).GetNode<Label>("%FactValue").Text;
             await Drag(Item(view, blade), Slot(view, heroA, 0));
             Require(Holds(run, heroA, blade, 0), "native inventory drag equips selected slot");
-            var armorFact = information.GetNode<CompactDetailFact>("%Armor");
+            var armorFact = orbit.Fact(CombatAttribute.Armor);
             await Click(armorFact);
+            Require(view.Disclosure.IsOpen, "attributes remain visible before equipment drag");
             await Drag(Item(view, armor), Slot(view, heroA, 0));
             Require(Holds(run, heroA, armor, 0) && run.EquipmentInventory.Any(item => item.InstanceId == blade),
                 "occupied slot replacement preserves old item in inventory");
-            var armorValue = details.GetNode<CompactDetailFact>("%Armor").GetNode<Label>("%FactValue").Text;
+            var armorValue = orbit.Fact(CombatAttribute.Armor).GetNode<Label>("%FactValue").Text;
             Require(initialArmor != armorValue && armorValue == information.GetNode<CompactDetailFact>("%Armor").GetNode<Label>("%FactValue").Text,
                 "equipment refreshes the effective sheet and card from the same values");
-            Require(details.GetNode<Label>("%ExplanationText").Text == armorFact.ExplanationText,
-                "equipping while reading an attribute refreshes its explanation");
-            await Click(details.GetNode<Button>("%ExplanationClose"));
+            Require(armorFact.ExplanationText.Contains(armorValue), "live per-attribute rules refresh after replacement");
+            Require(view.Disclosure.Groups.All(group => group.IsVisibleInTree()), "equipment refresh keeps all information visible");
             FirstRowFits(view);
             await Capture("replacement");
 
@@ -169,39 +215,26 @@ public partial class RosterLoadoutInputSmoke : Control
             await Drag(Slot(view, heroB, 0), returnZone.GetGlobalRect().End - new Vector2(4, 4));
             Require(run.EquipmentInventory.Any(item => item.InstanceId == armor), "inventory blank area receives unequip");
 
-            _step = "attribute and skill reading keeps portrait visible";
-            var healthFact = information.GetNode<CompactDetailFact>("%MaxHealth");
+            _step = "individual attribute and skill tooltips";
+            var healthFact = Fact(view, CombatAttribute.MaxHealth);
             await Hover(healthFact);
-            Require(VisibleTooltip(view).GetNode<CombatRichText>("%Stats").Text.Contains("满血", StringComparison.Ordinal),
-                "health symbol explains maximum health and full-health start");
+            Require(VisibleTooltip(view).GetNode<CombatRichText>("%SingleEntry").Text.Contains("满血"), "health entry explains full-health start");
             await Capture("health-symbol-hover");
             await Click(healthFact);
-            Require(details.GetNode<Control>("%Explanation").Visible && information.GetNode<Control>("%Portrait").IsVisibleInTree(),
-                "fact opens adjacent explanation while large art stays visible");
-            await Capture("complete-details");
-            await Click(details.GetNode<Button>("%ExplanationClose"));
-            Require(healthFact.HasFocus(), "explanation return restores source focus");
-            await KeyPress(Key.Space);
-            Require(details.GetNode<Control>("%Explanation").Visible, "focused fact opens through keyboard");
-            await KeyPress(Key.Space);
-            Require(!details.GetNode<Control>("%Explanation").Visible, "keyboard return restores attribute sheet");
-            var active = details.GetNode<DetailExplainButton>("%Active");
+            Require(information.GetNode<Control>("%Portrait").IsVisibleInTree(), "single fact never replaces portrait");
+            foreach (var attribute in new[] { CombatAttribute.AttackSpeed, CombatAttribute.HealingPower })
+            {
+                var fact = Fact(view, attribute);
+                await Hover(fact);
+                Require(VisibleTooltip(view).GetNode<Label>("%Title").Text == fact.ExplanationTitle, "one fact one title");
+                Require(VisibleTooltip(view).GetNode<CombatRichText>("%SingleEntry").Text == fact.ExplanationText, "full rule only for this fact");
+                await Click(fact); await KeyPress(Key.Space);
+                Require(fact.HasFocus(), "keyboard inspection retains its own source");
+            }
+            var active = view.Disclosure.Groups[2].GetChildren().OfType<Button>().First();
             await Hover(active);
-            Require(!string.IsNullOrWhiteSpace(VisibleTooltip(view).GetNode<CombatRichText>("%Abilities").Text), "real skill rules in tooltip");
-            await Click(active.GetNode<Control>("Layout/Socket"));
-            Require(details.GetNode<Label>("%ExplanationText").Text == active.ExplanationText, "complete skill prose, without summary truncation");
-            await Click(details.GetNode<Button>("%ExplanationClose"));
-            Require(active.HasFocus(), "empty skill-art socket retains the skill button's return focus");
-            var speedFact = details.GetNode<CompactDetailFact>("%AttackSpeed");
-            await Click(speedFact);
-            Require(details.GetNode<Label>("%ExplanationTitle").Text == "攻速倍率"
-                && details.GetNode<Label>("%ExplanationText").Text == speedFact.ExplanationText,
-                "short attribute caption still opens the full rule through real input");
-            await Click(details.GetNode<Button>("%ExplanationClose"));
-            var lastAttribute = details.GetNode<CompactDetailFact>("%HealingPower");
-            await Click(lastAttribute);
-            Require(details.GetNode<Label>("%ExplanationText").Text == lastAttribute.ExplanationText, "last attribute remains reachable");
-            await Click(details.GetNode<Button>("%ExplanationClose"));
+            Require(!string.IsNullOrWhiteSpace(VisibleTooltip(view).GetNode<CombatRichText>("%SingleEntry").Text), "single skill has full rules");
+            await Capture("complete-details");
 
             _step = "equipment published rules";
             await Hover(Item(view, blade));
@@ -220,7 +253,7 @@ public partial class RosterLoadoutInputSmoke : Control
             Require(_stage.Viewport.GetVisibleRect().Encloses(returnZone.GetGlobalRect()), "inventory stays visible during list scroll");
             await Drag(Item(view, blade), Slot(view, last.HeroId, 0));
             Require(Holds(run, last.HeroId, blade, 0), "reserve equipment uses same command path");
-            Require(details.GetNode<Label>("%Context").Text.Contains("自身与装备", StringComparison.Ordinal),
+            Require(Fact(view, CombatAttribute.Armor).ExplanationText.Contains("自身与装备", StringComparison.Ordinal),
                 "reserve preview states its scope instead of claiming positional bonuses");
             FirstRowFits(view);
             await Capture("reserve-scroll");
@@ -237,6 +270,7 @@ public partial class RosterLoadoutInputSmoke : Control
             Require(bench.Modulate == benchTint && board.GetGlobalRect() == boardRect,
                 "closing inspection restores reserve presentation and original board geometry");
             await Click(opener);
+            Require(view.Disclosure.Groups.All(group => group.IsVisibleInTree()), "reopening the manager restores all information immediately");
             await Click(popup.GetNode<Button>("Panel/Layout/Header/Close"));
             Require(!popup.IsOpen, "explicit close works");
 
@@ -258,7 +292,7 @@ public partial class RosterLoadoutInputSmoke : Control
             Require(!army.IsOpen && !popup.IsOpen && save.Writes > 0, "global close and isolated persistence");
             Require(bench.Modulate == benchTint && resource.Modulate.A > 0, "global close restores background HUD");
             _motion.Save("equipment-motion");
-            GD.Print("ROSTER_LOADOUT_INPUT_OK selected-workbench,large-art,transparent-scene,19-attributes,portrait-selection,keyboard,effective-equipment-values,equip,replace,selector-transfer,tile-return,blank-return,explanation-focus,skills,reserve-scroll,reserve-equip,modal-focus,global-army");
+            GD.Print("ROSTER_LOADOUT_INPUT_OK selected-workbench,large-art,transparent-scene,always-visible,no-details-button,symmetric-core,15-card-entries,split-initial-max-mana,portrait-selection,keyboard,effective-equipment-values,equip,replace,selector-transfer,tile-return,blank-return,explanation-focus,skills,reserve-scroll,reserve-equip,modal-focus,global-army");
         }
         catch (Exception exception)
         {
@@ -277,7 +311,18 @@ public partial class RosterLoadoutInputSmoke : Control
             var information = card.GetNode<WorkbenchHeroSummary>("%Information");
             var artwork = information.GetNode<Control>("%Portrait");
             var ribbon = information.GetNode<Control>("%HeroName");
-            var share = (artwork.Size.Y - ((UnitPortrait)artwork).IllustrationTopInset - ribbon.Size.Y) / card.Size.Y;
+            var frame = card.GetNode<Control>("CardFrame").GetGlobalRect();
+            Require(artwork.GetGlobalRect().End.Y >= frame.End.Y - 24 && ribbon.GetGlobalRect().End.Y >= frame.End.Y - 24,
+                "roster portrait and name finish the lower edge without an equipment strip");
+            if (view.Disclosure.IsOpen)
+            {
+                var skills = view.Disclosure.Groups[2].GetGlobalRect();
+                var equipment = view.Disclosure.Groups[3].GetGlobalRect();
+                Require(skills.End.Y < frame.GetCenter().Y && equipment.End.Y < frame.GetCenter().Y &&
+                    Math.Abs(skills.GetCenter().Y - equipment.GetCenter().Y) < 4 && !skills.Intersects(equipment),
+                    "roster skills and equipment share one non-overlapping top row");
+            }
+            var share = (artwork.Size.Y - ((UnitPortrait)artwork).IllustrationTopInset - ribbon.Size.Y) / card.GetNode<Control>("CardFrame").Size.Y;
             Require(share >= .60f, $"roster art excluding name ribbon must occupy at least 3/5 of card height: {share:P1}, art={artwork.Size}, ribbon={ribbon.Size}, card={card.Size}");
             GD.Print($"HERO_ART_SHARE roster={card.HeroId} visible-height={share:P1}");
         }
@@ -313,10 +358,14 @@ public partial class RosterLoadoutInputSmoke : Control
     private static RosterHeroSelector Selector(RosterLoadoutView view, string id) => Selectors(view).Single(row => row.HeroId == id);
     private static IEnumerable<RosterHeroCard> Cards(RosterLoadoutView view) => Descendants<RosterHeroCard>(view);
     private static RosterHeroCard Card(RosterLoadoutView view, string id) => Cards(view).Single(card => card.HeroId == id);
-    private static EquipmentSlotButton Slot(RosterLoadoutView view, string hero, int index) => Card(view, hero).GetNode<EquipmentSlotButton>("%Slot" + index);
+    private static EquipmentSlotButton Slot(RosterLoadoutView view, string hero, int index) => Card(view, hero).Slot(index);
     private static EquipmentSlotButton Item(RosterLoadoutView view, string id) =>
         Descendants<EquipmentSlotButton>(view.GetNode<Control>("%RosterInventory")).Single(tile => tile.InstanceId == id);
 
+    private static CompactDetailFact Fact(RosterLoadoutView view, CombatAttribute attribute)
+        => attribute is CombatAttribute.AttackDamage or CombatAttribute.SpellPower or CombatAttribute.MaxHealth
+            ? Card(view, view.SelectedHeroId).GetNode<WorkbenchHeroSummary>("%Information").GetNode<CompactDetailFact>("%" + attribute)
+            : Card(view, view.SelectedHeroId).Orbit.Fact(attribute);
     private async Task Click(Control target) { await Reveal(target); await ClickPoint(target.GetGlobalRect().GetCenter()); }
     private async Task ClickPoint(Vector2 point)
     {
@@ -396,6 +445,19 @@ public partial class RosterLoadoutInputSmoke : Control
     }
     private async Task Reveal(Control target)
     {
+        if (!target.IsVisibleInTree() && target is EquipmentSlotButton slot && slot.SlotIndex >= 0)
+        {
+            UnitCardOrbit? orbitOwner = null;
+            for (var ancestor = target.GetParent(); ancestor is not null; ancestor = ancestor.GetParent())
+                if (ancestor is UnitCardOrbit candidate) { orbitOwner = candidate; break; }
+            if (orbitOwner is not null)
+            {
+                var owner = (Control)orbitOwner.GetParent();
+                WarpPointer(owner.GetGlobalRect().GetCenter());
+                _stage.Push(new InputEventMouseMotion { Position = owner.GetGlobalRect().GetCenter(), GlobalPosition = owner.GetGlobalRect().GetCenter() });
+                await ToSignal(GetTree().CreateTimer(.5), SceneTreeTimer.SignalName.Timeout); await Frames(3);
+            }
+        }
         Require(target.IsVisibleInTree(), "target hidden: " + target.GetPath());
         for (var ancestor = target.GetParent(); ancestor is not null; ancestor = ancestor.GetParent())
         {
@@ -427,7 +489,10 @@ public partial class RosterLoadoutInputSmoke : Control
         for (var i = 0; i < count; i++)
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            // macOS can suspend native presentation when the host is occluded.
+            // Render the isolated viewport without depending on a desktop swap.
+            if (IsolatedPointer) RenderingServer.ForceDraw(false);
+            else await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
             if (_step is "card transfer and inventory return" or "inventory equips and replaces")
                 _motion.Sample(_stage.Viewport, _step);
         }

@@ -18,14 +18,20 @@ public partial class HeroSelectScreen : Control
     public event Action<string>? OpeningHeroToggled;
     public event Action? OpeningConfirmed;
     [Export] public PackedScene HeroLibraryTileScene { get; set; } = null!;
+    [Export] public PackedScene OpeningHeroLibraryTileScene { get; set; } = null!;
+    [Export] public StyleBox OpeningLibraryStyle { get; set; } = null!;
+    [Export] public Theme OpeningTheme { get; set; } = null!;
 
     private GridContainer _library = null!;
     private ScrollContainer _libraryScroll = null!;
+    private PanelContainer _libraryPanel = null!;
     private HeroDetailPanel _detail = null!;
     private Button _back = null!;
     private Button _confirm = null!;
     private Label _status = null!;
     private Label _hint = null!;
+    private OpeningHeroSeat _firstSeat = null!;
+    private OpeningHeroSeat _secondSeat = null!;
     private OpeningRecruitmentDto? _opening;
     private readonly Dictionary<string, HeroSelectionViewModel> _models = new(StringComparer.Ordinal);
     private readonly Dictionary<string, HeroLibraryTile> _tiles = new(StringComparer.Ordinal);
@@ -41,6 +47,8 @@ public partial class HeroSelectScreen : Control
         _detail.DeployRequested += OnDeployRequested;
         _back.Pressed += OnBack;
         _confirm.Pressed += OnConfirm;
+        _firstSeat.Pressed += OnFirstSeat;
+        _secondSeat.Pressed += OnSecondSeat;
         UpdateResponsiveColumns();
     }
 
@@ -51,6 +59,8 @@ public partial class HeroSelectScreen : Control
         _detail.DeployRequested -= OnDeployRequested;
         _back.Pressed -= OnBack;
         _confirm.Pressed -= OnConfirm;
+        _firstSeat.Pressed -= OnFirstSeat;
+        _secondSeat.Pressed -= OnSecondSeat;
     }
 
     public void Bind(ContentRegistry content, MetaProgressDto meta)
@@ -58,7 +68,7 @@ public partial class HeroSelectScreen : Control
 
     public void BindOpening(RunApplication app)
     {
-        var opening = app.ActiveRun?.OpeningRecruitment ?? throw new InvalidOperationException("Missing opening draft.");
+        var opening = app.Run?.OpeningRecruitment ?? throw new InvalidOperationException("Missing opening draft.");
         BindContent(app.Content, opening.CandidateIds, app.Project.Campaign.RecruitmentSupply, app.GrowthRules);
         RefreshOpening(opening);
     }
@@ -98,15 +108,38 @@ public partial class HeroSelectScreen : Control
             }
             finally { root.Free(); }
         }
-        Bind(heroes);
+        Bind(heroes, supply is not null);
     }
 
-    public void Bind(IEnumerable<HeroSelectionViewModel> heroes)
+    public void Bind(IEnumerable<HeroSelectionViewModel> heroes) => Bind(heroes, false);
+
+    private void Bind(IEnumerable<HeroSelectionViewModel> heroes, bool opening)
     {
         CacheNodes();
         _opening = null;
+        Theme = opening ? OpeningTheme : null;
+        GetNode<Control>("OpeningBackdrop").Visible = opening;
+        var title = GetNode<Label>("Margin/Layout/Title");
+        title.Text = opening ? "选择同行的两位英雄" : "选择英雄";
+        title.ThemeTypeVariation = opening ? "OpeningTitle" : "PageTitle";
+        title.HorizontalAlignment = opening ? HorizontalAlignment.Center : HorizontalAlignment.Left;
+        _back.ThemeTypeVariation = opening ? "OpeningBack" : "SecondaryButton";
+        var margin = GetNode<MarginContainer>("Margin");
+        margin.AddThemeConstantOverride("margin_top", opening ? 72 : 20);
+        margin.AddThemeConstantOverride("margin_bottom", opening ? 32 : 20);
+        GetNode<Control>("Margin/Layout/Footer").CustomMinimumSize = new Vector2(0, opening ? 148 : 50);
+        _firstSeat.Visible = _secondSeat.Visible = opening;
+        _firstSeat.Bind(null); _secondSeat.Bind(null);
+        _detail.Visible = !opening;
+        if (opening) _libraryPanel.AddThemeStyleboxOverride("panel", OpeningLibraryStyle);
+        else _libraryPanel.RemoveThemeStyleboxOverride("panel");
+        _library.AddThemeConstantOverride("h_separation", opening ? 14 : 24);
+        _libraryScroll.HorizontalScrollMode = opening ? ScrollContainer.ScrollMode.Disabled : ScrollContainer.ScrollMode.ShowNever;
+        _libraryScroll.VerticalScrollMode = opening ? ScrollContainer.ScrollMode.Disabled : ScrollContainer.ScrollMode.Auto;
+        _library.GetParent<Control>().SizeFlagsVertical = opening ? SizeFlags.ExpandFill : SizeFlags.Fill;
         _confirm.Visible = false;
         _status.Text = string.Empty;
+        _status.Hide();
         foreach (var child in _library.GetChildren())
         {
             if (child is HeroLibraryTile existing) existing.SelectionRequested -= OnTilePressed;
@@ -119,7 +152,7 @@ public partial class HeroSelectScreen : Control
         foreach (var model in heroes)
         {
             _models.Add(model.StableId, model);
-            var tile = HeroLibraryTileScene.Instantiate<HeroLibraryTile>();
+            var tile = (opening ? OpeningHeroLibraryTileScene : HeroLibraryTileScene).Instantiate<HeroLibraryTile>();
             _library.AddChild(tile);
             tile.Bind(model);
             tile.SelectionRequested += OnTilePressed;
@@ -129,7 +162,17 @@ public partial class HeroSelectScreen : Control
         if (initial is not null)
         {
             Preview(initial.StableId);
-            _tiles[initial.StableId].CallDeferred(Control.MethodName.GrabFocus);
+            var initialTile = _tiles[initial.StableId];
+            Callable.From(() =>
+            {
+                if (!GodotObject.IsInstanceValid(initialTile) || !initialTile.IsInsideTree()) return;
+                initialTile.GrabFocus();
+                // Focus can run before the opening page finishes reflowing.
+                // Start at the card's upper edge, not a stale scroll offset;
+                // subsequent keyboard navigation still uses follow_focus.
+                if (_opening is not null)
+                    _libraryScroll.SetDeferred(ScrollContainer.PropertyName.ScrollVertical, 0);
+            }).CallDeferred();
         }
     }
 
@@ -145,18 +188,26 @@ public partial class HeroSelectScreen : Control
     public void RefreshOpening(OpeningRecruitmentDto opening)
     {
         _opening = opening;
+        _detail.Hide();
+        UpdateResponsiveColumns();
         _confirm.Visible = true;
         _confirm.Disabled = opening.SelectedIds.Length != CompiledRecruitmentSupply.OpeningSelectionCount;
-        _status.Text = $"已选 {opening.SelectedIds.Length} / 2";
+        _status.Text = string.Empty;
+        _status.Hide();
+        _status.ThemeTypeVariation = "SecondaryLabel";
         _hint.Text = string.Empty;
         _hint.Visible = false;
         RefreshSelectionState();
+        _firstSeat.Bind(opening.SelectedIds.Length > 0 ? _models[opening.SelectedIds[0]] : null);
+        _secondSeat.Bind(opening.SelectedIds.Length > 1 ? _models[opening.SelectedIds[1]] : null);
     }
 
     public void ShowOpeningError(string message)
     {
-        _hint.Text = message;
-        _hint.Visible = true;
+        // Keep feedback in the fixed footer so it cannot displace the candidates.
+        _status.Text = message;
+        _status.ThemeTypeVariation = "DangerValue";
+        _status.Show();
     }
 
     private void RefreshSelectionState()
@@ -185,23 +236,37 @@ public partial class HeroSelectScreen : Control
     }
 
     private void OnBack() => BackRequested?.Invoke();
+    private void OnFirstSeat() { if (_firstSeat.StableId.Length > 0) OpeningHeroToggled?.Invoke(_firstSeat.StableId); }
+    private void OnSecondSeat() { if (_secondSeat.StableId.Length > 0) OpeningHeroToggled?.Invoke(_secondSeat.StableId); }
     private void OnConfirm() { if (!_confirm.Disabled) OpeningConfirmed?.Invoke(); }
 
     private void UpdateResponsiveColumns()
     {
-        // The allocated library width, rather than window width, determines whether tiles fit.
-        if (_libraryScroll is not null)
-            _library.Columns = Math.Clamp((int)((_libraryScroll.Size.X - 16 + 8) / (190 + 8)), 1, 3);
+        if (_libraryScroll is null) return;
+        var gap = _library.GetThemeConstant("h_separation");
+        var opening = _opening is not null;
+        _library.Columns = opening ? Math.Max(1, _tiles.Count)
+            : Math.Clamp((int)((_libraryScroll.Size.X + gap) / (470 + gap)), 1, 3);
+        _library.SizeFlagsHorizontal = opening ? SizeFlags.ShrinkCenter : SizeFlags.ExpandFill;
+        if (!opening || _tiles.Count == 0) return;
+        // Reserve side air for the entire card's lift. Keep the irregular stone
+        // frame at its authored 2:3 ratio; it is never stretched as a nine-patch.
+        var width = Math.Clamp(Mathf.Floor((_libraryScroll.Size.X - 32 - (_tiles.Count - 1) * gap) / _tiles.Count), 234, 320);
+        var height = width * 1.5f;
+        foreach (var tile in _tiles.Values) tile.CustomMinimumSize = new Vector2(width, height);
     }
 
     private void CacheNodes()
     {
         _library ??= GetNode<GridContainer>("%HeroLibrary");
         _libraryScroll ??= GetNode<ScrollContainer>("%LibraryScroll");
+        _libraryPanel ??= GetNode<PanelContainer>("%LibraryPanel");
         _detail ??= GetNode<HeroDetailPanel>("%HeroDetailPanel");
         _back ??= GetNode<Button>("%BackButton");
         _confirm ??= GetNode<Button>("%ConfirmOpening");
         _status ??= GetNode<Label>("%OpeningStatus");
         _hint ??= GetNode<Label>("%OpeningHint");
+        _firstSeat ??= GetNode<OpeningHeroSeat>("%FirstSeat");
+        _secondSeat ??= GetNode<OpeningHeroSeat>("%SecondSeat");
     }
 }

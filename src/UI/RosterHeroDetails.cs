@@ -27,12 +27,15 @@ public partial class RosterHeroDetails : VBoxContainer
         foreach (var skill in _skills) if (IsInstanceValid(skill)) skill.ExplanationRequested -= ShowExplanation;
         if (IsInstanceValid(_close)) _close.Pressed -= CloseExplanation;
     }
-    public void Bind(UnitInformation model, int rank = 1)
+    public void Bind(UnitInformation model, int rank = 1, string traitContributionSummary = "")
     {
         if (_identity != model.Identity) { GetNode<Control>("%Explanation").Hide(); GetNode<Control>("%MainContent").Show(); _source = null; }
         _identity = model.Identity;
         GetNode<Label>("%HeroName").Text = model.Definition.DisplayName;
         GetNode<Label>("%Context").Text = model.ContextCaption;
+        var traits = GetNode<Label>("%TraitContributions");
+        traits.Text = traitContributionSummary;
+        traits.Visible = traitContributionSummary.Length > 0;
         GetNode<Label>("%DetailRank").Text = RosterHeroCard.FormatRank(rank);
         foreach (var attribute in Enum.GetValues<CombatAttribute>())
         {
@@ -66,6 +69,9 @@ public partial class RosterHeroDetails : VBoxContainer
             var explanation = string.Join("\n\n", group.Select(skill => skill.Name + "\n" + skill.Body + "\n" + skill.Timing));
             var button = _skills[index];
             button.Visible = group.Length > 0;
+            var icon = button.GetNode<TextureRect>("Layout/Socket/Art");
+            icon.Texture = SemanticIcons.Catalog.ResolveIcon(category == "主动" ? SemanticIconKeys.Mana : SemanticIconKeys.Hero);
+            icon.Modulate = new Color("c9b17d");
             button.GetNode<Label>("Layout/Copy/Category").Text = category.Length == 0 ? string.Empty : category + "技能";
             button.GetNode<Label>("Layout/Copy/Name").Text = name;
             button.GetNode<Label>("Layout/Copy/Body").Text = body.Replace("\n", " ");

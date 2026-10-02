@@ -16,19 +16,19 @@
 [ext_resource type="Texture2D" path="res://assets/ui/tavern/workbench-skill-socket.png" id="WorkbenchSocket"]
 
 [sub_resource type="SystemFont" id="WorkbenchReadingFont"]
-font_names = PackedStringArray("SimSun", "Noto Serif SC")
+font_names = PackedStringArray("PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC")
 font_weight = 400
 
 [sub_resource type="SystemFont" id="WorkbenchNumberFont"]
-font_names = PackedStringArray("Georgia", "Times New Roman")
-font_weight = 400
+font_names = PackedStringArray("Avenir Next", "Segoe UI", "Noto Sans", "PingFang SC")
+font_weight = 600
 
 [sub_resource type="SystemFont" id="CombatBoldFont"]
-font_names = PackedStringArray("Microsoft YaHei", "Noto Sans CJK SC")
+font_names = PackedStringArray("PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC")
 font_weight = 700
 
 [sub_resource type="SystemFont" id="TavernTitleFont"]
-font_names = PackedStringArray("Noto Serif CJK SC", "Source Han Serif SC", "SimSun")
+font_names = PackedStringArray("Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun")
 font_weight = 700
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_badge"]
@@ -1126,13 +1126,274 @@ content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxEmpty" id="FocusOverlay"]
 
+[sub_resource type="StyleBoxFlat" id="ReadingWell"]
+bg_color = Color(0.12, 0.14, 0.12, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.39, 0.42, 0.35, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+shadow_color = Color(0.015, 0.02, 0.015, 0.55)
+shadow_size = 6
+shadow_offset = Vector2(0, 3)
+content_margin_left = 18.0
+content_margin_top = 16.0
+content_margin_right = 18.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxEmpty" id="PageHeading"]
+
+[sub_resource type="StyleBoxFlat" id="RiskInset"]
+bg_color = Color(0.17, 0.11, 0.075, 0.96)
+border_width_left = 3
+border_color = Color(0.79, 0.49, 0.24, 1)
+content_margin_left = 16.0
+content_margin_top = 7.0
+content_margin_right = 16.0
+content_margin_bottom = 7.0
+
+[sub_resource type="StyleBoxTexture" id="ReserveTray"]
+texture = ExtResource("WorkbenchTray")
+region_rect = Rect2(35, 240, 1956, 278)
+texture_margin_left = 38.0
+texture_margin_top = 20.0
+texture_margin_right = 38.0
+texture_margin_bottom = 20.0
+content_margin_left = 28.0
+content_margin_top = 14.0
+content_margin_right = 28.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="ResourceBar"]
+bg_color = Color(0.12, 0.105, 0.085, 0.98)
+border_width_top = 1
+border_width_bottom = 3
+border_width_left = 1
+border_width_right = 1
+border_color = Color(0.48, 0.39, 0.26, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_left = 7
+corner_radius_bottom_right = 7
+shadow_color = Color(0.03, 0.02, 0.015, 0.5)
+shadow_size = 4
+shadow_offset = Vector2(0, 3)
+content_margin_left = 18.0
+content_margin_right = 18.0
+content_margin_top = 8.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="AttributeRow"]
+bg_color = Color(0.12, 0.105, 0.085, 0.22)
+border_width_bottom = 1
+border_color = Color(0.7, 0.61, 0.44, 0.10)
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="AttributeRowHover"]
+bg_color = Color(0.55, 0.43, 0.26, 0.12)
+border_width_bottom = 1
+border_color = Color(0.72, 0.60, 0.38, 0.35)
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="FormField"]
+bg_color = Color(0.09, 0.079, 0.062, 1)
+border_width_bottom = 2
+border_width_left = 1
+border_width_right = 1
+border_width_top = 1
+border_color = Color(0.39, 0.32, 0.22, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+content_margin_left = 14.0
+content_margin_right = 28.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="FormFieldHover"]
+bg_color = Color(0.15, 0.126, 0.089, 1)
+border_width_bottom = 2
+border_width_left = 1
+border_width_right = 1
+border_width_top = 1
+border_color = Color(0.67, 0.52, 0.30, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+content_margin_left = 14.0
+content_margin_right = 28.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+
+
+[sub_resource type="StyleBoxTexture" id="TowerRouteNormal"]
+texture = ExtResource("CardSlab")
+region_rect = Rect2(36, 72, 952, 1376)
+modulate_color = Color(0.90, 0.94, 0.91, 1)
+
+[sub_resource type="StyleBoxTexture" id="TowerRoutePressed"]
+texture = ExtResource("CardSlab")
+region_rect = Rect2(36, 72, 952, 1376)
+modulate_color = Color(0.84, 0.87, 0.85, 1)
+
+[sub_resource type="StyleBoxFlat" id="TowerRouteFocus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.83, 0.73, 0.49, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_left = 22
+corner_radius_bottom_right = 22
+
+[sub_resource type="StyleBoxEmpty" id="QuietHeader"]
+
+[sub_resource type="StyleBoxFlat" id="QuietHeaderHover"]
+bg_color = Color(0.19, 0.22, 0.18, 0.45)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+
+[sub_resource type="StyleBoxFlat" id="ReadingPopup"]
+bg_color = Color(0.105, 0.12, 0.105, 0.99)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.46, 0.47, 0.40, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+shadow_color = Color(0.015, 0.02, 0.015, 0.65)
+shadow_size = 8
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="SlateChoice"]
+bg_color = Color(0.16, 0.18, 0.155, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.42, 0.43, 0.37, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+shadow_color = Color(0.02, 0.025, 0.02, 0.50)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="SlateChoiceHover"]
+bg_color = Color(0.18, 0.20, 0.175, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.65, 0.63, 0.48, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+shadow_color = Color(0.02, 0.025, 0.02, 0.50)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxTexture" id="RunStatusNormal"]
+texture = ExtResource("WorkbenchTray")
+region_rect = Rect2(35, 240, 1956, 278)
+content_margin_left = 22.0
+content_margin_top = 20.0
+content_margin_right = 22.0
+content_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="RunStatusHover"]
+texture = ExtResource("WorkbenchTray")
+region_rect = Rect2(35, 240, 1956, 278)
+content_margin_left = 22.0
+content_margin_top = 20.0
+content_margin_right = 22.0
+content_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxTexture" id="RunStatusPressed"]
+texture = ExtResource("WorkbenchTray")
+region_rect = Rect2(35, 240, 1956, 278)
+content_margin_left = 22.0
+content_margin_top = 20.0
+content_margin_right = 22.0
+content_margin_bottom = 20.0
+modulate_color = Color(0.84, 0.84, 0.82, 1)
+
+[sub_resource type="StyleBoxFlat" id="RunStatusFocus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.75, 0.49, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxEmpty" id="RunArmyEntry"]
+content_margin_left = 8.0
+content_margin_right = 8.0
+
+[sub_resource type="StyleBoxLine" id="RunStatusDivider"]
+color = Color(0.59, 0.54, 0.44, 0.45)
+thickness = 1
+vertical = true
+
+[sub_resource type="StyleBoxEmpty" id="RunTraitBacking"]
+
+[sub_resource type="StyleBoxFlat" id="RunTraitInactive"]
+bg_color = Color(0.07, 0.064, 0.055, 0.18)
+border_width_bottom = 1
+border_color = Color(0.48, 0.44, 0.37, 0.22)
+
+[sub_resource type="StyleBoxFlat" id="RunTraitActive"]
+bg_color = Color(0.66, 0.59, 0.45, 0.09)
+border_width_bottom = 1
+border_color = Color(0.65, 0.56, 0.4, 0.36)
+
+[sub_resource type="StyleBoxFlat" id="RunTraitHover"]
+bg_color = Color(0.74, 0.67, 0.53, 0.14)
+border_width_bottom = 1
+border_color = Color(0.8, 0.69, 0.47, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="RunTraitFocus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.81, 0.7, 0.49, 0.85)
+
 [resource]
 default_font_size = 17
+default_font = SubResource("WorkbenchReadingFont")
+RichTextLabel/fonts/normal_font = SubResource("WorkbenchReadingFont")
 RichTextLabel/fonts/bold_font = SubResource("CombatBoldFont")
-RichTextLabel/font_sizes/normal_font_size = 14
-RichTextLabel/font_sizes/bold_font_size = 14
-RichTextLabel/colors/default_color = Color(0.78, 0.83, 0.88, 1)
-RichTextLabel/constants/line_separation = 4
+RichTextLabel/font_sizes/normal_font_size = 17
+RichTextLabel/font_sizes/bold_font_size = 17
+RichTextLabel/colors/default_color = Color(0.86, 0.83, 0.76, 1)
+RichTextLabel/constants/line_separation = 5
 BattleLabPlayerCell/base_type = &"GridCellButton"
 BattleLabPlayerCell/styles/normal = SubResource("StyleBox_lab_player_cell")
 BattleLabEnemyCell/base_type = &"GridCellButton"
@@ -1178,14 +1439,15 @@ Button/styles/hover = SubResource("StyleBox_compact_hover")
 Button/styles/normal = SubResource("StyleBox_compact_normal")
 Button/styles/pressed = SubResource("StyleBox_compact_pressed")
 ChoiceBody/base_type = &"Label"
-ChoiceBody/colors/font_color = Color(0.8, 0.85, 0.9, 1)
-ChoiceBody/font_sizes/font_size = 16
+ChoiceBody/colors/font_color = Color(0.84, 0.80, 0.70, 1)
+ChoiceBody/font_sizes/font_size = 17
 ChoiceFooter/base_type = &"Label"
 ChoiceFooter/colors/font_color = Color(0.42, 0.72, 1, 1)
 ChoiceFooter/font_sizes/font_size = 15
 ChoiceTitle/base_type = &"Label"
-ChoiceTitle/colors/font_color = Color(0.94, 0.96, 1, 1)
-ChoiceTitle/font_sizes/font_size = 20
+ChoiceTitle/colors/font_color = Color(0.94, 0.87, 0.69, 1)
+ChoiceTitle/fonts/font = SubResource("TavernTitleFont")
+ChoiceTitle/font_sizes/font_size = 24
 CompactButton/base_type = &"Button"
 SidebarRailButton/base_type = &"CompactButton"
 SidebarRailButton/font_sizes/font_size = 14
@@ -1208,7 +1470,7 @@ ContextSidebarPanel/styles/panel = SubResource("StyleBox_context_sidebar")
 HeroDragPreviewPanel/base_type = &"PanelContainer"
 HeroDragPreviewPanel/styles/panel = SubResource("StyleBox_hero_drag_preview")
 DamageValue/base_type = &"Label"
-DamageValue/colors/font_color = Color(1, 0.38, 0.34, 1)
+DamageValue/colors/font_color = Color(0.91, 0.65, 0.52, 1)
 DamageValue/font_sizes/font_size = 18
 DangerButton/base_type = &"Button"
 DangerButton/colors/font_color = Color(1, 0.88, 0.85, 1)
@@ -1221,7 +1483,7 @@ DangerButton/styles/hover = SubResource("StyleBox_danger_hover")
 DangerButton/styles/normal = SubResource("StyleBox_danger_normal")
 DangerButton/styles/pressed = SubResource("StyleBox_danger_pressed")
 DangerValue/base_type = &"Label"
-DangerValue/colors/font_color = Color(0.95, 0.18, 0.26, 1)
+DangerValue/colors/font_color = Color(0.91, 0.52, 0.43, 1)
 DangerValue/font_sizes/font_size = 18
 DeploymentCellDrag/base_type = &"Button"
 DeploymentCellDrag/styles/disabled = SubResource("StyleBox_deployment_drag")
@@ -1266,7 +1528,7 @@ DeploymentCellSwap/styles/hover = SubResource("StyleBox_deployment_swap")
 DeploymentCellSwap/styles/normal = SubResource("StyleBox_deployment_swap")
 DeploymentCellSwap/styles/pressed = SubResource("StyleBox_deployment_swap")
 EnemyLabel/base_type = &"Label"
-EnemyLabel/colors/font_color = Color(1, 0.43, 0.43, 1)
+EnemyLabel/colors/font_color = Color(0.89, 0.59, 0.52, 1)
 EnemyLabel/font_sizes/font_size = 18
 EnemyTitleLabel/base_type = &"TitleLabel"
 EnemyTitleLabel/colors/font_color = Color(1, 0.43, 0.43, 1)
@@ -1323,10 +1585,10 @@ HealingTitleLabel/base_type = &"TitleLabel"
 HealingTitleLabel/colors/font_color = Color(0.4, 0.9, 0.58, 1)
 HealingTitleLabel/font_sizes/font_size = 36
 HealingValue/base_type = &"Label"
-HealingValue/colors/font_color = Color(0.25, 0.86, 0.68, 1)
+HealingValue/colors/font_color = Color(0.64, 0.80, 0.62, 1)
 HealingValue/font_sizes/font_size = 18
 HealthValue/base_type = &"Label"
-HealthValue/colors/font_color = Color(0.38, 0.88, 0.52, 1)
+HealthValue/colors/font_color = Color(0.59, 0.79, 0.59, 1)
 HealthValue/font_sizes/font_size = 18
 HeroIdentity/base_type = &"Label"
 HeroIdentity/colors/font_color = Color(1, 0.78, 0.3, 1)
@@ -1352,12 +1614,12 @@ FreezeValue/font_sizes/font_size = 18
 ModalPanel/base_type = &"PanelContainer"
 ModalPanel/styles/panel = SubResource("StyleBox_modal")
 NotificationPanel/base_type = &"PanelContainer"
-NotificationPanel/styles/panel = SubResource("StyleBox_notification")
+NotificationPanel/styles/panel = SubResource("ReadingPopup")
 PanelContainer/styles/panel = SubResource("StyleBox_panel")
 DetailSection/base_type = &"PanelContainer"
 DetailSection/styles/panel = SubResource("StyleBox_detail_section")
 PlayerLabel/base_type = &"Label"
-PlayerLabel/colors/font_color = Color(0.42, 0.72, 1, 1)
+PlayerLabel/colors/font_color = Color(0.64, 0.77, 0.84, 1)
 PlayerLabel/font_sizes/font_size = 18
 PrimaryButton/base_type = &"Button"
 PrimaryButton/font_sizes/font_size = 19
@@ -1408,11 +1670,11 @@ RiskValue/colors/font_color = Color(1, 0.66, 0.26, 1)
 RiskValue/font_sizes/font_size = 18
 SecondaryButton/base_type = &"Button"
 SecondaryLabel/base_type = &"Label"
-SecondaryLabel/colors/font_color = Color(0.58, 0.66, 0.72, 1)
-SecondaryLabel/font_sizes/font_size = 15
+SecondaryLabel/colors/font_color = Color(0.73, 0.69, 0.61, 1)
+SecondaryLabel/font_sizes/font_size = 16
 SectionTitleLabel/base_type = &"Label"
-SectionTitleLabel/colors/font_color = Color(0.72, 0.86, 0.94, 1)
-SectionTitleLabel/font_sizes/font_size = 17
+SectionTitleLabel/colors/font_color = Color(0.87, 0.78, 0.60, 1)
+SectionTitleLabel/font_sizes/font_size = 19
 SelectedButton/base_type = &"Button"
 SelectedButton/colors/font_color = Color(1, 0.9, 0.6, 1)
 SelectedButton/styles/disabled = SubResource("StyleBox_button_disabled")
@@ -1547,6 +1809,13 @@ CardStat/styles/normal = SubResource("CardStatQuiet")
 CardStat/styles/hover = SubResource("CardStatQuiet")
 CardStat/styles/pressed = SubResource("CardStatQuiet")
 CardStat/styles/focus = SubResource("FocusOverlay")
+OrbitStat/base_type = &"CardStat"
+CardStatValue/base_type = &"Label"
+CardStatValue/colors/font_outline_color = Color(0.045, 0.035, 0.025, 0.8)
+CardStatValue/constants/outline_size = 3
+CardStatValue/colors/font_shadow_color = Color(0.025, 0.02, 0.015, 0.7)
+CardStatValue/constants/shadow_offset_x = 1
+CardStatValue/constants/shadow_offset_y = 1
 EquipmentSocket/colors/font_color = Color(0.68, 0.61, 0.47, 1)
 
 CardEquipment/base_type = &"Button"
@@ -1635,7 +1904,7 @@ WorkbenchRank/constants/outline_size = 2
 WorkbenchRank/colors/font_outline_color = Color(0.12, 0.09, 0.07, 1)
 WorkbenchBody/base_type = &"Label"
 WorkbenchBody/fonts/font = SubResource("WorkbenchReadingFont")
-WorkbenchBody/font_sizes/font_size = 18
+WorkbenchBody/font_sizes/font_size = 17
 WorkbenchBody/colors/font_color = Color(0.83, 0.79, 0.71, 1)
 WorkbenchValue/base_type = &"Label"
 WorkbenchValue/fonts/font = SubResource("WorkbenchNumberFont")
@@ -1659,8 +1928,208 @@ WorkbenchVerticalRule/styles/separator = SubResource("WorkbenchVerticalRule")
 WorkbenchVerticalRule/constants/separation = 4
 WorkbenchRankPlate/base_type = &"PanelContainer"
 WorkbenchRankPlate/styles/panel = SubResource("WorkbenchRankPlate")
+
+PageTitle/base_type = &"TitleLabel"
+PageTitle/font_sizes/font_size = 30
+PageTitle/colors/font_color = Color(0.96, 0.92, 0.79, 1)
+PageTitle/colors/font_outline_color = Color(0.025, 0.035, 0.025, 0.9)
+PageTitle/constants/outline_size = 1
+PageTitle/styles/normal = SubResource("PageHeading")
+PageHint/base_type = &"SecondaryLabel"
+PageHint/font_sizes/font_size = 17
+RunRiskLabel/base_type = &"Label"
+RunRiskLabel/font_sizes/font_size = 16
+RunRiskLabel/colors/font_color = Color(0.94, 0.79, 0.56, 1)
+RunRiskLabel/styles/normal = SubResource("RiskInset")
+ReadingWell/base_type = &"PanelContainer"
+ReadingWell/styles/panel = SubResource("ReadingWell")
+ReserveTray/base_type = &"PanelContainer"
+ReserveTray/styles/panel = SubResource("ReserveTray")
+ResourceBar/base_type = &"Button"
+ResourceBar/styles/normal = SubResource("ResourceBar")
+ResourceBar/styles/hover = SubResource("ResourceBar")
+ResourceBar/styles/pressed = SubResource("ResourceBar")
+ResourceBar/styles/focus = SubResource("FocusOverlay")
+HudValue/base_type = &"Label"
+HudValue/fonts/font = SubResource("WorkbenchNumberFont")
+HudValue/font_sizes/font_size = 22
+HudValue/colors/font_color = Color(0.94, 0.89, 0.76, 1)
+HudGold/base_type = &"HudValue"
+HudGold/colors/font_color = Color(0.91, 0.73, 0.40, 1)
+HudHealth/base_type = &"HudValue"
+HudHealth/colors/font_color = Color(0.64, 0.79, 0.57, 1)
+HudCriticalHealth/base_type = &"HudValue"
+HudCriticalHealth/colors/font_color = Color(0.95, 0.65, 0.40, 1)
+HudCaption/base_type = &"Label"
+HudCaption/font_sizes/font_size = 12
+HudCaption/colors/font_color = Color(0.70, 0.64, 0.53, 1)
+WorkbenchSubtitle/base_type = &"SecondaryLabel"
+WorkbenchSectionTitle/base_type = &"SectionTitleLabel"
+WorkbenchAttributeRow/base_type = &"Button"
+WorkbenchAttributeRow/styles/normal = SubResource("AttributeRow")
+WorkbenchAttributeRow/styles/hover = SubResource("AttributeRowHover")
+WorkbenchAttributeRow/styles/pressed = SubResource("AttributeRowHover")
+WorkbenchAttributeRow/styles/focus = SubResource("FocusOverlay")
+SectionPanel/base_type = &"PanelContainer"
+SectionPanel/styles/panel = SubResource("ReadingWell")
+QuietButton/base_type = &"Button"
+QuietButton/styles/normal = SubResource("WorkbenchEmpty")
+QuietButton/styles/hover = SubResource("AttributeRowHover")
+QuietButton/styles/pressed = SubResource("AttributeRowHover")
+QuietButton/styles/focus = SubResource("FocusOverlay")
+QuietButton/colors/font_color = Color(0.76, 0.71, 0.61, 1)
+QuietButton/font_sizes/font_size = 16
+OptionButton/styles/normal = SubResource("FormField")
+OptionButton/styles/hover = SubResource("FormFieldHover")
+OptionButton/styles/pressed = SubResource("FormFieldHover")
+OptionButton/styles/disabled = SubResource("FormField")
+OptionButton/styles/focus = SubResource("FocusOverlay")
+OptionButton/font_sizes/font_size = 17
+OptionButton/colors/font_color = Color(0.89, 0.85, 0.76, 1)
+OptionButton/colors/font_hover_color = Color(1, 0.91, 0.70, 1)
+OptionButton/colors/font_disabled_color = Color(0.49, 0.46, 0.40, 1)
+OptionButton/constants/arrow_margin = 10
+PopupMenu/styles/panel = SubResource("ReadingWell")
+PopupMenu/styles/hover = SubResource("AttributeRowHover")
+PopupMenu/font_sizes/font_size = 17
+PopupMenu/colors/font_color = Color(0.89, 0.85, 0.76, 1)
+PopupMenu/colors/font_hover_color = Color(1, 0.91, 0.70, 1)
+PopupMenu/constants/v_separation = 12
+BattleLabFold/font_sizes/font_size = 18
+BattleLabFold/colors/font_color = Color(0.86, 0.79, 0.65, 1)
+CheckButton/font_sizes/font_size = 18
+CheckButton/colors/font_color = Color(0.89, 0.85, 0.76, 1)
+RouteChoiceButton/base_type = &"Button"
+RouteChoiceButton/styles/normal = SubResource("SlateChoice")
+RouteChoiceButton/styles/hover = SubResource("SlateChoiceHover")
+RouteChoiceButton/styles/pressed = SubResource("SlateChoice")
+RouteChoiceButton/styles/focus = SubResource("FocusOverlay")
 LineEdit/styles/focus = SubResource("FocusOverlay")
 TextEdit/styles/focus = SubResource("FocusOverlay")
 ItemList/styles/focus = SubResource("FocusOverlay")
 TabBar/styles/tab_focus = SubResource("FocusOverlay")
 TabContainer/styles/tab_focus = SubResource("FocusOverlay")
+OrbitCard/base_type = &"Button"
+OrbitCard/styles/normal = SubResource("WorkbenchEmpty")
+OrbitCard/styles/hover = SubResource("WorkbenchEmpty")
+OrbitCard/styles/pressed = SubResource("WorkbenchEmpty")
+OrbitCard/styles/focus = SubResource("FocusOverlay")
+OrbitFrame/base_type = &"Panel"
+OrbitFrame/styles/panel = SubResource("TavernRoster")
+OrbitFrameSelected/base_type = &"Panel"
+OrbitFrameSelected/styles/panel = SubResource("TavernRosterHover")
+
+TowerRouteButton/base_type = &"Button"
+TowerRouteButton/styles/normal = SubResource("TowerRouteNormal")
+TowerRouteButton/styles/hover = SubResource("TowerRouteNormal")
+TowerRouteButton/styles/pressed = SubResource("TowerRoutePressed")
+TowerRouteButton/styles/focus = SubResource("TowerRouteFocus")
+RoutePageTitle/base_type = &"TitleLabel"
+RoutePageTitle/fonts/font = SubResource("TavernTitleFont")
+RoutePageTitle/font_sizes/font_size = 42
+RoutePageTitle/colors/font_color = Color(0.96, 0.92, 0.79, 1)
+RoutePageTitle/colors/font_outline_color = Color(0.025, 0.035, 0.025, 1)
+RoutePageTitle/constants/outline_size = 2
+RouteCardTitle/base_type = &"ChoiceTitle"
+RouteCardTitle/font_sizes/font_size = 29
+RouteCardTitle/colors/font_color = Color(0.95, 0.89, 0.73, 1)
+RouteCardBody/base_type = &"ChoiceBody"
+RouteCardBody/font_sizes/font_size = 18
+RouteCardBody/colors/font_color = Color(0.82, 0.84, 0.77, 1)
+RouteConsequence/base_type = &"Label"
+RouteConsequence/font_sizes/font_size = 15
+RouteConsequence/colors/font_color = Color(0.73, 0.73, 0.65, 1)
+RouteAction/base_type = &"Label"
+RouteAction/font_sizes/font_size = 20
+RouteAction/colors/font_color = Color(0.87, 0.79, 0.60, 1)
+RunSummaryButton/base_type = &"Button"
+RunSummaryButton/styles/normal = SubResource("RunStatusNormal")
+RunSummaryButton/styles/hover = SubResource("RunStatusHover")
+RunSummaryButton/styles/pressed = SubResource("RunStatusPressed")
+RunSummaryButton/styles/focus = SubResource("RunStatusFocus")
+QuietDangerButton/base_type = &"Button"
+QuietDangerButton/font_sizes/font_size = 15
+QuietDangerButton/colors/font_color = Color(0.72, 0.70, 0.63, 1)
+QuietDangerButton/colors/font_hover_color = Color(0.89, 0.73, 0.64, 1)
+QuietDangerButton/styles/normal = SubResource("QuietHeader")
+QuietDangerButton/styles/hover = SubResource("QuietHeaderHover")
+QuietDangerButton/styles/pressed = SubResource("QuietHeaderHover")
+QuietDangerButton/styles/focus = SubResource("FocusOverlay")
+
+RunHeaderCaption/base_type = &"Label"
+RunHeaderCaption/font_sizes/font_size = 12
+RunHeaderCaption/colors/font_color = Color(0.74, 0.69, 0.59, 1)
+RunArmyEntry/base_type = &"PanelContainer"
+RunArmyEntry/styles/panel = SubResource("RunArmyEntry")
+RunArmyEntryText/base_type = &"Label"
+RunArmyEntryText/fonts/font = SubResource("TavernTitleFont")
+RunArmyEntryText/font_sizes/font_size = 18
+RunArmyEntryText/colors/font_color = Color(0.92, 0.86, 0.68, 1)
+RunStatusDivider/base_type = &"VSeparator"
+RunStatusDivider/constants/separation = 8
+RunStatusDivider/styles/separator = SubResource("RunStatusDivider")
+
+RunTraitPanel/base_type = &"PanelContainer"
+RunTraitPanel/styles/panel = SubResource("RunTraitBacking")
+RunTraitActiveRow/base_type = &"Button"
+RunTraitActiveRow/styles/normal = SubResource("RunTraitActive")
+RunTraitActiveRow/styles/hover = SubResource("RunTraitHover")
+RunTraitActiveRow/styles/pressed = SubResource("RunTraitHover")
+RunTraitActiveRow/styles/focus = SubResource("RunTraitFocus")
+RunTraitInactiveRow/base_type = &"Button"
+RunTraitInactiveRow/styles/normal = SubResource("RunTraitInactive")
+RunTraitInactiveRow/styles/hover = SubResource("RunTraitHover")
+RunTraitInactiveRow/styles/pressed = SubResource("RunTraitHover")
+RunTraitInactiveRow/styles/focus = SubResource("RunTraitFocus")
+RunTraitTitle/base_type = &"Label"
+RunTraitTitle/font_sizes/font_size = 24
+RunTraitTitle/colors/font_color = Color(0.92, 0.85, 0.68, 1)
+RunTraitTitle/fonts/font = SubResource("TavernTitleFont")
+RunTraitHint/base_type = &"Label"
+RunTraitHint/font_sizes/font_size = 14
+RunTraitHint/colors/font_color = Color(0.68, 0.65, 0.57, 1)
+RunTraitHint/fonts/font = SubResource("WorkbenchReadingFont")
+RunTraitName/base_type = &"Label"
+RunTraitName/font_sizes/font_size = 19
+RunTraitName/colors/font_color = Color(0.93, 0.89, 0.78, 1)
+RunTraitName/fonts/font = SubResource("TavernTitleFont")
+RunTraitStatus/base_type = &"Label"
+RunTraitStatus/font_sizes/font_size = 13
+RunTraitStatus/colors/font_color = Color(0.76, 0.72, 0.62, 1)
+RunTraitStatus/fonts/font = SubResource("WorkbenchReadingFont")
+RunTraitActiveCount/base_type = &"Label"
+RunTraitActiveCount/font_sizes/font_size = 22
+RunTraitActiveCount/colors/font_color = Color(0.95, 0.79, 0.42, 1)
+RunTraitActiveCount/fonts/font = SubResource("WorkbenchNumberFont")
+RunTraitMutedCount/base_type = &"Label"
+RunTraitMutedCount/font_sizes/font_size = 22
+RunTraitMutedCount/colors/font_color = Color(0.6, 0.58, 0.52, 1)
+RunTraitMutedCount/fonts/font = SubResource("WorkbenchNumberFont")
+RunTraitCurrentTier/base_type = &"Label"
+RunTraitCurrentTier/font_sizes/font_size = 14
+RunTraitCurrentTier/colors/font_color = Color(0.98, 0.81, 0.43, 1)
+RunTraitCurrentTier/fonts/font = SubResource("WorkbenchNumberFont")
+RunTraitOtherTier/base_type = &"Label"
+RunTraitOtherTier/font_sizes/font_size = 14
+RunTraitOtherTier/colors/font_color = Color(0.59, 0.57, 0.51, 1)
+RunTraitOtherTier/fonts/font = SubResource("WorkbenchNumberFont")
+RunTraitBronzeCount/base_type = &"Label"
+RunTraitBronzeCount/font_sizes/font_size = 22
+RunTraitBronzeCount/colors/font_color = Color(0.87, 0.69, 0.49, 1)
+RunTraitBronzeCount/fonts/font = SubResource("WorkbenchNumberFont")
+RunTraitSilverCount/base_type = &"Label"
+RunTraitSilverCount/font_sizes/font_size = 22
+RunTraitSilverCount/colors/font_color = Color(0.84, 0.89, 0.86, 1)
+RunTraitSilverCount/fonts/font = SubResource("WorkbenchNumberFont")
+RunTraitBronzeTier/base_type = &"Label"
+RunTraitBronzeTier/font_sizes/font_size = 14
+RunTraitBronzeTier/colors/font_color = Color(0.87, 0.69, 0.49, 1)
+RunTraitBronzeTier/fonts/font = SubResource("WorkbenchNumberFont")
+RunTraitSilverTier/base_type = &"Label"
+RunTraitSilverTier/font_sizes/font_size = 14
+RunTraitSilverTier/colors/font_color = Color(0.84, 0.89, 0.86, 1)
+RunTraitSilverTier/fonts/font = SubResource("WorkbenchNumberFont")
+RunTraitMutedName/base_type = &"Label"
+RunTraitMutedName/font_sizes/font_size = 19
+RunTraitMutedName/colors/font_color = Color(0.7, 0.67, 0.59, 1)
+RunTraitMutedName/fonts/font = SubResource("TavernTitleFont")

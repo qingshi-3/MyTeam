@@ -80,13 +80,19 @@ public static class RunOfferDetailText
             SkillNames("主动"), SkillNames("被动"), tier,
             SemanticIcons.Catalog.ResolveIcon(SemanticIconKeys.Responsibility(definition.Role)),
             SemanticIcons.Catalog.ResolveIcon(snapshot.AttackDelivery == AttackDelivery.Melee ? SemanticIconKeys.Melee : SemanticIconKeys.Ranged),
-            Read(CombatAttribute.AttackRange, definition.AttackRange).ToString("0.##"));
+            Read(CombatAttribute.AttackRange, definition.AttackRange).ToString("0.##"),
+            SpellPower: Read(CombatAttribute.SpellPower, definition.SpellPower).ToString("0.#"),
+            Information: info, GrowthTitle: growth.Title, GrowthRules: string.Join("\n\n", new[] { growth.Description, rules }.Where(value => !string.IsNullOrWhiteSpace(value))));
     }
 
-    private static string ItemRules(RunApplication app, ItemDefinition item)
+    private static string ItemRules(RunApplication app, ItemDefinition item) =>
+        ItemRules(app.Content, item, app.Run, candidate: true);
+
+    // Offers and the persistent relic shelf read the same published effects.
+    public static string ItemRules(ContentRegistry content, ItemDefinition item, RunView? run = null, bool candidate = false)
     {
-        var graph = app.Content.Graph;
-        string ContentName(string id) => app.Content.TryGet(id, out var entry) && entry.Definition is UnitDefinition unit
+        var graph = content.Graph;
+        string ContentName(string id) => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition unit
             ? unit.DisplayName : "临时单位";
         var facts = new List<string>();
         if (item.ProductKind == ItemProductKind.Equipment)
@@ -106,7 +112,8 @@ public static class RunOfferDetailText
         else if (item.ProductKind == ItemProductKind.Relic)
         {
             var relic = graph.ResolveRelic(item.Id);
-            facts.Add($"当前持有 {app.ActiveRun?.Items.Where(entry => entry.ContentId == item.Id).Sum(entry => entry.Stacks) ?? 0} 层（本候选尚未领取）。");
+            var stacks = run?.Items.Where(entry => entry.ContentId == item.Id).Sum(entry => entry.Stacks) ?? 0;
+            if (candidate) facts.Add($"当前持有 {stacks} 层（本候选尚未领取）。");
             foreach (var binding in relic.AttributeBindings)
             {
                 var stackText = binding.StackPolicy == RelicAttributeStackPolicy.PerStack
@@ -142,6 +149,7 @@ public static class RunOfferDetailText
                 {
                     RelicCounterSourceKind.Population => $"发生{Event(counter.EventKind)}时，按{team}初始单位数增加计数",
                     RelicCounterSourceKind.Alive => $"发生{Event(counter.EventKind)}时，按{team}存活人数增加计数",
+                    RelicCounterSourceKind.Kill => $"{team}单位击杀敌方单位时增加 1 次计数",
                     RelicCounterSourceKind.Attack => $"{team}单位发生{Event(counter.EventKind)}时增加 1 次计数",
                     _ => $"{team}单位阵亡时增加 1 次计数"
                 };
@@ -152,12 +160,28 @@ public static class RunOfferDetailText
                     _ => counter.TargetTeam == 0 ? "我方首个存活单位" : "敌方首个存活单位"
                 };
                 facts.Add($"{input}（{temporary}）。达到 {counter.Threshold} 次时消耗 {counter.Consumption} 次，目标为{target}：" +
-                    EffectModelText.DescribeBinding(counter.ThresholdEffect) +
+                    (counter.ThresholdEffect is null ? "战后按奖励池结算" : EffectModelText.DescribeBinding(counter.ThresholdEffect)) +
                     $"；{(counter.Scope == RelicCounterScope.Battle ? "本场计数" : "本局计数")}，{(counter.ResetPolicy == RelicCounterResetPolicy.BattleEnd ? "战后清零" : "本局结束清零")}。");
             }
+            if (!relic.RunRules.IsDefaultOrEmpty) facts.AddRange(relic.RunRules.Select(RelicRuleText.Describe));
+            if (run is not null)
+            foreach (var owned in run.Items.Where(instance => instance.ContentId == relic.StableId))
+            {
+                foreach (var counter in owned.Counters)
+                    if (relic.ReactiveCounters.FirstOrDefault(value => value.CounterId == counter.CounterId) is { } definition)
+                        facts.Add($"当前累计进度：{counter.Value}/{definition.Threshold}。");
+                foreach (var rule in relic.RunRules.IsDefault ? [] : relic.RunRules)
+                {
+                    if (rule.Kind == RelicRunRuleKind.NodeGoldUntilPurchase && owned.Charges > 0) facts.Add("当前状态：已在商店消费，钱匣停止产出。");
+                    if (rule.Kind == RelicRunRuleKind.VictoryInterest) facts.Add(run.BattleNumber >= rule.Limit
+                        ? "当前状态：利息阶段已结束。" : $"利息生效窗口剩余 {rule.Limit - run.BattleNumber} 场战斗。");
+                }
+            }
+            if (!relic.AbilityRepeats.IsDefaultOrEmpty) facts.AddRange(relic.AbilityRepeats.Select(rule =>
+                $"我方单位的{(rule.Trigger == TowerAutobattler.Abilities.AbilityTriggerKind.OwnerEnteredBattle ? "入场" : "自身死亡")}能力成功触发后额外执行 {rule.ExtraExecutions} 次。"));
             if (!relic.VictoryOutcomes.IsDefaultOrEmpty)
                 facts.AddRange(relic.VictoryOutcomes.Select(outcome =>
-                    $"正式流程胜利结算：每层额外 {outcome.Amount} 金币。"));
+                    $"胜利后：每层额外获得 {outcome.Amount} 金币。"));
         }
         var text = string.Join("\n\n", facts);
         foreach (var trait in graph.Traits)
@@ -180,6 +204,7 @@ public static class RunOfferDetailText
 
     private static string RelicTarget(CompiledRelicUnitTarget target) => target switch
     {
+        CompiledRelicPlayerTeamTarget => "我方所有存活单位（含后来召唤）",
         CompiledRelicPlayerArmyTarget => "我方初始非英雄单位（不含临时召唤）",
         CompiledRelicPlayerSummonsTarget => "我方临时召唤物（含战斗中后续生成）",
         CompiledRelicPlayerHeroesTarget or CompiledRelicPlayerEmptySlotHeroesTarget => "我方初始英雄（不含临时单位）",

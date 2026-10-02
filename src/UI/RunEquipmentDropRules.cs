@@ -15,8 +15,8 @@ public readonly record struct EquipmentDropEvaluation(bool Allowed, string ItemI
 public static class RunEquipmentDropRules
 {
     private sealed class ContextToken { public string Id { get; } = Guid.NewGuid().ToString("N"); }
-    private static readonly ConditionalWeakTable<ActiveRunDto, ContextToken> Contexts = new();
-    public static string ContextFor(ActiveRunDto run) => Contexts.GetOrCreateValue(run).Id;
+    private static readonly ConditionalWeakTable<RunView, ContextToken> Contexts = new();
+    public static string ContextFor(RunView run) => Contexts.GetOrCreateValue(run).Id;
     public static EquipmentDropEvaluation Evaluate(RunApplication? app, string heroId, Variant data,
         bool editing = true)
     {
@@ -24,7 +24,7 @@ public static class RunEquipmentDropRules
             !data.AsGodotDictionary().TryGetValue("equipment-scope", out var scope) ||
             scope.VariantType != Variant.Type.String || scope.AsString() != "run")
             return EquipmentDropEvaluation.Reject("只能拖入本局拥有的装备。");
-        if (!editing || app?.ActiveRun is not { } run || app.EquipmentEditingLocked)
+        if (!editing || app?.Run is not { } run || app.EquipmentEditingLocked)
             return EquipmentDropEvaluation.Reject("当前不能更换装备。");
         if (!EquipmentSlotButton.HasContext(data, ContextFor(run)))
             return EquipmentDropEvaluation.Reject("装备来自另一局或已失效的拖动，请重新拿起。");

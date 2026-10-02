@@ -62,7 +62,7 @@ public partial class EquipmentLoadoutPanel : PanelContainer
     {
         _app = app;
         if (!string.IsNullOrEmpty(heroId)) _heroId = heroId;
-        var run = app.ActiveRun;
+        var run = app.Run;
         Visible = run is { Roster.Count: > 0 };
         if (!Visible) return;
         if (!run!.Roster.Any(hero => hero.InstanceId == _heroId)) _heroId = run.Roster[0].InstanceId;
@@ -71,7 +71,7 @@ public partial class EquipmentLoadoutPanel : PanelContainer
 
     private void Refresh()
     {
-        if (_app?.ActiveRun is not { } run) return;
+        if (_app?.Run is not { } run) return;
         var hero = run.Roster.First(unit => unit.InstanceId == _heroId);
         var definition = (UnitDefinition)Required(hero.ContentId).Definition;
         _heroName.Text = definition.DisplayName;
@@ -185,7 +185,7 @@ public partial class EquipmentLoadoutPanel : PanelContainer
 
     private void Equip(string instanceId, int slot)
     {
-        if (_app?.ActiveRun is not { } run || FindEquipment(instanceId) is not { } item) return;
+        if (_app?.Run is not { } run || FindEquipment(instanceId) is not { } item) return;
         var hero = run.Roster.First(unit => unit.InstanceId == _heroId);
         var previous = hero.Equipment.SingleOrDefault(equipment => equipment.SlotIndex == slot);
         var label = ItemDefinition(item.ContentId).DisplayName;
@@ -218,7 +218,7 @@ public partial class EquipmentLoadoutPanel : PanelContainer
         UiDragVisual.Committed(GetViewport(), instanceId);
     }
 
-    private EquipmentInstanceState? FindEquipment(string id) => _app?.ActiveRun is { } run
+    private RunEquipmentView? FindEquipment(string id) => _app?.Run is { } run
         ? run.EquipmentInventory.Concat(run.Roster.SelectMany(hero => hero.Equipment)).FirstOrDefault(item => item.InstanceId == id)
         : null;
     private CatalogEntry Required(string id) => _app!.Content.TryGet(id, out var entry) ? entry :
@@ -227,7 +227,7 @@ public partial class EquipmentLoadoutPanel : PanelContainer
     private void PreviousHero() => ChangeHero(-1);
     private int FirstEmptySlot(string ownerId)
     {
-        var owner = _app?.ActiveRun?.Roster.FirstOrDefault(hero => hero.InstanceId == ownerId);
+        var owner = _app?.Run?.Roster.FirstOrDefault(hero => hero.InstanceId == ownerId);
         return owner is null ? -1 : Enumerable.Range(0, _app!.Rules.EquipmentSlotCapacity)
             .FirstOrDefault(slot => owner.Equipment.All(item => item.SlotIndex != slot), -1);
     }
@@ -238,7 +238,7 @@ public partial class EquipmentLoadoutPanel : PanelContainer
     private void NextHero() => ChangeHero(1);
     private void ChangeHero(int direction)
     {
-        if (_app?.ActiveRun is not { } run) return;
+        if (_app?.Run is not { } run) return;
         var index = run.Roster.FindIndex(hero => hero.InstanceId == _heroId);
         _heroId = run.Roster[(index + direction + run.Roster.Count) % run.Roster.Count].InstanceId;
         Refresh();

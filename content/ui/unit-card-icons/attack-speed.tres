@@ -1,0 +1,9 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/icons/unit-card/attack-speed.png" id="Atlas"]
+
+[resource]
+atlas = ExtResource("Atlas")
+region = Rect2(39, 67, 1168, 1096)
+filter_clip = true
+

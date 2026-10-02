@@ -12,6 +12,7 @@
 
 [node name="UnitDetailView" type="PanelContainer"]
 size_flags_vertical = 3
+theme_type_variation = &"ReadingWell"
 script = ExtResource("1")
 TraitBadgeScene = ExtResource("Traits")
 
@@ -62,7 +63,7 @@ autowrap_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"SecondaryLabel"
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 14
 autowrap_mode = 2
 
 [node name="Vitals" parent="Margin/DetailsScroll/Content/Header/Identity" instance=ExtResource("Vitals")]
@@ -79,7 +80,7 @@ theme_override_constants/v_separation = 4
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"ChoiceBody"
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 17
 autowrap_mode = 2
 
 [node name="CoreStats" parent="Margin/DetailsScroll/Content" instance=ExtResource("CoreStats")]
@@ -123,8 +124,8 @@ theme_override_font_sizes/font_size = 12
 [node name="ExplanationText" type="RichTextLabel" parent="Margin/DetailsScroll/Content/Explanation/Margin/Body"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 15
-theme_override_font_sizes/bold_font_size = 15
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 17
 bbcode_enabled = true
 fit_content = true
 scroll_active = false

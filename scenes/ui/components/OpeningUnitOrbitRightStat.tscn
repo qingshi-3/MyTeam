@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningUnitOrbitStat.tscn" id="Base"]
+[node name="OpeningUnitOrbitRightStat" instance=ExtResource("Base")]
+[node name="Layout" parent="." index="0"]
+layout_direction = 3
+[node name="FactValue" parent="Layout" index="1"]
+layout_direction = 2
+horizontal_alignment = 2

@@ -9,13 +9,17 @@ namespace TowerAutobattler.UI;
 public partial class DeploymentCell : Button, IUiMotionHost
 {
     public Func<bool> ReduceUiMotion { get; set; } = () => false;
-    private string _displayName = "";
     public event Action<Vector2I, string>? CellSelected;
     public event Action<string, Vector2I>? PieceDropped;
     public Vector2I Cell { get; private set; } = new(-1, -1);
     public string PieceId { get; private set; } = string.Empty;
     public bool IsLegalTarget { get; private set; }
     public bool IsDragHovered => _dropHover;
+    public float BodyRadius { get; private set; } = BattlefieldSpace.DefaultBodyRadius;
+    public Vector2 UnitVisualSize => _projection.DeploymentUnitSize(BodyRadius);
+    private BattlefieldProjection _projection;
+    private bool _isHero;
+    private UnitRole _role;
     private UnitPortrait _portrait = null!;
     private TextureRect _heroBadge = null!;
     private TextureRect _roleBadge = null!;
@@ -93,14 +97,13 @@ public partial class DeploymentCell : Button, IUiMotionHost
         UnitRole role = UnitRole.Fighter,
         float attackRange = 1f,
         bool hasSelection = false,
-        FormationEvaluation? evaluation = null)
+        FormationEvaluation? evaluation = null,
+        float bodyRadius = BattlefieldSpace.DefaultBodyRadius)
     {
-        _portrait ??= GetNode<UnitPortrait>("%UnitPortrait");
-        _heroBadge ??= GetNode<TextureRect>("%HeroBadge");
-        _roleBadge ??= GetNode<TextureRect>("%RoleBadge");
-        _reachBadge ??= GetNode<TextureRect>("%ReachBadge");
         var previousIdentity = PieceId;
-        _displayName = displayName;
+        BodyRadius = bodyRadius;
+        _isHero = isHero;
+        _role = role;
         Cell = cell;
         PieceId = pieceId;
         IsLegalTarget = legalTarget;
@@ -111,6 +114,25 @@ public partial class DeploymentCell : Button, IUiMotionHost
         ClearDragState();
         Text = string.Empty;
         var occupied = !string.IsNullOrEmpty(pieceId);
+        BindArtwork(portrait, isHero, role, occupied);
+        var rejection = evaluation?.RejectionReason;
+        TooltipText = string.IsNullOrEmpty(pieceId)
+            ? legalTarget ? $"部署到第 {cell.X + 1} 列、第 {cell.Y + 1} 行" : rejection ?? "该格当前不可部署"
+            : legalTarget
+                ? $"{displayName} · {PlayerFacingText.DescribeUnitRole(role)} · {UnitRangeClassifier.Describe(attackRange)} {attackRange:0.#} 格。点击选择，或拖动以移动/交换。"
+                : rejection ?? $"{displayName} 当前不能作为目标。";
+        Disabled = false;
+        FocusMode = FocusModeEnum.All;
+        RefreshVisualRole();
+        if (previousIdentity != PieceId) UiDragVisual.Bound(this, PieceId, "piece_id");
+    }
+
+    private void BindArtwork(UnitPortraitDefinition? portrait, bool isHero, UnitRole role, bool occupied)
+    {
+        _portrait ??= GetNode<UnitPortrait>("%UnitPortrait");
+        _heroBadge ??= GetNode<TextureRect>("%HeroBadge");
+        _roleBadge ??= GetNode<TextureRect>("%RoleBadge");
+        _reachBadge ??= GetNode<TextureRect>("%ReachBadge");
         _portrait.Visible = occupied;
         if (occupied)
         {
@@ -127,24 +149,34 @@ public partial class DeploymentCell : Button, IUiMotionHost
         _reachBadge.Texture = SemanticIcons.Catalog.ResolveIcon(SemanticIconKeys.Reach);
         _reachBadge.Visible = occupied;
         _reachBadge.Modulate = new Color(.35f, .9f, 1f);
-        var rejection = evaluation?.RejectionReason;
-        TooltipText = string.IsNullOrEmpty(pieceId)
-            ? legalTarget ? $"部署到第 {cell.X + 1} 列、第 {cell.Y + 1} 行" : rejection ?? "该格当前不可部署"
-            : legalTarget
-                ? $"{displayName} · {PlayerFacingText.DescribeUnitRole(role)} · {UnitRangeClassifier.Describe(attackRange)} {attackRange:0.#} 格。点击选择，或拖动以移动/交换。"
-                : rejection ?? $"{displayName} 当前不能作为目标。";
-        Disabled = false;
-        FocusMode = FocusModeEnum.All;
-        RefreshVisualRole();
-        if (previousIdentity != PieceId) UiDragVisual.Bound(this, PieceId, "piece_id");
     }
 
     public void ApplyProjection(BattlefieldProjection projection)
     {
+        _projection = projection;
         var rect = projection.CellRect(Cell);
         Position = rect.Position;
         Size = rect.Size;
         CustomMinimumSize = rect.Size;
+        // The receiver remains one anchor cell. Only the artwork grows with the body.
+        // Draw overflowing art above later sibling tiles instead of behind their floors.
+        ZIndex = BodyRadius > .5f ? 1 : 0;
+        var overhang = (UnitVisualSize - rect.Size) * .5f;
+        _portrait.OffsetLeft = 5 - overhang.X;
+        _portrait.OffsetTop = 3 - overhang.Y;
+        _portrait.OffsetRight = -5 + overhang.X;
+        _portrait.OffsetBottom = -3 + overhang.Y;
+    }
+
+    public static Control CreateDragPreview(UnitPortraitDefinition? portrait, bool isHero, UnitRole role, Vector2 size)
+    {
+        var preview = GD.Load<PackedScene>("res://scenes/ui/components/DeploymentCell.tscn").Instantiate<DeploymentCell>();
+        preview.Theme = GD.Load<Theme>("res://content/ui/RealmTheme.tres");
+        preview.CustomMinimumSize = preview.Size = size;
+        preview.MouseBehaviorRecursive = MouseBehaviorRecursiveEnum.Disabled;
+        preview.FocusBehaviorRecursive = FocusBehaviorRecursiveEnum.Disabled;
+        preview.BindArtwork(portrait, isHero, role, true);
+        return preview;
     }
 
     public override Variant _GetDragData(Vector2 atPosition)
@@ -152,11 +184,9 @@ public partial class DeploymentCell : Button, IUiMotionHost
         if (string.IsNullOrWhiteSpace(PieceId)) return default;
         _dragSource = true;
         RefreshVisualRole();
-        var preview = GD.Load<PackedScene>("res://scenes/ui/components/HeroDragPreview.tscn").Instantiate<Control>();
-        preview.GetNode<UnitPortrait>("Layout/Portrait").Bind(_portrait.Definition);
-        preview.GetNode<Label>("Layout/Name").Text = _displayName;
+        var preview = CreateDragPreview(_portrait.Definition, _isHero, _role, UnitVisualSize);
         return UiDragVisual.Begin(this, preview, new Godot.Collections.Dictionary { ["piece_id"] = PieceId },
-            () => ReduceUiMotion(), keepTargetVisible: true);
+            () => ReduceUiMotion(), centerOnPointer: true);
     }
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)
@@ -222,12 +252,9 @@ public partial class DeploymentCell : Button, IUiMotionHost
     private void RefreshVisualRole()
     {
         QueueRedraw();
-        var activeEvaluation = _dropHover ? _dragEvaluation : _targetEvaluation;
-        var activeLegal = activeEvaluation?.IsValid ?? IsLegalTarget;
+        // During deployment the dragged unit carries the drop feedback itself.
+        // Keep the source silhouette and ordinary selection, without a second tile.
         ThemeTypeVariation = _dragSource ? "DeploymentCellDrag"
-            : _dropHover && !activeLegal ? "DeploymentCellIllegal"
-            : _dropHover && !string.IsNullOrEmpty(PieceId) ? "DeploymentCellSwap"
-            : _dropHover ? "DeploymentCellLegal"
             : _selected ? "DeploymentCellSelected"
             : _hasSelection && !IsLegalTarget ? "DeploymentCellIllegal"
             : _hasSelection && !string.IsNullOrEmpty(PieceId) ? "DeploymentCellSwap"

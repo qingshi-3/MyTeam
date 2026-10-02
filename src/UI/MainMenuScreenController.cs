@@ -10,6 +10,7 @@ public partial class MainMenuScreenController : Control
     public event Action? BattleLabRequested;
     public event Action? ExperienceSliceRequested;
     public event Action? VfxPreviewRequested;
+    public event Action? EnvironmentPreviewRequested;
     public event Action? GrowthJourneyRequested;
     public event Action? SettingsRequested;
     public event Action? QuitRequested;
@@ -21,6 +22,7 @@ public partial class MainMenuScreenController : Control
     private Button _experience = null!;
     private Button _quit = null!;
     private Button _vfx = null!;
+    private Button _environment = null!;
     private Button _growth = null!;
     private Button _tools = null!;
 
@@ -33,11 +35,13 @@ public partial class MainMenuScreenController : Control
         _experience = GetNode<Button>("Center/Panel/Menu/ExperienceSliceButton");
         _quit = GetNode<Button>("Center/Panel/Menu/QuitButton");
         _vfx = GetNode<Button>("Center/Panel/Menu/VfxPreviewButton");
+        _environment = GetNode<Button>("Center/Panel/Menu/EnvironmentPreviewButton");
         _growth = GetNode<Button>("Center/Panel/Menu/GrowthJourneyButton");
         _tools = GetNode<Button>("Center/Panel/Menu/ToolsButton");
         _tools.Toggled += SetToolsExpanded;
         _growth.Pressed += OnGrowth;
         _vfx.Pressed += OnVfx;
+        _environment.Pressed += OnEnvironment;
         _newRun.Pressed += OnNewRun;
         _continue.Pressed += OnContinue;
         _settings.Pressed += OnSettings;
@@ -55,25 +59,37 @@ public partial class MainMenuScreenController : Control
         _experience.Pressed -= OnExperience;
         _quit.Pressed -= OnQuit;
         _vfx.Pressed -= OnVfx;
+        _environment.Pressed -= OnEnvironment;
         _growth.Pressed -= OnGrowth;
         _tools.Toggled -= SetToolsExpanded;
     }
 
-    public void Bind(bool canContinue) => _continue.Disabled = !canContinue;
+    public void Bind(bool canContinue)
+    {
+        _continue.Disabled = !canContinue;
+        _tools.SetPressedNoSignal(false);
+        SetToolsExpanded(false);
+    }
 
     public void BindJourney(bool isGrowth)
     {
-        GetNode<Label>("Center/Panel/Menu/Title").Text = isGrowth ? "成长征程" : "军团登塔";
+        GetNode<Label>("Center/Panel/Menu/Title").Text = isGrowth ? "军团登塔" : "旧版征程";
         GetNode<Label>("Center/Panel/Menu/Subtitle").Text = isGrowth
             ? "培养伙伴，向高塔进发" : "集结军团，攻上三重高塔";
-        _growth.Text = isGrowth ? "返回主菜单" : "成长征程";
+        _growth.Text = isGrowth ? "旧版征程（开发）" : "返回正式征程";
+        _growth.TooltipText = isGrowth ? "保留旧版玩法与旧存档入口。" : "进入当前成长玩法。";
     }
 
     private void SetToolsExpanded(bool expanded)
     {
+        _newRun.Visible = !expanded;
+        _continue.Visible = !expanded;
+        _settings.Visible = !expanded;
+        _growth.Visible = expanded;
         _battleLab.Visible = expanded;
         _experience.Visible = expanded;
         _vfx.Visible = expanded;
+        _environment.Visible = expanded;
         _tools.Text = expanded ? "收起练习与预览 ▴" : "练习与预览 ▾";
     }
 
@@ -84,5 +100,6 @@ public partial class MainMenuScreenController : Control
     private void OnExperience() => ExperienceSliceRequested?.Invoke();
     private void OnQuit() => QuitRequested?.Invoke();
     private void OnVfx() => VfxPreviewRequested?.Invoke();
+    private void OnEnvironment() => EnvironmentPreviewRequested?.Invoke();
     private void OnGrowth() => GrowthJourneyRequested?.Invoke();
 }

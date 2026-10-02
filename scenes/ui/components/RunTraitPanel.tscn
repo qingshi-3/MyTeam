@@ -1,0 +1,71 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/UI/RunTraitPanel.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/RunTraitStoneFrame.tscn" id="2"]
+
+[node name="RunTraitPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(240, 240)
+mouse_filter = 2
+theme_type_variation = &"RunTraitPanel"
+script = ExtResource("1")
+
+[node name="StoneFrame" parent="." instance=ExtResource("2")]
+layout_mode = 2
+
+[node name="Padding" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 26
+
+[node name="Layout" type="VBoxContainer" parent="Padding"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Padding/Layout"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"RunTraitTitle"
+text = "阵容羁绊"
+horizontal_alignment = 1
+
+[node name="TraitSummary" type="Label" parent="Padding/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"RunTraitHint"
+text = "已激活 0 项"
+horizontal_alignment = 1
+
+[node name="TraitScroll" type="ScrollContainer" parent="Padding/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 1
+follow_focus = true
+
+[node name="TraitRows" type="VBoxContainer" parent="Padding/Layout/TraitScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="EmptyTraits" type="Label" parent="Padding/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"RunTraitHint"
+text = "暂无羁绊成员\n上阵英雄后在这里查看"
+autowrap_mode = 3
+
+[node name="ReadingHint" type="Label" parent="Padding/Layout"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"RunTraitHint"
+text = "悬停 / 聚焦查看效果与成员"
+autowrap_mode = 3

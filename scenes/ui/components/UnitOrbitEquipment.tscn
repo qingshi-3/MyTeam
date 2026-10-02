@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/EquipmentSlotButton.tscn" id="Base"]
+[ext_resource type="Theme" path="res://content/ui/unit_card_relic_theme.tres" id="Theme"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/equipment-hanger-mount.tres" id="Mount"]
+[node name="UnitOrbitEquipment" instance=ExtResource("Base")]
+texture_filter = 2
+custom_minimum_size = Vector2(56, 76)
+theme = ExtResource("Theme")
+theme_type_variation = &"RelicEquipment"
+InlinePresentation = true
+WorkbenchPresentation = true
+CardRelicPresentation = true
+theme_override_constants/icon_max_width = 32
+theme_override_font_sizes/font_size = 22
+[node name="Mount" type="TextureRect" parent="." index="1"]
+texture_filter = 4
+show_behind_parent = true
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("Mount")
+expand_mode = 1
+stretch_mode = 5

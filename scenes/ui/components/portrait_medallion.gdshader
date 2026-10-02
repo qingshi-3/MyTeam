@@ -8,6 +8,7 @@ uniform vec2 window_size = vec2(320.0, 494.0);
 uniform float portrait_zoom = 1.0;
 uniform bool full_illustration = false;
 uniform bool stone_frame = false;
+uniform bool breakout = false;
 uniform float bottom_occlusion = 0.0;
 varying vec4 canvas_tint;
 
@@ -26,6 +27,10 @@ void fragment() {
     float edge = max(fwidth(radius), 0.002);
     if (stone_frame) {
         paint.a *= 1.0 - smoothstep(0.92 - edge, 0.92, radius);
+    } else if (breakout) {
+        // Upper silhouettes may overlap the card rim, but never leak below the
+        // information rail. No ellipse or artificial new frame is added here.
+        paint.a *= 1.0 - smoothstep(0.94, 1.0, UV.y);
     } else if (!full_illustration) {
         paint.a *= 1.0 - smoothstep(1.0 - edge, 1.0, radius);
     } else {

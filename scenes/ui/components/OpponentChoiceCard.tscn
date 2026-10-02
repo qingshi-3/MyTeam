@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/ChoiceCard.tscn" id="1"]
+
+[node name="OpponentChoiceCard" instance=ExtResource("1")]
+custom_minimum_size = Vector2(340, 206)
+toggle_mode = true
+
+[node name="Margin" parent="." index="0"]
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Layout" parent="Margin" index="0"]
+theme_override_constants/separation = 10
+
+[node name="ChoiceIcon" parent="Margin/Layout" index="0"]
+custom_minimum_size = Vector2(34, 34)
+
+[node name="ChoiceTitle" parent="Margin/Layout/Copy" index="0"]
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 2
+
+[node name="ChoiceBody" parent="Margin/Layout/Copy" index="1"]
+theme_override_font_sizes/font_size = 15
+
+[node name="ChoiceFooter" parent="Margin/Layout/Copy" index="2"]
+theme_override_font_sizes/font_size = 16

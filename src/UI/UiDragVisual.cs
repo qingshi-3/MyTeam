@@ -16,18 +16,21 @@ public partial class UiDragVisual : Control
     private Func<bool> _reduced = () => false;
     private Color _sourceColor;
     private Vector2 _lastPointer, _lag;
+    private Vector2 _releasePosition;
+    private float _releaseScale, _settle;
+    private ulong _landingTick;
     private float _tilt, _lift;
     private Tween? _tween;
     private Rect2 _aimBounds;
-    private bool _hasAim, _finishing, _restored, _keepTargetVisible;
+    private bool _hasAim, _finishing, _restored, _keepTargetVisible, _centerOnPointer;
     public bool IsReturning { get; private set; }
     public bool IsFinishing => _finishing;
     public bool HasCommittedDestination => _destination is not null;
 
     public static Variant Begin(Control source, Control content, Godot.Collections.Dictionary payload, Func<bool> reduced,
-        bool keepTargetVisible = false)
+        bool keepTargetVisible = false, bool centerOnPointer = false)
     {
-        var visual = Lift(source, content, reduced, keepTargetVisible);
+        var visual = Lift(source, content, reduced, keepTargetVisible, centerOnPointer);
         var anchor = GD.Load<PackedScene>("res://scenes/ui/components/UiDragAnchor.tscn").Instantiate<UiDragAnchor>();
         anchor.Visual = visual;
         payload[PayloadKey] = visual;
@@ -37,7 +40,8 @@ public partial class UiDragVisual : Control
 
     // The lab already owns a pointer-drag lifecycle. It supplies that lifecycle
     // explicitly instead of starting a second native drag over it.
-    public static UiDragVisual Lift(Control source, Control content, Func<bool> reduced, bool keepTargetVisible = false)
+    public static UiDragVisual Lift(Control source, Control content, Func<bool> reduced, bool keepTargetVisible = false,
+        bool centerOnPointer = false)
     {
         BattleLabHoverHint.HideAll(true);
         var visual = GD.Load<PackedScene>("res://scenes/ui/components/UiDragVisual.tscn").Instantiate<UiDragVisual>();
@@ -45,6 +49,7 @@ public partial class UiDragVisual : Control
         visual._sourceColor = source.Modulate;
         visual._reduced = reduced;
         visual._keepTargetVisible = keepTargetVisible;
+        visual._centerOnPointer = centerOnPointer;
         source.GetViewport().AddChild(visual);
         visual._face.AddChild(content);
         content.Position = Vector2.Zero;
@@ -53,12 +58,22 @@ public partial class UiDragVisual : Control
         visual._face.Size = visual._shadow.Size = visual.Size;
         visual._face.PivotOffset = visual._shadow.PivotOffset = visual.Size * .5f;
         visual._lastPointer = source.GetViewport().GetMousePosition();
-        visual.Position = keepTargetVisible
+        visual.Position = centerOnPointer ? visual._lastPointer - visual.Size * .5f : keepTargetVisible
             ? visual.ResolveDragPosition(visual._lastPointer, Vector2.Zero)
             : visual._lastPointer - visual.Size * .5f + new Vector2(0, -24);
         source.Modulate = new Color(visual._sourceColor, visual._sourceColor.A * .38f);
-        visual._mark.Position = new Vector2(visual.Size.X - 20, visual.Size.Y - 8);
+        visual._mark.Position = centerOnPointer
+            ? new Vector2(visual.Size.X - 28, 0)
+            : new Vector2(visual.Size.X - 20, visual.Size.Y - 8);
         if (reduced()) visual._lift = 1;
+        else if (centerOnPointer)
+        {
+            visual._tween = visual.CreateTween().SetIgnoreTimeScale(true).SetPauseMode(Tween.TweenPauseMode.Process);
+            visual._tween.TweenMethod(Callable.From<float>(value => visual._lift = value), 0f, 1.5f, .12)
+                .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+            visual._tween.TweenMethod(Callable.From<float>(value => visual._lift = value), 1.5f, 1f, .13)
+                .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
+        }
         else
         {
             visual._tween = visual.CreateTween().SetIgnoreTimeScale(true).SetPauseMode(Tween.TweenPauseMode.Process);
@@ -83,6 +98,15 @@ public partial class UiDragVisual : Control
         {
             var target = IsReturning ? _source : _destination;
             if (_reduced() || !IsInstanceValid(target) || !target!.IsVisibleInTree()) Finish();
+            else if (_centerOnPointer)
+            {
+                // A command may have rebuilt the board earlier in this frame.
+                // Only advance by time since release, not that frame's stale delta.
+                var now = Time.GetTicksUsec();
+                _tween?.CustomStep((now - _landingTick) / 1_000_000.0);
+                _landingTick = now;
+                UpdateLanding(target);
+            }
             return;
         }
         if (!IsInstanceValid(_source) || !_source.IsVisibleInTree())
@@ -100,18 +124,28 @@ public partial class UiDragVisual : Control
         var blend = 1f - Mathf.Exp(-18 * dt);
         var reduced = _reduced();
         var velocity = movement / dt;
-        _lag = _lag.Lerp(reduced ? Vector2.Zero : (-velocity * .012f).LimitLength(12), blend);
-        _tilt = Mathf.Lerp(_tilt, reduced ? 0 : Mathf.Clamp(velocity.X * .000055f, -.075f, .075f), blend);
+        _lag = _lag.Lerp(reduced || _centerOnPointer ? Vector2.Zero : (-velocity * .012f).LimitLength(12), blend);
+        _tilt = Mathf.Lerp(_tilt, reduced || _centerOnPointer ? 0 : Mathf.Clamp(velocity.X * .000055f, -.075f, .075f), blend);
         if (reduced) { _tween?.Kill(); _lift = 1; _lag = Vector2.Zero; _tilt = 0; }
-        Position = _keepTargetVisible
+        // Deployment carries the unit tile at the pointer. Changing receivers must
+        // not relocate it above/below the board or add a second placement cursor.
+        Position = _centerOnPointer ? pointer - Size * .5f : _keepTargetVisible
             ? ResolveDragPosition(pointer, _lag)
             : pointer - Size * .5f + new Vector2(0, reduced ? -24 : -12 - 12 * _lift) + _lag;
-        _face.Scale = Vector2.One * (reduced ? 1 : .96f + .12f * _lift);
+        _face.Scale = Vector2.One * (reduced ? 1 : (_centerOnPointer ? 1 : .96f) + .12f * _lift);
         _face.Rotation = _tilt;
         _shadow.Scale = Vector2.One * (reduced ? 1 : 1 + .03f * _lift);
         _shadow.Position = new Vector2(4, reduced ? 9 : 6 + 10 * _lift);
         _shadow.Rotation = _tilt * .5f;
-        _mark.Visible = _hasAim && _aimBounds.HasPoint(pointer);
+        var overTarget = _hasAim && _aimBounds.HasPoint(pointer);
+        if (_centerOnPointer)
+            _mark.Position = Size * .5f + new Vector2(Size.X * .5f - 28, -Size.Y * .5f) * _face.Scale;
+        _mark.Visible = _centerOnPointer || overTarget;
+        if (_centerOnPointer && !overTarget)
+        {
+            _mark.Text = "×";
+            _mark.Modulate = new Color("e9b0a4");
+        }
     }
 
     private Vector2 ResolveDragPosition(Vector2 pointer, Vector2 lag)
@@ -247,6 +281,27 @@ public partial class UiDragVisual : Control
         IsReturning = !IsInstanceValid(_destination);
         var target = IsReturning ? _source : _destination!;
         if (_reduced() || !IsInstanceValid(target) || !target.IsVisibleInTree()) { Finish(); return; }
+        if (_centerOnPointer)
+        {
+            _releasePosition = Position;
+            _releaseScale = _face.Scale.X;
+            _settle = 0;
+            _tween = CreateTween().SetIgnoreTimeScale(true).SetPauseMode(Tween.TweenPauseMode.Process);
+            if (IsReturning)
+                _tween.TweenMethod(Callable.From<float>(value => _settle = value), 0f, 1f, .22)
+                    .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+            else
+            {
+                _tween.TweenMethod(Callable.From<float>(value => _settle = value), 0f, 1.2f, .13)
+                    .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+                _tween.TweenMethod(Callable.From<float>(value => _settle = value), 1.2f, 1f, .09)
+                    .SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
+            }
+            _tween.TweenCallback(Callable.From(Finish));
+            _tween.Pause();
+            _landingTick = Time.GetTicksUsec();
+            return;
+        }
         var rect = target.GetGlobalRect();
         var scale = Mathf.Clamp(Mathf.Min(rect.Size.X / Size.X, rect.Size.Y / Size.Y), .4f, 1);
         _tween = CreateTween().SetIgnoreTimeScale(true).SetPauseMode(Tween.TweenPauseMode.Process).SetParallel();
@@ -259,6 +314,27 @@ public partial class UiDragVisual : Control
         _tween.TweenProperty(_shadow, "modulate:a", 0f, duration);
         _tween.TweenProperty(this, "modulate:a", 0f, .07).SetDelay(duration - .07);
         _tween.Chain().TweenCallback(Callable.From(Finish));
+    }
+
+    private void UpdateLanding(Control target)
+    {
+        // A bench becoming empty can resize the board after the command binds it.
+        // Follow the live target geometry through that layout, including large bodies.
+        var rect = target.GetGlobalRect();
+        if (target is DeploymentCell cell)
+            rect = new Rect2(rect.GetCenter() - cell.UnitVisualSize * .5f, cell.UnitVisualSize);
+        else if (target is DeploymentUnitCard card)
+            rect = card.Portrait.GetGlobalRect();
+        var targetScale = Mathf.Min(rect.Size.X / Size.X, rect.Size.Y / Size.Y);
+        Position = _releasePosition.Lerp(rect.GetCenter() - Size * .5f, Mathf.Min(_settle, 1));
+        var scale = Mathf.Lerp(_releaseScale, targetScale, Mathf.Min(_settle, 1));
+        if (_settle > 1) scale *= 1 - .15f * (_settle - 1);
+        _face.Scale = Vector2.One * scale;
+        _face.Rotation = 0;
+        _shadow.Modulate = new Color(1, 1, 1, 1 - Mathf.Min(_settle, 1));
+        // Leave the shrink and brief rebound visible, then blend into the bound unit.
+        var elapsed = (float)(_tween?.GetTotalElapsedTime() ?? 0);
+        Modulate = new Color(1, 1, 1, elapsed > .17f ? Mathf.Clamp((.22f - elapsed) / .05f, 0, 1) : 1);
     }
 
     private void RestoreSource()

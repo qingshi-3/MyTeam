@@ -14,6 +14,10 @@ public partial class ArmyOverviewController : Control, IUiMotionHost
     private Color _summaryModulate = Colors.White;
     private Button _summary = null!;
     private ArmyResourceStrip _resourceStrip = null!;
+    private RunRelicShelf _relicShelf = null!;
+    private RunTraitPanel _traitPanel = null!;
+    private bool _showSummary = true;
+    private bool _showRelics = true;
     private Button _close = null!;
     private Button _pageToggle = null!;
     private Button _backdrop = null!;
@@ -32,19 +36,23 @@ public partial class ArmyOverviewController : Control, IUiMotionHost
     private string _inspectedHero = "";
 
     public bool IsOpen => _isOpen;
+    public float TraitsReservedWidth => _traitPanel.OffsetRight + 12f;
     public GrowthWorkbenchPanel GrowthPanel => _growthPanel;
     public System.Func<bool> ReduceUiMotion { get; set; } = () => false;
     private UiPopupMotion? _motion;
     // The global resource strip owns this header band. ScreenRouter reserves it
     // before laying out page-local controls, including their popup launchers.
-    public float HeaderReservedHeight => System.Math.Max(_summary.OffsetBottom,
-        _summary.OffsetTop + _summary.GetCombinedMinimumSize().Y) + 12f;
+    public float HeaderReservedHeight => System.Math.Max(
+        System.Math.Max(_summary.OffsetBottom, _summary.OffsetTop + _summary.GetCombinedMinimumSize().Y),
+        System.Math.Max(_relicShelf.OffsetBottom, _relicShelf.OffsetTop + _relicShelf.GetCombinedMinimumSize().Y)) + 12f;
 
     public override void _Ready()
     {
         _summary = GetNode<Button>("%SummaryButton");
         _summaryModulate = _summary.Modulate;
         _resourceStrip = GetNode<ArmyResourceStrip>("%ResourceStrip");
+        _relicShelf = GetNode<RunRelicShelf>("%RunRelicShelf");
+        _traitPanel = GetNode<RunTraitPanel>("%RunTraitPanel");
         _close = GetNode<Button>("%CloseButton");
         _backdrop = GetNode<Button>("%Backdrop");
         _drawer = GetNode<PanelContainer>("%Drawer");
@@ -91,8 +99,19 @@ public partial class ArmyOverviewController : Control, IUiMotionHost
         _pageInspectionOpen = open;
         RefreshSummaryPresentation();
     }
-    private void RefreshSummaryPresentation() =>
+    public void SetRunHeaderContext(bool showSummary, bool showRelics)
+    {
+        _showSummary = showSummary;
+        _showRelics = showRelics;
+        RefreshSummaryPresentation();
+    }
+    private void RefreshSummaryPresentation()
+    {
+        _summary.Visible = _showSummary;
         _summary.Modulate = _isOpen || _pageInspectionOpen ? new Color(_summaryModulate, 0) : _summaryModulate;
+        _relicShelf.Visible = _showRelics && !_isOpen && !_pageInspectionOpen;
+        _traitPanel.Visible = _showRelics && !_isOpen && !_pageInspectionOpen;
+    }
 
     public void BindEquipmentManagement(RunApplication app)
     {
@@ -106,7 +125,7 @@ public partial class ArmyOverviewController : Control, IUiMotionHost
 
     private void OnEquipmentChanged()
     {
-        if (_application?.ActiveRun is not { } run) return;
+        if (_application?.Run is not { } run) return;
         Bind(ArmyOverviewFactory.Build(run, _application.Content, _application.Rules));
         EquipmentChanged?.Invoke();
     }
@@ -116,17 +135,28 @@ public partial class ArmyOverviewController : Control, IUiMotionHost
         _summary.Text = string.Empty;
         _summary.TooltipText = "打开军团详情";
         _resourceStrip.Bind(model);
+        _relicShelf.Bind(model.Relics);
+        _traitPanel.Bind(model.Traits);
         ClearRows();
         AddSection("英雄名册");
         if (model.RosterHeroes.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无英雄", "", ""));
         else foreach (var hero in model.RosterHeroes) AddRow(hero);
-        AddSection("战术指令");
-        if (model.TacticalCommands.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无战术指令", "", ""));
-        else foreach (var command in model.TacticalCommands) AddRow(command);
+        if (model.CanUseTacticalCommands)
+        {
+            AddSection("战术指令");
+            if (model.TacticalCommands.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无战术指令", "", ""));
+            else foreach (var command in model.TacticalCommands) AddRow(command);
+        }
         AddSection("遗物与备用装备");
         if (model.Items.Count == 0) AddRow(new ArmyOverviewRowViewModel("暂无物品", "", ""));
         else foreach (var item in model.Items) AddRow(item);
         RefreshRoster();
+    }
+
+    public void RefreshTraits()
+    {
+        if (_application?.Run is { } run)
+            _traitPanel.Bind(RunTraitModels.Build(run, _application.Content));
     }
 
     private void RefreshRoster()
@@ -189,7 +219,7 @@ public partial class ArmyOverviewController : Control, IUiMotionHost
         if (_isOpen) return;
         GetNode<TabContainer>("%Pages").CurrentTab = 0;
         _pageToggle.Text = NextPageTitle(GetNode<TabContainer>("%Pages"));
-        if (_application?.ActiveRun is { } run)
+        if (_application?.Run is { } run)
         {
             Bind(ArmyOverviewFactory.Build(run, _application.Content, _application.Rules));
             _growthPanel.Refresh();

@@ -6,8 +6,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/StatBlock.tscn" id="4"]
 
 [node name="UnitChoiceCard" type="Button"]
-theme_type_variation = &"SecondaryButton"
-custom_minimum_size = Vector2(0, 172)
+theme_type_variation = &"RouteChoiceButton"
+custom_minimum_size = Vector2(0, 202)
 size_flags_horizontal = 3
 focus_mode = 2
 text = ""

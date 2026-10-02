@@ -1,0 +1,9 @@
+[gd_resource type="FontVariation" load_steps=2 format=3]
+
+[sub_resource type="SystemFont" id="Face"]
+font_names = PackedStringArray("Avenir Next", "Segoe UI", "Noto Sans")
+font_weight = 700
+
+[resource]
+base_font = SubResource("Face")
+opentype_features = { "lnum": 1, "tnum": 1 }

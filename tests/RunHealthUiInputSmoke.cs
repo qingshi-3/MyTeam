@@ -24,7 +24,7 @@ public partial class RunHealthUiInputSmoke : Node
         {
             Require(DisplayServer.GetName() != "headless", "rendered driver required");
             _stage = new UiInputStage(this, true);
-            GetWindow().Position = new Vector2I(-4000, -4000);
+            GetWindow().Position = new Vector2I(80, 80);
             DirAccess.MakeDirRecursiveAbsolute(ProjectSettings.GlobalizePath(Output));
             game = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
             game.SaveNamespace = $"tests/run-health-ui/{Guid.NewGuid():N}";
@@ -109,7 +109,8 @@ public partial class RunHealthUiInputSmoke : Node
             game.Flow.SetEncounterForTesting(encounter);
             game.Flow.ShowDeployment();
             await Frames(6);
-            Require(screens.Deployment.GetNode<Label>("%RunRisk").Text.Contains("无论剩余生命"), "Boss hard-failure warning");
+            var bossWarning = screens.Deployment.GetNode<Label>("%RunRisk").Text;
+            Require(bossWarning.Contains("即结束征程") && bossWarning.Contains("不受剩余生命影响"), "Boss hard-failure warning");
             await Capture("boss-warning");
             game.Flow.ResetPendingBattleFlow();
             game.Flow.AcceptBattleResult(RunHealthFixture.Result(app.BuildBattleConfig(encounter, false), BattleOutcome.PlayerDefeat));

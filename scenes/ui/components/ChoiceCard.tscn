@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/SemanticChip.tscn" id="2"]
 
 [node name="ChoiceCard" type="Button"]
-theme_type_variation = &"SecondaryButton"
+theme_type_variation = &"RouteChoiceButton"
 custom_minimum_size = Vector2(250, 112)
 size_flags_horizontal = 3
 focus_mode = 2
@@ -19,19 +19,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 14
 
 [node name="Layout" type="HBoxContainer" parent="Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 20
 
 [node name="ChoiceIcon" type="TextureRect" parent="Margin/Layout"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(58, 58)
+modulate = Color(0.83, 0.73, 0.52, 1)
+size_flags_vertical = 4
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 1

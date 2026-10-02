@@ -1,17 +1,37 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=10 format=3]
+[ext_resource type="Theme" path="res://content/ui/unit_card_relic_theme.tres" id="RelicTheme"]
+
+[ext_resource type="Texture2D" path="res://content/ui/card_information_shade.tres" id="Shade"]
+
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/attack.tres" id="Attack"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/spell-power.tres" id="Spell"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/health.tres" id="Health"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitCardOrbit.tscn" id="Annex"]
 
 [ext_resource type="Script" path="res://src/UI/HeroLibraryTile.cs" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/TraitBadge.tscn" id="3"]
 
 [node name="HeroLibraryTile" type="Button"]
-theme_type_variation = &"CompactButton"
-custom_minimum_size = Vector2(190, 310)
+theme_type_variation = &"OrbitCard"
+custom_minimum_size = Vector2(470, 660)
 size_flags_horizontal = 3
 focus_mode = 2
 text = ""
 script = ExtResource("1")
 TraitBadgeScene = ExtResource("3")
+
+[node name="CardFrame" type="Panel" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_right = -36.0
+offset_top = 28.0
+offset_bottom = -28.0
+mouse_filter = 2
+theme_type_variation = &"OrbitFrame"
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -21,12 +41,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 52
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 52
+theme_override_constants/margin_bottom = 46
 
-[node name="Layout" type="VBoxContainer" parent="Margin"]
+[node name="Layout" type="Control" parent="Margin"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
@@ -35,33 +55,174 @@ theme_override_constants/separation = 4
 PreferIllustration = true
 FullIllustration = true
 StoneFrame = true
+BreakoutIllustration = true
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 216)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 0.0
 size_flags_vertical = 3
 
+[node name="InformationShade" type="TextureRect" parent="Margin/Layout"]
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -100.0
+mouse_filter = 2
+texture = ExtResource("Shade")
+expand_mode = 1
+stretch_mode = 0
+
 [node name="HeroName" type="Label" parent="Margin/Layout"]
+z_index = 2
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -52.0
 size_flags_horizontal = 3
 mouse_filter = 2
-theme_type_variation = &"HeroIdentity"
-theme_override_font_sizes/font_size = 18
+theme_type_variation = &"CardName"
+theme_override_font_sizes/font_size = 26
 text = "英雄名称"
 text_overrun_behavior = 3
 horizontal_alignment = 1
 
 [node name="HeroState" type="Label" parent="Margin/Layout"]
+z_index = 2
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 1
+anchor_right = 1.0
+offset_top = -30.0
+offset_bottom = -2.0
 mouse_filter = 2
 theme_type_variation = &"SecondaryLabel"
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 12
 text = "可出征"
 
 [node name="HeroTraits" type="HFlowContainer" parent="Margin/Layout"]
+visible = false
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 4
+
+[node name="DetailsButton" type="Button" parent="."]
+z_index = 13
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -108.0
+offset_top = -146.0
+offset_right = -52.0
+offset_bottom = -102.0
+custom_minimum_size = Vector2(56, 44)
+theme_type_variation = &"QuietButton"
+theme_override_font_sizes/font_size = 17
+text = "详情"
+toggle_mode = true
+
+[node name="Orbit" parent="." instance=ExtResource("Annex")]
+
+[node name="CoreFacts" type="HBoxContainer" parent="Margin/Layout"]
+z_index = 2
+theme = ExtResource("RelicTheme")
+texture_filter = 2
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -94.0
+offset_bottom = -55.0
+offset_left = 44.0
+offset_right = -44.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Attack" type="HBoxContainer" parent="Margin/Layout/CoreFacts"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/CoreFacts/Attack"]
+layout_mode = 2
+custom_minimum_size = Vector2(26, 26)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("Attack")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Margin/Layout/CoreFacts/Attack"]
+theme_type_variation = &"CardCoreValue"
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.94, 0.91, 0.83, 1)
+theme_override_constants/outline_size = 3
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+text = "0"
+accessibility_name = "攻击"
+
+[node name="Spell" type="HBoxContainer" parent="Margin/Layout/CoreFacts"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/CoreFacts/Spell"]
+layout_mode = 2
+custom_minimum_size = Vector2(26, 26)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("Spell")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Margin/Layout/CoreFacts/Spell"]
+theme_type_variation = &"CardCoreValue"
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.94, 0.91, 0.83, 1)
+theme_override_constants/outline_size = 3
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+text = "0"
+accessibility_name = "法强"
+
+[node name="Health" type="HBoxContainer" parent="Margin/Layout/CoreFacts"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/CoreFacts/Health"]
+layout_mode = 2
+custom_minimum_size = Vector2(26, 26)
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("Health")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Margin/Layout/CoreFacts/Health"]
+theme_type_variation = &"CardCoreValue"
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.94, 0.91, 0.83, 1)
+theme_override_constants/outline_size = 3
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+text = "0"
+accessibility_name = "生命上限"

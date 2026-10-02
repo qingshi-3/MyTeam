@@ -1,0 +1,186 @@
+[gd_scene load_steps=8 format=3]
+[ext_resource type="Script" path="res://src/UI/UnitCardOrbit.cs" id="Orbit"]
+[ext_resource type="Script" path="res://src/UI/UiCardDisclosure.cs" id="Motion"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningUnitOrbitStat.tscn" id="Fact"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningUnitOrbitRightStat.tscn" id="RightFact"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitOrbitEquipment.tscn" id="Slot"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitCardEdgeShade.tscn" id="Shade"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningUnitOrbitSkill.tscn" id="Skill"]
+
+[node name="OpeningUnitCardOrbit" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+z_index = 12
+clip_contents = true
+mouse_filter = 2
+script = ExtResource("Orbit")
+SkillScene = ExtResource("Skill")
+SplitMana = true
+
+[node name="Disclosure" type="Node" parent="."]
+script = ExtResource("Motion")
+
+[node name="EdgeShade" parent="." instance=ExtResource("Shade")]
+
+[node name="Left" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_right = 0.0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = 8.0
+offset_right = 98.0
+offset_top = 64.0
+offset_bottom = 256.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Armor" parent="Left" instance=ExtResource("Fact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="AttackSpeed" parent="Left" instance=ExtResource("Fact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="AttackRange" parent="Left" instance=ExtResource("Fact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="CriticalChance" parent="Left" instance=ExtResource("Fact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="CriticalDamage" parent="Left" instance=ExtResource("Fact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="LifeSteal" parent="Left" instance=ExtResource("Fact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="Growth" type="Button" parent="Left"]
+self_modulate = Color(0.74, 0.68, 0.56, 1)
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+theme_override_constants/icon_max_width = 22
+icon_alignment = 0
+expand_icon = true
+
+[node name="Right" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = -98.0
+offset_right = -8.0
+offset_top = 64.0
+offset_bottom = 256.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="MoveSpeed" parent="Right" instance=ExtResource("RightFact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="StartingMana" parent="Right" instance=ExtResource("RightFact")]
+layout_mode = 2
+
+[node name="MaxMana" parent="Right" instance=ExtResource("RightFact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="HealingPower" parent="Right" instance=ExtResource("RightFact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="DodgeChance" parent="Right" instance=ExtResource("RightFact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="ControlResistance" parent="Right" instance=ExtResource("RightFact")]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+
+[node name="Traits" type="Button" parent="Right"]
+self_modulate = Color(0.74, 0.68, 0.56, 1)
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(90, 24)
+theme_type_variation = &"OrbitStat"
+theme_override_constants/icon_max_width = 22
+icon_alignment = 2
+expand_icon = true
+
+[node name="TopDock" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 8.0
+offset_right = -8.0
+offset_top = 16.0
+offset_bottom = 58.0
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 4
+
+[node name="Skills" type="HBoxContainer" parent="TopDock"]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 1
+
+[node name="Equipment" type="HBoxContainer" parent="TopDock"]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 1
+
+[node name="Slot0" parent="TopDock/Equipment" instance=ExtResource("Slot")]
+layout_mode = 2
+custom_minimum_size = Vector2(56, 76)
+InlinePresentation = true
+WorkbenchPresentation = true
+theme_type_variation = &"RelicEquipment"
+theme_override_constants/icon_max_width = 32
+theme_override_font_sizes/font_size = 22
+
+[node name="Slot1" parent="TopDock/Equipment" instance=ExtResource("Slot")]
+layout_mode = 2
+custom_minimum_size = Vector2(56, 76)
+InlinePresentation = true
+WorkbenchPresentation = true
+theme_type_variation = &"RelicEquipment"
+theme_override_constants/icon_max_width = 32
+theme_override_font_sizes/font_size = 22
+
+[node name="Slot2" parent="TopDock/Equipment" instance=ExtResource("Slot")]
+layout_mode = 2
+custom_minimum_size = Vector2(56, 76)
+InlinePresentation = true
+WorkbenchPresentation = true
+theme_type_variation = &"RelicEquipment"
+theme_override_constants/icon_max_width = 32
+theme_override_font_sizes/font_size = 22

@@ -11,6 +11,8 @@ namespace TowerAutobattler.UI;
 public partial class GrowthWorkbenchPanel : VBoxContainer
 {
     [Signal] public delegate void ChangedEventHandler();
+    // Optional animation observers receive only committed facts. No observer is required.
+    [Signal] public delegate void AscensionCompletedEventHandler(string heroInstanceId, string ascensionId);
 
     private RunApplication? _application;
     private OptionButton _producer = null!;
@@ -22,7 +24,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
     private VBoxContainer _discovery = null!;
     private Label _message = null!;
     private PackedScene _discoveryChoice = null!;
-    public bool IsGrowthEnabled => _application?.ActiveRun?.Growth is not null && _application.GrowthRules is not null;
+    public bool IsGrowthEnabled => _application?.Run?.Growth is not null && _application.GrowthRules is not null;
 
     public override void _Ready()
     {
@@ -56,7 +58,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
     public void Refresh()
     {
         var app = _application;
-        var run = app?.ActiveRun;
+        var run = app?.Run;
         var rules = app?.GrowthRules;
         if (!IsGrowthEnabled || app is null || run is null || rules is null) return;
 
@@ -95,6 +97,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
             GetNode<Button>("%" + button).Disabled = !editable.Succeeded;
         GetNode<Button>("%ApplyAssignment").Disabled |= _producer.ItemCount == 0;
         _producer.GetParent<Control>().Visible = _producer.ItemCount > 0;
+        GetNode<Control>("Scroll/Content/Production/Layout/SelectorLabels").Visible = _producer.ItemCount > 0;
         GetNode<Button>("%ApplyAssignment").Visible = _producer.ItemCount > 0;
         RefreshAssignmentChoices();
         RefreshAscensionPreview();
@@ -104,7 +107,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
 
     private void RefreshAssignmentChoices()
     {
-        if (_application?.ActiveRun is not { } run || _application.GrowthRules is not { } rules) return;
+        if (_application?.Run is not { } run || _application.GrowthRules is not { } rules) return;
         var producer = run.Roster.FirstOrDefault(hero => hero.InstanceId == SelectedId(_producer));
         var previousMode = SelectedId(_mode);
         _mode.Clear();
@@ -122,7 +125,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
 
     private void RefreshProductionPreview()
     {
-        if (_application?.ActiveRun is not { } run || _application.GrowthRules is not { } rules) return;
+        if (_application?.Run is not { } run || _application.GrowthRules is not { } rules) return;
         var producer = run.Roster.FirstOrDefault(hero => hero.InstanceId == SelectedId(_producer));
         var target = run.Roster.FirstOrDefault(hero => hero.InstanceId == SelectedId(_target));
         if (producer is null || !rules.Heroes.TryGetValue(producer.ContentId, out var growthHero) || !Enum.TryParse(SelectedId(_mode), out GrowthProductionMode mode))
@@ -142,13 +145,16 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
 
     private void RefreshAscensionPreview()
     {
-        if (_application?.ActiveRun is not { } run || _application.GrowthRules is not { } rules) return;
+        if (_application?.Run is not { } run || _application.GrowthRules is not { } rules) return;
         var hero = run.Roster.FirstOrDefault(value => value.InstanceId == SelectedId(_ascensionHero));
         if (hero is null || !rules.Heroes.TryGetValue(hero.ContentId, out var definition)) return;
         var categories = string.IsNullOrWhiteSpace(definition.MaterialCategory) ? "通用材料" : "对应类别材料优先抵扣，不足部分以通用材料补足";
-        GetNode<Label>("%AscensionPreview").Text = hero.Growth.AscensionId.Length > 0
-            ? $"已升阶：{definition.AscensionName}\n{definition.AscensionDescription}"
-            : $"{definition.AscensionName}\n{definition.AscensionDescription}\n{categories} · 升阶后从三名高阶英雄中选择一名";
+        var ascended = hero.Growth.AscensionId.Length > 0;
+        var status = GrowthPresentation.AscensionStatus(definition, ascended);
+        var benefit = GrowthPresentation.AscensionBenefitText(definition);
+        GetNode<Label>("%AscensionPreview").Text = ascended
+            ? $"{status}\n{benefit}"
+            : $"{status}\n{benefit}\n{categories} · 升阶后从三名高阶英雄中选择一名";
         var button = GetNode<Button>("%Ascend");
         button.Text = hero.Growth.AscensionId.Length > 0 ? "已升阶" : $"升阶 · {rules.AscensionCost}材料";
         button.Disabled = !_application.CheckGrowthAction().Succeeded || hero.Growth.AscensionId.Length > 0 ||
@@ -159,7 +165,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
     {
         if (_application?.GrowthRules is not { } rules || !rules.Spells.TryGetValue(SelectedId(_spell), out var spell)) return;
         GetNode<Label>("%SpellPreview").Text = spell.Description;
-        var run = _application.ActiveRun!;
+        var run = _application.Run!;
         var editable = _application.CheckGrowthAction().Succeeded;
         var craft = GetNode<Button>("%CraftSpell");
         craft.Text = $"兑换 · {spell.ResearchCost}研究";
@@ -168,7 +174,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
         GetNode<Button>("%UnequipSpell").Disabled = !editable || string.IsNullOrEmpty(run.Growth!.EquippedSpellId);
     }
 
-    private void RefreshDiscovery(ActiveRunDto run, ContentRegistry content)
+    private void RefreshDiscovery(RunView run, ContentRegistry content)
     {
         foreach (var child in _discovery.GetChildren()) { _discovery.RemoveChild(child); child.QueueFree(); }
         var pending = run.Growth?.PendingDiscovery;
@@ -192,23 +198,30 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
         RunCommand(() => _application!.SetGrowthAssignment(SelectedId(_producer),
             mode == GrowthProductionMode.Research ? SelectedId(_producer) : SelectedId(_target), mode));
     }
-    private void Ascend() => RunCommand(() => _application!.AscendHero(SelectedId(_ascensionHero)));
+    private void Ascend()
+    {
+        var heroId = SelectedId(_ascensionHero);
+        if (!RunCommand(() => _application!.AscendHero(heroId))) return;
+        var hero = _application!.Run!.Roster.Single(value => value.InstanceId == heroId);
+        EmitSignal(SignalName.AscensionCompleted, heroId, hero.Growth.AscensionId);
+    }
     private void CraftSpell() => RunCommand(() => _application!.CraftGrowthSpell(SelectedId(_spell)));
     private void EquipSpell() => RunCommand(() => _application!.EquipGrowthSpell(SelectedId(_spell), SelectedId(_spellTarget)));
     private void UnequipSpell() => RunCommand(() => _application!.EquipGrowthSpell(string.Empty, string.Empty));
 
-    private void RunCommand(Func<GrowthCommandResult> command)
+    private bool RunCommand(Func<GrowthCommandResult> command)
     {
         var result = command();
         _message.Text = result.Succeeded ? string.Empty : result.Message;
         _message.ThemeTypeVariation = "FeedbackFailure";
         _message.Visible = !result.Succeeded && !string.IsNullOrWhiteSpace(result.Message);
-        if (!result.Succeeded) return;
+        if (!result.Succeeded) return false;
         Refresh();
         EmitSignal(SignalName.Changed);
+        return true;
     }
 
-    private static void FillHeroes(OptionButton menu, ActiveRunDto run, ContentRegistry content, Func<RosterHeroInstanceDto, bool> predicate, string selected) =>
+    private static void FillHeroes(OptionButton menu, RunView run, ContentRegistry content, Func<RosterHeroView, bool> predicate, string selected) =>
         Fill(menu, run.Roster.Where(predicate).Select(hero => (hero.InstanceId, ((UnitDefinition)Required(content, hero.ContentId).Definition).DisplayName)), selected);
     private static void Fill(OptionButton menu, System.Collections.Generic.IEnumerable<(string Id, string Name)> values, string selected)
     { menu.Clear(); foreach (var (id, name) in values) Add(menu, id, name); Select(menu, selected); }
@@ -216,7 +229,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
     private static void Select(OptionButton menu, string id) { for (var i = 0; i < menu.ItemCount; i++) if (menu.GetItemMetadata(i).AsString() == id) { menu.Select(i); return; } if (menu.ItemCount > 0) menu.Select(0); }
     private static string SelectedId(OptionButton menu) => menu.ItemCount == 0 || menu.Selected < 0 ? string.Empty : menu.GetItemMetadata(menu.Selected).AsString();
     private static string ModeName(GrowthProductionMode mode) => mode switch { GrowthProductionMode.Attack => "攻击培养", GrowthProductionMode.Vitality => "生命培养", _ => "研究" };
-    private static string HeroName(ActiveRunDto run, ContentRegistry content, string instanceId) { var hero = run.Roster.FirstOrDefault(value => value.InstanceId == instanceId); return hero is null ? "未选择" : ((UnitDefinition)Required(content, hero.ContentId).Definition).DisplayName; }
+    private static string HeroName(RunView run, ContentRegistry content, string instanceId) { var hero = run.Roster.FirstOrDefault(value => value.InstanceId == instanceId); return hero is null ? "未选择" : ((UnitDefinition)Required(content, hero.ContentId).Definition).DisplayName; }
     private static string SpellName(CompiledGrowthRules rules, string id) => rules.Spells.TryGetValue(id, out var spell) ? spell.DisplayName : id;
     private static CatalogEntry Required(ContentRegistry content, string id) => content.TryGet(id, out var entry) ? entry : throw new InvalidOperationException($"缺少内容 {id}");
 }

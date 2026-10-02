@@ -18,7 +18,6 @@ public partial class RosterLoadoutView : Control
     private Func<string, PreparedUnitDetails?>? _preparedFor;
     private VBoxContainer _list = null!;
     private RosterHeroCard _card = null!;
-    private RosterHeroDetails _details = null!;
     private ScrollContainer _scroll = null!;
     private HFlowContainer _inventory = null!;
     private EquipmentDropZone _return = null!;
@@ -27,12 +26,13 @@ public partial class RosterLoadoutView : Control
     private readonly Dictionary<string, EquipmentSlotButton> _items = new(StringComparer.Ordinal);
     private readonly Dictionary<string, UnitSnapshot> _snapshots = new(StringComparer.Ordinal);
     private string _selectedItem = "";
+    private string _presentedHeroId = "";
+    public UiCardDisclosure Disclosure => _card.Orbit.Disclosure;
     private PackedScene _cardScene = null!, _tileScene = null!;
     public override void _Ready()
     {
         _list = GetNode<VBoxContainer>("%RosterHeroList");
         _card = GetNode<RosterHeroCard>("%SelectedCard");
-        _details = GetNode<RosterHeroDetails>("%HeroDetails");
         _scroll = GetNode<ScrollContainer>("%RosterHeroScroll");
         _inventory = GetNode<HFlowContainer>("%RosterInventory");
         _return = GetNode<EquipmentDropZone>("%RosterReturnZone");
@@ -45,7 +45,6 @@ public partial class RosterLoadoutView : Control
         _card.EquipmentDropped += Equip;
         _card.EquipmentInspected += Inspect;
         _card.KeyboardEquipment += Keyboard;
-        _card.FactInspected += _details.ShowExplanation;
         _card.EvaluateDrop = data => RunEquipmentDropRules.Evaluate(_app, SelectedHeroId, data);
         _card.CanReceiveItem = itemId => _app?.EquipmentEditingLocked == false && Find(itemId) is not null;
         Resized += FitRosterList;
@@ -60,8 +59,9 @@ public partial class RosterLoadoutView : Control
     }
     private void Refresh()
     {
-        if (_app?.ActiveRun is not { } run) return;
+        if (_app?.Run is not { } run) return;
         if (run.Roster.All(hero => hero.InstanceId != SelectedHeroId)) SelectedHeroId = run.Roster.FirstOrDefault()?.InstanceId ?? "";
+        if (_presentedHeroId != SelectedHeroId) { Disclosure.Reset(); _presentedHeroId = SelectedHeroId; }
         foreach (var id in _selectors.Keys.Where(id => run.Roster.All(hero => hero.InstanceId != id)).ToArray())
         { var selector = _selectors[id]; _list.RemoveChild(selector); selector.QueueFree(); _selectors.Remove(id); }
         foreach (var hero in run.Roster)
@@ -82,9 +82,8 @@ public partial class RosterLoadoutView : Control
             if (hero.InstanceId == SelectedHeroId)
             {
                 var model = new UnitInformation(hero.InstanceId, definition, snapshot,
-                    _preparedFor?.Invoke(hero.InstanceId) ?? RosterEquipmentPreview.Build(_app.Content, hero, snapshot, _app.GrowthRules));
+                    _preparedFor?.Invoke(hero.InstanceId) ?? RosterEquipmentPreview.Build(_app.Content, hero, snapshot, _app.GrowthRules, _app.Project.MatrixStatusRules));
                 _card.Bind(_app, hero, definition, model, _selectedItem);
-                _details.Bind(model, hero.Rank);
             }
         }
         foreach (var id in _items.Keys.Where(id => run.EquipmentInventory.All(item => item.InstanceId != id)).ToArray())
@@ -117,7 +116,7 @@ public partial class RosterLoadoutView : Control
         GetNode<Label>("%RosterCount").Text = $"{run.Roster.Count} 名英雄" + (_app.EquipmentEditingLocked ? " · 战斗中仅查看" : "");
         GetNode<Control>("%RosterInventoryEmpty").Visible = run.EquipmentInventory.Count == 0;
         GetNode<Control>("%RosterEmpty").Visible = run.Roster.Count == 0;
-        _card.Visible = _details.Visible = run.Roster.Count > 0;
+        _card.Visible = run.Roster.Count > 0;
         GetNode<Label>("%RosterItemName").Text = Find(_selectedItem) is { } selectedItem
             ? Item(selectedItem.ContentId).DisplayName : string.Empty;
         FitRosterList();
@@ -132,6 +131,7 @@ public partial class RosterLoadoutView : Control
     public override void _ExitTree() => Resized -= FitRosterList;
     private void SelectHero(string id)
     {
+        if (SelectedHeroId != id) Disclosure.Reset();
         SelectedHeroId = id; Refresh(); HeroSelected?.Invoke(id);
     }
     private void Inspect(EquipmentSlotButton tile, string heroId)
@@ -144,7 +144,7 @@ public partial class RosterLoadoutView : Control
     private void Keyboard(EquipmentSlotButton tile, bool remove, string heroId)
     {
         if (remove) { Remove(tile.InstanceId); return; }
-        var hero = _app?.ActiveRun?.Roster.FirstOrDefault(unit => unit.InstanceId == heroId);
+        var hero = _app?.Run?.Roster.FirstOrDefault(unit => unit.InstanceId == heroId);
         var slot = hero is null ? -1 : Enumerable.Range(0, _app!.Rules.EquipmentSlotCapacity)
             .FirstOrDefault(at => hero.Equipment.All(item => item.SlotIndex != at), -1);
         if (slot < 0) { Feedback("该英雄装备已满，请拖到具体槽位替换。", true); return; }
@@ -152,7 +152,7 @@ public partial class RosterLoadoutView : Control
     }
     private void Equip(string heroId, int slot, string itemId)
     {
-        if (_app?.ActiveRun is not { } run || Find(itemId) is not { } item) return;
+        if (_app?.Run is not { } run || Find(itemId) is not { } item) return;
         var owner = run.Roster.FirstOrDefault(hero => hero.InstanceId == heroId);
         if (owner is null) return;
         var old = owner.Equipment.FirstOrDefault(candidate => candidate.SlotIndex == slot);
@@ -175,7 +175,7 @@ public partial class RosterLoadoutView : Control
         Feedback($"{Item(item.ContentId).DisplayName} 已回背包", false);
     }
     private bool CanReturn(string id) => _app?.EquipmentEditingLocked == false && Find(id) is { OwnerHeroInstanceId.Length: > 0 };
-    private EquipmentInstanceState? Find(string id) => _app?.ActiveRun is { } run ?
+    private RunEquipmentView? Find(string id) => _app?.Run is { } run ?
         run.EquipmentInventory.Concat(run.Roster.SelectMany(hero => hero.Equipment)).FirstOrDefault(item => item.InstanceId == id) : null;
     private ItemDefinition Item(string id) => _app!.Content.TryGet(id, out var entry) ? (ItemDefinition)entry.Definition :
         throw new InvalidOperationException("Missing item " + id);

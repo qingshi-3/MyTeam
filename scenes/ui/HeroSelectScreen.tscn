@@ -1,8 +1,15 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/UI/HeroSelectScreen.cs" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/HeroLibraryTile.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/HeroDetailPanel.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningHeroLibraryTile.tscn" id="OpeningTile"]
+
+[ext_resource type="Theme" path="res://content/ui/opening_theme.tres" id="OpeningTheme"]
+[ext_resource type="Texture2D" path="res://assets/ui/opening/mustering-hall.png" id="Hall"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningHeroSeat.tscn" id="Seat"]
+
+[sub_resource type="StyleBoxEmpty" id="OpeningRow"]
 
 [node name="HeroSelectScreen" type="Control"]
 layout_mode = 3
@@ -13,6 +20,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 HeroLibraryTileScene = ExtResource("2")
+OpeningHeroLibraryTileScene = ExtResource("OpeningTile")
+OpeningLibraryStyle = SubResource("OpeningRow")
+OpeningTheme = ExtResource("OpeningTheme")
+
+[node name="OpeningBackdrop" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("Hall")
+expand_mode = 1
+stretch_mode = 6
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -22,9 +43,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 72
 theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_bottom = 32
 
 [node name="Layout" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
@@ -32,7 +53,7 @@ theme_override_constants/separation = 14
 
 [node name="Title" type="Label" parent="Margin/Layout"]
 layout_mode = 2
-theme_type_variation = &"TitleLabel"
+theme_type_variation = &"PageTitle"
 text = "组建开局队伍 · 六选二"
 
 [node name="OpeningHint" type="Label" parent="Margin/Layout"]
@@ -47,7 +68,8 @@ size_flags_vertical = 3
 theme_override_constants/separation = 16
 
 [node name="LibraryPanel" type="PanelContainer" parent="Margin/Layout/Content"]
-theme_type_variation = &"ContextSidebarPanel"
+unique_name_in_owner = true
+theme_type_variation = &"ReadingWell"
 custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -59,6 +81,7 @@ layout_mode = 2
 theme_override_constants/separation = 7
 
 [node name="LibraryTitle" type="Label" parent="Margin/Layout/Content/LibraryPanel/LibraryLayout"]
+visible = false
 layout_mode = 2
 theme_type_variation = &"HeroIdentity"
 text = "本次候选"
@@ -70,12 +93,17 @@ size_flags_vertical = 3
 horizontal_scroll_mode = 3
 follow_focus = true
 
-[node name="HeroLibrary" type="GridContainer" parent="Margin/Layout/Content/LibraryPanel/LibraryLayout/LibraryScroll"]
+[node name="GridCenter" type="CenterContainer" parent="Margin/Layout/Content/LibraryPanel/LibraryLayout/LibraryScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="HeroLibrary" type="GridContainer" parent="Margin/Layout/Content/LibraryPanel/LibraryLayout/LibraryScroll/GridCenter"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 10
 columns = 3
 
 [node name="HeroDetailPanel" parent="Margin/Layout/Content" instance=ExtResource("3")]
@@ -84,29 +112,67 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.15
 
-[node name="Footer" type="HBoxContainer" parent="Margin/Layout"]
+[node name="Footer" type="Control" parent="Margin/Layout"]
 layout_mode = 2
-theme_override_constants/separation = 18
+custom_minimum_size = Vector2(0, 148)
+mouse_filter = 2
 
 [node name="BackButton" type="Button" parent="Margin/Layout/Footer"]
 unique_name_in_owner = true
 theme_type_variation = &"SecondaryButton"
-custom_minimum_size = Vector2(160, 50)
-layout_mode = 2
-size_flags_horizontal = 4
-text = "返回主菜单"
+layout_mode = 1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -25.0
+offset_bottom = 25.0
+offset_right = 170.0
+text = "‹  返回主菜单"
 
 [node name="OpeningStatus" type="Label" parent="Margin/Layout/Footer"]
 unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_right = 1.0
+offset_top = -42.0
+offset_bottom = -10.0
+mouse_filter = 2
+horizontal_alignment = 1
+
+[node name="SelectionCenter" type="CenterContainer" parent="Margin/Layout/Footer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Seats" type="HBoxContainer" parent="Margin/Layout/Footer/SelectionCenter"]
 layout_mode = 2
-size_flags_horizontal = 3
-text = "已选 0 / 2"
-autowrap_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="FirstSeat" parent="Margin/Layout/Footer/SelectionCenter/Seats" instance=ExtResource("Seat")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SecondSeat" parent="Margin/Layout/Footer/SelectionCenter/Seats" instance=ExtResource("Seat")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Ordinal" parent="Margin/Layout/Footer/SelectionCenter/Seats/SecondSeat" index="1"]
+text = "II"
 
 [node name="ConfirmOpening" type="Button" parent="Margin/Layout/Footer"]
 unique_name_in_owner = true
 theme_type_variation = &"PrimaryButton"
-custom_minimum_size = Vector2(240, 50)
-layout_mode = 2
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -288.0
+offset_top = -48.0
+offset_bottom = 48.0
 disabled = true
-text = "确认队伍 · 前往备战"
+text = "启程"
+
+[editable path="Margin/Layout/Footer/SelectionCenter/Seats/SecondSeat"]

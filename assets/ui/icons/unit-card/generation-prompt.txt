@@ -1,0 +1,9 @@
+Use case: background-extraction.
+Production asset preparation from the attached APPROVED icon review sheet. Extract the SIXTEEN existing icon illustrations in the lower 4 by 4 table, remove ALL background, ALL headings, ALL numbers, ALL rules/lines, and the ENTIRE upper name ribbon. Preserve every extracted illustration's identity, colors, materials, proportions and detail. Do not redesign or replace any symbol.
+Output a clean transparent square 4 by 4 sprite atlas with EXACTLY sixteen evenly sized cells and ample transparent gutters. Every icon centered in its cell with 15% padding, comparable optical size, no clipping. No cell lines, text or decorations.
+Order must remain:
+row 1: steel axe with brown handle; smooth flowing purple arcane energy (not crystal); red heart; steel shield.
+row 2: curved attack-speed sword; brass circular crosshair; SOLID gold spiked impact burst with NO lightning/central symbol; red impact burst with diagonal steel blade.
+row 3: paired RED fangs; gold running figure with speed bars; broken steel chain; brown leather boot with speed marks.
+row 4: FILLED blue mana teardrop (not hollow); GREEN equal-armed cross; gold lightning active-skill symbol; gold ring with four-point star passive-skill symbol.
+Keep just these assets, preserving their current hand-painted tactile materials. No individual backgrounds, frames, labels or values. All gaps and outside contours genuinely transparent, no white speckled patches or opaque charcoal. This is extraction and arranging, not a new art direction. The second-row first sword will be replaced separately in the engine with the separately approved attack-speed image; do not change other icons to match it.

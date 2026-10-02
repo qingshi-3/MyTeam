@@ -1,6 +1,6 @@
 {
   "date": "2026-09-25",
-  "policy": "Explicit Resource references matched by current SpriteFrames path; older generation labels are historical. UI card opt-in only, battle animation unchanged.",
+  "policy": "Explicit Resource references matched by current SpriteFrames path across alpha heroes, growth and validation-matrix content; UI card opt-in only, battle animation unchanged.",
   "bindings": [
     {
       "portrait": "content/portraits/heroes/hero_hc01_crossbow.tres",
@@ -11,12 +11,14 @@
         0.25
       ],
       "zoom": 1.15,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f1_ranged.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc03_iron_guard.tres",
@@ -27,12 +29,14 @@
         0.53
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png",
+      "card_illustration": null,
       "card_focus": [
         0.62,
         0.52
       ],
-      "card_zoom": 1.25
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc04_crit_duelist.tres",
@@ -43,12 +47,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f2_melee.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc05_tide_caster.tres",
@@ -59,12 +65,15 @@
         0.22
       ],
       "zoom": 1.1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f3_dunecaster.png",
+      "card_illustration": null,
       "card_focus": [
-        0.5,
+        0.62,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.6,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "card_crop_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc06_surge_conductor.tres",
@@ -75,12 +84,15 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f6_sister.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_palette": "灰紫",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/background-study/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc07_death_echo.tres",
@@ -91,12 +103,15 @@
         0.59
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f2_lanternfox.png",
+      "card_illustration": null,
       "card_focus": [
         0.6,
         0.6
       ],
-      "card_zoom": 1.3
+      "card_zoom": 1.0,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "card_crop_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc08_poison_keeper.tres",
@@ -107,12 +122,14 @@
         0.56
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f4_darkspine.png",
+      "card_illustration": null,
       "card_focus": [
         0.53,
         0.48
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc09_breach_scribe.tres",
@@ -123,12 +140,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f2_spellthief.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc10_ember_cashout.tres",
@@ -139,12 +158,14 @@
         0.71
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f5_firebreather.png",
+      "card_illustration": null,
       "card_focus": [
         0.53,
         0.52
       ],
-      "card_zoom": 1.1
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc11_triad_weaver.tres",
@@ -155,12 +176,14 @@
         0.41
       ],
       "zoom": 1.55,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f6_general.png",
+      "card_illustration": null,
       "card_focus": [
         0.55,
         0.48
       ],
-      "card_zoom": 1.65
+      "card_zoom": 1.65,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc12_control_clock.tres",
@@ -171,12 +194,14 @@
         0.29
       ],
       "zoom": 1.3,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f3_general.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.4
       ],
-      "card_zoom": 1.4
+      "card_zoom": 1.4,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc13_shield_crit.tres",
@@ -187,12 +212,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f1_sunforgelancer.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc14_stone_fist.tres",
@@ -203,12 +230,14 @@
         0.42
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f5_tank.png",
+      "card_illustration": null,
       "card_focus": [
         0.57,
         0.46
       ],
-      "card_zoom": 1.1
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc15_shield_grower.tres",
@@ -219,12 +248,14 @@
         0.27
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f1_tank.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc16_shield_bomber.tres",
@@ -235,12 +266,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f4_mech.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc17_pain_vessel.tres",
@@ -251,12 +284,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f4_general.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc18_healing_reader.tres",
@@ -267,12 +302,15 @@
         0.25
       ],
       "zoom": 1.5,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f3_aymarahealer.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.37
       ],
-      "card_zoom": 1.35
+      "card_zoom": 1.35,
+      "illustration_mode": "direct_original",
+      "background_palette": "灰绿",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/background-study/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc19_overheal_priest.tres",
@@ -283,12 +321,14 @@
         0.29
       ],
       "zoom": 1.15,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f1_sister.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc20_blood_drummer.tres",
@@ -299,12 +339,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f4_bloodbaronette.png",
+      "card_illustration": null,
       "card_focus": [
         0.56,
         0.38
       ],
-      "card_zoom": 1.15
+      "card_zoom": 1.15,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc21_last_stand.tres",
@@ -315,12 +357,14 @@
         0.28
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f5_general.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc22_dodge_assassin.tres",
@@ -331,12 +375,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f6_freeblade.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc23_frost_historian.tres",
@@ -347,12 +393,14 @@
         0.34
       ],
       "zoom": 1.15,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f6_frostbitehawker.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc24_swarm_keeper.tres",
@@ -363,12 +411,14 @@
         0.55
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f4_crawler.png",
+      "card_illustration": null,
       "card_focus": [
         0.61,
         0.54
       ],
-      "card_zoom": 1.25
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc25_death_provider.tres",
@@ -379,12 +429,14 @@
         0.52
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f5_spiritharvester.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.48
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc26_ash_returner.tres",
@@ -395,12 +447,14 @@
         0.27
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f5_drogon.png",
+      "card_illustration": null,
       "card_focus": [
         0.43,
         0.4
       ],
-      "card_zoom": 1.1
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc27_ally_consumer.tres",
@@ -411,12 +465,14 @@
         0.56
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f6_crystalbeetle.png",
+      "card_illustration": null,
       "card_focus": [
         0.58,
         0.55
       ],
-      "card_zoom": 1.1
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc28_corpse_raiser.tres",
@@ -427,12 +483,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f4_bloodbaronette.png",
+      "card_illustration": null,
       "card_focus": [
         0.56,
         0.38
       ],
-      "card_zoom": 1.15
+      "card_zoom": 1.15,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc29_mind_binder.tres",
@@ -443,12 +501,14 @@
         0.24
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f3_dervish.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.4
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc30_armor_broadcaster.tres",
@@ -459,12 +519,15 @@
         0.23
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f1_general.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_palette": "蓝灰",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/background-study/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc31_breach_lancer.tres",
@@ -475,12 +538,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f1_sunforgelancer.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc32_sky_monk.tres",
@@ -491,12 +556,14 @@
         0.24
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f3_dervish.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.4
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc33_rift_assassin.tres",
@@ -507,12 +574,14 @@
         0.25
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f6_freeblade.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc34_shockshield_guard.tres",
@@ -523,12 +592,14 @@
         0.27
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f1_tank.png",
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc35_hook_hunter.tres",
@@ -539,12 +610,14 @@
         0.56
       ],
       "zoom": 1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f4_darkspine.png",
+      "card_illustration": null,
       "card_focus": [
         0.53,
         0.48
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
     },
     {
       "portrait": "content/portraits/heroes/hero_hc36_cyclone_weaver.tres",
@@ -555,12 +628,1638 @@
         0.22
       ],
       "zoom": 1.1,
-      "card_illustration": "assets/portraits/illustrations/cutouts/f3_dunecaster.png",
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.32
+      ],
+      "card_zoom": 1.6,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "card_crop_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json"
+    },
+    {
+      "portrait": "content/growth/portraits/gx01_vine_plague.tres",
+      "frames": "assets/donor-units/f6_frostbitehawker/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "focus": [
+        0.5,
+        0.34
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
       "card_focus": [
         0.5,
         0.32
       ],
-      "card_zoom": 1.2
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/growth/portraits/gx02_venom_walker.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/growth/portraits/gx03_array_gunner.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/growth/portraits/gx04_phase_anchor.tres",
+      "frames": "assets/donor-units/f3_dervish/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dervish.png",
+      "focus": [
+        0.5,
+        0.24
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx01.tres",
+      "frames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "focus": [
+        0.62,
+        0.53
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.52
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx02.tres",
+      "frames": "assets/donor-units/f5_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "focus": [
+        0.5,
+        0.42
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.57,
+        0.46
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx03.tres",
+      "frames": "assets/donor-units/f6_frostbitehawker/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "focus": [
+        0.5,
+        0.34
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx04.tres",
+      "frames": "assets/donor-units/f3_dunecaster/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dunecaster.png",
+      "focus": [
+        0.5,
+        0.22
+      ],
+      "zoom": 1.1,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.32
+      ],
+      "card_zoom": 1.6,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx05.tres",
+      "frames": "assets/donor-units/f3_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_general.png",
+      "focus": [
+        0.5,
+        0.29
+      ],
+      "zoom": 1.3,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.4,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx06.tres",
+      "frames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "focus": [
+        0.62,
+        0.53
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.52
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx07.tres",
+      "frames": "assets/donor-units/f4_darkspine/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_darkspine.png",
+      "focus": [
+        0.5,
+        0.56
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.53,
+        0.48
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx08.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx09.tres",
+      "frames": "assets/donor-units/f4_darkspine/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_darkspine.png",
+      "focus": [
+        0.5,
+        0.56
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.53,
+        0.48
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx10.tres",
+      "frames": "assets/donor-units/f3_aymarahealer/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_aymarahealer.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.5,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.37
+      ],
+      "card_zoom": 1.35,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx11.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx12.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx13.tres",
+      "frames": "assets/donor-units/f6_freeblade/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_freeblade.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx14.tres",
+      "frames": "assets/donor-units/f5_firebreather/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_firebreather.png",
+      "focus": [
+        0.5,
+        0.71
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.53,
+        0.52
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx15.tres",
+      "frames": "assets/donor-units/f4_crawler/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "focus": [
+        0.58,
+        0.55
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.61,
+        0.54
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx16.tres",
+      "frames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "focus": [
+        0.62,
+        0.53
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.52
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx17.tres",
+      "frames": "assets/donor-units/f5_drogon/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_drogon.png",
+      "focus": [
+        0.45,
+        0.27
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.43,
+        0.4
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx18.tres",
+      "frames": "assets/donor-units/f6_freeblade/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_freeblade.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx19.tres",
+      "frames": "assets/donor-units/f2_lanternfox/frames.tres",
+      "illustration": "assets/portraits/illustrations/f2_lanternfox.png",
+      "focus": [
+        0.55,
+        0.59
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.6,
+        0.6
+      ],
+      "card_zoom": 1.0,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx20.tres",
+      "frames": "assets/donor-units/f5_spiritharvester/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_spiritharvester.png",
+      "focus": [
+        0.5,
+        0.52
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.48
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx22.tres",
+      "frames": "assets/donor-units/f4_mech/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_mech.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx23.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx24.tres",
+      "frames": "assets/donor-units/f1_sunforgelancer/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sunforgelancer.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx25.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx26.tres",
+      "frames": "assets/donor-units/f5_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_general.png",
+      "focus": [
+        0.5,
+        0.28
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx27.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx28.tres",
+      "frames": "assets/donor-units/f2_melee/frames.tres",
+      "illustration": "assets/portraits/illustrations/f2_melee.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx29.tres",
+      "frames": "assets/donor-units/f4_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_general.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx30.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx31.tres",
+      "frames": "assets/donor-units/f1_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_general.png",
+      "focus": [
+        0.5,
+        0.23
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx32.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx33.tres",
+      "frames": "assets/donor-units/f6_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_sister.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx34.tres",
+      "frames": "assets/donor-units/f3_aymarahealer/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_aymarahealer.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.5,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.37
+      ],
+      "card_zoom": 1.35,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx35.tres",
+      "frames": "assets/donor-units/f4_crawler/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "focus": [
+        0.58,
+        0.55
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.61,
+        0.54
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx36.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx37.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx38.tres",
+      "frames": "assets/donor-units/f6_general/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_general.png",
+      "focus": [
+        0.55,
+        0.41
+      ],
+      "zoom": 1.55,
+      "card_illustration": null,
+      "card_focus": [
+        0.55,
+        0.48
+      ],
+      "card_zoom": 1.65,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx39.tres",
+      "frames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "focus": [
+        0.62,
+        0.53
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.52
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx40.tres",
+      "frames": "assets/donor-units/f1_sunforgelancer/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sunforgelancer.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx41.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx42.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx43.tres",
+      "frames": "assets/donor-units/f1_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_tank.png",
+      "focus": [
+        0.5,
+        0.27
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx44.tres",
+      "frames": "assets/donor-units/f6_frostbitehawker/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "focus": [
+        0.5,
+        0.34
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx45.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx46.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx47.tres",
+      "frames": "assets/donor-units/f3_dervish/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dervish.png",
+      "focus": [
+        0.5,
+        0.24
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx48.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_astral.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_aurora.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_bone.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_drone.tres",
+      "frames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "focus": [
+        0.62,
+        0.53
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.52
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_fire.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_plague.tres",
+      "frames": "assets/donor-units/f1_sister/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "focus": [
+        0.62,
+        0.29
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "background_revision_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_bc_insect.tres",
+      "frames": "assets/donor-units/f4_crawler/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "focus": [
+        0.58,
+        0.55
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.61,
+        0.54
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_bc_morsel.tres",
+      "frames": "assets/donor-units/f6_crystalbeetle/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_crystalbeetle.png",
+      "focus": [
+        0.56,
+        0.56
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.58,
+        0.55
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_bc_raised.tres",
+      "frames": "assets/donor-units/f4_darkspine/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_darkspine.png",
+      "focus": [
+        0.5,
+        0.56
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.53,
+        0.48
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_bc_skeleton.tres",
+      "frames": "assets/donor-units/f3_irondervish/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_irondervish.png",
+      "focus": [
+        0.5,
+        0.32
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_dummy_melee.tres",
+      "frames": "assets/donor-units/f2_melee/frames.tres",
+      "illustration": "assets/portraits/illustrations/f2_melee.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_dummy_ranged.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_dummy_static.tres",
+      "frames": "assets/donor-units/f1_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_tank.png",
+      "focus": [
+        0.5,
+        0.27
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_blood_reaver.tres",
+      "frames": "assets/donor-units/f4_bloodbaronette/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_bloodbaronette.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.56,
+        0.38
+      ],
+      "card_zoom": 1.15,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_boreal_boss.tres",
+      "frames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "focus": [
+        0.62,
+        0.53
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.52
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_brood_larva.tres",
+      "frames": "assets/donor-units/f4_crawler/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "focus": [
+        0.58,
+        0.55
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.61,
+        0.54
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_carrion.tres",
+      "frames": "assets/donor-units/f4_crawler/frames.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "focus": [
+        0.58,
+        0.55
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.61,
+        0.54
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_clockwork_boss.tres",
+      "frames": "assets/donor-units/boss_decepticleprime/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_decepticleprime.png",
+      "focus": [
+        0.5,
+        0.32
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_crossbow.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_cutpurse.tres",
+      "frames": "assets/donor-units/f2_melee/frames.tres",
+      "illustration": "assets/portraits/illustrations/f2_melee.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_eb01_rampart_warden.tres",
+      "frames": "assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "focus": [
+        0.62,
+        0.53
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.52
+      ],
+      "card_zoom": 1.25,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_eb02_shell_matriarch.tres",
+      "frames": "assets/donor-units/f6_crystalbeetle/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_crystalbeetle.png",
+      "focus": [
+        0.56,
+        0.56
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.58,
+        0.55
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ee03_trample_brute.tres",
+      "frames": "assets/donor-units/f5_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "focus": [
+        0.5,
+        0.42
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.57,
+        0.46
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ee07_furnace_lizard.tres",
+      "frames": "assets/donor-units/f5_firebreather/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_firebreather.png",
+      "focus": [
+        0.5,
+        0.71
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.53,
+        0.52
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ee08_return_blade.tres",
+      "frames": "assets/donor-units/f3_irondervish/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_irondervish.png",
+      "focus": [
+        0.5,
+        0.32
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ee09_swap_envoy.tres",
+      "frames": "assets/donor-units/f2_spellthief/frames.tres",
+      "illustration": "assets/portraits/illustrations/f2_spellthief.png",
+      "focus": [
+        0.53,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_es01_piercing_crossbow.tres",
+      "frames": "assets/donor-units/f1_ranged/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_es04_prism_caster.tres",
+      "frames": "assets/donor-units/f3_dunecaster/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dunecaster.png",
+      "focus": [
+        0.5,
+        0.22
+      ],
+      "zoom": 1.1,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.32
+      ],
+      "card_zoom": 1.6,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_hexer.tres",
+      "frames": "assets/donor-units/f3_dunecaster/frames.tres",
+      "illustration": "assets/portraits/illustrations/f3_dunecaster.png",
+      "focus": [
+        0.5,
+        0.22
+      ],
+      "zoom": 1.1,
+      "card_illustration": null,
+      "card_focus": [
+        0.62,
+        0.32
+      ],
+      "card_zoom": 1.6,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ice_blade.tres",
+      "frames": "assets/donor-units/f6_freeblade/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_freeblade.png",
+      "focus": [
+        0.5,
+        0.25
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ice_hawker.tres",
+      "frames": "assets/donor-units/f6_frostbitehawker/frames.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "focus": [
+        0.5,
+        0.34
+      ],
+      "zoom": 1.15,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_resistance_dummy.tres",
+      "frames": "assets/donor-units/f5_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "focus": [
+        0.5,
+        0.42
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.57,
+        0.46
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_rust_guard.tres",
+      "frames": "assets/donor-units/f1_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f1_tank.png",
+      "focus": [
+        0.5,
+        0.27
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.32
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_scale_brute.tres",
+      "frames": "assets/donor-units/f5_tank/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "focus": [
+        0.5,
+        0.42
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.57,
+        0.46
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_shadow_boss.tres",
+      "frames": "assets/donor-units/boss_shadowlord/frames.tres",
+      "illustration": "assets/portraits/illustrations/boss_shadowlord.png",
+      "focus": [
+        0.5,
+        0.32
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.5,
+        0.4
+      ],
+      "card_zoom": 1.2,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_wyrm.tres",
+      "frames": "assets/donor-units/f5_drogon/frames.tres",
+      "illustration": "assets/portraits/illustrations/f5_drogon.png",
+      "focus": [
+        0.45,
+        0.27
+      ],
+      "zoom": 1.0,
+      "card_illustration": null,
+      "card_focus": [
+        0.43,
+        0.4
+      ],
+      "card_zoom": 1.1,
+      "illustration_mode": "direct_original",
+      "runtime_reference_fix_record": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json"
     }
   ],
   "animationFallbacks": [
@@ -575,6 +2274,24 @@
     {
       "portrait": "content/portraits/heroes/hero_hc39_hook_machine.tres",
       "animationKey": "f1_invincibuddy"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_brood_egg.tres",
+      "animationKey": "brood_egg"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_rampart_segment.tres",
+      "animationKey": "rampart_segment"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx21.tres",
+      "animationKey": "f1_invincibuddy"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx49.tres",
+      "animationKey": "f1_windbladecommander"
     }
-  ]
+  ],
+  "portrait_optimization_date": "2026-09-30",
+  "runtime_reference_fix_date": "2026-10-01"
 }

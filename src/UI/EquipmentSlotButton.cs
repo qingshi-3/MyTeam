@@ -10,6 +10,7 @@ public partial class EquipmentSlotButton : Button, IUiMotionHost
     public Func<bool> ReduceUiMotion { get; set; } = () => false;
     [Export] public bool InlinePresentation { get; set; }
     [Export] public bool WorkbenchPresentation { get; set; }
+    [Export] public bool CardRelicPresentation { get; set; }
     public event Action<EquipmentSlotButton>? Chosen;
     public event Action<string, int>? EquipmentDropped;
     public string InstanceId { get; private set; } = string.Empty;
@@ -52,7 +53,7 @@ public partial class EquipmentSlotButton : Button, IUiMotionHost
         ordinal.Text = (slotIndex + 1).ToString();
         TooltipText = item is null ? "拖入装备。已有装备会回到背包。" :
             $"{item.DisplayName}\n{item.Description}\n{(editable ? "拖动装备 · 点击查看 · Ctrl+回车装入空槽 · Delete卸下" : "当前仅查看。")}";
-        var style = WorkbenchPresentation ? "WorkbenchEquipment" : InlinePresentation ? "CardEquipment" : "EquipmentSocket";
+        var style = PresentationStyle;
         _normalStyle = selected ? style + "Selected" : style;
         ThemeTypeVariation = _normalStyle;
         Disabled = !editable && item is null;
@@ -81,7 +82,7 @@ public partial class EquipmentSlotButton : Button, IUiMotionHost
     {
         if (!TryEquipmentId(data, out var id)) return false;
         var allowed = HasScope(data, DragScope) && HasContext(data, DragContext) && AcceptEquipment && id != InstanceId && (CanReceive?.Invoke(id) ?? true);
-        var style = WorkbenchPresentation ? "WorkbenchEquipment" : InlinePresentation ? "CardEquipment" : "EquipmentSocket";
+        var style = PresentationStyle;
         ThemeTypeVariation = style + (allowed ? "Valid" : "Invalid");
         UiDragVisual.Aim(data, this, allowed, allowed && !string.IsNullOrEmpty(InstanceId));
         return allowed;
@@ -107,6 +108,8 @@ public partial class EquipmentSlotButton : Button, IUiMotionHost
         }
     }
     private void ClearHighlight() => ThemeTypeVariation = _normalStyle;
+    private string PresentationStyle => CardRelicPresentation ? "RelicEquipment" :
+        WorkbenchPresentation ? "WorkbenchEquipment" : InlinePresentation ? "CardEquipment" : "EquipmentSocket";
 
     public static bool TryEquipmentId(Variant data, out string id)
     {

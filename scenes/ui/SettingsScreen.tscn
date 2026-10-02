@@ -19,7 +19,7 @@ grow_horizontal = 2
 grow_vertical = 2
 [node name="Panel" type="PanelContainer" parent="Center"]
 theme_type_variation = &"ModalPanel"
-custom_minimum_size = Vector2(720, 520)
+custom_minimum_size = Vector2(760, 580)
 layout_mode = 2
 [node name="Layout" type="VBoxContainer" parent="Center/Panel"]
 layout_mode = 2
@@ -27,6 +27,7 @@ theme_override_constants/separation = 18
 [node name="Title" type="Label" parent="Center/Panel/Layout"]
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 38
 text = "设置"
 [node name="VolumeHeader" type="HBoxContainer" parent="Center/Panel/Layout"]
 layout_mode = 2
@@ -38,7 +39,7 @@ text = "主音量"
 
 [node name="VolumeValue" type="Label" parent="Center/Panel/Layout/VolumeHeader"]
 layout_mode = 2
-theme_type_variation = &"SecondaryLabel"
+theme_type_variation = &"HudValue"
 text = "80%"
 [node name="VolumeSlider" type="HSlider" parent="Center/Panel/Layout"]
 custom_minimum_size = Vector2(0, 48)

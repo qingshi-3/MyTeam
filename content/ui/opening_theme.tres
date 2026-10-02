@@ -1,0 +1,76 @@
+[gd_resource type="Theme" load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/opening/hero-stone-frame.png" id="Frame"]
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/button-primary.png" id="Button"]
+
+[sub_resource type="SystemFont" id="TitleFont"]
+font_names = PackedStringArray("Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun")
+font_weight = 500
+
+[sub_resource type="StyleBoxEmpty" id="Empty"]
+
+[sub_resource type="StyleBoxTexture" id="Stone"]
+texture = ExtResource("Frame")
+
+[sub_resource type="StyleBoxTexture" id="SelectedStone"]
+texture = ExtResource("Frame")
+modulate_color = Color(1.28, 1.15, 0.86, 1)
+
+[sub_resource type="StyleBoxTexture" id="Primary"]
+texture = ExtResource("Button")
+
+[sub_resource type="StyleBoxTexture" id="PrimaryHover"]
+texture = ExtResource("Button")
+modulate_color = Color(1.08, 1.08, 1.08, 1)
+
+[sub_resource type="StyleBoxTexture" id="PrimaryPressed"]
+texture = ExtResource("Button")
+modulate_color = Color(0.86, 0.86, 0.86, 1)
+
+[sub_resource type="StyleBoxTexture" id="PrimaryDisabled"]
+texture = ExtResource("Button")
+modulate_color = Color(0.48, 0.52, 0.55, 1)
+
+[resource]
+OrbitFrame/base_type = &"Panel"
+OrbitFrame/styles/panel = SubResource("Stone")
+OrbitFrameSelected/base_type = &"Panel"
+OrbitFrameSelected/styles/panel = SubResource("SelectedStone")
+OpeningTitle/base_type = &"Label"
+OpeningTitle/fonts/font = SubResource("TitleFont")
+OpeningTitle/font_sizes/font_size = 42
+OpeningTitle/colors/font_color = Color(0.94, 0.9, 0.8, 1)
+OpeningTitle/colors/font_shadow_color = Color(0.02, 0.03, 0.04, 0.95)
+OpeningTitle/constants/shadow_offset_y = 2
+OpeningTitle/constants/outline_size = 0
+OpeningTitle/styles/normal = SubResource("Empty")
+CardName/base_type = &"Label"
+CardName/fonts/font = SubResource("TitleFont")
+CardName/font_sizes/font_size = 23
+CardName/colors/font_color = Color(0.95, 0.91, 0.82, 1)
+CardName/constants/outline_size = 0
+CardName/styles/normal = SubResource("Empty")
+PrimaryButton/base_type = &"Button"
+PrimaryButton/fonts/font = SubResource("TitleFont")
+PrimaryButton/font_sizes/font_size = 25
+PrimaryButton/colors/font_color = Color(0.95, 0.91, 0.79, 1)
+PrimaryButton/colors/font_hover_color = Color(1, 0.97, 0.88, 1)
+PrimaryButton/colors/font_focus_color = Color(0.95, 0.91, 0.79, 1)
+PrimaryButton/colors/font_pressed_color = Color(0.95, 0.91, 0.79, 1)
+PrimaryButton/colors/font_disabled_color = Color(0.56, 0.59, 0.59, 1)
+PrimaryButton/styles/normal = SubResource("Primary")
+PrimaryButton/styles/hover = SubResource("PrimaryHover")
+PrimaryButton/styles/pressed = SubResource("PrimaryPressed")
+PrimaryButton/styles/disabled = SubResource("PrimaryDisabled")
+OpeningSeat/base_type = &"Button"
+OpeningSeat/styles/normal = SubResource("Empty")
+OpeningSeat/styles/hover = SubResource("Empty")
+OpeningSeat/styles/pressed = SubResource("Empty")
+OpeningSeat/styles/disabled = SubResource("Empty")
+OpeningBack/base_type = &"Button"
+OpeningBack/font_sizes/font_size = 21
+OpeningBack/colors/font_color = Color(0.74, 0.75, 0.73, 1)
+OpeningBack/colors/font_hover_color = Color(0.96, 0.92, 0.83, 1)
+OpeningBack/styles/normal = SubResource("Empty")
+OpeningBack/styles/hover = SubResource("Empty")
+OpeningBack/styles/pressed = SubResource("Empty")

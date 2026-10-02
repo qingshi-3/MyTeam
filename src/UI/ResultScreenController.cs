@@ -29,10 +29,12 @@ public partial class ResultScreenController : Control
         _menu.Pressed -= OnMenu;
     }
 
-    public void Bind(string title, string summary)
+    public void Bind(string title, string summary, string primaryText = "再次登塔", string secondaryText = "返回主菜单")
     {
         _title.Text = title;
         _summary.Text = summary;
+        _newRun.Text = primaryText;
+        _menu.Text = secondaryText;
     }
 
     private void OnNewRun() => NewRunRequested?.Invoke();

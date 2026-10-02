@@ -8,8 +8,8 @@ public static class RunHealthText
 {
     public static string Risk(CompiledRunRules rules, TowerNodeType type) => type switch
     {
-        TowerNodeType.Boss => "Boss 战失败或超时，直接结束征程（无论剩余生命）。",
-        TowerNodeType.Combat or TowerNodeType.Elite => $"失败或超时扣 {RunHealthPolicy.DefeatLoss(rules, type)} 全局生命；有余血可继续，无战利品。",
+        TowerNodeType.Boss => "首领战 · 战败或超时即结束征程，不受剩余生命影响。",
+        TowerNodeType.Combat or TowerNodeType.Elite => $"战败 / 超时：全局生命 −{RunHealthPolicy.DefeatLoss(rules, type)} · 无战利品；生命尚有剩余可继续。",
         _ => string.Empty
     };
 

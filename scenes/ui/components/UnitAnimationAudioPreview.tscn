@@ -25,6 +25,7 @@ anchor_bottom = 1.0
 color = Color(0.005, 0.01, 0.015, 0.88)
 
 [node name="Panel" type="PanelContainer" parent="."]
+theme_type_variation = &"ModalPanel"
 layout_mode = 1
 anchor_left = 0.06
 anchor_top = 0.06
@@ -80,7 +81,7 @@ layout_mode = 1
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0.024, 0.043, 0.056, 1)
+color = Color(0.085, 0.075, 0.06, 1)
 
 [node name="PreviewActorHost" type="Node2D" parent="Panel/Margin/Layout/Body/Animation/PreviewStage"]
 unique_name_in_owner = true

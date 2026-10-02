@@ -13,6 +13,8 @@ public partial class DeploymentUnitCard : Button, IUiMotionHost
     public event Action<string>? UnitSelected;
     public string InstanceId { get; private set; } = string.Empty;
     public UnitPortrait Portrait { get; private set; } = null!;
+    public Func<float, Vector2>? DragPreviewSizeProvider { get; set; }
+    private DeploymentUnitViewModel? _model;
 
     private Label _name = null!;
     private SemanticChip _health = null!;
@@ -50,6 +52,7 @@ public partial class DeploymentUnitCard : Button, IUiMotionHost
 
     public void Bind(DeploymentUnitViewModel model, bool selected)
     {
+        _model = model;
         var previousIdentity = InstanceId;
         InstanceId = model.InstanceId;
         if (previousIdentity != InstanceId) UiDragVisual.Bound(this, InstanceId, "piece_id");
@@ -86,12 +89,11 @@ public partial class DeploymentUnitCard : Button, IUiMotionHost
 
     public override Variant _GetDragData(Vector2 atPosition)
     {
-        if (string.IsNullOrWhiteSpace(InstanceId)) return default;
-        var preview = GD.Load<PackedScene>("res://scenes/ui/components/HeroDragPreview.tscn").Instantiate<Control>();
-        preview.GetNode<UnitPortrait>("Layout/Portrait").Bind(Portrait.Definition);
-        preview.GetNode<Label>("Layout/Name").Text = _name.Text;
+        if (string.IsNullOrWhiteSpace(InstanceId) || _model is null) return default;
+        var size = DragPreviewSizeProvider?.Invoke(_model.BodyRadius) ?? Portrait.Size;
+        var preview = DeploymentCell.CreateDragPreview(Portrait.Definition, _model.IsHero, _model.Role, size);
         return UiDragVisual.Begin(this, preview, new Godot.Collections.Dictionary { ["piece_id"] = InstanceId },
-            () => ReduceUiMotion(), keepTargetVisible: true);
+            () => ReduceUiMotion(), centerOnPointer: true);
     }
 
     public override bool _CanDropData(Vector2 atPosition, Variant data)

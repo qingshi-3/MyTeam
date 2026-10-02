@@ -97,3 +97,19 @@ mouse_filter = 2
 theme_type_variation = &"SecondaryLabel"
 theme_override_font_sizes/font_size = 12
 autowrap_mode = 3
+
+[node name="SingleEntry" type="RichTextLabel" parent="TooltipPanel/Margin/Copy"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 0
+custom_minimum_size = Vector2(0, 100)
+theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/bold_font_size = 18
+bbcode_enabled = true
+fit_content = false
+scroll_active = true
+selection_enabled = false
+script = ExtResource("RichCopy")
+Vocabulary = ExtResource("Vocabulary")
+ShowGlossary = false

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitOrbitStat.tscn" id="Base"]
+[node name="OpeningUnitOrbitStat" instance=ExtResource("Base")]
+custom_minimum_size = Vector2(90, 24)
+[node name="Layout" parent="." index="0"]
+theme_override_constants/separation = 4
+[node name="FactIcon" parent="Layout" index="0"]
+custom_minimum_size = Vector2(22, 22)
+[node name="FactValue" parent="Layout" index="1"]
+theme_override_font_sizes/font_size = 18

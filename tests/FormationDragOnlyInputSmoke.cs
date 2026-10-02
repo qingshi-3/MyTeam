@@ -7,6 +7,7 @@ using Godot;
 using TowerAutobattler.App;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Composition;
+using TowerAutobattler.Content;
 using TowerAutobattler.Project;
 using TowerAutobattler.Run;
 using TowerAutobattler.UI;
@@ -17,7 +18,8 @@ public partial class FormationDragOnlyInputSmoke : Control
 {
     private string _step = "startup";
     private UiInputStage _stage = null!;
-    private readonly UiDragMotionRecorder _motion = new();
+    private UiDragMotionRecorder _motion = new();
+    private float _expectedBodyRadius = BattlefieldSpace.DefaultBodyRadius;
     public override async void _Ready()
     {
         var exit = 0;
@@ -67,15 +69,22 @@ public partial class FormationDragOnlyInputSmoke : Control
             };
             screens.BindEquipmentManagement(app);
             screen.Bind(app, encounter);
-            screens.Show(AppScreenId.Deployment, run, app.Content, app.Rules);
+            screens.Show(AppScreenId.Deployment, RunView.For(run), app.Content, app.Rules);
             await Frames(4);
+            if (OS.GetCmdlineUserArgs().Contains("--large-only"))
+            {
+                game.Hide();
+                await ValidateLargeBodyPreview(app.BuildBattleConfig(encounter));
+                GD.Print("FORMATION_LARGE_INPUT_OK grid-diameter,isotropic-lift,move,cancel,withdraw");
+                GetTree().Quit();
+                return;
+            }
             var board = screen.GetNode<DeploymentBoard>("%DeploymentBoard");
             var window = screen.GetNode<Control>("%ReserveBench");
             Require(window.IsVisibleInTree() && window.GetGlobalRect().Position.Y >= board.GetGlobalRect().End.Y,
                 "reserve bench is already visible below the battlefield");
             Require(Descendants<DeploymentUnitCard>(screen).All(card => !run.Deployment.Contains(card.InstanceId)),
                 "bench contains only undeployed heroes");
-            await ValidateLongNamePreviewFixture();
 
             _step = "reserve click only selects";
             var firstEmpty = Cells(screen).First(cell => cell.PieceId.Length == 0 && !window.GetGlobalRect().Intersects(cell.GetGlobalRect()));
@@ -108,7 +117,7 @@ public partial class FormationDragOnlyInputSmoke : Control
             Require(Cell(screen, firstCell).PieceId == reserveId
                 && !Descendants<DeploymentUnitCard>(screen).Any(card => card.InstanceId == reserveId),
                 "deployed hero leaves bench immediately");
-            Require(window.IsVisibleInTree() && screen.GetNode<Label>("%EmptyReserve").Visible,
+            Require(window.IsVisibleInTree() && window.Size.Y > 0 && !Descendants<DeploymentUnitCard>(screen).Any(),
                 "empty bench remains available as a withdrawal target");
             await Capture("reserve-deployed");
 
@@ -237,6 +246,7 @@ public partial class FormationDragOnlyInputSmoke : Control
             var sourceTint = topEdgeSource.Modulate;
             var topEdgePoint = topEdgeTarget.GetGlobalRect().GetCenter();
             await BeginDrag(topEdgeSource, topEdgePoint);
+            topEdgeSource.ReduceUiMotion = () => true;
             await ValidateTargetPreview(board, topEdgeTarget, "top-edge-1280");
             await KeyPress(Key.Escape);
             Require(!_stage.Viewport.GuiIsDragging(), "top-edge Escape cancels the active drag");
@@ -246,7 +256,9 @@ public partial class FormationDragOnlyInputSmoke : Control
                 && Cells(screen).All(cell => !cell.IsDragHovered), "cancel restores source tint and clears target border");
             await CaptureTarget("cancel-restored-1280");
             _motion.Save("formation-motion");
-            GD.Print("FORMATION_DRAG_ONLY_INPUT_OK isolated-viewport,persistent-bottom-bench,portrait-select,click-no-placement,reserve-deploy,single-save,board-move,board-swap,target-visible-preview,top-edge-1280,drag-withdraw,reserve-replace,enemy-cancel,escape-cancel,full-bench,keyboard,resized-layout");
+            game.Hide();
+            await ValidateLargeBodyPreview(app.BuildBattleConfig(encounter));
+            GD.Print("FORMATION_DRAG_ONLY_INPUT_OK isolated-viewport,persistent-bottom-bench,portrait-select,click-no-placement,reserve-deploy,single-save,board-move,board-swap,pointer-centered-preview,grid-sized-preview,isotropic-lift-and-landing,large-body-2.4-pitch,no-extra-target-region,source-silhouette,top-edge-1280,reduced-motion,drag-withdraw,reserve-replace,enemy-cancel,escape-cancel,full-bench,keyboard,resized-layout");
         }
         catch (Exception exception)
         {
@@ -291,6 +303,16 @@ public partial class FormationDragOnlyInputSmoke : Control
     private async Task BeginDrag(Control source, Vector2 destination)
     {
         await Reveal(source); var start = source.GetGlobalRect().GetCenter();
+        var sourceVisual = source is UnitPortrait
+            ? Descendants<DeploymentUnitCard>(_stage.Viewport).Single(card => card.Portrait == source)
+            : source;
+        var sourceAlpha = sourceVisual.Modulate.A;
+        var sourcePosition = sourceVisual.GlobalPosition;
+        var board = Descendants<DeploymentBoard>(_stage.Viewport).Single(value => value.IsVisibleInTree());
+        var expectedSize = _expectedBodyRadius > .5f
+            ? board.CurrentProjection.CellPitch * (2 * _expectedBodyRadius)
+            : board.CurrentProjection.CellRect(Vector2I.Zero).Size;
+        var peakScale = 1f;
         Require(_stage.Viewport.GetVisibleRect().HasPoint(start) && _stage.Viewport.GetVisibleRect().HasPoint(destination), "native drag endpoints visible");
         WarpPointer(start); await Frames(1);
         Inject(new InputEventMouseMotion { Position = start, GlobalPosition = start });
@@ -300,17 +322,47 @@ public partial class FormationDragOnlyInputSmoke : Control
             var point = start.Lerp(destination, i / 20f); WarpPointer(point);
             Inject(new InputEventMouseMotion { Position = point, GlobalPosition = point, Relative = (destination - start) / 20, ButtonMask = MouseButtonMask.Left });
             await Frames(2);
+            foreach (var visual in Descendants<UiDragVisual>(_stage.Viewport).Where(value => !value.IsFinishing))
+            {
+                var face = visual.GetNode<Control>("Face");
+                Require(visual.Size.DistanceTo(expectedSize) < .1f,
+                    $"preview base size maps to the projected tile or body diameter: actual={visual.Size} expected={expectedSize}");
+                Require(Mathf.IsEqualApprox(face.Scale.X, face.Scale.Y), "lift scales width and height together");
+                peakScale = Mathf.Max(peakScale, face.Scale.X);
+                Require(TransformedBounds(face).GetCenter().DistanceTo(point) < 1.5f,
+                    "unit tile stays under the pointer across cell boundaries and outside the board");
+                Require(Mathf.IsZeroApprox(face.Rotation), "direct deployment drag does not tilt away from its pointer");
+            }
         }
         Require(_stage.Viewport.GuiIsDragging(), "pointer movement starts native unit drag: " + source.GetPath());
         Require(Descendants<UiDragVisual>(_stage.Viewport).Any(), "native hero drag owns a rendered motion visual");
+        Require(peakScale > 1.14f && peakScale <= 1.181f, $"lift overshoots before settling: peak={peakScale}");
+        Require(Mathf.IsEqualApprox(sourceVisual.Modulate.A, sourceAlpha * .38f)
+            && sourceVisual.GlobalPosition.IsEqualApprox(sourcePosition),
+            "dragging retains the original source silhouette");
         GD.Print($"FORMATION_DRAG step={_step} source={source.GetPath()} destination={destination} hover={_stage.Viewport.GuiGetHoveredControl()?.GetPath()}");
     }
     private async Task Release(Vector2 point)
     {
+        var visual = Descendants<UiDragVisual>(_stage.Viewport).FirstOrDefault(value => !value.IsFinishing);
+        var startingScale = visual?.GetNode<Control>("Face").Scale.X ?? 1;
+        var minimumScale = startingScale;
+        var landingSamples = 0;
         Inject(new InputEventMouseMotion { Position = point, GlobalPosition = point, ButtonMask = MouseButtonMask.Left });
         Inject(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, Pressed = false });
         var until = Time.GetTicksMsec() + 280;
-        while (Time.GetTicksMsec() < until) await Frames(1);
+        while (Time.GetTicksMsec() < until)
+        {
+            await Frames(1);
+            if (!IsInstanceValid(visual)) continue;
+            var scale = visual!.GetNode<Control>("Face").Scale;
+            landingSamples++;
+            Require(scale.X > 0 && Mathf.IsEqualApprox(scale.X, scale.Y), "landing preserves aspect ratio without inversion");
+            minimumScale = Mathf.Min(minimumScale, scale.X);
+        }
+        if (_step is "deployed native move" or "deployed native swap" or "large body native move")
+            Require(minimumScale < 1 && minimumScale > .95f && startingScale > 1.1f,
+                $"landing shrinks through the base size for a small rebound: {startingScale} -> {minimumScale}; samples={landingSamples}");
         Require(!Descendants<UiDragVisual>(_stage.Viewport).Any(), "release clears drag presentation");
     }
     private async Task ValidateTargetPreview(DeploymentBoard board, DeploymentCell target, string capture)
@@ -318,8 +370,6 @@ public partial class FormationDragOnlyInputSmoke : Control
         await Frames(3);
         var visual = Descendants<UiDragVisual>(_stage.Viewport).Single(value => !value.IsFinishing);
         var faceBounds = TransformedBounds(visual.GetNode<Control>("Face"));
-        // UiDragVisual's authored StyleBox shadow paints ten pixels beyond the
-        // Control rect, so include that visible edge in the occlusion contract.
         var shadowBounds = TransformedBounds(visual.GetNode<Control>("Shadow")).Grow(10);
         var thumbBounds = faceBounds.Merge(shadowBounds);
         var targetBounds = target.GetGlobalRect();
@@ -327,12 +377,16 @@ public partial class FormationDragOnlyInputSmoke : Control
         Require(pointer.DistanceTo(targetBounds.GetCenter()) < 1.5f, "native pointer remains anchored to the intended cell center");
         Require(board.CurrentDragHoverCell == target.Cell && target.IsDragHovered,
             "native hover evaluation resolves the cell under the pointer");
-        Require(!thumbBounds.Intersects(targetBounds, includeBorders: true),
-            $"hero thumb including face transform and shadow leaves the whole target cell visible: thumb={thumbBounds} target={targetBounds}");
+        Require(faceBounds.GetCenter().DistanceTo(pointer) < 1.5f,
+            $"unit tile itself follows the drop point: face={faceBounds} pointer={pointer}");
         Require(_stage.Viewport.GetVisibleRect().Grow(1).Encloses(thumbBounds),
-            $"target-aware hero thumb remains inside the viewport: {thumbBounds}");
-        Require(target.ThemeTypeVariation.ToString() is "DeploymentCellLegal" or "DeploymentCellSwap",
-            "legal or swap target retains its authored full-cell border while dragging");
+            $"unit tile remains visible over a board target: {thumbBounds}");
+        Require(target.ThemeTypeVariation.ToString() is not ("DeploymentCellLegal" or "DeploymentCellSwap" or "DeploymentCellIllegal")
+            && board.GetNode<DeploymentFootprintLayer>("%DeploymentFootprints").DragBody is null,
+            "deployment does not draw a second target region beneath the unit tile");
+        var mark = visual.GetNode<Label>("Mark");
+        Require(mark.Visible && mark.Text == (target.PieceId.Length > 0 ? "⇄" : "＋"),
+            "the dragged tile carries placement or swap feedback");
         await CaptureTarget(capture);
     }
     private static Rect2 TransformedBounds(Control control)
@@ -343,19 +397,55 @@ public partial class FormationDragOnlyInputSmoke : Control
         bounds = bounds.Expand(transform * control.Size);
         return bounds.Expand(transform * new Vector2(0, control.Size.Y));
     }
-    private async Task ValidateLongNamePreviewFixture()
+    private async Task ValidateLargeBodyPreview(BattleConfig config)
     {
-        var preview = GD.Load<PackedScene>("res://scenes/ui/components/HeroDragPreview.tscn").Instantiate<Control>();
-        _stage.Viewport.AddChild(preview);
-        preview.Position = new Vector2(24, 24);
-        preview.GetNode<Label>("Layout/Name").Text = "★ 星辉远征军首席守望者";
-        preview.Size = preview.GetCombinedMinimumSize();
-        await Frames(2);
-        Require(preview.Size.X <= 96.5f && preview.Size.Y <= 96.5f,
-            $"long localized hero name keeps the authored 96px drag thumb: {preview.Size}");
-        await CaptureTarget("long-name-fixture");
-        preview.QueueFree();
-        await Frames(1);
+        // UI geometry fixture only: production portrait/body data with in-memory
+        // binding callbacks, not permission to recruit a boss into a real Run.
+        var unit = GD.Load<UnitDefinition>("res://content/definitions/enemies/enemy_eb02_shell_matriarch.tres");
+        _expectedBodyRadius = unit.BodyRadius;
+        _motion = new UiDragMotionRecorder();
+        var screen = GD.Load<PackedScene>("res://scenes/ui/DeploymentScreen.tscn").Instantiate<DeploymentScreenController>();
+        screen.Theme = GD.Load<Theme>("res://content/ui/RealmTheme.tres");
+        _stage.AddChild(screen);
+        var model = new DeploymentUnitViewModel("large-preview", unit.DisplayName, unit.Description, unit.MaxHealth,
+            unit.Role, unit.AttackRange, false, -1, null, unit.Portrait, BodyRadius: unit.BodyRadius);
+        var commands = 0;
+        void Bind() => screen.Bind("拖动体型检查", "", config, [model], [], 3);
+        screen.MoveRequested += command => { commands++; model = model with { Cell = command.TargetCell }; Bind(); };
+        screen.WithdrawRequested += _ => { commands++; model = model with { Cell = null }; Bind(); };
+        Bind();
+        await Frames(5);
+        var board = screen.GetNode<DeploymentBoard>("%DeploymentBoard");
+        var target = Cell(screen, new Vector2I(1, 2));
+        _step = "large body native deploy";
+        await BeginDrag(Card(screen, model.InstanceId).Portrait, target.GetGlobalRect().GetCenter());
+        await ValidateTargetPreview(board, target, "large-deploy");
+        await Release(target.GetGlobalRect().GetCenter());
+        Require(commands == 1 && model.Cell == target.Cell, "large reserve deploys exactly once");
+        _step = "large body native move";
+        target = Cell(screen, new Vector2I(1, 3));
+        await BeginDrag(Cell(screen, model.Cell!.Value), target.GetGlobalRect().GetCenter());
+        await ValidateTargetPreview(board, target, "large-move");
+        await Release(target.GetGlobalRect().GetCenter());
+        Require(commands == 2 && model.Cell == target.Cell, "large deployed unit moves exactly once");
+        Require(target.ZIndex > Cells(screen).Where(cell => cell.PieceId.Length == 0).Max(cell => cell.ZIndex),
+            "large artwork renders above surrounding tile floors after landing");
+        Require(target.GetNode<UnitPortrait>("%UnitPortrait").Size.IsEqualApprox(target.UnitVisualSize - new Vector2(10, 6)),
+            "landed large artwork uses the same content window as its drag preview");
+        await CaptureTarget("large-landed");
+        _step = "large body cancel";
+        var source = Cell(screen, model.Cell!.Value);
+        var sourceColor = source.Modulate;
+        target = Cell(screen, new Vector2I(1, 2));
+        await BeginDrag(source, target.GetGlobalRect().GetCenter());
+        await KeyPress(Key.Escape);
+        await Release(target.GetGlobalRect().GetCenter());
+        Require(commands == 2 && source.Modulate == sourceColor, "large cancel restores the source without a command");
+        _step = "large body withdraw";
+        await Drag(source, screen.GetNode<Control>("%ReserveBench").GetGlobalRect().GetCenter());
+        Require(commands == 3 && model.Cell is null, "large unit lands back in the bench portrait");
+        _motion.Save("formation-large-motion");
+        screen.QueueFree();
     }
     private async Task Reveal(Control target)
     {
@@ -389,8 +479,12 @@ public partial class FormationDragOnlyInputSmoke : Control
         for (var i = 0; i < count; i++)
         {
             await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
-            await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
-            if (_step is "reserve portrait native deploy" or "deployed native move" or "deployed native swap" or "reserve drag enemy area cancels")
+            // macOS may suspend native presentation when another test window closes.
+            // Draw the isolated view explicitly; do not advance its animation clock.
+            if (OS.GetCmdlineUserArgs().Contains("--isolated-pointer")) RenderingServer.ForceDraw(false);
+            else await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+            if (_step is "reserve portrait native deploy" or "deployed native move" or "deployed native swap" or "reserve drag enemy area cancels"
+                || _step.StartsWith("large body", StringComparison.Ordinal))
                 _motion.Sample(_stage.Viewport, _step);
         }
     }

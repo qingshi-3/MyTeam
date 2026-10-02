@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitCardOrbit.tscn" id="Base"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitOrbitStat.tscn" id="Fact"]
+
+[node name="RosterUnitCardOrbit" instance=ExtResource("Base")]
+ShowEquipment = true
+SplitMana = true
+AlwaysVisible = true
+
+[node name="StartingMana" parent="Right" index="1" instance=ExtResource("Fact")]
+layout_mode = 2
+
+[node name="Layout" parent="Right/MoveSpeed" index="0"]
+layout_direction = 3
+
+[node name="FactValue" parent="Right/MoveSpeed/Layout" index="1"]
+layout_direction = 2
+horizontal_alignment = 2
+
+[node name="Layout" parent="Right/StartingMana" index="0"]
+layout_direction = 3
+
+[node name="FactValue" parent="Right/StartingMana/Layout" index="1"]
+layout_direction = 2
+horizontal_alignment = 2
+
+[node name="Layout" parent="Right/MaxMana" index="0"]
+layout_direction = 3
+
+[node name="FactValue" parent="Right/MaxMana/Layout" index="1"]
+layout_direction = 2
+horizontal_alignment = 2
+
+[node name="Layout" parent="Right/HealingPower" index="0"]
+layout_direction = 3
+
+[node name="FactValue" parent="Right/HealingPower/Layout" index="1"]
+layout_direction = 2
+horizontal_alignment = 2
+
+[node name="Layout" parent="Right/DodgeChance" index="0"]
+layout_direction = 3
+
+[node name="FactValue" parent="Right/DodgeChance/Layout" index="1"]
+layout_direction = 2
+horizontal_alignment = 2
+
+[node name="Layout" parent="Right/ControlResistance" index="0"]
+layout_direction = 3
+
+[node name="FactValue" parent="Right/ControlResistance/Layout" index="1"]
+layout_direction = 2
+horizontal_alignment = 2
+
+[node name="Traits" parent="Right" index="6"]
+icon_alignment = 2
+
+[editable path="Right/MoveSpeed"]
+[editable path="Right/StartingMana"]
+[editable path="Right/MaxMana"]
+[editable path="Right/HealingPower"]
+[editable path="Right/DodgeChance"]
+[editable path="Right/ControlResistance"]

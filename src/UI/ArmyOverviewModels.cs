@@ -23,7 +23,12 @@ public sealed record ArmyOverviewViewModel(
 {
     public int CurrentRunHealth { get; init; }
     public int MaximumRunHealth { get; init; }
+    public bool CanUseTacticalCommands { get; init; } = true;
+    public IReadOnlyList<RunRelicViewModel> Relics { get; init; } = [];
+    public IReadOnlyList<RunTraitViewModel> Traits { get; init; } = [];
 }
+
+public sealed record RunRelicViewModel(string ContentId, Texture2D? Icon, int Stacks, BattleLabTooltipInfo Hint);
 
 public sealed record ArmyOverviewRowViewModel(
     string Title,
@@ -41,7 +46,7 @@ public sealed record ArmyOverviewRowViewModel(
 public static class ArmyOverviewFactory
 {
     public static ArmyOverviewViewModel Build(
-        ActiveRunDto run,
+        RunView run,
         ContentRegistry content,
         CompiledRunRules rules)
     {
@@ -91,7 +96,7 @@ public static class ArmyOverviewFactory
                 "装备背包 · 尚未穿戴", Icon: definition.Icon);
         })).ToArray();
 
-        var tacticalCommands = run.EquippedTacticalCommandIds.Select((id, index) =>
+        var tacticalCommands = (run.Growth is null ? (IEnumerable<string>)run.EquippedTacticalCommandIds : []).Select((id, index) =>
         {
             var command = content.Graph.ResolveTacticalCommand(id);
             var runtimeRules = new List<string>();
@@ -108,6 +113,16 @@ public static class ArmyOverviewFactory
                 GoldCost: command.GoldCost);
         }).ToArray();
 
+        var relics = run.Items.GroupBy(instance => instance.ContentId).Select(group =>
+        {
+            var item = (ItemDefinition)Required(content, group.Key).Definition;
+            var stacks = group.Sum(instance => instance.Stacks);
+            var rulesText = RunOfferDetailText.ItemRules(content, item, run);
+            return new RunRelicViewModel(group.Key, item.Icon, stacks,
+                new BattleLabTooltipInfo(item.DisplayName,
+                    $"军团遗物 · {PlayerFacingText.DescribeItemRarity(item.Rarity)} · 持有 {stacks} 层",
+                    Abilities: string.IsNullOrWhiteSpace(rulesText) ? item.Description : rulesText, SingleEntry: true, AnchorBelow: true));
+        }).ToArray();
         var deployed = run.Deployment.Count(id => !string.IsNullOrEmpty(id));
         var reserve = Math.Max(0, run.Roster.Count - deployed);
         var population = RunPopulationPolicy.Evaluate(run, rules);
@@ -115,7 +130,8 @@ public static class ArmyOverviewFactory
             population.EffectivePopulationCap, reserve, run.Items.Count + run.EquipmentInventory.Count +
                 run.Roster.Sum(hero => hero.Equipment.Count), run.Gold,
             rosterHeroes, items, tacticalCommands)
-            { CurrentRunHealth = run.CurrentRunHealth, MaximumRunHealth = run.MaximumRunHealth };
+            { CurrentRunHealth = run.CurrentRunHealth, MaximumRunHealth = run.MaximumRunHealth,
+                CanUseTacticalCommands = run.Growth is null, Relics = relics, Traits = RunTraitModels.Build(run, content) };
     }
 
     private static CatalogEntry Required(ContentRegistry content, string id) =>

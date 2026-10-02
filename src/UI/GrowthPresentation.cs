@@ -30,7 +30,14 @@ public static class GrowthPresentation
         if (production.Length > 0)
             lines.Add("每次选一种产出；生产者与培养对象须在出发前上阵。成长在本局保留，最终战不再产出。");
         if (!string.IsNullOrWhiteSpace(hero.AscensionId))
-            lines.Add($"升阶 · {rules.AscensionCost} 材料（仅一次）\n{hero.AscensionDescription}\n另获高阶伙伴三选一。");
+            lines.Add($"升阶 · {rules.AscensionCost} 材料（仅一次）\n{AscensionBenefitText(hero)}\n另获高阶伙伴三选一。");
         return new(projected, lines.Count == 0 ? string.Empty : "成长方案", string.Join("\n\n", lines));
     }
+
+    public static string AscensionBenefitText(CompiledGrowthHero hero) =>
+        hero.AscensionBenefit?.Description ?? "本次升阶不改变该英雄的战斗能力。";
+
+    public static string AscensionStatus(CompiledGrowthHero hero, bool ascended) => ascended
+        ? hero.AscensionDisplay?.CompletedLabel ?? "已升阶"
+        : hero.AscensionDisplay?.DisplayName ?? "升阶";
 }

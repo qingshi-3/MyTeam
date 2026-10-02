@@ -1,0 +1,204 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/tavern/workbench-list.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="TopLeft"]
+atlas = ExtResource("1")
+region = Rect2(44, 28, 192, 192)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="TopRight"]
+atlas = ExtResource("1")
+region = Rect2(726, 28, 192, 192)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="BottomLeft"]
+atlas = ExtResource("1")
+region = Rect2(44, 1404, 192, 192)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="BottomRight"]
+atlas = ExtResource("1")
+region = Rect2(726, 1404, 192, 192)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Top"]
+atlas = ExtResource("1")
+region = Rect2(236, 28, 490, 70)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Bottom"]
+atlas = ExtResource("1")
+region = Rect2(236, 1526, 490, 70)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Left"]
+atlas = ExtResource("1")
+region = Rect2(44, 220, 84, 1184)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Right"]
+atlas = ExtResource("1")
+region = Rect2(834, 220, 84, 1184)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Surface"]
+atlas = ExtResource("1")
+region = Rect2(140, 220, 680, 1184)
+filter_clip = true
+
+[sub_resource type="StyleBoxFlat" id="Shadow"]
+bg_color = Color(0.075, 0.068, 0.056, 1)
+corner_radius_top_left = 28
+corner_radius_top_right = 28
+corner_radius_bottom_left = 28
+corner_radius_bottom_right = 28
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 6
+shadow_offset = Vector2(0, 3)
+
+[node name="RunTraitStoneFrame" type="Control"]
+mouse_filter = 2
+
+[node name="Shadow" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Shadow")
+
+[node name="Surface" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = -18.0
+offset_bottom = -18.0
+mouse_filter = 2
+texture = SubResource("Surface")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Top" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = 36.0
+offset_top = 0.0
+offset_right = -36.0
+offset_bottom = 13.0
+mouse_filter = 2
+texture = SubResource("Top")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Bottom" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = -13.0
+offset_right = -36.0
+offset_bottom = 0.0
+mouse_filter = 2
+texture = SubResource("Bottom")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Left" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 36.0
+offset_right = 16.0
+offset_bottom = -36.0
+mouse_filter = 2
+texture = SubResource("Left")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Right" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = 36.0
+offset_right = 0.0
+offset_bottom = -36.0
+mouse_filter = 2
+texture = SubResource("Right")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="TopLeft" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 36.0
+offset_bottom = 36.0
+mouse_filter = 2
+texture = SubResource("TopLeft")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="TopRight" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -36.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 36.0
+mouse_filter = 2
+texture = SubResource("TopRight")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="BottomLeft" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = -36.0
+offset_right = 36.0
+offset_bottom = 0.0
+mouse_filter = 2
+texture = SubResource("BottomLeft")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="BottomRight" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -36.0
+offset_top = -36.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2
+texture = SubResource("BottomRight")
+expand_mode = 1
+stretch_mode = 0

@@ -17,6 +17,8 @@ public partial class GrowthWorkbenchInputSmoke : Control
         try
         {
             _stage = new UiInputStage(this, true);
+            _stage.Resize(new Vector2I(960, 540));
+            var blankAscension = OS.GetCmdlineUserArgs().Contains("--blank-ascension");
             var publication = await GrowthContentPackage.CreateReadyAsync(this);
             var package = publication.Package ?? throw new InvalidOperationException(string.Join(';', publication.Report.CoreErrors));
             var rules = GrowthContentPackage.LoadRules(package.Content);
@@ -24,7 +26,7 @@ public partial class GrowthWorkbenchInputSmoke : Control
             var app = new RunApplication(package.Content, save, package.Project, rules);
             var producers = rules.Heroes.Values.Where(hero => !hero.ProductionModes.IsEmpty).Select(hero => hero.ContentId).ToHashSet(StringComparer.Ordinal);
             var startingHero = producers
-                .OrderBy(id => id == "hero_mx25" ? 0 : 1).ThenBy(id => id, StringComparer.Ordinal).First();
+                .OrderBy(id => id == (blankAscension ? "hero_mx10" : "hero_mx25") ? 0 : 1).ThenBy(id => id, StringComparer.Ordinal).First();
             if (!app.Meta.UnlockedHeroIds.Contains(startingHero)) app.Meta.UnlockedHeroIds.Add(startingHero);
             Require(app.StartNewRun(startingHero, 90427), "成长征程初始化");
             var run = app.ActiveRun!;
@@ -43,15 +45,32 @@ public partial class GrowthWorkbenchInputSmoke : Control
             run = app.ActiveRun!;
             var producer = run.Roster.Single(hero => hero.InstanceId == producerId);
             Require(producer.Growth!.ProductionTargetInstanceId == producer.InstanceId, "真实点击保存生产者、目标与模式");
-            Require(panel.GetNode<Label>("%ProductionPreview").Text.Contains("下一次完成非终局节点"), "展示永久增量与产出时机");
+            var productionCopy = panel.GetNode<Label>("%ProductionPreview").Text;
+            var rulesCopy = panel.GetNode<Label>("GrowthRules/Rules").Text;
+            Require(productionCopy.Contains("下次产出：") && productionCopy.Contains("上阵条件")
+                && rulesCopy.Contains("逐次累加") && rulesCopy.Contains("最终节点不产出"),
+                "产出预览、上阵资格与完整规则仍保留");
 
             var ascend = panel.GetNode<Button>("%Ascend");
             var rosterBeforeDiscovery = app.ActiveRun!.Roster.Count;
+            var completionEvents = 0;
+            panel.AscensionCompleted += (_, _) => completionEvents++;
+            if (blankAscension)
+            {
+                Require(panel.GetNode<Label>("%AscensionPreview").Text.Contains("不改变该英雄的战斗能力"), "付费前如实说明空白收益");
+                save.FailWrites = true;
+                await Click(ascend);
+                Require(completionEvents == 0 && app.ActiveRun!.Growth!.Materials == rules.AscensionCost &&
+                    app.ActiveRun.Growth.PendingDiscovery is null, "保存失败不播放升阶完成表现且不扣材料");
+                save.FailWrites = false;
+            }
             ascend.GrabFocus();
             await Key(Godot.Key.Enter);
             run = app.ActiveRun!;
             var growth = run.Growth!;
             Require(growth.PendingDiscovery?.CandidateIds.Count == 3, "键盘升阶后保留固定三选一");
+            Require(completionEvents == 1 && panel.GetNode<Label>("%AscensionPreview").Text.StartsWith("已升阶"),
+                "提交后独立通知表现并展示升阶身份");
             var choice = panel.GetNode<VBoxContainer>("%DiscoveryChoices").GetChildren().OfType<Button>().First();
             await Click(choice);
             run = app.ActiveRun!;
@@ -68,12 +87,13 @@ public partial class GrowthWorkbenchInputSmoke : Control
             growth = run.Growth!;
             Require(growth.EquippedSpellId == selectedSpell && growth.SpellInventory[selectedSpell] == 1,
                 "预设不提前消费法术库存");
-            Require(panel.GetNode<Label>("%EquippedSpell").Text.Contains("真正开始战斗时消耗"), "消费前目标预设可见");
+            Require(panel.GetNode<Label>("%EquippedSpell").Text.Contains("已预设：")
+                && rulesCopy.Contains("战斗正式开始时消耗"), "已预设目标与正式消费时机可查");
             Require(save.Writes >= 5, "命令均写入隔离存档");
             if (DisplayServer.GetName() != "headless")
             {
-                const string output = "res://design-discussion/04-content-validation/artifacts/growth-route/runtime/growth-workbench.png";
-                DirAccess.MakeDirRecursiveAbsolute(ProjectSettings.GlobalizePath("res://design-discussion/04-content-validation/artifacts/growth-route/runtime"));
+                var output = blankAscension ? "res://.godot/ui-review/growth-workbench-blank-ascension.png" : "res://.godot/ui-review/growth-workbench.png";
+                DirAccess.MakeDirRecursiveAbsolute(ProjectSettings.GlobalizePath("res://.godot/ui-review"));
                 await Frames(3);
                 Require(_stage.Viewport.GetTexture().GetImage().SavePng(ProjectSettings.GlobalizePath(output)) == Error.Ok, "保存成长工坊实际渲染截图");
             }
@@ -110,12 +130,13 @@ public partial class GrowthWorkbenchInputSmoke : Control
     {
         private string? _json;
         public int Writes { get; private set; }
+        public bool FailWrites { get; set; }
         public MetaProgressDto LoadMeta() => new();
         public SettingsDto LoadSettings() => new();
         public ActiveRunDto? LoadActiveRun() => _json is null ? null : JsonSerializer.Deserialize<ActiveRunDto>(_json);
         public bool SaveMeta(MetaProgressDto value) => true;
         public bool SaveSettings(SettingsDto value) => true;
-        public bool SaveActiveRun(ActiveRunDto value) { Writes++; _json = JsonSerializer.Serialize(value); return true; }
+        public bool SaveActiveRun(ActiveRunDto value) { if (FailWrites) return false; Writes++; _json = JsonSerializer.Serialize(value); return true; }
         public void DeleteActiveRun() => _json = null;
     }
 }

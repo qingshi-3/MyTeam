@@ -4,6 +4,16 @@
 
 [打开立绘总览](index.html) · [源帧映射与提示词](manifest.json)
 
+2026-10-01修正实际游戏引用：上轮遗漏默认成长模式复用的matrix／growth肖像，旧CardIllustration导致多个页面仍显示旧透明稿。57份覆盖已移除，同时补齐有同身份图片的敌人／士兵资源；完整PNG、物种与动画身份保持，战斗动画和缺图回退不变。运行映射已扩展到这些目录，默认游戏的开局六选二与英雄／装备页通过真实隔离输入检查，图与来源见[修正记录](../../../design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json)。下方9月30日“当前35张均接入”的表述只覆盖旧英雄资源，不代表当时成长目录已更新。
+
+2026-09-30 全量优化完成：按用户继续实施的要求，剩余32张已逐张统一描边、发束、衣褶和材质，并采用按单位配色的低饱和柔光背景；原先三张角色定稿保持。当前35张正式图片均为完整不透明PNG，英雄UI通过既有Illustration回退直接读取，旧CardIllustration透明图不再用于当前绑定。32份相关资源引用已更新，沙丘施法者与灯笼狐另做大卡取景修正，小肖像保持原参数。构建、导入、肖像检查及25种本轮有绑定外形的正式大小肖像渲染通过，包含一次隔离视口实际点击；未做完整流程验收，新图最终观感待用户反馈。[本轮前后对照／提示词／卡面](../../../design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/index.html)和[替换记录](../../../design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/replacement.json)已保存。下方旧透明图优先和其余角色不变的描述保留为历史，不是当前集合状态。
+
+2026-09-29 背景配色更新：按用户要求，山岳旗手换为蓝灰底、共鸣使换为灰紫底、济世医师换为灰绿底，统一低饱和柔光和较暗边缘。内置 imagegen 编辑完整图片后直接覆盖这三张正式PNG，沿用Illustration读取与既有裁剪。完成哈希、导入、正式大小肖像渲染检查；最终观感待反馈。[完整图片／提示词／卡面](../../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/background-study/index.html)及替换记录已保存。下方“保留浅色背景”是本次更新前的状态。
+
+2026-09-29 三张定稿已直接接入：山岳旗手（f1_general）、济世医师（f3_aymarahealer）、共鸣使（f6_sister）使用用户采纳的最新版完整PNG，保留原浅色背景。对应肖像不再指定CardIllustration，由既有代码直接读取Illustration；旧透明图留作历史回退，其余角色不变。已检查真实大小肖像及隔离点击，详见[接入记录](../../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/runtime-replacement.json)。本条覆盖下方这三张必须使用透明衍生图的历史描述。
+
+2026-09-29，共鸣使（`f6_sister`）已按用户“接受替换掉”替换为衣装逻辑修正版，同时通过内置 imagegen 更新透明衍生图。正式路径与肖像引用保持原位，导入设置未改；已查看真实 `RosterHeroCard` 与大小肖像合成，隔离视口实际点击触发一次，无桌面鼠标移动。旧版原图、透明图和清单保留备份，完整提示词、来源与检查范围见[替换记录](../../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/replacement.json)。这是定向组件检查，不代表完整游戏流程验收。下方“原PNG保持不变”属于此前接入阶段。
+
 2026-09-25 已按用户选择接入开局选将、招募、英雄详情与整备卡片，战斗继续使用像素动画。当前 35 名英雄通过显式 Resource 引用使用其中 28 张图片；同一动画外形共享美术身份。军团斗士、怒拳斗士、铁钩机兵暂无对应立绘，保留原动态像素肖像。当前绑定、逐图焦点与缩放见 [运行映射](runtime-bindings.json)；旧 `manifest.json` 的单位名称绑定为生成时快照，不作为当前身份依据。
 
 原 PNG 和此前用户修图保持不变。`UnitPortrait` 只在场景显式开启时展示立绘，用独立材质做窗口裁剪；取景由各自肖像定义保存。已查看全部 28 张实际窗口裁剪，以及招募、开局选将、整备渲染；整备真实输入和共享组件隔离检查通过。整套 UI 品质仍在继续迭代，见 [活动任务](../../../work-items/active/ui-material-overhaul.md)。

@@ -17,7 +17,9 @@ using TowerAutobattler.UI;
 
 public partial class UiClarityReview : Node
 {
-    private const string OutputDirectory = "res://.godot/ui-review/clarity";
+    private static string OutputDirectory => "res://.godot/ui-review/" +
+        (OS.GetCmdlineUserArgs().Contains("--polish-before") ? "polish-before" :
+         OS.GetCmdlineUserArgs().Contains("--polish-after") ? "polish-after" : "clarity");
     private UiInputStage _stage = null!;
     private readonly List<string> _captures = [];
 
@@ -61,6 +63,25 @@ public partial class UiClarityReview : Node
             if (screens.BattleLab.IsVisibleInTree())
             {
                 await CaptureVisible(screens, AppScreenId.BattleLab, "battle-lab");
+                var labUnit = Descendants<BattleLabBoardCell>(screens.BattleLab).First(cell => cell.InstanceId.Length > 0);
+                await Click(labUnit);
+                foreach (var (button, panel, name) in new[]
+                         {
+                             ("ToggleLibraryButton", "LibraryPopup", "lab-library"),
+                             ("UnitDetailsButton", "DetailsPopup", "lab-unit"),
+                             ("TeamDetailsButton", "DetailsPopup", "lab-team"),
+                             ("SettingsDetailsButton", "DetailsPopup", "lab-settings"),
+                             ("EquipmentDetailsButton", "DetailsPopup", "lab-equipment"),
+                             ("AudioPreviewButton", "AudioPreviewPopup", "lab-animation"),
+                             ("OpenPresetsButton", "PresetPanel", "lab-presets")
+                         })
+                {
+                    await Click(screens.BattleLab.GetNode<Button>("%" + button));
+                    Require(screens.BattleLab.GetNode<Control>("%" + panel).IsVisibleInTree(), name + " real open");
+                    await Capture(name);
+                    await Key(Godot.Key.Escape);
+                    await Until(() => !screens.BattleLab.GetNode<Control>("%" + panel).IsVisibleInTree(), name + " real close");
+                }
                 await Click(screens.BattleLab.GetNode<Button>("%BackButton"));
                 await Until(() => screens.MainMenu.IsVisibleInTree(), "battle lab return");
             }
@@ -141,6 +162,20 @@ public partial class UiClarityReview : Node
                 "real bench-to-board drag restores the original deployment");
             GD.Print("UI_CLARITY_REAL_INPUT empty-bench-round-trip=" + deployedId);
 
+            await Click(originalCell);
+            foreach (var (button, popup, name) in new[]
+                     {
+                         ("UnitDetailsButton", "UnitDetailsPopup", "deployment-details"),
+                         ("EncounterButton", "EncounterPopup", "deployment-encounter")
+                     })
+            {
+                await Click(screens.Deployment.GetNode<Button>("%" + button));
+                Require(screens.Deployment.GetNode<ContextPopup>("%" + popup).IsOpen, name + " real open");
+                await Capture(name);
+                await Key(Godot.Key.Escape);
+                await Until(() => !screens.Deployment.GetNode<ContextPopup>("%" + popup).IsOpen, name + " real close");
+            }
+
             var army = game.GetNode<ArmyOverviewController>("ArmyOverview");
             await Click(army.GetNode<Button>("%SummaryButton"));
             await Until(() => army.IsOpen, "army drawer real open");
@@ -185,6 +220,15 @@ public partial class UiClarityReview : Node
             Require(inspector.GetNode<Control>("%InspectorPopup").IsVisibleInTree(),
                 "real unit click opens populated battle detail");
             await Capture("battle-detail");
+            await Key(Godot.Key.Escape);
+            await Click(inspector.GetNode<Button>("%StatisticsToggle"));
+            Require(inspector.WantsStatistics, "battle statistics real open");
+            await Capture("battle-statistics");
+            await Key(Godot.Key.Escape);
+            await Click(screens.Battle.GetNode<Button>("%RuleButton"));
+            Require(screens.Battle.GetNode<ContextPopup>("%RulesPopup").IsOpen, "battle rules real open");
+            await Capture("battle-rules");
+            await Key(Godot.Key.Escape);
             screens.Battle.StopBattle();
 
             var presentation = app.Project.Presentation;
@@ -197,7 +241,7 @@ public partial class UiClarityReview : Node
             var shopApp = OfferFixture(app, save, TowerNodeType.Shop);
             shopApp.ActiveRun!.Gold = 999;
             screens.Shop.Bind(shopApp, presentation.ChoiceCard, presentation.ItemChoiceCard, presentation.SemanticIcons);
-            screens.Show(AppScreenId.Shop, shopApp.ActiveRun, shopApp.Content, shopApp.Rules);
+            screens.Show(AppScreenId.Shop, shopApp.Run, shopApp.Content, shopApp.Rules);
             await Frames(3);
             Require(Descendants<RunOfferChoiceCard>(screens.Shop).Any(card => card.IsVisibleInTree()),
                 "shop review contains real offer cards");
@@ -207,11 +251,21 @@ public partial class UiClarityReview : Node
             var encounter = reportApp.CurrentEncounter();
             var report = SyntheticResult(reportApp.BuildBattleConfig(encounter), BattleOutcome.PlayerVictory);
             screens.BattleReport.Bind(report, encounter.Title, reportApp.Content, "继续");
-            screens.Show(AppScreenId.BattleReport, reportApp.ActiveRun, reportApp.Content, reportApp.Rules);
+            screens.Show(AppScreenId.BattleReport, reportApp.Run, reportApp.Content, reportApp.Rules);
             await Frames(3);
             Require(report.Units.Length > 0 && screens.BattleReport.GetNode<Control>("%PlayerRosterStrip").IsVisibleInTree(),
                 "battle report review contains populated combat rows");
             await CaptureVisible(screens, AppScreenId.BattleReport, "battle-report");
+            foreach (var (button, name) in new[]
+                     {
+                         ("OffenseTab", "report-offense"),
+                         ("SurvivalTab", "report-survival"),
+                         ("HealingTab", "report-healing")
+                     })
+            {
+                await Click(screens.BattleReport.GetNode<Button>("%" + button));
+                await Capture(name);
+            }
 
             var resolution = reportApp.ResolveBattle(report, encounter);
             Require(resolution.Accepted, "reward review follows an accepted battle victory");
@@ -219,7 +273,7 @@ public partial class UiClarityReview : Node
                 "accepted battle victory creates the formal combat reward offer");
             screens.Reward.BindOffer(reportApp, presentation.ChoiceCard, presentation.ItemChoiceCard,
                 presentation.SemanticIcons);
-            screens.Show(AppScreenId.Reward, reportApp.ActiveRun, reportApp.Content, reportApp.Rules);
+            screens.Show(AppScreenId.Reward, reportApp.Run, reportApp.Content, reportApp.Rules);
             await Frames(3);
             Require(Descendants<RunOfferChoiceCard>(screens.Reward).Any(card => card.IsVisibleInTree()),
                 "reward review contains real item cards");
@@ -230,7 +284,7 @@ public partial class UiClarityReview : Node
                 "recruitment fixture creates the formal recruitment offer");
             screens.Recruitment.BindOffer(recruitmentApp, presentation.ChoiceCard, presentation.ItemChoiceCard,
                 presentation.SemanticIcons);
-            screens.Show(AppScreenId.Recruitment, recruitmentApp.ActiveRun, recruitmentApp.Content, recruitmentApp.Rules);
+            screens.Show(AppScreenId.Recruitment, recruitmentApp.Run, recruitmentApp.Content, recruitmentApp.Rules);
             await Frames(3);
             Require(Descendants<RunOfferChoiceCard>(screens.Recruitment).Any(card => card.IsVisibleInTree()),
                 "recruitment review contains real hero cards");
@@ -245,7 +299,7 @@ public partial class UiClarityReview : Node
                 var offerApp = OfferFixture(app, save, offerPage.Type);
                 screens.Reward.BindOffer(offerApp, presentation.ChoiceCard, presentation.ItemChoiceCard,
                     presentation.SemanticIcons);
-                screens.Show(AppScreenId.Reward, offerApp.ActiveRun, offerApp.Content, offerApp.Rules);
+                screens.Show(AppScreenId.Reward, offerApp.Run, offerApp.Content, offerApp.Rules);
                 await Frames(3);
                 var offer = offerApp.PendingOffer ?? throw new InvalidOperationException(
                     offerPage.Type + " review fixture did not create a pending offer");
@@ -264,7 +318,7 @@ public partial class UiClarityReview : Node
                          (AppScreenId.Result,"result")
                      })
             {
-                screens.Show(page.Item1, app.ActiveRun, game.Content, app.Rules);
+                screens.Show(page.Item1, app.Run, game.Content, app.Rules);
                 await Frames(3);
                 await CaptureVisible(screens, page.Item1, page.Item2);
             }
@@ -275,13 +329,13 @@ public partial class UiClarityReview : Node
                          (Id: AppScreenId.Rest, Name: "legacy-rest")
                      })
             {
-                screens.Show(legacyPage.Id, app.ActiveRun, game.Content, app.Rules);
+                screens.Show(legacyPage.Id, app.Run, game.Content, app.Rules);
                 await Frames(3);
                 await CaptureVisible(screens, legacyPage.Id, legacyPage.Name);
                 GD.Print("UI_CLARITY_LEGACY_PAGE " + legacyPage.Name);
             }
 
-            Require(_captures.Distinct(StringComparer.Ordinal).Count() == 23,
+            Require(_captures.Distinct(StringComparer.Ordinal).Count() == 37,
                 "clarity review produced every named page/detail capture");
             Require(JsonSerializer.Serialize(production.LoadActiveRun()) == productionBefore,
                 "clarity review did not alter the production growth save");
@@ -307,6 +361,10 @@ public partial class UiClarityReview : Node
 
     private async Task Capture(string name)
     {
+        // Capture settled typography and surfaces, not a partly transparent entry tween.
+        // The real-input tests still exercise the normal animation path.
+        var settledAt = Time.GetTicksMsec() + 320;
+        while (Time.GetTicksMsec() < settledAt) await Frames(1);
         await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
         using var image = _stage.Viewport.GetTexture().GetImage();
         Require(image is not null && !image.IsEmpty(), "rendered image exists: " + name);

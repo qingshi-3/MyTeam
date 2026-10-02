@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitOrbitSkill.tscn" id="Base"]
+[node name="OpeningUnitOrbitSkill" instance=ExtResource("Base")]
+custom_minimum_size = Vector2(42, 42)
+theme_override_constants/icon_max_width = 26

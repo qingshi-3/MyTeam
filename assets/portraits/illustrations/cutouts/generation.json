@@ -21,19 +21,45 @@
     },
     {
       "id": "f6_sister",
-      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the white hair, fur cloak, horns, massive blue mechanical gauntlets and existing blue energy. Remove backdrop between the fingers, horns, cloak and energy arcs.",
-      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-65ad45b5-c972-46d4-bd8c-776774990dcf.png",
+      "prompt": "Use case: background-extraction.\nOnly remove the background from this user-approved finished character illustration for the game's UI. The input is the sole edit target and identity authority. Deliver an actual transparent RGBA PNG, preserving the original 1024x1536 canvas, character placement, scale, pose, head/face/eyes, warm skin, silver short hair, purple double-horn headpiece, newly approved continuous navy sleeveless tunic, red waist sash, black pants, white gloves, ivory fur cloak, black boots, giant blue-silver gauntlet and cyan flame. Preserve the exact approved outfit: no hanging waist rings, straps or streamers may reappear.\nRemove only the pale grey backdrop and ground/contact shadow, including background gaps between the horns, arms, legs, cloak and flame. Keep the white hair and white cloak opaque, with clean antialiased edges. Retain the existing flame's cyan colors and appropriate edge transparency. Preserve all visible ink lines, colors, shading and existing shapes as closely as possible. No redesign, new pose, resizing, recentering, recoloring, new lighting, edge glow or extra shadow. No painted checkerboard; genuine alpha transparency. Return only the same isolated finished figure.\n",
+      "generated": "/Users/qingshi/.codex/generated_images/01a0eb96-2a0d-7ee2-be32-604c85651f14/exec-f2a98eb5-65d9-4880-adf0-9b359a2d991d.png",
       "source": "assets/portraits/illustrations/f6_sister.png",
       "file": "assets/portraits/illustrations/cutouts/f6_sister.png",
-      "source_sha256": "ebeaa5d120ba3dcb8691567f56feef430c5cc947356aef3e19d8187d0af288a4",
+      "source_sha256": "e4eed3700522b917ac8d54673fe4fbc1c0cb71c2bf60edf90bd0cc3c1d6d25d0",
       "alpha": {
         "size": [
           1024,
           1536
         ],
-        "transparent_fraction": 0.5
+        "transparent_fraction": 0.4824053446451823,
+        "semi_transparent_fraction": 0.5175946553548177,
+        "alpha_range": [
+          0,
+          254
+        ]
       },
-      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+      "review": "Re-extracted from the user-accepted outfit revision. Actual alpha verified; large RosterHeroCard and small UnitPortrait rendered with the real new texture and inspected. Isolated viewport mouse press/release triggered the production card once. White cloak and cyan flame edges have no visible backdrop fringe in engine compositing. This is a scoped component fixture, not a full gameplay flow. Generative extraction is not pixel-identical.",
+      "revisionHistory": [
+        {
+          "id": "f6_sister",
+          "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the white hair, fur cloak, horns, massive blue mechanical gauntlets and existing blue energy. Remove backdrop between the fingers, horns, cloak and energy arcs.",
+          "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-65ad45b5-c972-46d4-bd8c-776774990dcf.png",
+          "source": "assets/portraits/illustrations/f6_sister.png",
+          "file": "assets/portraits/illustrations/cutouts/f6_sister.png",
+          "source_sha256": "ebeaa5d120ba3dcb8691567f56feef430c5cc947356aef3e19d8187d0af288a4",
+          "alpha": {
+            "size": [
+              1024,
+              1536
+            ],
+            "transparent_fraction": 0.5
+          },
+          "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+        }
+      ],
+      "sha256": "fb73dd0056bf5db4ebd3abeb83278fffeb61f04d61804e2745a8c14d879717be",
+      "revisionDate": "2026-09-29",
+      "runtimeReview": "../../../../design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/replacement.json"
     },
     {
       "id": "f2_spellthief",

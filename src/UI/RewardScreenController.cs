@@ -3,6 +3,7 @@ using System.Linq;
 using Godot;
 using TowerAutobattler.Components;
 using TowerAutobattler.Content;
+using TowerAutobattler.Project;
 using TowerAutobattler.Run;
 
 namespace TowerAutobattler.UI;
@@ -95,20 +96,29 @@ public partial class RewardScreenController : Control
         _offerBody.Visible = true;
         _title.Text = offer.DisplayName;
         _hint.Text = "选择一项带走。";
+        if (offer.RewardCategory is RunRewardCategory.Equipment or RunRewardCategory.Relic)
+        {
+            var category = offer.RewardCategory == RunRewardCategory.Equipment ? "装备" : "遗物";
+            var remaining = app.Run!.PendingRewardGroups.Length;
+            _hint.Text = $"本组{category}选择一件；基础收益已到账。"
+                + (remaining > 0 ? $"领取或跳过后，还有 {remaining} 组独立奖励。" : "这是本场最后一组奖励。");
+        }
         if (offer.Kind == TowerAutobattler.Project.RunOfferKind.Rest)
-            _hint.Text = $"全局生命 {app.ActiveRun!.CurrentRunHealth}/{app.ActiveRun.MaximumRunHealth} · 恢复生命与领取金币只能选择一项。";
+            _hint.Text = $"全局生命 {app.Run!.CurrentRunHealth}/{app.Run.MaximumRunHealth} · 恢复生命与领取金币只能选择一项。";
         if (offer.Kind == TowerAutobattler.Project.RunOfferKind.Recruitment)
             _hint.Text = offer.Choices.IsEmpty ? "本阶段已无可招募的新英雄，可以继续前进。" :
                 "选择一名英雄加入队伍。";
         RunOfferCardBinder.Sync(_choices, app, choiceTemplate, itemTemplate, icons, OnChoice);
         _convert.Visible = false;
         _continue.Visible = offer.AllowSkip;
-        _continue.Text = "放弃此次机会，继续";
+        _continue.Text = app.RewardSkipText == "跳过"
+            ? (offer.RewardCategory == RunRewardCategory.None ? "放弃此次机会，继续" : "跳过本组奖励")
+            : app.RewardSkipText;
     }
 
     private static int CurrentHeroConversion(RunApplication app)
     {
-        if (app.ActiveRun is not { Roster.Count: > 0 } run ||
+        if (app.Run is not { Roster.Count: > 0 } run ||
             !app.Content.TryGet(run.Roster[0].ContentId, out var entry))
             return 0;
         var root = entry.Scene.Instantiate<UnitContentRoot>();

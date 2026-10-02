@@ -31,3 +31,5 @@ Reference evidence: [LoL UI elements and atlas coordinates](https://raw.communit
 2026-09-25: `skill-active.svg` (lightning), `skill-passive.svg` (ringed star), and `roster-reserve.svg` (bench) are project-authored 24×24 monochrome paths for card categories and roster state. They contain no third-party image pixels.
 
 2026-09-25: `critical-chance.svg` 与 `critical-damage.svg` 是项目自绘的暴击概率／倍率图标，通过共享 SemanticIconCatalog 解析；未使用第三方图像像素。
+
+2026-10-01: `trait-facet.svg`（六边形承载面）与 `trait-ember.svg`（灰烬火焰）为项目自绘 SVG。矩阵羁绊的其余语义图标复用本目录的职责、霜寒、构装、亡灵、毒、吸血与星形资产，遵守各资产的既有来源记录；没有复制云顶的图标图片。展示参考与适配范围见 `outputs/trait-tracker-20261001/README.md`。

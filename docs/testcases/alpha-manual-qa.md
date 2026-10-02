@@ -1,5 +1,56 @@
 # Alpha Manual QA
 
+## 全局资源栏（2026-10-01，专项通过、体验待确认）
+
+查看顶部右侧资源栏：手绘灰石横托应与卡框材质协调，角石没有被压扁；图标和数字应在同一基线，标签位于下方，生命条不挤压标签或石边。检查右侧“军团”是否容易辨认，鼠标按下后松开及键盘 Enter 均打开既有军团窗口，Esc 关闭后资源与遗物陈列恢复。生命低于等于 30% 时数字、图标和短生命条显示警示色，同时带“危急”文字；恢复后生命条回到普通样式。此前圆角扁平底板为用户否定的版本，不作为当前材质验收依据。
+
+`RunRelicShelfInputSmoke.tscn -- --header-review-only` 已通过隔离 GUI 输入、基线／边距、长数值、警示样式恢复及不修改征程数据检查。低生命与长数值是只读展示夹具，未冒充自然获得。实机图、范围和日志见[证据](../../outputs/run-header-20261001/README.md)。文字大小、栏内留距和质感待用户确认。
+
+## 路线页与共享 UI（2026-09-30，专项通过、体验待确认）
+
+查看顶部紧凑资源、军团入口与遗物；悬停遗物提示应在陈列下方展开，不挡中心标题；从右端图标跨过空隙移向提示应继续保持，便于阅读和滚动，移出阅读区域再收起。三个节点同屏比较机会、风险和失败代价，整卡可点击；按下后移出并松开应取消，键盘 Enter 应提交一次，减弱动效应保留正常命中位置。单 Boss 卡居中且常驻显示终局代价。进入精英比较，候选正文／收益应在边界内，右侧敌军详情可完整阅读，返回不提前选择节点；事件／商店标题和说明应容易读。通过军团开关及进入实际战斗继续检查共享顶栏和提示恢复。
+
+`TowerLayoutInputReview.tscn` 与 `RunRelicShelfInputSmoke.tscn` 最终隔离 GUI 输入通过。录制、实机图、测试夹具与退出告警的限制见[证据](../../outputs/ui-overhaul-20260930/README.md)。观感和按压重量仍待用户体验确认；没有把功能通过写成整套审美验收。
+
+
+## 全局遗物陈列（2026-09-30，专项已检查、体验待确认）
+
+进入拥有遗物的征程，查看顶部左侧陈列；悬停图标，检查名称、稀有度、持有层数、作用对象和完整效果。鼠标移开应收起；键盘聚焦可阅读，Esc 可关闭，点击不会消耗或改变遗物。同类遗物显示总层数，数量较多时横向滚动，键盘应能到达最后一项。打开／关闭军团或配装窗口，检查陈列被覆盖、旧提示清理及关闭后的恢复。
+
+路线、机会、备战、正式战斗和继续征程的战报均应可查看；实验室及其战斗不混入征程遗物。切屏多次后顶部不持续下移，陈列、资源和页面操作不重叠。`tests/RunRelicShelfInputSmoke.tscn` 使用真实内容、受控拥有状态和隔离 GUI 输入，完整专项与 `--tooltip-copy-only` 补验已通过；覆盖及预览见[证据记录](../../outputs/run-relic-shelf-20260930/README.md)。没有把夹具当作自然获取或通关，最终图标密度、提示位置和阅读舒适度由用户确认。
+
+## 默认成长主流程、独立奖励与战前法术（2026-09-30）
+
+入口为默认主菜单“开始新征程／继续征程”；旧Alpha及旧档在“练习与预览→旧版征程（开发）”中保留。
+
+1. 六选二后进入当前路线。普通战点击后直接整备，能查看实际敌情并进入法术工坊，不出现具体选敌面板；精英战才比较完整候选、压力、收益及失败代价，确认后进入整备。Boss当前固定必经。
+2. 普通胜利基础收益直接取得；装备、遗物按实际类别独立选择或跳过。先领装备再继续读档，仍应只看到原剩余遗物组，不重发基础收益或重抽候选。领取一组不得消耗另一组名额。
+3. 精英选敌返回／重进候选不重抽，确认与继续游戏恢复同一实际敌阵。旧v9已锁普通选敌亦应保留原敌阵与收益，新普通战不新增该机会。
+4. 整备“战前法术”直达工坊。自然研究来源为研究英雄节点产出及部分精英胜利奖励，不能假定任意首战后都可施法。费用护阵／蓄势4、破阵5、压制3；预设或取消不消费，实际开战减一份库存，本场自动执行，无战中指令。
+5. 以不同开局试玩，记录种子、所选敌阵、法术投入、胜负与资源；评价奖励类别／法术供给频率、信息是否好读及法术是否值得留存。新外层主循环仍待R10回接，本次不把旧三选节点循环当作节奏验收。
+
+合同入口：`OpponentChoiceContractSmoke.tscn`、`GrowthRewardGroupsContractSmoke.tscn`、`GrowthRunContractSmoke.tscn`；法术真实效果沿`GrowthBattleGainSmoke.tscn`原证据。真实输入`GrowthEntryInputSmoke.tscn`从ProjectSettings的默认主场景启动，在960×540隔离视口完成新局入口与seed2合法开局档继续、首普通实战、独立领奖／中途读档、休整／事件自然生产3研究、精英选敌、兑换／取消／预设、第二场真实开战。无资源或战果注入，不移动桌面鼠标，不覆盖正式存档；seed2路线不是任意随机开局的可用法术保证。实际结果及剩余验收见[活动任务](../../work-items/active/opponent-choice-and-prebattle-spells.md)。
+
+## 新征程重新抽取（2026-09-29）
+
+1. 点击“新征程”，勾选一至两名候选，返回菜单，再点“新征程”：重新随机六名候选、勾选清空，确认按钮禁用；随机允许不同局出现相同英雄。
+2. 勾选两名、返回菜单，再点“继续征程”：保留原候选和勾选；关闭后重进再继续也应保持，确认进入首战备战。
+3. 保存失败夹具中，新建失败须保留原征程／候选／选择，确认失败须允许重试。
+
+聚焦入口为 `RecruitmentOpeningContractSmoke.tscn -- --opening-only`；无头模式检查开局契约，带渲染模式额外通过隔离 `SubViewport` 执行点击和键盘输入，宿主固定 960×540，不移动桌面鼠标、不写玩家存档。本轮执行结果见[活动任务](../../work-items/active/recruitment-opening-and-tiers.md)。
+
+开局样板接入另用 `UnitCardDisclosureInputSmoke.tscn -- --opening-only --growth-opening` 检查正式成长候选。六张卡应完整同屏；悬停石框与立绘同步放大，实际图标命中跟随画面；核心数值保留，边缘的属性、技能、成长及羁绊仍能逐项读取。选中通过高亮和底部头像席位表达，没有对号和常驻解释；点击席位取消，保存失败保留原选择。补查连点、Esc、键盘和运行中减弱动效。实录与当前验收状态见[开局接入证据](../../outputs/opening-adaptation-20261001/README.md)。
+
+## 全页面视觉统一（2026-09-28，本轮已检查，观感待试玩）
+
+保留认可灰石框与立绘，统一资源栏、标题／正文、机会卡、备战席、英雄属性、表单和工具窗口。`UiClarityReview.tscn -- --polish-after` 与 `UiAuxiliaryReview.tscn` 实际复核 41 个页面／展开状态，覆盖主流程、英雄装备／军团／工坊、战报四页签、实验室七个窗口、两战练习和特效预览工具；前后截图、输入范围和已知退出清理提示见 [UI 活动任务](../../work-items/active/ui-material-overhaul.md)。`RosterLoadoutInputSmoke`、`GrowthWorkbenchInputSmoke`、`RunHealthUiInputSmoke` 通过真实点击、键盘或拖放；普通单位拖放断言完成，大体型因宿主停发绘制帧改用聚焦入口补验通过。所有桌面宿主为 960×540，输入隔离，不移动桌面鼠标。夹具页面不能算自然全流程通过。
+
+玩家复查：
+
+1. 正常进入部署，辨认顶部资源、首领警告和空备战席；拖动普通与大体型单位，观察比例、跟手、落下与取消，原位淡影应保持。
+2. 打开“英雄与装备”，切换英雄、展开技能说明并换装；检查全部 19 项属性、长技能和背包易读，法强／暴击不遗漏，背景不抢视线。
+3. 查看机会卡、路线、战报、工坊及工具窗口，确认字号、间距、主操作层级统一。整体质感与弹性节奏仍由玩家确认，未记作审美验收。
+
 ## 独立成长征程闭环（2026-09-27，专项已执行、体验待试玩）
 
 本项使用独立 `GrowthGameRoot`、成长内容包和存档命名空间，不改变 Alpha 存档。当前是 26 名代表内容的可玩包，不宣称 49 名矩阵英雄全部完成成长重构。玩家入口为主菜单“成长征程 · 工坊与升阶”，进入后从军团面板打开“成长工坊”。以下检查已实际执行：
@@ -27,17 +78,17 @@
 
 ## 拖动物件动效 · 当前检查
 
-装备库存／槽位、备战英雄／后备及实验室单位库／棋子使用拿起、跟手倾摆、来源淡影、落点符号、成功落下与取消返回。玩家复查：拖动起步是否轻快；停止移动时是否及时归正；预览是否遮挡目标；交换与非法位置是否好认；Esc 是否只取消一次；快速连续拖动是否出现残影或来源变暗。开启“减弱界面动效”后，倾摆、缩放和返回飞行应立即停止，拖放功能保持。
+战前部署直接拖动带单位素材的格子：素材格中心跟随鼠标，跨格／到边缘时不绕开落点跳位，棋盘不另画拖动区域；放置／交换／拒绝由素材格上的符号表达。普通单位以当前部署格宽高为基础，大体型按身体直径映射到棋盘投影，不再使用固定方形名字牌。拿起围绕中心等比弹大（100% → 118% → 112%），放下收回目标尺寸并轻微回弹；原位置保留淡影，取消返回、撤回后备均等比收缩。装备库存／槽位和实验室单位库／棋子继续使用已有拿起、跟手倾摆和落点反馈。玩家复查：宽高是否一起变化、放下是否自然收回，跨格是否连续跟手，交换与非法位置是否好认，Esc 是否只取消一次，快速连续拖动是否出现残影或来源持续变暗。开启“减弱界面动效”后，缩放和返回飞行应立即停止，拖放功能保持。大体型检查使用正式裂壳虫母的身体／立绘数据与内存 UI 夹具，不代表开放 Boss 招募或改变占位规则。
 
 自动实输入入口：`FormationDragOnlyInputSmoke --isolated-pointer`、`RosterLoadoutInputSmoke --isolated-pointer`、`UiDragMotionInputSmoke`、`LabDragMotionInputSmoke`。后两者默认隔离，覆盖提交拒绝／非法目标／连续重拖／减弱动效／隐藏清理，以及实验室放置／交换／Esc／撤回／装备模板取用和移除。都使用隔离视口或内存数据。Godot 桌面窗口使用 960×540，`UiInputStage` 直接限制窗口模式和大小，内部视口可独立采样；不移动用户桌面鼠标。旧最大化窗口入口不作为本轮默认检查方式。实机动图和日志见 [UI 活动任务](../../work-items/active/ui-material-overhaul.md)；不等于玩家手感认可。
 
 ## C 英雄检视台 · 当前路径
 
-备战“英雄与装备”及右上军团入口均为左侧头像列表／中间选中英雄／右侧技能属性与背包。外层透明但输入仍是模态；军团总览从标题栏切换。右侧完整 19 项、卡面六项及暴击对都保留零值。点击属性／技能在右侧展开，返回恢复来源焦点，立绘保持可见。后备与无战场投影的军团显示自身及装备初始化值，明确排除其他开战条件；备战出战单位仍为完整准备值。
+备战“英雄与装备”及右上军团入口均为左侧头像列表／中间选中英雄／右侧技能属性与背包。背景暗化且输入为模态；军团总览从标题栏切换。右侧完整 19 项、卡面六项及暴击对都保留零值。点击属性／技能在右侧展开，返回恢复来源焦点，立绘保持可见。后备与无战场投影的军团显示自身及装备初始化值，明确排除其他开战条件；备战出战单位仍为完整准备值。
 
 `RosterLoadoutInputSmoke --isolated-pointer` 已验证原生点击／键盘／拖放、只读查看、穿戴替换转交卸下、配装期间说明刷新、长列表、19 项不裁切、非零法强与暴击、模态关闭及全局共用入口。1600×900 可见立绘高度占 60.9%。日志和实机图见 [UI 活动任务](../../work-items/active/ui-material-overhaul.md)。
 
-玩家复查重点：左侧识别与切换是否顺手，右侧长技能是否好读，真实场景透出是否影响视觉主次，物体材质与统一感是否符合批准稿。下方旧多卡／翻面路径是历史记录。本次未重跑全局通关或全分辨率测试。
+玩家复查重点：左侧识别与切换是否顺手，右侧长技能是否好读，暗化背景是否让信息主次清晰，物体材质与统一感是否符合批准稿。下方旧多卡／翻面路径是历史记录。本次未重跑全局通关或全分辨率测试。
 
 
 ## 每战满血与战外生命上限（2026-09-25）
@@ -257,6 +308,17 @@
 11. Click and focus several leaderboard rows with mouse, keyboard, and gamepad. Exactly one compact row becomes selected and exactly one authored detail panel exposes that unit's complete existing facts and awards. Switch dimension/allegiance while a row is focused: retain selection only when the same runtime id remains valid, otherwise select the first available row, never target a freed control, and keep rows, controls, detail, and continue reachable.
 12. Bind the longest current Chinese name/responsibility plus large values, tied core leaders, simultaneous positive awards, summons, and mixed alive/defeated states; then resize repeatedly between 1280×720 and 1600×900 and intermediate widths. Overview matchup identity/value/share columns and detailed ranking columns must stay contained; fixed columns must not drift between header and rows, names/identity must truncate or wrap into their authored regions without crossing numeric columns, common-scale ranking bars must remain comparable, detail content may grow only into the report scroll owner, and repeated resize must preserve dimension, allegiance, exact row count, and a valid selection/focus without transform-scaling text or the report tree.
 
+### Full-Art Unit Cards And Disclosure (2026-09-30 修订)
+
+2026-10-01立绘引用检查：从默认GrowthGameRoot的新局进入开局六选二，再选择、确认并打开英雄与装备页，核对使用低饱和配色背景的新版完整立绘。成长／matrix复用单位不能被旧CardIllustration透明稿覆盖；已有同Frames图片的敌人／士兵在选择立绘的静态信息面中也应使用新图，战场像素动画保持。`GrowthEntryInputSmoke.tscn -- --portraits-only` 提供这两个实际页面的隔离输入及Texture来源检查；`UiPortraitPresentationSmoke.tscn` 覆盖所有五个肖像目录的绑定、缺图回退和战斗动画隔离。最终观感仍由用户验收。
+
+1. 在固定 960×540 隔离宿主中打开正式开局候选、招募单位卡和英雄／装备页。立绘占主体，保留灰石框与克制越框；底部姓名、攻击、法强、生命上限不被立绘淹没。招募按钮应常驻灰石卡框下方，留有间隔；属性项在正常、悬停和按压时均只有图标＋数字，没有独立底色框。单项提示可有自身阅读面板。现有未重画人物的画风不作为此轮 UI 验收成果。
+2. 悬停卡片，检查左列向右、右列向左；真实技能（通常 1～2 个）从顶部向下渐显弹入；选人和招募卡不显示装备位，英雄／装备页显式启用三个装备位并保持同排技能，属性／技能／装备槽进入页面即常驻，没有“详情”按钮；移开指针、切换英雄与换装后均不隐藏。底部攻击靠左、法强居中、生命靠右，左右留白对称。最终停在灰石框内，没有整块资料框。底部只留姓名条收口，立绘铺到下沿，装备收起不留下预留空段。框宽保持，各项不覆盖邻卡、不移动原卡或确认按钮。招募卡点击“详情”固定，路过邻卡不抢走；“收起”／Esc 收起，旧焦点不能反复重开。开局六张卡横向单排居中，外围无大背板，人物展示高度增加；招募阶位以角石上的小号罗马数字刻字呈现，可悬停查看精确阶位，选中仅使卡框变为金色，取消后恢复，不额外显示勾选标记或选中文字。圆形立绘窗口与人物整体上移，姓名和核心数值位置稳定。开局右上角不显示“详情”；技能靠近卡框上沿，不覆盖角石阶位，血量等数字等高且基线一致；参考视口无需滚动，左右端卡的技能、属性和姓名完整可见。最右端卡悬停查看、明确点击选择及 Esc 收起均应可用；键盘 Tab 聚焦卡片可查看，移开后收起，提示选满或保存失败不得挤动卡片。
+3. 招募卡核对常驻攻击／法强／生命与左右 11 项合计 14 个展示条目，零值保留；法力用实心蓝水滴与 `初始/上限`（如 `20/60`），不显示四项回蓝数值。开局紧凑卡和配装卡将法力拆成“初始法力”和“法力上限”，共 15 个属性条目；右列数值在左、图标在右，数值统一右对齐，两列的属性行距拉开。攻速为已确认原弯刀＋宽条拖尾，吸血红色、治疗绿色、法强为紫色流动能量、暴击率无中央闪电；材质图标不得再套单色调制。hover／键盘聚焦某项仅出现自己的解释，合并法力词条解释初始与上限两个数，开局与配装拆分条目则各自解释对应值。主动／被动、装备及两侧的成长／羁绊入口也各自只解释自身，成长／羁绊不充当技能槽。长说明可移入该提示滚动。配装页直接在常驻顶部槽位穿戴、替换、转交、卸下；同英雄刷新不收起，换人清理旧解释。两组顶部图标不能互相遮挡或被裁切；完整开局页选两名后仍能明确确认。
+4. 开局卡没有详情按钮，悬停／键盘聚焦不选人，明确点卡或 Enter 才选择；招募仅明确确认才执行一次。招募检查 Enter 固定、Esc 返回；配装页检查一次 Esc 关闭整个窗口，重新打开时属性立即显示。检查快速反复开合、减弱动效中途开启、父界面隐藏和单位卡重绑为非单位机会。
+5. 聚焦入口 `UnitCardDisclosureInputSmoke.tscn` 与既有 `RosterLoadoutInputSmoke.tscn -- --isolated-pointer` 提供实际输入检查；正常速度记录位于 `.godot/ui-review/unit-card-disclosure-motion/`。输入断言和 Agent 动态复核不替代用户对构图、幅度、时机与操作舒适度的最终验收。
+6. 对照 D 战利品挂件左侧卡面：技能为圆形托座，装备为三个皮革扣，两组保持可辨间隔；左右属性同一起点、统一行距，数字字重低于常驻核心项。hover 展开时，黑色渐变在开窗边缘淡入，中心保持透明，不覆盖姓名／阶位／核心数值，也不能形成压住石框的硬矩形。英雄装备弹窗中也必须实际可见，不能因绝对 Z 层级落到弹窗下面。移开／Esc／切卡／隐藏父界面后无残留；快速反向与减弱动效不产生闪黑或拦截输入。顶部材质及渐变强度仍由用户作最终观感判断。
+
 ### Semantic Theme, Icons, And Choice Cards
 
 1. Inspect hero/gold/legendary headings, mana/shield/player facts, healing/survival gains, enemy/casualty/defeat facts, and warning/timeout states across screens. Confirm their gold, blue, green, red, amber, and neutral treatments are consistent and centralized; every meaning also retains a Chinese word, icon, or symbol, and paragraphs remain neutral rather than fully colorized.
@@ -278,3 +340,11 @@
 6. Exercise settings sliders and every long scroll owner. Slider tracks/grabbers, scrollbar tracks/grabbers, report health/contribution bars, and keyboard/gamepad focus must remain visible in RealmTheme's flat language. Values, focus, and scroll position must behave as before.
 7. Inspect the root composition and the local Theme resource. The background must be an authored flat dark `ColorRect`; the live Theme path must be `res://content/ui/RealmTheme.tres`; all styles must be `StyleBoxFlat`; and no live scene, source, test, system/QA authority, or Theme may reference a removed pixel path, old visual-role vocabulary, or an external absolute donor path.
 8. Run the RealmTheme focused contract before the hierarchy, semantic, portrait/window, responsive/dynamic report, fixture, content, gameplay, movement, UI, alpha-run, and clean-startup checks. Generate and manually inspect the complete paired VisualCapture set at both supported resolutions, including fixed actions and selected/focused/disabled states.
+
+## 2026-10-01：局内羁绊列表
+
+1. 新开或继续征程，左侧应显示当前有关的羁绊，已激活的在前；当前贡献值、各档门槛、菱形当前档及激活／升档差值可辨认。
+2. 悬停条目查看效果和计入成员，移入右侧说明面板并滚动至末尾；键盘聚焦可阅读，Esc 收起。后备成员应注明未计入（仅上阵计数的规则）。
+3. 战前原生拖动成员下场／上场，跨过门槛时立即更新；原生穿戴／卸下羁绊徽章也要更新，同一成员的原生标签与徽章按当前去重规则处理。
+4. 查看军团／装备后关闭，列表恢复；正式开战后仍显示开战阵容；实验室与实验室开战不显示无关征程数据。长列表滚轮和键盘都可到达末项。
+5. Agent 已完成低并发构建与正式成长界面的隔离真实输入专项，证据与录像见 [羁绊展示记录](../../outputs/trait-tracker-20261001/README.md)。本地录像浏览器加载受限，未把抽帧记成原速播放观感验收；最后的密度、文字大小、遮挡与阅读舒适度仍待玩家确认。

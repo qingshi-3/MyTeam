@@ -32,13 +32,17 @@ public sealed class UiMotionBinding : IDisposable
     {
         if (_root.IsAncestorOf(node) && node is IUiMotionHost host) host.ReduceUiMotion = _reduced;
         if (node is not Button button || !_root.IsAncestorOf(button) || _bindings.ContainsKey(button)) return;
+        // Perimeter entries own their reveal transform; a second hover/press
+        // tween would overwrite it while the pointer crosses an opening entry.
+        for (var parent = button.GetParent(); parent is not null; parent = parent.GetParent())
+            if (parent is UnitCardOrbit) return;
         // Board cells, drag owners and card layouts have their own spatial/input
         // contracts. Only authored action roles receive this small press response.
         if (button.ThemeTypeVariation != "PrimaryButton" &&
             button.ThemeTypeVariation != "SecondaryButton" &&
             button.ThemeTypeVariation != "DangerButton" &&
             button.ThemeTypeVariation != "CompactButton" &&
-            button is not DetailExplainButton && button is not EquipmentSlotButton) return;
+            button is not DetailExplainButton && button is not EquipmentSlotButton && button is not TowerRouteCard) return;
         var binding = new Binding(button, _reduced, () => Remove(button));
         _bindings.Add(button, binding);
     }
@@ -101,7 +105,8 @@ public sealed class UiMotionBinding : IDisposable
                 Reset();
                 return;
             }
-            var target = _down ? (_reading ? .988f : .956f) : !_reading && _button.IsHovered() ? 1.018f : 1f;
+            var route = _button is TowerRouteCard;
+            var target = _down ? (route ? .99f : _reading ? .988f : .956f) : !_reading && _button.IsHovered() ? (route ? 1.006f : 1.018f) : 1f;
             var position = new Vector2(0, _down ? 1.5f : !_reading && _button.IsHovered() ? -1f : 0f);
             // Mouse exit, focus exit and button-up can describe the same release.
             // Keep its rebound instead of replacing it with a second plain tween.

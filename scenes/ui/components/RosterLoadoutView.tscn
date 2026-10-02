@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 [ext_resource type="Script" path="res://src/UI/RosterLoadoutView.cs" id="1"]
 [ext_resource type="Script" path="res://src/UI/EquipmentDropZone.cs" id="2"]
 [ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/RosterHeroCard.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/RosterHeroDetails.tscn" id="5"]
 [node name="RosterLoadoutView" type="Control"]
 layout_mode = 1
 anchors_preset = 15
@@ -72,20 +71,21 @@ theme_override_constants/separation = 0
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.36
+size_flags_stretch_ratio = 0.64
 
-[node name="DetailsPanel" type="PanelContainer" parent="Layout/Columns/Inspection"]
+[node name="DetailsPanel" type="Control" parent="Layout/Columns/Inspection"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.64
-theme_type_variation = &"WorkbenchDetails"
+size_flags_stretch_ratio = 0.36
 
 [node name="Layout" type="VBoxContainer" parent="Layout/Columns/Inspection/DetailsPanel"]
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 theme_override_constants/separation = 9
 
-[node name="HeroDetails" parent="Layout/Columns/Inspection/DetailsPanel/Layout" instance=ExtResource("5")]
-unique_name_in_owner = true
+[node name="ReadingSpace" type="Control" parent="Layout/Columns/Inspection/DetailsPanel/Layout"]
 layout_mode = 2
 size_flags_vertical = 3
 

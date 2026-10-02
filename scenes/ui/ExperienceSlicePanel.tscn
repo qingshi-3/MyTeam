@@ -39,9 +39,10 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "一段可以重来的小旅程"
 autowrap_mode = 3
-theme_type_variation = &"TitleLabel"
+theme_type_variation = &"PageTitle"
 
 [node name="Hint" type="Label" parent="Margin/Layout"]
+theme_type_variation = &"PageHint"
 unique_name_in_owner = true
 layout_mode = 2
 text = "只在内存中运行，不读取或修改正式征程。"
@@ -61,6 +62,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 20
 
 [node name="Team" type="Label" parent="Margin/Layout/Scroll/Body"]
+theme_type_variation = &"SectionTitleLabel"
 unique_name_in_owner = true
 layout_mode = 2
 text = ""
@@ -148,6 +150,7 @@ autowrap_mode = 3
 visible = false
 
 [node name="HistoryFold" type="FoldableContainer" parent="Margin/Layout/Scroll/Body"]
+theme_type_variation = &"BattleLabFold"
 unique_name_in_owner = true
 layout_mode = 2
 title = "查看本次与之前尝试的记录"
@@ -224,5 +227,4 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 46)
 text = "返回主菜单"
 theme_type_variation = &"SecondaryButton"
-
 

@@ -25,7 +25,6 @@ public partial class DeploymentBoard : Control
     private IBattleFloorRuleRuntime? _floorRule;
     private BattlefieldProjection _projection;
     private DeploymentFootprintLayer _footprints = null!;
-    private readonly Dictionary<string, float> _bodyRadii = new(StringComparer.Ordinal);
     public Func<string, Variant, EquipmentDropEvaluation>? EquipmentDropEvaluator { get; set; }
     public Action<string, Variant>? EquipmentReceiver { get; set; }
 
@@ -65,8 +64,8 @@ public partial class DeploymentBoard : Control
 
     public override void _Process(double delta)
     {
-        if (_footprints.DragBody is not null &&
-            (!GetViewport().GuiIsDragging() || CurrentDragHoverCell is not { } cell ||
+        if (CurrentDragHoverCell is { } cell &&
+            (!GetViewport().GuiIsDragging() ||
              !_projection.CellRect(cell).HasPoint(GetLocalMousePosition())))
             ClearDragHover();
     }
@@ -90,10 +89,8 @@ public partial class DeploymentBoard : Control
         ClearDragHover();
         _floorRule = config.FloorRule;
         _evaluations.Clear();
-        _bodyRadii.Clear();
         foreach (var piece in pieces)
         {
-            _bodyRadii[piece.InstanceId] = piece.BodyRadius;
             if (piece.TargetEvaluations is not null)
                 _evaluations[piece.InstanceId] = piece.TargetEvaluations;
         }
@@ -109,7 +106,7 @@ public partial class DeploymentBoard : Control
             cellControl.Bind(cell, piece?.InstanceId ?? string.Empty, piece?.DisplayName ?? string.Empty,
                 piece?.IsHero == true, piece?.InstanceId == selectedId, _floorRule.CanOccupy(cell), preview,
                 piece?.Portrait, piece?.Role ?? UnitRole.Fighter, piece?.AttackRange ?? 1f,
-                false);
+                false, bodyRadius: piece?.BodyRadius ?? BattlefieldSpace.DefaultBodyRadius);
             cellControl.ApplyProjection(_projection);
         }
         WireCellFocus();
@@ -145,16 +142,16 @@ public partial class DeploymentBoard : Control
             var inPlayerZone = BattlefieldLayout.IsPlayerDeploymentCell(cell);
             var color = preview switch
             {
-                FloorCellPreview.Blocked => new Color("243043"),
-                FloorCellPreview.Hazard => new Color("6e2f2f"),
-                FloorCellPreview.Objective => new Color("285b57"),
-                _ when inPlayerZone => (x + y) % 2 == 0 ? new Color("34445a") : new Color("2d3c52"),
-                _ => (x + y) % 2 == 0 ? new Color("252c3b") : new Color("202736")
+                FloorCellPreview.Blocked => new Color(.15f, .19f, .18f, .62f),
+                FloorCellPreview.Hazard => new Color(.55f, .15f, .10f, .32f),
+                FloorCellPreview.Objective => new Color(.10f, .42f, .32f, .30f),
+                _ when inPlayerZone => new Color(.20f, .17f, .10f, .14f),
+                _ => Colors.Transparent
             };
             var rect = _projection.CellRect(cell);
             DrawRect(rect, color, true);
-            DrawRect(rect, inPlayerZone ? new Color(1f, .78f, .3f, .28f) : new Color(1f, 1f, 1f, .08f), false,
-                inPlayerZone ? 2f : 1f);
+            if (inPlayerZone || preview != FloorCellPreview.Normal)
+                DrawRect(rect, new Color(1f, .85f, .5f, .3f), false, 1f);
         }
 
         var boundaryX = (_projection.CellToLocal(new Vector2I(2, 0)).X +
@@ -213,7 +210,7 @@ public partial class DeploymentBoard : Control
 
     private void ApplyEnemyProjection(EnemyDeploymentPreview preview, Vector2I cell)
     {
-        var size = preview.BodyRadius > .5f ? _projection.CellPitch * (2 * preview.BodyRadius) : _projection.CellRect(cell).Size;
+        var size = _projection.DeploymentUnitSize(preview.BodyRadius);
         preview.CustomMinimumSize = Vector2.Zero;
         preview.Size = size;
         preview.Position = _projection.CellToLocal(cell) - size * .5f;
@@ -265,15 +262,10 @@ public partial class DeploymentBoard : Control
             _cells.FirstOrDefault(candidate => candidate.Cell == current)?.ClearDragState();
         CurrentDragHoverCell = cell.Cell;
         cell.SetDragHovered(evaluation ?? FormationEvaluation.Reject("该格当前不可部署。"));
-        var data = GetViewport().GuiGetDragData();
-        if (data.VariantType == Variant.Type.Dictionary && data.AsGodotDictionary().TryGetValue("piece_id", out var identity) &&
-            _bodyRadii.TryGetValue(identity.AsString(), out var radius))
-            _footprints.ShowDrag(new DeploymentBodyPreview(identity.AsString(), cell.Cell, radius, 0), evaluation?.IsValid == true);
     }
 
     public void ClearDragHover()
     {
-        if (IsInstanceValid(_footprints)) _footprints.ShowDrag(null);
         foreach (var cell in _cells) cell.ClearDragState();
         CurrentDragHoverCell = null;
     }

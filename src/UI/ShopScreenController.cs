@@ -31,7 +31,7 @@ public partial class ShopScreenController : Control
         PackedScene itemTemplate,
         SemanticIconCatalog icons)
     {
-        var run = app.ActiveRun ?? throw new InvalidOperationException("No active run for shop screen.");
+        var run = app.Run ?? throw new InvalidOperationException("No active run for shop screen.");
         _gold.Bind(SemanticIconKeys.Gold, run.Gold.ToString(), "GoldValue");
         _gold.BindCaption("持有");
         _status.Text = string.Empty;

@@ -1,6 +1,21 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/UI/TowerScreenController.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OpponentChoicePanel.tscn" id="2"]
+
+[sub_resource type="StyleBoxFlat" id="ProgressTrack"]
+bg_color = Color(0.62, 0.67, 0.53, 0.18)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="ProgressFill"]
+bg_color = Color(0.81, 0.75, 0.52, 0.9)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
 
 [node name="TowerScreen" type="Control"]
 layout_mode = 3
@@ -18,36 +33,72 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 250
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 250
-theme_override_constants/margin_bottom = 40
+theme_override_constants/margin_left = 140
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 140
+theme_override_constants/margin_bottom = 28
 
 [node name="Layout" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 18
 
-[node name="Title" type="Label" parent="Margin/Layout"]
+[node name="Header" type="VBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
-theme_type_variation = &"TitleLabel"
+theme_override_constants/separation = 6
+
+[node name="RouteTitle" type="Label" parent="Margin/Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"RoutePageTitle"
+horizontal_alignment = 1
 text = "高塔路线"
 
-[node name="RunInfo" type="Label" parent="Margin/Layout"]
+[node name="RunInfo" type="Label" parent="Margin/Layout/Header"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "第 1 层"
+theme_type_variation = &"PageHint"
+theme_override_colors/font_color = Color(0.89, 0.87, 0.73, 1)
+horizontal_alignment = 1
+text = "第 1 / 15 层"
 
-[node name="RouteHint" type="Label" parent="Margin/Layout"]
+[node name="RouteProgress" type="ProgressBar" parent="Margin/Layout/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 4)
 layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+theme_override_styles/background = SubResource("ProgressTrack")
+theme_override_styles/fill = SubResource("ProgressFill")
+max_value = 15.0
+value = 1.0
+show_percentage = false
+
+[node name="RouteHint" type="Label" parent="Margin/Layout/Header"]
+layout_mode = 2
+theme_type_variation = &"PageHint"
+theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
 text = "选择下一处塔层节点"
 
-[node name="Choices" type="VBoxContainer" parent="Margin/Layout"]
+[node name="Choices" type="HBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 10
+theme_override_constants/separation = 34
+alignment = 1
 
 [node name="AbandonButton" type="Button" parent="Margin/Layout"]
-theme_type_variation = &"SecondaryButton"
-custom_minimum_size = Vector2(180, 50)
+theme_type_variation = &"QuietDangerButton"
+custom_minimum_size = Vector2(150, 36)
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 4
 text = "放弃本次征程"
+
+[node name="Status" type="Label" parent="Margin/Layout"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"WarningLabel"
+theme_override_font_sizes/font_size = 15
+autowrap_mode = 2
+
+[node name="OpponentChoicePanel" parent="." instance=ExtResource("2")]
+visible = false

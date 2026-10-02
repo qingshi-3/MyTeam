@@ -5,8 +5,6 @@
 
 [ext_resource type="Texture2D" path="res://assets/portraits/illustrations/boss_borealjuggernaut.png" id="illustration"]
 
-[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png" id="card_illustration"]
-
 [resource]
 script = ExtResource("script")
 StableId = "hero_mx01"
@@ -16,7 +14,6 @@ FrameIndex = 0
 Zoom = 1.45
 OffsetRatio = Vector2(0, 0)
 Illustration = ExtResource("illustration")
-CardIllustration = ExtResource("card_illustration")
 CardIllustrationFocus = Vector2(0.62, 0.52)
 CardIllustrationZoom = 1.25
 IllustrationFocus = Vector2(0.62, 0.53)

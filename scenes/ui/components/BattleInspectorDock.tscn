@@ -77,7 +77,7 @@ anchor_bottom = 0.9
 grow_horizontal = 2
 grow_vertical = 2
 custom_minimum_size = Vector2(460, 0)
-theme_type_variation = &"ContextSidebarPanel"
+theme_type_variation = &"ModalPanel"
 
 [node name="Inset" type="MarginContainer" parent="InspectorPopup/ExpandedInspector"]
 layout_mode = 2
@@ -97,7 +97,8 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_type_variation = &"SectionTitleLabel"
+theme_override_font_sizes/font_size = 24
 text = "战斗统计"
 
 [node name="CloseInspector" type="Button" parent="InspectorPopup/ExpandedInspector/Inset/Layout/Header"]
@@ -152,14 +153,14 @@ tooltip_text = "伤害与承伤包含护盾吸收；治疗只统计实际恢复�
 [node name="StatTotal" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 17
 text = "我方 · 总伤害 0"
 autowrap_mode = 3
 
 [node name="StatisticsNote" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.65, 0.72, 0.81, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.72, 0.69, 0.62, 1)
 text = "按开场阵营统计；含召唤物，治疗不含过疗\n条长相对本侧最高值；伤害与承伤含护盾吸收"
 autowrap_mode = 3
 
@@ -196,4 +197,3 @@ autowrap_mode = 3
 [node name="SelectedUnitPanel" parent="InspectorPopup/ExpandedInspector/Inset/Layout/UnitDetailsPage" instance=ExtResource("details")]
 unique_name_in_owner = true
 layout_mode = 2
-

@@ -22,10 +22,19 @@ public partial class ArmyResourceStrip : HBoxContainer
     public void Bind(ArmyOverviewViewModel model)
     {
         GetNode<RunHealthDisplay>("%RunHealth").Bind(model.CurrentRunHealth, model.MaximumRunHealth);
-        _heroes.Bind(SemanticIconKeys.Hero, $"英雄 {model.RosterCount}", "HeroIdentity");
-        _deployed.Bind(SemanticIconKeys.Melee, $"{model.Deployed}/{model.CurrentPopulation}", "PlayerLabel");
-        _reserve.Bind(SemanticIconKeys.Ranged, model.Reserve.ToString(), "RangeValue");
-        _items.Bind(SemanticIconKeys.Loot, model.ItemCount.ToString(), "PlayerLabel");
-        _gold.Bind(SemanticIconKeys.Gold, model.Gold.ToString(), "GoldValue");
+        BindMetric(_heroes, SemanticIconKeys.Hero, "英雄", model.RosterCount.ToString());
+        BindMetric(_deployed, SemanticIconKeys.Melee, "出战 / 人口", $"{model.Deployed}/{model.CurrentPopulation}");
+        BindMetric(_reserve, SemanticIconKeys.Ranged, "后备", model.Reserve.ToString());
+        BindMetric(_items, SemanticIconKeys.Loot, "背包", model.ItemCount.ToString());
+        BindMetric(_gold, SemanticIconKeys.Gold, "金币", model.Gold.ToString(), "HudGold");
+    }
+
+    private static void BindMetric(SemanticChip chip, StringName icon, string caption, string value, string role = "HudValue")
+    {
+        chip.Bind(icon, value, role);
+        var label = chip.GetNode<Label>("%SemanticCaption");
+        label.Text = caption;
+        label.Show();
+        chip.AccessibilityName = caption + " " + value;
     }
 }

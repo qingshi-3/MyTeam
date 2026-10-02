@@ -27,11 +27,15 @@ public partial class UiPortraitPresentationSmoke : Node
             var count = 0;
             var fallbacks = 0;
             var illustrations = new Dictionary<string, UnitPortraitDefinition>();
-            foreach (var file in DirAccess.GetFilesAt("res://content/portraits/heroes"))
+            foreach (var folder in new[] { "res://content/portraits/heroes", "res://content/growth/portraits",
+                "res://content/validation_matrix/portraits", "res://content/portraits/soldiers",
+                "res://content/portraits/enemies" })
+            foreach (var file in DirAccess.GetFilesAt(folder))
             {
                 if (!file.EndsWith(".tres", StringComparison.Ordinal)) continue;
-                var definition = GD.Load<UnitPortraitDefinition>("res://content/portraits/heroes/" + file);
+                var definition = GD.Load<UnitPortraitDefinition>(folder + "/" + file);
                 var frames = definition.Frames;
+                var sourceFolder = frames!.ResourcePath.GetBaseDir().GetFile();
                 var original = definition.ResolveTexture();
                 card.Bind(definition);
                 board.Bind(definition);
@@ -42,15 +46,18 @@ public partial class UiPortraitPresentationSmoke : Node
                     count++;
                     illustrations.TryAdd(definition.Illustration.ResourcePath, definition);
                     Require(card.IsShowingIllustration && !card.IsPortraitPlaying, file + ": card displays authored art");
-                    var sourceFolder = frames!.ResourcePath.GetBaseDir().GetFile();
                     Require(definition.Illustration.ResourcePath.GetFile() == sourceFolder + ".png",
                         file + ": illustration matches current animation identity, not historical labels");
-                    Require(definition.CardIllustration is not null &&
-                        definition.CardIllustration.ResourcePath == "res://assets/portraits/illustrations/cutouts/" + sourceFolder + ".png",
-                        file + ": card derivative matches the same current character identity");
+                    Require(definition.CardIllustration is null,
+                        folder + "/" + file + ": optimized full artwork must not be overridden by an old cutout");
+                    Require(card.GetNode<TextureRect>("%PortraitIllustration").Texture ==
+                        (definition.CardIllustration ?? definition.Illustration),
+                        file + ": approved full images display directly when no derivative is assigned");
                 }
                 else
                 {
+                    Require(!FileAccess.FileExists("res://assets/portraits/illustrations/" + sourceFolder + ".png"),
+                        folder + "/" + file + ": available optimized art must be bound to static portraits");
                     fallbacks++;
                     Require(!card.IsShowingIllustration && card.IsPortraitPlaying, file + ": missing art retains animation");
                 }
@@ -90,8 +97,9 @@ public partial class UiPortraitPresentationSmoke : Node
             Require(firstMaterial.GetShaderParameter("full_illustration").AsBool() &&
                 !secondMaterial.GetShaderParameter("full_illustration").AsBool(),
                 "large card framing does not change another instance's small portrait mask");
-            Require(cardWindow.Texture == beast.CardIllustration && otherWindow.Texture == archer.CardIllustration,
-                "large and small UI windows use the transparent figure with separate framing");
+            Require(cardWindow.Texture == (beast.CardIllustration ?? beast.Illustration) &&
+                otherWindow.Texture == (archer.CardIllustration ?? archer.Illustration),
+                "large and small UI windows use the selected authored art with separate framing");
             Require(firstMaterial.GetShaderParameter("focal_point").AsVector2() == beast.CardIllustrationFocus &&
                 firstMaterial.GetShaderParameter("portrait_zoom").AsSingle() == beast.CardIllustrationZoom &&
                 firstMaterial.GetShaderParameter("bottom_occlusion").AsSingle() == 30,

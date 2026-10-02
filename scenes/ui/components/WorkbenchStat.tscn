@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/DetailExplanationTooltip.tscn" id="2"]
 [ext_resource type="Resource" path="res://content/ui/combat_keywords.tres" id="3"]
 [node name="WorkbenchStat" type="Button"]
+texture_filter = 2
 custom_minimum_size = Vector2(78, 31)
 size_flags_horizontal = 3
 theme_type_variation = &"CardStat"
@@ -11,6 +12,7 @@ ExplanationTooltip = ExtResource("2")
 Vocabulary = ExtResource("3")
 UseSemanticColor = false
 ShowIcon = true
+UseMaterialIcon = true
 
 [node name="Layout" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -28,7 +30,7 @@ theme_override_constants/separation = 7
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-custom_minimum_size = Vector2(23, 23)
+custom_minimum_size = Vector2(30, 30)
 size_flags_vertical = 4
 expand_mode = 1
 stretch_mode = 5
@@ -36,11 +38,15 @@ stretch_mode = 5
 [node name="FactValue" type="Label" parent="Layout"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"CardStatValue"
 mouse_filter = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 21
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+theme_override_constants/outline_size = 3
 theme_override_colors/font_color = Color(0.94, 0.91, 0.83, 1)
 vertical_alignment = 1
+text_overrun_behavior = 3
 
 [node name="FactCaption" type="Label" parent="Layout"]
 unique_name_in_owner = true

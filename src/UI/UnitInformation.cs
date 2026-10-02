@@ -131,6 +131,15 @@ public sealed class UnitInformation
         return new(icon, number, caption, Explain(attribute, rule, fallback, percent));
     }
 
+    // Preparation card, not a live battle-mana meter. Retain both source explanations.
+    public UnitAttributeFact CardManaFact()
+    {
+        var initial = AttributeFact(CombatAttribute.StartingMana);
+        var maximum = AttributeFact(CombatAttribute.MaxMana);
+        return new(SemanticIconKeys.Mana, initial.Value + "/" + maximum.Value, "法力 · 初始／上限",
+            "数值为每战初始法力／法力上限，不是战斗中的当前法力。\n" + initial.Explanation + "\n" + maximum.Explanation);
+    }
+
     public string AllAttributesText() => string.Join("\n", Enum.GetValues<CombatAttribute>().Select(attribute =>
     {
         var fallback = attribute switch { CombatAttribute.MaxHealth => Baseline.MaxHealth,

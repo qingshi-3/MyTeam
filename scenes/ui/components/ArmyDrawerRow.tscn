@@ -7,12 +7,13 @@
 
 [node name="ArmyDrawerRow" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 84)
+theme_type_variation = &"ReadingWell"
 script = ExtResource("1")
 SemanticChipScene = ExtResource("3")
 
 [node name="Layout" type="HBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 14
 
 [node name="UnitPortrait" parent="Layout" instance=ExtResource("2")]
 unique_name_in_owner = true
@@ -40,13 +41,13 @@ theme_override_constants/separation = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.86, 0.52, 1)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 20
 text = "条目"
 
 [node name="RowDetails" type="Label" parent="Layout/Copy"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "说明"
 autowrap_mode = 2
 
@@ -74,8 +75,8 @@ layout_mode = 2
 [node name="RowFooter" type="Label" parent="Layout/Copy"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.58, 0.76, 1, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.73, 0.72, 0.63, 1)
+theme_override_font_sizes/font_size = 15
 text = "状态"
 autowrap_mode = 2
 

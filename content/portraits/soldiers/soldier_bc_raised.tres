@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="r0"]
 [ext_resource type="SpriteFrames" path="res://assets/donor-units/f4_darkspine/frames.tres" id="r1"]
 
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f4_darkspine.png" id="illustration"]
+
 [resource]
 script = ExtResource("r0")
 StableId = "soldier_bc_raised"
@@ -10,3 +12,8 @@ Frames = ExtResource("r1")
 AnimationName = &"idle"
 FrameIndex = 0
 Zoom = 2
+Illustration = ExtResource("illustration")
+CardIllustrationFocus = Vector2(0.53, 0.48)
+CardIllustrationZoom = 1.2
+IllustrationFocus = Vector2(0.5, 0.56)
+IllustrationZoom = 1

@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/WorkbenchStat.tscn" id="Base"]
+[ext_resource type="Theme" path="res://content/ui/unit_card_relic_theme.tres" id="Theme"]
+[node name="UnitOrbitStat" instance=ExtResource("Base")]
+custom_minimum_size = Vector2(138, 42)
+theme = ExtResource("Theme")
+theme_type_variation = &"OrbitStat"
+[node name="Layout" parent="." index="0"]
+theme_override_constants/separation = 9
+[node name="FactIcon" parent="Layout" index="0"]
+custom_minimum_size = Vector2(34, 34)
+[node name="FactValue" parent="Layout" index="1"]
+theme_type_variation = &"CardOrbitValue"
+theme_override_font_sizes/font_size = 23
+theme_override_colors/font_color = Color(0.97, 0.93, 0.82, 1)
+theme_override_constants/outline_size = 2

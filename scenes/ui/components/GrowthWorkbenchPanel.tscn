@@ -13,6 +13,7 @@ script = ExtResource("1")
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"WorkbenchSubtitle"
+theme_override_font_sizes/font_size = 22
 text = "通用材料 0 · 研究 0"
 
 [node name="PhaseHint" type="Label" parent="."]
@@ -47,7 +48,7 @@ theme_override_constants/separation = 14
 
 [node name="Production" type="PanelContainer" parent="Scroll/Content"]
 layout_mode = 2
-theme_type_variation = &"WorkbenchReport"
+theme_type_variation = &"SectionPanel"
 
 [node name="Layout" type="VBoxContainer" parent="Scroll/Content/Production"]
 layout_mode = 2
@@ -57,6 +58,28 @@ theme_override_constants/separation = 8
 layout_mode = 2
 theme_type_variation = &"WorkbenchSectionTitle"
 text = "工坊分配"
+
+[node name="SelectorLabels" type="HBoxContainer" parent="Scroll/Content/Production/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Producer" type="Label" parent="Scroll/Content/Production/Layout/SelectorLabels"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SecondaryLabel"
+text = "生产者"
+
+[node name="Direction" type="Label" parent="Scroll/Content/Production/Layout/SelectorLabels"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SecondaryLabel"
+text = "培养方向"
+
+[node name="Recipient" type="Label" parent="Scroll/Content/Production/Layout/SelectorLabels"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SecondaryLabel"
+text = "受益英雄"
 
 [node name="Selectors" type="HBoxContainer" parent="Scroll/Content/Production/Layout"]
 layout_mode = 2
@@ -93,7 +116,7 @@ text = "保存分配"
 
 [node name="Ascension" type="PanelContainer" parent="Scroll/Content"]
 layout_mode = 2
-theme_type_variation = &"WorkbenchReport"
+theme_type_variation = &"SectionPanel"
 
 [node name="Layout" type="VBoxContainer" parent="Scroll/Content/Ascension"]
 layout_mode = 2
@@ -122,7 +145,7 @@ text = "升阶"
 [node name="DiscoverySection" type="PanelContainer" parent="Scroll/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"WorkbenchReport"
+theme_type_variation = &"SectionPanel"
 
 [node name="Layout" type="VBoxContainer" parent="Scroll/Content/DiscoverySection"]
 layout_mode = 2
@@ -140,7 +163,7 @@ theme_override_constants/separation = 6
 
 [node name="Spells" type="PanelContainer" parent="Scroll/Content"]
 layout_mode = 2
-theme_type_variation = &"WorkbenchReport"
+theme_type_variation = &"SectionPanel"
 
 [node name="Layout" type="VBoxContainer" parent="Scroll/Content/Spells"]
 layout_mode = 2

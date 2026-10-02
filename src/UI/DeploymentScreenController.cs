@@ -13,9 +13,11 @@ public partial class DeploymentScreenController : Control
 {
     public event Action? BackRequested;
     public event Action? StartRequested;
+    public event Action? GrowthWorkbenchRequested;
     public event Action<FormationMoveCommand>? MoveRequested;
     public event Action<string>? WithdrawRequested;
     public event Action<bool>? EquipmentOverlayChanged;
+    [Signal] public delegate void LoadoutChangedEventHandler();
     private readonly Dictionary<CanvasItem, Color> _inspectionChrome = [];
     private bool _globalInspectionOpen;
     private bool _chromeSuppressed;
@@ -32,6 +34,7 @@ public partial class DeploymentScreenController : Control
     private PanelContainer _bench = null!;
     private Button _back = null!;
     private Button _start = null!;
+    private Button _growthSpell = null!;
     private PackedScene _cardScene = null!;
     private readonly Dictionary<string, DeploymentUnitCard> _cards = new(StringComparer.Ordinal);
     private IReadOnlyList<DeploymentUnitViewModel> _pieces = [];
@@ -73,6 +76,7 @@ public partial class DeploymentScreenController : Control
         _bench = GetNode<PanelContainer>("%ReserveBench");
         _back = GetNode<Button>("%BackButton");
         _start = GetNode<Button>("%StartBattleButton");
+        _growthSpell = GetNode<Button>("%GrowthSpellButton");
         _cardScene = GD.Load<PackedScene>("res://scenes/ui/components/DeploymentUnitCard.tscn");
         _equipmentPanel = GetNode<RosterLoadoutView>("%EquipmentLoadoutPanel");
         _details = GetNode<PreparedUnitDetailPanel>("%PreparedUnitDetailPanel");
@@ -103,6 +107,7 @@ public partial class DeploymentScreenController : Control
             Callable.From<Vector2, Variant>((_, data) => ReceiveWithdrawDrag(data)));
         _back.Pressed += OnBack;
         _start.Pressed += OnStart;
+        _growthSpell.Pressed += OnGrowthSpell;
     }
 
     public override void _ExitTree()
@@ -122,6 +127,7 @@ public partial class DeploymentScreenController : Control
         _board.EquipmentReceiver = null;
         _back.Pressed -= OnBack;
         _start.Pressed -= OnStart;
+        _growthSpell.Pressed -= OnGrowthSpell;
         _unitButton.Pressed -= ToggleUnitDetails;
         _equipmentButton.Pressed -= ToggleEquipment;
         _encounterButton.Pressed -= ToggleEncounter;
@@ -165,12 +171,14 @@ public partial class DeploymentScreenController : Control
         BattleConfig config,
         IReadOnlyList<DeploymentUnitViewModel> pieces,
         IReadOnlyList<EnemyDeploymentViewModel>? enemies,
-        int reserveCapacity)
+        int reserveCapacity,
+        bool preserveEquipmentSurface = false)
     {
         _application = null;
+        _growthSpell.Visible = false;
         GetNode<Label>("%RunRisk").Visible = false;
         _encounterPlan = null;
-        _equipmentPanel.Visible = false;
+        if (!preserveEquipmentSurface) _equipmentPanel.Visible = false;
         _equipmentButton.Disabled = true;
         _title.Text = title;
         _encounter.Text = encounter;
@@ -178,11 +186,9 @@ public partial class DeploymentScreenController : Control
         _pieces = pieces;
         _enemies = enemies ?? [];
         _prepared.Clear();
-        using (var preview = new BattleSimulation(config))
-            foreach (var unit in preview.Units)
+        foreach (var unit in BattlePreparationProjection.Build(config).Units)
                 _prepared[unit.SourceInstanceId] = new PreparedUnitDetails(unit.Definition,
-                    Enum.GetValues<CombatAttribute>().ToDictionary(attribute => attribute,
-                        attribute => unit.Attributes.GetValue(attribute)), unit.Health, unit.Shield);
+                    unit.Attributes.Values, unit.Health, unit.Shield);
         _reserveCapacity = Math.Max(0, reserveCapacity);
         if (!string.IsNullOrEmpty(_selectedId) && !ContainsPiece(_selectedId)) _selectedId = string.Empty;
         Refresh();
@@ -192,7 +198,7 @@ public partial class DeploymentScreenController : Control
 
     public void Bind(RunApplication app, EncounterPlan encounter, bool equipmentEditing = true)
     {
-        var run = app.ActiveRun ?? throw new InvalidOperationException("No active run for deployment.");
+        var run = app.Run ?? throw new InvalidOperationException("No active run for deployment.");
         var config = app.BuildBattleConfig(encounter, false);
         var pieces = run.Roster.Select(instance =>
         {
@@ -209,10 +215,18 @@ public partial class DeploymentScreenController : Control
             return new EnemyDeploymentViewModel(spawn.InstanceId, definition.DisplayName, spawn.Cell,
                 definition.Role, definition.AttackRange, spawn.Unit.IsBoss, definition.Portrait, spawn.Unit.BodyRadius);
         }).ToArray();
-        Bind(encounter.Title, DescribeEncounter(app, encounter), config, pieces, enemies, app.Rules.ReserveCapacity);
+        // A same-screen equipment refresh must not simulate leaving the view:
+        // disclosure pins and drag-source lifetime belong to the visible surface.
+        Bind(encounter.Title, DescribeEncounter(app, encounter), config, pieces, enemies, app.Rules.ReserveCapacity, true);
         GetNode<Label>("%RunRisk").Text = RunHealthText.Risk(app.Rules, encounter.NodeType);
         GetNode<Label>("%RunRisk").Visible = true;
         _application = app;
+        _growthSpell.Visible = app.GrowthRules is not null;
+        var growthAction = app.CheckGrowthAction();
+        _growthSpell.Disabled = !growthAction.Succeeded;
+        _growthSpell.TooltipText = growthAction.Succeeded
+            ? "兑换、预设或取消本场法术；正式开战前不会消耗库存。"
+            : growthAction.Message;
         _encounterPlan = encounter;
         _equipmentEditing = equipmentEditing;
         _equipmentPanel.Bind(app, _selectedId, id => _prepared.GetValueOrDefault(id));
@@ -278,6 +292,7 @@ public partial class DeploymentScreenController : Control
                 card.EquipmentReceiver = data => ReceiveEquipment(card.InstanceId, data);
                 card.RosterDropEvaluator = CanWithdrawDrag;
                 card.RosterReceiver = ReceiveWithdrawDrag;
+                card.DragPreviewSizeProvider = radius => _board.CurrentProjection.DeploymentUnitSize(radius);
                 _cards.Add(piece.InstanceId, card);
             }
             card.Bind(piece, piece.InstanceId == _selectedId);
@@ -319,6 +334,7 @@ public partial class DeploymentScreenController : Control
     private void OnEquipmentChanged()
     {
         if (_application is { } app && _encounterPlan is { } encounter) Bind(app, encounter, _equipmentEditing);
+        EmitSignal(SignalName.LoadoutChanged);
     }
 
     private EquipmentDropEvaluation EvaluateEquipmentDrop(string heroId, Variant data)
@@ -350,7 +366,7 @@ public partial class DeploymentScreenController : Control
 
     private void RefreshEquipmentCards()
     {
-        if (_application?.ActiveRun is not { } run) return;
+        if (_application?.Run is not { } run) return;
         foreach (var hero in run.Roster)
             if (_cards.TryGetValue(hero.InstanceId, out var card))
                 card.BindEquipment(hero.Equipment.Select(item =>
@@ -404,7 +420,7 @@ public partial class DeploymentScreenController : Control
         UnitDefinition? definition = null;
         if (_application is { } app)
         {
-            var contentId = snapshot?.ContentId ?? app.ActiveRun?.Roster
+            var contentId = snapshot?.ContentId ?? app.Run?.Roster
                 .FirstOrDefault(hero => hero.InstanceId == _inspectedId)?.ContentId;
             if (contentId is not null)
             {
@@ -446,6 +462,14 @@ public partial class DeploymentScreenController : Control
     {
         ClosePopups();
         StartRequested?.Invoke();
+    }
+    private void OnGrowthSpell()
+    {
+        if (_application is not { GrowthRules: not null } app) return;
+        var action = app.CheckGrowthAction();
+        if (!action.Succeeded) { ShowMessage(action.Message, true); return; }
+        ClosePopups();
+        GrowthWorkbenchRequested?.Invoke();
     }
 
     private void ToggleUnitDetails() => TogglePopup(_unitPopup, _unitButton);

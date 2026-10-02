@@ -54,7 +54,7 @@ layout_mode = 2
 mouse_filter = 2
 unique_name_in_owner = true
 theme_type_variation = &"WorkbenchBody"
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.64, 0.60, 0.52, 1)
 text_overrun_behavior = 3
 
@@ -156,7 +156,7 @@ text_overrun_behavior = 3
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"WorkbenchBody"
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 16
 autowrap_mode = 2
 max_lines_visible = 2
 text_overrun_behavior = 3
@@ -223,7 +223,7 @@ text_overrun_behavior = 3
 layout_mode = 2
 mouse_filter = 2
 theme_type_variation = &"WorkbenchBody"
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 16
 autowrap_mode = 2
 max_lines_visible = 2
 text_overrun_behavior = 3
@@ -305,33 +305,45 @@ mouse_filter = 2
 theme_type_variation = &"WorkbenchHorizontalRule"
 custom_minimum_size = Vector2(0, 16)
 
-[node name="Movement" type="HBoxContainer" parent="MainContent/Content/AttributeField/Columns/Left"]
+[node name="Survival" type="HBoxContainer" parent="MainContent/Content/AttributeField/Columns/Left"]
 layout_mode = 2
 mouse_filter = 2
 custom_minimum_size = Vector2(0, 30)
 theme_override_constants/separation = 10
 
-[node name="Icon" type="TextureRect" parent="MainContent/Content/AttributeField/Columns/Left/Movement"]
+[node name="Icon" type="TextureRect" parent="MainContent/Content/AttributeField/Columns/Left/Survival"]
 layout_mode = 2
 mouse_filter = 2
 custom_minimum_size = Vector2(28, 28)
 size_flags_vertical = 4
-texture = ExtResource("MovementIcon")
-modulate = Color(0.87, 0.72, 0.51, 1)
+texture = ExtResource("SurvivalIcon")
+modulate = Color(0.64, 0.80, 0.43, 1)
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Title" type="Label" parent="MainContent/Content/AttributeField/Columns/Left/Movement"]
+[node name="Title" type="Label" parent="MainContent/Content/AttributeField/Columns/Left/Survival"]
 layout_mode = 2
 mouse_filter = 2
-text = "行动"
+text = "生存"
 theme_type_variation = &"WorkbenchGroup"
 
-[node name="AttackRange" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+[node name="MaxHealth" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
 layout_mode = 2
 unique_name_in_owner = true
 
-[node name="MoveSpeed" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+[node name="Armor" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="DodgeChance" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="ControlResistance" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="LifeSteal" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Left"]
 layout_mode = 2
 unique_name_in_owner = true
 
@@ -346,45 +358,33 @@ mouse_filter = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
 
-[node name="Survival" type="HBoxContainer" parent="MainContent/Content/AttributeField/Columns/Right"]
+[node name="Movement" type="HBoxContainer" parent="MainContent/Content/AttributeField/Columns/Right"]
 layout_mode = 2
 mouse_filter = 2
 custom_minimum_size = Vector2(0, 30)
 theme_override_constants/separation = 10
 
-[node name="Icon" type="TextureRect" parent="MainContent/Content/AttributeField/Columns/Right/Survival"]
+[node name="Icon" type="TextureRect" parent="MainContent/Content/AttributeField/Columns/Right/Movement"]
 layout_mode = 2
 mouse_filter = 2
 custom_minimum_size = Vector2(28, 28)
 size_flags_vertical = 4
-texture = ExtResource("SurvivalIcon")
-modulate = Color(0.64, 0.80, 0.43, 1)
+texture = ExtResource("MovementIcon")
+modulate = Color(0.87, 0.72, 0.51, 1)
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Title" type="Label" parent="MainContent/Content/AttributeField/Columns/Right/Survival"]
+[node name="Title" type="Label" parent="MainContent/Content/AttributeField/Columns/Right/Movement"]
 layout_mode = 2
 mouse_filter = 2
-text = "生存"
+text = "行动"
 theme_type_variation = &"WorkbenchGroup"
 
-[node name="MaxHealth" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+[node name="AttackRange" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
 layout_mode = 2
 unique_name_in_owner = true
 
-[node name="Armor" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
-layout_mode = 2
-unique_name_in_owner = true
-
-[node name="DodgeChance" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
-layout_mode = 2
-unique_name_in_owner = true
-
-[node name="ControlResistance" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
-layout_mode = 2
-unique_name_in_owner = true
-
-[node name="LifeSteal" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
+[node name="MoveSpeed" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
 layout_mode = 2
 unique_name_in_owner = true
 
@@ -443,6 +443,15 @@ unique_name_in_owner = true
 [node name="HealingPower" instance=ExtResource("2") parent="MainContent/Content/AttributeField/Columns/Right"]
 layout_mode = 2
 unique_name_in_owner = true
+
+[node name="TraitContributions" type="Label" parent="MainContent/Content"]
+layout_mode = 2
+mouse_filter = 2
+unique_name_in_owner = true
+size_flags_horizontal = 3
+theme_type_variation = &"WorkbenchBody"
+theme_override_font_sizes/font_size = 18
+autowrap_mode = 2
 
 [node name="Explanation" type="VBoxContainer" parent="."]
 layout_mode = 2

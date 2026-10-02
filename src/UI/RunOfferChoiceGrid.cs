@@ -33,13 +33,15 @@ public partial class RunOfferChoiceGrid : GridContainer
         // Mixed offers retain equal-sized cards so comparison does not shift when one is a unit.
         var compact = cards.Length > 0 && cards.All(card => !card.IsUnit);
         SizeFlagsHorizontal = compact ? SizeFlags.ShrinkCenter : SizeFlags.ExpandFill;
-        SizeFlagsVertical = compact ? SizeFlags.ShrinkCenter : SizeFlags.ExpandFill;
+        // Oversized rows must begin at the scroll origin. Centering them clips
+        // their names above the scrollable area on short reward pages.
+        SizeFlagsVertical = compact ? SizeFlags.ShrinkBegin : SizeFlags.ExpandFill;
         var compactWidth = Math.Min(width, Math.Min(1120, cards.Length * 376 + Math.Max(0, cards.Length - 1) * 16));
         CustomMinimumSize = new Vector2(compact ? compactWidth : 0, 0);
         if (compact) width = compactWidth;
-        Columns = Math.Clamp((int)((width + 16) / 316), 1, Math.Max(1, Math.Min(3, cards.Length)));
-        var height = Math.Max(360, _viewport.Size.Y - 4);
-        if (compact) height = Math.Min(height, 540);
+        Columns = Math.Clamp((int)((width + 16) / (compact ? 316 : 506)), 1, Math.Max(1, Math.Min(3, cards.Length)));
+        var height = Math.Max(compact ? 240 : 360, _viewport.Size.Y - 4);
+        if (compact) height = Math.Min(height, 440);
         foreach (var card in cards) card.SetAvailableHeight(height);
     }
 }

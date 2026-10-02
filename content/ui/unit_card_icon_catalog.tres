@@ -1,0 +1,120 @@
+[gd_resource type="Resource" script_class="SemanticIconCatalog" load_steps=35 format=3]
+
+[ext_resource type="Script" path="res://src/UI/SemanticIconCatalog.cs" id="Catalog"]
+[ext_resource type="Script" path="res://src/UI/SemanticIconEntry.cs" id="Entry"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/attack.tres" id="attack"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/spell-power.tres" id="spell_power"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/health.tres" id="health"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/armor.tres" id="armor"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/reach.tres" id="reach"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/critical-chance.tres" id="critical_chance"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/critical-damage.tres" id="critical_damage"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/lifesteal.tres" id="lifesteal"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/dodge.tres" id="dodge"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/control-resistance.tres" id="control_resistance"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/move-speed.tres" id="move_speed"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/mana.tres" id="mana"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/healing.tres" id="healing"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/skill-active.tres" id="skill_active"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/skill-passive.tres" id="skill_passive"]
+[ext_resource type="Texture2D" path="res://content/ui/unit-card-icons/attack-speed.tres" id="attack_speed"]
+
+[sub_resource type="Resource" id="attack"]
+script = ExtResource("Entry")
+Key = &"attack"
+Icon = ExtResource("attack")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="spell_power"]
+script = ExtResource("Entry")
+Key = &"spell_power"
+Icon = ExtResource("spell_power")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="health"]
+script = ExtResource("Entry")
+Key = &"health"
+Icon = ExtResource("health")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="armor"]
+script = ExtResource("Entry")
+Key = &"armor"
+Icon = ExtResource("armor")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="reach"]
+script = ExtResource("Entry")
+Key = &"reach"
+Icon = ExtResource("reach")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="critical_chance"]
+script = ExtResource("Entry")
+Key = &"critical_chance"
+Icon = ExtResource("critical_chance")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="critical_damage"]
+script = ExtResource("Entry")
+Key = &"critical_damage"
+Icon = ExtResource("critical_damage")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="lifesteal"]
+script = ExtResource("Entry")
+Key = &"keyword.lifesteal"
+Icon = ExtResource("lifesteal")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="dodge"]
+script = ExtResource("Entry")
+Key = &"keyword.dodge"
+Icon = ExtResource("dodge")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="control_resistance"]
+script = ExtResource("Entry")
+Key = &"control_resistance"
+Icon = ExtResource("control_resistance")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="move_speed"]
+script = ExtResource("Entry")
+Key = &"move-speed"
+Icon = ExtResource("move_speed")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="mana"]
+script = ExtResource("Entry")
+Key = &"mana"
+Icon = ExtResource("mana")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="healing"]
+script = ExtResource("Entry")
+Key = &"healing"
+Icon = ExtResource("healing")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="skill_active"]
+script = ExtResource("Entry")
+Key = &"skill-active"
+Icon = ExtResource("skill_active")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="skill_passive"]
+script = ExtResource("Entry")
+Key = &"skill-passive"
+Icon = ExtResource("skill_passive")
+PresentationRole = "Unit card material icon"
+
+[sub_resource type="Resource" id="attack_speed"]
+script = ExtResource("Entry")
+Key = &"keyword.attack-speed"
+Icon = ExtResource("attack_speed")
+PresentationRole = "Unit card material icon"
+
+[resource]
+script = ExtResource("Catalog")
+Entries = Array[ExtResource("Entry")]([SubResource("attack"), SubResource("spell_power"), SubResource("health"), SubResource("armor"), SubResource("reach"), SubResource("critical_chance"), SubResource("critical_damage"), SubResource("lifesteal"), SubResource("dodge"), SubResource("control_resistance"), SubResource("move_speed"), SubResource("mana"), SubResource("healing"), SubResource("skill_active"), SubResource("skill_passive"), SubResource("attack_speed")])

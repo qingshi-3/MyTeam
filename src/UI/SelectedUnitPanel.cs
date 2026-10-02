@@ -324,7 +324,7 @@ public partial class SelectedUnitPanel : PanelContainer
         foreach (var tile in _statusViews.Values) tile.DetailRequested -= ShowDetail;
     }
 
-    public static string DescribeAction(BattleUnitState state)
+    public static string DescribeAction(BattleUnitView state)
     {
         var target = string.IsNullOrWhiteSpace(state.ActionTargetName) ? string.Empty : $"：{state.ActionTargetName}";
         return state.Mode switch
@@ -366,7 +366,7 @@ public partial class SelectedUnitPanel : PanelContainer
         };
     }
 
-    private static int DisabledTicks(BattleUnitState state) => Math.Max(
+    private static int DisabledTicks(BattleUnitView state) => Math.Max(
         state.DisabledTicks,
         state.Statuses.Where(status => status.GrantedTags.Contains(
                 StatusDefinitionCompiler.ActionDisabledTag,

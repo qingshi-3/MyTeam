@@ -14,8 +14,9 @@ public interface IUiMotionHost
 public sealed class UiPopupMotion : IDisposable
 {
     private readonly Control _panel;
-    private readonly Control _backdrop;
+    private readonly Control? _backdrop;
     private readonly Func<bool> _reduced;
+    private readonly bool _fadeOnly;
     private readonly Color _panelColor, _backdropColor;
     private readonly Control.MouseBehaviorRecursiveEnum _mouse;
     private readonly Control.FocusBehaviorRecursiveEnum _focus;
@@ -25,14 +26,15 @@ public sealed class UiPopupMotion : IDisposable
     private bool _watching;
     public bool IsClosing { get; private set; }
 
-    public UiPopupMotion(Control panel, Control backdrop, Func<bool> reduced)
+    public UiPopupMotion(Control panel, Control? backdrop, Func<bool> reduced, bool fadeOnly = false)
     {
         _panel = panel;
         _tree = panel.GetTree();
         _backdrop = backdrop;
         _reduced = reduced;
+        _fadeOnly = fadeOnly;
         _panelColor = panel.Modulate;
-        _backdropColor = backdrop.Modulate;
+        _backdropColor = backdrop?.Modulate ?? Colors.White;
         _mouse = panel.MouseBehaviorRecursive;
         _focus = panel.FocusBehaviorRecursive;
         panel.OffsetTransformEnabled = true;
@@ -40,7 +42,7 @@ public sealed class UiPopupMotion : IDisposable
         panel.OffsetTransformPivotRatio = new Vector2(.5f, .5f);
     }
 
-    public void Open()
+    public void Open(Vector2? from = null)
     {
         var reversing = IsClosing;
         Stop();
@@ -49,22 +51,25 @@ public sealed class UiPopupMotion : IDisposable
         var large = _panel.Size.X >= _panel.GetViewportRect().Size.X * .85f;
         if (!reversing)
         {
-            _panel.OffsetTransformScale = Vector2.One * (large ? .978f : .94f);
-            _panel.OffsetTransformPosition = new Vector2(0, large ? 8 : 14);
+            _panel.OffsetTransformScale = _fadeOnly ? Vector2.One : Vector2.One * (large ? .978f : .94f);
+            _panel.OffsetTransformPosition = _fadeOnly ? Vector2.Zero : from ?? new Vector2(0, large ? 8 : 14);
             _panel.Modulate = new Color(_panelColor, 0);
-            _backdrop.Modulate = new Color(_backdropColor, 0);
+            if (_backdrop is not null) _backdrop.Modulate = new Color(_backdropColor, 0);
         }
         _tween = NewTween().SetParallel();
-        _tween.TweenProperty(_panel, "offset_transform_scale", Vector2.One, .28)
-            .SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
-        _tween.TweenProperty(_panel, "offset_transform_position", Vector2.Zero, .28)
-            .SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
+        if (!_fadeOnly)
+        {
+            _tween.TweenProperty(_panel, "offset_transform_scale", Vector2.One, .28)
+                .SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
+            _tween.TweenProperty(_panel, "offset_transform_position", Vector2.Zero, .28)
+                .SetTrans(Tween.TransitionType.Back).SetEase(Tween.EaseType.Out);
+        }
         _tween.TweenProperty(_panel, "modulate", _panelColor, .10);
-        _tween.TweenProperty(_backdrop, "modulate", _backdropColor, .14);
+        if (_backdrop is not null) _tween.TweenProperty(_backdrop, "modulate", _backdropColor, .14);
         _tween.Chain().TweenCallback(Callable.From(Reset));
     }
 
-    public void Close(Action finished)
+    public void Close(Action finished, Vector2? toward = null)
     {
         if (IsClosing) return;
         Stop();
@@ -79,11 +84,14 @@ public sealed class UiPopupMotion : IDisposable
         _panel.MouseBehaviorRecursive = Control.MouseBehaviorRecursiveEnum.Disabled;
         _panel.FocusBehaviorRecursive = Control.FocusBehaviorRecursiveEnum.Disabled;
         _tween = NewTween().SetParallel();
-        _tween.TweenProperty(_panel, "offset_transform_scale", Vector2.One * .976f, .12)
-            .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
-        _tween.TweenProperty(_panel, "offset_transform_position", new Vector2(0, 6), .12);
+        if (!_fadeOnly)
+        {
+            _tween.TweenProperty(_panel, "offset_transform_scale", Vector2.One * .976f, .12)
+                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.In);
+            _tween.TweenProperty(_panel, "offset_transform_position", toward ?? new Vector2(0, 6), .12);
+        }
         _tween.TweenProperty(_panel, "modulate:a", 0f, .12);
-        _tween.TweenProperty(_backdrop, "modulate:a", 0f, .12);
+        if (_backdrop is not null) _tween.TweenProperty(_backdrop, "modulate:a", 0f, .12);
         _tween.Chain().TweenCallback(Callable.From(() =>
         {
             Reset();

@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="r0"]
 [ext_resource type="SpriteFrames" path="res://assets/donor-units/f3_irondervish/frames.tres" id="r1"]
 
+[ext_resource type="Texture2D" path="res://assets/portraits/illustrations/f3_irondervish.png" id="illustration"]
+
 [resource]
 script = ExtResource("r0")
 StableId = "soldier_bc_skeleton"
@@ -10,3 +12,4 @@ Frames = ExtResource("r1")
 AnimationName = &"idle"
 FrameIndex = 0
 Zoom = 2
+Illustration = ExtResource("illustration")

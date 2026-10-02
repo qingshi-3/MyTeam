@@ -13,6 +13,8 @@ public partial class UnitPortrait : Control
     [Export] public bool PreferIllustration { get; set; }
     [Export] public bool FullIllustration { get; set; }
     [Export] public bool StoneFrame { get; set; }
+    [Export] public bool BreakoutIllustration { get; set; }
+    [Export] public bool AlignIllustrationTop { get; set; }
     [Export(PropertyHint.Range, "0.5,3,0.05")] public float IllustrationZoomMultiplier { get; set; } = 1f;
     [Export(PropertyHint.Range, "0,64,1")] public float IllustrationBottomOcclusion { get; set; }
 
@@ -34,7 +36,7 @@ public partial class UnitPortrait : Control
     public bool IsPortraitPlaying => _sprite?.IsPlaying() == true;
     public int CurrentFrame => _sprite?.Frame ?? 0;
     public bool IsShowingIllustration => _illustration?.Visible == true;
-    public float IllustrationTopInset => StoneFrame && _definition is not null ? Size.Y * .04f : 0;
+    public float IllustrationTopInset => StoneFrame && !BreakoutIllustration && _definition is not null ? Size.Y * .04f : 0;
 
     public override void _Ready()
     {
@@ -56,20 +58,27 @@ public partial class UnitPortrait : Control
     {
         CacheNodes();
         _definition = definition;
-        _frame.Visible = _recess.Visible = StoneFrame && definition is not null;
+        var breakout = BreakoutIllustration && PreferIllustration && definition?.CardIllustration is not null;
+        ClipContents = !breakout;
+        _frame.Visible = _recess.Visible = StoneFrame && definition is not null && !breakout;
         _illustration.Texture = PreferIllustration
             ? definition?.CardIllustration ?? definition?.Illustration
             : null;
         _illustration.Visible = _illustration.Texture is not null;
         if (_illustration.Material is ShaderMaterial material)
         {
-            material.SetShaderParameter("focal_point", FullIllustration
+            var focus = FullIllustration
                 ? definition?.CardIllustrationFocus ?? new Vector2(.5f, .4f)
-                : definition?.IllustrationFocus ?? new Vector2(.5f, .32f));
-            material.SetShaderParameter("portrait_zoom", FullIllustration
-                ? definition?.CardIllustrationZoom ?? 1.2f : (definition?.IllustrationZoom ?? 1f) * IllustrationZoomMultiplier);
+                : definition?.IllustrationFocus ?? new Vector2(.5f, .32f);
+            // Wide inspection cards keep the authored upper silhouette visible.
+            // The shader clamps this to the first valid sample row.
+            if (AlignIllustrationTop) focus.Y = 0;
+            material.SetShaderParameter("focal_point", focus);
+            material.SetShaderParameter("portrait_zoom", (FullIllustration
+                ? definition?.CardIllustrationZoom ?? 1.2f : definition?.IllustrationZoom ?? 1f) * IllustrationZoomMultiplier);
             material.SetShaderParameter("full_illustration", FullIllustration);
-            material.SetShaderParameter("stone_frame", StoneFrame && definition is not null);
+            material.SetShaderParameter("stone_frame", StoneFrame && definition is not null && !breakout);
+            material.SetShaderParameter("breakout", breakout);
             material.SetShaderParameter("bottom_occlusion", IllustrationBottomOcclusion);
         }
         _layoutTexture = definition?.ResolveTexture();
@@ -104,6 +113,14 @@ public partial class UnitPortrait : Control
         {
             _illustration.Size = FullIllustration ? Size : new Vector2(Mathf.Min(Size.X, Size.Y * 1.3f), Size.Y);
             _illustration.Position = (Size - _illustration.Size) * .5f;
+            if (BreakoutIllustration && _definition?.CardIllustration is not null)
+            {
+                // Only transparent cutouts may cross the UI-owned frame. Hit testing
+                // remains on the authored card; the lower edge stays behind its rail.
+                var overhang = Mathf.Min(24, Size.X * .06f);
+                _illustration.Size = Size + new Vector2(overhang * 2, overhang);
+                _illustration.Position = new Vector2(-overhang, -overhang);
+            }
             if (_illustration.Material is ShaderMaterial material)
             {
                 material.SetShaderParameter("window_aspect", _illustration.Size.X / _illustration.Size.Y);
