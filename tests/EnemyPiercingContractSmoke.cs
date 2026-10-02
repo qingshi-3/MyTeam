@@ -165,7 +165,7 @@ public partial class EnemyPiercingContractSmoke : Node
         foreach (var kind in new[] { TowerNodeType.Combat, TowerNodeType.Elite, TowerNodeType.Boss })
         for (ulong seed = 1; seed <= 12; seed++)
         {
-            var run = new ActiveRunDto { Seed = seed, FloorIndex = region * 5,
+            var run = new ActiveRunDto { Seed = seed, FloorIndex = region * package.Project.Campaign.FloorsPerRegion,
                 EquippedTacticalCommandIds = package.Project.RunRules.StarterTacticalCommandIds.ToList(),
                 Roster = [new() { InstanceId = "hero", ContentId = "hero_hc03_iron_guard" }] };
             run.Deployment[0] = "hero";
@@ -175,12 +175,18 @@ public partial class EnemyPiercingContractSmoke : Node
             if (seed != 1) continue;
             var config = prepare.Build(run, encounter, false);
             var authored = package.Project.Campaign.Regions[region].Encounters[kind];
+            // Current encounter rules combine the region multiplier and its local floor curve.
+            var localFloor = run.FloorIndex % package.Project.Campaign.FloorsPerRegion;
+            var healthScale = authored.EnemyHealthMultiplier *
+                (authored.LocalHealthMultipliers.IsDefaultOrEmpty ? 1 : authored.LocalHealthMultipliers[localFloor]);
+            var damageScale = authored.EnemyDamageMultiplier *
+                (authored.LocalDamageMultipliers.IsDefaultOrEmpty ? 1 : authored.LocalDamageMultipliers[localFloor]);
             foreach (var spawn in config.Spawns.Where(s => s.Team == 1))
             {
                 package.Content.TryGet(spawn.Unit.ContentId, out var entry);
                 var baseline = BattleSetupFactory.Snapshot(entry, package.Content);
-                Near(spawn.Unit.MaxHealth, baseline.MaxHealth * authored.EnemyHealthMultiplier, "encounter HP applied to snapshot");
-                Near(spawn.Unit.Damage, baseline.Damage * authored.EnemyDamageMultiplier, "encounter attack applied to snapshot");
+                Near(spawn.Unit.MaxHealth, baseline.MaxHealth * healthScale, "encounter HP and local curve applied to snapshot");
+                Near(spawn.Unit.Damage, baseline.Damage * damageScale, "encounter attack and local curve applied to snapshot");
                 using var battle = new BattleSimulation(config);
                 var state = battle.Units.Single(u => u.RuntimeId == spawn.InstanceId);
                 Near(state.MaxHealth, spawn.Unit.MaxHealth, "scaled HP reaches battle attributes");

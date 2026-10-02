@@ -27,7 +27,7 @@ public sealed record CompiledStatusCombatReactiveBinding(
     CompiledEffectBinding Binding,
     CombatSourceKind SourceKind = CombatSourceKind.None,
     bool FilterDamageType = false,
-    EffectDamageType DamageType = EffectDamageType.Normal);
+    EffectDamageType DamageType = EffectDamageType.Normal, bool UseOverheal = false);
 
 public sealed record CompiledStatusTransition(
     CompiledStatusDefinition Target,
@@ -58,7 +58,13 @@ public sealed record CompiledStatusDefinition(
     ImmutableArray<CompiledStatusLifecycleBinding> LifecycleBindings,
     ImmutableArray<CompiledStatusCombatReactiveBinding> CombatReactiveBindings,
     CompiledStatusTransition? OverflowTransition,
-    CompiledStatusPresentation? Presentation);
+    CompiledStatusPresentation? Presentation,
+    ImmutableArray<CompiledStatusReaction> Reactions = default,
+    ImmutableArray<CompiledStatusDamageRule> DamageRules = default);
+
+public sealed record CompiledStatusReaction(BattleCombatEventKind EventKind, StatusReactiveOwnerRole OwnerRole,
+    StatusReactionTarget Target, float Radius, CompiledStatusDefinition Status);
+public sealed record CompiledStatusDamageRule(StatusDamageCondition Condition, float Threshold, float Multiplier);
 
 public sealed record StatusSourceContributionSnapshot(
     string SourceId,
@@ -147,7 +153,10 @@ public sealed record StatusEffectInvocation(
     int Tick,
     CompiledEffectBinding Binding,
     StatusRemovalReason RemovalReason,
-    BattleCombatEvent? CombatEvent = null, float PeriodicValue = 0, string PeriodicReceiptId = "");
+    BattleCombatEvent? CombatEvent = null, float PeriodicValue = 0, string PeriodicReceiptId = "")
+{
+    public bool UseOverheal { get; init; }
+}
 
 public sealed record StatusCombatReactiveSubscriptionRequest(
     BattleCombatEventKind EventKind,

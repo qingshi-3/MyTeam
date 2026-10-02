@@ -55,7 +55,8 @@ internal static class ContentPrimitiveValidator
         {
             foreach (var binding in relic.AttributeBindings) Magnitude(binding.Modifier.Magnitude, relic.StableId);
             foreach (var binding in relic.BattleStartEffects.OfType<CompiledRelicBattleStartShield>()) Effect(binding.Effect, relic.StableId);
-            foreach (var counter in relic.ReactiveCounters) Effect(counter.ThresholdEffect, relic.StableId);
+            foreach (var counter in relic.ReactiveCounters)
+                if (counter.ThresholdEffect is not null) Effect(counter.ThresholdEffect, relic.StableId);
         }
     }
 

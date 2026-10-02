@@ -20,7 +20,7 @@ public enum AbilityTriggerKind
     ManaFull,
     CriticalHit, DodgedAttack, ReceivedAttack, HealthDamaged, ShieldReceived, HealingDone, OverhealReceived,
     AllyManaCast, OwnerManaCast, AllyAttackHit, AllyDefeated, EnemyDefeated, ControlApplied, SummonAttackHit, OwnerRevived,
-    OwnerAttackOrSkillHit = 22, AllyTemporaryDefeated = 23, ActionQueued = 24
+    OwnerAttackOrSkillHit = 22, AllyTemporaryDefeated = 23, ActionQueued = 24, OwnerEnteredBattle = 25
 }
 
 public enum AbilityAutomaticTargetKind { CurrentEnemy, WoundedAlly }

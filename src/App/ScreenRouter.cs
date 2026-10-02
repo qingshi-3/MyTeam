@@ -13,26 +13,34 @@ public sealed class ScreenRouter
 {
     private readonly IReadOnlyList<Control> _screens;
     private readonly HashSet<Control> _armyOverlayScreens;
+    private readonly HashSet<Control> _relicScreens;
     private readonly ArmyOverviewController _armyOverview;
     private readonly Dictionary<Control, float> _authoredTopOffsets = [];
+    private readonly Dictionary<Control, float> _authoredLeftOffsets = [];
 
     public ScreenRouter(
         IReadOnlyList<Control> screens,
         IEnumerable<Control> armyOverlayScreens,
-        ArmyOverviewController armyOverview)
+        ArmyOverviewController armyOverview,
+        IEnumerable<Control>? relicScreens = null)
     {
         _screens = screens ?? throw new ArgumentNullException(nameof(screens));
         _armyOverlayScreens = new HashSet<Control>(armyOverlayScreens ??
             throw new ArgumentNullException(nameof(armyOverlayScreens)));
         _armyOverview = armyOverview ?? throw new ArgumentNullException(nameof(armyOverview));
-        foreach (var screen in _screens) _authoredTopOffsets.Add(screen, screen.OffsetTop);
+        _relicScreens = new HashSet<Control>(relicScreens ?? _armyOverlayScreens);
+        foreach (var screen in _screens)
+        {
+            _authoredTopOffsets.Add(screen, screen.OffsetTop);
+            _authoredLeftOffsets.Add(screen, screen.OffsetLeft);
+        }
     }
 
     public Control? Current { get; private set; }
 
     public void Show(
         Control target,
-        ActiveRunDto? run,
+        RunView? run,
         ContentRegistry? content,
         CompiledRunRules? rules)
     {
@@ -41,16 +49,18 @@ public sealed class ScreenRouter
         Current = target;
         var showArmy = run is not null && content is not null && rules is not null &&
             _armyOverlayScreens.Contains(target);
+        var showRelics = run is not null && content is not null && rules is not null && _relicScreens.Contains(target);
         // The resource strip is a sibling overlay, not a child of the current
         // page's layout. Reserve its band centrally instead of stacking both
         // sets of controls at the viewport's top edge. Restore authored space
         // on screens without the strip; repeated navigation must not add insets.
-        target.OffsetTop = _authoredTopOffsets[target] + (showArmy ? _armyOverview.HeaderReservedHeight : 0f);
-        _armyOverview.Visible = showArmy;
-        if (showArmy)
+        _armyOverview.SetRunHeaderContext(showArmy, showRelics);
+        _armyOverview.Visible = showArmy || showRelics;
+        if (!showArmy) _armyOverview.Close();
+        if (showArmy || showRelics)
             _armyOverview.Bind(ArmyOverviewFactory.Build(run!, content!, rules!));
-        else
-            _armyOverview.Close();
+        target.OffsetTop = _authoredTopOffsets[target] + (showArmy || showRelics ? _armyOverview.HeaderReservedHeight : 0f);
+        target.OffsetLeft = _authoredLeftOffsets[target] + (showRelics ? _armyOverview.TraitsReservedWidth : 0f);
         foreach (var node in target.FindChildren("*", "Button", true, false))
             if (node is Button { Disabled: false } button && button.IsVisibleInTree())
             {

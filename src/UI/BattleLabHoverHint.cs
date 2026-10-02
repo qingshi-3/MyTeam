@@ -5,6 +5,7 @@ namespace TowerAutobattler.UI;
 // A small lifecycle component. The popup itself is an authored scene, shared one-at-a-time.
 public partial class BattleLabHoverHint : Node
 {
+    [Export] public PackedScene? TooltipScene { get; set; }
     private static PackedScene? _hintScene;
     private static PackedScene? _tooltipScene;
     private static BattleLabHoverHint? _active;
@@ -13,6 +14,11 @@ public partial class BattleLabHoverHint : Node
     private BattleLabTooltip? _tooltip;
     private Timer _delay = null!;
     private bool _hovered, _keyboardFocus, _suppressed;
+    private double _entryLeave;
+
+    public static bool HasActiveEntryFor(Control owner) => IsInstanceValid(_active) &&
+        _active!._info?.SingleEntry == true && _active._tooltip?.Visible == true &&
+        IsInstanceValid(_active._target) && owner.IsAncestorOf(_active._target!);
 
     public static void Bind(Control target, BattleLabTooltipInfo? info)
     {
@@ -71,7 +77,7 @@ public partial class BattleLabHoverHint : Node
     }
 
     private void OnMouseEntered() { _hovered = true; _suppressed = false; _keyboardFocus = false; Schedule(); }
-    private void OnMouseExited() { _hovered = false; _suppressed = false; if (!_keyboardFocus) Dismiss(); }
+    private void OnMouseExited() { _hovered = false; _suppressed = false; _entryLeave = 0; if (!_keyboardFocus && _info?.SingleEntry != true) Dismiss(); }
     private void OnFocusEntered()
     {
         _keyboardFocus = !Input.IsMouseButtonPressed(MouseButton.Left);
@@ -82,6 +88,9 @@ public partial class BattleLabHoverHint : Node
     private void OnVisibilityChanged() { if (_target?.IsVisibleInTree() != true) Dismiss(); }
     private void OnTargetInput(InputEvent input)
     {
+        if (_info?.SingleEntry == true && (input is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } ||
+            input is InputEventKey { Pressed: true, Keycode: Key.Enter or Key.Space }))
+        { _suppressed = false; _keyboardFocus = _target!.HasFocus(); Schedule(); ShowHint(); return; }
         if (input is InputEventMouseButton { Pressed: true } ||
             (input is InputEventKey { Pressed: true } key && key.Keycode is Key.Enter or Key.Space or Key.Escape))
         { _suppressed = true; Dismiss(); }
@@ -103,7 +112,9 @@ public partial class BattleLabHoverHint : Node
     }
 
     private bool CanShow() => IsInsideTree() && _info is not null && !_suppressed && _target?.IsVisibleInTree() == true &&
-        (_hovered || _keyboardFocus && _target.HasFocus()) && !Input.IsMouseButtonPressed(MouseButton.Left);
+        (_hovered || _keyboardFocus && _target.HasFocus() || _info.SingleEntry && _tooltip?.Visible == true && _entryLeave < .25) &&
+        !GetViewport().GuiIsDragging() &&
+        (!Input.IsMouseButtonPressed(MouseButton.Left) || _info.SingleEntry);
 
     private void ShowHint()
     {
@@ -111,7 +122,7 @@ public partial class BattleLabHoverHint : Node
         if (_tooltip is null || !GodotObject.IsInstanceValid(_tooltip))
         {
             _tooltipScene ??= GD.Load<PackedScene>("res://scenes/ui/components/BattleLabTooltip.tscn");
-            _tooltip = _tooltipScene.Instantiate<BattleLabTooltip>();
+            _tooltip = (TooltipScene ?? _tooltipScene).Instantiate<BattleLabTooltip>();
             AddChild(_tooltip);
         }
         _tooltip.Present(_info!, _target!, _keyboardFocus);
@@ -120,11 +131,19 @@ public partial class BattleLabHoverHint : Node
 
     public override void _Process(double delta)
     {
+        if (_info?.SingleEntry == true)
+            _entryLeave = _hovered || _tooltip?.ContainsPointer() == true ||
+                (_info.AnchorBelow || _info.AnchorBeside) && _target is not null && _tooltip?.ContainsEntryBridge(_target) == true
+                ? 0 : _entryLeave + delta;
         if (!CanShow()) Dismiss();
     }
 
     public override void _Input(InputEvent input)
     {
+        // A reading hint must not consume a click aimed at the card/slot beneath
+        // it. Wheel input still belongs to its full single-entry description.
+        if (_info?.SingleEntry == true && input is InputEventMouseButton button &&
+            (_hovered || _tooltip?.ContainsPointer() == true && button.ButtonIndex is MouseButton.WheelUp or MouseButton.WheelDown)) return;
         if (input is InputEventMouseButton { Pressed: true } || input.IsActionPressed("ui_cancel"))
         { _suppressed = true; Dismiss(); }
     }

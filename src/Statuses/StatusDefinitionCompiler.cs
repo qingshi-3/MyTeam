@@ -77,7 +77,7 @@ public static partial class StatusDefinitionCompiler
     private static CompiledStatusDefinition? CompileDefinition(
         StatusDefinition authored,
         CompiledStatusDefinition? overflowTarget,
-        ValidationReport report)
+        ImmutableArray<CompiledStatusReaction> reactions, ValidationReport report)
     {
         var label = ResourceLabel(authored);
         var errorCount = report.CoreErrors.Count;
@@ -241,6 +241,8 @@ public static partial class StatusDefinitionCompiler
             ValidateEnum(item.EventKind, label, $"combat reactive binding[{index}] event kind", report);
             ValidateEnum(item.OwnerRole, label, $"combat reactive binding[{index}] owner role", report);
             ValidateEnum(item.SourceKind, label, $"combat reactive binding[{index}] source kind", report);
+            if (item.UseOverheal && (item.EventKind != BattleCombatEventKind.HealingResolved || item.OwnerRole != StatusReactiveOwnerRole.OwnerIsTarget))
+                report.Error($"{label}: overheal magnitude requires the recipient's healing event.");
             ValidateEnum(item.DamageType, label, $"combat reactive binding[{index}] damage type", report);
             if (item.FilterDamageType && item.EventKind is not (BattleCombatEventKind.DamageResolved or
                 BattleCombatEventKind.UnitDefeated or BattleCombatEventKind.UnitKilled))
@@ -263,10 +265,20 @@ public static partial class StatusDefinitionCompiler
                     result.Binding,
                     item.SourceKind,
                     item.FilterDamageType,
-                    item.DamageType));
+                    item.DamageType, item.UseOverheal));
             }
         }
-        if (authored.DurationKind == StatusDurationKind.Instant && reactive.Count > 0)
+        var damageRules = ImmutableArray.CreateBuilder<CompiledStatusDamageRule>();
+        foreach (var rule in authored.DamageRules ?? [])
+        {
+            if (rule is null || !Enum.IsDefined(rule.Condition) || !float.IsFinite(rule.Threshold) || rule.Threshold < 0 ||
+                !float.IsFinite(rule.Multiplier) || rule.Multiplier <= 0 || rule.Multiplier > 100 ||
+                rule.Condition == StatusDamageCondition.TargetHealthAbove && rule.Threshold > 1 ||
+                rule.Condition == StatusDamageCondition.HarmfulStatusCount && (rule.Threshold < 1 || rule.Threshold != MathF.Floor(rule.Threshold)))
+            { report.Error($"{label}: invalid conditional damage rule."); continue; }
+            damageRules.Add(new(rule.Condition, rule.Threshold, rule.Multiplier));
+        }
+        if (authored.DurationKind == StatusDurationKind.Instant && (reactive.Count > 0 || reactions.Length > 0 || damageRules.Count > 0))
             report.Error($"{label}: instant Statuses cannot retain combat reactive bindings.");
 
         if (report.CoreErrors.Count != errorCount) return null;
@@ -305,7 +317,7 @@ public static partial class StatusDefinitionCompiler
             lifecycle.ToImmutable(),
             reactive.ToImmutable(),
             overflowTarget is null ? null : new CompiledStatusTransition(overflowTarget, authored.OverflowConsumeStacks),
-            presentation);
+            presentation, reactions, damageRules.ToImmutable());
         return definition with { Description = StatusModelText.Describe(definition) };
     }
 
@@ -319,7 +331,9 @@ public static partial class StatusDefinitionCompiler
         BattleCombatEventKind.ShieldResolved or
         BattleCombatEventKind.UnitDefeated or
         BattleCombatEventKind.UnitKilled or
-        BattleCombatEventKind.ControlApplied;
+        BattleCombatEventKind.ControlApplied or
+        BattleCombatEventKind.CriticalHit or
+        BattleCombatEventKind.AttackDodged;
 
     private static void ValidateEnum<T>(T value, string label, string name, ValidationReport report) where T : struct, Enum
     {
@@ -397,7 +411,17 @@ public static partial class StatusDefinitionCompiler
                 else
                     overflowTarget = Compile(target);
             }
-            var compiled = CompileDefinition(canonical, overflowTarget, _report);
+            var reactions = ImmutableArray.CreateBuilder<CompiledStatusReaction>();
+            foreach (var reaction in canonical.Reactions ?? [])
+            {
+                if (reaction is null || !Enum.IsDefined(reaction.OwnerRole) || !Enum.IsDefined(reaction.Target) ||
+                    !IsReactiveEventKind(reaction.EventKind) || !float.IsFinite(reaction.Radius) || reaction.Radius < 0)
+                { _report.Error($"{ResourceLabel(canonical)}: invalid status reaction."); continue; }
+                if (reaction.Status is null) { _report.Error($"{ResourceLabel(canonical)}: missing reaction status."); continue; }
+                var dependency = Compile(reaction.Status);
+                if (dependency is not null) reactions.Add(new(reaction.EventKind, reaction.OwnerRole, reaction.Target, reaction.Radius, dependency));
+            }
+            var compiled = CompileDefinition(canonical, overflowTarget, reactions.ToImmutable(), _report);
             _stack.RemoveAt(_stack.Count - 1);
             _states[canonical] = 2;
             if (compiled is not null) _compiled.Add(canonical, compiled);

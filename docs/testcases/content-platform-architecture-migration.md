@@ -133,3 +133,14 @@ Additional automated acceptance:
 - Source guards keep `GameRoot` bootstrap-only, require Coordinator→typed Run resolution, prohibit Coordinator-owned save mutation, and reject the former batch-wide compiled-stable-id collision pattern.
 
 Run the low-concurrency build, `AbilityStatusContractSmoke`, `ScalableAuthoringContractSmoke`, `RelicContractSmoke`, `UiSmoke`, `GameUiInteractionReliabilityContractSmoke`, `ProjectCompositionContractSmoke`, and `GameplayContractSmoke` before the complete seventeen-scene serial regression, isolated clean startup, source guards, and `git diff --check`.
+
+## 战斗职责模块拆分（2026-10-01）
+
+设计入口：`system-design/battle-runtime-modules.md`。先按项目约定低并发构建，再用 `tools/run_architecture_checks.py --godot <Godot.NET> --case ability-modules --case enemy-action-module --case ability-status --case first-content-systems --case enemy-actions --case mature-combat --case preparation-projection --case matrix-status-rules --case read-boundary --case legacy-authoring --case flow-input --output <证据目录>` 执行所需范围。显示用例使用隔离 960×540 输入，不操作桌面鼠标。
+
+- 独立模块：不创建模拟器；召唤准备不生成单位、共享预留不能重叠，提交前失效须拒绝，正式召唤全部完成后才消费额外召唤资格；统计回滚应撤销新增单位身份、统计与终局冻结，跨实例检查点拒绝；敌人前摇无伤害，脉冲失败可重试、控制停止后续脉冲、已释放飞刃在来源死亡后继续往返。
+- 完整权威路径：后置效果故障必须恢复先前冷却、护盾、资源及事实，成功重试只结算一次；概率状态恢复随机序列；五类敌人的原时序、换位合法性、产物上限及回滚保持既有断言。
+- 实际输入观察：实验室开始／暂停／重置／返回配置、实际模拟终局后返回；正式征程保存失败显示重试，失败不推进，成功仅推进一次。实验室不得写征程存档。
+- 固定战斗核对：使用 `tools/run_architecture_profile.py --mode core` 的既定真实 10v10 内容核对完整事件／状态指纹。脚本会暂存优化程序集并在结束恢复 Debug；此期间不要并行构建或启动其他验证。
+
+本批结果见 `outputs/architecture-ability-design-20261001/verified-results.json`。输入正确性与最终观感验收分别记录；既有 960×540 测试环境的页面裁切不算已修复。

@@ -116,6 +116,33 @@ public sealed partial class BattleSimulation
             _statusScope.RevokeGrant(PassiveGrantId(ownerId, ability.StableId));
     }
 
+    private void ActivateTriggeredWithRepeats(string ownerId, AbilityTriggerKind trigger, string targetId)
+    {
+        if (_abilityScope is null) return;
+        var results = _abilityScope.ActivateTriggered(ownerId, trigger, TickIndex, targetId);
+        var owner = _units.FirstOrDefault(unit => unit.RuntimeId == ownerId);
+        if (owner?.Team != 0 || _config.Relics is null || _executingEcho) return;
+        var repeats = _config.Relics.Instances.Sum(instance => (instance.Definition.AbilityRepeats.IsDefault ? [] : instance.Definition.AbilityRepeats)
+            .Where(rule => rule.Trigger == trigger).Sum(rule => checked(rule.ExtraExecutions * instance.Stacks)));
+        if (repeats == 0) return;
+        var previousEcho = _executingEcho;
+        _executingEcho = true;
+        try
+        {
+            foreach (var result in results.Where(result => result.Succeeded))
+            {
+                var ability = _abilityScope.Find(ownerId, result.AbilityId)!;
+                for (var repeat = 0; repeat < repeats; repeat++)
+                {
+                    if (repeat >= _combatPipeline.Limits.MaxReactions) throw new InvalidOperationException("Ability repeat budget exceeded.");
+                    var prepared = PrepareAbility(ability, ownerId, ownerId, targetId, TickIndex);
+                    if (prepared.Succeeded && prepared.Plan is { } plan) CommitAbility(plan);
+                }
+            }
+        }
+        finally { _executingEcho = previousEcho; }
+    }
+
     private void BindAbilityCombatEvents()
     {
         var bindingSource = CombatSourceRef.System("ability-event-bridge");
@@ -187,7 +214,10 @@ public sealed partial class BattleSimulation
                 if (pending.PassiveGrant)
                 {
                     if (_units.Any(unit => unit.RuntimeId == pending.OwnerId && unit.Alive))
+                    {
                         ActivatePassiveGrants(pending.OwnerId);
+                        ActivateTriggeredWithRepeats(pending.OwnerId, AbilityTriggerKind.OwnerEnteredBattle, "");
+                    }
                 }
                 else
                 {
@@ -202,7 +232,7 @@ public sealed partial class BattleSimulation
                             var prepared = PrepareAbility(echo,pending.OwnerId,pending.OwnerId,pending.TargetId,TickIndex);
                             if (prepared.Succeeded && prepared.Plan is { } plan) CommitAbility(plan);
                         }
-                        else _abilityScope.ActivateTriggered(pending.OwnerId,pending.Trigger,TickIndex,pending.TargetId);
+                        else ActivateTriggeredWithRepeats(pending.OwnerId,pending.Trigger,pending.TargetId);
                     }
                     finally { _abilityTriggerEvent = previousEvent; _executingEcho = previousEcho; }
                 }

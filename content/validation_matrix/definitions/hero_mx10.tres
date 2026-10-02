@@ -4,6 +4,8 @@
 [ext_resource type="Resource" path="res://content/validation_matrix/portraits/hero_mx10.tres" id="portrait"]
 [ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="trait"]
 
+[ext_resource type="Resource" path="res://content/vfx/basic_arcane.tres" id="attack_visual"]
+
 [sub_resource type="Resource" id="t0"]
 script = ExtResource("trait")
 TraitId = "mx_support"
@@ -13,6 +15,7 @@ Value = 1
 script = ExtResource("trait")
 TraitId = "mx_poison"
 Value = 1
+
 
 [resource]
 script = ExtResource("script")
@@ -29,6 +32,7 @@ Armor = 2
 AttackCooldown = 1.5
 AttackRange = 5.2
 AttackDelivery = 1
+AttackVisual = ExtResource("attack_visual")
 ProjectileWindupSeconds = 0.35
 MaxMana = 70
 StartingMana = 20

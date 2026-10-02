@@ -71,7 +71,8 @@ public sealed class BattleLabPreparationAdapter
                 null,
                 BattlePlacementValidation.ExactAll,
                 HeroRuleOverride: HeroRuleSnapshot.Neutral,
-                AdditionalBossTimelines: ResolveBossTimelines(snapshot));
+                AdditionalBossTimelines: ResolveBossTimelines(snapshot),
+                MatrixStatusRules: _index.Package.Project.MatrixStatusRules);
             return BattlePreparationAssembler.Assemble(request);
         }
         finally { floorRoot.Free(); }

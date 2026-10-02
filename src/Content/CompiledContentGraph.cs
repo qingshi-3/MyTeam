@@ -15,6 +15,10 @@ namespace TowerAutobattler.Content;
 // references are lookup keys only; mutable runtime state never enters this graph.
 public sealed class CompiledContentGraph
 {
+    // Keep native C# resource wrappers alive with the published package. Trait roots
+    // have no catalog scene owner; releasing them between publications can leave
+    // cached Godot resources with finalized managed handles during a reload.
+    private readonly ImmutableArray<Godot.Resource> _authoringRoots;
     private readonly ImmutableDictionary<AbilityLoadoutDefinition, CompiledAbilityLoadout> _loadoutsByResource;
     private readonly ImmutableDictionary<string, CompiledAbilityLoadout> _loadoutsByPath;
     private readonly ImmutableDictionary<string, CompiledRelicDefinition> _relicsById;
@@ -37,8 +41,10 @@ public sealed class CompiledContentGraph
         ImmutableArray<CompiledTacticalCommandDefinition> tacticalCommands = default,
         IEnumerable<TacticalCommandDefinition>? tacticalAuthored = null,
         ImmutableArray<CompiledTraitDefinition> traits = default,
-        IReadOnlyDictionary<string, ImmutableArray<CompiledTraitContribution>>? unitTraitContributions = null)
+        IReadOnlyDictionary<string, ImmutableArray<CompiledTraitContribution>>? unitTraitContributions = null,
+        IEnumerable<Godot.Resource>? authoringRoots = null)
     {
+        _authoringRoots = authoringRoots?.ToImmutableArray() ?? [];
         if (tacticalCommands.IsDefault) tacticalCommands = [];
         if (traits.IsDefault) traits = [];
         var byResource = ImmutableDictionary.CreateBuilder<AbilityLoadoutDefinition, CompiledAbilityLoadout>(

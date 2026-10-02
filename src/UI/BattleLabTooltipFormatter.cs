@@ -126,6 +126,7 @@ public static class BattleLabTooltipFormatter
                 {
                     RelicCounterSourceKind.Population => $"发生{Event(counter.EventKind)}时，按{team}初始单位数增加计数",
                     RelicCounterSourceKind.Alive => $"发生{Event(counter.EventKind)}时，按{team}存活人数增加计数",
+                    RelicCounterSourceKind.Kill => $"{team}单位击杀敌方单位时增加 1 次计数",
                     RelicCounterSourceKind.Attack => $"{team}单位发生{Event(counter.EventKind)}时增加 1 次计数",
                     _ => $"{team}单位阵亡时增加 1 次计数"
                 };
@@ -136,9 +137,12 @@ public static class BattleLabTooltipFormatter
                     _ => counter.TargetTeam == 0 ? "A 队首个存活单位" : "B 队首个存活单位"
                 };
                 facts.Add($"{input}（{temporary}）。达到 {counter.Threshold} 次时消耗 {counter.Consumption} 次，目标为{target}：" +
-                    EffectModelText.DescribeBinding(counter.ThresholdEffect) +
+                    (counter.ThresholdEffect is null ? "战后按奖励池结算" : EffectModelText.DescribeBinding(counter.ThresholdEffect)) +
                     $"；{(counter.ResetPolicy == RelicCounterResetPolicy.BattleEnd ? "战后清零" : "本局结束清零")}。");
             }
+            if (!relic.RunRules.IsDefaultOrEmpty) facts.AddRange(relic.RunRules.Select(RelicRuleText.Describe));
+            if (!relic.AbilityRepeats.IsDefaultOrEmpty) facts.AddRange(relic.AbilityRepeats.Select(rule =>
+                $"我方单位的{(rule.Trigger == TowerAutobattler.Abilities.AbilityTriggerKind.OwnerEnteredBattle ? "入场" : "自身死亡")}能力成功触发后额外执行 {rule.ExtraExecutions} 次。"));
             if (!relic.VictoryOutcomes.IsDefaultOrEmpty)
                 facts.AddRange(relic.VictoryOutcomes.Select(outcome =>
                     $"正式流程胜利结算：每层额外 {outcome.Amount} 金币；实验室不发放这项局内收益。"));
@@ -165,6 +169,7 @@ public static class BattleLabTooltipFormatter
 
     private static string RelicTarget(CompiledRelicUnitTarget target) => target switch
     {
+        CompiledRelicPlayerTeamTarget => "我方所有存活单位（含后来召唤）",
         CompiledRelicPlayerArmyTarget => "A 队初始非英雄单位（不含临时召唤）",
         CompiledRelicPlayerSummonsTarget => "A 队临时召唤物（含战斗中后续生成）",
         CompiledRelicPlayerHeroesTarget or CompiledRelicPlayerEmptySlotHeroesTarget => "A 队初始英雄（不含临时单位）",

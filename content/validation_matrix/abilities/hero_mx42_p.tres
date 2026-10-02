@@ -2,39 +2,75 @@
 
 [ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
 [ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="matrix_targeting"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="matrix_magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixReactionParameters.cs" id="matrix_reaction"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="matrix_execution"]
+
+[sub_resource type="Resource" id="op_2_targeting"]
+script = ExtResource("matrix_targeting")
+Target = 13
+
+[sub_resource type="Resource" id="op_2_magnitude"]
+script = ExtResource("matrix_magnitude")
+Amount = 1
 
 [sub_resource type="Resource" id="op_2"]
 script = ExtResource("operation")
 Kind = 4
-Target = 13
-Amount = 1
+Targeting = SubResource("op_2_targeting")
+Magnitude = SubResource("op_2_magnitude")
 
-[sub_resource type="Resource" id="op_1"]
-script = ExtResource("operation")
-Kind = 18
+[sub_resource type="Resource" id="op_1_targeting"]
+script = ExtResource("matrix_targeting")
 Target = 0
+
+[sub_resource type="Resource" id="op_1_reaction"]
+script = ExtResource("matrix_reaction")
 Event = 12
 SourceRelation = 5
 TargetRelation = 4
 CooldownTicks = 15
 PerTargetCooldown = true
+
+[sub_resource type="Resource" id="op_1"]
+script = ExtResource("operation")
+Kind = 18
 Effects = Array[ExtResource("operation")]([SubResource("op_2")])
+Targeting = SubResource("op_1_targeting")
+Reaction = SubResource("op_1_reaction")
+
+[sub_resource type="Resource" id="op_4_targeting"]
+script = ExtResource("matrix_targeting")
+Target = 10
+
+[sub_resource type="Resource" id="op_4_execution"]
+script = ExtResource("matrix_execution")
+DurationTicks = 20
+Count = 3
 
 [sub_resource type="Resource" id="op_4"]
 script = ExtResource("operation")
 Kind = 16
-Target = 10
-DurationTicks = 20
-Count = 3
+Targeting = SubResource("op_4_targeting")
+Execution = SubResource("op_4_execution")
+
+[sub_resource type="Resource" id="op_3_targeting"]
+script = ExtResource("matrix_targeting")
+Target = 0
+
+[sub_resource type="Resource" id="op_3_reaction"]
+script = ExtResource("matrix_reaction")
+Event = 7
+SourceRelation = 1
+TargetRelation = 0
 
 [sub_resource type="Resource" id="op_3"]
 script = ExtResource("operation")
 Kind = 18
-Target = 0
-Event = 7
-SourceRelation = 1
-TargetRelation = 0
 Effects = Array[ExtResource("operation")]([SubResource("op_4")])
+Targeting = SubResource("op_3_targeting")
+Reaction = SubResource("op_3_reaction")
 
 [resource]
 script = ExtResource("ability")

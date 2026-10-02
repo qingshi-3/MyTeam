@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MatrixStatusRulesDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/MatrixStatusRulesDefinition.cs" id="1"]
+[resource]
+script = ExtResource("1")
+PoisonDurationTicks = 120
+PoisonIntervalTicks = 10
+PoisonDamagePerLayer = 2.0
+ChillDurationTicks = 40
+ChillDefaultStackLimit = 2
+ChillSlowPerLayer = 0.06
+EmberDurationTicks = 80
+EmberStackLimit = 5

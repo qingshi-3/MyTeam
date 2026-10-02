@@ -57,7 +57,9 @@ public static class BattleSetupFactory
         definition.BodyRadius, definition.AttackDelivery,
         definition.ProjectileSpeed, definition.ProjectileRadius, definition.ProjectileLifetime,
         ProjectileWindupSeconds: definition.ProjectileWindupSeconds,
-        AttackReleaseProgress: definition.AttackReleaseProgress);
+        AttackReleaseProgress: definition.AttackReleaseProgress,
+        AttackVisualId: definition.AttackVisual?.StableId ??
+            (definition.AttackDelivery == AttackDelivery.Beam ? "beam" : "projectile"));
 
     public static UnitSnapshot Snapshot(CatalogEntry entry, ContentRegistry? content = null)
     {

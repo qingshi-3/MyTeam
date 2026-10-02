@@ -32,10 +32,14 @@ public static class DefinitionFingerprint
                     .OrderBy(value => value, StringComparer.Ordinal)),
                 string.Join(",", unit.Tags.Select(tag => tag.ToString()).OrderBy(tag => tag, StringComparer.Ordinal))),
             ItemDefinition item => string.Join("|", item.Id, item.DisplayName, item.Description, item.Rarity,
-                item.ProductKind, item.Price,
+                item.ProductKind, item.Price, item.AllowRepeatAcquisition,
                 string.Join(",", item.Tags.Select(tag => tag.ToString()).OrderBy(tag => tag, StringComparer.Ordinal))),
             _ => throw new ArgumentException($"Unsupported definition type: {definition.GetType().Name}", nameof(definition))
         };
+        // Keep fingerprints of unrelated definitions stable when no attack
+        // presentation is assigned; assigned visuals still invalidate caches.
+        if (definition is UnitDefinition { AttackVisual: { } visual })
+            text += "|attack_visual|" + visual.StableId + "|" + visual.ResourcePath;
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant();
     }
 

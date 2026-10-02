@@ -10,6 +10,8 @@ public sealed class BattleAttributeSet
     private readonly Dictionary<CombatAttribute, float> _baseOverrides = [];
     private readonly Dictionary<ModifierKey, RuntimeModifier> _modifiers = [];
     private readonly Dictionary<long, ModifierKey> _handleKeys = [];
+    // Derived order only. Live magnitudes must still read their current dependencies.
+    private readonly Dictionary<CombatAttribute, RuntimeModifier[]> _orderedModifiers = [];
     private readonly HashSet<CombatAttribute> _evaluationStack = [];
     private ImmutableDictionary<CombatAttribute, float> _completedBases = ImmutableDictionary<CombatAttribute, float>.Empty;
     private ImmutableDictionary<CombatAttribute, float> _completedValues = ImmutableDictionary<CombatAttribute, float>.Empty;
@@ -59,23 +61,21 @@ public sealed class BattleAttributeSet
         try
         {
             var definition = Definition.Find(attribute);
-            var ordered = _modifiers.Values.Where(item => item.Modifier.Attribute == attribute)
-                .OrderBy(item => item.Modifier.Priority)
-                .ThenBy(item => item.ApplicationSequence)
-                .ThenBy(item => item.Source)
-                .ThenBy(item => item.Modifier.SlotId, StringComparer.Ordinal)
-                .ToArray();
-            var running = GetBaseValue(attribute);
-            foreach (var item in ordered.Where(item => item.Modifier.Operation == AttributeModifierOperation.Add))
-                running = Finite(running + ResolveMagnitude(item), attribute);
-            foreach (var item in ordered.Where(item => item.Modifier.Operation == AttributeModifierOperation.Multiply))
-                running = Finite(running * ResolveMagnitude(item), attribute);
-            var winner = ordered.Where(item => item.Modifier.Operation == AttributeModifierOperation.Override)
-                .OrderBy(item => item.Modifier.Priority)
-                .ThenBy(item => item.ApplicationSequence)
-                .ThenBy(item => item.Source)
-                .ThenBy(item => item.Modifier.SlotId, StringComparer.Ordinal)
-                .LastOrDefault();
+            if (!_orderedModifiers.TryGetValue(attribute, out var ordered))
+            {
+                ordered = BuildModifierOrder(attribute);
+                _orderedModifiers.Add(attribute, ordered);
+            }
+            var running = _baseOverrides.TryGetValue(attribute, out var overridden) ? overridden : definition.BaseValue;
+            foreach (var item in ordered)
+                if (item.Modifier.Operation == AttributeModifierOperation.Add)
+                    running = Finite(running + ResolveMagnitude(item), attribute);
+            foreach (var item in ordered)
+                if (item.Modifier.Operation == AttributeModifierOperation.Multiply)
+                    running = Finite(running * ResolveMagnitude(item), attribute);
+            RuntimeModifier? winner = null;
+            foreach (var item in ordered)
+                if (item.Modifier.Operation == AttributeModifierOperation.Override) winner = item;
             if (winner is not null) running = ResolveMagnitude(winner);
             return Math.Clamp(Finite(running, attribute), definition.Minimum, definition.Maximum);
         }
@@ -84,6 +84,13 @@ public sealed class BattleAttributeSet
             _evaluationStack.Remove(attribute);
         }
     }
+
+    private RuntimeModifier[] BuildModifierOrder(CombatAttribute attribute) => _modifiers.Count == 0 ? [] :
+        _modifiers.Values.Where(item => item.Modifier.Attribute == attribute)
+            .OrderBy(item => item.Modifier.Priority)
+            .ThenBy(item => item.ApplicationSequence)
+            .ThenBy(item => item.Source)
+            .ThenBy(item => item.Modifier.SlotId, StringComparer.Ordinal).ToArray();
 
     public void SetBaseValue(CombatAttribute attribute, float value)
     {
@@ -129,6 +136,7 @@ public sealed class BattleAttributeSet
                 captured = EvaluateMagnitudeCore(modifier.Magnitude, context);
             var runtime = new RuntimeModifier(modifier, source, handle, ++_applicationSequence, context, captured);
             _modifiers[key] = runtime;
+            _orderedModifiers.Remove(modifier.Attribute);
             _handleKeys[handle.Sequence] = key;
             _ = GetValue(modifier.Attribute);
             return handle;
@@ -147,6 +155,7 @@ public sealed class BattleAttributeSet
                 _modifiers.Remove(key);
                 _handleKeys.Remove(handle.Sequence);
             }
+            _orderedModifiers.Remove(modifier.Attribute);
             throw;
         }
     }
@@ -177,6 +186,7 @@ public sealed class BattleAttributeSet
             handle.OwnerRuntimeId != OwnerRuntimeId ||
             !_handleKeys.Remove(handle.Sequence, out var key))
             return false;
+        _orderedModifiers.Remove(key.Attribute);
         return _modifiers.Remove(key);
     }
 
@@ -189,6 +199,7 @@ public sealed class BattleAttributeSet
             var handle = _modifiers[key].Handle;
             _modifiers.Remove(key);
             _handleKeys.Remove(handle.Sequence);
+            _orderedModifiers.Remove(key.Attribute);
         }
         return keys.Length;
     }
@@ -213,6 +224,7 @@ public sealed class BattleAttributeSet
         _completedBases = bases.ToImmutable();
         _completedValues = values.ToImmutable();
         _modifiers.Clear();
+        _orderedModifiers.Clear();
         _handleKeys.Clear();
         _baseOverrides.Clear();
         _evaluationStack.Clear();
@@ -267,6 +279,7 @@ public sealed class BattleAttributeSet
             owner._baseOverrides.Clear();
             foreach (var pair in _baseOverrides) owner._baseOverrides.Add(pair.Key, pair.Value);
             owner._modifiers.Clear();
+            owner._orderedModifiers.Clear();
             foreach (var pair in _modifiers) owner._modifiers.Add(pair.Key, pair.Value);
             owner._handleKeys.Clear();
             foreach (var pair in _handleKeys) owner._handleKeys.Add(pair.Key, pair.Value);

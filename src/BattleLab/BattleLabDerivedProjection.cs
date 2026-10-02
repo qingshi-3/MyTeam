@@ -58,14 +58,14 @@ public static class BattleLabDerivedProjectionBuilder
                     unit => unit.InstanceId,
                     StringComparer.Ordinal);
                 var config = new BattleLabPreparationAdapter(session.Content).BuildProjection(snapshot);
-                using var simulation = new BattleSimulation(config);
-                foreach (var state in simulation.Units)
+                var preparation = BattlePreparationProjection.Build(config);
+                foreach (var state in preparation.Units)
                 {
                     if (!authoredById.TryGetValue(state.SourceInstanceId, out var authored)) continue;
                     var authoredSources = authored.Equipment.Select(item => item.InstanceId)
                         .Append(authored.InstanceId)
                         .ToHashSet(StringComparer.Ordinal);
-                    var contributions = simulation.TraitSnapshot.Contributions
+                    var contributions = preparation.Traits.Contributions
                         .Where(contribution => !contribution.IsTemporary && contribution.Team == state.Team &&
                             (contribution.OwnerRuntimeId == authored.InstanceId ||
                              contribution.OwnerRuntimeId == state.RuntimeId ||
@@ -91,7 +91,7 @@ public static class BattleLabDerivedProjectionBuilder
                         state.MaxMana,
                         state.Attributes.GetValue(CombatAttribute.ManaPerSecond)));
                 }
-                traitFacts = simulation.TraitSnapshot.Values.Select(value => value.Presentation).ToImmutableArray();
+                traitFacts = preparation.Traits.Values.Select(value => value.Presentation).ToImmutableArray();
             }
             catch (Exception exception)
             {

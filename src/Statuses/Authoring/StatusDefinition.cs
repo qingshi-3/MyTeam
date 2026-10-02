@@ -76,6 +76,8 @@ public enum StatusControlDurationRule
 [GlobalClass]
 public partial class StatusDefinition : Resource
 {
+    [Export] public StatusReactionSpec[] Reactions { get; set; } = [];
+    [Export] public StatusDamageRuleSpec[] DamageRules { get; set; } = [];
     [Export] public string StableId { get; set; } = string.Empty;
     [Export] public string DisplayName { get; set; } = string.Empty;
     [Export] public StatusBehaviorKind Behavior { get; set; }

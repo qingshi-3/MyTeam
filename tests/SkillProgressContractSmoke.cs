@@ -224,7 +224,7 @@ public partial class SkillProgressContractSmoke : Node
     {
         var skills = battle.ReadUnitSkills(unit.RuntimeId);
         _view.SetCombatResources(unit.CurrentMana, unit.MaxMana, unit.Shield, unit.Statuses, unit.Alive, skills.Primary);
-        _panel.Bind(BattleRuntimeUnitProjection.Build(unit, _content, null, battle.TraitSnapshot, "", skills));
+        _panel.Bind(BattleRuntimeUnitProjection.Build(BattleUnitView.For(unit), _content, null, battle.TraitSnapshot, "", skills));
     }
     private UnitSnapshot Profile(string id)
     {

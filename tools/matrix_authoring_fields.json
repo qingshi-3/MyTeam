@@ -1,0 +1,57 @@
+{
+  "Targeting": [
+    "Target",
+    "Range",
+    "Radius",
+    "MaxTargets",
+    "ExcludeSelf",
+    "TargetCondition",
+    "OwnerCondition",
+    "HealthThreshold",
+    "RadiusPerCounter",
+    "CounterOnTarget",
+    "LandingSide"
+  ],
+  "Magnitude": [
+    "Amount",
+    "AttackRatio",
+    "OwnerHealthRatio",
+    "TargetHealthRatio",
+    "EventRatio",
+    "EventTargetHealthRatio",
+    "CounterRatio",
+    "ShieldCap",
+    "TemporaryScale",
+    "Maximum"
+  ],
+  "Execution": [
+    "Key",
+    "RequiredCounter",
+    "CounterThreshold",
+    "ConsumeCounter",
+    "CounterConsumeRatio",
+    "ResetOnTargetChange",
+    "DurationTicks",
+    "Count",
+    "IntervalTicks",
+    "Attribute",
+    "ContentId",
+    "ClearOnDeath"
+  ],
+  "Reaction": [
+    "Event",
+    "SourceRelation",
+    "TargetRelation",
+    "MinimumEventValue",
+    "CooldownTicks",
+    "Every",
+    "PerTargetCooldown",
+    "OncePerTarget",
+    "OncePerSource",
+    "OncePerAction",
+    "OncePerBattle",
+    "ActiveSkillOnly",
+    "TemporaryOnly",
+    "LivingOwnerRequired"
+  ]
+}

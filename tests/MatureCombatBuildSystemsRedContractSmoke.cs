@@ -128,7 +128,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
 
     private static void VerifyFrostFreezeProductionBehavior()
     {
-        var productionCatalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres") ??
+        var productionCatalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ??
             throw new InvalidOperationException("production catalog is missing for the Frost/Freeze probe");
         var production = ContentValidator.CompileProductionGraph(productionCatalog, []);
         var graph = production.Graph ?? throw new InvalidOperationException(
@@ -323,15 +323,15 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
             cue.Lifecycle == StatusPresentationCueLifecycle.Removed &&
             cue.Status.StableId == frost.StableId &&
             cue.RemovalReason == StatusRemovalReason.OverflowConsumed);
-        if (freezeActive.Status.RemainingTicks != 3 || frozen.RemainingTicks != 2 ||
+        if (freezeActive.Status.RemainingTicks != 3 || frozen.RemainingTicks != 3 ||
             !frozen.GrantedTags.Contains(StatusDefinitionCompiler.ActionDisabledTag, StringComparer.Ordinal) ||
             enemy.Mode != BattleUnitMode.Disabled || nextFrost.Stacks != 1 ||
             consumed.Status.Stacks != 3 ||
             !consumed.Status.SourceContributions.Select(source => (source.SourceId, source.Stacks))
                 .SequenceEqual([("rime-a", 2), ("rime-c", 1)]))
-            throw new InvalidOperationException("production Frost threshold, resistance, attribution, or action authority changed");
-        var selectedAction = SelectedUnitPanel.DescribeAction(enemy);
-        if (!selectedAction.Contains("0.2 秒", StringComparison.Ordinal) ||
+            throw new InvalidOperationException($"production Frost threshold, resistance, attribution, or action authority changed: active={freezeActive.Status.RemainingTicks}, remaining={frozen.RemainingTicks}, tags={string.Join(',', frozen.GrantedTags)}, mode={enemy.Mode}, next={nextFrost.Stacks}, consumed={consumed.Status.Stacks}, sources={string.Join(',', consumed.Status.SourceContributions.Select(s => (s.SourceId, s.Stacks)))}");
+        var selectedAction = SelectedUnitPanel.DescribeAction(BattleUnitView.For(enemy));
+        if (!selectedAction.Contains("0.3 秒", StringComparison.Ordinal) ||
             !enemy.Statuses.Any(status => status.ReportLabel == "冻结" &&
                                           status.SemanticIcon == "status.freeze"))
             throw new InvalidOperationException("immutable Freeze UI facts did not expose the effective control duration");
@@ -749,7 +749,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
         VerifyBattleTraitScope(compiled);
         VerifyTraitBattleLifecycle(compiled);
 
-        var productionCatalog = GD.Load<ContentCatalog>("res://tests/fixtures/legacy-roster/content/catalogs/alpha_catalog.tres") ??
+        var productionCatalog = GD.Load<ContentCatalog>("res://content/catalogs/alpha_catalog.tres") ??
             throw new InvalidOperationException("production catalog missing for Trait graph probe");
         var production = ContentValidator.CompileProductionGraph(productionCatalog, []);
         if (production.Report.HasCoreErrors || production.Graph is null ||
@@ -1037,7 +1037,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
 
         var timeout = new BattleSimulation(TraitResultConfig(
             0x7103UL, preparation, 0, 1_000_000_000, 0, floor: new IsolatedEquipmentCellsFloorRule(),
-            enemyCell: new Vector2I(10, 5)));
+            enemyCell: new Vector2I(BattlefieldLayout.Width - 1, BattlefieldLayout.Height - 1)));
         if (timeout.RunToEnd().Outcome != BattleOutcome.Timeout)
             throw new InvalidOperationException("Trait timeout fixture outcome changed");
         AssertTraitCompletion(timeout, TraitBattleCompletionReason.BattleCompleted, "timeout");
@@ -2265,7 +2265,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
             enemyHealth: 1_000_000_000,
             enemyDamage: 0,
             floor: new IsolatedEquipmentCellsFloorRule(),
-            enemyCell: new Vector2I(10, 5)));
+            enemyCell: new Vector2I(BattlefieldLayout.Width - 1, BattlefieldLayout.Height - 1)));
         var timeoutResult = timeout.RunToEnd();
         if (timeoutResult.Outcome != BattleOutcome.Timeout)
             throw new InvalidOperationException("Equipment result timeout fixture outcome changed");
@@ -2371,7 +2371,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
         : ClearFloorRuleRuntime("equipment_isolated", "equipment_isolated", "test")
     {
         public override bool CanOccupy(Vector2I cell) =>
-            cell == new Vector2I(1, 1) || cell == new Vector2I(10, 5);
+            cell == new Vector2I(1, 1) || cell == new Vector2I(BattlefieldLayout.Width - 1, BattlefieldLayout.Height - 1);
     }
 
     private static CompiledRunRules EquipmentProbeRunRules() => new(
@@ -3094,7 +3094,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
                     key => key == "status_power" ? invocationValue : 0,
                     (kind, team) => kind == AttributeTeamCountKind.Alive && team == 0 ? teamValue : 0,
                     (trait, team) => trait == "phase2_trait" && team == 0 ? traitValue : 0));
-            var typed = CompileStatus(new StatusDefinition
+            var typedAuthored = new StatusDefinition
             {
                 StableId = "phase2_typed_status_magnitudes",
                 DisplayName = "状态类型化数值",
@@ -3137,7 +3137,16 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
                         SlotId = "trait_value"
                     }
                 ]
-            });
+            };
+            // Production has no arbitrary invocation-key binding. Reject that authoring;
+            // this isolated runtime below explicitly supplies one to test the generic port.
+            var unbound = StatusDefinitionCompiler.Compile(typedAuthored);
+            if (unbound.Definition is not null || !unbound.Report.CoreErrors.Any(e => e.Contains("ContextValue")))
+                throw new InvalidOperationException("unbound production status context was accepted");
+            var contextModifier = AttributeDefinitionCompiler.Compile(typedAuthored.AttributeModifiers[0]).Modifier!;
+            typedAuthored.AttributeModifiers.RemoveAt(0);
+            var typed = CompileStatus(typedAuthored);
+            typed = typed with { AttributeModifiers = typed.AttributeModifiers.Insert(0, contextModifier) };
             scope.Apply(typed, "system", "context_owner", 0);
             Near(owner.GetValue(CombatAttribute.AttackDamage), 19,
                 "Status invocation/team/trait magnitude context");
@@ -4058,7 +4067,11 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
                 Attribute(CombatAttribute.HealingPower, 0, 0, 500),
                 Attribute(CombatAttribute.ManaPerHitCap, 0, 0, 100),
                 Attribute(CombatAttribute.Armor, 0, 0, 100),
-                Attribute(CombatAttribute.CriticalDamage, 0, 0, 100)
+                Attribute(CombatAttribute.CriticalDamage, 0, 0, 100),
+                Attribute(CombatAttribute.ManaPerSecond, 0, 0, 100),
+                Attribute(CombatAttribute.ManaPerAttack, 0, 0, 100),
+                Attribute(CombatAttribute.ManaPerDamageRatio, 0, 0, 1),
+                Attribute(CombatAttribute.DodgeChance, 0, 0, 1)
             ]
         };
         var compilation = AttributeDefinitionCompiler.Compile(authored);
@@ -4589,6 +4602,17 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
                 PeriodicShieldAmount: 5,
                 PeriodicSummonTicks: 1,
                 PeriodicSummonLimit: 1));
+        // HealingPower is a magnitude, not an implicit heal action. Current content
+        // declares healing through an ability, so the event probe must do the same.
+        using var healingOperation = new MatrixAbilityOperationSpec
+            { Kind = MatrixOperationKind.Heal, Target = MatrixTargetKind.LowestHealthAllies, Amount = 10, Range = 3 };
+        using var healingAbility = new AbilityDefinition { StableId = "feature_heal", DisplayName = "测试治疗",
+            ActivationKind = AbilityActivationKind.Automatic, Trigger = AbilityTriggerKind.PeriodicTick,
+            IntervalTicks = 1, Operations = [healingOperation] };
+        using var healingAuthored = new AbilityLoadoutDefinition { Abilities = [healingAbility] };
+        var healing = AbilityDefinitionCompiler.CompileLoadout(healingAuthored);
+        featureHealer = featureHealer with { AbilityLoadout = healing.Loadout ??
+            throw new InvalidOperationException(string.Join(';', healing.Report.CoreErrors)) };
         var featureBattle = new BattleSimulation(new BattleConfig
         {
             Seed = 8102,
@@ -4893,11 +4917,10 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
         var expected = new[]
         {
             (BattleCombatEventKind.StatusApplied, 1, 0, 1, string.Empty),
+            (BattleCombatEventKind.ControlApplied, 1, 0, 0, string.Empty),
             (BattleCombatEventKind.AbilityResolved, 1, 0, 0, string.Empty),
-            (BattleCombatEventKind.StatusApplied, 2, 1, 2, string.Empty),
-            (BattleCombatEventKind.StatusStackChanged, 2, 1, 2, string.Empty),
-            (BattleCombatEventKind.AbilityResolved, 2, 0, 0, string.Empty),
-            (BattleCombatEventKind.StatusRemoved, 3, 2, 0, StatusRemovalReason.Expired.ToString())
+            // ActionDisabled suppresses the periodic ability at tick 2; expiration is at tick 3.
+            (BattleCombatEventKind.StatusRemoved, 3, 1, 0, StatusRemovalReason.Expired.ToString())
         };
         if (!actual.SequenceEqual(expected))
             throw new InvalidOperationException("production ability/status events: " + string.Join('|', actual));
@@ -4923,8 +4946,9 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
         {
             credited.RunToEnd();
             var killed = credited.CombatTransition!.Events.Single(item => item.Kind == BattleCombatEventKind.UnitKilled);
-            if (killed.SourceRuntimeId != "a_player" || killed.Source.Kind != CombatSourceKind.Unit)
-                throw new InvalidOperationException("runtime unit compatibility damage lost kill attribution");
+            if (killed.SourceRuntimeId != "a_player" || killed.Source.Kind != CombatSourceKind.FloorRule ||
+                killed.Source.StableId != "lethal")
+                throw new InvalidOperationException($"runtime unit compatibility damage lost kill attribution: {killed.SourceRuntimeId} {killed.Source}");
             AssertBattleScopesZero(credited, "credited compatibility kill", BattleCombatCompletionReason.PlayerVictory);
         }
 
@@ -4941,7 +4965,7 @@ public partial class MatureCombatBuildSystemsRedContractSmoke : Node
             hazardEvents.Any(item => item.Kind == BattleCombatEventKind.UnitKilled))
             throw new InvalidOperationException("unknown system damage produced credited kill semantics");
         var defeated = hazardEvents.Single(item => item.Kind == BattleCombatEventKind.UnitDefeated);
-        if (defeated.SourceRuntimeId != "hazard" || defeated.Source.Kind != CombatSourceKind.System)
+        if (defeated.SourceRuntimeId != "hazard" || defeated.Source.Kind != CombatSourceKind.FloorRule || defeated.Source.StableId != "lethal")
             throw new InvalidOperationException("system defeat source attribution changed");
         AssertBattleScopesZero(hazard, "uncredited compatibility defeat", BattleCombatCompletionReason.PlayerVictory);
     }

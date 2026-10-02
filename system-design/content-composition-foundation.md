@@ -1,13 +1,44 @@
 # 内容组合基础契约
 
+战斗运行时的模块职责、依赖方向和事务顺序见 [战斗运行时职责拆分](battle-runtime-modules.md)。技能执行、通用操作、召唤规划、统计和敌人动作已经迁入独立对象；编译能力资源、内容场景和世界权威保持同一条正式路径。
+
+## 启动恢复与成长完整发布（2026-10-01）
+
+`CompiledContentGraph` 私有持有缺少场景所有者的羁绊作者资源根，寿命随已发布内容包，防止重复发布时原生缓存重用已终结的 C# 句柄；运行时继续只读取编译值，不通过这些根获取可变玩法状态。
+
+`GamePackagePublisher` 在注册表发布前统一编译项目与可选成长规则；成长规则任一错误使整包拒绝，发布版本为 0。成功的 `CompiledGamePackage.GrowthRules` 是默认成长入口交给 Run 的不可变结果，启动后不再重新读取规则资源进行第二次编译。Alpha 不要求成长规则。`GrowthGameRoot` 通过预制场景显式引用规则，并在自身生命周期内持有整份 authored package，覆盖失败、重试和成功运行。
+
+`GameRoot` 将内容发布、征程构造与流程启动纳入失败处理，启动完成前隐藏业务页面。失败后解除未完成流程的事件绑定，在既有结果页提供重试与退出；恢复后普通结果页恢复新局和主菜单语义。异步完成后检查根仍在树内且未待删除，重复重试不得并发启动。
+
+活动存档读取失败只报告并保留原件。明确新局写回时，无法反序列化的旧文件必须先完整复制到唯一的 `active_run.json.backups/corrupt-<guid>.bak`，随后才原子替换；备份或写入失败均不得发布新征程。不同 schema 仍保留原有版本备份。Meta 读取失败不自动重置，玩家修复或恢复备份后可重试启动。验证见 [架构治理任务](../work-items/active/architecture-hardening.md)。
+
+矩阵操作的递归作者字段 `Effects` 使用可导出的 `MatrixAbilityOperationSpec[]`，保留类型提示和既有 `.tres` 表达。Godot 4.7.2 下，原 `Godot.Collections.Array<MatrixAbilityOperationSpec>` 可独立复现退出脚本保留；不要无验证地恢复此类型。发布后仍使用不可变的 `CompiledMatrixOperation.Effects`，可变战斗状态不进入作者资源。
+
 ## 目标与分层
 
 本模块区分：①通用结算与生命周期；②内容作者使用的通用模型、编译和运行接入；③具体英雄、技能、羁绊、装备、遗物与事件配置。前两层不依赖具体内容 id。新增原子机制可以扩展类型化处理器，不承诺无需扩展即可表达所有未来玩法。
 
 沿用独立内容场景、只读 Resource、不可变编译图和显式运行作用域。BattleSimulation 仍是战斗修改权威，RunApplication 仍是征程命令边界。不得以一个万能产品类替换各系统生命周期。
 
+## 准备属性的共用投影（2026-10-01）
+
+`BattlePreparationProjection.Build` 交付冻结的单位属性／状态及羁绊快照，部署、选敌、名册、实验室和体验切片都经此入口读取。计算继续走正式初始化内核，涵盖装备、羁绊、常驻授予、生命与法力归一化以及开战效果；不能在 UI 另写一套公式。准备模式禁用战斗步进，省略寻路更新服务、表现事件历史与销毁战报，完成捕获后释放作用域。实际战斗仍使用完整初始化模式，提交／回滚规则相同。初始化内核目前仍在 BattleSimulation 内；这里收紧的是查询与运行职责，不是把整台战斗引擎拆成第二套实现。
+
+## Run 与 Battle 的读取端口（2026-10-01）
+
+`RunApplication.Run` 返回实时只读 `RunView`，英雄、装备、成长与计数的嵌套对象同样只读。列表不暴露底层 List，字典以只读包装交付。包装按权威对象缓存身份，提交替换 DTO 内的列表后，下一次列表读取看到新内容；换新局产生新的根视图。调用方应在刷新时重新取得子对象，不把实时视图当作历史快照或跨线程同步机制。业务命令与持久化仍操作内部 DTO，序列化 schema 不变。
+
+`BattleSimulation.UnitViews` 以 `BattleUnitView`／`BattleAttributeView` 提供查询，事件集合不暴露可写列表。可变兼容访问仅为 internal；同程序集表现代码通过源码门禁禁止回到旧 DTO／单位状态。对外战果继续使用冻结投影。矩阵、羁绊和敌人动作的状态作用域分别负责状态根与检查点身份、事件入队和清理，世界事务负责跨域提交／回滚；伤害权威与执行顺序不变。
+
+`GameProjectDefinition.MatrixStatusRules` 引用棘毒、寒意和余烬的静态数值资源。项目编译复制参数，拒绝非法周期、非有限数值和导致累计减速达到 100% 的配置；检查包括当前羁绊扩展的寒意上限。正式 Run、实验室和名册预览传递编译规则，不在战斗中重新加载或修改 Resource。
+
+`BattleMatrixQueries` 独立负责矩阵目标排序、空间筛选和条件语义，仅接收 `IBattleMatrixReadWorld` 的只读单位视图与状态查询。`BattleMatrixReactionScope` 独立拥有规则注册、事件队列、次数与冷却、按动作／目标／来源去重、死亡前资格、亡语复制及周期触发。它通过 `IBattleMatrixReactionWorld` 请求效果与权威事务，不持有 BattleSimulation 或可变单位；世界适配器只连接现有原子提交路径。反应检查点纳入世界整体快照，拒绝跨实例恢复；失败恢复次数、冷却与去重，事件排空的重入保护按调用栈释放。战斗结束清理反应规则及队列。矩阵效果执行、临时增益／召唤寿命等仍由原战斗机制管理，不能把这次提取写成全部矩阵执行器都已独立。
+
 ## 共享战斗原语
 
+- `BattleAttributeSet` 按属性缓存修饰器的稳定排序，新增、替换、删除、失败恢复、检查点恢复及结束时失效或清空。缓存不保存最终数值：Live magnitude 每次读取当前来源／目标属性，循环检查与 Add → Multiply → Override → Clamp 的顺序保持不变。快照只保存权威状态，恢复后重建派生排序。
+- `BattleProjectileScope` 独占已发射投射物的编号、飞行状态、命中记录、稳定碰撞次序、检查点、恢复和清理。`IBattleProjectileWorld` 提供值类型目标投影、存活／地形查询、命中命令和类型化移动／结束事实；模块不持有或修改 `BattleUnitState`。共同战斗权威仍决定伤害和事务提交。投射物检查点归所属战斗，跨实例恢复拒绝；命中反应取消飞行后不得用局部副本重建它。
+- `BattleSimulation.Projectiles` 返回按变更失效的不可变投影，重复读取不重新排序分配；先前取得的投影不随飞行改变。世界事务整体捕获／恢复投射物模块，结束、替换和销毁统一清理；正常已发射弹体仍可在来源死亡后飞行，换队取消沿用明确的命令入口。投射物读取为冻结投影，单位与 Run 的实时读取端口见上文；两者的时态语义不同。
 - `EffectTargetResolver` 是效果和技能操作共同的快照目标查询。旧自身/来源/指定目标/相对队伍语义保留；`FilteredTargetQuerySpec` 组合锚点、敌我、存活、是否含锚点、标签、范围、排序、数量。`Range=-1` 为不限制，`MaxTargets=0` 为不限制。最近/生命比例排序使用 runtime id 作为稳定并列次序。空间范围使用逻辑单位中心距离，不隐含视线或普攻范围限制。
 - 条件组合为 AND；支持存活、标签存在/不存在、生命比例比较。显式实体引用不存在时条件不成立，不将缺实体解释为已死亡。按所需来源/拥有者/指定目标检查，不能把一次绑定的条件误认为对查询选出的每个目标分别判定。
 - `CompositeAttributeMagnitudeSpec` 支持加、乘、最小值、最大值，以及既有常量、来源/目标属性、上下文值、队伍计数、羁绊值。最多 8 层/128 节点，每个组合 2–8 项；拒绝循环、缺值和非有限结果。根节点决定整个属性修饰的 snapshot/live 时机。负系数用常量表达；效果最终值不得为负，需要截断时显式组合 Maximum。
@@ -25,9 +56,13 @@
 - `RunApplication` 是成长命令边界。生产分配、一次升阶、发现领取、研究兑换、法术预设及真实开战都只能经门面进入；UI 不直接修改 DTO。`GrowthRunService` 计算候选状态，`RunProgressionPersistenceService` 以复制后校验、保存成功再发布的事务提交。失败返回消息并保留原活动状态、选择、库存和待领取机会。
 - 非战斗节点在选择时冻结参与者与生产分配；战斗在真实开始时冻结。结算和层数推进属于同一次保存；普通败战仍按规则结算非终局成长，终局不产生下一次可用收益。生产增量记录来源、目标、模式、层数和战斗编号，攻击／生命使用受益友军内容原始值的 `4%` 固定绝对量，禁止从当前叠加后面板继续复利。
 - 升阶在一个事务中验证材料、扣除材料、写入一次性升阶身份并创建固定三个候选的 `PendingDiscovery`。候选不足、重复拥有、保存失败或准备锁定时不允许部分扣款。待领取发现独立于常规 `PendingOffer`，存在时不能推进下一节点或开战；保存重载沿用原候选。
+- 升阶过程只读取身份、资格和费用，不要求收益或表现资源存在。`GrowthAscensionBenefitDefinition` 单独承载可选战斗能力与实际说明；没有资源表示收益留白。`ResolveBattleLoadout` 在收益留空时继续选择完整的 `BaseLoadout`，同一投影用于战斗、预览与永久收益校验，不回退到缺少成长能力的旧单位定义。已保存的升阶身份不会因删除占位收益而丢失，也不补偿为其他临时加成。
+- `GrowthAscensionDisplayDefinition` 只承载名称与升阶后状态文字，不参与资格或战斗判定。`GrowthWorkbenchPanel.AscensionCompleted(heroInstanceId, ascensionId)` 仅在保存提交成功后通知可选表现观察者；无监听者、无动画也能完成升阶。常驻展示从 Run 的升阶身份重建，不能靠动画是否播过判断；收益留白时 UI 明示不改变该英雄战斗能力，发现奖励另行说明。当前未新配升阶特效。
+- Growth 战役使用独立 `growth_item_pool.tres` 管理当前供给；退役条目不再出现在新商店或新战利品候选中。兼容目录仍保留其定义与独立物品场景，以接续旧持有物及已冻结候选；目录可解析不等于仍在当前供给。Alpha 的历史供给不受这一局部内容清理影响。
 - 研究兑换只把法术身份及数量写入 Run 库存。预设只保存法术和目标；`TryBeginGrowthBattle` 先校验完整战斗配置，再于真实开战事务中冻结并消费，并清空下一场预设。准备异常后的重试复用 `PendingNode` 已消费身份，既不二次扣除也不允许替换。战斗准备把法术能力临时投影到指定英雄，不写入英雄永久 loadout。
 - 永久攻击／生命和升阶 loadout 由战斗准备适配器投影到实例快照；装备、羁绊等继续按既有顺序工作。战内永久收益只接受 `BattleResult` 的明确增量载荷并校验来源／触发次数；例如 MX01 每战首次成功冻结的 `+16` 最大生命。临时状态、层数和战斗属性不能整体回写 Run。
 - schema v8 为成长增加显式空状态：旧 v7 只迁移能够确定为空的成长字段，不凭历史战斗猜测产量。若v7已停在非战斗节点，迁移空参与名单／分配快照；完成原选择只授予当前节点固定材料一次，不补生产。非法或不支持的存档保留原件并拒绝载入，不静默重置。独立 Growth namespace 防止验证征程覆盖 Alpha 玩家数据。
+- 当前schema v10保存当前奖励组与剩余独立组队列，并保留v9选敌身份。新普通战直接整备，精英要求合法候选；旧已锁普通选敌、旧待领奖快照保持原资格。完整奖励／选敌／战果绑定／迁移边界见[tower-autobattler-architecture](tower-autobattler-architecture.md#默认入口与独立领奖2026-09-30)，执行证据见[活动任务](../work-items/active/opponent-choice-and-prebattle-spells.md)。
 - 全局生命仍由 Run 节点结算拥有：普通／精英败战在生命剩余时继续，Boss 败战直接终局；成长结算不得绕过或改写该失败语义。
 
 本批数值是可调验证基线。系统权威固定的是所有权、冻结点、事务原子性、失败语义与投影边界；数值调整应留在成长规则资源，不写入 UI 或战斗特例。
@@ -37,7 +72,7 @@
 ### 职业／体系矩阵逻辑验证包
 
 - `scenes/app/ValidationMatrix.tscn` 经 `ValidationMatrixPackage` 发布独立 `content/validation_matrix/matrix_project.tres` 与 manifest，复用正式战斗及实验室。MX 英雄与临时单位分别有独立 `.tscn`／`.tres`，不改正式 HC、敌人定义或正式招募池；实验包使用独立存档命名空间。设计源和验收边界见 `work-items/active/trait-roster-planning.md`。
-- `MatrixAbilityOperationSpec` 编译为不可变操作树，按原子类型而非具体英雄 ID 分派。嵌套效果有深度／数量／循环检查，召唤引用进入发布门禁和准备快照，所有字段及嵌套操作进入内容指纹。事件注册、延迟、计数器、条件租约和召唤寿命均归战斗实例，禁止回写资源。
+- `MatrixAbilityOperationSpec` 通过 Targeting、Magnitude、Execution、Reaction 四个独立参数资源组织作者字段，Kind 与嵌套 Effects 留在操作根。编译器读取它们并编译为不可变操作树，按原子类型而非具体英雄 ID 分派。嵌套效果有深度／数量／循环检查，召唤引用进入发布门禁和准备快照，所有字段及嵌套操作进入内容指纹。事件注册、延迟、计数器、条件租约和召唤寿命均归战斗实例，禁止回写资源。
 - `TraitBreakpointSpec.Mechanics` 以类型化机制声明羁绊档位，旧无机制配置保持既有指纹。开战贡献者和档位固定，临时单位受益范围独立判断；生成物不能递归新增凑档，羁绊生成的死亡收益按规则排除。额外召唤消费首次成功资格，即使容量或空间不足也不延后重试；共享召唤路径保留其原有存活上限。
 - `CombatDamageClass` 与 `ActionId` 区分普攻、主动技能、持续、反击及派生伤害，单次施法和单次普攻具有稳定行为身份，多段命中据此去重；投射物保存发射时身份。`HealthLost` 保存伤害前来源／伤害后目标生命比例，`HealingResolved.TargetHealthRatio` 保存治疗前目标比例；反应不得读后续变化的比例代替事件事实。
 - 限时护盾按来源与到期时间记录，实际吸收和过期同步同一账本；破盾反应保留真实伤害因果。毒逐层保存来源、寿命与下一次跳伤，转移保留这些属性。寒意／余烬提供可检查的状态层数，死亡前冻结合法死亡读取值并清除活体持续结算。
@@ -70,7 +105,13 @@
 
 贯穿直线弹显式设置 `BattleProjectileState.ContinueAfterHitLimit`：名额用尽后跳过新碰撞伤害，但仍推进至锁定终点；普通弹默认命中耗尽即结束。表现消费独立终点事实，贯穿弹最后一段插值完成并呈现终点后释放；暂停不提前清除，终局立即清理。贯穿命中表现排到可见前端抵达接点时播放，队列归飞行实例并随清场清除，不延迟权威伤害结算。通用 `impact` 为独立短擦痕资源，不再承载范围圆环。
 
-`VfxDefinition.ProjectileImpactTail` 是投射物自身命中余效的可选表现配置（默认关闭）。启用后末段显示插值抵达接触点才向同一实例发送Impact，Completed按资源ReleaseDuration释放；未命中只结束，不伪造Impact，作用域清场仍立即释放。目前酸液启用；普通箭和贯穿箭原逻辑保持。
+`VfxDefinition.ProjectileImpactTail` 是投射物自身命中余效的可选表现配置（默认关闭）。启用后末段显示插值抵达接触点才向同一实例发送Impact，Completed按资源ReleaseDuration释放；未命中只结束，不伪造Impact，作用域清场仍立即释放。酸液与新基础弹体启用；普通箭和贯穿箭原逻辑保持。
+
+`UnitDefinition.AttackVisual` 显式引用共享VfxDefinition，只把StableId冻结为UnitSnapshot.AttackVisualId；既有运行时ProjectileVisualId覆盖继续有效。普通投射物和Beam事件传递此ID，表现层不按英雄ID猜类型。缺省配置保留箭／旧beam兼容路径，校验资源与发射类型匹配，配置进入内容指纹。伤害、射程、前摇、速度、碰撞和技能触发不读取此表现资源。
+
+`VfxDefinition.ExternalProjectile` 标识由外部事实持续提供位置的弹体，供共用预览路径识别，要求Persistent／FaceDirection／ProjectileImpactTail。可选ProjectileContactVfx是接触时的独立小擦痕；不反馈伤害。VfxBasicProjectileTrack只控制预制主体、局部旋转／流动和有限Sprite池尾迹，历史点保存逻辑坐标并经注入舞台重投影，所有时间归实例／VfxPlayer。末端隐藏主体、停止新尾迹，已有余迹按ReleaseDuration消散；清场立即释放，减弱动效关闭旋转／流动和新余迹。
+
+可选`ProjectileContactAtTarget`要求ExternalProjectile与有效ProjectileContactVfx。牧师basic_holy_strike是无可见飞行部件的预制载体，保留原Projectile模拟；实际projectile_impact立即播放basic_holy_pillar，不等待画面弹体插值。接触中心从显式注入的实际受击者显示脚点捕获为逻辑位置，随后冻结，投影变化继续重投影；不跟随目标后续移动。墙挡／寿命结束不产生目标光柱。共用预览的自动到达与手动命中使用同一contact资源，独立暂停／变速／减弱动效／清理，不产生战斗反馈。
 
 ## 首批设计英雄的组合接入
 
@@ -165,7 +206,7 @@
 - `CampaignDefinition.RecruitmentSupply` 引用独立 `.tres`，包含按顺序编号的2–5阶英雄组、开局权重和按绝对楼层递增的阶段权重。编译时检查全部征程池英雄唯一归阶、身份资格、权重长度/非负/总和、阶段起点与范围，以及开局能提供6名且人口能容纳2人。正式当前值为14人4阶，不从全目录推断入池资格；实验室仍读取完整发布目录。
 - `RecruitmentSupplySampler` 只读取编译快照：稳定身份派生随机源，先阶后英雄、不放回抽取，只在当前允许的非空阶重分。`RunDecisionService` 的 Recruit 池配方和兼容 `RecruitmentChoices` 查询共用此策略；生成后保存的 Offer 仍沿原快照恢复，不因读档重抽。旧快照中的合法历史英雄保留，不拿新池缩减去删除已取得内容。
 - schema v6 增加可空 `OpeningRecruitment`（不可变候选/勾选身份数组）；缺失表示既有正常征程。只有经过严格校验的开局状态可持有空名册；必须是0层/0战斗、无节点/奖励/终局、初始资源、6个合法互异候选及0–2个候选内勾选。异常状态保留原档并拒绝载入，不猜测补人或重抽。
-- `BeginOpeningRecruitment` 先保存再替换活动征程；存在开局草稿时复用。`ToggleOpeningHero` 和 `ConfirmOpeningRecruitment` 使用副本及同一保存边界；确认恰好添加所选2名、布置合法初始格并进入首战 PendingNode，保存失败不更改草稿、队伍或原征程。候选资格来自当前测试征程池，独立于旧账号解锁列表。正式 UI 仅通过这组命令开始新局；旧 `StartNewRun(heroId, seed)` 保留为测试/工具兼容入口，不是产品开局路径。
+- `BeginOpeningRecruitment` 每次按传入的新种子生成开局，先保存再替换活动征程，即使已有未确认的开局草稿也不复用（2026-09-29 用户修订）。菜单／结局的“新征程”走该命令；“继续征程”与已有草稿的导航只绑定当前快照，不生成或保存新局。`ToggleOpeningHero` 和 `ConfirmOpeningRecruitment` 使用副本及同一保存边界；确认恰好添加所选2名、布置合法初始格并进入首战 PendingNode，保存失败不更改草稿、队伍或原征程。候选资格来自当前测试征程池，独立于旧账号解锁列表。正式 UI 仅通过这组命令开始新局；旧 `StartNewRun(heroId, seed)` 保留为测试/工具兼容入口，不是产品开局路径。
 
 - Campaign 可配置 `RunOfferDefinition → RunChoiceDefinition → 条件/成本/成功效果/失败效果`。有限操作覆盖金币、招募、物品、生命恢复/损失、人口增长、人口上限来源；不新增升星、合并、成长曲线或独立交易经济。
 - 原有默认节点参数/资源池编译为同一 Offer 模型。`ResolveOffer(offerId, choiceId)` 验证当前资格，在副本支付全部成本并执行收益，同时消费机会/推进节点，保存成功后才发布。失败保留原状态和机会。Shop 重复购买是明确策略，不等同于一次性奖励。
@@ -191,3 +232,19 @@ BattleScreen单位层Z=1，地裂裂缝和酸液液斑使用绝对地面Z=0，�
 岩垒视角修订：RockBarrierVisual保持原注入/时钟接口，子场景RockBarrierPillar用 authored 足印和纹理面投影柱体，俯侧视顶面/厚度随前向与弧切线共同变化；视角与受光不再依赖逐柱Sprite翻转。所有Polygon2D节点由场景编排，脚本只投影几何和采样起升。其石材底色来自项目内barrier-stone-matte.png；旧单柱图保留供历史对照。
 
 岩壁近景的角色缩放与地面投影须使用同一比例（BaseCellPitch×UnitScale），不能只放大角色而保留固定格距。共享场景通过ArcDepth与ForwardOffset调节视觉浅弧，墙段的实际生成点和碰撞仍归战斗；保留施法者与墙体的可见间隙。
+
+## 单位轮廓、地面阴影与受击材质
+
+`UnitAnimationComponent` 显式将 authored `AnimatedSprite2D` 绑定到 `UnitReadabilityComponent`；后者拥有预制地面阴影、独立实例材质、当前帧图集采样边界及短命受击状态。阴影留在地面脚点，身体动作／跃起只改变精灵。共享 SpriteFrames、Shader 和单位定义保持只读。`RangedAttackLayer.UnitHitPresented` 消费正伤害事实；插值贯穿弹在既有可见接触路径发出通知，不在显示层重算伤害，也不抢占动画姿态。冷却防止连续命中不断重启闪光；暂停、速度、单步和Deactivate／死亡清理由单位既有表现入口绑定。具体试验参数和验收证据归表现活动任务。
+
+
+## 通用遗物规则与池奖励（2026-10-01）
+
+- `RelicRunRuleSpec` 提供局内经济、商店、特殊跳过、阶段利息、金币对应战斗生命和奖励池引用；编译为不可变快照，完整参数及池身份／内容进入指纹。池类别和条目在内容发布时验证，装备奖励不能混入遗物。`RelicRuleText` 从编译规则生成详细说明。
+- `RunRelicRules` 只修改调用方的脱离副本。节点进入在 SelectNode 的事务中处理；商店原价冻结保存，折扣仅为展示／支付投影，不能把折后价当下一次原价。支付成功的副本令钱匣停止；保存失败不公布停止标志。跳过组收益与组消费一次提交。
+- `RelicReactiveCounterSpec.SettlementOnly` 允许只计数与消费阈值、不虚构战斗效果。`Kill` 来源只统计指定阵营对敌方的真实击杀，IncludeTemporary 在这里筛选被击杀者；击杀者可以是我方召唤物。`CounterReward` 引用该计数器，结算先验证 trace 和 Run 余数，再按阈值次数抽取配置池。正常结束才发奖，战斗异常和生命周期清理不发。失败／超时仍提交合法计数和这种明确的战后资格；普通胜利贡献仍仅胜利生效。
+- `RelicPlayerTeamTargetSpec` 明确表示我方全体含后来召唤。出生时投影新增最大生命，战内金币减少时扣回上限并裁齐当前生命；死亡保留属性到作用域清理以供死亡能力读取。状态授予在移动、召唤、阵亡、返场与阵营变化时重新核对。
+- 状态新增有限 `DamageRules`（目标血量、身体边缘距离、首领、不同减益数、近战普攻）和 `Reactions`（事件后向自己／另一方／另一方附近敌人施加普通状态）。多个来源的同种减益只算一个稳定 ID；命中刻痕及溢出破甲复用既有状态聚合、计时和溢出。状态依赖图纳入反应目标，禁止循环及未发布引用。
+- `UseOverheal` 仅可绑定治疗承受方事件，读取 applied − effective。状态后续效果遇到 Effect 队列正在结算时加入同一个有界队列，由外层 drain 报告失败，不同步重入内核；能力原有世界事务仍承担整体回滚。新字段为空时保留既有状态定义指纹。
+- `OwnerEnteredBattle` 是独立能力触发种类；初始入场和后续召唤注册完被动后触发，不把 BattleStarted 或一般召唤操作替换为该语义。`RelicAbilityRepeatSpec` 仅接受入场／自身死亡，额外 1–3 次；在原能力成功后复制执行，沿用实际准备／提交路径，不再支付费用，禁止递归重复，受反应预算限制。
+- 本批玩法及供给范围见 `gameplay-design/generic-relics.md`；图标留空。验证入口与恢复状态见 `work-items/active/generic-relic-integration.md`。

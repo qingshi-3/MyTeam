@@ -29,6 +29,10 @@ public readonly record struct BattlefieldProjection(Vector2 Origin, Vector2 Cell
         return new Rect2(CellToLocal(cell) - size * .5f, size);
     }
 
+    // Ordinary portraits occupy one tile; large bodies use their projected diameter.
+    public Vector2 DeploymentUnitSize(float bodyRadius) =>
+        bodyRadius > .5f ? CellPitch * (2 * bodyRadius) : CellRect(Vector2I.Zero).Size;
+
     public Vector2 RemapLocalTo(BattlefieldProjection next, Vector2 localPosition)
     {
         if (!IsValid || !next.IsValid) return localPosition;

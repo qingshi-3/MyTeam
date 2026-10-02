@@ -148,6 +148,18 @@ public static class RunTraitSnapshotBuilder
         IEnumerable<TraitExplicitContribution>? explicitExtras = null)
     {
         ArgumentNullException.ThrowIfNull(run);
+        if (run.Roster is null || run.Deployment is null ||
+            run.Roster.Any(hero => hero is not null && hero.Equipment is null))
+            throw new ArgumentException("Run roster, deployment or equipment is missing.", nameof(run));
+        return CollectInputs(RunView.For(run), graph, explicitExtras);
+    }
+
+    public static ImmutableArray<TraitContributionInput> CollectInputs(
+        RunView run,
+        CompiledContentGraph graph,
+        IEnumerable<TraitExplicitContribution>? explicitExtras = null)
+    {
+        ArgumentNullException.ThrowIfNull(run);
         ArgumentNullException.ThrowIfNull(graph);
         if (run.Roster is null || run.Deployment is null)
             throw new ArgumentException("Run roster or deployment is missing.", nameof(run));

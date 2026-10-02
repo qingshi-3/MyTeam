@@ -14,6 +14,7 @@ public partial class ItemDefinition : Resource
     [Export] public Texture2D? Icon { get; set; }
     [Export] public ItemRarity Rarity { get; set; } = ItemRarity.Common;
     [Export] public ItemProductKind ProductKind { get; set; } = ItemProductKind.Relic;
+    [Export] public bool AllowRepeatAcquisition { get; set; }
     [Export] public int Price { get; set; } = 10;
     [Export] public StringName[] Tags { get; set; } = [];
 }

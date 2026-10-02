@@ -7,8 +7,12 @@ namespace TowerAutobattler.UI;
 public partial class BattleLabTooltip : CanvasLayer
 {
     private PanelContainer _panel = null!;
+    private Vector2[] _entryBridge = [];
 
     public override void _Ready() => _panel = GetNode<PanelContainer>("%TooltipPanel");
+    public bool ContainsPointer() => Visible && _panel.GetGlobalRect().HasPoint(_panel.GetGlobalMousePosition());
+    public bool ContainsEntryBridge(Control target) => Visible && _entryBridge.Length > 0 &&
+        Geometry2D.IsPointInPolygon(target.GetGlobalMousePosition(), _entryBridge);
 
     public void Present(BattleLabTooltipInfo info, Control target, bool keyboard)
     {
@@ -23,19 +27,37 @@ public partial class BattleLabTooltip : CanvasLayer
         SetLabel("%Loadout", info.Loadout);
         SetLabel("%Hint", info.Hint);
         GetNode<TooltipStatGrid>("%IconStats").Bind(info.IconStats);
-        var width = Mathf.Min(396, target.GetViewportRect().Size.X - 24);
+        var width = Mathf.Min(info.AnchorBelow ? 340 : 396, target.GetViewportRect().Size.X - 24);
         _panel.CustomMinimumSize = new Vector2(Mathf.Max(160, width), 0);
         _panel.Size = new Vector2(Mathf.Max(160, width), 0);
-        FitContent(info, Mathf.Max(160, width) - 28, target.GetViewportRect().Size.Y - 24);
+        var entry = GetNode<CombatRichText>("%SingleEntry");
+        entry.Visible = info.SingleEntry;
+        _panel.MouseFilter = info.SingleEntry ? Control.MouseFilterEnum.Stop : Control.MouseFilterEnum.Ignore;
+        if (info.SingleEntry)
+        {
+            foreach (var path in new[] { "%Stats", "%Abilities", "%Loadout", "%Hint", "%IconStats" }) GetNode<Control>(path).Hide();
+            entry.Text = string.Join("\n\n", new[] { info.Stats, info.Abilities, info.Loadout }.Where(value => !string.IsNullOrWhiteSpace(value)));
+            var lines = entry.Text.Split('\n').Sum(line => Math.Max(1, (line.Length + 18) / 19));
+            entry.CustomMinimumSize = new Vector2(0, Math.Min(Math.Max(48, lines * 25), Math.Min(420, target.GetViewportRect().Size.Y - 130)));
+            entry.ScrollToLine(0);
+        }
+        else FitContent(info, Mathf.Max(160, width) - 28, target.GetViewportRect().Size.Y - 24);
         Visible = true;
-        Place(target, keyboard);
+        Place(target, keyboard, info.AnchorBelow, info.AnchorBeside);
         Callable.From(() =>
         {
             if (!GodotObject.IsInstanceValid(this) || !GodotObject.IsInstanceValid(target) || !target.IsInsideTree() || !Visible) return;
             // RichText finishes wrapping after the container sort. Shrink the actual panel too:
             // changing only its minimum leaves the previous tall tooltip as an empty rectangle.
+            if (info.SingleEntry)
+            {
+                // Measure the rendered Chinese font and keyword icons, not a
+                // character-count estimate. Short entries must not need scrolling.
+                entry.CustomMinimumSize = new Vector2(0, Math.Min(Math.Max(48, entry.GetContentHeight() + 4),
+                    Math.Min(420, target.GetViewportRect().Size.Y - 130)));
+            }
             _panel.ResetSize();
-            Place(target, keyboard);
+            Place(target, keyboard, info.AnchorBelow, info.AnchorBeside);
         }).CallDeferred();
     }
 
@@ -124,10 +146,39 @@ public partial class BattleLabTooltip : CanvasLayer
         }));
         return allParagraphs.Length > paragraphs.Length ? summary.TrimEnd('…') + "…" : summary;
     }
-    private void Place(Control target, bool keyboard)
+    private void Place(Control target, bool keyboard, bool below, bool beside)
     {
+        _entryBridge = [];
         var viewport = target.GetViewportRect();
         var targetRect = target.GetGlobalRect();
+        if (beside)
+        {
+            _panel.Position = new Vector2(Mathf.Clamp(targetRect.End.X + 12, 12, Mathf.Max(12, viewport.End.X - _panel.Size.X - 12)),
+                Mathf.Clamp(targetRect.Position.Y, 12, Mathf.Max(12, viewport.End.Y - _panel.Size.Y - 12)));
+            var source = targetRect.Grow(4);
+            var panel = _panel.GetGlobalRect().Grow(4);
+            _entryBridge = Geometry2D.ConvexHull([
+                source.Position, new Vector2(source.End.X, source.Position.Y), source.End,
+                new Vector2(source.Position.X, source.End.Y), panel.Position,
+                new Vector2(panel.End.X, panel.Position.Y), panel.End, new Vector2(panel.Position.X, panel.End.Y)]);
+            return;
+        }
+        if (below && target is RunRelicIcon { HintAnchor: { } anchorControl })
+        {
+            var dock = anchorControl.GetGlobalRect();
+            _panel.Position = new Vector2(Mathf.Clamp(dock.Position.X, 12, Mathf.Max(12, viewport.End.X - _panel.Size.X - 12)),
+                Mathf.Clamp(dock.End.Y + 10, 12, Mathf.Max(12, viewport.End.Y - _panel.Size.Y - 12)));
+            // Connect this icon to its docked reading panel. Crossing that
+            // space must not run the normal pointer-leave dismissal timer.
+            var source = targetRect.Grow(4);
+            var panel = _panel.GetGlobalRect().Grow(4);
+            _entryBridge = Geometry2D.ConvexHull([
+                source.Position, new Vector2(source.End.X, source.Position.Y), source.End,
+                new Vector2(source.Position.X, source.End.Y),
+                panel.Position, new Vector2(panel.End.X, panel.Position.Y), panel.End,
+                new Vector2(panel.Position.X, panel.End.Y)]);
+            return;
+        }
         var anchor = keyboard ? targetRect.Position + new Vector2(targetRect.Size.X, 0) : target.GetGlobalMousePosition();
         var size = _panel.Size;
         var x = anchor.X + 16;

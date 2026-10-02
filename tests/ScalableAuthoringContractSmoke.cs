@@ -64,10 +64,19 @@ public partial class ScalableAuthoringContractSmoke : Node
             await VerifyIndependentSceneLifecycleAsync(registry);
             VerifyDeterministicRuntimeAndIsolation(registry, project);
             VerifyReactiveRelicPersistenceAtomicity(registry, fixture.Project);
-            VerifyVersionTwoMigration(registry, project);
-            await VerifyTransactionalRejectionAsync(fixture);
-            VerifyEffectDependencyTransaction();
-            VerifySourceGuards();
+            // Independent architecture boundaries must still execute if an older
+            // compatibility assertion fails. Preserve every failure for the runner.
+            var failures = new List<string>();
+            async Task Check(string name, Func<Task> check)
+            {
+                try { await check(); GD.Print($"SCALABLE_AUTHORING_CHECK_OK {name}"); }
+                catch (Exception exception) { failures.Add(name + ": " + exception); }
+            }
+            await Check("migration", () => { VerifyVersionTwoMigration(registry, project); return Task.CompletedTask; });
+            await Check("publication-rejection", () => VerifyTransactionalRejectionAsync(fixture));
+            await Check("effect-dependencies", () => { VerifyEffectDependencyTransaction(); return Task.CompletedTask; });
+            await Check("source-boundaries", () => { VerifySourceGuards(); return Task.CompletedTask; });
+            if (failures.Count > 0) throw new InvalidOperationException(string.Join("\n", failures));
 
             Expect(ResourceFingerprint(fixture) == before,
                 "authored unit/item/ability/status/relic/project resources mutated during two runtime instances");
@@ -77,7 +86,7 @@ public partial class ScalableAuthoringContractSmoke : Node
             GD.Print("SCALABLE_AUTHORING_CONTRACT_OK package=hero,soldier,boss,item,ability,status,relic,equipment,floor,encounter,campaign " +
                      "publication=atomic-invalid-ability-project-timeline,shared-ability-canonical boss=two-distinct-loadouts-effects " +
                      "fingerprint=authored-compiled-deep diagnostics=path-operation lifecycle=zero " +
-                     "isolation=two-runtime deterministic=true timing=domain migration=v2-v3 " +
+                     $"isolation=two-runtime deterministic=true timing=domain migration=v2-v{ActiveRunFormationSchema.CurrentVersion} " +
                      "compatibility=hero-command-and-item-provider-removed centers=zero-id-dispatch");
             return 0;
         }
@@ -437,11 +446,11 @@ public partial class ScalableAuthoringContractSmoke : Node
             BattleNumber = 0
         };
         var app = new RunApplication(registry, new MemoryRunSaveService(v2), project);
-        Expect(app.ActiveRun is { Version: 4 } migrated && migrated.Roster.Count == 2 &&
+        Expect(app.ActiveRun is { } migrated && migrated.Version == ActiveRunFormationSchema.CurrentVersion && migrated.Roster.Count == 2 &&
                migrated.CurrentPopulation == 2 &&
                migrated.Deployment.Count == 18 && migrated.Items.Single().Charges == 2 &&
                migrated.Items.Single().Roll == 3 && migrated.Items.Single().Counters.Count == 0,
-            "fixture v2→v3 migration lost formation or relic state");
+            $"fixture v2→v{ActiveRunFormationSchema.CurrentVersion} migration lost formation or relic state");
     }
 
     private async Task VerifyTransactionalRejectionAsync(Fixture fixture)
@@ -718,6 +727,7 @@ public partial class ScalableAuthoringContractSmoke : Node
 
         var gameRoot = Source("src/App/GameRoot.cs");
         var coordinator = Source("src/App/GameFlowCoordinator.cs");
+        var campaignBattle = Source("src/App/RunBattleFlow.cs");
         var publisher = Source("src/Composition/GamePackagePublisher.cs");
         var registry = Source("src/Content/ContentRegistry.cs");
         Expect(gameRoot.Contains("GamePackagePublisher.CreateReadyAsync", StringComparison.Ordinal) &&
@@ -726,10 +736,13 @@ public partial class ScalableAuthoringContractSmoke : Node
                !gameRoot.Contains("ResolveBattle", StringComparison.Ordinal) &&
                !gameRoot.Contains("CompleteBattle", StringComparison.Ordinal),
             "GameRoot bypasses the one complete package publication boundary");
-        Expect(coordinator.Contains("App.ResolveBattle", StringComparison.Ordinal) &&
+        Expect(campaignBattle.Contains("App.ResolveBattle", StringComparison.Ordinal) &&
+               !campaignBattle.Contains("SaveActiveRun", StringComparison.Ordinal) &&
+               !campaignBattle.Contains("DeleteActiveRun", StringComparison.Ordinal) &&
+               !coordinator.Contains("App.ResolveBattle", StringComparison.Ordinal) &&
                !coordinator.Contains("SaveActiveRun", StringComparison.Ordinal) &&
                !coordinator.Contains("DeleteActiveRun", StringComparison.Ordinal),
-            "GameFlowCoordinator bypasses typed Run settlement or owns persistence mutation");
+            "campaign battle flow bypasses typed Run settlement or router owns persistence mutation");
         Expect(publisher.Contains("ContentValidator.CompileProductionGraph", StringComparison.Ordinal) &&
                publisher.Contains("GameProjectCompiler.Compile", StringComparison.Ordinal) &&
                publisher.Contains("ContentRegistry.PublishReadyAsync", StringComparison.Ordinal) &&
@@ -746,7 +759,10 @@ public partial class ScalableAuthoringContractSmoke : Node
         var compilerAuthorities = new HashSet<string>(StringComparer.Ordinal)
         {
             "Abilities/AbilityDefinitionCompiler.cs",
-            "Content/ContentValidator.cs"
+            // This file is another partial of the same compiler authority.
+            "Abilities/BattleOperationCompiler.cs",
+            "Content/ContentAbilityStatusCompiler.cs",
+            "Content/ContentItemCompiler.cs"
         };
         var sourceRoot = Global("src");
         foreach (var path in Directory.GetFiles(sourceRoot, "*.cs", SearchOption.AllDirectories))
@@ -761,6 +777,8 @@ public partial class ScalableAuthoringContractSmoke : Node
 
         var abilityCompiler = Source("src/Abilities/AbilityDefinitionCompiler.cs");
         var statusCompiler = Source("src/Statuses/StatusDefinitionCompiler.cs");
+        var battleOperationCompiler = Source("src/Abilities/BattleOperationCompiler.cs");
+        var statusText = Source("src/Statuses/StatusModelText.cs");
         var compileBatchStart = abilityCompiler.IndexOf(
             "public static AbilityBatchCompilationResult CompileBatch", StringComparison.Ordinal);
         var compileBatchEnd = abilityCompiler.IndexOf(
@@ -775,8 +793,11 @@ public partial class ScalableAuthoringContractSmoke : Node
             "Ability batch compiler reverted to batch-wide compiled stable-id collision authority");
         Expect(!abilityCompiler.Contains("BattleSimulation", StringComparison.Ordinal) &&
                !statusCompiler.Contains("BattleSimulation", StringComparison.Ordinal) &&
+               !battleOperationCompiler.Contains("BattleSimulation", StringComparison.Ordinal) &&
+               !statusText.Contains("BattleSimulation", StringComparison.Ordinal) &&
                abilityCompiler.Contains("BattleTiming.TickSeconds", StringComparison.Ordinal) &&
-               statusCompiler.Contains("BattleTiming.TickSeconds", StringComparison.Ordinal),
+               battleOperationCompiler.Contains("BattleTiming.TickSeconds", StringComparison.Ordinal) &&
+               statusText.Contains("BattleTiming.TickSeconds", StringComparison.Ordinal),
             "Ability/Status compilation depends on the Battle runtime center instead of neutral timing authority");
         var command = Source("src/TacticalCommands/TacticalCommandContentRoot.cs");
         var battle = Source("src/Battle/BattleSimulation.cs");
@@ -1380,7 +1401,7 @@ public partial class ScalableAuthoringContractSmoke : Node
                     .Append(counter.IncludeTemporary).Append(':').Append(counter.Threshold).Append(':')
                     .Append(counter.Consumption).Append(':').Append(counter.Priority).Append(':')
                     .Append(counter.Target).Append(':').Append(counter.TargetTeam).Append(':');
-                AppendCompiledEffect(text, counter.ThresholdEffect);
+                if (counter.ThresholdEffect is not null) AppendCompiledEffect(text, counter.ThresholdEffect);
             }
             text.Append("outcomes{");
             foreach (var outcome in relic.VictoryOutcomes)

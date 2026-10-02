@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using TowerAutobattler.Content;
+using TowerAutobattler.Growth;
 using TowerAutobattler.Project;
 
 namespace TowerAutobattler.Composition;
@@ -11,7 +12,10 @@ namespace TowerAutobattler.Composition;
 public sealed record CompiledGamePackage(
     ContentRegistry Content,
     CompiledGameProject Project,
-    int PublicationVersion);
+    int PublicationVersion)
+{
+    public CompiledGrowthRules? GrowthRules { get; init; }
+}
 
 public sealed record GamePackagePublicationResult(
     CompiledGamePackage? Package,
@@ -53,12 +57,15 @@ public static class GamePackagePublisher
             () => Prepare(project, authoredPackage, additionalStructuralValidationScenes),
             additionalValidationScenes);
         var package = gate.Registry is not null && gate.Payload is not null
-            ? new CompiledGamePackage(gate.Registry, gate.Payload, gate.PublishedVersion)
+            ? new CompiledGamePackage(gate.Registry, gate.Payload.Project, gate.PublishedVersion)
+                { GrowthRules = gate.Payload.GrowthRules }
             : null;
         return new GamePackagePublicationResult(package, gate.Report, gate.PublishedVersion);
     }
 
-    private static ContentPublicationPreparation<CompiledGameProject> Prepare(
+    private sealed record PreparedRules(CompiledGameProject Project, CompiledGrowthRules? GrowthRules);
+
+    private static ContentPublicationPreparation<PreparedRules> Prepare(
         GameProjectDefinition? project,
         AuthoredContentPackage? authoredPackage,
         IEnumerable<PackedScene>? additionalStructuralValidationScenes)
@@ -67,7 +74,7 @@ public static class GamePackagePublisher
         if (project is null)
         {
             report.Error("Game project definition is missing.");
-            return new ContentPublicationPreparation<CompiledGameProject>(null, null, null, report);
+            return new ContentPublicationPreparation<PreparedRules>(null, null, null, report);
         }
 
         var catalog = authoredPackage?.Catalog ?? project.Content;
@@ -107,10 +114,18 @@ public static class GamePackagePublisher
             report.Merge(compiledProject.Report);
         }
 
-        return new ContentPublicationPreparation<CompiledGameProject>(
+        CompiledGrowthRules? growthRules = null;
+        if (!report.HasCoreErrors && content.Graph is not null && authoredPackage?.GrowthRules is { } growth)
+        {
+            try { growthRules = GrowthRulesCompiler.Compile(growth, catalog!, content.Graph); }
+            catch (Exception exception) { report.Error($"Growth rules prepublication failed: {exception.Message}"); }
+        }
+
+        return new ContentPublicationPreparation<PreparedRules>(
             catalog,
             report.HasCoreErrors ? null : content.Graph,
-            report.HasCoreErrors ? null : compiledProject?.Project,
+            report.HasCoreErrors || compiledProject?.Project is not { } readyProject
+                ? null : new PreparedRules(readyProject, growthRules),
             report);
     }
 }

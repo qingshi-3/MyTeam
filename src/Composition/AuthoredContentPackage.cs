@@ -3,6 +3,7 @@ using Godot;
 using TowerAutobattler.Abilities;
 using TowerAutobattler.Content;
 using TowerAutobattler.Equipment;
+using TowerAutobattler.Growth;
 using TowerAutobattler.Project;
 using TowerAutobattler.Relics;
 using TowerAutobattler.Statuses;
@@ -23,6 +24,7 @@ internal sealed record AuthoredContentPackage(
     IReadOnlyList<StatusDefinition?> Statuses,
     IReadOnlyList<RelicDefinition?> Relics)
 {
+    public GrowthRulesDefinition? GrowthRules { get; init; }
     public IReadOnlyList<EquipmentDefinition?> Equipment { get; init; } = [];
     public IReadOnlyList<TacticalCommandDefinition?> TacticalCommands { get; init; } = [];
     public IReadOnlyList<PackedScene?> TacticalCommandScenes { get; init; } = [];

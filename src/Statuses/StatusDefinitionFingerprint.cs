@@ -38,6 +38,15 @@ public static class StatusDefinitionFingerprint
             status.Presentation is null ? "none" : Pack("presentation", status.Presentation.SemanticIcon,
                 status.Presentation.ExecutedCue, status.Presentation.OnActiveCue, status.Presentation.WhileActiveCue,
                 status.Presentation.RemovedCue, status.Presentation.ReportLabel, status.Presentation.PersistentVfx));
+        // Preserve the identity of unchanged old definitions. New semantics extend only their own fingerprints.
+        if (status.CombatReactiveBindings.Any(binding => binding.UseOverheal))
+            canonical += Pack("overheal", string.Join(',', status.CombatReactiveBindings.Select(binding => binding.UseOverheal)));
+        if (!status.Reactions.IsDefaultOrEmpty)
+            canonical += Pack("reactions", Pack(status.Reactions.Select(reaction => Pack(reaction.EventKind.ToString(),
+                reaction.OwnerRole.ToString(), reaction.Target.ToString(), reaction.Radius.ToString("R", CultureInfo.InvariantCulture), Compute(reaction.Status))).ToArray()));
+        if (!status.DamageRules.IsDefaultOrEmpty)
+            canonical += Pack("damage-rules", Pack(status.DamageRules.Select(rule => Pack(rule.Condition.ToString(),
+                rule.Threshold.ToString("R", CultureInfo.InvariantCulture), rule.Multiplier.ToString("R", CultureInfo.InvariantCulture))).ToArray()));
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical))).ToLowerInvariant();
     }
 }

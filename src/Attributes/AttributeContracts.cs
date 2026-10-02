@@ -112,9 +112,12 @@ public sealed record CompiledAttributeSetDefinition(
     ImmutableArray<CompiledAttributeDefinition> Attributes,
     string Fingerprint)
 {
-    public CompiledAttributeDefinition Find(CombatAttribute attribute) =>
-        Attributes.FirstOrDefault(item => item.Attribute == attribute) ??
+    public CompiledAttributeDefinition Find(CombatAttribute attribute)
+    {
+        foreach (var item in Attributes)
+            if (item.Attribute == attribute) return item;
         throw new KeyNotFoundException($"Attribute '{attribute}' is not defined.");
+    }
 }
 
 public sealed class BattleAttributeMagnitudeContext

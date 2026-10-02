@@ -149,7 +149,7 @@ public partial class BattleLabBattleLifecycleContractSmoke : Node
         }
     }
 
-    private static void VerifyFailureTransactions(
+    internal static void VerifyFailureTransactions(
         BattleScreenController battle,
         ContentRegistry content,
         BattleLabContentIndex index,

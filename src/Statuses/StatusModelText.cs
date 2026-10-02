@@ -52,8 +52,13 @@ public static class StatusModelText
         foreach (var binding in status.CombatReactiveBindings)
             facts.Add($"当拥有者作为{(binding.OwnerRole == StatusReactiveOwnerRole.OwnerIsSource ? "事件发起方" : "事件承受方")}发生{EventName(binding.EventKind)}" +
                 (binding.SourceKind == CombatSourceKind.None ? "" : $"（仅{SourceName(binding.SourceKind)}来源）") +
+                (binding.UseOverheal ? "（按溢出治疗量）" : "") +
                 (binding.FilterDamageType ? $"（仅{EffectModelText.DamageTypeName(binding.DamageType)}伤害）" : "") +
                 $"：{EffectModelText.DescribeBinding(binding.Binding)}");
+        foreach (var reaction in status.Reactions.IsDefault ? [] : status.Reactions)
+            facts.Add($"{EventName(reaction.EventKind)}时，对{reaction.Target switch { StatusReactionTarget.Owner => "自身", StatusReactionTarget.Counterpart => "事件另一方", _ => $"事件另一方周围 {reaction.Radius:0.##} 距离内的敌人" }}施加「{reaction.Status.DisplayName}」");
+        foreach (var rule in status.DamageRules.IsDefault ? [] : status.DamageRules)
+            facts.Add($"{rule.Condition switch { StatusDamageCondition.TargetHealthAbove => $"目标生命高于 {rule.Threshold:P0}", StatusDamageCondition.WithinRange => $"与目标边缘距离不超过 {rule.Threshold:0.##}", StatusDamageCondition.BossTarget => "目标为首领", StatusDamageCondition.MeleeAttack => "近战普攻", _ => $"目标至少有 {rule.Threshold:0} 种不同减益" }}时，伤害 ×{rule.Multiplier:0.##}");
         facts.Add(status.DispelCategory switch { StatusDispelCategory.NonDispellable => "不可驱散", StatusDispelCategory.StrongOnly => "仅强驱散可移除", _ => "可驱散" });
         if (status.Behavior == StatusBehaviorKind.Taunt) facts.Add("普攻目标改为嘲讽来源；来源阵亡后恢复寻敌");
         if (status.ControlDurationRule == StatusControlDurationRule.LinearResistanceCeiling) facts.Add("持续时间受控制抗性缩短，至少保留一个逻辑帧");
@@ -63,12 +68,19 @@ public static class StatusModelText
 
     public static string EventName(BattleCombatEventKind kind) => kind switch
     {
+        BattleCombatEventKind.BattleStarted => "战斗开始", BattleCombatEventKind.BattleCompleted => "战斗结束",
         BattleCombatEventKind.AttackDeclared => "普通攻击开始", BattleCombatEventKind.AttackLanded => "普通攻击命中",
         BattleCombatEventKind.SkillHitLanded => "技能命中",
         BattleCombatEventKind.AbilityResolved => "技能结算", BattleCombatEventKind.DamageResolved => "伤害结算",
         BattleCombatEventKind.HealingResolved => "治疗结算", BattleCombatEventKind.ShieldResolved => "护盾结算",
         BattleCombatEventKind.UnitDefeated => "单位阵亡", BattleCombatEventKind.UnitKilled => "击杀单位",
-        _ => kind.ToString()
+        BattleCombatEventKind.StatusApplied => "状态施加", BattleCombatEventKind.StatusStackChanged => "状态层数变化",
+        BattleCombatEventKind.StatusRemoved => "状态移除", BattleCombatEventKind.UnitSummoned => "召唤",
+        BattleCombatEventKind.UnitMoved => "移动", BattleCombatEventKind.CriticalHit => "普攻暴击",
+        BattleCombatEventKind.AttackDodged => "闪避普攻", BattleCombatEventKind.HealthLost => "实际生命受损",
+        BattleCombatEventKind.ManaSkillResolved => "满蓝技能施放", BattleCombatEventKind.ControlApplied => "成功施加控制",
+        BattleCombatEventKind.UnitRevived => "返场", BattleCombatEventKind.AllegianceChanged => "阵营变化",
+        _ => "战斗事件"
     };
 
     private static string SourceName(CombatSourceKind kind) => kind switch

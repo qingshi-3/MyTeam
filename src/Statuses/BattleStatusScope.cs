@@ -16,12 +16,10 @@ public sealed class BattleStatusScope : IDisposable
     private readonly Action<StatusLifecycleEvent> _lifecycleSink;
     private readonly Action<StatusPresentationCue> _cueSink;
     private readonly Func<StatusMagnitudeContextRequest, BattleAttributeMagnitudeContext> _magnitudeContextFactory;
-    private readonly Func<StatusCombatReactiveSubscriptionRequest, IDisposable>? _combatReactiveRegistrar;
-    private readonly Func<StatusEffectInvocation, bool> _reactiveEffectSink;
-    private readonly Dictionary<StatusKey, RuntimeInstance> _instances = [];
-    private readonly Dictionary<ProjectionKey, ModifierProjection> _modifierProjections = [];
-    private readonly Dictionary<ReactiveSubscriptionKey, IDisposable> _reactiveSubscriptions = [];
-    private readonly Dictionary<string, PendingPeriodicReceipt> _periodicReceipts = new(StringComparer.Ordinal);
+    private readonly Dictionary<StatusKey, StatusRuntimeInstance> _instances = [];
+    private readonly StatusModifierProjectionScope _projections;
+    private readonly StatusReactiveSubscriptionScope _subscriptions;
+    private readonly StatusPeriodicReceiptLedger _periodicReceipts = new();
     private readonly bool _deferredPeriodicEffects;
     private StatusScopeTransitionResult? _transition;
     private long _applicationSequence;
@@ -75,18 +73,23 @@ public sealed class BattleStatusScope : IDisposable
         _cueSink = cueSink ?? (_ => { });
         _magnitudeContextFactory = magnitudeContextFactory ?? (request =>
             new BattleAttributeMagnitudeContext(request.SourceAttributes, request.TargetAttributes));
-        _combatReactiveRegistrar = combatReactiveRegistrar;
-        _reactiveEffectSink = reactiveEffectSink ?? _effectSink;
+        _projections = new StatusModifierProjectionScope(_attributeResolver, _magnitudeContextFactory);
+        _subscriptions = new StatusReactiveSubscriptionScope(() => _instances.Values, () => _transition is not null,
+            combatReactiveRegistrar, reactiveEffectSink ?? _effectSink);
         _deferredPeriodicEffects = true;
     }
 
     public string ScopeId => _scopeId;
     public bool IsCompleted => _transition is not null;
     public int LiveInstanceCount => _instances.Count;
-    public int LiveModifierHandleCount => _modifierProjections.Count;
+    public int LiveModifierHandleCount => _projections.Count;
     public int ContributionCount => _instances.Values.Sum(instance => instance.Contributions.Count);
-    public int LiveReactiveSubscriptionCount => _reactiveSubscriptions.Count;
+    public int LiveReactiveSubscriptionCount => _subscriptions.Count;
     public StatusScopeTransitionResult? Transition => _transition;
+
+    public ImmutableArray<CompiledStatusDefinition> ActiveDefinitions(string ownerId) => _instances.Values
+        .Where(instance => instance.OwnerId == ownerId).OrderBy(instance => instance.InstanceId, StringComparer.Ordinal)
+        .Select(instance => instance.Definition).ToImmutableArray();
 
     internal WorldStateCheckpoint BeginWorldTransaction()
     {
@@ -248,8 +251,8 @@ public sealed class BattleStatusScope : IDisposable
                     instance.NextPeriodTick = checked(instance.NextPeriodTick + instance.Definition.PeriodicIntervalTicks);
                     var periodicValue = instance.Stacks * instance.Definition.Magnitude;
                     var receiptId = $"{_scopeId}:{instance.InstanceId}:period:{dueTick}";
-                    _periodicReceipts.Add(receiptId, new PendingPeriodicReceipt(instance.InstanceId,
-                        instance.OwnerId, instance.Definition.StableId, dueTick, periodicValue));
+                    _periodicReceipts.Schedule(receiptId, instance.InstanceId,
+                        instance.OwnerId, instance.Definition.StableId, dueTick, periodicValue);
                     batch.Effects.Add(new StatusEffectInvocation(
                         StatusEffectInvocationKind.Periodic,
                         instance.Definition,
@@ -293,9 +296,7 @@ public sealed class BattleStatusScope : IDisposable
     {
         ValidatePeriodicSelection(ownerId, stableId, tick);
         if (_transition is not null) return 0;
-        double value = _periodicReceipts.Values
-            .Where(receipt => receipt.OwnerId == ownerId && receipt.StableId == stableId)
-            .Sum(receipt => (double)receipt.Value);
+        double value = _periodicReceipts.PendingValue(ownerId, stableId);
         foreach (var pair in Owned(ownerId).Where(pair => CanConsumePeriodic(pair.Value, stableId)))
         {
             var instance = pair.Value;
@@ -319,8 +320,7 @@ public sealed class BattleStatusScope : IDisposable
         {
             _lastTick = Math.Max(_lastTick, tick);
             var value = RemainingPeriodicDamage(ownerId,stableId,tick);
-            foreach (var receipt in _periodicReceipts.Where(pair => pair.Value.OwnerId == ownerId && pair.Value.StableId == stableId).ToArray())
-                _periodicReceipts.Remove(receipt.Key);
+            _periodicReceipts.Consume(ownerId, stableId);
             foreach (var pair in Owned(ownerId).Where(pair => CanConsumePeriodic(pair.Value, stableId)))
                 RemoveInstance(pair.Key,pair.Value,StatusRemovalReason.OverflowConsumed,tick,Snapshot(pair.Value),batch);
             return value;
@@ -332,15 +332,10 @@ public sealed class BattleStatusScope : IDisposable
         ArgumentNullException.ThrowIfNull(invocation);
         if (invocation.Kind != StatusEffectInvocationKind.Periodic || string.IsNullOrWhiteSpace(invocation.PeriodicReceiptId))
             return true; // Compatibility invocations predate the authoritative receipt ledger.
-        if (_transition is not null || !_periodicReceipts.TryGetValue(invocation.PeriodicReceiptId, out var receipt)) return false;
-        if (receipt.InstanceId != invocation.InstanceId || receipt.OwnerId != invocation.OwnerId ||
-            receipt.StableId != invocation.Definition.StableId || receipt.Tick != invocation.Tick || receipt.Value != invocation.PeriodicValue)
-            throw new InvalidOperationException("Periodic effect receipt does not match its scheduled invocation.");
-        _periodicReceipts.Remove(invocation.PeriodicReceiptId);
-        return true;
+        return _transition is null && _periodicReceipts.TryClaim(invocation);
     }
 
-    private static bool CanConsumePeriodic(RuntimeInstance instance, string stableId) =>
+    private static bool CanConsumePeriodic(StatusRuntimeInstance instance, string stableId) =>
         instance.Definition.StableId == stableId && instance.Definition.PeriodicEffect is not null &&
         instance.Definition.DurationKind == StatusDurationKind.TimedTicks && instance.Definition.PeriodicIntervalTicks > 0;
 
@@ -475,16 +470,7 @@ public sealed class BattleStatusScope : IDisposable
             throw new ArgumentException("Status owner id is required.", nameof(ownerId));
         var instanceIds = _instances.Values.Where(instance => instance.OwnerId == ownerId)
             .Select(instance => instance.InstanceId).ToHashSet(StringComparer.Ordinal);
-        return _modifierProjections.Where(pair => instanceIds.Contains(pair.Key.InstanceId))
-            .OrderBy(pair => pair.Key.StackApplicationSequence)
-            .ThenBy(pair => pair.Key.ModifierIndex)
-            .Select(pair => new StatusModifierProjectionSnapshot(
-                pair.Key.InstanceId,
-                pair.Key.SourceId,
-                pair.Key.StackApplicationSequence,
-                pair.Key.ModifierIndex,
-                pair.Value.Handle))
-            .ToImmutableArray();
+        return _projections.Snapshot(instanceIds);
     }
 
     public StatusScopeTransitionResult Complete(StatusScopeCompletionReason reason, int finalTick)
@@ -506,11 +492,10 @@ public sealed class BattleStatusScope : IDisposable
                     Snapshot(pair.Value), batch, removeFromDictionary: false, scheduleLifecycleEffects: false);
             var owners = _instances.Values.Select(instance => instance.OwnerId)
                 .Distinct(StringComparer.Ordinal).OrderBy(id => id, StringComparer.Ordinal).ToArray();
-            RemoveAllModifiers();
-            var failure = DisposeAllReactiveSubscriptions();
+            _projections.Clear();
+            var failure = _subscriptions.Clear();
             _instances.Clear();
             _periodicReceipts.Clear();
-            _modifierProjections.Clear();
 
             foreach (var effect in batch.Effects)
                 try
@@ -564,7 +549,7 @@ public sealed class BattleStatusScope : IDisposable
         var duration = StatusControlDuration.ResolveTicks(definition, _attributeResolver(ownerId));
         if (definition.DurationKind == StatusDurationKind.Instant)
         {
-            var instant = new RuntimeInstance(definition, ownerId, applicationSequence, tick, duration);
+            var instant = new StatusRuntimeInstance(definition, ownerId, applicationSequence, tick, duration);
             instant.Contributions.Add(CreateContribution(instant, sourceId, applicationSequence, tick));
             var snapshot = Snapshot(instant, sourceId);
             AddLifecycle(batch, definition, StatusLifecycleKind.Applied, snapshot, 0, 1,
@@ -589,7 +574,7 @@ public sealed class BattleStatusScope : IDisposable
         }
         if (created)
         {
-            instance = new RuntimeInstance(definition, ownerId, applicationSequence, tick, duration) { GrantId = grantId };
+            instance = new StatusRuntimeInstance(definition, ownerId, applicationSequence, tick, duration) { GrantId = grantId };
             instance.Contributions.Add(CreateContribution(instance, sourceId, applicationSequence, tick));
             _instances.Add(key, instance);
         }
@@ -651,7 +636,7 @@ public sealed class BattleStatusScope : IDisposable
 
     private void ConsumeOverflow(
         StatusKey key,
-        RuntimeInstance instance,
+        StatusRuntimeInstance instance,
         string sourceId,
         int tick,
         CompiledStatusTransition transition,
@@ -699,7 +684,7 @@ public sealed class BattleStatusScope : IDisposable
 
     private void RemoveInstance(
         StatusKey key,
-        RuntimeInstance instance,
+        StatusRuntimeInstance instance,
         StatusRemovalReason reason,
         int tick,
         StatusRuntimeSnapshot snapshot,
@@ -721,13 +706,13 @@ public sealed class BattleStatusScope : IDisposable
         _insideMutation = true;
         var backup = CaptureState();
         var batch = new MutationBatch();
-        ProjectionTransaction? projectionTransaction = null;
-        ReactiveSubscriptionTransaction? reactiveTransaction = null;
+        StatusModifierProjectionScope.ProjectionTransaction? projectionTransaction = null;
+        StatusReactiveSubscriptionScope.ReactiveSubscriptionTransaction? reactiveTransaction = null;
         try
         {
             var result = mutation(batch);
-            projectionTransaction = SynchronizeModifiers(batch.ModifierInstances);
-            reactiveTransaction = SynchronizeReactiveSubscriptions(batch.ModifierInstances);
+            projectionTransaction = _projections.Synchronize(_instances.Values, batch.ModifierInstances);
+            reactiveTransaction = _subscriptions.Synchronize(batch.ModifierInstances, _worldTransactionActive);
             Flush(batch);
             reactiveTransaction.Commit();
             projectionTransaction.Commit();
@@ -766,7 +751,7 @@ public sealed class BattleStatusScope : IDisposable
 
     private ScopeState CaptureState() => new(
         _instances.ToDictionary(pair => pair.Key, pair => pair.Value.Clone()),
-        new Dictionary<string, PendingPeriodicReceipt>(_periodicReceipts, StringComparer.Ordinal),
+        _periodicReceipts.Capture(),
         _applicationSequence,
         _lastTick);
 
@@ -774,8 +759,7 @@ public sealed class BattleStatusScope : IDisposable
     {
         _instances.Clear();
         foreach (var pair in backup.Instances) _instances.Add(pair.Key, pair.Value.Clone());
-        _periodicReceipts.Clear();
-        foreach (var pair in backup.PeriodicReceipts) _periodicReceipts.Add(pair.Key, pair.Value);
+        _periodicReceipts.Restore(backup.PeriodicReceipts);
         _applicationSequence = backup.ApplicationSequence;
         _lastTick = backup.LastTick;
     }
@@ -786,19 +770,7 @@ public sealed class BattleStatusScope : IDisposable
             throw new InvalidOperationException("Status world transaction is not active for this scope.");
         try
         {
-            var desired = _instances.Values.SelectMany(instance =>
-                    Enumerable.Range(0, instance.Definition.CombatReactiveBindings.Length)
-                        .Select(index => new ReactiveSubscriptionKey(instance.InstanceId, index)))
-                .ToHashSet();
-            foreach (var key in _reactiveSubscriptions.Keys.Where(key => !desired.Contains(key))
-                         .OrderBy(key => key.InstanceId, StringComparer.Ordinal)
-                         .ThenBy(key => key.BindingIndex)
-                         .ToArray())
-            {
-                if (!_reactiveSubscriptions.Remove(key, out var handle)) continue;
-                try { handle.Dispose(); }
-                catch { }
-            }
+            _subscriptions.CommitWorld();
         }
         finally
         {
@@ -812,17 +784,6 @@ public sealed class BattleStatusScope : IDisposable
             throw new InvalidOperationException("Status world transaction is not active for this scope.");
         try
         {
-            foreach (var key in _reactiveSubscriptions.Keys.Where(key =>
-                         !checkpoint.ContainsReactiveSubscription(key.InstanceId, key.BindingIndex))
-                         .OrderBy(key => key.InstanceId, StringComparer.Ordinal)
-                         .ThenBy(key => key.BindingIndex)
-                         .Reverse()
-                         .ToArray())
-            {
-                if (!_reactiveSubscriptions.Remove(key, out var handle)) continue;
-                try { handle.Dispose(); }
-                catch { }
-            }
             checkpoint.RestoreCapturedState();
         }
         finally
@@ -831,232 +792,7 @@ public sealed class BattleStatusScope : IDisposable
         }
     }
 
-    private ProjectionTransaction SynchronizeModifiers(IReadOnlySet<string> instanceIds)
-    {
-        if (instanceIds.Count == 0) return ProjectionTransaction.Empty;
-        var desired = new Dictionary<ProjectionKey, DesiredProjection>();
-        foreach (var instance in _instances.Values.Where(item => instanceIds.Contains(item.InstanceId))
-                     .OrderBy(item => item.ApplicationSequence))
-        {
-            if (instance.Definition.AttributeModifiers.IsEmpty) continue;
-            var target = _attributeResolver(instance.OwnerId) ?? throw new InvalidOperationException(
-                $"Status '{instance.Definition.StableId}' cannot resolve owner AttributeSet '{instance.OwnerId}'.");
-            foreach (var contribution in instance.Contributions.OrderBy(item => item.ApplicationSequence))
-            foreach (var stack in contribution.Stacks.OrderBy(item => item.ApplicationSequence))
-            {
-                var sourceAttributes = _attributeResolver(contribution.SourceId);
-                if (sourceAttributes is null && instance.Definition.AttributeModifiers.Any(modifier =>
-                    AttributeMagnitudeSupport.Leaves(modifier.Magnitude).Any(item => item is CompiledSourceAttributeMagnitude)))
-                    throw new InvalidOperationException(
-                        $"Status '{instance.Definition.StableId}' requires source AttributeSet '{contribution.SourceId}'.");
-                sourceAttributes ??= target;
-                var context = CreateMagnitudeContext(
-                    instance,
-                    contribution.SourceId,
-                    stack.ApplicationSequence,
-                    stack.AppliedTick,
-                    sourceAttributes,
-                    target);
-                var source = CombatSourceRef.Status(
-                    instance.Definition.StableId,
-                    instance.OwnerId,
-                    $"{instance.InstanceId}:{stack.ApplicationSequence}");
-                for (var modifierIndex = 0; modifierIndex < instance.Definition.AttributeModifiers.Length; modifierIndex++)
-                {
-                    var modifier = instance.Definition.AttributeModifiers[modifierIndex];
-                    if (stack.CapturedMagnitudes.TryGetValue(modifierIndex, out var captured))
-                        modifier = modifier with { Magnitude = new CompiledConstantMagnitude(captured) };
-                    var key = new ProjectionKey(
-                        instance.InstanceId,
-                        contribution.SourceId,
-                        stack.ApplicationSequence,
-                        modifierIndex);
-                    desired.Add(key, new DesiredProjection(target, modifier, source, context));
-                }
-            }
-        }
-
-        var previous = _modifierProjections.ToDictionary(pair => pair.Key, pair => pair.Value);
-        var touched = _modifierProjections.Where(pair => instanceIds.Contains(pair.Key.InstanceId))
-            .Select(pair => pair.Value.Attributes)
-            .Concat(desired.Values.Select(item => item.Attributes))
-            .Distinct()
-            .ToDictionary(attributes => attributes, attributes => attributes.CaptureModifierState());
-        var transaction = new ProjectionTransaction(this, previous, touched);
-        try
-        {
-            foreach (var key in _modifierProjections.Keys.Where(key =>
-                         instanceIds.Contains(key.InstanceId) && !desired.ContainsKey(key))
-                     .OrderBy(key => key.StackApplicationSequence)
-                     .ThenBy(key => key.ModifierIndex)
-                     .ToArray())
-            {
-                var projection = _modifierProjections[key];
-                projection.Attributes.Remove(projection.Handle);
-                _modifierProjections.Remove(key);
-            }
-            foreach (var pair in desired.Where(pair => !_modifierProjections.ContainsKey(pair.Key))
-                         .OrderBy(pair => pair.Key.StackApplicationSequence)
-                         .ThenBy(pair => pair.Key.ModifierIndex))
-            {
-                var desiredProjection = pair.Value;
-                var handle = desiredProjection.Attributes.ApplyModifier(
-                    desiredProjection.Modifier,
-                    desiredProjection.Source,
-                    desiredProjection.Context);
-                _modifierProjections.Add(pair.Key, new ModifierProjection(desiredProjection.Attributes, handle));
-            }
-            return transaction;
-        }
-        catch
-        {
-            transaction.Rollback();
-            throw;
-        }
-    }
-
-    private void RemoveModifierProjections(IEnumerable<string> instanceIds)
-    {
-        var ids = instanceIds.ToHashSet(StringComparer.Ordinal);
-        foreach (var key in _modifierProjections.Keys.Where(key => ids.Contains(key.InstanceId)).ToArray())
-        {
-            var projection = _modifierProjections[key];
-            projection.Attributes.Remove(projection.Handle);
-            _modifierProjections.Remove(key);
-        }
-    }
-
-    private void RemoveAllModifiers()
-    {
-        foreach (var projection in _modifierProjections.Values)
-            projection.Attributes.Remove(projection.Handle);
-        _modifierProjections.Clear();
-    }
-
-    private ReactiveSubscriptionTransaction SynchronizeReactiveSubscriptions(IReadOnlySet<string> instanceIds)
-    {
-        if (instanceIds.Count == 0) return ReactiveSubscriptionTransaction.Empty;
-        var desired = new Dictionary<ReactiveSubscriptionKey, CompiledStatusCombatReactiveBinding>();
-        foreach (var instance in _instances.Values.Where(item => instanceIds.Contains(item.InstanceId))
-                     .OrderBy(item => item.ApplicationSequence))
-        for (var bindingIndex = 0; bindingIndex < instance.Definition.CombatReactiveBindings.Length; bindingIndex++)
-            desired.Add(
-                new ReactiveSubscriptionKey(instance.InstanceId, bindingIndex),
-                instance.Definition.CombatReactiveBindings[bindingIndex]);
-
-        if (desired.Count > 0 && _combatReactiveRegistrar is null)
-            throw new InvalidOperationException("Status combat reactive bindings require a Battle-local registrar.");
-        var obsolete = _reactiveSubscriptions.Keys.Where(key =>
-                instanceIds.Contains(key.InstanceId) && !desired.ContainsKey(key))
-            .OrderBy(key => key.InstanceId, StringComparer.Ordinal)
-            .ThenBy(key => key.BindingIndex)
-            .ToArray();
-        var added = new List<ReactiveSubscriptionKey>();
-        var transaction = new ReactiveSubscriptionTransaction(this, added, obsolete);
-        try
-        {
-            foreach (var pair in desired.Where(pair => !_reactiveSubscriptions.ContainsKey(pair.Key))
-                         .OrderBy(pair => pair.Key.InstanceId, StringComparer.Ordinal)
-                         .ThenBy(pair => pair.Key.BindingIndex))
-            {
-                var key = pair.Key;
-                var binding = pair.Value;
-                var instance = _instances.Values.Single(item => item.InstanceId == key.InstanceId);
-                var subscriptionSource = CombatSourceRef.Status(
-                    instance.Definition.StableId,
-                    instance.OwnerId,
-                    $"{instance.InstanceId}:reactive:{key.BindingIndex}");
-                var handle = _combatReactiveRegistrar!(new StatusCombatReactiveSubscriptionRequest(
-                    binding.EventKind,
-                    subscriptionSource,
-                    binding.Priority,
-                    (combatEvent, reactionSink) =>
-                        HandleReactiveEvent(key, binding, combatEvent, reactionSink)));
-                if (handle is null)
-                    throw new InvalidOperationException(
-                        $"Status '{instance.Definition.StableId}' reactive registrar returned null.");
-                _reactiveSubscriptions.Add(key, handle);
-                added.Add(key);
-            }
-            return transaction;
-        }
-        catch
-        {
-            transaction.Rollback();
-            throw;
-        }
-    }
-
-    private void HandleReactiveEvent(
-        ReactiveSubscriptionKey key,
-        CompiledStatusCombatReactiveBinding binding,
-        BattleCombatEvent combatEvent,
-        BattleCombatReactionSink reactionSink)
-    {
-        if (_transition is not null) return;
-        var instance = _instances.Values.FirstOrDefault(item => item.InstanceId == key.InstanceId);
-        if (instance is null) return;
-        var matches = binding.OwnerRole switch
-        {
-            StatusReactiveOwnerRole.OwnerIsSource => combatEvent.SourceRuntimeId == instance.OwnerId,
-            StatusReactiveOwnerRole.OwnerIsTarget => combatEvent.TargetRuntimeId == instance.OwnerId,
-            _ => false
-        };
-        if (!matches) return;
-        if (binding.SourceKind != CombatSourceKind.None && combatEvent.Source.Kind != binding.SourceKind) return;
-        if (binding.FilterDamageType && combatEvent.DamageType != binding.DamageType) return;
-        var sourceId = binding.EffectSourcePolicy switch
-        {
-            StatusReactiveEffectSourcePolicy.PrimaryContribution => PrimarySource(instance),
-            _ => string.Empty
-        };
-        if (string.IsNullOrWhiteSpace(sourceId)) return;
-        var explicitTargetId = binding.OwnerRole switch
-        {
-            StatusReactiveOwnerRole.OwnerIsSource => combatEvent.TargetRuntimeId,
-            StatusReactiveOwnerRole.OwnerIsTarget => combatEvent.SourceRuntimeId,
-            _ => string.Empty
-        };
-        var invocation = new StatusEffectInvocation(
-            StatusEffectInvocationKind.Reactive,
-            instance.Definition,
-            sourceId,
-            instance.OwnerId,
-            instance.InstanceId,
-            explicitTargetId,
-            combatEvent.Tick,
-            binding.Binding,
-            StatusRemovalReason.None,
-            combatEvent);
-        var reactionSource = CombatSourceRef.Status(
-            instance.Definition.StableId,
-            instance.OwnerId,
-            $"{instance.InstanceId}:reactive:{key.BindingIndex}");
-        if (!reactionSink.Enqueue(reactionSource, binding.Priority, _ =>
-            {
-                if (!_reactiveEffectSink(invocation))
-                    throw new InvalidOperationException(
-                        $"Status reactive effect '{binding.Binding.StableId}' failed to execute.");
-            }))
-            throw new InvalidOperationException(
-                $"Status reactive effect '{binding.Binding.StableId}' failed to enqueue.");
-    }
-
-    private Exception? DisposeAllReactiveSubscriptions()
-    {
-        Exception? failure = null;
-        // Unsubscription is irreversible cleanup. Finish every detach, clear Status ownership,
-        // and report the first failure only after no live handle remains; ordinary state rollback
-        // must never recreate a subscription whose external detach already ran.
-        foreach (var handle in _reactiveSubscriptions.OrderBy(pair => pair.Key.InstanceId, StringComparer.Ordinal)
-                     .ThenBy(pair => pair.Key.BindingIndex).Select(pair => pair.Value).ToArray())
-            try { handle.Dispose(); }
-            catch (Exception exception) { failure ??= exception; }
-        _reactiveSubscriptions.Clear();
-        return failure;
-    }
-
-    private KeyValuePair<StatusKey, RuntimeInstance>[] Owned(string ownerId) => _instances
+    private KeyValuePair<StatusKey, StatusRuntimeInstance>[] Owned(string ownerId) => _instances
         .Where(pair => pair.Value.OwnerId == ownerId)
         .OrderBy(pair => pair.Value.Definition.StableId, StringComparer.Ordinal)
         .ThenBy(pair => pair.Value.ApplicationSequence)
@@ -1074,24 +810,24 @@ public sealed class BattleStatusScope : IDisposable
         _ => throw new InvalidOperationException("Unsupported Status aggregation policy.")
     };
 
-    private SourceContribution CreateContribution(
-        RuntimeInstance instance,
+    private StatusSourceContribution CreateContribution(
+        StatusRuntimeInstance instance,
         string sourceId,
         long applicationSequence,
         int tick)
     {
-        var contribution = new SourceContribution(sourceId);
+        var contribution = new StatusSourceContribution(sourceId);
         contribution.Stacks.Add(CaptureStack(instance, sourceId, applicationSequence, tick));
         return contribution;
     }
 
-    private SourceStack CaptureStack(
-        RuntimeInstance instance,
+    private StatusSourceStack CaptureStack(
+        StatusRuntimeInstance instance,
         string sourceId,
         long applicationSequence,
         int tick)
     {
-        var stack = new SourceStack(applicationSequence, tick);
+        var stack = new StatusSourceStack(applicationSequence, tick);
         if (!instance.Definition.AttributeModifiers.Any(modifier =>
                 modifier.Magnitude.CaptureMode == AttributeCaptureMode.Snapshot))
             return stack;
@@ -1104,7 +840,7 @@ public sealed class BattleStatusScope : IDisposable
             throw new InvalidOperationException(
                 $"Status '{instance.Definition.StableId}' requires source AttributeSet '{sourceId}'.");
         sourceAttributes ??= target;
-        var context = CreateMagnitudeContext(
+        var context = _projections.CreateMagnitudeContext(
             instance,
             sourceId,
             applicationSequence,
@@ -1120,28 +856,8 @@ public sealed class BattleStatusScope : IDisposable
         return stack;
     }
 
-    private BattleAttributeMagnitudeContext CreateMagnitudeContext(
-        RuntimeInstance instance,
-        string sourceId,
-        long stackApplicationSequence,
-        int stackAppliedTick,
-        BattleAttributeSet sourceAttributes,
-        BattleAttributeSet targetAttributes)
-    {
-        var context = _magnitudeContextFactory(new StatusMagnitudeContextRequest(
-            instance.Definition,
-            sourceId,
-            instance.OwnerId,
-            stackApplicationSequence,
-            stackAppliedTick,
-            sourceAttributes,
-            targetAttributes));
-        return context ?? throw new InvalidOperationException(
-            $"Status '{instance.Definition.StableId}' magnitude context factory returned null.");
-    }
-
     private static void RefreshDuration(
-        RuntimeInstance instance,
+        StatusRuntimeInstance instance,
         int duration,
         StatusDurationRefreshPolicy policy,
         int tick)
@@ -1225,7 +941,7 @@ public sealed class BattleStatusScope : IDisposable
     }
 
     private StatusRuntimeSnapshot Snapshot(
-        RuntimeInstance instance,
+        StatusRuntimeInstance instance,
         string? attributionSource = null,
         int? stacksOverride = null)
     {
@@ -1279,7 +995,7 @@ public sealed class BattleStatusScope : IDisposable
             instance.NextPeriodTick);
     }
 
-    private static string PrimarySource(RuntimeInstance instance) => instance.Contributions
+    private static string PrimarySource(StatusRuntimeInstance instance) => instance.Contributions
         .OrderBy(item => item.ApplicationSequence).Select(item => item.SourceId).FirstOrDefault() ?? string.Empty;
 
     private static void EnsureAttribution(string sourceId, string ownerId)
@@ -1297,22 +1013,9 @@ public sealed class BattleStatusScope : IDisposable
     }
 
     private readonly record struct StatusKey(string StableId, string OwnerId, string AggregationToken);
-    private readonly record struct ProjectionKey(
-        string InstanceId,
-        string SourceId,
-        long StackApplicationSequence,
-        int ModifierIndex);
-    private readonly record struct ReactiveSubscriptionKey(string InstanceId, int BindingIndex);
-    private sealed record DesiredProjection(
-        BattleAttributeSet Attributes,
-        CompiledAttributeModifier Modifier,
-        CombatSourceRef Source,
-        BattleAttributeMagnitudeContext Context);
-    private sealed record ModifierProjection(BattleAttributeSet Attributes, AttributeModifierHandle Handle);
-    private sealed record PendingPeriodicReceipt(string InstanceId, string OwnerId, string StableId, int Tick, float Value);
     private sealed record ScopeState(
-        Dictionary<StatusKey, RuntimeInstance> Instances,
-        Dictionary<string, PendingPeriodicReceipt> PeriodicReceipts,
+        Dictionary<StatusKey, StatusRuntimeInstance> Instances,
+        StatusPeriodicReceiptLedger.Checkpoint PeriodicReceipts,
         long ApplicationSequence,
         int LastTick);
 
@@ -1324,29 +1027,22 @@ public sealed class BattleStatusScope : IDisposable
         {
             Owner = owner;
             State = owner.CaptureState();
-            ModifierProjections = owner._modifierProjections.ToDictionary(pair => pair.Key, pair => pair.Value);
-            ReactiveSubscriptions = owner._reactiveSubscriptions.ToDictionary(pair => pair.Key, pair => pair.Value);
+            ModifierProjections = owner._projections.CaptureIndex();
+            ReactiveSubscriptions = owner._subscriptions.Capture();
         }
 
         private BattleStatusScope Owner { get; }
         private ScopeState State { get; }
-        private Dictionary<ProjectionKey, ModifierProjection> ModifierProjections { get; }
-        private Dictionary<ReactiveSubscriptionKey, IDisposable> ReactiveSubscriptions { get; }
+        private StatusModifierProjectionScope.Checkpoint ModifierProjections { get; }
+        private StatusReactiveSubscriptionScope.Checkpoint ReactiveSubscriptions { get; }
 
         internal bool BelongsTo(BattleStatusScope owner) => ReferenceEquals(Owner, owner);
 
-        internal bool ContainsReactiveSubscription(string instanceId, int bindingIndex) =>
-            ReactiveSubscriptions.ContainsKey(new ReactiveSubscriptionKey(instanceId, bindingIndex));
-
         internal void RestoreCapturedState()
         {
+            Owner._subscriptions.Rollback(ReactiveSubscriptions);
             Owner.RestoreState(State);
-            Owner._modifierProjections.Clear();
-            foreach (var pair in ModifierProjections)
-                Owner._modifierProjections.Add(pair.Key, pair.Value);
-            Owner._reactiveSubscriptions.Clear();
-            foreach (var pair in ReactiveSubscriptions)
-                Owner._reactiveSubscriptions.Add(pair.Key, pair.Value);
+            Owner._projections.RestoreIndex(ModifierProjections);
         }
 
         internal void Commit()
@@ -1364,101 +1060,6 @@ public sealed class BattleStatusScope : IDisposable
         }
     }
 
-    private sealed class ProjectionTransaction
-    {
-        public static ProjectionTransaction Empty { get; } = new();
-
-        private readonly BattleStatusScope? _scope;
-        private readonly Dictionary<ProjectionKey, ModifierProjection>? _previous;
-        private readonly Dictionary<BattleAttributeSet, BattleAttributeSet.ModifierStateCheckpoint>? _checkpoints;
-        private bool _finished;
-
-        private ProjectionTransaction()
-        {
-        }
-
-        public ProjectionTransaction(
-            BattleStatusScope scope,
-            Dictionary<ProjectionKey, ModifierProjection> previous,
-            Dictionary<BattleAttributeSet, BattleAttributeSet.ModifierStateCheckpoint> checkpoints)
-        {
-            _scope = scope;
-            _previous = previous;
-            _checkpoints = checkpoints;
-        }
-
-        public void Commit() => _finished = true;
-
-        public void Rollback()
-        {
-            if (_finished || _scope is null || _previous is null || _checkpoints is null) return;
-            foreach (var pair in _checkpoints) pair.Key.RestoreModifierState(pair.Value);
-            _scope._modifierProjections.Clear();
-            foreach (var pair in _previous) _scope._modifierProjections.Add(pair.Key, pair.Value);
-            _finished = true;
-        }
-    }
-
-    private sealed class ReactiveSubscriptionTransaction
-    {
-        public static ReactiveSubscriptionTransaction Empty { get; } = new();
-
-        private readonly BattleStatusScope? _scope;
-        private readonly IReadOnlyList<ReactiveSubscriptionKey>? _added;
-        private readonly IReadOnlyList<ReactiveSubscriptionKey>? _obsolete;
-        private bool _finished;
-
-        private ReactiveSubscriptionTransaction()
-        {
-        }
-
-        public ReactiveSubscriptionTransaction(
-            BattleStatusScope scope,
-            IReadOnlyList<ReactiveSubscriptionKey> added,
-            IReadOnlyList<ReactiveSubscriptionKey> obsolete)
-        {
-            _scope = scope;
-            _added = added;
-            _obsolete = obsolete;
-        }
-
-        public void Commit()
-        {
-            if (_finished || _scope is null || _obsolete is null) return;
-            if (_scope._worldTransactionActive)
-            {
-                // The Battle transaction keeps obsolete listeners attached but logically dormant:
-                // their Status instance is absent, so handlers no-op. Final detach happens only
-                // after the complete Ability world commit succeeds.
-                _finished = true;
-                return;
-            }
-            foreach (var key in _obsolete)
-            {
-                if (!_scope._reactiveSubscriptions.Remove(key, out var handle)) continue;
-                // External detach cannot be rolled back. Preserve the committed removal direction
-                // even when a cleanup wrapper reports after it has already unsubscribed.
-                try { handle.Dispose(); }
-                catch { }
-            }
-            _finished = true;
-        }
-
-        public void Rollback()
-        {
-            if (_finished || _scope is null || _added is null) return;
-            foreach (var key in _added.Reverse())
-            {
-                if (!_scope._reactiveSubscriptions.Remove(key, out var handle)) continue;
-                // Failed application owns no subscription. Cleanup exceptions cannot convert that
-                // rollback into a pseudo-commit or restore an externally detached listener.
-                try { handle.Dispose(); }
-                catch { }
-            }
-            _finished = true;
-        }
-    }
-
     private sealed class MutationBatch
     {
         public HashSet<string> Owners { get; } = new(StringComparer.Ordinal);
@@ -1468,74 +1069,4 @@ public sealed class BattleStatusScope : IDisposable
         public List<StatusPresentationCue> Cues { get; } = [];
     }
 
-    private sealed class RuntimeInstance(
-        CompiledStatusDefinition definition,
-        string ownerId,
-        long applicationSequence,
-        int appliedTick,
-        int durationTicks)
-    {
-        public CompiledStatusDefinition Definition { get; } = definition;
-        public string GrantId { get; init; } = "";
-        public string OwnerId { get; } = ownerId;
-        public string InstanceId { get; } = $"status:{definition.StableId}:{ownerId}:{applicationSequence}";
-        public long ApplicationSequence { get; } = applicationSequence;
-        public int AppliedTick { get; } = appliedTick;
-        public int LastAppliedTick { get; set; } = appliedTick;
-        public int Stacks { get; set; } = 1;
-        public int RemainingTicks { get; set; } = durationTicks;
-        // The due-time boundary is independent of when this owner's turn is visited.
-        // RemainingTicks is its presentation projection, never a new schedule anchor.
-        public int ExpirationTick { get; set; } = definition.DurationKind == StatusDurationKind.TimedTicks
-            ? checked(appliedTick + durationTicks)
-            : 0;
-        public int NextPeriodTick { get; set; } = definition.PeriodicIntervalTicks > 0
-            ? checked(appliedTick + definition.PeriodicIntervalTicks)
-            : 0;
-        public List<SourceContribution> Contributions { get; } = [];
-
-        public RuntimeInstance Clone()
-        {
-            var clone = new RuntimeInstance(Definition, OwnerId, ApplicationSequence, AppliedTick, RemainingTicks)
-            {
-                GrantId = GrantId,
-                LastAppliedTick = LastAppliedTick,
-                Stacks = Stacks,
-                RemainingTicks = RemainingTicks,
-                ExpirationTick = ExpirationTick,
-                NextPeriodTick = NextPeriodTick
-            };
-            clone.Contributions.AddRange(Contributions.Select(item => item.Clone()));
-            return clone;
-        }
-    }
-
-    private sealed class SourceContribution(string sourceId)
-    {
-        public string SourceId { get; } = sourceId;
-        public List<SourceStack> Stacks { get; } = [];
-        public long ApplicationSequence => Stacks.Count == 0 ? 0 : Stacks[0].ApplicationSequence;
-        public int AppliedTick => Stacks.Count == 0 ? 0 : Stacks[0].AppliedTick;
-
-        public SourceContribution Clone()
-        {
-            var clone = new SourceContribution(SourceId);
-            clone.Stacks.AddRange(Stacks.Select(item => item.Clone()));
-            return clone;
-        }
-    }
-
-    private sealed class SourceStack(long applicationSequence, int appliedTick)
-    {
-        public long ApplicationSequence { get; } = applicationSequence;
-        public int AppliedTick { get; } = appliedTick;
-        public Dictionary<int, float> CapturedMagnitudes { get; } = [];
-
-        public SourceStack Clone()
-        {
-            var clone = new SourceStack(ApplicationSequence, AppliedTick);
-            foreach (var pair in CapturedMagnitudes) clone.CapturedMagnitudes.Add(pair.Key, pair.Value);
-            return clone;
-        }
-    }
 }

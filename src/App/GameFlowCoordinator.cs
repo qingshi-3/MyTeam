@@ -1,8 +1,5 @@
 using System;
-using Godot;
 using TowerAutobattler.Battle;
-using TowerAutobattler.BattleLab;
-using TowerAutobattler.Composition;
 using TowerAutobattler.Domain;
 using TowerAutobattler.Project;
 using TowerAutobattler.Run;
@@ -19,25 +16,8 @@ public sealed class GameFlowCoordinator : IDisposable
     private readonly Action _quit;
     private readonly Action<string>? _feedback;
     private readonly CompiledProjectPresentation _presentation;
-    private EncounterPlan? _encounter;
-    private BattleResult? _pendingBattleResult;
-    private PostBattleRoute _postBattleRoute;
-    private string _pendingResultTitle = string.Empty;
-    private string _pendingResultSummary = string.Empty;
-    private string _pendingEncounterTitle = string.Empty;
-    private string _pendingSettlementMessage = string.Empty;
-    private RunBattleResolution? _pendingBattleResolution;
-    private bool _pendingFinalBoss;
-    private bool _battleResolutionCommitted;
-    private bool _battleReportShown;
-    private bool _battleReportContinued;
-    private BattleLabContentIndex? _battleLabIndex;
-    private BattleLabPresetStore? _battleLabPresets;
-    private BattleLabSession? _battleLabSession;
-    private BattleLabStartSnapshot? _battleLabStartSnapshot;
-    private BattleResult? _battleLabResult;
-    private bool _battleLabBattleActive;
-    private bool _battleLabReportShown;
+    private readonly RunBattleFlow _runBattle;
+    private readonly BattleLabFlow _battleLab;
     private bool _connected;
 
     public GameFlowCoordinator(
@@ -52,6 +32,10 @@ public sealed class GameFlowCoordinator : IDisposable
         _presentation = presentation ?? throw new ArgumentNullException(nameof(presentation));
         _quit = quit ?? throw new ArgumentNullException(nameof(quit));
         _feedback = feedback;
+        _runBattle = new(application, screens.Deployment, screens.Battle, screens.BattleReport,
+            new(Show, ShowTower, ShowCombatReward, ShowResult, screens.OpenGrowthWorkbench));
+        _battleLab = new(application, screens.BattleLab, screens.Battle, screens.BattleReport,
+            Show, ShowMainMenu, ShowResult);
     }
 
     private RunApplication App => _application() ??
@@ -70,9 +54,11 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.HeroSelection.OpeningConfirmed += ConfirmOpening;
         _screens.HeroSelection.BackRequested += ShowMainMenu;
         _screens.Tower.NodeSelected += SelectNode;
+        _screens.Tower.OpponentSelected += SelectOpponent;
         _screens.Tower.AbandonRequested += AbandonRun;
         _screens.Deployment.BackRequested += ShowTower;
         _screens.Deployment.StartRequested += StartBattle;
+        _screens.Deployment.GrowthWorkbenchRequested += _screens.OpenGrowthWorkbench;
         _screens.Deployment.MoveRequested += MoveDeploymentUnit;
         _screens.Deployment.WithdrawRequested += WithdrawDeploymentUnit;
         _screens.Reward.ChoiceRequested += ClaimItem;
@@ -100,7 +86,7 @@ public sealed class GameFlowCoordinator : IDisposable
 
     public void Dispose()
     {
-        _application()?.SetEquipmentEditingLocked(false);
+        _runBattle.Dispose();
         if (!_connected) return;
         _screens.MainMenu.NewRunRequested -= ShowHeroSelection;
         _screens.GrowthChanged -= RefreshGrowth;
@@ -112,9 +98,11 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.HeroSelection.OpeningConfirmed -= ConfirmOpening;
         _screens.HeroSelection.BackRequested -= ShowMainMenu;
         _screens.Tower.NodeSelected -= SelectNode;
+        _screens.Tower.OpponentSelected -= SelectOpponent;
         _screens.Tower.AbandonRequested -= AbandonRun;
         _screens.Deployment.BackRequested -= ShowTower;
         _screens.Deployment.StartRequested -= StartBattle;
+        _screens.Deployment.GrowthWorkbenchRequested -= _screens.OpenGrowthWorkbench;
         _screens.Deployment.MoveRequested -= MoveDeploymentUnit;
         _screens.Deployment.WithdrawRequested -= WithdrawDeploymentUnit;
         _screens.Reward.ChoiceRequested -= ClaimItem;
@@ -136,121 +124,35 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.BattleReport.ContinueRequested -= ContinueAfterBattleReport;
         _screens.BattleLab.BackRequested -= ShowMainMenu;
         _screens.BattleLab.StartRequested -= StartBattleLabBattle;
-        if (_battleLabBattleActive) _screens.Battle.StopBattle();
-        _battleLabBattleActive = false;
+        _battleLab.Dispose();
         _connected = false;
     }
 
     internal void ShowMainMenu()
     {
-        _screens.MainMenu.Bind(App.ActiveRun is not null);
+        _screens.MainMenu.Bind(App.Run is not null);
         Show(AppScreenId.MainMenu);
-    }
-
-    internal void ShowBattleLab()
-    {
-        try
-        {
-            EnsureBattleLabSession();
-            _screens.BattleLab.Bind(_battleLabIndex!, _battleLabSession!, _battleLabPresets);
-            Show(AppScreenId.BattleLab);
-        }
-        catch (Exception exception)
-        {
-            _screens.Result.Bind("战斗实验室不可用", exception.Message);
-            Show(AppScreenId.Result);
-        }
-    }
-
-    private void EnsureBattleLabSession()
-    {
-        if (_battleLabSession is not null) return;
-        _battleLabIndex = new BattleLabContentIndex(new CompiledGamePackage(
-            App.Content,
-            App.Project,
-            App.Content.PublicationVersion));
-        _battleLabPresets = new BattleLabPresetStore(_screens.BattleLab.PresetCatalog);
-        if (!_battleLabPresets.TryLoad(_battleLabPresets.DefaultPresetName, out var preset))
-            throw new InvalidOperationException("默认战斗实验室预设无法读取。");
-        var snapshot = BattleLabPresetStore.ToSnapshot(preset);
-        _battleLabSession = new BattleLabSession(
-            _battleLabIndex,
-            snapshot.CurrentPopulation,
-            snapshot.Seed,
-            snapshot.Mode,
-            snapshot.FloorRuleId);
-        _battleLabSession.Restore(snapshot);
-    }
-
-    private void StartBattleLabBattle()
-    {
-        if (_battleLabIndex is null || _battleLabSession is null) return;
-        try
-        {
-            _battleLabStartSnapshot = _battleLabSession.Freeze();
-            _battleLabResult = null;
-            _battleLabReportShown = false;
-            _battleLabBattleActive = true;
-            var config = new BattleLabPreparationAdapter(_battleLabIndex).Build(_battleLabStartSnapshot);
-            Show(AppScreenId.Battle);
-            _screens.Battle.StartBattle(App.Content, config, "战斗实验室", 1f);
-            _screens.Battle.SetLabControlsVisible(true);
-        }
-        catch (Exception exception)
-        {
-            _screens.Battle.StopBattle();
-            _battleLabBattleActive = false;
-            _screens.BattleLab.ShowFeedback("无法开始实验：" + exception.Message, false);
-            Show(AppScreenId.BattleLab);
-        }
-    }
-
-    private void ResetBattleLabBattle()
-    {
-        if (!_battleLabBattleActive || _battleLabIndex is null || _battleLabStartSnapshot is null) return;
-        try
-        {
-            _battleLabResult = null;
-            _battleLabReportShown = false;
-            var config = new BattleLabPreparationAdapter(_battleLabIndex).Build(_battleLabStartSnapshot);
-            _screens.Battle.StartBattle(App.Content, config, "战斗实验室", 1f);
-            _screens.Battle.SetLabControlsVisible(true);
-        }
-        catch (Exception exception)
-        {
-            _screens.Battle.StopBattle();
-            ReturnToBattleLabConfiguration();
-            _screens.BattleLab.ShowFeedback("重置失败：" + exception.Message, false);
-        }
-    }
-
-    private void ReturnToBattleLabConfiguration()
-    {
-        if (!_battleLabBattleActive && _battleLabSession is null) return;
-        _screens.Battle.StopBattle();
-        _battleLabBattleActive = false;
-        _battleLabResult = null;
-        _battleLabReportShown = false;
-        _battleLabStartSnapshot = null;
-        if (_battleLabIndex is null || _battleLabSession is null) { ShowMainMenu(); return; }
-        _screens.BattleLab.Bind(_battleLabIndex, _battleLabSession, _battleLabPresets);
-        Show(AppScreenId.BattleLab);
     }
 
     internal void ShowHeroSelection()
     {
         if (!App.BeginOpeningRecruitment((ulong)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()))
         {
-            ShowResult("开局未能保存", "原征程已保留。请检查存储空间后重试。");
+            ShowResult("开局未能保存", "原征程已保留。无法写入新存档或备份旧档，请检查存档目录的访问权限和可用空间后重试。");
             return;
         }
+        ShowOpeningDraft();
+    }
+
+    private void ShowOpeningDraft()
+    {
         _screens.HeroSelection.BindOpening(App);
         Show(AppScreenId.HeroSelection);
     }
 
     private void ToggleOpeningHero(string heroId)
     {
-        if (App.ToggleOpeningHero(heroId)) _screens.HeroSelection.RefreshOpening(App.ActiveRun!.OpeningRecruitment!);
+        if (App.ToggleOpeningHero(heroId)) _screens.HeroSelection.RefreshOpening(App.Run!.OpeningRecruitment!);
         else _screens.HeroSelection.ShowOpeningError("未能保存选择，原选择已保留，请重试。");
     }
 
@@ -262,14 +164,14 @@ public sealed class GameFlowCoordinator : IDisposable
 
     private void ContinueRun()
     {
-        if (App.ActiveRun is null) { ShowHeroSelection(); return; }
+        if (App.Run is null) { ShowHeroSelection(); return; }
         ShowTower();
     }
 
     internal void ShowTower()
     {
-        if (App.ActiveRun is not { } run) { ShowMainMenu(); return; }
-        if (run.OpeningRecruitment is not null) { ShowHeroSelection(); return; }
+        if (App.Run is not { } run) { ShowMainMenu(); return; }
+        if (run.OpeningRecruitment is not null) { ShowOpeningDraft(); return; }
         if (!string.IsNullOrEmpty(run.TerminalCompletionId))
         {
             var victory = run.TerminalVictory;
@@ -291,7 +193,7 @@ public sealed class GameFlowCoordinator : IDisposable
 
     private void SelectNode(TowerNodeType type)
     {
-        if (App.ActiveRun?.Growth?.PendingDiscovery is not null)
+        if (App.Run?.Growth?.PendingDiscovery is not null)
         {
             _screens.OpenGrowthWorkbench();
             return;
@@ -299,14 +201,25 @@ public sealed class GameFlowCoordinator : IDisposable
         if (App.SelectNode(type)) OpenSelectedNode();
     }
 
+    private void SelectOpponent(TowerNodeType type, string opponentOptionId)
+    {
+        if (App.Run?.Growth?.PendingDiscovery is not null)
+        {
+            _screens.OpenGrowthWorkbench();
+            return;
+        }
+        if (App.SelectNode(type, opponentOptionId)) OpenSelectedNode();
+        else _screens.Tower.ShowMessage("未能确认对手，原候选和征程状态已保留，请重试。");
+    }
+
     internal void OpenSelectedNode()
     {
-        if (App.ActiveRun is not { } run) { ShowMainMenu(); return; }
+        if (App.Run is not { } run) { ShowMainMenu(); return; }
         if (run.PendingOffer is not null) { ShowPendingOffer(); return; }
         switch (run.SelectedNode)
         {
             case TowerNodeType.Combat or TowerNodeType.Elite or TowerNodeType.Boss:
-                _encounter = App.CurrentEncounter();
+                _runBattle.SetEncounter(App.CurrentEncounter());
                 ShowDeployment();
                 break;
             case TowerNodeType.Recruitment:
@@ -326,176 +239,12 @@ public sealed class GameFlowCoordinator : IDisposable
         }
     }
 
-    internal void ShowDeployment()
-    {
-        if (_encounter is null) return;
-        App.SetEquipmentEditingLocked(false);
-        _screens.Deployment.Bind(App, _encounter);
-        Show(AppScreenId.Deployment);
-    }
-
-    private void MoveDeploymentUnit(FormationMoveCommand command)
-    {
-        if (_screens.Deployment.FloorRule is not { } floorRule) return;
-        var evaluation = App.EvaluateFormationCommand(command, floorRule);
-        if (!evaluation.IsValid)
-        {
-            _screens.Deployment.ShowCellResult(command.TargetCell, false);
-            _screens.Deployment.ShowMessage(evaluation.RejectionReason, true);
-        }
-        else if (App.ApplyFormationCommand(command, floorRule))
-        {
-            ShowDeployment();
-            _screens.Deployment.ShowCellResult(command.TargetCell, true);
-            _screens.Deployment.ShowMessage("阵型已更新。", false);
-        }
-        else
-        {
-            _screens.Deployment.ShowCellResult(command.TargetCell, false);
-            _screens.Deployment.ShowMessage("阵型保存失败，已恢复原阵型。", true);
-        }
-    }
-
-    private void WithdrawDeploymentUnit(string instanceId)
-    {
-        if (App.WithdrawDeploymentUnit(instanceId))
-        {
-            ShowDeployment();
-            _screens.Deployment.ShowMessage("已撤回候命。", false);
-        }
-        else
-            _screens.Deployment.ShowMessage(
-                $"只有已部署单位可以撤回，且后备区不能超过 {App.Rules.ReserveCapacity} 人。", true);
-    }
-
-    private void StartBattle()
-    {
-        if (_encounter is null) return;
-        if (App.ActiveRun?.Growth?.PendingDiscovery is not null)
-        {
-            _screens.OpenGrowthWorkbench();
-            return;
-        }
-        ResetPendingBattleFlow();
-        try
-        {
-            // The facade validates the complete configuration before paying for a preset.
-            var begin = App.TryBeginGrowthBattle(_encounter);
-            if (!begin.Succeeded)
-            {
-                _screens.Deployment.ShowMessage(begin.Message, true);
-                return;
-            }
-            var config = App.BuildBattleConfig(_encounter);
-            App.SetEquipmentEditingLocked(true);
-            Show(AppScreenId.Battle);
-            _screens.Battle.StartBattle(App.Content, config, _encounter.Title, App.Settings.DefaultBattleSpeed);
-            _screens.Battle.BindRunHealth(App.ActiveRun!.CurrentRunHealth, App.ActiveRun.MaximumRunHealth);
-        }
-        catch (Exception exception)
-        {
-            _screens.Battle.StopBattle();
-            App.SetEquipmentEditingLocked(false);
-            ShowDeployment();
-            _screens.Deployment.ShowMessage("战斗未能启动，可重试；已保存的法术不会重复消耗。" + exception.Message, true);
-        }
-    }
-
     private void RefreshGrowth()
     {
         // Rebind the underlying page without dismissing the workbench/focus scope.
-        if (_screens.Deployment.Visible && _encounter is not null) _screens.Deployment.Bind(App, _encounter);
+        _runBattle.RefreshDeployment();
         if (_screens.Tower.Visible) _screens.Tower.Bind(App, _presentation.ChoiceCard, _presentation.SemanticIcons);
         _screens.BindEquipmentManagement(App);
-    }
-
-    internal void AcceptBattleResult(BattleResult result)
-    {
-        if (_battleLabBattleActive)
-        {
-            _battleLabResult ??= result;
-            return;
-        }
-        if (_battleResolutionCommitted || _encounter is null || _pendingBattleResult is not null) return;
-        _pendingBattleResult = result;
-        _pendingEncounterTitle = _encounter.Title;
-        _pendingFinalBoss = App.ActiveRun?.FloorIndex == App.Project.Campaign.TotalFloors - 1 && _encounter.IsBoss;
-        TryResolvePendingBattle();
-    }
-
-    private bool TryResolvePendingBattle()
-    {
-        if (_battleResolutionCommitted || _encounter is null || _pendingBattleResult is null)
-            return _battleResolutionCommitted;
-
-        var resolution = App.ResolveBattle(_pendingBattleResult, _encounter);
-        _pendingBattleResolution = resolution;
-        if (!resolution.Accepted)
-        {
-            _pendingSettlementMessage = resolution.Failure == RunBattleResolutionFailure.PersistenceFailed
-                ? !string.IsNullOrEmpty(App.ActiveRun?.TerminalCompletionId)
-                    ? "终局结果已暂存，征程归档尚未完成。请重试结算，不会重复扣血或发奖。"
-                    : "战斗结果暂未保存，军团状态没有改变。请重试结算。"
-                : "战斗结算暂未完成，军团状态没有改变。请重试结算。";
-            if (_battleReportShown)
-                _screens.BattleReport.ShowSettlementRetry(_pendingSettlementMessage);
-            return false;
-        }
-
-        _battleResolutionCommitted = true;
-        App.SetEquipmentEditingLocked(false);
-        _pendingSettlementMessage = string.Empty;
-        if (resolution.Outcome != BattleOutcome.PlayerVictory)
-        {
-            _postBattleRoute = resolution.ActiveRun is not null ? PostBattleRoute.Continue : PostBattleRoute.Failure;
-            _pendingResultTitle = "征程结束";
-            _pendingResultSummary = resolution.Consequence is { } consequence
-                ? RunHealthText.Consequence(consequence) : "本次征程已结束。";
-        }
-        else if (_pendingFinalBoss)
-        {
-            _postBattleRoute = PostBattleRoute.Success;
-            _pendingResultTitle = "登塔成功";
-            _pendingResultSummary = "塔顶主宰已被击败。新的英雄与更高难度正在等待下一次征程。\n本局战斗摘要：" + _pendingBattleResult.Digest[..12];
-        }
-        else
-            _postBattleRoute = PostBattleRoute.Reward;
-        return true;
-    }
-
-    internal void ShowBattleReport()
-    {
-        if (_battleLabBattleActive)
-        {
-            if (_battleLabReportShown || _battleLabResult is null) return;
-            _battleLabReportShown = true;
-            _screens.Battle.StopBattle(replacement: false);
-            Show(AppScreenId.BattleReport);
-            _screens.BattleReport.Bind(_battleLabResult, "战斗实验室", App.Content, "返回原配置");
-            return;
-        }
-        if (_battleReportShown || _pendingBattleResult is null) return;
-        _battleReportShown = true;
-        Show(AppScreenId.BattleReport);
-        _screens.BattleReport.Bind(_pendingBattleResult, _pendingEncounterTitle, App.Content);
-        if (_battleResolutionCommitted) _screens.BattleReport.BindRunConsequence(_pendingBattleResolution?.Consequence);
-        if (!_battleResolutionCommitted)
-            _screens.BattleReport.ShowSettlementRetry(_pendingSettlementMessage);
-    }
-
-    private void ContinueAfterBattleReport()
-    {
-        if (_battleLabBattleActive)
-        {
-            ReturnToBattleLabConfiguration();
-            return;
-        }
-        if (!_battleReportShown || _battleReportContinued) return;
-        if (!_battleResolutionCommitted && !TryResolvePendingBattle()) return;
-        _battleReportContinued = true;
-        if (_postBattleRoute == PostBattleRoute.Reward) ShowCombatReward();
-        else if (_postBattleRoute == PostBattleRoute.Continue) ShowTower();
-        else ShowResult(_pendingResultTitle, _pendingResultSummary);
     }
 
     internal void ShowRecruitment()
@@ -506,6 +255,7 @@ public sealed class GameFlowCoordinator : IDisposable
 
     internal void ShowCombatReward()
     {
+        if (App.PendingOffer is null) { ShowTower(); return; }
         _screens.Reward.BindOffer(
             App,
             _presentation.ChoiceCard,
@@ -632,28 +382,38 @@ public sealed class GameFlowCoordinator : IDisposable
     internal void Show(AppScreenId id)
     {
         _screens.BindEquipmentManagement(App);
-        _screens.Show(id, App.ActiveRun, App.Content, App.Rules);
+        var displayedRun = _battleLab.BattleActive && id is AppScreenId.Battle or AppScreenId.BattleReport
+            ? null : App.Run;
+        _screens.Show(id, displayedRun, App.Content, App.Rules);
     }
 
-    internal void SetEncounterForTesting(EncounterPlan encounter) => _encounter = encounter;
+    internal void SetEncounterForTesting(EncounterPlan encounter) => _runBattle.SetEncounter(encounter);
 
-    internal bool BattleResolutionCommitted => _battleResolutionCommitted;
-    internal RunBattleResolution? PendingBattleResolution => _pendingBattleResolution;
+    internal bool BattleResolutionCommitted => _runBattle.BattleResolutionCommitted;
+    internal RunBattleResolution? PendingBattleResolution => _runBattle.PendingBattleResolution;
 
-    internal void ResetPendingBattleFlow()
+    internal void ShowDeployment() => _runBattle.ShowDeployment();
+    internal void ShowBattleLab() => _battleLab.ShowBattleLab();
+    private void StartBattle() => _runBattle.StartBattle();
+    private void MoveDeploymentUnit(FormationMoveCommand command) => _runBattle.MoveDeploymentUnit(command);
+    private void WithdrawDeploymentUnit(string id) => _runBattle.WithdrawDeploymentUnit(id);
+    private void StartBattleLabBattle() => _battleLab.StartBattleLabBattle();
+    private void ResetBattleLabBattle() => _battleLab.ResetBattleLabBattle();
+    private void ReturnToBattleLabConfiguration() => _battleLab.ReturnToBattleLabConfiguration();
+    internal void ResetPendingBattleFlow() => _runBattle.ResetPendingBattleFlow();
+    internal void AcceptBattleResult(BattleResult result)
     {
-        _pendingBattleResult = null;
-        _pendingBattleResolution = null;
-        _postBattleRoute = PostBattleRoute.None;
-        _pendingResultTitle = string.Empty;
-        _pendingResultSummary = string.Empty;
-        _pendingEncounterTitle = string.Empty;
-        _pendingSettlementMessage = string.Empty;
-        _pendingFinalBoss = false;
-        _battleResolutionCommitted = false;
-        _battleReportShown = false;
-        _battleReportContinued = false;
+        if (_battleLab.BattleActive) _battleLab.AcceptBattleResult(result);
+        else _runBattle.AcceptBattleResult(result);
     }
-
-    private enum PostBattleRoute { None, Reward, Continue, Success, Failure }
+    internal void ShowBattleReport()
+    {
+        if (_battleLab.BattleActive) _battleLab.ShowBattleReport();
+        else _runBattle.ShowBattleReport();
+    }
+    private void ContinueAfterBattleReport()
+    {
+        if (_battleLab.BattleActive) _battleLab.ReturnToBattleLabConfiguration();
+        else _runBattle.ContinueAfterBattleReport();
+    }
 }

@@ -26,5 +26,6 @@ public partial class StatusCombatReactiveBindingSpec : Resource
     [Export] public CombatSourceKind SourceKind { get; set; }
     [Export] public bool FilterDamageType { get; set; }
     [Export] public EffectDamageType DamageType { get; set; }
+    [Export] public bool UseOverheal { get; set; }
     [Export] public EffectBindingSpec Binding { get; set; } = null!;
 }

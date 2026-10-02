@@ -119,6 +119,7 @@ public partial class UnitContentRoot : Node2D
 
     public void Deactivate()
     {
+        Readability?.ResetFeedback();
         var context = _context;
         var wasActive = LifecycleState == ContentLifecycleState.Active;
         _motion?.ResetMotion();
@@ -160,7 +161,7 @@ public partial class UnitContentRoot : Node2D
     public void RefreshPresentation(string cue, float currentHealth, float maxHealth)
     {
         _healthView?.SetHealth(currentHealth, maxHealth);
-        if (cue == "defeated") _motion?.CancelForDefeat();
+        if (cue == "defeated") { _motion?.CancelForDefeat(); Readability?.ResetFeedback(); }
         if (cue == "idle" && _motion?.IsMoving == true) cue = "move";
         if (!string.IsNullOrWhiteSpace(cue)) _animation?.PlayCue(cue);
     }
@@ -197,7 +198,14 @@ public partial class UnitContentRoot : Node2D
     public void BeginAttackPresentation(BattleAttackTiming timing, string actionCue = "attack") => _animation?.BeginTimedAttack(timing, actionCue);
     public void CancelAttackPresentation() => _animation?.CancelTimedAttack();
     public void StepAttackPresentation(float seconds)
-    { _animation?.StepTimedAttack(seconds);BarrierVisual?.Advance(seconds); }
+    { _animation?.StepTimedAttack(seconds);BarrierVisual?.Advance(seconds); Readability?.Advance(seconds); }
+
+    public UnitReadabilityComponent? Readability =>
+        _animation?.GetNode<UnitReadabilityComponent>("UnitReadabilityComponent");
+    public void PresentHitFeedback()
+    {
+        if (_animation?.IsTerminal != true) Readability?.PresentHit();
+    }
     public void CompleteAttackWindup(float releaseProgress) => _animation?.CompleteTimedWindup(releaseProgress);
 
     public void SetPresentationSpeed(float speedScale, float simulationSpeed = 1)

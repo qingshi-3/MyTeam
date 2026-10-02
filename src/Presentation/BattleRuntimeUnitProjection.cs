@@ -60,7 +60,7 @@ public sealed record BattleScreenEquipmentSnapshot(
 public static class BattleRuntimeUnitProjection
 {
     public static BattleScreenRuntimeUnitSnapshot Build(
-        BattleUnitState unit, ContentRegistry? content, BattleConfig? config,
+        BattleUnitView unit, ContentRegistry? content, BattleConfig? config,
         TraitSnapshot? traitSnapshot, string battleResources, BattleUnitSkillsSnapshot? skills = null)
     {
         var equipment = config?.Equipment.Instances

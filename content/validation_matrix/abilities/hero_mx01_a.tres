@@ -2,19 +2,42 @@
 
 [ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
 [ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="matrix_targeting"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="matrix_magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="matrix_execution"]
+
+[sub_resource type="Resource" id="op_1_targeting"]
+script = ExtResource("matrix_targeting")
+Target = 1
+
+[sub_resource type="Resource" id="op_1_magnitude"]
+script = ExtResource("matrix_magnitude")
+AttackRatio = 1.4
 
 [sub_resource type="Resource" id="op_1"]
 script = ExtResource("operation")
 Kind = 0
-Target = 1
-AttackRatio = 1.4
+Targeting = SubResource("op_1_targeting")
+Magnitude = SubResource("op_1_magnitude")
+
+[sub_resource type="Resource" id="op_2_targeting"]
+script = ExtResource("matrix_targeting")
+Target = 0
+
+[sub_resource type="Resource" id="op_2_magnitude"]
+script = ExtResource("matrix_magnitude")
+Amount = 45
+
+[sub_resource type="Resource" id="op_2_execution"]
+script = ExtResource("matrix_execution")
+DurationTicks = 30
 
 [sub_resource type="Resource" id="op_2"]
 script = ExtResource("operation")
 Kind = 2
-Target = 0
-Amount = 45
-DurationTicks = 30
+Targeting = SubResource("op_2_targeting")
+Magnitude = SubResource("op_2_magnitude")
+Execution = SubResource("op_2_execution")
 
 [resource]
 script = ExtResource("ability")

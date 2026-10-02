@@ -400,10 +400,10 @@ public partial class AbilityStatusContractSmoke : Node
                 "effect usage-limit preflight consumed mana or committed a later operation");
         }
 
-        var unsafeOrder = new AbilityDefinition
+        var lateEffect = new AbilityDefinition
         {
             StableId = "ability_unsafe_late_effect",
-            DisplayName = "非法后置效果",
+            DisplayName = "后置效果事务",
             ActivationKind = AbilityActivationKind.ManualCommand,
             Trigger = AbilityTriggerKind.None,
             ManaCost = 1,
@@ -417,10 +417,31 @@ public partial class AbilityStatusContractSmoke : Node
                 EffectOperation("ability_unsafe_late_effect_binding")
             ]
         };
-        var unsafeCompilation = AbilityDefinitionCompiler.Compile(unsafeOrder);
-        Expect(unsafeCompilation.Ability is null && unsafeCompilation.Report.CoreErrors.Any(error =>
-                   error.Contains("must be first", StringComparison.Ordinal)),
-            "unsafe late effect operation was published without transactional batch support");
+        var compilation = AbilityDefinitionCompiler.Compile(lateEffect);
+        Expect(compilation.Ability is not null && !compilation.Report.HasCoreErrors,
+            "transactional ability compiler rejected a late effect");
+        var fail = true;
+        using var transaction = new BattleSimulation(Config(
+            [Spawn(Hero("late-hero"), 0, 0, 2, "hero"),
+             Spawn(Unit("late-enemy", health: 10000, damage: 0, moveTicks: 1000), 1, 9, 2, "enemy")],
+            Rule(new CompiledAbilityLoadout([compilation.Ability!]), lateEffect.StableId, 3),
+            bindings: registry => registry.Subscribe(BattleCombatEventKind.AbilityResolved,
+                CombatSourceRef.System("late-effect-failure"), 0, (fact, sink) =>
+                {
+                    if (fail && fact.SubjectStableId == lateEffect.StableId)
+                        sink.Enqueue(CombatSourceRef.System("late-effect-failure"), 0,
+                            _ => throw new InvalidOperationException("controlled failure after cooldown and shield"));
+                })));
+        var owner = transaction.Units.Single(unit => unit.RuntimeId == "hero");
+        owner.AttackCooldown = 9;
+        transaction.DrainEvents();
+        var fingerprint = BattleFingerprint(transaction);
+        Expect(!transaction.TryUseTacticalCommand(0).Succeeded && BattleFingerprint(transaction) == fingerprint,
+            "late effect failure retained earlier cooldown, shield, payment or facts");
+        fail = false;
+        Expect(transaction.TryUseTacticalCommand(0).Succeeded && owner.AttackCooldown == 0 && owner.Shield == 5 &&
+               transaction.TacticalPoints == 2,
+            "successful retry did not commit ordered cooldown and shield exactly once");
     }
 
     private static void AssertWorldFailureAtomic(
@@ -762,7 +783,7 @@ public partial class AbilityStatusContractSmoke : Node
         var summonLoadout = new AbilityLoadoutDefinition { Abilities = [summonAbility] };
         Expect(ContentValidator.ValidateAbilityStatusAuthoredGraph(
                    Graph([summonLoadout], [summonAbility], [], [summonLoadout], Ids("known_summon")))
-               .CoreErrors.Any(error => error.Contains("unknown content id", StringComparison.Ordinal)),
+               .CoreErrors.Any(error => error.Contains("unavailable unit content id: missing_content", StringComparison.Ordinal)),
             "unknown summon content-id dependency passed publication");
     }
 
@@ -1050,9 +1071,11 @@ public partial class AbilityStatusContractSmoke : Node
         CompiledTacticalCommandDefinition command,
         SummonProfiles? summons = null,
         int startingGold = 0,
-        IBattleFloorRuleRuntime? floor = null) => new()
+        IBattleFloorRuleRuntime? floor = null,
+        Action<BattleCombatBindingRegistry>? bindings = null) => new()
         {
             Seed = 2301,
+            ConfigureCombatBindings = bindings,
             FloorRule = floor ?? new ClearFloorRuleRuntime("ability-status", "契约", "test"),
             Spawns = spawns.ToList(),
             HeroRule = new HeroRuleSnapshot(

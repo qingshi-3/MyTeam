@@ -38,6 +38,8 @@ public sealed class BattleEffectScope : IDisposable
         if (string.IsNullOrWhiteSpace(scopeId))
             throw new ArgumentException("Effect scope id is required.", nameof(scopeId));
         _scopeId = scopeId;
+        Events = _events.AsReadOnly();
+        Trace = _trace.AsReadOnly();
         _world = world ?? throw new ArgumentNullException(nameof(world));
         _processors = processors ?? EffectProcessorRegistry.CreateDefault();
         _limits = limits ?? new EffectExecutionLimits();
@@ -48,9 +50,10 @@ public sealed class BattleEffectScope : IDisposable
     public bool IsCompleted => _transition is not null;
     public int SubscriptionCount => _registrations.Count;
     public int PendingInvocationCount => _pending.Count;
+    internal bool IsDraining => _isDraining;
     public int LiveRuntimeInstanceCount => _runtimeStates.Count;
-    public IReadOnlyList<EffectDomainEvent> Events => _events;
-    public IReadOnlyList<EffectTraceEntry> Trace => _trace;
+    public IReadOnlyList<EffectDomainEvent> Events { get; }
+    public IReadOnlyList<EffectTraceEntry> Trace { get; }
     public BattleScopeTransitionResult? Transition => _transition;
 
     internal EffectStateCheckpoint CaptureState()

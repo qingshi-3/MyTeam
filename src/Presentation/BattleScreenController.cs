@@ -21,13 +21,12 @@ public partial class BattleScreenController : Control
     public event Action<int, int, string, bool, string>? TacticalCommandAttempted;
 
     private const float NormalSimulationScale = .8f;
-    private const double EndHoldSeconds = 1.1;
-    private const double EndFadeSeconds = .45;
 
     internal Func<CatalogEntry, UnitContentRoot> PresenterFactory { get; set; } =
         entry => entry.Scene.Instantiate<UnitContentRoot>();
 
     private BattleBoard _board = null!;
+    private BattleEnvironment _environment = null!;
     private Node2D _unitsRoot = null!;
     private BattleGeometryOverlay _geometry = null!;
     private Button _collisionToggle = null!;
@@ -50,29 +49,25 @@ public partial class BattleScreenController : Control
     private SelectedUnitPanel _selectedUnit = null!;
     private BattleInspectorDock _inspector = null!;
     private ColorRect _endFadeOverlay = null!;
-    private readonly Dictionary<string, UnitContentRoot> _presenters = new(StringComparer.Ordinal);
+    private readonly BattlePlaybackSession _playback = new();
+    private BattlePresentationSession _presentation = null!;
+    private BattleEndTransition _endTransition = null!;
     private ContentRegistry? _content;
     private BattleConfig? _config;
-    private BattleSimulation? _simulation;
-    private double _accumulator;
-    private float _speedScale = 1f;
-    private bool _paused;
-    private bool _reported;
-    private bool _ending;
-    private bool _endTransitionReported;
-    private Tween? _endTween;
-    private BattleResult? _terminalResult;
+    private BattleSimulation? _simulation => _playback.Simulation;
+    private float _speedScale => _playback.Speed;
+    private bool _paused => _playback.Paused;
+    private bool _ending => _playback.Ending;
+    private BattleResult? _terminalResult => _playback.Result;
     private string _commandFeedback = string.Empty;
     private bool _commandFeedbackError;
     private string _selectedRuntimeId = string.Empty;
-    private int _combatCueCursor;
-    private int _statusCueCursor;
     public string LastRuntimeFailure { get; private set; } = string.Empty;
     public float SpeedScale => _speedScale;
     public int TacticalPoints => _simulation?.TacticalPoints ?? 0;
     public int MaximumTacticalPoints => _simulation?.MaximumTacticalPoints ?? 0;
     public int RemainingGold => _simulation?.RemainingGold ?? 0;
-    public int TemporaryUnitCount => _simulation?.Units.Count(unit => unit.IsTemporary) ?? 0;
+    public int TemporaryUnitCount => _simulation?.UnitViews.Count(unit => unit.IsTemporary) ?? 0;
     public string CommandFeedback => _commandFeedback;
     public bool IsEnding => _ending;
     public bool IsPaused => _paused;
@@ -84,9 +79,16 @@ public partial class BattleScreenController : Control
     public int ActiveFloatingCueCount => _floatingCueLayer?.ActiveCueCount ?? 0;
     public int ActiveFloatingTweenCount => _floatingCueLayer?.ActiveTweenCount ?? 0;
 
+    public override void _Notification(int what)
+    {
+        if (what == NotificationResized && _environment is not null)
+            RefreshEnvironmentLighting();
+    }
+
     public override void _Ready()
     {
         _board = GetNode<BattleBoard>("%BattleBoard");
+        _environment = GetNode<BattleEnvironment>("BattleEnvironment");
         _unitsRoot = GetNode<Node2D>("%UnitsRoot");
         _geometry = GetNode<BattleGeometryOverlay>("%BattleGeometryOverlay");
         _collisionToggle = GetNode<Button>("%CollisionToggle");
@@ -95,13 +97,9 @@ public partial class BattleScreenController : Control
         _collisionToggle.Toggled += OnGeometryToggled;
         _attackRangeToggle.Toggled += OnGeometryToggled;
         _rangedAttackLayer = GetNode<RangedAttackLayer>("%RangedAttackLayer");
+        _rangedAttackLayer.UnitHitPresented += OnUnitHitPresented;
         _audio = GetNode<FeedbackAudio>("BattleAudio");
         _rangedAttackLayer.Bind(_board);
-        _rangedAttackLayer.BindUnitPositions(id => _presenters.TryGetValue(id, out var unit) ? unit.Position : null);
-        _rangedAttackLayer.BindUnitBodyPositions(id => _presenters.TryGetValue(id, out var unit)
-            ? _unitsRoot.ToLocal(unit.BodyGlobalPosition) : null);
-        _rangedAttackLayer.BindUnitBodyVisuals(id => _presenters.TryGetValue(id, out var unit)
-            ? unit.CaptureBodyVisual(_rangedAttackLayer.GlobalTransform.AffineInverse()) : null);
         _floatingCueLayer = GetNode<BattleFloatingCueLayer>("%FloatingCueOverlay");
         _title = GetNode<Label>("%BattleTitle");
         _rule = GetNode<Label>("%RuleText");
@@ -120,6 +118,11 @@ public partial class BattleScreenController : Control
         _inspector.StatisticsRequested += RefreshInspectorStatistics;
         _inspector.UnitSelected += OnActorSelected;
         _endFadeOverlay = GetNode<ColorRect>("%EndFadeOverlay");
+        _presentation = new BattlePresentationSession(_playback, _board, _environment, _unitsRoot,
+            _rangedAttackLayer, _audio, _floatingCueLayer, entry => PresenterFactory(entry), OnActorSelected);
+        _presentation.BindRangedPositions();
+        _endTransition = new BattleEndTransition(this, _endFadeOverlay);
+        _endTransition.Completed += OnEndTransitionCompleted;
         _pause.Pressed += TogglePause;
         _speed.Pressed += CycleSpeed;
         _step.Pressed += OnStepPressed;
@@ -133,6 +136,7 @@ public partial class BattleScreenController : Control
 
     public override void _ExitTree()
     {
+        _rangedAttackLayer.UnitHitPresented -= OnUnitHitPresented;
         _collisionToggle.Toggled -= OnGeometryToggled;
         _attackRangeToggle.Toggled -= OnGeometryToggled;
         _inspector.StatisticsRequested -= RefreshInspectorStatistics;
@@ -147,6 +151,7 @@ public partial class BattleScreenController : Control
         _board.GuiInput -= OnBoardGuiInput;
         _board.ProjectionChanged -= OnBoardProjectionChanged;
         ResetEndSequence();
+        _endTransition.Completed -= OnEndTransitionCompleted;
         ClearPresenters();
     }
 
@@ -160,17 +165,13 @@ public partial class BattleScreenController : Control
             _content = content ?? throw new ArgumentNullException(nameof(content));
             _config = config ?? throw new ArgumentNullException(nameof(config));
             LastRuntimeFailure = string.Empty;
-            _simulation = new BattleSimulation(config);
+            _playback.Start(config, defaultSpeed);
+            _presentation.Bind(content);
             _title.Text = title;
             _rule.Text = $"{config.FloorRule.DisplayName}：{config.FloorRule.PreviewText}";
             _board.Bind(config.FloorRule);
-            _accumulator = 0;
-            _speedScale = NormalizeSpeed(defaultSpeed);
-            _paused = false;
+            _environment.ResetClock();
             _rangedAttackLayer.SetClock(false, _speedScale * NormalSimulationScale);
-            _reported = false;
-            _ending = false;
-            _terminalResult = null;
             _pause.Text = "暂停";
             _pause.Disabled = false;
             _speed.Text = $"速度 x{_speedScale:0}";
@@ -183,7 +184,8 @@ public partial class BattleScreenController : Control
             RefreshCommandHud();
             RefreshStatus();
             SyncPresenters("idle");
-            _rangedAttackLayer.SynchronizeUnits(_simulation.Units);
+            RefreshEnvironmentLighting();
+            _rangedAttackLayer.SynchronizeUnits(_simulation!.UnitViews);
             PresentResolvedFacts();
             SetProcess(true);
             SetProcessUnhandledInput(false);
@@ -219,12 +221,12 @@ public partial class BattleScreenController : Control
     public void SetPaused(bool paused)
     {
         if (_ending || _simulation?.Outcome != BattleOutcome.Running) return;
-        _paused = paused;
+        _playback.SetPaused(paused);
         _pause.Text = _paused ? "继续" : "暂停";
         _step.Disabled = !_step.Visible || !_paused;
         // Resuming an animation may emit its pending first-frame marker immediately.
         _audio.SetPaused(_paused);
-        foreach (var presenter in _presenters.Values) presenter.SetPresentationPaused(_paused);
+        foreach (var presenter in _presentation.Actors) presenter.SetPresentationPaused(_paused);
         _rangedAttackLayer.SetClock(_paused, _speedScale * NormalSimulationScale);
         RefreshGeometry();
     }
@@ -232,9 +234,9 @@ public partial class BattleScreenController : Control
     public void SetSpeed(float speed)
     {
         if (_ending) return;
-        _speedScale = NormalizeSpeed(speed);
+        _playback.SetSpeed(speed);
         _speed.Text = $"速度 x{_speedScale:0}";
-        foreach (var presenter in _presenters.Values) presenter.SetPresentationSpeed(_speedScale, _speedScale * NormalSimulationScale);
+        foreach (var presenter in _presentation.Actors) presenter.SetPresentationSpeed(_speedScale, _speedScale * NormalSimulationScale);
         _rangedAttackLayer.SetClock(_paused, _speedScale * NormalSimulationScale);
     }
 
@@ -244,14 +246,16 @@ public partial class BattleScreenController : Control
             return false;
         try
         {
-            foreach (var presenter in _presenters.Values) presenter.StepAttackPresentation(BattleTiming.TickSeconds);
+            foreach (var presenter in _presentation.Actors) presenter.StepAttackPresentation(BattleTiming.TickSeconds);
             _simulation.Step();
             PresentEvents(_simulation.DrainEvents());
             SnapPresentersToAuthority();
+            _environment.Advance(BattleTiming.TickSeconds);
+            RefreshEnvironmentLighting();
             PresentResolvedFacts();
             RefreshStatus();
             RefreshSelectedUnit();
-            if (_simulation.Outcome != BattleOutcome.Running && !_reported) BeginEndSequence();
+            if (_simulation.Outcome != BattleOutcome.Running && !_ending) BeginEndSequence();
             return true;
         }
         catch (Exception exception)
@@ -261,7 +265,7 @@ public partial class BattleScreenController : Control
         }
     }
 
-    public ImmutableArray<BattleScreenRuntimeUnitSnapshot> ReadRuntimeUnits() => _simulation?.Units
+    public ImmutableArray<BattleScreenRuntimeUnitSnapshot> ReadRuntimeUnits() => _simulation?.UnitViews
         .OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal)
         .Select(BuildRuntimeSnapshot)
         .ToImmutableArray() ?? [];
@@ -279,17 +283,15 @@ public partial class BattleScreenController : Control
         if (_ending || _paused || _simulation is null || _simulation.Outcome != BattleOutcome.Running) return;
         try
         {
-            _accumulator += delta * _speedScale * NormalSimulationScale;
-            var steps = 0;
-            while (_accumulator >= BattleTiming.TickSeconds && steps++ < 12 && _simulation.Outcome == BattleOutcome.Running)
+            _environment.Advance((float)delta * _speedScale * NormalSimulationScale);
+            RefreshEnvironmentLighting();
+            _playback.Advance(delta, () =>
             {
-                _accumulator -= BattleTiming.TickSeconds;
-                _simulation.Step();
                 PresentEvents(_simulation.DrainEvents());
                 PresentResolvedFacts();
-            }
+            });
             RefreshStatus();
-            if (_simulation.Outcome != BattleOutcome.Running && !_reported)
+            if (_simulation.Outcome != BattleOutcome.Running && !_ending)
                 BeginEndSequence();
         }
         catch (Exception exception)
@@ -300,204 +302,25 @@ public partial class BattleScreenController : Control
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (!_ending || _endTransitionReported || !@event.IsActionPressed("ui_accept")) return;
+        if (!_ending || _endTransition.Reported || !@event.IsActionPressed("ui_accept")) return;
         GetViewport().SetInputAsHandled();
         CompleteEndTransition();
     }
 
+    private void OnUnitHitPresented(string id) => _presentation.OnUnitHitPresented(id);
     private void PresentEvents(IReadOnlyList<BattleEvent> events)
     {
-        foreach (var change in events.Where(e => e.Type is "revived" or "allegiance"))
-        {
-            var id = change.TargetRuntimeId;
-            if (_presenters.Remove(id,out var previous))
-            {
-                previous.ActorSelected -= OnActorSelected;
-                previous.AnimationSoundRequested -= OnAnimationSoundRequested;
-                previous.Deactivate(); previous.GetParent()?.RemoveChild(previous); previous.Free();
-            }
-            EnsurePresenter(id);
-        }
-        BattleAudioFeedback.Present(_audio, events,
-            id => FindState(id)?.AttackDelivery ?? AttackDelivery.Melee,
-            (id, cue) =>
-            {
-                EnsurePresenter(id);
-                return _presenters.TryGetValue(id, out var actor) && actor.HasAnimationSounds(cue);
-            });
-        PresentDisplacements(events);
-        var displacedOwners = events.Where(fact => fact.Displacement is not null)
-            .Select(fact => fact.TargetRuntimeId).ToHashSet(StringComparer.Ordinal);
-        var timedAttackOwners = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var fact in events)
-        {
-            var released = fact.Type is "attack" or "skill_arrow" && FindState(fact.SourceRuntimeId)?.Definition.ProjectileWindupSeconds > 0;
-            if (fact.AttackTiming is null && fact.Type is not ("attack_cancel" or "line_cancel" or "line_release" or "blade_release") && !released) continue;
-            EnsurePresenter(fact.SourceRuntimeId);
-            if (!_presenters.TryGetValue(fact.SourceRuntimeId, out var actor)) continue;
-            if (fact.AttackTiming is { } timing)
-            {
-                actor.FaceToward(_board.LogicalToLocal(fact.Position));
-                actor.BeginAttackPresentation(timing, fact.Line?.ReleaseVfx ?? "attack");
-                timedAttackOwners.Add(fact.SourceRuntimeId);
-            }
-            else if (fact.Type == "line_release") actor.CompleteAttackWindup(fact.Line?.ReleaseProgress ?? .8f);
-            else if (fact.Type == "blade_release") actor.CompleteAttackWindup(FindState(fact.SourceRuntimeId)!.Definition.AttackReleaseProgress);
-            else if (released) actor.CompleteAttackWindup(FindState(fact.SourceRuntimeId)!.Definition.AttackReleaseProgress);
-            else actor.CancelAttackPresentation();
-        }
-        foreach(var group in events.Where(e=>e.Type=="wall_raised").GroupBy(e=>e.SourceRuntimeId))
-        {
-            var walls=group.ToArray();
-            var tangent=walls.Length>1?(walls[^1].Position-walls[0].Position).Normalized():Vector2.Down;
-            var forward=new Vector2(tangent.Y,-tangent.X);
-            for(int i=0;i<walls.Length;i++)
-            {
-                var fact=walls[i];EnsurePresenter(fact.TargetRuntimeId);
-                if(!_presenters.TryGetValue(fact.TargetRuntimeId,out var actor) || actor.BarrierVisual is null)continue;
-                var foot=_board.LogicalToLocal(fact.Position);
-                actor.BarrierVisual.Begin((_board.LogicalToLocal(fact.Position+tangent)-foot)/actor.Scale.X,
-                    (_board.LogicalToLocal(fact.Position+forward)-foot)/actor.Scale.X,i-(walls.Length-1)*.5f,_paused);
-            }
-        }
-        _rangedAttackLayer.Present(events, _paused);
-        if (_simulation is not null && !events.Any(e => e.Type == "battle_finished"))
-            _rangedAttackLayer.SynchronizeUnits(_simulation.Units);
-        foreach (var battleEvent in events)
-        {
-            if (battleEvent.Type != "move" || string.IsNullOrWhiteSpace(battleEvent.SourceRuntimeId) ||
-                displacedOwners.Contains(battleEvent.SourceRuntimeId)) continue;
-            EnsurePresenter(battleEvent.SourceRuntimeId);
-            if (_presenters.TryGetValue(battleEvent.SourceRuntimeId, out var mover))
-            {
-                var logicalPosition = battleEvent.Position != default
-                    ? battleEvent.Position
-                    : BattlefieldSpace.CellCenter(battleEvent.Cell);
-                mover.QueueMovement(_board.LogicalToLocal(logicalPosition));
-            }
-        }
-
-        foreach (var battleEvent in events.Where(battleEvent => battleEvent.Type is "attack" or "skill_arrow" or "heal" or "ability"))
-        {
-            EnsurePresenter(battleEvent.SourceRuntimeId);
-            EnsurePresenter(battleEvent.TargetRuntimeId);
-            if (_presenters.TryGetValue(battleEvent.SourceRuntimeId, out var source) &&
-                _presenters.TryGetValue(battleEvent.TargetRuntimeId, out var target))
-                source.FaceToward(target.Position);
-            if (battleEvent.Type == "ability" && _presenters.TryGetValue(battleEvent.SourceRuntimeId, out var caster))
-                caster.PresentAbility(FindState(battleEvent.SourceRuntimeId)?.LastAbilityName ?? "技能");
-        }
-        foreach (var fact in events.Where(fact => fact.Type == "line_charge"))
-            if (_presenters.TryGetValue(fact.SourceRuntimeId, out var caster))
-                caster.PresentAbility(FindState(fact.SourceRuntimeId)?.LastAbilityName ?? "蓄力");
-
-        var presented = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var selection in BattlePresentationCueArbiter.Select(events))
-        {
-            var presentationId = selection.Key;
-            EnsurePresenter(presentationId);
-            if (_presenters.TryGetValue(presentationId, out var presenter))
-            {
-                var state = FindState(presentationId);
-                if (state is not null)
-                {
-                    presenter.RefreshPresentation(state.Alive && timedAttackOwners.Contains(presentationId) ? "" : selection.Value, state.Health, state.MaxHealth);
-                    presented.Add(presentationId);
-                }
-            }
-        }
-        SyncPresenters("idle", presented);
+        _presentation.PresentEvents(events);
         RefreshSelectedUnit();
     }
-
     private void PresentResolvedFacts()
     {
-        if (_simulation is null) return;
-        var combatStart = Math.Min(_combatCueCursor, _simulation.CombatEvents.Count);
-        var combatFacts = _simulation.CombatEvents.Skip(combatStart).ToArray();
-        var statusStart = Math.Min(_statusCueCursor, _simulation.StatusPresentationCues.Count);
-        var statusCues = _simulation.StatusPresentationCues.Skip(statusStart).ToArray();
-        foreach (var fact in combatFacts)
-        {
-            _audio.Play(BattleAudioFeedback.CombatCue(fact,
-                FindState(fact.SourceRuntimeId)?.AttackDelivery ?? AttackDelivery.Melee));
-            if (fact.Kind == BattleCombatEventKind.AbilityResolved &&
-                !(_presenters.TryGetValue(fact.SourceRuntimeId, out var caster) && caster.HasAnimationSounds("skill_cast")))
-                _audio.Play(_audio.AbilityCue(fact.SubjectStableId));
-        }
-        foreach (var cue in statusCues) _audio.Play(BattleAudioFeedback.StatusCue(cue));
-        _floatingCueLayer.Present(combatFacts, statusCues,
-            id => FindState(id)?.Position, _board.LogicalToLocal);
-        _combatCueCursor = _simulation.CombatEvents.Count;
-        _statusCueCursor = _simulation.StatusPresentationCues.Count;
+        _presentation.PresentResolvedFacts();
         RefreshGeometry();
     }
-
+    private void SyncPresenters(string cue) => _presentation.SyncPresenters(cue);
+    private BattleUnitView? FindState(string id) => _presentation.FindState(id);
     private void ClearFloatingCues() => _floatingCueLayer?.Clear();
-
-    private void SyncPresenters(string cue, IReadOnlySet<string>? preserveCue = null)
-    {
-        if (_simulation is null) return;
-        foreach (var state in _simulation.Units)
-        {
-            EnsurePresenter(state.RuntimeId);
-            if (_presenters.TryGetValue(state.RuntimeId, out var presenter))
-            {
-                presenter.RefreshPresentation(state.Alive && preserveCue?.Contains(state.RuntimeId) == true ? "" : state.Alive ? cue : "defeated",
-                    state.Health, state.MaxHealth);
-                presenter.RefreshBattleForm(state.BodyRadius);
-                presenter.RefreshCombatResources(state.CurrentMana, state.MaxMana, state.Shield, state.Statuses, state.Alive,
-                    _simulation.ReadUnitSkills(state.RuntimeId).Primary);
-            }
-        }
-    }
-
-    private void EnsurePresenter(string runtimeId)
-    {
-        if (string.IsNullOrWhiteSpace(runtimeId) || _presenters.ContainsKey(runtimeId) || _content is null) return;
-        var state = FindState(runtimeId);
-        if (state is null || !_content.TryGet(state.Definition.ContentId, out var entry)) return;
-        UnitContentRoot? presenter = null;
-        var subscribed = false;
-        try
-        {
-            presenter = PresenterFactory(entry);
-            _unitsRoot.AddChild(presenter);
-            presenter.Bind(state.RuntimeId, state.Team, state.Health, state.MaxHealth);
-            presenter.ActorSelected += OnActorSelected;
-            presenter.AnimationSoundRequested += OnAnimationSoundRequested;
-            subscribed = true;
-            presenter.Activate(new UnitBindingContext(
-                new DeterministicRandom(1), NullEvents.Instance, NullCommands.Instance));
-            presenter.SetPresentationSpeed(_speedScale, _speedScale * NormalSimulationScale);
-            presenter.SetPresentationPaused(_paused);
-            presenter.Scale = Vector2.One * _board.CurrentProjection.UnitScale;
-            presenter.SnapPresentation(_board.LogicalToLocal(state.Position), state.Health, state.MaxHealth);
-            _presenters.Add(runtimeId, presenter);
-        }
-        catch
-        {
-            if (presenter is not null)
-            {
-                if (subscribed)
-                {
-                    presenter.ActorSelected -= OnActorSelected;
-                    presenter.AnimationSoundRequested -= OnAnimationSoundRequested;
-                }
-                try { presenter.Deactivate(); }
-                catch { }
-                presenter.GetParent()?.RemoveChild(presenter);
-                presenter.Free();
-            }
-            throw;
-        }
-    }
-
-    private BattleUnitState? FindState(string runtimeId) => _simulation?.Units.FirstOrDefault(unit => unit.RuntimeId == runtimeId);
-    private void OnAnimationSoundRequested(FeedbackSound sound)
-    {
-        if (!_ending && !_reported) _audio.Play(sound);
-    }
 
     private void ShowRules() => _rulesPopup.Open(_ruleButton);
 
@@ -540,8 +363,8 @@ public partial class BattleScreenController : Control
     private void RefreshCommandHud()
     {
         if (_simulation is null) return;
-        // Lab presets without commands should give this space back to the board and unit details.
-        _tacticalCommandHud.Visible = !_step.Visible || !_simulation.TacticalCommands.Slots.IsDefaultOrEmpty;
+        // Automatic Growth battles and Lab presets without commands expose no command HUD.
+        _tacticalCommandHud.Visible = !_simulation.TacticalCommands.Slots.IsDefaultOrEmpty;
         _tacticalCommandHud.Bind(
             _simulation.TacticalCommands,
             _commandFeedback,
@@ -553,8 +376,8 @@ public partial class BattleScreenController : Control
     {
         if (_simulation is null) return;
         _status.Bind(_simulation.TickIndex * BattleTiming.TickSeconds,
-            _simulation.Units.Count(unit => unit.Team == 0 && unit.Alive),
-            _simulation.Units.Count(unit => unit.Team == 1 && unit.Alive),
+            _simulation.UnitViews.Count(unit => unit.Team == 0 && unit.Alive),
+            _simulation.UnitViews.Count(unit => unit.Team == 1 && unit.Alive),
             _simulation.TacticalCommands.Slots.Any(slot => slot.GoldCost > 0), _simulation.RemainingGold,
             _commandFeedback, _commandFeedbackError);
         RefreshInspectorStatistics();
@@ -582,7 +405,7 @@ public partial class BattleScreenController : Control
     private void OnBoardGuiInput(InputEvent @event)
     {
         if (_ending || @event is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true } mouse || _simulation is null) return;
-        var presenter = _presenters.Values
+        var presenter = _presentation.Actors
             .Where(candidate => candidate.Visible && FindState(candidate.RuntimeId)?.Alive == true)
             .OrderBy(candidate => candidate.Position.DistanceSquaredTo(mouse.Position))
             .FirstOrDefault(candidate =>
@@ -603,7 +426,7 @@ public partial class BattleScreenController : Control
         if (state is not null) _inspector.BindSelection(BuildRuntimeSnapshot(state), ResolveUnitPortrait(state.Definition.ContentId));
     }
 
-    private BattleScreenRuntimeUnitSnapshot BuildRuntimeSnapshot(BattleUnitState unit) =>
+    private BattleScreenRuntimeUnitSnapshot BuildRuntimeSnapshot(BattleUnitView unit) =>
         BattleRuntimeUnitProjection.Build(unit, _content, _config, _simulation?.TraitSnapshot,
             _simulation?.DescribeBattleResources(unit.RuntimeId) ?? "", _simulation?.ReadUnitSkills(unit.RuntimeId));
 
@@ -638,57 +461,31 @@ public partial class BattleScreenController : Control
             _collisionToggle.ButtonPressed, _attackRangeToggle.ButtonPressed);
     }
 
-    private void SnapPresentersToAuthority()
-    {
-        if (_simulation is null) return;
-        foreach (var state in _simulation.Units)
-        {
-            EnsurePresenter(state.RuntimeId);
-            if (_presenters.TryGetValue(state.RuntimeId, out var presenter))
-                presenter.SnapSpatialPresentation(_board.LogicalToLocal(state.Position));
-        }
-    }
+    private void SnapPresentersToAuthority() => _presentation.SnapPresentersToAuthority();
 
     private void OnBoardProjectionChanged(BattlefieldProjection previous, BattlefieldProjection next)
     {
-        foreach (var presenter in _presenters.Values)
+        foreach (var presenter in _presentation.Actors)
         {
             presenter.RemapPresentationCoordinates(previous.Origin, previous.CellPitch, next.Origin, next.CellPitch);
             presenter.Scale = Vector2.One * next.UnitScale;
         }
         if (_geometry is not null) RefreshGeometry();
+        if (_environment is not null) RefreshEnvironmentLighting();
     }
+
+    private void RefreshEnvironmentLighting() => _presentation?.RefreshEnvironmentLighting();
 
     private void ClearPresenters(bool replacement = false)
     {
-        _audio?.Clear();
-        _rangedAttackLayer?.Clear();
         _geometry?.Clear();
         if (_geometryReadout is not null) _geometryReadout.Visible = false;
-        if (replacement)
-        {
-            try { _simulation?.Replace(); }
-            catch (Exception exception) { GD.PushError($"Battle replacement failed: {exception.Message}"); }
-        }
-        try { _simulation?.Dispose(); }
-        catch (Exception exception) { GD.PushError($"Battle abort failed: {exception.Message}"); }
-        ClearFloatingCues();
-        foreach (var presenter in _presenters.Values)
-        {
-            presenter.ActorSelected -= OnActorSelected;
-            presenter.AnimationSoundRequested -= OnAnimationSoundRequested;
-            presenter.Deactivate();
-            if (presenter.GetParent() is not null) presenter.GetParent().RemoveChild(presenter);
-            presenter.Free();
-        }
-        _presenters.Clear();
+        _playback.Stop(replacement);
+        _presentation?.Clear();
         _selectedRuntimeId = string.Empty;
         if (_inspector is not null) _inspector.ResetSelection();
-        _simulation = null;
         _config = null;
         _content = null;
-        _combatCueCursor = 0;
-        _statusCueCursor = 0;
     }
 
     private void CleanupRuntimeFailure(Exception exception)
@@ -702,20 +499,13 @@ public partial class BattleScreenController : Control
 
     private void BeginEndSequence()
     {
-        if (_ending || _reported || _simulation is null || _simulation.Outcome == BattleOutcome.Running) return;
-        _ending = true;
-        // Scope completion can remove an airborne motion without a per-unit finish fact.
-        // The held result screen must retain ground positions, never suspended leap poses.
-        foreach (var state in _simulation.Units)
-            if (_presenters.TryGetValue(state.RuntimeId, out var presenter))
-                presenter.SnapPresentation(_board.LogicalToLocal(state.Position), state.Health, state.MaxHealth);
+        if (!_playback.BeginTerminal()) return;
+        // Preserve final ground positions after scope cleanup removed any airborne motion.
+        _presentation.HoldTerminalPositions();
         _rangedAttackLayer.Clear();
-        _rangedAttackLayer.SetClock(false, _speedScale * NormalSimulationScale);
-        _reported = true;
-        _accumulator = 0;
-        _terminalResult = _simulation.CreateResult();
+        _rangedAttackLayer.SetClock(false, _playback.SimulationScale);
         _audio.Clear();
-        _audio.Play(_terminalResult.Outcome == BattleOutcome.PlayerVictory ? "victory" : "defeat");
+        _audio.Play(_terminalResult!.Outcome == BattleOutcome.PlayerVictory ? "victory" : "defeat");
         _pause.Disabled = true;
         _speed.Disabled = true;
         _step.Disabled = true;
@@ -725,57 +515,24 @@ public partial class BattleScreenController : Control
         SetProcessUnhandledInput(true);
         ClearFloatingCues();
 
-        _endFadeOverlay.Color = new Color(0, 0, 0, 0);
-        _endFadeOverlay.Visible = true;
-        _endFadeOverlay.MouseFilter = _reset.Visible ? MouseFilterEnum.Ignore : MouseFilterEnum.Stop;
         SetProcess(false);
-        _endTween?.Kill();
-        _endTween = CreateTween().SetPauseMode(Tween.TweenPauseMode.Process);
-        _endTween.TweenInterval(EndHoldSeconds);
-        _endTween.TweenProperty(_endFadeOverlay, "color:a", 1f, EndFadeSeconds)
-            .SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.InOut);
-        _endTween.TweenCallback(Callable.From(CompleteEndTransition));
+        _endTransition.Begin(_reset.Visible);
 
-        Finished?.Invoke(_terminalResult);
+        Finished?.Invoke(_terminalResult!);
     }
 
-    private void CompleteEndTransition()
+    private void CompleteEndTransition() => _endTransition.Complete();
+
+    private void OnEndTransitionCompleted()
     {
-        if (!_ending || _endTransitionReported) return;
-        _endTransitionReported = true;
-        _endTween?.Kill();
-        _endTween = null;
-        _endFadeOverlay.Color = Colors.Black;
         SetProcessUnhandledInput(false);
         EndTransitionFinished?.Invoke();
     }
 
     private void ResetEndSequence()
     {
-        _endTween?.Kill();
-        _endTween = null;
-        _ending = false;
-        _endTransitionReported = false;
-        _terminalResult = null;
+        _endTransition?.Reset();
+        _playback.ResetTerminal();
         SetProcessUnhandledInput(false);
-        if (_endFadeOverlay is not null)
-        {
-            _endFadeOverlay.Visible = false;
-            _endFadeOverlay.Color = new Color(0, 0, 0, 0);
-        }
-    }
-
-    private static float NormalizeSpeed(float speed) => speed >= 4f ? 4f : speed >= 2f ? 2f : 1f;
-
-    private sealed class NullEvents : ISemanticBattleEventSink
-    {
-        public static readonly NullEvents Instance = new();
-        public void Publish(SemanticBattleEvent battleEvent) { }
-    }
-
-    private sealed class NullCommands : IBattleCommandGateway
-    {
-        public static readonly NullCommands Instance = new();
-        public bool Submit(BattleCommandRequest command) => false;
     }
 }

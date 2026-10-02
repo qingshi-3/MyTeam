@@ -30,6 +30,11 @@ internal sealed class BattleEffectCompatibilityAdapter : IDisposable
     public BattleScopeTransitionResult? Transition => _scope.Transition;
     public int SubscriptionCount => _scope.SubscriptionCount;
     public int PendingInvocationCount => _scope.PendingInvocationCount;
+    public bool IsExecuting => _scope.IsDraining;
+    // Nested status consequences join the current bounded queue; the outer drain reports failures.
+    public bool EnqueueAuthored(CompiledEffectBinding binding, string sourceId, string ownerId, string targetId,
+        int tick, float value, CombatSourceRef origin) =>
+        _scope.EnqueueRoot(binding, sourceId, ownerId, targetId, tick, value, origin).Accepted;
     public int LiveRuntimeInstanceCount => _scope.LiveRuntimeInstanceCount;
 
     internal BattleEffectScope.EffectStateCheckpoint CaptureState() => _scope.CaptureState();

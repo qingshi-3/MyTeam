@@ -26,12 +26,13 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     public const int MaxTicks = 1800;
 
     private readonly BattleConfig _config;
+    private readonly bool _preparationOnly;
     private readonly DeterministicRandom _random;
     private readonly List<BattleUnitState> _units = [];
     private readonly List<BattleEvent> _events = [];
     private readonly StringBuilder _digest = new();
-    private readonly HashSet<string> _deathProcUnits = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, BattleUnitStatistics> _statistics = new(StringComparer.Ordinal);
+    private readonly BattleVitalityScope _vitality;
+    private readonly BattleStatistics _statistics = new();
     private readonly Dictionary<string, int> _bossPhaseIndexes = new(StringComparer.Ordinal);
     private readonly BattleEffectCompatibilityAdapter _effectCompatibility;
     private readonly BattleAttributeScope _attributeScope;
@@ -40,7 +41,6 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     private readonly List<StatusPresentationCue> _statusPresentationCues = [];
     private readonly IReadOnlyList<StatusPresentationCue> _statusPresentationCueView;
     private readonly RelicBattleScope? _relicScope;
-    private ImmutableArray<BattleUnitReportSnapshot> _terminalUnitReports;
     private EquipmentBattleScope? _equipmentScope;
     private BattleTraitScope? _traitScope;
     private BattleAbilityScope? _abilityScope;
@@ -60,11 +60,13 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         _tacticalCommandScope?.Snapshot(TickIndex) ??
         new BattleTacticalCommandSnapshot(0, MaximumTacticalPoints, []);
     public int RemainingGold => _config.StartingGold - GoldSpent;
-    public IReadOnlyList<BattleUnitState> Units => _units;
+    // Mutable compatibility access is internal to combat and its contract fixtures.
+    internal IReadOnlyList<BattleUnitState> Units => _units;
+    public ReadOnlyListView<BattleUnitView> UnitViews { get; }
     // Live UI reads an immutable report projection without ending combat or rebuilding its digest.
     public ImmutableArray<BattleUnitReportSnapshot> ReadUnitReports() =>
-        _terminalUnitReports.IsDefault ? BuildUnitReports() : _terminalUnitReports;
-    public IReadOnlyList<BattleEvent> PendingEvents => _events;
+        _statistics.ReadReports(UnitViews, ActiveBattleTicks);
+    public IReadOnlyList<BattleEvent> PendingEvents { get; }
     public IReadOnlyList<EffectTraceEntry> EffectTrace => _effectCompatibility.Trace;
     public BattleScopeTransitionResult? EffectTransition => _effectCompatibility.Transition;
     public AttributeScopeTransitionResult? AttributeTransition => _attributeScope.Transition;
@@ -88,9 +90,20 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     public TacticalCommandScopeTransitionResult? TacticalCommandTransition =>
         _tacticalCommandScope?.Transition;
 
-    public BattleSimulation(BattleConfig config)
+    public BattleSimulation(BattleConfig config) : this(config, preparationOnly: false) { }
+
+    private BattleSimulation(BattleConfig config, bool preparationOnly)
     {
+        _preparationOnly = preparationOnly;
         _config = config;
+        PendingEvents = _events.AsReadOnly();
+        UnitViews = new(() => _units.Count, index => BattleUnitView.For(_units[index]));
+        var enemyWorld = new EnemyWorld(this);
+        _enemyRuntime = new BattleEnemyActionScope(enemyWorld, enemyWorld, enemyWorld);
+        _projectileScope = new BattleProjectileScope(new ProjectileWorld(this));
+        var matrixWorld = new MatrixWorld(this);
+        _matrixQueries = new BattleMatrixQueries(matrixWorld);
+        _matrixReactions = new BattleMatrixReactionScope(matrixWorld, _matrixQueries);
         _random = new DeterministicRandom(config.Seed);
         _statusPresentationCueView = _statusPresentationCues.AsReadOnly();
         _attributeScope = new BattleAttributeScope($"battle_{config.Seed}_attributes");
@@ -116,69 +129,54 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                 contextValue: key => throw new InvalidOperationException($"Status context key '{key}' has no battle binding."),
                 teamCount: TeamCount,
                 traitValue: (traitId, team) => CurrentTraitSnapshot.Value(traitId, team)));
+        _values = new BattleValueLedger(() => TickIndex, () => _units, _statistics);
+        _lifecycleRuntime = new BattleLifecycleScope(new LifecycleWorld(this), _values, _statistics, _statusScope, _projectileScope);
+        _valueOperations = new BattleValueOperations(new ValueWorld(this), _values, _lifecycleRuntime, _statusScope, _statistics);
+        _actionQueue = new BattleUnitActionQueueScope(() => TickIndex, () => _abilityScope);
+        _techniqueRuntime = new BattleTechniqueScope(new TechniqueWorld(this), _statusScope, _actionQueue);
+        _displacementRuntime = new BattleDisplacementScope(new DisplacementWorld(this), _statusScope);
+        var directedActions = new DirectedActionWorld(this);
+        _chargedLines = new BattleChargedLineScope(directedActions, _combatPipeline, _projectileScope);
+        _tramples = new BattleTrampleScope(directedActions, _statusScope, _displacementRuntime);
+        _attacks = new BattleAttackScope(new AttackWorld(this), _combatPipeline, _statistics, _statusScope, _random.NextFloat);
+        _vitality = new BattleVitalityScope(new VitalityWorld(this), config, _combatPipeline, _statistics, _statusScope);
+        var traitWorld = new TraitWorld(this);
+        _traitBindings = new BattleTraitBindings(_combatPipeline.ScopeId);
+        _elementStatuses = new BattleElementStatusScope(traitWorld, traitWorld, _traitBindings, _statusScope, config.MatrixStatusRules);
+        _supportEffects = new BattleSupportEffectScope(traitWorld, traitWorld, _traitBindings);
+        _traitReactions = new BattleTraitReactionScope(traitWorld, traitWorld, traitWorld, _traitBindings, _statusScope, _elementStatuses, _supportEffects);
+        _matrixRuntime = new BattleMatrixAbilityScope(new MatrixOperationWorld(this), _matrixQueries, _matrixReactions,
+            _displacementRuntime, _elementStatuses, _supportEffects, _statistics, _permanentGrowth);
+        _targeting = new BattleTargetingPolicy(new TargetingWorld(this), config.HeroRule.PreferBossTargets);
+        _skillProgress = new BattleSkillProgressProjection(new SkillProgressWorld(this));
+        _abilityExecutor = new BattleAbilityExecutor(new AbilityHost(this),
+            new BattleAbilityEffectOperations(new AbilityEffectWorld(this), _effectCompatibility, _statusScope,
+                () => CurrentTraitSnapshot, _random.NextFloat),
+            new BattleAbilitySummons(new AbilitySummonWorld(this)), new AbilityMechanisms(this));
         _relicScope = null;
         try
         {
+            BindStatusRules();
             var combatBindings = new BattleCombatBindingRegistry(_combatPipeline);
             try { config.ConfigureCombatBindings?.Invoke(combatBindings); }
             finally { combatBindings.CloseRegistration(); }
 
+            var unitFactory = new BattleUnitFactory(config, _attributeScope);
             var index = 0;
             foreach (var spawn in config.Spawns)
             {
-                var unit = spawn.Unit;
-                var taggedForHero = !string.IsNullOrWhiteSpace(config.HeroRule.RequiredSoldierTag) && unit.Tags.Contains(config.HeroRule.RequiredSoldierTag);
-                var healthMultiplier = spawn.Team == 0
-                    ? (unit.IsHero ? config.Modifiers.HeroHealthMultiplier : config.Modifiers.ArmyHealthMultiplier * config.HeroRule.SoldierHealthMultiplier)
-                    : 1f;
-                if (spawn.Team == 0 && !unit.IsHero && taggedForHero) healthMultiplier *= config.HeroRule.TaggedSoldierHealthMultiplier;
-                var damageMultiplier = spawn.Team == 0
-                    ? (unit.IsHero
-                        ? config.Modifiers.HeroDamageMultiplier * config.HeroRule.HeroDamageMultiplier *
-                          (1f + config.EmptyDeploymentSlots * (config.HeroRule.EmptySlotHeroBonus + config.Modifiers.EmptySlotPower / 100f))
-                        : config.Modifiers.ArmyDamageMultiplier * config.HeroRule.SoldierDamageMultiplier)
-                    : 1f;
-                if (spawn.Team == 0 && !unit.IsHero && taggedForHero) damageMultiplier *= config.HeroRule.TaggedSoldierDamageMultiplier;
                 var requestedCell = ClampCell(spawn.Cell);
                 var resolvedCell = CanOccupy(requestedCell) ? requestedCell : FindOpenCellNear(requestedCell, spawn.Team);
                 // Placement cells are anchors, not one-cell bodies. Resolve the full authored circle
                 // against terrain and previously placed bodies before publishing any battle state.
                 var anchor = BattlefieldSpace.CellCenter(resolvedCell);
-                anchor = new Vector2(Math.Clamp(anchor.X, -.5f + unit.BodyRadius, Width - .5f - unit.BodyRadius),
-                    Math.Clamp(anchor.Y, -.5f + unit.BodyRadius, Height - .5f - unit.BodyRadius));
-                var resolvedPosition = FindOpenNear(anchor, spawn.Team, unit.BodyRadius)
-                    ?? throw new InvalidOperationException($"No legal space for unit '{unit.ContentId}'.");
-                var maxHealth = unit.MaxHealth * healthMultiplier;
-                var damage = unit.Damage * damageMultiplier;
-                var lifeSteal = Mathf.Clamp(unit.LifeSteal + (spawn.Team == 0
-                    ? (unit.IsHero ? config.Modifiers.HeroLifeStealBonus + config.HeroRule.HeroLifeStealBonus : config.Modifiers.ArmyLifeStealBonus)
-                    : 0), 0, .8f);
-                var runtimeId = string.IsNullOrWhiteSpace(spawn.InstanceId)
-                    ? $"{(spawn.Team == 0 ? "p" : "e")}-{index}"
-                    : spawn.InstanceId;
-                var attributes = _attributeScope.CreateSet(
-                    runtimeId,
-                    CreateBattleAttributeDefinition(unit, maxHealth, damage, lifeSteal));
-                var state = new BattleUnitState
-                {
-                    RuntimeId = runtimeId,
-                    SourceInstanceId = spawn.InstanceId,
-                    Definition = unit,
-                    Attributes = attributes,
-                    Team = spawn.Team,
-                    InitialTeam = spawn.Team,
-                    Cell = resolvedCell,
-                    Position = resolvedPosition,
-                    Health = maxHealth * Mathf.Clamp(spawn.HealthRatio, .05f, 1f),
-                    Shield = spawn.Team == 0 ? config.Modifiers.StartShield +
-                        (unit.IsHero ? maxHealth * config.EmptyDeploymentSlots * config.HeroRule.EmptySlotStartShield : 0) : 0,
-                    IsTemporary = spawn.IsTemporary,
-                    IsPersistentRosterHero = spawn.IsPersistentRosterHero ??
-                        (spawn.Team == 0 && !spawn.IsTemporary && unit.IsHero),
-                    BehaviorSummon = spawn.BehaviorSummon
-                };
+                anchor = new Vector2(Math.Clamp(anchor.X, -.5f + spawn.Unit.BodyRadius, Width - .5f - spawn.Unit.BodyRadius),
+                    Math.Clamp(anchor.Y, -.5f + spawn.Unit.BodyRadius, Height - .5f - spawn.Unit.BodyRadius));
+                var resolvedPosition = FindOpenNear(anchor, spawn.Team, spawn.Unit.BodyRadius)
+                    ?? throw new InvalidOperationException($"No legal space for unit '{spawn.Unit.ContentId}'.");
+                var state = unitFactory.CreateInitial(spawn, index, resolvedCell, resolvedPosition);
                 _units.Add(state);
-                _statistics.Add(state.RuntimeId, new BattleUnitStatistics { JoinTick = 0 });
+                _statistics.Join(state.RuntimeId, 0);
                 index++;
             }
             var healthRatios = _units.ToDictionary(
@@ -223,6 +221,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                     {
                         CombatBindings = relicBindings,
                         QueryUnits = QueryRelicUnits,
+                        RemainingGold = () => RemainingGold,
                         ExecuteEffect = ExecuteRelicEffect,
                         ExecuteAttributedEffect = ExecuteRelicEffect,
                         Summon = SummonRelic,
@@ -264,7 +263,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             AddConfiguredSummons();
             _floorRuleStartAttempted = true;
             _config.FloorRule.OnBattleStarted(CreateRuleContext());
-            _movement = new DeterministicContinuousMovementService(
+            if (!_preparationOnly) _movement = new DeterministicContinuousMovementService(
                 Width, Height, () => _units, cell => _config.FloorRule.CanOccupy(cell), HasLineAccess, config.Seed,
                 isGrounded: unit => !IsAirborne(unit), landingReservations: CaptureDisplacementReservations);
             ActivateBattleStartedAbilities();
@@ -300,6 +299,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
 
     public BattleOutcome Step()
     {
+        if (_preparationOnly) throw new InvalidOperationException("A preparation world cannot advance combat.");
         if (Outcome != BattleOutcome.Running) return Outcome;
         TickIndex++;
         try
@@ -453,41 +453,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     public BattleResult CreateResult()
     {
         var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(_digest.ToString()))).ToLowerInvariant();
-        var units = _terminalUnitReports.IsDefault ? BuildUnitReports() : _terminalUnitReports;
+        var units = _statistics.ReadReports(UnitViews, ActiveBattleTicks);
         return new BattleResult(Outcome, TickIndex, hash, units, GoldSpent, SuccessfulTacticalCommandUses,
-            _relicScope?.Transition, _config.Identity, _permanentGains);
+            _relicScope?.Transition, _config.Identity, _permanentGrowth.Gains);
     }
-
-    private ImmutableArray<BattleUnitReportSnapshot> BuildUnitReports() =>
-        _units.Select(unit =>
-        {
-            var statistics = _statistics[unit.RuntimeId];
-            return new BattleUnitReportSnapshot(
-                unit.RuntimeId,
-                unit.SourceInstanceId,
-                unit.Definition.ContentId,
-                unit.Definition.DisplayName,
-                unit.Definition.Role,
-                unit.InitialTeam >= 0 ? unit.InitialTeam : unit.Team,
-                unit.Definition.IsHero,
-                unit.IsTemporary,
-                unit.Alive,
-                unit.Cell,
-                unit.Health,
-                unit.MaxHealth,
-                unit.Shield,
-                unit.Damage,
-                statistics.DamageDealt,
-                statistics.DamageTaken,
-                statistics.ShieldAbsorbed,
-                statistics.HealingDone,
-                statistics.Kills,
-                statistics.JoinTick,
-                statistics.DefeatTick,
-                statistics.AttackActions,
-                statistics.EffectiveHealingEvents,
-                unit.Position, ActiveBattleTicks(unit));
-        }).ToImmutableArray();
 
     private void AddConfiguredSummons()
     {
@@ -619,46 +588,13 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     {
         if (_abilityScope is null) return;
         foreach (var unit in _units.Where(unit => unit.Alive).OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal))
+        {
             _abilityScope.ActivateAutomatic(unit.RuntimeId, 0);
+            ActivateTriggeredWithRepeats(unit.RuntimeId, AbilityTriggerKind.OwnerEnteredBattle, "");
+        }
     }
 
-    private string SelectAutomaticTarget(BattleUnitState owner, CompiledAbilityDefinition ability)
-    {
-        if (ability.Operations.OfType<CompiledHookOperation>().FirstOrDefault() is { } hook)
-            return _units.Where(target => CanAimHook(owner,target,hook))
-                .OrderByDescending(target => owner.Position.DistanceSquaredTo(target.Position))
-                .ThenBy(target => target.RuntimeId,StringComparer.Ordinal).Select(target => target.RuntimeId).FirstOrDefault() ?? "";
-        if (ability.Operations.OfType<CompiledGritPunchOperation>().FirstOrDefault() is { } punch)
-            return _units.Where(target => target.Alive && target.Team != owner.Team &&
-                    owner.Position.DistanceTo(target.Position) <= punch.Range && HasLineAccess(owner,target))
-                .OrderBy(target => target.RuntimeId == owner.ActionTargetRuntimeId ? 0 : 1)
-                .ThenBy(target => owner.Position.DistanceSquaredTo(target.Position))
-                .ThenBy(target => target.RuntimeId,StringComparer.Ordinal).Select(target => target.RuntimeId).FirstOrDefault() ?? "";
-        if (ability.Operations.OfType<CompiledEnemyAction>().FirstOrDefault() is { } enemyAction)
-            return SelectEnemyActionTarget(owner,enemyAction);
-        if (ability.Operations.OfType<CompiledTrampleOperation>().FirstOrDefault() is { } trample)
-            return _units.Where(target => CanAimTrample(owner, target, trample))
-                .OrderByDescending(target => owner.Position.DistanceSquaredTo(target.Position))
-                .ThenBy(target => target.RuntimeId, StringComparer.Ordinal)
-                .Select(target => target.RuntimeId).FirstOrDefault() ?? string.Empty;
-        if (ability.Operations.OfType<CompiledChargedLineOperation>().FirstOrDefault() is { } line)
-            return _units.Where(target => CanAimChargedLine(owner, target, line))
-                .OrderBy(target => owner.Position.DistanceSquaredTo(target.Position))
-                .ThenBy(target => target.RuntimeId, StringComparer.Ordinal)
-                .Select(target => target.RuntimeId).FirstOrDefault() ?? string.Empty;
-        var candidates = _units.Where(target => target.Alive &&
-            BattlefieldSpace.IsWithinReach(owner, target, owner.AttackRange) && HasLineAccess(owner, target));
-        if (ability.AutomaticTarget == AbilityAutomaticTargetKind.WoundedAlly)
-            return candidates.Where(target => target.Team == owner.Team && target.Health < target.MaxHealth)
-                .OrderBy(target => target.Health / target.MaxHealth)
-                .ThenBy(target => target.RuntimeId, StringComparer.Ordinal)
-                .Select(target => target.RuntimeId).FirstOrDefault() ?? string.Empty;
-        return candidates.Where(target => target.Team != owner.Team)
-            .OrderBy(target => target.RuntimeId == owner.ActionTargetRuntimeId ? 0 : 1)
-            .ThenBy(target => BattlefieldSpace.EdgeDistance(owner, target))
-            .ThenBy(target => target.RuntimeId, StringComparer.Ordinal)
-            .Select(target => target.RuntimeId).FirstOrDefault() ?? string.Empty;
-    }
+    private string SelectAutomaticTarget(BattleUnitState owner, CompiledAbilityDefinition ability) => _targeting.SelectAutomaticTarget(owner, ability);
 
     private bool ScheduleStatusEffect(StatusEffectInvocation invocation)
     {
@@ -691,13 +627,19 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         if (invocation.Kind == StatusEffectInvocationKind.Periodic &&
             !_statusScope.TryClaimPeriodicInvocation(invocation)) return true;
         var combatEvent = invocation.CombatEvent;
+        var value = invocation.Kind == StatusEffectInvocationKind.Periodic ? invocation.PeriodicValue :
+            invocation.UseOverheal ? Math.Max(0, (combatEvent?.AppliedValue ?? 0) - (combatEvent?.EffectiveValue ?? 0)) : combatEvent?.EffectiveValue ?? 0;
+        if (_effectCompatibility.IsExecuting)
+            return _effectCompatibility.EnqueueAuthored(invocation.Binding, invocation.SourceId, invocation.OwnerId,
+                invocation.ExplicitTargetId, invocation.Tick, value,
+                CombatSourceRef.Status(invocation.Definition.StableId, invocation.OwnerId, invocation.InstanceId));
         var result = _effectCompatibility.ExecuteAuthored(
             invocation.Binding,
             invocation.SourceId,
             invocation.OwnerId,
             invocation.ExplicitTargetId,
             invocation.Tick,
-            invocation.Kind == StatusEffectInvocationKind.Periodic ? invocation.PeriodicValue : combatEvent?.EffectiveValue ?? 0,
+            value,
             CombatSourceRef.Status(invocation.Definition.StableId, invocation.OwnerId, invocation.InstanceId));
         return result.Status is EffectExecutionStatus.Succeeded or EffectExecutionStatus.Skipped ||
             result.Status == EffectExecutionStatus.Interrupted &&
@@ -763,476 +705,11 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                 unit.Definition.Tags.ToImmutableArray()))
             .ToImmutableDictionary(unit => unit.RuntimeId, StringComparer.Ordinal));
 
-    private AbilityPreparationResult PrepareAbility(
-        CompiledAbilityDefinition ability,
-        string sourceId,
-        string ownerId,
-        string explicitTargetId,
-        int tick)
-    {
-        var owner = _units.FirstOrDefault(unit => unit.RuntimeId == ownerId &&
-            (unit.Alive || ability.Trigger == AbilityTriggerKind.OwnerDefeated));
-        if (owner is null)
-            return AbilityPreparationFailed(AbilityActivationFailure.SourceUnavailable, "英雄或能力拥有者已无法行动。");
-        if (ability.GoldCost > RemainingGold)
-            return AbilityPreparationFailed(AbilityActivationFailure.InsufficientGold, $"金币不足：需要 {ability.GoldCost} 金币。");
-        if (ability.ActivationKind == AbilityActivationKind.Automatic &&
-            (EnemyActionBusy(owner) || TechniqueBusy(owner) || UnitActionRecovering(owner) || DuelOpponent(owner) is not null || owner.Trample is not null || owner.ChargedLine is not null || owner.DisabledTicks > 0 || _statusScope.HasTag(ownerId, StatusDefinitionCompiler.ActionDisabledTag)))
-            return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "受控期间不能施法。");
-        if (ability.Trigger == AbilityTriggerKind.ManaFull)
-        {
-            if (IsDisplacing(owner))
-                return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "位移过程中不能开始新的主动技能。");
-            if (!BattleHeroMana.IsReady(owner, tick))
-                return AbilityPreparationFailed(AbilityActivationFailure.InsufficientMana, "法力尚未充满或正在施法。");
-        }
-        // Targeting is independent of the trigger/resource policy. Triggered invocations
-        // retain their event counterpart; every Automatic entry selects its own target.
-        if (ability.ActivationKind == AbilityActivationKind.Automatic)
-            explicitTargetId = SelectAutomaticTarget(owner, ability);
-        var snapshot = CaptureAbilitySnapshot(tick);
-        var ownerSnapshot = snapshot.Entities[ownerId];
-        var operations = ImmutableArray.CreateBuilder<ResolvedAbilityOperation>();
-        var summons = ImmutableArray.CreateBuilder<AbilitySummonReservation>();
-        var reservedPositions = new List<(Vector2 Position, float Radius)>();
-        for (var operationIndex = 0; operationIndex < ability.Operations.Length; operationIndex++)
-        {
-            var operation = ability.Operations[operationIndex];
-            switch (operation)
-            {
-                case CompiledEnemyAction enemyAction:
-                    if (!PrepareEnemyAction(owner,enemyAction,explicitTargetId))
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet,"当前没有合法的机制目标或召唤资源。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex,operation,[explicitTargetId],0));
-                    break;
-                case CompiledCombatTechniqueOperation technique:
-                    if (!PrepareTechnique(technique,owner,explicitTargetId,out var techniqueTargets))
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet,"没有合法的技能目标或积累条件。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex,operation,techniqueTargets,0));
-                    break;
-                case CompiledTrampleOperation trample:
-                    if (IsDisplacing(owner) || owner.ProjectileSequence is not null || !owner.ProjectileWindups.IsEmpty ||
-                        !_units.Any(target => target.RuntimeId == explicitTargetId && CanAimTrample(owner, target, trample)))
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "没有合法的冲锋方向。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, trample, [explicitTargetId], 0));
-                    break;
-                case CompiledChargedLineOperation line:
-                    if (owner.ChargedLine is not null || IsDisplacing(owner) || owner.ProjectileSequence is not null ||
-                        !owner.ProjectileWindups.IsEmpty || !_units.Any(target => target.RuntimeId == explicitTargetId && CanAimChargedLine(owner, target, line)))
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "当前不能蓄力或没有合法的贯穿目标。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, line, [explicitTargetId], 0));
-                    break;
-                case CompiledDisplacementOperation displacement:
-                    if (!PrepareDisplacementOperation(displacement, owner, explicitTargetId, out var displacementTargets))
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "没有合法的位移目标或落点。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, operation, displacementTargets, 0));
-                    break;
-                case CompiledMatrixOperation matrix:
-                    if (!PrepareMatrixOperation(matrix, owner, explicitTargetId, out var matrixTargets))
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "当前不满足技能的资源、状态或目标条件。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, matrix, matrixTargets, 0));
-                    break;
-                case CompiledBattleValueOperation or CompiledConsumeStatusOperation or CompiledEchoOperation or CompiledLifecycleOperation:
-                    if (!PrepareBattleOperation(operation,owner,explicitTargetId,out var battleTargets))
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet,"当前不满足技能的资源、状态或目标条件。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex,operation,battleTargets,0));
-                    break;
-                case CompiledProjectileSequenceAbilityOperation sequence:
-                    if (owner.ProjectileSequence is not null || owner.AttackDelivery != Content.AttackDelivery.Projectile ||
-                        !_units.Any(unit => unit.RuntimeId == explicitTargetId && unit.Alive && unit.Team != owner.Team))
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "当前没有合法的连射目标。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, sequence, [explicitTargetId], 0));
-                    break;
-                case CompiledEffectAbilityOperation effect:
-                {
-                    var targetIds = ResolveAbilityTargets(effect.Binding.TargetQuery, snapshot, sourceId, ownerId, explicitTargetId);
-                    if (targetIds.Length == 0) return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "当前没有合法的能力目标。");
-                    var invocationValue = effect.InvocationValueSource == AbilityInvocationValueSource.OwnerMaxHealth
-                        ? ownerSnapshot.MaxHealth * effect.InvocationValueScale
-                        : effect.InvocationValueScale;
-                    var preflight = _effectCompatibility.PreflightAuthored(
-                        effect.Binding,
-                        sourceId,
-                        ownerId,
-                        targetIds.FirstOrDefault() ?? explicitTargetId,
-                        tick,
-                        invocationValue,
-                        AbilityOrigin(ability, ownerId));
-                    if (!preflight.Succeeded)
-                        return AbilityPreparationFailed(
-                            AbilityActivationFailure.ConditionsUnmet,
-                            string.IsNullOrWhiteSpace(preflight.Message) ? "当前不满足能力效果条件。" : preflight.Message);
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, operation, targetIds, invocationValue));
-                    break;
-                }
-                case CompiledCooldownAbilityOperation cooldown:
-                {
-                    var targetIds = ResolveAbilityTargets(cooldown.TargetQuery, snapshot, sourceId, ownerId, explicitTargetId);
-                    if (targetIds.Length == 0) return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "当前没有合法的能力目标。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, operation, targetIds, 0));
-                    break;
-                }
-                case CompiledScaledStatusAbilityOperation scaled:
-                {
-                    var targetIds = ResolveAbilityTargets(scaled.TargetQuery, snapshot, sourceId, ownerId, explicitTargetId);
-                    if (targetIds.Length == 0) return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "当前没有合法的状态目标。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, operation, targetIds, 0));
-                    break;
-                }
-                case CompiledApplyStatusAbilityOperation status:
-                {
-                    var targetIds = ResolveAbilityTargets(status.TargetQuery, snapshot, sourceId, ownerId, explicitTargetId);
-                    if (targetIds.Length == 0) return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "当前没有合法的状态目标。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, operation, targetIds, 0));
-                    break;
-                }
-                case CompiledSummonAbilityOperation summon:
-                {
-                    var profile = ResolveSummonProfile(summon, owner);
-                    if (profile is null) return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "没有可用的召唤单位。");
-                    var livingTemporary = _units.Count(unit => unit.Team == owner.Team && unit.IsTemporary && unit.Alive &&
-                        (!summon.LimitPerOwner || unit.SummonerRuntimeId == owner.RuntimeId));
-                    var availableByLimit = summon.MaximumLivingTemporaryUnits <= 0
-                        ? summon.Count
-                        : Math.Max(0, summon.MaximumLivingTemporaryUnits - livingTemporary);
-                    var reserveCount = Math.Min(summon.Count, availableByLimit);
-                    for (var sequence = 0; sequence < reserveCount; sequence++)
-                    {
-                        if (!TryFindOpenNear(
-                                owner.Position,
-                                owner.Team,
-                                profile.BodyRadius,
-                                reservedPositions,
-                                out var position)) break;
-                        reservedPositions.Add((position, profile.BodyRadius));
-                        summons.Add(new AbilitySummonReservation(
-                            operationIndex,
-                            summon.Profile,
-                            sequence,
-                            position.X,
-                            position.Y,
-                            summon.HealthMultiplier,
-                            summon.DamageMultiplier));
-                    }
-                    var reservedForOperation = summons.Count(item => item.OperationIndex == operationIndex);
-                    if (summon.RequireAtLeastOne && reservedForOperation == 0)
-                        return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "没有可用的召唤单位或合法落点。");
-                    operations.Add(new ResolvedAbilityOperation(operationIndex, operation, [], 0));
-                    break;
-                }
-                default:
-                    return AbilityPreparationFailed(AbilityActivationFailure.ConditionsUnmet, "能力包含不受支持的操作。");
-            }
-        }
+    private AbilityPreparationResult PrepareAbility(CompiledAbilityDefinition ability, string sourceId,
+        string ownerId, string explicitTargetId, int tick) =>
+        _abilityExecutor.Prepare(ability, sourceId, ownerId, explicitTargetId, tick);
 
-        return new AbilityPreparationResult(
-            true,
-            AbilityActivationFailure.None,
-            string.Empty,
-            new AbilityExecutionPlan(
-                ability,
-                sourceId,
-                ownerId,
-                tick,
-                operations.ToImmutable(),
-                summons.ToImmutable(),
-                ability.GoldCost));
-    }
-
-    private AbilityCommitResult CommitAbility(AbilityExecutionPlan plan)
-    {
-        var checkpoint = new BattleWorldStateCheckpoint(this);
-        try
-        {
-            var result = CommitAbilityCore(plan);
-            if (!result.Succeeded)
-            {
-                checkpoint.Rollback();
-                return result;
-            }
-            checkpoint.Commit();
-            return result;
-        }
-        catch (Exception commitFailure)
-        {
-            try
-            {
-                checkpoint.Rollback();
-            }
-            catch (Exception rollbackFailure)
-            {
-                throw new AggregateException("Ability world rollback failed.", commitFailure, rollbackFailure);
-            }
-            return AbilityCommitFailed(AbilityActivationFailure.CommitFailed, commitFailure.Message);
-        }
-    }
-
-    private AbilityCommitResult CommitAbilityCore(AbilityExecutionPlan plan)
-    {
-        using var resolution = _combatPipeline.BeginAuthoritativeResolution();
-        if (plan.Tick != TickIndex)
-            return AbilityCommitFailed(AbilityActivationFailure.CommitFailed, "能力计划已经过期。");
-        var owner = _units.FirstOrDefault(unit => unit.RuntimeId == plan.OwnerId &&
-            (unit.Alive || plan.Ability.Trigger == AbilityTriggerKind.OwnerDefeated));
-        if (owner is null) return AbilityCommitFailed(AbilityActivationFailure.SourceUnavailable, "英雄或能力拥有者已无法行动。");
-        var manaSkill = plan.Ability.Trigger == AbilityTriggerKind.ManaFull;
-        if (manaSkill && (IsDisplacing(owner) || !BattleHeroMana.IsReady(owner, plan.Tick) || owner.DisabledTicks > 0 ||
-                _statusScope.HasTag(owner.RuntimeId, StatusDefinitionCompiler.ActionDisabledTag)))
-            return AbilityCommitFailed(AbilityActivationFailure.ConditionsUnmet, "施法条件在提交前失效。");
-        if (plan.GoldCost > RemainingGold) return AbilityCommitFailed(AbilityActivationFailure.InsufficientGold, $"金币不足：需要 {plan.GoldCost} 金币。");
-
-        foreach (var operation in plan.Operations)
-            if (operation.Operation is not CompiledLifecycleOperation && operation.TargetIds.Any(targetId => !_units.Any(unit => unit.RuntimeId == targetId && unit.Alive)))
-                return AbilityCommitFailed(AbilityActivationFailure.CommitFailed, "能力目标在提交前失效。");
-        var reservedPositions = new List<(Vector2 Position, float Radius)>();
-        foreach (var reservation in plan.Summons.OrderBy(item => item.OperationIndex).ThenBy(item => item.Sequence))
-        {
-            var summon = (CompiledSummonAbilityOperation)plan.Ability.Operations[reservation.OperationIndex];
-            var profile = ResolveSummonProfile(summon, owner);
-            if (profile is null)
-                return AbilityCommitFailed(AbilityActivationFailure.CommitFailed, "召唤模板在提交前失效。");
-            var position = new Vector2(reservation.PositionX, reservation.PositionY);
-            if (!CanOccupyPosition(position, profile.BodyRadius, reservedPositions))
-                return AbilityCommitFailed(AbilityActivationFailure.CommitFailed, "召唤落点在提交前失效。");
-            reservedPositions.Add((position, profile.BodyRadius));
-        }
-
-        // Lock before effects so reflected/reactive damage cannot refill this cast. Any failed
-        // operation restores mana, recovery and visuals together with all other world state.
-        var manaSpent = manaSkill ? BattleHeroMana.Spend(owner, plan.Tick, plan.Ability.CooldownTicks) : 0;
-        var actionId = BeginAbilityAction(owner.RuntimeId, plan.Ability);
-        TraitMechanicsBeginAbility(owner.RuntimeId, actionId, manaSkill && manaSpent > 0);
-        var facts = ImmutableArray.CreateBuilder<string>();
-        var successfulSummonOperations = new HashSet<int>();
-        foreach (var resolved in plan.Operations.OrderBy(operation => operation.OperationIndex))
-        {
-            // Initial preflight validated all targets. A preceding operation may now have
-            // killed one; that is a resolved combat fact, not a reason to undo the kill or
-            // restore a defeated unit through a later status/heal operation.
-            if (resolved.Operation is not CompiledLifecycleOperation && resolved.TargetIds.Length > 0 && resolved.TargetIds.All(targetId =>
-                    !_units.Any(unit => unit.RuntimeId == targetId && unit.Alive)))
-                continue;
-            switch (resolved.Operation)
-            {
-                case CompiledEnemyAction enemyAction:
-                    BeginEnemyAction(owner,_units.First(u => u.RuntimeId == resolved.TargetIds[0]),enemyAction,plan.Ability);
-                    facts.Add(enemyAction.GetType().Name);
-                    break;
-                case CompiledCombatTechniqueOperation technique:
-                    ExecuteTechnique(technique,owner,resolved.TargetIds,plan.Ability);
-                    facts.Add(technique.GetType().Name);
-                    break;
-                case CompiledTrampleOperation trample:
-                    BeginTrample(owner, _units.First(target => target.RuntimeId == resolved.TargetIds[0]), trample, plan.Ability);
-                    facts.Add("Trample");
-                    break;
-                case CompiledChargedLineOperation line:
-                    BeginChargedLine(owner, _units.First(target => target.RuntimeId == resolved.TargetIds[0]),
-                        line, plan.Ability);
-                    facts.Add($"ChargedLine:{line.Delivery}");
-                    break;
-                case CompiledDisplacementOperation displacement:
-                    ExecuteDisplacementOperation(displacement, resolved.TargetIds, owner, AbilityOrigin(plan.Ability, plan.OwnerId));
-                    facts.Add($"Displacement:{displacement.Kind}:{string.Join(",", resolved.TargetIds)}");
-                    break;
-                case CompiledBattleValueOperation or CompiledConsumeStatusOperation or CompiledEchoOperation or CompiledLifecycleOperation:
-                    ExecuteBattleOperation(resolved,plan,owner);
-                    facts.Add($"BattleOperation:{resolved.OperationIndex}");
-                    break;
-                case CompiledMatrixOperation:
-                    ExecuteMatrixOperation(resolved, plan, owner);
-                    facts.Add($"MatrixOperation:{resolved.OperationIndex}");
-                    break;
-                case CompiledProjectileSequenceAbilityOperation sequence:
-                    owner.ProjectileSequence = new ProjectileSequenceState(sequence,
-                        AbilityOrigin(plan.Ability, plan.OwnerId), resolved.TargetIds[0], sequence.ShotCount);
-                    FireSequenceShot(owner);
-                    facts.Add($"Sequence:{sequence.ShotCount}");
-                    break;
-                case CompiledEffectAbilityOperation effect:
-                {
-                    var result = _effectCompatibility.ExecuteAuthored(
-                        effect.Binding,
-                        plan.SourceId,
-                        plan.OwnerId,
-                        resolved.TargetIds.FirstOrDefault() ?? string.Empty,
-                        plan.Tick,
-                        resolved.InvocationValue,
-                        AbilityOrigin(plan.Ability, plan.OwnerId));
-                    if (result.Status != EffectExecutionStatus.Succeeded)
-                        throw new InvalidOperationException($"Prepared ability effect '{effect.Binding.StableId}' failed during commit.");
-                    var steps = result.Invocations.SelectMany(invocation => invocation.Steps)
-                        .Where(step => step.Status == EffectExecutionStatus.Succeeded)
-                        .ToArray();
-                    if (plan.Ability.ActivationKind == AbilityActivationKind.Automatic)
-                        foreach (var step in steps.Where(step => step.Kind == EffectKind.Shield))
-                        {
-                            var target = _units.First(unit => unit.RuntimeId == step.TargetId);
-                            Emit("shield", plan.SourceId, step.TargetId, step.AppliedAmount, target.Position, "skill_cast");
-                        }
-                    facts.AddRange(steps.Select(step => $"{step.Kind}:{step.TargetId}:{step.AppliedAmount:0.###}"));
-                    if (plan.Ability.Presentation?.DamageVfx is { Length: > 0 } vfx)
-                        foreach (var step in steps.Where(step => step.Kind == EffectKind.Damage && step.AppliedAmount > 0))
-                        {
-                            var target = _units.First(unit => unit.RuntimeId == step.TargetId);
-                            Emit("vfx", plan.SourceId, target.RuntimeId, step.AppliedAmount, target.Position, "",
-                                vfx: new BattleVfxCue(BattleVfxPhase.Burst, vfx));
-                        }
-                    break;
-                }
-                case CompiledCooldownAbilityOperation cooldown:
-                    foreach (var targetId in resolved.TargetIds)
-                    {
-                        var target = _units.First(unit => unit.RuntimeId == targetId);
-                        if (!target.Alive) continue;
-                        target.AttackCooldown = AdjustCooldown(target.AttackCooldown, cooldown.AttackAdjustment, cooldown.AttackValue);
-                        target.MoveCooldown = AdjustCooldown(target.MoveCooldown, cooldown.MoveAdjustment, cooldown.MoveValue);
-                        facts.Add($"Cooldown:{targetId}");
-                    }
-                    break;
-                case CompiledScaledStatusAbilityOperation scaled:
-                    CommitScaledStatus(scaled, resolved, plan, facts);
-                    break;
-                case CompiledApplyStatusAbilityOperation status:
-                    foreach (var targetId in resolved.TargetIds)
-                    {
-                        if (!_units.Any(unit => unit.RuntimeId == targetId && unit.Alive)) continue;
-                        var grantId = plan.Ability.ActivationKind == AbilityActivationKind.Passive
-                            ? PassiveGrantId(plan.OwnerId, plan.Ability.StableId) : string.Empty;
-                        var applied = _statusScope.ApplyBatch([new StatusApplicationRequest(
-                            status.Status, plan.SourceId, targetId, plan.Tick, grantId)])[0];
-                        if (!applied.Applied)
-                            throw new InvalidOperationException($"Prepared status '{status.Status.StableId}' failed during commit.");
-                        facts.Add($"Status:{status.Status.StableId}:{targetId}:{applied.Status?.Stacks ?? 0}");
-                    }
-                    if (!string.IsNullOrWhiteSpace(status.ApplicationVfx) && status.TargetQuery is CompiledFilteredTargetQuery area)
-                    {
-                        var anchorId = area.Anchor == EffectEntityReference.Owner ? plan.OwnerId : plan.SourceId;
-                        var anchor = _units.First(unit => unit.RuntimeId == anchorId);
-                        Emit("vfx", plan.SourceId, anchorId, 0, anchor.Position, "", origin: anchor.Position,
-                            vfx: new BattleVfxCue(BattleVfxPhase.Burst, status.ApplicationVfx, area.Range));
-                    }
-                    break;
-                case CompiledSummonAbilityOperation summon:
-                    if (!owner.Alive && plan.Ability.Trigger != AbilityTriggerKind.OwnerDefeated) break;
-                    foreach (var reservation in plan.Summons
-                                 .Where(item => item.OperationIndex == resolved.OperationIndex)
-                                 .OrderBy(item => item.Sequence))
-                    {
-                        var profile = ResolveSummonProfile(summon, owner)!;
-                        if (!SpawnTemporary(
-                                profile,
-                                owner.Team,
-                                new Vector2(reservation.PositionX, reservation.PositionY),
-                                reservation.HealthMultiplier,
-                                reservation.DamageMultiplier,
-                                plan.SourceId))
-                            throw new InvalidOperationException("Prepared ability summon failed during commit.");
-                        facts.Add($"Summon:{profile.ContentId}:{reservation.PositionX:R},{reservation.PositionY:R}");
-                        successfulSummonOperations.Add(resolved.OperationIndex);
-                    }
-                    break;
-            }
-        }
-
-        // Resolve optional trait copies after all reserved summons, so a bonus cannot occupy
-        // another operation's committed landing spot. The first success consumes eligibility
-        // even when the authored living cap or available space prevents the extra body.
-        foreach (var operationIndex in successfulSummonOperations.OrderBy(index => index))
-        {
-            if (!TraitMechanicsExtraSummon(owner.RuntimeId)) break;
-            var summon = (CompiledSummonAbilityOperation)plan.Ability.Operations[operationIndex];
-            var living = _units.Count(unit => unit.Alive && unit.IsTemporary && unit.Team == owner.Team &&
-                (!summon.LimitPerOwner || unit.SummonerRuntimeId == owner.RuntimeId));
-            if (summon.MaximumLivingTemporaryUnits > 0 && living >= summon.MaximumLivingTemporaryUnits) continue;
-            var profile = ResolveSummonProfile(summon, owner)!;
-            SpawnTemporaryNear(profile, owner.Team, owner.Position, summon.HealthMultiplier,
-                summon.DamageMultiplier, plan.SourceId);
-        }
-
-        GoldSpent += plan.GoldCost;
-        if (plan.Ability.IsActiveSkill)
-        {
-            owner.LastAbilityName = plan.Ability.DisplayName;
-            var primaryTarget = plan.Operations.SelectMany(operation => operation.TargetIds).FirstOrDefault() ?? owner.RuntimeId;
-            if (owner.Alive)
-            {
-                owner.Mode = BattleUnitMode.Casting;
-                owner.LastActionKind = BattleActionKind.Ability;
-                var actionTarget = _units.FirstOrDefault(unit => unit.RuntimeId == primaryTarget);
-                if (actionTarget is not null) SetActionTarget(owner, actionTarget);
-                else ClearActionTarget(owner);
-                _movement?.ReleaseGoal(owner.RuntimeId);
-                Emit("ability", owner.RuntimeId, primaryTarget, manaSpent, owner.Position,
-                    string.IsNullOrWhiteSpace(plan.Ability.Presentation?.Cue) ? "skill_cast" : plan.Ability.Presentation.Cue,
-                    sourceVfx: plan.Ability.Presentation?.CastVfx ?? "");
-            }
-        }
-        if (manaSkill && manaSpent > 0)
-            PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.ManaSkillResolved,
-                AbilityOrigin(plan.Ability,plan.OwnerId),plan.SourceId,plan.OwnerId,plan.Tick,
-                RequestedValue:manaSpent,AppliedValue:manaSpent,EffectiveValue:manaSpent,
-                SubjectStableId:plan.Ability.StableId,ActionId:actionId));
-        PublishCombat(new BattleCombatEventDraft(
-            BattleCombatEventKind.AbilityResolved,
-            AbilityOrigin(plan.Ability, plan.OwnerId),
-            plan.SourceId,
-            plan.OwnerId,
-            plan.Tick,
-            Cell: ToCombatCell(owner.Cell),
-            Position: ToCombatPoint(owner.Position),
-            SubjectStableId: plan.Ability.StableId, ActionId: actionId));
-        resolution.Commit();
-        return new AbilityCommitResult(true, AbilityActivationFailure.None, string.Empty, facts.ToImmutable(), manaSpent);
-    }
-
-    private ImmutableArray<string> ResolveAbilityTargets(
-        CompiledEffectTargetQuery query,
-        AbilityWorldSnapshot snapshot,
-        string sourceId,
-        string ownerId,
-        string explicitTargetId)
-    {
-        return EffectTargetResolver.Resolve(query, CaptureEffectSnapshot(snapshot.Tick), sourceId, ownerId, explicitTargetId)
-            .Where(id => snapshot.Entities.TryGetValue(id, out var entity) && entity.Alive)
-            .ToImmutableArray();
-    }
-
-    private UnitSnapshot? ResolveSummonProfile(CompiledSummonAbilityOperation summon, BattleUnitState owner)
-    {
-        if (!string.IsNullOrWhiteSpace(summon.SummonContentId) &&
-            _config.TacticalSummons.TryGetValue(summon.SummonContentId, out var authoredSummon))
-            return authoredSummon;
-        var profile = summon.Profile switch
-        {
-            AbilitySummonProfile.DeathSummon => _config.Summons.DeathSummon,
-            AbilitySummonProfile.HeroConstruct => _config.Summons.HeroConstruct,
-            AbilitySummonProfile.Mercenary => _config.Summons.Mercenary,
-            AbilitySummonProfile.ItemToken => _config.Summons.ItemToken,
-            AbilitySummonProfile.BehaviorSummon => owner.BehaviorSummon,
-            _ => null
-        };
-        return profile is not null &&
-               (string.IsNullOrWhiteSpace(summon.SummonContentId) || profile.ContentId == summon.SummonContentId)
-            ? profile
-            : null;
-    }
-
-    private static int AdjustCooldown(int current, CooldownAdjustmentKind kind, int value) => kind switch
-    {
-        CooldownAdjustmentKind.None => current,
-        CooldownAdjustmentKind.Reset => 0,
-        CooldownAdjustmentKind.Add => current + value,
-        CooldownAdjustmentKind.Cap => Math.Min(current, value),
-        CooldownAdjustmentKind.Divide => current / value,
-        _ => current
-    };
-
-    private static AbilityPreparationResult AbilityPreparationFailed(AbilityActivationFailure failure, string reason) =>
-        new(false, failure, reason, null);
-
-    private static AbilityCommitResult AbilityCommitFailed(AbilityActivationFailure failure, string reason) =>
-        new(false, failure, reason, []);
+    private AbilityCommitResult CommitAbility(AbilityExecutionPlan plan) => _abilityExecutor.Commit(plan);
 
     private void Act(BattleUnitState unit)
     {
@@ -1355,285 +832,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         else unit.Mode = BattleUnitMode.Seeking;
     }
 
-    private BattleUnitState? SelectTarget(BattleUnitState unit)
-    {
-        if (DuelOpponent(unit) is { } opponent) return _movement!.SelectTarget(unit, [opponent]);
-        var taunter = unit.Statuses.Where(status => status.Behavior == StatusBehaviorKind.Taunt)
-            .OrderByDescending(status => status.LastAppliedTick).ThenByDescending(status => status.ApplicationSequence)
-            .Select(status => _units.FirstOrDefault(candidate => candidate.RuntimeId == status.SourceId &&
-                candidate.Alive && candidate.Team != unit.Team)).FirstOrDefault(candidate => candidate is not null);
-        if (taunter is not null) return _movement!.SelectTarget(unit, [taunter]);
-        var enemies = Allies(1 - unit.Team).ToList();
-        if (enemies.Count == 0)
-        {
-            _movement!.ClearTarget(unit.RuntimeId);
-            return null;
-        }
-        IEnumerable<BattleUnitState> ordered;
-        if (unit.Team == 0 && unit.Definition.IsHero && _config.HeroRule.PreferBossTargets)
-        {
-            ordered = enemies.OrderByDescending(enemy => enemy.Definition.IsBoss && BattlefieldSpace.EdgeDistance(unit, enemy) <= 3f)
-                .ThenBy(enemy => BattlefieldSpace.EdgeDistance(unit, enemy)).ThenBy(enemy => enemy.RuntimeId, StringComparer.Ordinal);
-        }
-        else if (unit.Definition.Behavior.PreferBacklineTargets)
-            ordered = enemies.OrderByDescending(enemy => enemy.AttackRange + enemy.HealingPower)
-                .ThenBy(enemy => BattlefieldSpace.EdgeDistance(unit, enemy)).ThenBy(enemy => enemy.RuntimeId, StringComparer.Ordinal);
-        else if (unit.Definition.Role == Content.UnitRole.Assassin)
-            ordered = enemies.OrderByDescending(enemy => enemy.AttackRange).ThenBy(enemy => BattlefieldSpace.EdgeDistance(unit, enemy))
-                .ThenBy(enemy => enemy.RuntimeId, StringComparer.Ordinal);
-        else
-            ordered = enemies.OrderBy(enemy => BattlefieldSpace.EdgeDistance(unit, enemy)).ThenBy(enemy => enemy.RuntimeId, StringComparer.Ordinal);
-        var desired = ordered.First();
-        var wall = enemies.Where(candidate => IsRampartBody(candidate) &&
-                LineHitTime(unit.Position, desired.Position-unit.Position, unit.BodyRadius*.5f, candidate) is not null)
-            .OrderBy(candidate => unit.Position.DistanceSquaredTo(candidate.Position)).ThenBy(candidate => candidate.RuntimeId,StringComparer.Ordinal).FirstOrDefault();
-        return _movement!.SelectTarget(unit, wall is null ? ordered.ToArray() : [wall]);
-    }
-
-    private void Attack(BattleUnitState attacker, BattleUnitState target)
-    {
-        attacker.AttackCooldown = attacker.Definition.AttackHitGrowth is null ? attacker.EffectiveAttackTicks : 0;
-        if (attacker.AttackDelivery == Content.AttackDelivery.Projectile && attacker.Definition.ProjectileWindupSeconds > 0)
-        {
-            attacker.Mode = BattleUnitMode.Attacking;
-            attacker.LastActionKind = BattleActionKind.Attack;
-            attacker.WaitingTicks = 0;
-            BeginProjectileWindup(attacker, target);
-            return;
-        }
-        ResolveAttack(attacker, target);
-    }
-
-    private void ResolveAttack(BattleUnitState attacker, BattleUnitState target, bool timed = false)
-    {
-        using var resolution = _combatPipeline.BeginAuthoritativeResolution();
-        _statistics[attacker.RuntimeId].AttackActions++;
-        SelectAttackChainTarget(attacker, target);
-        attacker.Mode = BattleUnitMode.Attacking;
-        attacker.LastActionKind = BattleActionKind.Attack;
-        attacker.WaitingTicks = 0;
-        SetActionTarget(attacker, target);
-        var source = ResolveCombatSource(attacker.RuntimeId, attacker);
-        PublishCombat(new BattleCombatEventDraft(
-            BattleCombatEventKind.AttackDeclared,
-            source,
-            attacker.RuntimeId,
-            target.RuntimeId,
-            TickIndex,
-            Cell: ToCombatCell(target.Cell),
-            Position: ToCombatPoint(target.Position)));
-        var rawDamage = EffectiveDamage(attacker);
-        if (attacker.Definition.Behavior.LowHealthDamageBonus > 0 && attacker.Health / attacker.MaxHealth <= .4f)
-            rawDamage *= 1f + attacker.Definition.Behavior.LowHealthDamageBonus;
-        BattleHeroMana.OnAttack(attacker, TickIndex);
-        Emit("attack", attacker.RuntimeId, target.RuntimeId, rawDamage, target.Position, timed ? "" : "attack");
-        if (attacker.AttackDelivery == TowerAutobattler.Content.AttackDelivery.Projectile)
-            LaunchProjectile(attacker, target, rawDamage);
-        else
-        {
-            if (attacker.AttackDelivery == TowerAutobattler.Content.AttackDelivery.Beam)
-                Emit("beam", attacker.RuntimeId, target.RuntimeId, rawDamage, target.Position, "",
-                    origin: attacker.Position);
-            ResolveAttackHit(attacker, target, rawDamage, instantPiercing: true);
-        }
-        resolution.Commit();
-    }
-
-    // Shared impact rules execute only after an instant attack or an authoritative projectile collision.
-    private void ResolveAttackHit(BattleUnitState attacker, BattleUnitState target, float rawDamage, bool instantPiercing, string actionId = "")
-    {
-        using var resolution = _combatPipeline.BeginAuthoritativeResolution();
-        var source = ResolveCombatSource(attacker.RuntimeId, attacker);
-        if (!target.Alive) { resolution.Commit(); return; }
-        var dodge = target.Attributes.GetValue(CombatAttribute.DodgeChance);
-        if (dodge > 0 && target.DisabledTicks <= 0 && !_statusScope.HasTag(target.RuntimeId,StatusDefinitionCompiler.ActionDisabledTag) && _random.NextFloat() < dodge)
-        {
-            PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.AttackDodged,source,attacker.RuntimeId,target.RuntimeId,TickIndex));
-            Emit("dodge",attacker.RuntimeId,target.RuntimeId,0,target.Position,"hit");
-            resolution.Commit(); return;
-        }
-        var chance = attacker.Attributes.GetValue(CombatAttribute.CriticalChance);
-        var critical = chance > 0 && _random.NextFloat() < chance;
-        if (critical) rawDamage *= attacker.Attributes.GetValue(CombatAttribute.CriticalDamage);
-        if (string.IsNullOrEmpty(actionId)) actionId = $"attack:{attacker.RuntimeId}:{_statistics[attacker.RuntimeId].AttackActions}";
-        var damage = ApplyDamage(attacker.RuntimeId, attacker, target, rawDamage,
-            damageClass: CombatDamageClass.BasicAttack, actionId: actionId);
-        if (critical)
-            PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.CriticalHit,source,attacker.RuntimeId,target.RuntimeId,
-                TickIndex,RequestedValue:rawDamage,EffectiveValue:damage));
-        RegisterGrowingHit(attacker, target);
-        if (attacker.Alive && attacker.LifeSteal > 0)
-            HealLiving(attacker.RuntimeId, attacker, damage * attacker.LifeSteal);
-        WriteCounter(attacker,"_basic_hits",ReadCounter(attacker,"_basic_hits")+1);
-        PublishCombat(new BattleCombatEventDraft(
-            BattleCombatEventKind.AttackLanded,
-            source,
-            attacker.RuntimeId,
-            target.RuntimeId,
-            TickIndex,
-            RequestedValue: rawDamage,
-            AppliedValue: damage,
-            EffectiveValue: damage,
-            Cell: ToCombatCell(target.Cell),
-            Position: ToCombatPoint(target.Position),
-            CurrentStacks: (int)Math.Min(int.MaxValue,ReadCounter(attacker,"_basic_hits")),
-            DamageClass:CombatDamageClass.BasicAttack, ActionId:actionId));
-        if (attacker.Definition.SplashRadius > 0)
-            Emit("vfx", attacker.RuntimeId, target.RuntimeId, 0, target.Position, "",
-                vfx: new BattleVfxCue(BattleVfxPhase.Burst, "burst", attacker.Definition.SplashRadius));
-        if (attacker.Definition.SplashRadius > 0)
-            foreach (var splash in Allies(target.Team).Where(other =>
-                         other != target &&
-                         Math.Max(0f, other.Position.DistanceTo(target.Position) - other.BodyRadius) <=
-                         attacker.Definition.SplashRadius + .0001f).ToArray())
-                ApplyDamage(attacker.RuntimeId, attacker, splash, rawDamage * .45f);
-        if (instantPiercing && attacker.Definition.Behavior.PiercingLine)
-        {
-            var attackDelta = target.Position - attacker.Position;
-            var direction = attackDelta.LengthSquared() <= .000001f ? Vector2.Right : attackDelta.Normalized();
-            var targetProjection = attackDelta.Length();
-            var rayEnd = attacker.Position + direction * MathF.Sqrt(Width * Width + Height * Height);
-            var behind = Allies(target.Team)
-                .Where(other => other.RuntimeId != target.RuntimeId)
-                .Select(other => new
-                {
-                    Unit = other,
-                    Projection = (other.Position - attacker.Position).Dot(direction)
-                })
-                .Where(candidate => candidate.Projection > targetProjection + .0001f &&
-                                    BattlefieldSpace.PointSegmentDistance(
-                                        candidate.Unit.Position, target.Position, rayEnd) <=
-                                    candidate.Unit.BodyRadius + .0001f)
-                .GroupBy(candidate => candidate.Unit.RuntimeId, StringComparer.Ordinal)
-                .Select(group => group.First())
-                .OrderBy(candidate => candidate.Projection)
-                .ThenBy(candidate => candidate.Unit.RuntimeId, StringComparer.Ordinal)
-                .Select(candidate => candidate.Unit)
-                .FirstOrDefault();
-            if (behind is not null) ApplyDamage(attacker.RuntimeId, attacker, behind, rawDamage * .35f);
-        }
-        if (attacker.Definition.Behavior.SlowOnHitTicks > 0 && target.Alive)
-        {
-            target.AttackCooldown += attacker.Definition.Behavior.SlowOnHitTicks / 2;
-            target.MoveCooldown += attacker.Definition.Behavior.SlowOnHitTicks;
-        }
-        resolution.Commit();
-    }
-
-    private float ApplyDamage(string sourceRuntimeId, BattleUnitState? source, BattleUnitState target, float raw,
-        CombatSourceRef origin = default, EffectDamageType damageType = EffectDamageType.Normal,
-        CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "")
-    {
-        if (!target.Alive) return 0;
-        using var resolution = _combatPipeline.BeginAuthoritativeResolution();
-        var healthBefore = target.Health;
-        var wasAlive = target.Alive;
-        var context = CreateRuleContext();
-        if (target.Team == 0 && target.Definition.IsHero && _config.HeroRule.EmptySlotHeroDefense > 0)
-            raw *= Math.Max(.25f, 1f - _config.EmptyDeploymentSlots * _config.HeroRule.EmptySlotHeroDefense);
-        raw = _config.FloorRule.ModifyIncomingDamage(context, target, raw);
-        if (source is not null && source.Definition.Behavior.ExecuteHealthThreshold > 0 && target.Health / target.MaxHealth <= source.Definition.Behavior.ExecuteHealthThreshold)
-            raw *= 1.5f;
-        var combatSource = origin.IsSpecified ? origin : ResolveCombatSource(sourceRuntimeId, source);
-        if (damageClass == CombatDamageClass.Other) damageClass = DamageClassFor(combatSource);
-        if (string.IsNullOrEmpty(actionId) && combatSource.Kind == CombatSourceKind.Ability) actionId = combatSource.InstanceId;
-        var creditedKiller = source ?? _units.FirstOrDefault(unit => unit.RuntimeId == sourceRuntimeId);
-        var sourceHealthRatio = creditedKiller is { MaxHealth: > 0 } ? creditedKiller.Health / creditedKiller.MaxHealth : -1;
-        var calculated = _combatPipeline.Resolve(new BattleCombatCalculationRequest(
-            BattleCombatCalculationKind.Damage,
-            combatSource,
-            sourceRuntimeId,
-            target.RuntimeId,
-            TickIndex,
-            Math.Max(0, raw), damageType, damageClass, actionId));
-        raw = calculated.ResolvedAmount;
-        var resistance = damageType switch
-        {
-            EffectDamageType.Normal => EffectiveArmor(target),
-            EffectDamageType.True => 0,
-            _ => throw new InvalidOperationException("Unsupported damage type.")
-        };
-        // True damage bypasses resistance, while shared incoming/outgoing modifiers and shields still apply.
-        var damage = raw <= 0 ? 0 : damageType == EffectDamageType.True ? raw :
-            Math.Max(1f, raw * 100f / (100f + resistance * 7f));
-        var resolvedDamage = damage;
-        var absorbed = Math.Min(target.Shield, damage);
-        target.Shield -= absorbed;
-        TraitMechanicsShieldConsumed(target, absorbed, creditedKiller is not null && creditedKiller.Team != target.Team, combatSource);
-        if (absorbed > 0)
-            Emit("vfx", sourceRuntimeId, target.RuntimeId, absorbed, target.Position, "",
-                vfx: new BattleVfxCue(target.Shield > 0 ? BattleVfxPhase.ShieldImpact : BattleVfxPhase.ShieldDepleted, "shield"));
-        damage -= absorbed;
-        target.Health = Math.Max(0, target.Health - damage);
-        RefreshGritActionRequests(target);
-        var healthRemoved = Math.Min(healthBefore, damage);
-        var effectiveDamage = absorbed + healthRemoved;
-        BattleHeroMana.OnDamage(target, effectiveDamage, TickIndex);
-        var targetStatistics = _statistics[target.RuntimeId];
-        targetStatistics.DamageTaken += effectiveDamage;
-        targetStatistics.ShieldAbsorbed += absorbed;
-        if (_statistics.TryGetValue(sourceRuntimeId, out var sourceStatistics))
-        {
-            sourceStatistics.DamageDealt += effectiveDamage;
-            if (wasAlive && !target.Alive) sourceStatistics.Kills++;
-        }
-        PublishCombat(new BattleCombatEventDraft(
-            BattleCombatEventKind.DamageResolved,
-            combatSource,
-            sourceRuntimeId,
-            target.RuntimeId,
-            TickIndex,
-            RequestedValue: calculated.RequestedAmount,
-            AppliedValue: resolvedDamage,
-            EffectiveValue: effectiveDamage,
-            Cell: ToCombatCell(target.Cell),
-            Position: ToCombatPoint(target.Position),
-            DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
-        if (healthRemoved > 0)
-            PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.HealthLost,combatSource,sourceRuntimeId,target.RuntimeId,
-                TickIndex,EffectiveValue:healthRemoved,DamageType:damageType,DamageClass:damageClass,ActionId:actionId,
-                SourceHealthRatio:sourceHealthRatio,TargetHealthRatio:target.Health / target.MaxHealth));
-        if (!target.Alive)
-        {
-            MatrixBeforeDeath(target);
-            TraitMechanicsBeforeDeath(target);
-            targetStatistics.DefeatTick ??= TickIndex;
-            target.Mode = BattleUnitMode.Defeated;
-            target.LastActionKind = BattleActionKind.None;
-            ClearActionTarget(target);
-            target.WaitingTicks = 0;
-            PublishCombat(new BattleCombatEventDraft(
-                BattleCombatEventKind.UnitDefeated,
-                combatSource,
-                sourceRuntimeId,
-                target.RuntimeId,
-                TickIndex,
-                AppliedValue: resolvedDamage,
-                EffectiveValue: effectiveDamage,
-                Cell: ToCombatCell(target.Cell),
-                Position: ToCombatPoint(target.Position),
-                DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
-            if (creditedKiller is not null)
-                PublishCombat(new BattleCombatEventDraft(
-                    BattleCombatEventKind.UnitKilled,
-                    combatSource,
-                    sourceRuntimeId,
-                    target.RuntimeId,
-                    TickIndex,
-                    AppliedValue: resolvedDamage,
-                    EffectiveValue: effectiveDamage,
-                    Cell: ToCombatCell(target.Cell),
-                    Position: ToCombatPoint(target.Position),
-                    DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
-            CancelProjectileWindups(target);
-            target.ProjectileSequence = null;
-            Emit("defeated", sourceRuntimeId, target.RuntimeId, damage, target.Position, "defeated");
-            HandleDeath(source, target);
-        }
-        else Emit("damage", sourceRuntimeId, target.RuntimeId, damage, target.Position, "hit");
-        resolution.Commit();
-        return damage;
-    }
+    private BattleUnitState? SelectTarget(BattleUnitState owner) => _targeting.SelectTarget(owner);
 
     private void ApplyFloorRule()
     {
@@ -1782,7 +981,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             Definition = snapshot,
             Attributes = _attributeScope.CreateSet(
                 runtimeId,
-                CreateBattleAttributeDefinition(snapshot, maxHealth, damage, lifeSteal)),
+                BattleUnitFactory.CreateAttributes(snapshot, maxHealth, damage, lifeSteal)),
             Team = team,
             InitialTeam = team,
             SummonerRuntimeId = sourceRuntimeId,
@@ -1794,7 +993,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         // Mid-battle join initializes this body once. Subsequent grants follow ordinary live
         // MaxHealth semantics; they do not heal recipients or replay the whole team's health.
         _units.Add(unit);
-        _statistics.Add(unit.RuntimeId, new BattleUnitStatistics { JoinTick = TickIndex });
+        _statistics.Join(unit.RuntimeId, TickIndex);
         TraitMechanicsOnSummoned(unit);
         BattleHeroMana.Initialize(unit);
         _traitScope?.AddOwnerAndContributions(
@@ -1922,114 +1121,6 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         }
     }
 
-    private float HealLiving(string sourceRuntimeId, BattleUnitState target, float amount, CombatSourceRef origin = default)
-    {
-        if (!target.Alive || amount <= 0) return 0;
-        using var resolution = _combatPipeline.BeginAuthoritativeResolution();
-        var combatSource = origin.IsSpecified ? origin : ResolveCombatSource(sourceRuntimeId);
-        var calculated = _combatPipeline.Resolve(new BattleCombatCalculationRequest(
-            BattleCombatCalculationKind.Healing,
-            combatSource,
-            sourceRuntimeId,
-            target.RuntimeId,
-            TickIndex,
-            amount));
-        var before = target.Health;
-        var beforeRatio = target.MaxHealth > 0 ? before / target.MaxHealth : 0;
-        target.Health = Math.Min(target.MaxHealth, target.Health + calculated.ResolvedAmount);
-        RefreshGritActionRequests(target);
-        var effectiveHealing = target.Health - before;
-        if (effectiveHealing > 0 && _statistics.TryGetValue(sourceRuntimeId, out var sourceStatistics))
-        {
-            sourceStatistics.HealingDone += effectiveHealing;
-            sourceStatistics.EffectiveHealingEvents++;
-        }
-        PublishCombat(new BattleCombatEventDraft(
-            BattleCombatEventKind.HealingResolved,
-            combatSource,
-            sourceRuntimeId,
-            target.RuntimeId,
-            TickIndex,
-            RequestedValue: calculated.RequestedAmount,
-            AppliedValue: calculated.ResolvedAmount,
-            EffectiveValue: effectiveHealing,
-            Cell: ToCombatCell(target.Cell),
-            Position: ToCombatPoint(target.Position),
-            DamageClass: DamageClassFor(combatSource), ActionId: combatSource.InstanceId,
-            TargetHealthRatio: beforeRatio));
-        resolution.Commit();
-        return effectiveHealing;
-    }
-
-    private float ApplyShield(string sourceRuntimeId, BattleUnitState target, float amount, CombatSourceRef origin = default)
-    {
-        if (!target.Alive || amount <= 0) return 0;
-        using var resolution = _combatPipeline.BeginAuthoritativeResolution();
-        var combatSource = origin.IsSpecified ? origin : ResolveCombatSource(sourceRuntimeId);
-        var calculated = _combatPipeline.Resolve(new BattleCombatCalculationRequest(
-            BattleCombatCalculationKind.Shield,
-            combatSource,
-            sourceRuntimeId,
-            target.RuntimeId,
-            TickIndex,
-            amount));
-        target.Shield += calculated.ResolvedAmount;
-        if (calculated.ResolvedAmount > 0)
-            Emit("vfx", sourceRuntimeId, target.RuntimeId, calculated.ResolvedAmount, target.Position, "",
-                vfx: new BattleVfxCue(BattleVfxPhase.ShieldActive, "shield"));
-        PublishCombat(new BattleCombatEventDraft(
-            BattleCombatEventKind.ShieldResolved,
-            combatSource,
-            sourceRuntimeId,
-            target.RuntimeId,
-            TickIndex,
-            RequestedValue: calculated.RequestedAmount,
-            AppliedValue: calculated.ResolvedAmount,
-            EffectiveValue: calculated.ResolvedAmount,
-            Cell: ToCombatCell(target.Cell),
-            Position: ToCombatPoint(target.Position)));
-        resolution.Commit();
-        return calculated.ResolvedAmount;
-    }
-
-    private void HandleDeath(BattleUnitState? source, BattleUnitState target)
-    {
-        if (!_deathProcUnits.Add(target.RuntimeId)) return;
-        RemoveDefeatedTechniques(target);
-        CancelEnemyAction(target.RuntimeId);
-        RemoveEnemyProducts(target.RuntimeId);
-        CancelChargedLine(target);
-        CancelTrample(target);
-        CancelDisplacement(target.RuntimeId);
-        WriteCounter(target,"_dead_since",TickIndex);
-        RevokePassiveGrants(target.RuntimeId);
-        foreach (var unit in _units.Where(unit => unit.ActionTargetRuntimeId == target.RuntimeId))
-            ClearActionTarget(unit);
-        _movement?.ReleaseUnit(target.RuntimeId);
-        _statusScope.HandleOwnerDeath(target.RuntimeId);
-        if (target.Definition.Behavior.OnDeathDamage > 0)
-            foreach (var enemy in Allies(1 - target.Team).Where(enemy => BattlefieldSpace.EdgeDistance(enemy, target) <= 1.5f).ToArray())
-                ApplyDamage(target.RuntimeId, null, enemy, target.Definition.Behavior.OnDeathDamage);
-        if (target.Team == 0 && _config.HeroRule.SummonOnAllyDeath && !target.Definition.IsHero && !target.IsTemporary)
-            SpawnTemporaryNear(_config.Summons.DeathSummon, 0, target.Position, .6f, .65f, target.RuntimeId);
-        if (source is { Team: 0 } && _config.HeroRule.KillGrowth > 0 &&
-            (string.IsNullOrWhiteSpace(_config.HeroRule.RequiredSoldierTag) || source.Definition.Tags.Contains(_config.HeroRule.RequiredSoldierTag)))
-            foreach (var ally in Allies(0).Where(ally => string.IsNullOrWhiteSpace(_config.HeroRule.RequiredSoldierTag) || ally.Definition.Tags.Contains(_config.HeroRule.RequiredSoldierTag)))
-                ally.Attributes.ApplyModifier(
-                    new CompiledAttributeModifier(
-                        CombatAttribute.AttackDamage,
-                        AttributeModifierOperation.Multiply,
-                        new CompiledConstantMagnitude(1f + _config.HeroRule.KillGrowth),
-                        0,
-                        $"kill_{target.RuntimeId}"),
-                    new CombatSourceRef(
-                        CombatSourceKind.System,
-                        "legacy_kill_growth",
-                        source.RuntimeId,
-                        $"{source.RuntimeId}:{target.RuntimeId}"));
-        ReleaseBattleLifecycleBindings(target.RuntimeId);
-    }
-
     private float EffectiveDamage(BattleUnitState unit)
     {
         var multiplier = 1f;
@@ -2077,9 +1168,9 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     {
         var playerHeroAlive = _units.Any(unit =>
             (unit.InitialTeam == 0 || unit.InitialTeam < 0 && unit.Team == 0) && unit.IsPersistentRosterHero && !unit.IsTemporary &&
-            (unit.Alive || _mechanics.Revivals.Any(r => r.OwnerId == unit.RuntimeId)));
-        var enemyAlive = _units.Any(unit => (unit.Alive && (unit.Team == 1 || _mechanics.Allegiances.Any(a => a.TargetId == unit.RuntimeId && a.OriginalTeam == 1))) ||
-            unit.InitialTeam == 1 && _mechanics.Revivals.Any(r => r.OwnerId == unit.RuntimeId));
+            (unit.Alive || _lifecycleRuntime.RevivalPending(unit.RuntimeId)));
+        var enemyAlive = _units.Any(unit => (unit.Alive && (unit.Team == 1 || _lifecycleRuntime.PreservesTeam(unit.RuntimeId, 1))) ||
+            unit.InitialTeam == 1 && _lifecycleRuntime.RevivalPending(unit.RuntimeId));
         if (!playerHeroAlive) Outcome = BattleOutcome.PlayerDefeat;
         else if (!enemyAlive) Outcome = BattleOutcome.PlayerVictory;
         else if (TickIndex >= MaxTicks) Outcome = BattleOutcome.Timeout;
@@ -2120,7 +1211,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     private void CompleteBattleScopes(BattleScopeCompletionReason reason)
     {
         CaptureTerminalSkillProgress();
-        _projectiles.Clear();
+        _projectileScope.Clear();
         foreach (var unit in _units) { CancelTrample(unit); CancelChargedLine(unit); unit.ProjectileSequence = null; unit.ProjectileWindups = []; }
         _discardStatusEffects = true;
         _pendingSetupEffects.Clear();
@@ -2138,16 +1229,17 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         // Equipment, Status, or Attribute cleanup can revert combat-time values.
         Finish(() =>
         {
-            if (_terminalUnitReports.IsDefault) _terminalUnitReports = BuildUnitReports();
+            if (!_preparationOnly) _statistics.Freeze(UnitViews, ActiveBattleTicks);
         });
-        _mechanics = MechanicState.Empty;
-        _techniques = TechniqueState.Empty;
+        _lifecycleRuntime.Clear();
+        _values.Clear();
+        _techniqueRuntime.Clear();
         TraitMechanicsComplete();
         ClearMatrixAbilities();
         _abilityActionIds = _abilityActionIds.Clear();
-        _unitActionQueues = ImmutableDictionary<string, UnitActionQueue>.Empty;
-        _enemyActions = new(ImmutableDictionary<string, EnemyCast>.Empty,ImmutableDictionary<int, BladeFlight>.Empty,ImmutableDictionary<string, BroodState>.Empty,[]);
-        _displacements = _displacements.Clear();
+        _actionQueue.Clear();
+        _enemyRuntime.Clear();
+        _displacementRuntime.Clear();
         _abilityTriggerEvent = null;
         _executingEcho = false;
         _bossPhaseIndexes.Clear();
@@ -2236,43 +1328,6 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         _config.FloorRule.OnBattleEnded(CreateRuleContext(), outcome);
     }
 
-    private static CompiledAttributeSetDefinition CreateBattleAttributeDefinition(
-        UnitSnapshot unit,
-        float maxHealth,
-        float damage,
-        float lifeSteal)
-    {
-        var definition = unit.AttributeDefinition ?? AttributeDefinitionCompiler.Legacy(
-            new Dictionary<CombatAttribute, float>
-            {
-                [CombatAttribute.MaxHealth] = unit.MaxHealth,
-                [CombatAttribute.AttackDamage] = unit.Damage,
-                [CombatAttribute.SpellPower] = 0,
-                [CombatAttribute.AttackSpeed] = 1,
-                [CombatAttribute.Armor] = unit.Armor,
-                [CombatAttribute.AttackRange] = unit.Range,
-                [CombatAttribute.MoveSpeed] = 1,
-                [CombatAttribute.CriticalChance] = 0,
-                [CombatAttribute.CriticalDamage] = 1.5f,
-                [CombatAttribute.MaxMana] = 0,
-                [CombatAttribute.StartingMana] = 0,
-                [CombatAttribute.HealingPower] = unit.HealPower,
-                [CombatAttribute.LifeSteal] = unit.LifeSteal,
-                [CombatAttribute.ControlResistance] = 0
-            });
-        return AttributeDefinitionCompiler.WithBaseValues(
-            definition,
-            new Dictionary<CombatAttribute, float>
-            {
-                [CombatAttribute.MaxHealth] = maxHealth,
-                [CombatAttribute.AttackDamage] = damage,
-                [CombatAttribute.Armor] = unit.Armor,
-                [CombatAttribute.AttackRange] = unit.Range,
-                [CombatAttribute.HealingPower] = unit.HealPower,
-                [CombatAttribute.LifeSteal] = lifeSteal
-            });
-    }
-
     private CombatSourceRef ResolveCombatSource(string runtimeId, BattleUnitState? explicitUnit = null)
     {
         if (string.IsNullOrWhiteSpace(runtimeId)) return CombatSourceRef.None;
@@ -2302,6 +1357,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         int entityId = 0, Vector2 origin = default, BattleVfxCue? vfx = null, BattleAttackTiming? attackTiming = null,
         BattleDisplacementCue? displacement = null, BattleLineCue? line = null, string sourceVfx = "", BattleTrampleCue? trample = null, BattleEnemyActionCue? enemyAction = null)
     {
+        if (_preparationOnly) return; // Presentation history/digest is not part of prepared unit state.
         var cell = BattlefieldSpace.PositionToCell(position);
         var battleEvent = new BattleEvent(TickIndex, type, source, target, value, cell, cue, position, entityId, origin, vfx, attackTiming, displacement, line, sourceVfx, trample, enemyAction);
         _events.Add(battleEvent);
@@ -2332,33 +1388,23 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     }
     private static Vector2I ClampCell(Vector2I cell) => new(Math.Clamp(cell.X, 0, Width - 1), Math.Clamp(cell.Y, 0, Height - 1));
 
-    private sealed class BattleUnitStatistics
-    {
-        public float DamageDealt { get; set; }
-        public float DamageTaken { get; set; }
-        public float ShieldAbsorbed { get; set; }
-        public float HealingDone { get; set; }
-        public int Kills { get; set; }
-        public int JoinTick { get; init; }
-        public int? DefeatTick { get; set; }
-        public int AttackActions { get; set; }
-        public int EffectiveHealingEvents { get; set; }
-    }
-
     private sealed class BattleWorldStateCheckpoint
     {
-        private readonly ImmutableArray<BattleProjectileState> _projectileStates;
-        private readonly int _projectileSequence;
+        private readonly BattleProjectileScope.Checkpoint _projectileState;
         private readonly BattleSimulation _owner;
-        private readonly MechanicState _mechanicState;
-        private readonly EnemyActionState _enemyActionState;
-        private readonly TechniqueState _techniqueState;
-        private readonly TraitMechanicsState _traitMechanicsState;
-        private readonly MatrixAbilityState _matrixAbilitiesState;
+        private readonly BattleLifecycleScope.Checkpoint _lifecycleState;
+        private readonly BattleValueLedger.Checkpoint _valueState;
+        private readonly BattleEnemyActionScope.Checkpoint _enemyActionState;
+        private readonly BattleTechniqueScope.Checkpoint _techniqueState;
+        private readonly BattleTraitReactionScope.Checkpoint _traitMechanicsState;
+        private readonly BattleElementStatusScope.Checkpoint _elementState;
+        private readonly BattleSupportEffectScope.Checkpoint _supportState;
+        private readonly BattleMatrixAbilityScope.Checkpoint _matrixAbilitiesState;
+        private readonly BattleMatrixReactionScope.Checkpoint _matrixReactionState;
         private readonly long _abilityActionSequence;
         private readonly ImmutableDictionary<string, string> _abilityActionIds;
-        private readonly ImmutableDictionary<string, UnitActionQueue> _unitActionQueueState;
-        private readonly ImmutableDictionary<string, DisplacementMotion> _displacementState;
+        private readonly BattleUnitActionQueueScope.Checkpoint _unitActionQueueState;
+        private readonly BattleDisplacementScope.Checkpoint _displacementState;
         private readonly ulong _randomState;
         private readonly BattleAbilityScope.ScopeStateCheckpoint? _abilityState;
         private readonly PendingAbilityReaction[] _abilityReactions;
@@ -2374,11 +1420,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         private readonly BattleUnitMutableState[] _unitStates;
         private readonly int _eventCount;
         private readonly int _digestLength;
-        private readonly HashSet<string> _deathProcUnits;
-        private readonly Dictionary<string, BattleUnitStatisticsState> _statistics;
+        private readonly BattleVitalityScope.Checkpoint _vitalityState;
+        private readonly BattleStatistics.Checkpoint _statistics;
         private readonly Dictionary<string, int> _bossPhaseIndexes;
         private readonly int _statusPresentationCueCount;
-        private readonly ImmutableArray<BattleUnitReportSnapshot> _terminalUnitReports;
         private readonly int _summonCounter;
         private readonly bool _floorRuleStartAttempted;
         private readonly bool _floorRuleEnded;
@@ -2386,28 +1431,30 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         private readonly BattleOutcome _outcome;
         private readonly int _goldSpent;
         private readonly int _successfulTacticalCommandUses;
-        private readonly ImmutableArray<BattlePermanentGain> _permanentGains;
-        private readonly ImmutableHashSet<string> _permanentGainKeys;
+        private readonly BattlePermanentGrowthScope.Checkpoint _permanentGrowth;
         private bool _finished;
 
         internal BattleWorldStateCheckpoint(BattleSimulation owner)
         {
             _owner = owner;
-            _mechanicState = owner._mechanics;
-            _techniqueState = owner._techniques;
-            _traitMechanicsState = owner._traitMechanics;
-            _matrixAbilitiesState = owner._matrixAbilities;
+            _lifecycleState = owner._lifecycleRuntime.Capture();
+            _valueState = owner._values.Capture();
+            _techniqueState = owner._techniqueRuntime.Capture();
+            _traitMechanicsState = owner._traitReactions.Capture();
+            _elementState = owner._elementStatuses.Capture();
+            _supportState = owner._supportEffects.Capture();
+            _matrixAbilitiesState = owner._matrixRuntime.Capture();
+            _matrixReactionState = owner._matrixReactions.Capture();
             _abilityActionSequence = owner._abilityActionSequence;
             _abilityActionIds = owner._abilityActionIds;
-            _unitActionQueueState = owner._unitActionQueues;
-            _enemyActionState = owner._enemyActions;
-            _displacementState = owner._displacements;
+            _unitActionQueueState = owner._actionQueue.Capture();
+            _enemyActionState = owner._enemyRuntime.Capture();
+            _displacementState = owner._displacementRuntime.Capture();
             _randomState = owner._random.State;
             _abilityState = owner._abilityScope?.CaptureState();
             _abilityReactions = owner._pendingAbilityReactions.ToArray();
             _setupEffects = owner._pendingSetupEffects.ToArray();
-            _projectileStates = owner.Projectiles;
-            _projectileSequence = owner._projectileSequence;
+            _projectileState = owner._projectileScope.Capture();
             _attributeState = owner._attributeScope.CaptureState();
             _combatState = owner._combatPipeline.CaptureState();
             _effectState = owner._effectCompatibility.CaptureState();
@@ -2420,14 +1467,10 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             // commit. Store their boundaries instead of cloning the complete Battle history.
             _eventCount = owner._events.Count;
             _digestLength = owner._digest.Length;
-            _deathProcUnits = new HashSet<string>(owner._deathProcUnits, StringComparer.Ordinal);
-            _statistics = owner._statistics.ToDictionary(
-                pair => pair.Key,
-                pair => new BattleUnitStatisticsState(pair.Value),
-                StringComparer.Ordinal);
+            _vitalityState = owner._vitality.Capture();
+            _statistics = owner._statistics.Capture();
             _bossPhaseIndexes = new Dictionary<string, int>(owner._bossPhaseIndexes, StringComparer.Ordinal);
             _statusPresentationCueCount = owner._statusPresentationCues.Count;
-            _terminalUnitReports = owner._terminalUnitReports;
             _summonCounter = owner._summonCounter;
             _floorRuleStartAttempted = owner._floorRuleStartAttempted;
             _floorRuleEnded = owner._floorRuleEnded;
@@ -2435,8 +1478,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             _outcome = owner.Outcome;
             _goldSpent = owner.GoldSpent;
             _successfulTacticalCommandUses = owner.SuccessfulTacticalCommandUses;
-            _permanentGains = owner._permanentGains;
-            _permanentGainKeys = owner._permanentGainKeys;
+            _permanentGrowth = owner._permanentGrowth.Capture();
             // Status is last because beginning its world transaction is the only capture step
             // that changes runtime coordination state.
             _statusState = owner._statusScope.BeginWorldTransaction();
@@ -2483,24 +1525,26 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                 _owner._statusPresentationCues.Count < _statusPresentationCueCount)
                 throw new InvalidOperationException("Battle append-only history changed before rollback.");
 
-            _owner._mechanics = _mechanicState;
-            _owner._techniques = _techniqueState;
-            _owner._traitMechanics = _traitMechanicsState;
-            _owner._matrixAbilities = _matrixAbilitiesState;
+            _owner._lifecycleRuntime.Restore(_lifecycleState);
+            _owner._values.Restore(_valueState);
+            _owner._techniqueRuntime.Restore(_techniqueState);
+            _owner._traitReactions.Restore(_traitMechanicsState);
+            _owner._elementStatuses.Restore(_elementState);
+            _owner._supportEffects.Restore(_supportState);
+            _owner._matrixRuntime.Restore(_matrixAbilitiesState);
+            _owner._matrixReactions.Restore(_matrixReactionState);
             _owner._abilityActionSequence = _abilityActionSequence;
             _owner._abilityActionIds = _abilityActionIds;
-            _owner._unitActionQueues = _unitActionQueueState;
-            _owner._enemyActions = _enemyActionState;
-            _owner._displacements = _displacementState;
+            _owner._actionQueue.Restore(_unitActionQueueState);
+            _owner._enemyRuntime.Restore(_enemyActionState);
+            _owner._displacementRuntime.Restore(_displacementState);
             _owner._random.State = _randomState;
             _owner._units.Clear();
             _owner._pendingAbilityReactions.Clear();
             _owner._pendingAbilityReactions.AddRange(_abilityReactions);
             _owner._pendingSetupEffects.Clear();
             _owner._pendingSetupEffects.AddRange(_setupEffects);
-            _owner._projectiles.Clear();
-            foreach (var projectile in _projectileStates) _owner._projectiles.Add(projectile.Id, projectile);
-            _owner._projectileSequence = _projectileSequence;
+            _owner._projectileScope.Restore(_projectileState);
             foreach (var state in _unitStates)
             {
                 state.Restore();
@@ -2509,18 +1553,14 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             if (_owner._events.Count > _eventCount)
                 _owner._events.RemoveRange(_eventCount, _owner._events.Count - _eventCount);
             _owner._digest.Length = _digestLength;
-            _owner._deathProcUnits.Clear();
-            foreach (var runtimeId in _deathProcUnits) _owner._deathProcUnits.Add(runtimeId);
-            _owner._statistics.Clear();
-            foreach (var pair in _statistics)
-                _owner._statistics.Add(pair.Key, pair.Value.Restore());
+            _owner._vitality.Restore(_vitalityState);
+            _owner._statistics.Restore(_statistics);
             _owner._bossPhaseIndexes.Clear();
             foreach (var pair in _bossPhaseIndexes) _owner._bossPhaseIndexes.Add(pair.Key, pair.Value);
             if (_owner._statusPresentationCues.Count > _statusPresentationCueCount)
                 _owner._statusPresentationCues.RemoveRange(
                     _statusPresentationCueCount,
                     _owner._statusPresentationCues.Count - _statusPresentationCueCount);
-            _owner._terminalUnitReports = _terminalUnitReports;
             _owner._summonCounter = _summonCounter;
             _owner._floorRuleStartAttempted = _floorRuleStartAttempted;
             _owner._floorRuleEnded = _floorRuleEnded;
@@ -2528,8 +1568,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             _owner.Outcome = _outcome;
             _owner.GoldSpent = _goldSpent;
             _owner.SuccessfulTacticalCommandUses = _successfulTacticalCommandUses;
-            _owner._permanentGains = _permanentGains;
-            _owner._permanentGainKeys = _permanentGainKeys;
+            _owner._permanentGrowth.Restore(_permanentGrowth);
         }
     }
 
@@ -2607,41 +1646,4 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         }
     }
 
-    private sealed record BattleUnitStatisticsState(
-        float DamageDealt,
-        float DamageTaken,
-        float ShieldAbsorbed,
-        float HealingDone,
-        int Kills,
-        int JoinTick,
-        int? DefeatTick,
-        int AttackActions,
-        int EffectiveHealingEvents)
-    {
-        internal BattleUnitStatisticsState(BattleUnitStatistics statistics) : this(
-            statistics.DamageDealt,
-            statistics.DamageTaken,
-            statistics.ShieldAbsorbed,
-            statistics.HealingDone,
-            statistics.Kills,
-            statistics.JoinTick,
-            statistics.DefeatTick,
-            statistics.AttackActions,
-            statistics.EffectiveHealingEvents)
-        {
-        }
-
-        internal BattleUnitStatistics Restore() => new()
-        {
-            DamageDealt = DamageDealt,
-            DamageTaken = DamageTaken,
-            ShieldAbsorbed = ShieldAbsorbed,
-            HealingDone = HealingDone,
-            Kills = Kills,
-            JoinTick = JoinTick,
-            DefeatTick = DefeatTick,
-            AttackActions = AttackActions,
-            EffectiveHealingEvents = EffectiveHealingEvents
-        };
-    }
 }

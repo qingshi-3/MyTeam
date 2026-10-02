@@ -68,7 +68,8 @@ public sealed record BattlePreparationRequest(
     Action<BattleCombatBindingRegistry>? ConfigureCombatBindings = null,
     float EnemyHealthMultiplier = 1, float EnemyDamageMultiplier = 1,
     HeroRuleSnapshot? HeroRuleOverride = null,
-    ImmutableArray<BossTimelineSnapshot> AdditionalBossTimelines = default);
+    ImmutableArray<BossTimelineSnapshot> AdditionalBossTimelines = default,
+    CompiledMatrixStatusRules? MatrixStatusRules = null);
 
 public static class BattlePreparationAssembler
 {
@@ -97,6 +98,7 @@ public static class BattlePreparationAssembler
 
         return new BattleConfig
         {
+            MatrixStatusRules = request.MatrixStatusRules ?? CompiledMatrixStatusRules.Default,
             Seed = request.Seed,
             Identity = request.Identity,
             FloorRule = request.FloorRule,

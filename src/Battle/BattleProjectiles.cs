@@ -19,10 +19,8 @@ public sealed record BattleProjectileState(
 
 public sealed partial class BattleSimulation
 {
-    private readonly Dictionary<int, BattleProjectileState> _projectiles = [];
-    private int _projectileSequence;
-    public ImmutableArray<BattleProjectileState> Projectiles =>
-        _projectiles.Values.OrderBy(projectile => projectile.Id).ToImmutableArray();
+    private readonly BattleProjectileScope _projectileScope;
+    public ImmutableArray<BattleProjectileState> Projectiles => _projectileScope.ReadSnapshot();
 
     private void LaunchProjectile(BattleUnitState source, BattleUnitState target, float damage,
         CombatSourceRef skillOrigin = default)
@@ -34,101 +32,48 @@ public sealed partial class BattleSimulation
             throw new InvalidOperationException("Invalid projectile parameters.");
         var direction = (target.Position - source.Position).Normalized();
         if (direction == Vector2.Zero) direction = source.Team == 0 ? Vector2.Right : Vector2.Left;
-        var projectile = new BattleProjectileState(++_projectileSequence, source.RuntimeId, source.Team,
+        var projectile = _projectileScope.Spawn(new BattleProjectileState(0, source.RuntimeId, source.Team,
             source.Position, direction * definition.ProjectileSpeed, definition.ProjectileRadius,
             damage, definition.ProjectileLifetime, TickIndex,
             !skillOrigin.IsSpecified && definition.Behavior.PiercingLine ? 2 : 1, [], skillOrigin,
-            VisualId: source.ProjectileVisualId, ActionId: skillOrigin.IsSpecified ? skillOrigin.InstanceId : $"attack:{source.RuntimeId}:{_statistics[source.RuntimeId].AttackActions}");
-        _projectiles.Add(projectile.Id, projectile);
+            VisualId: source.ProjectileVisualId, ActionId: skillOrigin.IsSpecified ? skillOrigin.InstanceId : $"attack:{source.RuntimeId}:{_statistics.AttackActions(source.RuntimeId)}"));
         Emit("projectile_spawn", source.RuntimeId, target.RuntimeId, damage, projectile.Position, "",
             projectile.Id, projectile.Position + direction, sourceVfx: source.ProjectileVisualId);
     }
 
-    private void AdvanceProjectiles(IReadOnlyDictionary<string, Vector2> previousPositions)
+    private void AdvanceProjectiles(IReadOnlyDictionary<string, Vector2> previousPositions) =>
+        _projectileScope.Advance(previousPositions);
+
+    private sealed class ProjectileWorld(BattleSimulation owner) : IBattleProjectileWorld
     {
-        foreach (var initial in Projectiles)
+        public int Tick => owner.TickIndex;
+        public bool CanOccupy(Vector2I cell) => owner._config.FloorRule.CanOccupy(cell);
+        public bool IsAlive(string id) => owner._units.Any(unit => unit.RuntimeId == id && unit.Alive);
+        public IEnumerable<ProjectileTarget> ReadTargets()
         {
-            // A launch is visible for at least one fixed step and never deals launch-time damage.
-            if (initial.LaunchTick == TickIndex || !_projectiles.ContainsKey(initial.Id)) continue;
-            var projectile = initial;
-            var seconds = Math.Min(BattleTiming.TickSeconds, projectile.RemainingSeconds);
-            var delta = projectile.Velocity * seconds;
-            var terrainFraction = BattlefieldSpace.FirstTerrainHitFraction(projectile.Position, delta,
-                projectile.Radius, Width, Height, cell => _config.FloorRule.CanOccupy(cell));
-            var candidates = new List<(BattleUnitState Unit, float Time)>();
-            foreach (var target in _units.Where(unit => (projectile.HitIds.Length < projectile.MaximumHits || IsRampartBody(unit)) &&
-                         unit.Alive && (unit.Team != projectile.Team || IsRampartBody(unit)) &&
-                         !projectile.HitIds.Contains(unit.RuntimeId)))
-            {
-                var start = previousPositions.TryGetValue(target.RuntimeId, out var previous) ? previous : target.Position;
-                var movement = (target.Position - start) * (seconds / BattleTiming.TickSeconds);
-                var radius = projectile.Radius + target.BodyRadius;
-                // Already overlapping counts as impact, including a target crossing into a stationary origin.
-                if (projectile.Position.DistanceSquaredTo(start) <= radius * radius)
-                    candidates.Add((target, 0));
-                else if (BattlefieldSpace.TryMovingCircleTimeOfImpact(projectile.Position, delta,
-                             projectile.Radius, start, movement, target.BodyRadius, out var time))
-                    candidates.Add((target, time));
-            }
-            var consumed = false;
-            foreach (var collision in candidates.OrderBy(hit => hit.Time)
-                         .ThenBy(hit => hit.Unit.RuntimeId, StringComparer.Ordinal))
-            {
-                if (!collision.Unit.Alive || collision.Time > terrainFraction ||
-                    (terrainFraction < 1f && collision.Time >= terrainFraction)) continue;
-                var source = _units.First(unit => unit.RuntimeId == projectile.SourceId);
-                var contact = projectile.Position + delta * collision.Time;
-                var blockedByWall = IsRampartBody(collision.Unit);
-                using var resolution = _combatPipeline.BeginAuthoritativeResolution();
-                // A wall consumes even an inert piercing flight, without restoring its damage budget.
-                if (projectile.HitIds.Length >= projectile.MaximumHits ||
-                    (blockedByWall && collision.Unit.Team == projectile.Team)) { }
-                else if (projectile.SkillOrigin.IsSpecified)
-                {
-                    ResolveLineSkillHit(source, collision.Unit,
-                        projectile.Damage * Mathf.Pow(projectile.SubsequentHitMultiplier, projectile.HitIds.Length),
-                        projectile.SkillOrigin, projectile.DamageType);
-                }
-                else if (projectile.HitIds.IsEmpty)
-                    ResolveAttackHit(source, collision.Unit, projectile.Damage, instantPiercing: false, actionId: projectile.ActionId);
-                else
-                    ApplyDamage(source.RuntimeId, source, collision.Unit, projectile.Damage * .35f);
-                projectile = projectile with { HitIds = projectile.HitIds.Add(collision.Unit.RuntimeId) };
-                Emit("projectile_impact", source.RuntimeId, collision.Unit.RuntimeId, 0, contact, "", projectile.Id);
-                resolution.Commit();
-                if (blockedByWall)
-                {
-                    _projectiles.Remove(projectile.Id);
-                    Emit("projectile_end",source.RuntimeId,"",0,contact,"",projectile.Id);
-                    consumed = true;
-                    break;
-                }
-                if (projectile.HitIds.Length >= projectile.MaximumHits)
-                {
-                    // Damage budget and travel distance are independent for charged
-                    // piercing shots. Once exhausted, the remaining flight is inert.
-                    if (!projectile.ContinueAfterHitLimit)
-                    {
-                        _projectiles.Remove(projectile.Id);
-                        Emit("projectile_end", source.RuntimeId, "", 0, contact, "", projectile.Id);
-                        consumed = true;
-                    }
-                    break;
-                }
-            }
-            if (consumed) continue;
-            var end = projectile.Position + delta * terrainFraction;
-            var remaining = projectile.RemainingSeconds - seconds;
-            if (terrainFraction < 1f || remaining <= .00001f)
-            {
-                _projectiles.Remove(projectile.Id);
-                Emit("projectile_end", projectile.SourceId, "", 0, end, "", projectile.Id);
-            }
-            else
-            {
-                _projectiles[projectile.Id] = projectile with { Position = end, RemainingSeconds = remaining };
-                Emit("projectile_move", projectile.SourceId, "", 0, end, "", projectile.Id);
-            }
+            foreach (var unit in owner._units)
+                yield return new(unit.RuntimeId, unit.Team, unit.Position, unit.BodyRadius, unit.Alive, owner.IsRampartBody(unit));
         }
+
+        public void ResolveImpact(BattleProjectileState projectile, string targetId, Vector2 contact, bool blockedByWall)
+        {
+            var source = owner._units.First(unit => unit.RuntimeId == projectile.SourceId);
+            var target = owner._units.First(unit => unit.RuntimeId == targetId);
+            using var resolution = owner._combatPipeline.BeginAuthoritativeResolution();
+            if (projectile.HitIds.Length >= projectile.MaximumHits || (blockedByWall && target.Team == projectile.Team)) { }
+            else if (projectile.SkillOrigin.IsSpecified)
+                owner.ResolveLineSkillHit(source, target,
+                    projectile.Damage * Mathf.Pow(projectile.SubsequentHitMultiplier, projectile.HitIds.Length),
+                    projectile.SkillOrigin, projectile.DamageType);
+            else if (projectile.HitIds.IsEmpty)
+                owner.ResolveAttackHit(source, target, projectile.Damage, instantPiercing: false, actionId: projectile.ActionId);
+            else owner.ApplyDamage(source.RuntimeId, source, target, projectile.Damage * .35f);
+            owner.Emit("projectile_impact", source.RuntimeId, target.RuntimeId, 0, contact, "", projectile.Id);
+            resolution.Commit();
+        }
+
+        public void Publish(ProjectileFlightFact fact) => owner.Emit(
+            fact.Kind == ProjectileFlightKind.Move ? "projectile_move" : "projectile_end",
+            fact.Projectile.SourceId, "", 0, fact.Position, "", fact.Projectile.Id);
     }
 }

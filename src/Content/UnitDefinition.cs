@@ -1,5 +1,6 @@
 using Godot;
 using TowerAutobattler.Traits;
+using TowerAutobattler.Vfx;
 
 namespace TowerAutobattler.Content;
 
@@ -26,6 +27,8 @@ public partial class UnitDefinition : Resource
     // Extra reach outside both bodies; the short default is suitable for melee contact.
     [Export] public float AttackRange { get; set; } = .25f;
     [Export] public AttackDelivery AttackDelivery { get; set; } = AttackDelivery.Melee;
+    // Presentation only; delivery, collision and damage remain separate authoring.
+    [Export] public VfxDefinition? AttackVisual { get; set; }
     // Logical battlefield units per second; independent of rendering and playback speed.
     [Export] public float ProjectileSpeed { get; set; } = 8f;
     [Export] public float ProjectileRadius { get; set; } = .07f;

@@ -31,7 +31,8 @@ public sealed record UnitSnapshot(
     AttackDelivery AttackDelivery = AttackDelivery.Melee,
     float ProjectileSpeed = 8f, float ProjectileRadius = .07f, float ProjectileLifetime = 3f,
     AttackHitGrowthSnapshot? AttackHitGrowth = null,
-    float ProjectileWindupSeconds = 0, float AttackReleaseProgress = .8f);
+    float ProjectileWindupSeconds = 0, float AttackReleaseProgress = .8f,
+    string AttackVisualId = "projectile");
 
 public sealed record ProjectileWindupState(string TargetId, int ReleaseTick, float DamageMultiplier,
     CombatSourceRef SkillOrigin);
@@ -85,7 +86,8 @@ public sealed record BattleIdentity(
     TowerNodeType NodeType,
     ulong RunSeed,
     int FloorIndex,
-    int BattleNumber);
+    int BattleNumber,
+    string CompositionId = "");
 
 public sealed record BossPhaseSnapshot(
     string StableId,
@@ -100,6 +102,7 @@ public sealed record BossTimelineSnapshot(
 
 public sealed class BattleConfig
 {
+    public CompiledMatrixStatusRules MatrixStatusRules { get; init; } = CompiledMatrixStatusRules.Default;
     public ulong Seed { get; init; }
     public BattleIdentity? Identity { get; init; }
     public required IBattleFloorRuleRuntime FloorRule { get; init; }
@@ -162,7 +165,12 @@ public sealed class BattleUnitState
     }
     public float? BodyRadiusOverride { get; set; }
     public AttackDelivery? AttackDeliveryOverride { get; set; }
-    public string ProjectileVisualId { get; set; } = "projectile";
+    private string? _projectileVisualId;
+    public string ProjectileVisualId
+    {
+        get => _projectileVisualId ?? Definition.AttackVisualId;
+        set => _projectileVisualId = value;
+    }
     public AttackDelivery AttackDelivery => AttackDeliveryOverride ?? Definition.AttackDelivery;
     public float BodyRadius => Mathf.Clamp(BodyRadiusOverride ?? Definition.BodyRadius, BattlefieldSpace.MinimumBodyRadius,
         BattlefieldSpace.MaximumBodyRadius);

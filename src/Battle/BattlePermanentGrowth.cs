@@ -13,12 +13,28 @@ public sealed record BattlePermanentGain(
     CombatAttribute Attribute,
     float Amount);
 
-public sealed partial class BattleSimulation
+internal sealed class BattlePermanentGrowthScope
 {
+    public ImmutableArray<BattlePermanentGain> Gains => _permanentGains;
+    internal sealed class Checkpoint
+    {
+        private readonly BattlePermanentGrowthScope _owner;
+        private readonly ImmutableArray<BattlePermanentGain> _gains;
+        private readonly ImmutableHashSet<string> _keys;
+        internal Checkpoint(BattlePermanentGrowthScope owner)
+        { _owner = owner; _gains = owner._permanentGains; _keys = owner._permanentGainKeys; }
+        internal void Restore(BattlePermanentGrowthScope owner)
+        {
+            if (!ReferenceEquals(owner, _owner)) throw new InvalidOperationException("Checkpoint belongs to another permanent growth scope.");
+            owner._permanentGains = _gains; owner._permanentGainKeys = _keys;
+        }
+    }
+    public Checkpoint Capture() => new(this);
+    public void Restore(Checkpoint checkpoint) => checkpoint.Restore(this);
     private ImmutableArray<BattlePermanentGain> _permanentGains = [];
     private ImmutableHashSet<string> _permanentGainKeys = ImmutableHashSet.Create<string>(StringComparer.Ordinal);
 
-    private void ApplyPermanentAttribute(BattleUnitState owner, BattleUnitState target,
+    public void ApplyPermanentAttribute(BattleUnitState owner, BattleUnitState target,
         CompiledMatrixOperation operation, CombatSourceRef origin, string slot)
     {
         if (target != owner || owner.Team != 0 || owner.IsTemporary || !owner.IsPersistentRosterHero ||

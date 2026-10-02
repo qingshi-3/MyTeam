@@ -12,7 +12,10 @@ public sealed record BattleLabTooltipInfo(
     string Abilities = "",
     string Loadout = "",
     string Hint = "",
-    ImmutableArray<UnitAttributeFact> IconStats = default)
+    ImmutableArray<UnitAttributeFact> IconStats = default,
+    bool SingleEntry = false,
+    bool AnchorBelow = false,
+    bool AnchorBeside = false)
 {
     public string PlainText => string.Join("\n\n", new[] { Title, Subtitle, Stats,
         IconStats.IsDefaultOrEmpty ? "" : string.Join("\n", IconStats.Select(fact => fact.Caption + " " + fact.Value)),

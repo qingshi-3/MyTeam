@@ -33,10 +33,12 @@ public enum AppScreenId
 public partial class AppScreenHost : Control
 {
     [Export] public NodePath ArmyOverviewPath { get; set; } = "../ArmyOverview";
+    [Export] public NodePath EnvironmentPath { get; set; } = "../Background";
 
     private readonly Dictionary<AppScreenId, Control> _screens = [];
     private ScreenRouter _router = null!;
     private ArmyOverviewController _armyOverview = null!;
+    private Control _environment = null!;
     public event Action? GrowthChanged;
 
     public MainMenuScreenController MainMenu { get; private set; } = null!;
@@ -86,16 +88,19 @@ public partial class AppScreenHost : Control
         _screens.Add(AppScreenId.Settings, Settings);
 
         var armyOverview = GetNode<ArmyOverviewController>(ArmyOverviewPath);
+        _environment = GetNode<Control>(EnvironmentPath);
         _armyOverview = armyOverview;
         _armyOverview.EquipmentChanged += RefreshEquipmentDisplay;
         _armyOverview.GrowthChanged += RefreshGrowthDisplay;
         _armyOverview.OpenChanged += Deployment.SetGlobalInspectionOpen;
         Deployment.EquipmentOverlayChanged += _armyOverview.SetPageInspectionOpen;
+        Deployment.LoadoutChanged += _armyOverview.RefreshTraits;
         armyOverview.BindModalFocusScope(this);
         _router = new ScreenRouter(
             _screens.Values.ToArray(),
             [Tower, Deployment, Reward, Recruitment, Shop, Event, Rest],
-            armyOverview);
+            armyOverview,
+            [Tower, Deployment, Reward, Recruitment, Shop, Event, Rest, Battle, BattleReport]);
     }
 
     public Control Screen(AppScreenId id) => _screens.TryGetValue(id, out var screen)
@@ -108,7 +113,10 @@ public partial class AppScreenHost : Control
         if (_armyOverview is not null) _armyOverview.GrowthChanged -= RefreshGrowthDisplay;
         if (_armyOverview is not null) _armyOverview.OpenChanged -= Deployment.SetGlobalInspectionOpen;
         if (Deployment is not null && _armyOverview is not null)
+        {
             Deployment.EquipmentOverlayChanged -= _armyOverview.SetPageInspectionOpen;
+            Deployment.LoadoutChanged -= _armyOverview.RefreshTraits;
+        }
     }
 
     public void BindEquipmentManagement(RunApplication app) => _armyOverview.BindEquipmentManagement(app);
@@ -118,8 +126,13 @@ public partial class AppScreenHost : Control
 
     public void Show(
         AppScreenId id,
-        ActiveRunDto? run,
+        RunView? run,
         ContentRegistry? content,
-        CompiledRunRules? rules) =>
+        CompiledRunRules? rules)
+    {
         _router.Show(Screen(id), run, content, rules);
+        // The battle owns its paused/scaled scenery. Other screens use the
+        // root's idle courtyard, avoiding two full-screen atmosphere draws.
+        _environment.Visible = id != AppScreenId.Battle;
+    }
 }

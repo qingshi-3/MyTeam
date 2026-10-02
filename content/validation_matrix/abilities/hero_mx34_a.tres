@@ -2,13 +2,23 @@
 
 [ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
 [ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="matrix_targeting"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="matrix_magnitude"]
+
+[sub_resource type="Resource" id="op_1_targeting"]
+script = ExtResource("matrix_targeting")
+Target = 7
+MaxTargets = 2
+
+[sub_resource type="Resource" id="op_1_magnitude"]
+script = ExtResource("matrix_magnitude")
+Amount = 55
 
 [sub_resource type="Resource" id="op_1"]
 script = ExtResource("operation")
 Kind = 1
-Target = 7
-Amount = 55
-MaxTargets = 2
+Targeting = SubResource("op_1_targeting")
+Magnitude = SubResource("op_1_magnitude")
 
 [resource]
 script = ExtResource("ability")

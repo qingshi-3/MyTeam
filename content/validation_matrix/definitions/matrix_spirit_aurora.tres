@@ -6,6 +6,9 @@
 
 
 
+
+[ext_resource type="Resource" path="res://content/vfx/basic_arcane.tres" id="attack_visual"]
+
 [resource]
 script = ExtResource("script")
 Id = "matrix_spirit_aurora"
@@ -21,6 +24,7 @@ Armor = 0
 AttackCooldown = 1.5
 AttackRange = 3.5
 AttackDelivery = 1
+AttackVisual = ExtResource("attack_visual")
 ProjectileWindupSeconds = 0.35
 MaxMana = 0
 StartingMana = 0

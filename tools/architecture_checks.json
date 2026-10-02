@@ -1,0 +1,212 @@
+[
+  {
+    "name": "growth-battle-gain",
+    "scene": "GrowthBattleGainSmoke",
+    "markers": [
+      "GROWTH_BATTLE_GAIN_SMOKE_OK"
+    ]
+  },
+  {
+    "name": "module-ownership",
+    "scene": "ArchitectureModuleOwnershipContractSmoke",
+    "markers": [
+      "ARCHITECTURE_MODULE_OWNERSHIP_OK"
+    ]
+  },
+  {
+    "name": "finish-input",
+    "scene": "ArchitectureFinishInputSmoke",
+    "display": true,
+    "markers": [
+      "ARCHITECTURE_FINISH_INPUT_OK"
+    ]
+  },
+  {
+    "name": "enemy-action-module",
+    "scene": "BattleEnemyActionModuleContractSmoke",
+    "markers": [
+      "BATTLE_ENEMY_ACTION_MODULE_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "ability-modules",
+    "scene": "BattleAbilityModulesContractSmoke",
+    "markers": [
+      "BATTLE_ABILITY_MODULES_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "first-content-systems",
+    "scene": "FirstContentSystemsContractSmoke",
+    "markers": [
+      "FIRST_CONTENT_SYSTEMS_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "ability-status",
+    "scene": "AbilityStatusContractSmoke",
+    "markers": [
+      "ABILITY_STATUS_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "matrix-reaction-module",
+    "scene": "MatrixReactionModuleContractSmoke",
+    "markers": [
+      "MATRIX_REACTION_MODULE_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "flow-input",
+    "scene": "ArchitectureFlowInputSmoke",
+    "display": true,
+    "markers": [
+      "ARCHITECTURE_FLOW_INPUT_OK"
+    ]
+  },
+  {
+    "name": "preparation-input",
+    "scene": "PreparationBoundaryInputSmoke",
+    "display": true,
+    "markers": [
+      "PREPARATION_BOUNDARY_INPUT_OK"
+    ]
+  },
+  {
+    "name": "preparation-projection",
+    "scene": "BattlePreparationProjectionContractSmoke",
+    "markers": [
+      "BATTLE_PREPARATION_PROJECTION_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "matrix-authoring-layout",
+    "scene": "MatrixAuthoringLayoutContractSmoke",
+    "markers": [
+      "MATRIX_AUTHORING_LAYOUT_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "matrix-status-rules",
+    "scene": "MatrixStatusRulesContractSmoke",
+    "markers": [
+      "MATRIX_STATUS_RULES_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "mature-combat",
+    "scene": "MatureCombatBuildSystemsRedContractSmoke",
+    "markers": [
+      "MATURE_COMBAT_BUILD_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "enemy-actions",
+    "scene": "EnemyFiveContractSmoke",
+    "markers": [
+      "ENEMY_FIVE_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "read-boundary",
+    "scene": "ReadBoundaryContractSmoke",
+    "markers": [
+      "READ_BOUNDARY_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "battle-architecture",
+    "scene": "BattleArchitectureContractSmoke",
+    "markers": [
+      "BATTLE_ARCHITECTURE_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "ranged",
+    "scene": "RangedAttackContractSmoke",
+    "markers": [
+      "RANGED_ATTACK_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "piercing",
+    "scene": "EnemyPiercingContractSmoke",
+    "markers": [
+      "ENEMY_PIERCING_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "matrix-lifetime",
+    "scene": "MatrixResourceLifetimeContractSmoke",
+    "markers": [
+      "MATRIX_RESOURCE_LIFETIME_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "recovery",
+    "scene": "ArchitectureRecoveryContractSmoke",
+    "markers": [
+      "ARCHITECTURE_RECOVERY_CONTRACT_OK",
+      "ARCHITECTURE_RECOVERY_CHECK_OK corrupt-save",
+      "ARCHITECTURE_RECOVERY_CHECK_OK backup-failure",
+      "ARCHITECTURE_RECOVERY_CHECK_OK version-backup",
+      "ARCHITECTURE_RECOVERY_CHECK_OK growth-publication"
+    ],
+    "expected_save_namespace": "architecture-recovery"
+  },
+  {
+    "name": "startup",
+    "scene": "ProductionStartupContractSmoke",
+    "markers": [
+      "PRODUCTION_STARTUP_OK"
+    ]
+  },
+  {
+    "name": "growth",
+    "scene": "GrowthRunContractSmoke",
+    "markers": [
+      "GROWTH_RUN_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "opening",
+    "scene": "RecruitmentOpeningContractSmoke",
+    "args": [
+      "--opening-only"
+    ],
+    "markers": [
+      "RECRUITMENT_OPENING_CONTRACT_OK"
+    ]
+  },
+  {
+    "name": "legacy-authoring",
+    "scene": "ScalableAuthoringContractSmoke",
+    "markers": [
+      "SCALABLE_AUTHORING_CONTRACT_OK",
+      "SCALABLE_AUTHORING_CHECK_OK migration",
+      "SCALABLE_AUTHORING_CHECK_OK publication-rejection",
+      "SCALABLE_AUTHORING_CHECK_OK effect-dependencies",
+      "SCALABLE_AUTHORING_CHECK_OK source-boundaries"
+    ]
+  },
+  {
+    "name": "recovery-input",
+    "scene": "ArchitectureRecoveryInputSmoke",
+    "display": true,
+    "markers": [
+      "ARCHITECTURE_RECOVERY_INPUT_OK"
+    ],
+    "expected_save_namespace": "architecture-recovery-input"
+  },
+  {
+    "name": "recovery-exit",
+    "scene": "ArchitectureRecoveryInputSmoke",
+    "display": true,
+    "args": [
+      "--exit-only"
+    ],
+    "markers": [
+      "ARCHITECTURE_RECOVERY_EXIT_REQUEST"
+    ]
+  }
+]

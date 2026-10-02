@@ -14,7 +14,6 @@ namespace TowerAutobattler.UI;
 public partial class BattleLabScreenController : Control, IUiMotionHost
 {
     public Func<bool> ReduceUiMotion { get; set; } = () => false;
-    private UiDragVisual? _dragMotion;
     [Signal] public delegate void BackRequestedEventHandler();
     [Signal] public delegate void StartRequestedEventHandler();
     [Export] public PackedScene LibraryCardScene { get; set; } = null!;
@@ -22,20 +21,22 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
     [Export] public BattleLabPresetCatalog PresetCatalog { get; set; } = null!;
     [Export] public Vector2 InformationWindowSize { get; set; } = new(660, 700);
 
-    private sealed record EditHistory(BattleLabStartSnapshot Snapshot, string Label, string PresetName, string PresetDigest);
     private readonly Dictionary<Vector2I, BattleLabBoardCell> _cells = [];
-    private readonly List<BattleLabLibraryCard> _cards = [];
+    private BattleLabLibraryView _library = null!;
+    private IReadOnlyList<BattleLabLibraryCard> _cards => _library.Cards;
     private readonly List<(Button Button, Action Handler)> _buttonBindings = [];
     private readonly Dictionary<string, Button> _buttons = [];
-    private readonly Dictionary<string, UnitSnapshot> _unitSnapshots = new(StringComparer.Ordinal);
-    private readonly List<EditHistory> _history = [];
     private string _inspectedEquipmentId = string.Empty;
     private readonly List<string> _relicIds = [], _existingRelicIds = [];
     private BattleLabContentIndex? _content;
     private BattleLabSession? _session;
     private BattleLabPresetStore? _presetStore;
     private BattleLabDerivedProjection? _derived;
-    private string _derivedDigest = string.Empty, _activePresetName = string.Empty, _presetDigest = string.Empty;
+    private BattleLabEditorSession? _editor;
+    private BattleLabDragController? _drag;
+    private readonly BattleLabSelection _selection = new();
+    private string _activePresetName => _editor?.PresetName ?? "";
+    private string _presetDigest => _editor?.PresetDigest ?? "";
     private VBoxContainer _unitLibrary = null!;
     private Control _equipmentBox = null!;
     private BattleLabPresetPanel _presetPanel = null!;
@@ -52,22 +53,18 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
     private OptionButton _relicChoice = null!, _existingRelicChoice = null!;
     private SpinBox _relicStacks = null!;
     private Label _libraryEmpty = null!, _status = null!, _facts = null!;
-    private Label _placementHint = null!, _unitTitle = null!, _inspectorDetails = null!, _teamFacts = null!;
+    private Label _placementHint = null!, _teamFacts = null!;
     private Label _readiness = null!, _equipmentNotApplicable = null!;
-    private CombatRichText _inspector = null!;
-    private CombatRichText _inspectorStats = null!, _inspectorGlossary = null!;
-    private StatBlock _healthStat = null!, _attackStat = null!, _armorStat = null!, _speedStat = null!;
-    private Control _statsPanel = null!;
     private BattleLabEquipmentPanel _equipmentDragPanel = null!;
     private string _equipmentDragContext = Guid.NewGuid().ToString("N");
     private CombatRichText _equipmentRules = null!, _relicRules = null!;
     private CheckButton _retentionUpgrade = null!;
-    private string _dragContentId = string.Empty, _dragInstanceId = string.Empty;
-    private BattleLabSide _dragSide;
-    private bool _dragging;
+    private BattleLabUnitInspector _unitInspector = null!;
+    private bool _dragging => _drag?.IsDragging ?? false;
     private bool _libraryCollapsed = true, _detailsCollapsed = true;
-    private string _selectedPrototype = string.Empty, _selectedInstanceId = string.Empty;
-    private BattleLabSide _selectedSide;
+    private string _selectedPrototype { get => _selection.Prototype; set => _selection.Prototype = value; }
+    private string _selectedInstanceId { get => _selection.InstanceId; set => _selection.InstanceId = value; }
+    private BattleLabSide _selectedSide { get => _selection.Side; set => _selection.Side = value; }
 
     public BattleLabStartSnapshot? CurrentSnapshot => _session?.Freeze();
     public int CellCount => _cells.Count;
@@ -102,18 +99,9 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         _status = GetNode<Label>("%Status");
         _facts = GetNode<Label>("%Facts");
         _placementHint = GetNode<Label>("%PlacementHint");
-        _unitTitle = GetNode<Label>("%UnitTitle");
-        _inspector = GetNode<CombatRichText>("%Inspector");
-        _inspectorStats = GetNode<CombatRichText>("%InspectorStats");
-        _inspectorGlossary = GetNode<CombatRichText>("%InspectorGlossary");
-        _statsPanel = GetNode<Control>("%StatsPanel");
-        _healthStat = GetNode<StatBlock>("%LabHealth");
-        _attackStat = GetNode<StatBlock>("%LabAttack");
-        _armorStat = GetNode<StatBlock>("%LabArmor");
-        _speedStat = GetNode<StatBlock>("%LabSpeed");
-        _inspectorDetails = GetNode<Label>("%InspectorDetails");
         _teamFacts = GetNode<Label>("%TeamFacts");
         _retentionUpgrade = GetNode<CheckButton>("%RetentionUpgrade");
+        _unitInspector = new BattleLabUnitInspector(GetNode<Control>("DetailsPopup/DetailPane/Inset/DetailBox/DetailTabs/UnitPage"), _retentionUpgrade);
         _readiness = GetNode<Label>("%Readiness");
         _equipmentDragPanel = GetNode<BattleLabEquipmentPanel>("%EquipmentDragPanel");
         _equipmentDragPanel.EquipRequested += EquipDragged;
@@ -141,8 +129,8 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         _unitFilter.AddItem("召唤物", (int)BattleLabUnitClassification.PublishedSummon);
         _unitFilter.AddItem("测试假人", (int)BattleLabUnitClassification.TestDummy);
         _unitFilter.Select(0);
-        _unitSearch.TextChanged += OnSearchChanged;
-        _unitFilter.ItemSelected += OnUnitFilterSelected;
+        _library = new BattleLabLibraryView(LibraryCardScene, _unitLibrary, _libraryEmpty, _unitSearch,
+            _unitFilter, _placementTeam, _selection, SelectPrototype, BeginLibraryDrag);
         _retentionUpgrade.Toggled += OnRetentionUpgrade;
         _seed.TextSubmitted += OnSeedSubmitted;
         _relicChoice.ItemSelected += OnBuildChoiceSelected;
@@ -172,10 +160,13 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         _content = content ?? throw new ArgumentNullException(nameof(content));
         _session = session ?? throw new ArgumentNullException(nameof(session));
         _equipmentDragContext = Guid.NewGuid().ToString("N");
-        _presetStore = presetStore; _history.Clear(); _unitSnapshots.Clear(); _derived = null;
-        _derivedDigest = string.Empty; _presetDigest = session.Freeze().CanonicalDigest;
-        _activePresetName = presetStore?.BuiltIns.FirstOrDefault(entry =>
-            BattleLabPresetStore.ToSnapshot(entry.Value).CanonicalDigest == _presetDigest).Key ?? string.Empty;
+        ResetDrag();
+        _presetStore = presetStore;
+        _editor = new BattleLabEditorSession(content, session, presetStore);
+        _library.Bind(_editor);
+        _drag = new BattleLabDragController(_editor, _selection, this, _libraryPane, _placementHint, _footprints,
+            _cells, _cards, ToolContains, OriginLibraryContains, () => ReduceUiMotion(), RefreshAll);
+        _derived = null;
         _selectedPrototype = string.Empty; _selectedInstanceId = string.Empty;
         _presetPanel.Bind(presetStore, UnitName);
         SyncRuleControls(); PopulateBuildChoices(); RebuildLibraries();
@@ -352,25 +343,7 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         _footprints.SetGrid(_battlefield.Position + Vector2.One * side * .5f,
             Vector2.One * (side + 3), Vector2.One * side);
     }
-    private void RebuildLibraries()
-    {
-        foreach (var card in _cards)
-        { card.Selected -= SelectPrototype; card.DragRequested -= BeginLibraryDrag; card.QueueFree(); }
-        _cards.Clear();
-        if (_content is null) return;
-        var units = _content.Units.Where(MatchesLibrarySearch).ToArray();
-        var side = (BattleLabSide)_placementTeam.GetSelectedId();
-        foreach (var unit in units) AddCard(_unitLibrary, unit, side, DescribeClassification(unit.Classification));
-        _libraryEmpty.Visible = units.Length == 0;
-    }
-    private void AddCard(Control owner, BattleLabPublishedUnit unit, BattleLabSide side, string classification)
-    {
-        var card = LibraryCardScene.Instantiate<BattleLabLibraryCard>();
-        card.Bind(unit.StableId, unit.DisplayName, side, classification, unit.Definition.Portrait);
-        card.SetInspection(BattleLabTooltipFormatter.Prototype(unit, UnitSnapshotFor(unit)));
-        card.Selected += SelectPrototype; card.DragRequested += BeginLibraryDrag;
-        owner.AddChild(card); card.SetSelected(_selectedPrototype == unit.StableId && _selectedSide == side); _cards.Add(card);
-    }
+    private void RebuildLibraries() => _library.RebuildLibraries();
     private void SelectPrototype(string contentId, BattleLabSide side)
     {
         ResetDrag(); _selectedPrototype = contentId; _selectedSide = side; _selectedInstanceId = string.Empty;
@@ -385,109 +358,13 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         RefreshBuildHints();
         RefreshAll("", true);
     }
-    private void BeginLibraryDrag(string contentId, BattleLabSide side)
-    {
-        BattleLabHoverHint.HideAll(true);
-        _selectedPrototype = string.Empty; _selectedInstanceId = string.Empty;
-        _dragContentId = contentId; _dragInstanceId = string.Empty; _dragSide = side; _dragging = true;
-        foreach (var card in _cards) card.SetSelected(false);
-        BeginDragVisual(_cards.FirstOrDefault(card => card.ContentId == contentId && card.Side == side), contentId);
-        _placementHint.Text = $"拖入{SideName(side)} {UnitName(contentId)} · 释放到合法空格";
-        RefreshDropStates(GetViewport().GetMousePosition());
-    }
-    private void BeginInstanceDrag(string instanceId)
-    {
-        BattleLabHoverHint.HideAll(true);
-        if (_session?.TryGet(instanceId, out var unit) != true) return;
-        _selectedPrototype = string.Empty; _selectedInstanceId = instanceId;
-        _dragContentId = unit.ContentId; _dragInstanceId = instanceId; _dragSide = unit.Side; _dragging = true;
-        BeginDragVisual(_cells.Values.FirstOrDefault(cell => cell.InstanceId == instanceId), unit.ContentId);
-        _placementHint.Text = $"移动{SideName(unit.Side)} {UnitName(unit.ContentId)} · 可交换；拖回单位库可移除";
-        RefreshDropStates(GetViewport().GetMousePosition());
-    }
-    private void CompleteDrag(Vector2 position)
-    {
-        if (_session is null) { ResetDrag(); return; }
-        var target = _cells.FirstOrDefault(pair => !ToolContains(position) && pair.Value.GetGlobalRect().HasPoint(position));
-        var before = _session.Freeze();
-        BattleLabPlacementResult? result = null;
-        var instanceId = _dragInstanceId;
-        if (target.Value is not null)
-        {
-            if (!string.IsNullOrEmpty(instanceId) && _session.TryGet(instanceId, out var existing) && existing.Cell == target.Key)
-            { ResetDrag(); RefreshAll("位置未改变。", true); return; }
-            result = string.IsNullOrEmpty(instanceId)
-                ? _session.AddAndPlace(_dragContentId, _dragSide, target.Key) : _session.Move(instanceId, target.Key);
-            if (result.Succeeded)
-            {
-                _selectedInstanceId = result.InstanceId;
-                if (IsInstanceValid(_dragMotion)) _dragMotion!.CommitTo(target.Value);
-            }
-        }
-        else if (!string.IsNullOrEmpty(instanceId) && OriginLibraryContains(position))
-        {
-            var removed = _session.Recall(instanceId);
-            if (removed && IsInstanceValid(_dragMotion)) _dragMotion!.CommitTo(_libraryPane);
-            ResetDrag(); RecordChange(before, "移除单位");
-            RefreshAll(removed ? "单位已移除，可撤销。" : "单位已经不在战场。", removed); return;
-        }
-        ResetDrag(); RecordChange(before, string.IsNullOrEmpty(instanceId) ? "布置单位" : "移动单位");
-        RefreshAll(result is null ? "拖动已取消。" : result.Succeeded
-            ? result.SwappedInstanceId is null ? "放置完成。" : "位置已交换。" : result.RejectionReason,
-            result?.Succeeded ?? true);
-    }
-    private void RefreshDropStates(Vector2 mousePosition)
-    {
-        if (_session is null) return;
-        _footprints.ShowDrag(null);
-        if (IsInstanceValid(_dragMotion)) _dragMotion!.ClearAim();
-        foreach (var (coordinate, cell) in _cells)
-        {
-            var prototype = new BattleLabUnitConfiguration(string.IsNullOrEmpty(_dragInstanceId) ? "lab-preview" : _dragInstanceId,
-                _dragContentId, _dragSide, coordinate, []);
-            if (!string.IsNullOrEmpty(_dragInstanceId) && _session.TryGet(_dragInstanceId, out var existing)) prototype = existing;
-            var evaluation = BattleLabPlacementPolicy.Evaluate(_session, prototype, coordinate, !string.IsNullOrEmpty(_dragInstanceId));
-            cell.ShowDropState(evaluation.Succeeded, evaluation.SwappedInstanceId is not null);
-            if (!ToolContains(mousePosition) && cell.GetGlobalRect().HasPoint(mousePosition) &&
-                _content?.TryGetUnit(_dragContentId, out var content) == true)
-            {
-                _footprints.ShowDrag(new DeploymentBodyPreview(_dragInstanceId, coordinate,
-                    content.Definition.BodyRadius, (int)_dragSide), evaluation.Succeeded);
-                if (IsInstanceValid(_dragMotion)) _dragMotion!.AimAt(cell, evaluation.Succeeded, evaluation.SwappedInstanceId is not null);
-            }
-        }
-        if (OriginLibraryContains(mousePosition) && IsInstanceValid(_dragMotion))
-            _dragMotion!.AimAt(_libraryPane, !string.IsNullOrEmpty(_dragInstanceId));
-        MouseDefaultCursorShape = (!ToolContains(mousePosition) && _cells.Values.Any(cell => cell.GetGlobalRect().HasPoint(mousePosition))) ||
-            OriginLibraryContains(mousePosition) ? CursorShape.PointingHand : CursorShape.Forbidden;
-    }
-    private void ResetDrag()
-    {
-        if (IsInstanceValid(_dragMotion)) _dragMotion!.Release();
-        _dragMotion = null;
-        if (IsInstanceValid(_footprints)) _footprints.ShowDrag(null);
-        _dragging = false; _dragContentId = string.Empty; _dragInstanceId = string.Empty;
-        MouseDefaultCursorShape = CursorShape.Arrow;
-        foreach (var cell in _cells.Values) if (IsInstanceValid(cell)) cell.ClearDropState();
-    }
+    private void BeginLibraryDrag(string id, BattleLabSide side) => _drag?.BeginLibraryDrag(id, side);
+    private void BeginInstanceDrag(string id) => _drag?.BeginInstanceDrag(id);
+    private void CompleteDrag(Vector2 position) => _drag?.CompleteDrag(position);
+    private void RefreshDropStates(Vector2 position) => _drag?.RefreshDropStates(position);
+    private void ResetDrag() => _drag?.ResetDrag();
+    private bool CancelPointerDrag() => _drag?.CancelPointerDrag() ?? false;
 
-    private bool CancelPointerDrag()
-    {
-        if (!_dragging) return false;
-        ResetDrag();
-        RefreshAll("", true);
-        return true;
-    }
-
-    private void BeginDragVisual(Control? source, string contentId)
-    {
-        if (source is null || _content?.TryGetUnit(contentId, out var unit) != true) return;
-        if (IsInstanceValid(_dragMotion)) _dragMotion!.Release();
-        var preview = GD.Load<PackedScene>("res://scenes/ui/components/HeroDragPreview.tscn").Instantiate<Control>();
-        preview.GetNode<UnitPortrait>("Layout/Portrait").Bind(unit.Definition.Portrait, unit.Definition.Icon);
-        preview.GetNode<Label>("Layout/Name").Text = unit.DisplayName;
-        _dragMotion = UiDragVisual.Lift(source, preview, () => ReduceUiMotion(), keepTargetVisible: true);
-    }
     private void ClearSelection()
     {
         ResetDrag(); _selectedPrototype = string.Empty; _selectedInstanceId = string.Empty;
@@ -533,14 +410,13 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
             cell.Refresh(unit, unit?.InstanceId == _selectedInstanceId, published?.DisplayName, published?.Definition.Portrait,
                 _session.Mode, published?.Definition.BodyRadius ?? BattlefieldSpace.DefaultBodyRadius);
         }
-        foreach (var card in _cards) card.SetSelected(card.ContentId == _selectedPrototype && card.Side == _selectedSide);
+        _library.RefreshSelection();
         _equipmentOwner.Text = _session.TryGet(_selectedInstanceId, out var equipmentOwner)
             ? $"{UnitName(equipmentOwner.ContentId)} · {SideName(equipmentOwner.Side)}"
             : "在棋盘选中单位，再拖放装备";
         var snapshot = _session.Freeze();
         // Selection and feedback do not change prepared battle attributes.
-        if (_derived is null || _derivedDigest != snapshot.CanonicalDigest)
-        { _derived = BattleLabDerivedProjectionBuilder.Build(_session); _derivedDigest = snapshot.CanonicalDigest; }
+        _derived = _editor!.Prepared();
         foreach (var (coordinate, cell) in _cells)
         {
             var unit = _session.At(coordinate);
@@ -571,54 +447,26 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         _buttons["%StartButton"].Disabled = _derived?.IsReady != true;
         _buttons["%StartButton"].TooltipText = _derived?.IsReady == true ? "使用当前配置开始战斗" : _readiness.Text;
         _buttons["%CancelSelectionButton"].Disabled = !_dragging && string.IsNullOrEmpty(_selectedInstanceId) && string.IsNullOrEmpty(_selectedPrototype);
-        _buttons["%UndoButton"].Disabled = _history.Count == 0;
-        _buttons["%UndoButton"].TooltipText = _history.Count == 0 ? "暂无可撤销操作" : $"撤销：{_history[^1].Label}（Ctrl+Z）";
+        _buttons["%UndoButton"].Disabled = _editor!.UndoCount == 0;
+        _buttons["%UndoButton"].TooltipText = _editor!.UndoCount == 0 ? "暂无可撤销操作" : $"撤销：{_editor!.UndoLabel}（Ctrl+Z）";
         _buttons["%ClearPlayerButton"].Disabled = !_session.Units.Any(item => item.Side == BattleLabSide.Player);
         _buttons["%ClearEnemyButton"].Disabled = !_session.Units.Any(item => item.Side == BattleLabSide.Enemy);
         _buttons["%ClearAllButton"].Disabled = _session.Units.Count == 0;
     }
-    private void RecordChange(BattleLabStartSnapshot before, string label)
-    {
-        if (_session is null || before.CanonicalDigest == _session.Freeze().CanonicalDigest) return;
-        _history.Add(new EditHistory(before, label, _activePresetName, _presetDigest));
-        if (_history.Count > 32) _history.RemoveAt(0);
-    }
     private bool Edit(string label, Func<bool> mutation, string success, string failure)
     {
-        if (_session is null) return false;
-        var before = _session.Freeze();
-        try
-        {
-            var succeeded = mutation();
-            if (succeeded) RecordChange(before, label);
-            RefreshAll(succeeded ? success : failure, succeeded); return succeeded;
-        }
-        catch (Exception exception) { RefreshAll(failure + "：" + exception.Message, false); return false; }
+        if (_editor is null) return false;
+        var result = _editor.Edit(label, mutation, success, failure);
+        RefreshAll(result.Message, result.Succeeded);
+        return result.Succeeded;
     }
     private void UndoLastEdit()
     {
-        if (_session is null || _history.Count == 0) return;
-        var entry = _history[^1];
-        try
-        {
-            _session.Restore(entry.Snapshot); _history.RemoveAt(_history.Count - 1);
-            _activePresetName = entry.PresetName; _presetDigest = entry.PresetDigest;
-            ResetDrag(); _selectedPrototype = string.Empty; SyncRuleControls();
-            RefreshAll($"已撤销：{entry.Label}。", true);
-        }
-        catch (Exception exception) { RefreshAll("无法撤销：" + exception.Message, false); }
+        if (_editor is null || _editor.UndoCount == 0) return;
+        var result = _editor.Undo();
+        if (result.Succeeded) { ResetDrag(); _selectedPrototype = ""; SyncRuleControls(); }
+        RefreshAll(result.Message, result.Succeeded);
     }
-    private void OnSearchChanged(string _) => RebuildLibraries();
-    private void OnUnitFilterSelected(long _) => RebuildLibraries();
-    private bool MatchesLibrarySearch(BattleLabPublishedUnit unit)
-    {
-        var filter = _unitFilter.Selected < 0 ? 0 : _unitFilter.GetItemId(_unitFilter.Selected);
-        return (filter == 0 || unit.Classification.HasFlag((BattleLabUnitClassification)filter)) && Matches(unit, _unitSearch.Text);
-    }
-    private static bool Matches(BattleLabPublishedUnit unit, string query) => string.IsNullOrWhiteSpace(query) ||
-        unit.DisplayName.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase) ||
-        unit.StableId.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase) ||
-        unit.Definition.Description.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase);
     private string UnitName(string contentId) => _content?.TryGetUnit(contentId, out var unit) == true ? unit.DisplayName : contentId;
     private long ParseSeed() => long.TryParse(_seed.Text, System.Globalization.NumberStyles.Integer,
         System.Globalization.CultureInfo.InvariantCulture, out var value) ? value : throw new InvalidOperationException("随机种子必须是有效的 64 位整数。");
@@ -672,29 +520,22 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
     }
     private void LoadPreset(string name)
     {
-        if (_presetStore is null || _session is null) return;
-        if (!_presetStore.TryLoad(name, out var preset)) { _presetPanel.ShowFeedback("预设读取失败，当前配置未改变。"); return; }
-        var before = _session.Freeze();
-        try
-        {
-            _session.Restore(BattleLabPresetStore.ToSnapshot(preset)); RecordChange(before, "载入预设");
-            _activePresetName = name; _presetDigest = _session.Freeze().CanonicalDigest;
-            _selectedInstanceId = string.Empty; _selectedPrototype = string.Empty;
-            ResetDrag(); SyncRuleControls(); _presetPanel.Close(); RefreshAll($"已载入“{name}”。", true);
-        }
-        catch (Exception exception) { _presetPanel.ShowFeedback("无法载入：" + exception.Message); }
+        if (_editor?.Presets is null) return;
+        var result = _editor.LoadPreset(name);
+        if (!result.Succeeded) { _presetPanel.ShowFeedback(result.Message); return; }
+        _selectedInstanceId = ""; _selectedPrototype = "";
+        ResetDrag(); SyncRuleControls(); _presetPanel.Close(); RefreshAll(result.Message, true);
     }
     private void SavePreset(string name)
     {
-        if (_session is null || _presetStore is null) return;
-        if (_presetStore.BuiltIns.ContainsKey(name)) { _presetPanel.ShowFeedback("这是内置预设名称，请为自己的配置取一个新名字。"); return; }
-        if (name.Length is < 1 or > 64 || name.Any(character => !(char.IsLetterOrDigit(character) || character is '-' or '_' || character > 127)))
-        { _presetPanel.ShowFeedback("名称需为 1–64 个字，支持中文、字母、数字、横线和下划线；不含空格。"); return; }
+        if (_editor?.Presets is null) return;
+        var invalid = _editor.ValidatePresetName(name);
+        if (invalid.Length > 0) { _presetPanel.ShowFeedback(invalid); return; }
         if (!CommitRuleInputs()) { _presetPanel.ShowFeedback(_status.Text); return; }
-        if (!_presetStore.Save(name, _session.Freeze())) { _presetPanel.ShowFeedback("保存失败：实验室预设文件不可写。"); return; }
-        _activePresetName = name; _presetDigest = _session.Freeze().CanonicalDigest;
+        var result = _editor.SavePreset(name);
+        if (!result.Succeeded) { _presetPanel.ShowFeedback(result.Message); return; }
         _presetPanel.SelectSaved(name);
-        RefreshAll($"已保存“{name}”。", true);
+        RefreshAll(result.Message, true);
     }
     private void PopulateBuildChoices()
     {
@@ -766,79 +607,9 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
     }
     private void RefreshInspector(BattleLabDerivedProjection derived)
     {
-        _retentionUpgrade.Visible = false; _inspectorDetails.Text = string.Empty;
-        _statsPanel.Visible = false;
-        _inspectorStats.Text = string.Empty;
-        _inspectorGlossary.Text = string.Empty;
-        if (_session is null) return;
-        var selected = !string.IsNullOrEmpty(_selectedInstanceId) && _session.TryGet(_selectedInstanceId, out var instance) ? instance : null;
-        var contentId = selected?.ContentId ?? _selectedPrototype;
-        if (string.IsNullOrEmpty(contentId) || _content?.TryGetUnit(contentId, out var content) != true)
-        { _unitTitle.Text = "选择一个单位"; _inspector.Text = "点击左侧单位了解能力；点击场上单位调整装备与升阶。"; return; }
-        _unitTitle.Text = content.DisplayName + (selected is null ? " · 单位预览" : " · " + SideName(selected.Side));
-        var identity = $"内容：{contentId}";
-        if (selected is not null)
-        {
-            identity += $"\n实例：{selected.InstanceId}\n坐标：({selected.Cell.X}, {selected.Cell.Y})";
-            _retentionUpgrade.Visible = UnitSnapshotFor(content).AttackHitGrowth?.RetentionUpgradeAvailable == true;
-            _retentionUpgrade.SetPressedNoSignal(selected.RetainAttackStacks);
-        }
-        var definition = content.Definition;
-        var snapshot = UnitSnapshotFor(content);
-        float Read(CombatAttribute attribute, float fallback) => snapshot.AttributeDefinition?.Attributes
-            .FirstOrDefault(item => item.Attribute == attribute)?.BaseValue ?? fallback;
-        var health = definition.MaxHealth;
-        var damage = definition.AttackDamage;
-        var armor = definition.Armor;
-        var speed = Read(CombatAttribute.AttackSpeed, 1);
-        var reach = definition.AttackRange;
-        var resistance = definition.BaseControlResistance;
-        if (selected is not null && derived.Units.TryGetValue(selected.InstanceId, out var prepared))
-        {
-            health = prepared.Health; damage = prepared.Damage; armor = prepared.Armor;
-            speed = prepared.AttackSpeed; reach = prepared.Reach; resistance = prepared.ControlResistance;
-            var contributions = prepared.TraitContributions.Select(item =>
-                $"{item.TraitId} +{item.Value}（{DescribeTraitSource(item.SourceKind)} · {item.SourceInstanceId} · {item.ContentIdentity}）");
-            identity += "\n\n羁绊贡献来源\n" + string.Join("\n", contributions);
-        }
-        var equipment = selected is not null ? "\n\n装备：" +
-            (selected.Equipment.IsDefaultOrEmpty ? "无" : string.Join("、", selected.Equipment.OrderBy(item => item.SlotIndex)
-                .Select(item => $"{item.SlotIndex + 1}号槽 {EquipmentName(item.ContentId)}"))) : string.Empty;
-        var abilities = DescribeAbilities(content);
-        var interval = snapshot.AttackTicks * BattleTiming.TickSeconds / Math.Max(.01f, speed);
-        _statsPanel.Visible = true;
-        _healthStat.Bind(SemanticIconKeys.Health, $"{health:0.#}", "生命", "HealthValue");
-        _attackStat.Bind(SemanticIconKeys.Attack, $"{damage:0.#}", "攻击", "DamageValue");
-        _armorStat.Bind(SemanticIconKeys.Armor, $"{armor:0.#}", "防御", "ArmorValue");
-        _speedStat.Bind(SemanticIconKeys.Time, snapshot.Behavior.DisableBasicAttacks ? "—" : $"{1 / Math.Max(.01f, interval):0.##}/秒", "普攻频率", "RangeValue");
-        var attack = snapshot.Behavior.DisableBasicAttacks ? "不进行普攻" : $"普攻间隔 {interval:0.##} 秒 · 攻速倍率 ×{speed:0.##}";
-        var range = snapshot.AttackDelivery == AttackDelivery.Melee ? "近战触及" : "远程射程";
-        var maxMana = Read(CombatAttribute.MaxMana, definition.MaxMana);
-        _inspectorStats.Text = (selected is null ? "基础属性" : "当前配置属性") + $"\n{attack}\n{range} {reach:0.##} 格 · 控制抗性 {resistance:P0}" +
-            (maxMana > 0 ? $"\n基础法力 {Read(CombatAttribute.StartingMana, definition.StartingMana):0.#}/{maxMana:0.#} · 满蓝施法\n基础回蓝 {Read(CombatAttribute.ManaPerSecond, definition.ManaPerSecond):0.#}/秒" : "") + equipment;
-        _inspector.Text = abilities.Length == 0 ? definition.Description : abilities;
-        _inspectorGlossary.Text = string.Join("\n\n", _inspector.Vocabulary.Terms
-            .Where(term => _inspector.Text.Contains(term.Word, StringComparison.Ordinal))
-            .Select(term => term.Word + " · " + term.Explanation));
-        _inspectorDetails.Text = identity + (abilities.Length == 0 ? string.Empty : "\n\n内容说明\n" + definition.Description);
+        if (_editor is not null) _unitInspector.Refresh(_editor, _selection, derived);
     }
-    private string DescribeAbilities(BattleLabPublishedUnit content)
-    {
-        if (_content is null) return string.Empty;
-        var snapshot = UnitSnapshotFor(content);
-        var retain = _session?.TryGet(_selectedInstanceId, out var selected) == true &&
-            selected.ContentId == content.StableId && selected.RetainAttackStacks;
-        return BattleLabTooltipFormatter.Abilities(snapshot, content.Definition.Description, retain);
-    }
-    private UnitSnapshot UnitSnapshotFor(BattleLabPublishedUnit content)
-    {
-        if (!_unitSnapshots.TryGetValue(content.StableId, out var snapshot))
-        {
-            snapshot = BattleSetupFactory.Snapshot(content.Entry, _content!.Package.Content);
-            _unitSnapshots.Add(content.StableId, snapshot);
-        }
-        return snapshot;
-    }
+    private UnitSnapshot UnitSnapshotFor(BattleLabPublishedUnit content) => _editor!.UnitSnapshotFor(content);
     private void RefreshTeamFacts(BattleLabDerivedProjection derived)
     {
         if (_session is null) return;
@@ -895,22 +666,6 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         var id = _existingRelicIds[_existingRelicChoice.Selected];
         Edit("移除团队遗物", () => _session.RemoveRelic(id), "团队遗物已移除。", "遗物已不存在");
     }
-    private static string DescribeClassification(BattleLabUnitClassification classification)
-    {
-        var labels = new List<string>();
-        if (classification.HasFlag(BattleLabUnitClassification.PlayerHero)) labels.Add("英雄");
-        if (classification.HasFlag(BattleLabUnitClassification.TestDummy)) labels.Add("测试假人");
-        if (classification.HasFlag(BattleLabUnitClassification.PveNormal)) labels.Add("基础 / 普通");
-        if (classification.HasFlag(BattleLabUnitClassification.PveElite)) labels.Add("精英");
-        if (classification.HasFlag(BattleLabUnitClassification.PveBoss)) labels.Add("首领");
-        if (classification.HasFlag(BattleLabUnitClassification.PublishedSummon)) labels.Add("召唤物");
-        return labels.Count == 0 ? "单位" : string.Join(" / ", labels);
-    }
-    private static string DescribeTraitSource(TraitContributionSourceKind sourceKind) => sourceKind switch
-    {
-        TraitContributionSourceKind.Hero => "英雄", TraitContributionSourceKind.Equipment => "装备",
-        TraitContributionSourceKind.ExplicitExtra => "额外", _ => sourceKind.ToString()
-    };
     public override void _ExitTree()
     {
         BattleLabHoverHint.HideAll(true);
@@ -918,8 +673,7 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         foreach (var (button, handler) in _buttonBindings) if (IsInstanceValid(button)) button.Pressed -= handler;
         _buttonBindings.Clear(); _buttons.Clear();
         if (IsInstanceValid(_retentionUpgrade)) _retentionUpgrade.Toggled -= OnRetentionUpgrade;
-        if (IsInstanceValid(_unitSearch)) _unitSearch.TextChanged -= OnSearchChanged;
-        if (IsInstanceValid(_unitFilter)) _unitFilter.ItemSelected -= OnUnitFilterSelected;
+        _library?.Dispose();
         if (IsInstanceValid(_placementTeam)) _placementTeam.ItemSelected -= OnPlacementTeamChanged;
         if (IsInstanceValid(_presetPanel))
         { _presetPanel.LoadRequested -= LoadPreset; _presetPanel.SaveRequested -= SavePreset; }
@@ -931,14 +685,12 @@ public partial class BattleLabScreenController : Control, IUiMotionHost
         if (IsInstanceValid(_detailsPopup)) { _detailsPopup.Closed -= OnDetailsClosed; _detailsPopup.CancelActiveInteraction = null; }
         if (IsInstanceValid(_boardCenter)) _boardCenter.Resized -= ResizeBoard;
         Resized -= ResizeLayout;
-        foreach (var card in _cards)
-        { if (IsInstanceValid(card)) { card.Selected -= SelectPrototype; card.DragRequested -= BeginLibraryDrag; } }
         foreach (var cell in _cells.Values)
         {
             if (!IsInstanceValid(cell)) continue;
             cell.UnitSelected -= SelectInstance; cell.UnitDragRequested -= BeginInstanceDrag;
         }
-        _cards.Clear(); _cells.Clear(); _history.Clear(); _unitSnapshots.Clear();
+        _cells.Clear(); _editor = null; _drag = null;
         _content = null; _session = null; _presetStore = null; _derived = null;
     }
 }
