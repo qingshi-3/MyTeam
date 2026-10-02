@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_rl05_star"
+DisplayName = "猎星徽记"
+Description = "击败精英后额外从精英遗物池获得1件未拥有的遗物；池耗尽时不替换成其他收益。"
+Rarity = 1
+Price = 16
+Tags = Array[StringName]([&"item"])

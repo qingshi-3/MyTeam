@@ -25,21 +25,24 @@ public static class RunPopulationPolicy
     {
         if (run is null || rules is null)
             return new RunPopulationFacts(0, 0, 0, 0, 0, 0, false, "人口上下文不可用。");
-        var deployed = run.Deployment?.Count(id => !string.IsNullOrEmpty(id)) ?? 0;
-        var rosterCount = run.Roster?.Count ?? 0;
-        RunPopulationFacts Invalid(string reason, int effective = 0) => new(
-            run.CurrentPopulation,
-            rules.OrdinaryPopulationCap,
-            effective == 0 ? rules.OrdinaryPopulationCap : effective,
-            rules.PhysicalDeploymentCeiling,
-            deployed,
-            rosterCount,
-            false,
-            reason);
-
         if (run.Roster is null || run.Deployment is null || run.PopulationCapSources is null ||
             run.Roster.Any(hero => hero is null) || run.Deployment.Any(id => id is null))
-            return Invalid("人口依赖的名册、阵型或来源数据为空。");
+            return new(run.CurrentPopulation, rules.OrdinaryPopulationCap, rules.OrdinaryPopulationCap,
+                rules.PhysicalDeploymentCeiling, run.Deployment?.Count(id => !string.IsNullOrEmpty(id)) ?? 0,
+                run.Roster?.Count ?? 0, false, "人口依赖的名册、阵型或来源数据为空。");
+        return Evaluate(RunView.For(run), rules);
+    }
+
+    public static RunPopulationFacts Evaluate(RunView run, CompiledRunRules rules)
+    {
+        if (run is null || rules is null)
+            return new(0, 0, 0, 0, 0, 0, false, "人口上下文不可用。");
+        var deployed = run.Deployment.Count(id => !string.IsNullOrEmpty(id));
+        var rosterCount = run.Roster.Count;
+        RunPopulationFacts Invalid(string reason, int effective = 0) => new(
+            run.CurrentPopulation, rules.OrdinaryPopulationCap,
+            effective == 0 ? rules.OrdinaryPopulationCap : effective,
+            rules.PhysicalDeploymentCeiling, deployed, rosterCount, false, reason);
         var sourceIds = new HashSet<string>(StringComparer.Ordinal);
         long bonus = 0;
         foreach (var source in run.PopulationCapSources)

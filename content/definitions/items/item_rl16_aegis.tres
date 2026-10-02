@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_rl16_aegis"
+DisplayName = "盈愈护符"
+Description = "我方单位受到的溢出治疗有50%转为护盾；护盾仅保留在本场战斗。"
+Rarity = 1
+Price = 16
+Tags = Array[StringName]([&"item"])

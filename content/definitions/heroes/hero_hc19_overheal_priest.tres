@@ -3,6 +3,9 @@
 [ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="r0"]
 [ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc19_overheal_priest.tres" id="r1"]
 
+
+[ext_resource type="Resource" path="res://content/vfx/basic_holy_strike.tres" id="attack_visual"]
+
 [resource]
 script = ExtResource("r0")
 Id = "hero_hc19_overheal_priest"
@@ -18,6 +21,7 @@ AttackDamage = 12
 Armor = 2
 AttackRange = 5.2
 AttackDelivery = 1
+AttackVisual = ExtResource("attack_visual")
 ProjectileWindupSeconds = 0.5
 AttackReleaseProgress = 0.8
 AttackCooldown = 1.5

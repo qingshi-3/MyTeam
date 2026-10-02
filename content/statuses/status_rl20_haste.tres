@@ -1,0 +1,30 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Value = 0.08
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Attribute = 3
+Operation = 0
+Magnitude = SubResource("s0")
+SlotId = "status_rl20_haste_0"
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_rl20_haste"
+DisplayName = "猎性加速"
+Behavior = 2
+Disposition = 1
+AttributeModifiers = [SubResource("s1")]
+DurationKind = 1
+DurationTicks = 60
+StackLimit = 3
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+DispelCategory = 1

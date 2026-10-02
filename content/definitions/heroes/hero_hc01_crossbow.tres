@@ -3,6 +3,9 @@
 [ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
 [ext_resource type="Resource" path="res://content/portraits/heroes/hero_hc01_crossbow.tres" id="portrait"]
 
+
+[ext_resource type="Resource" path="res://content/vfx/projectile.tres" id="attack_visual"]
+
 [resource]
 script = ExtResource("script")
 Id = "hero_hc01_crossbow"
@@ -19,6 +22,7 @@ MaxHealth = 155
 AttackDamage = 22
 AttackRange = 5.2
 AttackDelivery = 1
+AttackVisual = ExtResource("attack_visual")
 ProjectileWindupSeconds = 0.5
 AttackReleaseProgress = 0.8
 AttackCooldown = 1.2

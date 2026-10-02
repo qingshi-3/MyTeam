@@ -12,9 +12,8 @@ public partial class GrowthHeroDefinition : Resource
     [Export] public float GrowthRate { get; set; } = .04f;
     [Export] public int ResearchYield { get; set; }
     [Export] public string AscensionId { get; set; } = string.Empty;
-    [Export] public string AscensionName { get; set; } = string.Empty;
-    [Export(PropertyHint.MultilineText)] public string AscensionDescription { get; set; } = string.Empty;
-    [Export] public AbilityLoadoutDefinition? AscendedLoadout { get; set; }
+    [Export] public GrowthAscensionDisplayDefinition? AscensionDisplay { get; set; }
+    [Export] public GrowthAscensionBenefitDefinition? AscensionBenefit { get; set; }
     [Export] public AbilityLoadoutDefinition? BaseLoadout { get; set; }
     [Export] public string MaterialCategory { get; set; } = string.Empty;
 }

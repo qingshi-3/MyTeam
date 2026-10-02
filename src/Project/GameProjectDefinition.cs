@@ -10,5 +10,6 @@ public partial class GameProjectDefinition : Resource
     [Export] public ContentCatalog? Content { get; set; }
     [Export] public CampaignDefinition? Campaign { get; set; }
     [Export] public RunRulesDefinition? RunRules { get; set; }
+    [Export] public MatrixStatusRulesDefinition? MatrixStatusRules { get; set; }
     [Export] public ProjectPresentationDefinition? Presentation { get; set; }
 }

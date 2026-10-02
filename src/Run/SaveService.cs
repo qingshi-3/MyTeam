@@ -74,15 +74,27 @@ public sealed class SaveService : IRunSaveService
 
     private bool Save<T>(string resourcePath, T value)
     {
+        string? temporary = null;
         try
         {
             var path = ProjectSettings.GlobalizePath(resourcePath);
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            var temporary = path + ".tmp";
+            temporary = path + $".{Guid.NewGuid():N}.tmp";
             File.WriteAllText(temporary, JsonSerializer.Serialize(value, _options));
             if (value is ActiveRunDto nextRun && File.Exists(path))
             {
-                var previous = JsonSerializer.Deserialize<ActiveRunDto>(File.ReadAllText(path), _options);
+                // A corrupt old file must not permanently prevent an explicit new run.
+                // Back it up before replacement; failed reads/backups still abort the save.
+                var previousJson = File.ReadAllText(path);
+                ActiveRunDto? previous;
+                try { previous = JsonSerializer.Deserialize<ActiveRunDto>(previousJson, _options); }
+                catch (JsonException) { previous = null; }
+                if (previous is null)
+                {
+                    var backups = path + ".backups";
+                    Directory.CreateDirectory(backups);
+                    File.Copy(path, Path.Combine(backups, $"corrupt-{Guid.NewGuid():N}.bak"));
+                }
                 if (previous is not null && previous.Version != nextRun.Version)
                     File.Copy(path, path + $".v{previous.Version}.{Guid.NewGuid():N}.bak");
             }
@@ -93,6 +105,12 @@ public sealed class SaveService : IRunSaveService
         {
             GD.PushError($"Save failed for {resourcePath}: {exception.Message}");
             return false;
+        }
+        finally
+        {
+            if (temporary is not null && File.Exists(temporary))
+                try { File.Delete(temporary); }
+                catch (Exception exception) { GD.PushWarning($"Save temporary cleanup failed: {exception.Message}"); }
         }
     }
 }

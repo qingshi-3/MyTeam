@@ -22,7 +22,7 @@ public partial class RecruitmentUniquenessContractSmoke : Node
             VerifySavedOffers(package);
             VerifyRepeatablePurchase(package);
             VerifyCompositeBranches(package);
-            GD.Print("RECRUITMENT_UNIQUENESS_CONTRACT_OK owned-and-reserve batch exhaustion reload atomic-purchase branches items-unchanged");
+            GD.Print("RECRUITMENT_UNIQUENESS_CONTRACT_OK owned-and-reserve batch exhaustion reload atomic-purchase branches relic-unique stock-consumed");
         }
         catch (Exception exception) { exit = 1; GD.PrintErr("RECRUITMENT_UNIQUENESS_CONTRACT_FAILED: " + exception); }
         GetTree().Quit(exit);
@@ -64,7 +64,12 @@ public partial class RecruitmentUniquenessContractSmoke : Node
         var itemId = app.Project.Campaign.ItemRewardPool.ContentIds[0];
         Require(app.GrantItem(itemId), "owned item fixture");
         var itemPool = app.Project.Campaign.ItemRewardPool with { ContentIds = [itemId, itemId] };
-        Require(rewards.PickEntries(run, itemPool, 6, 0).Count == 2, "hero rule does not change item supply");
+        Require(rewards.PickEntries(run, itemPool, 6, 0).Count == 0, "owned default-unique relic is excluded from direct item supply");
+        var equipmentId = app.Project.Campaign.ItemRewardPool.ContentIds.First(id =>
+            package.Content.TryGet(id, out var entry) && entry.Definition is TowerAutobattler.Content.ItemDefinition
+                { ProductKind: TowerAutobattler.Content.ItemProductKind.Equipment });
+        Require(app.GrantItem(equipmentId) && rewards.PickEntries(run, itemPool with { ContentIds = [equipmentId, equipmentId] }, 6, 0).Count == 2,
+            "equipment remains repeatable despite ordinary relic uniqueness");
 
         var a = Hero("a", eligible[0]);
         var duplicate = Hero("same-hero-different-card", eligible[0]) with { ContentId = eligible[1] };
@@ -160,14 +165,15 @@ public partial class RecruitmentUniquenessContractSmoke : Node
         Require(app.ResolveOffer("uniqueness-probe", "hero").Succeeded && run.Gold == 93 &&
                 run.Roster.Count(member => member.ContentId == id) == 1 &&
                 app.PendingOffer!.Choices.Select(card => card.StableId).SequenceEqual(["item"]),
-            "one successful purchase atomically removes hero card and keeps repeatable item");
+            "one successful purchase atomically removes hero stock and keeps unpurchased item");
         var writes = save.Attempts;
         Require(!app.ResolveOffer("uniqueness-probe", "hero").Succeeded && save.Attempts == writes && run.Gold == 93,
             "second hero purchase has no effect");
         var reloaded = new RunApplication(package.Content, save, app.Project);
         Require(reloaded.ResolveOffer("uniqueness-probe", "item").Succeeded &&
-                reloaded.ResolveOffer("uniqueness-probe", "item").Succeeded && reloaded.ActiveRun!.Gold == 89,
-            "repeatable item purchase unchanged after reload");
+                !reloaded.ResolveOffer("uniqueness-probe", "item").Succeeded && reloaded.ActiveRun!.Gold == 91 &&
+                reloaded.PendingOffer is { AllowSkip: true, Choices.IsEmpty: true },
+            "a visit can buy remaining stock, but the same sold stock cannot be bought twice after reload");
     }
 
     private static void VerifyCompositeBranches(CompiledGamePackage package)

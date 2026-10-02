@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://src/Experience/ExperienceSliceRoot.cs" id="1"]
 [ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="2"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/BattleScreen.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/ui/BattleReportScreen.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/ArmyOverview.tscn" id="9"]
+
+[ext_resource type="PackedScene" path="res://scenes/environments/CourtyardBackdrop.tscn" id="courtyard"]
 
 [node name="ExperienceSlice" type="Control"]
 layout_mode = 3
@@ -22,13 +24,8 @@ script = ExtResource("1")
 ProjectDefinition = ExtResource("3")
 SliceDefinition = ExtResource("4")
 
-[node name="Background" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-color = Color(0.018, 0.032, 0.043, 1)
+[node name="Background" parent="." instance=ExtResource("courtyard")]
+layout_mode = 0
 
 [node name="Screens" type="Control" parent="."]
 layout_mode = 1
@@ -64,4 +61,3 @@ size = Vector2i(520, 180)
 dialog_text = "本次尝试和检查点只在内存中，离开后不保留。\n正式征程和存档不会被修改。"
 ok_button_text = "离开试验"
 cancel_button_text = "继续体验"
-

@@ -1,7 +1,10 @@
-[gd_resource type="Resource" script_class="UnitDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="UnitDefinition" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="1"]
 [ext_resource type="Resource" path="res://content/portraits/enemies/enemy_hexer.tres" id="portrait"]
+
+
+[ext_resource type="Resource" path="res://content/vfx/basic_hex_ray.tres" id="attack_visual"]
 
 [resource]
 script = ExtResource("1")
@@ -18,6 +21,7 @@ MaxHealth = 85
 AttackDamage = 24
 AttackRange = 5
 AttackDelivery = 2
+AttackVisual = ExtResource("attack_visual")
 AttackCooldown = 1.7
 MoveInterval = 0.54
 Armor = 0

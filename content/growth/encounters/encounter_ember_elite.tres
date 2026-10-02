@@ -9,6 +9,8 @@
 [sub_resource type="Resource" id="pierce"]
 script = ExtResource("composition")
 StableId = "ember_elite_pierce"
+PressureSummary = "贯射弩卫从盾阵后方贯穿直线上的多个目标。"
+RewardResearch = 4
 DisplayName = "盾阵贯射"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -18,6 +20,8 @@ Cells = Array[Vector2i]([Vector2i(9, 2), Vector2i(7, 2), Vector2i(7, 3), Vector2
 [sub_resource type="Resource" id="furnace"]
 script = ExtResource("composition")
 StableId = "ember_elite_furnace"
+PressureSummary = "炉蜥持续喷吐锁定方向，弩手在后方补充远射伤害。"
+RewardMaterials = 2
 DisplayName = "炉蜥压阵"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -27,6 +31,8 @@ Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(7, 3), Vector2i(9, 2), Vector2
 [sub_resource type="Resource" id="blade"]
 script = ExtResource("composition")
 StableId = "ember_elite_blade"
+PressureSummary = "回刃手造成往返路径伤害，两翼割喉者同时近战接敌。"
+RewardGold = 6
 DisplayName = "回刃夹击"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -35,6 +41,7 @@ Cells = Array[Vector2i]([Vector2i(9, 2), Vector2i(7, 2), Vector2i(7, 1), Vector2
 
 [resource]
 script = ExtResource("1")
+OpponentChoiceCount = 3
 StableId = "encounter_ember_elite"
 NodeType = 1
 TitlePattern = "{region}精英战"

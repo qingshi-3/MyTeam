@@ -973,15 +973,15 @@ public partial class GameplayContractSmoke : Node
         foreach (var pair in expected)
         {
             state.Mode = pair.Key;
-            if (!SelectedUnitPanel.DescribeAction(state).Contains(pair.Value, StringComparison.Ordinal))
+            if (!SelectedUnitPanel.DescribeAction(BattleUnitView.For(state)).Contains(pair.Value, StringComparison.Ordinal))
                 throw new InvalidOperationException($"selected-unit action text omitted {pair.Key}");
         }
         state.Mode = BattleUnitMode.Recovering;
         state.AttackCooldown = 7;
         state.LastActionKind = BattleActionKind.Attack;
-        var attackCooldown = SelectedUnitPanel.DescribeAction(state);
+        var attackCooldown = SelectedUnitPanel.DescribeAction(BattleUnitView.For(state));
         state.LastActionKind = BattleActionKind.Heal;
-        var healCooldown = SelectedUnitPanel.DescribeAction(state);
+        var healCooldown = SelectedUnitPanel.DescribeAction(BattleUnitView.For(state));
         if (!attackCooldown.Contains("攻击冷却 0.7 秒", StringComparison.Ordinal) ||
             !healCooldown.Contains("治疗冷却 0.7 秒", StringComparison.Ordinal) ||
             attackCooldown.Contains("tick", StringComparison.OrdinalIgnoreCase) || healCooldown.Contains("tick", StringComparison.OrdinalIgnoreCase))

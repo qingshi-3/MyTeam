@@ -1,0 +1,30 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Value = -10
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Attribute = 4
+Operation = 0
+Magnitude = SubResource("s0")
+SlotId = "status_rl17_armor_broken_0"
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_rl17_armor_broken"
+DisplayName = "碎甲"
+Behavior = 2
+Disposition = 2
+AttributeModifiers = [SubResource("s1")]
+DurationKind = 1
+DurationTicks = 80
+AggregationPolicy = 1
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+DispelCategory = 1

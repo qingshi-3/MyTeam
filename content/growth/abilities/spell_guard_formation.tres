@@ -1,21 +1,51 @@
 [gd_resource type="Resource" script_class="AbilityDefinition" format=3]
 [ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
 [ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="matrix_targeting"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="matrix_magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="matrix_execution"]
+
+[sub_resource type="Resource" id="self_targeting"]
+script = ExtResource("matrix_targeting")
+Target = 0
+
+[sub_resource type="Resource" id="self_magnitude"]
+script = ExtResource("matrix_magnitude")
+OwnerHealthRatio = 0.15
+
+[sub_resource type="Resource" id="self_execution"]
+script = ExtResource("matrix_execution")
+DurationTicks = 180
+
 [sub_resource type="Resource" id="self"]
 script = ExtResource("operation")
 Kind = 2
-Target = 0
-OwnerHealthRatio = 0.15
-DurationTicks = 180
-[sub_resource type="Resource" id="near"]
-script = ExtResource("operation")
-Kind = 2
+Targeting = SubResource("self_targeting")
+Magnitude = SubResource("self_magnitude")
+Execution = SubResource("self_execution")
+
+[sub_resource type="Resource" id="near_targeting"]
+script = ExtResource("matrix_targeting")
 Target = 8
 Range = 2.5
 MaxTargets = 2
 ExcludeSelf = true
+
+[sub_resource type="Resource" id="near_magnitude"]
+script = ExtResource("matrix_magnitude")
 OwnerHealthRatio = 0.15
+
+[sub_resource type="Resource" id="near_execution"]
+script = ExtResource("matrix_execution")
 DurationTicks = 180
+
+[sub_resource type="Resource" id="near"]
+script = ExtResource("operation")
+Kind = 2
+Targeting = SubResource("near_targeting")
+Magnitude = SubResource("near_magnitude")
+Execution = SubResource("near_execution")
+
 [resource]
 script = ExtResource("ability")
 StableId = "growth_spell_guard_formation"

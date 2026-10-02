@@ -33,6 +33,8 @@ public static class RunDecisionValidation
     {
         if (offer is null) return true;
         if (string.IsNullOrWhiteSpace(offer.OfferId) || string.IsNullOrWhiteSpace(offer.DisplayName) || !Enum.IsDefined(offer.Kind) ||
+            !Enum.IsDefined(offer.RewardCategory) ||
+            offer.RewardCategory != RunRewardCategory.None && offer.Kind != RunOfferKind.CombatReward ||
             offer.FloorIndex != run.FloorIndex || offer.BattleNumber != run.BattleNumber || offer.Choices.IsDefault ||
             offer.Choices.IsEmpty && !offer.AllowSkip ||
             offer.Repeatable && offer.Kind != RunOfferKind.Shop || offer.Kind == RunOfferKind.Shop && !offer.AllowSkip ||

@@ -6,9 +6,9 @@ Reading boundary (2026-09-06): existing exact rules remain the current contract 
 
 ## Product Identity
 
-The game is a single-player tower-climbing roguelite hero-roster autobattler. The player chooses two heroes from six random opening candidates, grows a changing population and build during the run, deploys a formation on the spatial battlefield, and watches it resolve through real-time automatic combat with limited intervention from an independent tactical-command loadout.
+The game is a single-player tower-climbing roguelite hero-roster autobattler. The player chooses two heroes from six random opening candidates, grows a changing population and build during the run, deploys a formation on the spatial battlefield, and watches it resolve through real-time automatic combat. The default journey uses growth, pre-battle preparation and single-battle spells; combat has no tactical-command input. The legacy Alpha command loadout remains accessible through the developer menu.
 
-The main pleasure is seeing a deliberately constructed hero team operate across a readable spatial battlefield. It is not a traditional turn-by-turn tactics game, a PvP economy autobattler, a permanent troop-management game, or passive playback with no meaningful preparation or intervention.
+The main pleasure is seeing a deliberately constructed hero team operate across a readable spatial battlefield. It is not a traditional turn-by-turn tactics game, a PvP economy autobattler, a permanent troop-management game, or passive playback without meaningful preparation.
 
 ## 每战满血与战外生命展示
 
@@ -77,6 +77,8 @@ Hero role hierarchy, shared build grammar, population scaling, explicit count ba
 ## Opening And Recruitment Supply
 
 The bounded 2026-09-16 execution replaces free choice of one hero plus a random companion with six unique random candidates and exactly two player selections. Selection can be cancelled; candidates and selections survive menu navigation and reload. Confirmation opens the first ordinary battle's deployment screen without granting a third companion. The current test campaign makes its opening pool available independently of the legacy two-hero account unlock list; it does not erase account history.
+
+2026-09-29 用户明确修订：“新征程”每次重新随机生成六名候选并清空勾选，即使上一轮尚未确认；“继续征程”恢复原候选与勾选，返回菜单和读档本身不重抽。新征程保存成功后才替换旧征程，失败保留原状态。随机仍允许不同征程出现相同英雄，不额外加入跨局排除。
 
 The run pool contains 14 heroes across four acquisition tiers (4/4/4/2), supporting poison, death/summon and frost attack builds plus shared functions. Excluded run-pool heroes remain published for laboratory use and existing rosters. Tier means acquisition stage, not stars or cultivation rank; this pass does not retune hero combat attributes. The 300-hero long-term library and five-tier budget remain future content planning.
 
@@ -168,10 +170,12 @@ Authored death effects distinguish consuming a temporary ally, using an eligible
 - Reward acquisition is shown before continuing, with immediate optional allocation. Deployment and the roster drawer share equipment controls; click/select and drag/drop express the same validated command. Invalid operations, cancellation and persistence failure do not consume or duplicate equipment. Equipment editing is locked while a battle is active.
 
 - Route, recruitment/reward, shop, event, rest, and deployment decisions keep a compact roster summary available without leaving the current decision. A read-only overlay drawer provides each hero's health, deployment state, responsibility, reach, equipment, build facts, the two equipped tactical commands, and run-level relic effects.
+- Owned relics also occupy a persistent top shelf on those run decisions, in live Run battles and in continuing battle reports. Each relic has its own artwork; matching definitions share a displayed total stack count without merging their runtime instances. Hover or keyboard focus reveals complete Chinese effect rules. Overflow scrolls within the shelf. Inspection never consumes or changes relics; modal roster inspection temporarily covers the shelf, and laboratory battles use their own configuration rather than the Run shelf.
 - Formation changes are owned only by deployment. The deployment screen shows the same `10×6` logical floor, floor-rule previews, unchanged enemy starts, and all 18 candidate player cells in columns `0..2` used by battle setup. Floor rules decide which candidate cells are currently legal.
 - Current persistent population limits how many roster heroes may deploy, while the eighteen legal cells remain the physical ceiling. Ordinary growth targets `10`; explicit population builds may exceed it and high-roll toward `18`. Every deployed hero occupies one unique legal cell.
 - All roster heroes, including the starting hero, support the same drag/drop operations: reserve deployment into an empty cell, reserve replacement of an occupied hero, deployed movement, atomic position swap, and withdrawal into the reserve return area. Clicking a hero selects/inspects it; clicking another cell never commits a pending formation move. A reserve exists, but its exact capacity is not yet fixed.
 - Every visible destination state and rejection message comes from the same non-mutating formation evaluation used by the committing command. At most one drag-hover destination exists, and moving between cells, cancelling, dropping, rebinding, or leaving deployment clears that transient state. Cancelled or illegal deployment input changes neither run state nor save data. Withdrawal obeys the eventual authored reserve limit. Each successful formation command commits and saves exactly once; a persistence failure rolls the complete ordered roster and formation back to its exact prior state.
+- During pre-battle deployment, the unit portrait tile follows the pointer directly, with placement/swap/rejection feedback on the tile itself. Its base size matches the projected deployment tile; large bodies use their projected diameter. Lift and landing scale width and height together around the center, with a small spring overshoot. It does not jump around targets or create a separate highlighted destination region. The original-position silhouette and successful landing/cancel return feedback remain.
 - Concrete enemy starts use their independently animated idle portraits in deployment, with compact enemy/role/reach or boss redundancy. Hazards, objectives, and blocked terrain remain semantic markers.
 - On the pre-battle board, concrete enemies stand on the right and their character art faces left toward the player deployment zone. This deployment-only mirror never flips badges, labels, tooltips, layout, or interaction geometry and does not change the independently owned battle-facing rules or neutral portrait consumers.
 
@@ -219,6 +223,37 @@ Floor rules are visible before combat and are data-driven. The initial content m
 - 寒意与冰冻合并，只保留无法行动的冰冻；移除寒意叠层、减速及按目标层数提高概率。
 - 寒羽由本人普攻或技能箭实际命中触发，基础概率25%、基础时长0.8秒。沿用霜羽同盟现有2／4成员档：2–3名成员时35%，4名及以上50%，最终概率上限50%。同盟攻速加成保持；概率提升只作用于拥有寒羽的同盟成员，不因佩戴徽章自动授予寒羽。
 - 原生资格与同一持有者的徽章不重复计数。控制抗性继续缩短适用时长，无新增冻结免疫期；高攻速和多目标仍增加触发机会，数值为当前试玩基线，未表示平衡验收。
+
+## 成长征程的具体选敌与单场法术（2026-09-30）
+
+正式主菜单“开始新征程／继续征程”默认进入成长玩法，使用原成长存档；旧Alpha入口置于“练习与预览”中，不把旧档自动转换。开局六选二确认后进入当前路线。普通战选择节点后直接整备、查看本场实际敌军，不额外弹出选敌；精英战提供至多三个具体敌阵，至少两个不同组成可供比较。每项显示实际单位与数量、机制压力、金币／研究／材料胜利收益及失败代价；敌人详情可查看本场开战属性、技能与初始位置。确认后进入整备，场上仍可查看实际敌阵与地形。
+
+候选由本局种子、层数、节点类型和已制作敌阵决定，不按玩家阵容临时生成克制。浏览、返回或继续游戏不会重抽；确认才保存并锁定该对手。额外收益只在胜利后获得，普通／精英败战仍按全局生命规则推进，不能获得所选额外收益。具体选敌集中在精英挑战，Boss目前保留固定必经遭遇，待制作完整候选后再扩展；旧Alpha维持原行为。已锁定普通对手的旧v9存档继续原战斗及承诺收益，新普通战不提供候选额外奖励。
+
+成长征程采用纯自动战斗，不启用旧Alpha的战中战术指令。玩家通过选敌、整备和单场法术作战前决定；战斗页面可暂停／变速查看，不提供即时施放操作。
+
+整备页点击“战前法术”直达成长工坊，以研究兑换法术库存，战前选一个法术及一名上阵友方英雄。预设可修改或取消且不消费库存；正式开战消耗一份并自动执行，本场不能再改。当前可配置起测内容如下：
+
+| 法术 | 研究费用 | 本场效果 |
+| --- | ---: | --- |
+| 护阵 | 4 | 指定英雄及其2.5格内至多2名友军，获得相当于指定英雄本场生命上限15%的护盾，持续18秒 |
+| 蓄势 | 4 | 指定英雄开战获得25法力 |
+| 破阵 | 5 | 距指定英雄20格内最近至多3名敌人各受70普通伤害 |
+| 压制 | 3 | 距指定英雄20格内最近至多2名敌人攻速倍率降低0.35，持续8秒，不打断技能 |
+
+研究来源为研究生产者的真实节点产出和部分精英候选的胜利研究奖励。新局研究为0，不保证任意开局首战后即可施法；取消普通选敌不额外增发研究。法术是有限的本场投入，不作为某类敌人的唯一钥匙。费用、效果、敌阵与收益均为首版验证基线，机制可用不代表节奏／平衡已经验收。实现与验收见[活动任务](../work-items/active/opponent-choice-and-prebattle-spells.md)。
+
+## 通用遗物逻辑测试批（2026-10-01）
+
+用户明确授权接入通用遗物，随后限定图标暂不制作，效果风格确认后再继续。当前 25 项规则及单项测试数值见[通用遗物](generic-relics.md)：24 项进入成长供给；专门入场能力重复已实现，但因当前英雄无对应入场能力，暂不供给。数值与节奏待验收，不冻结正在重设计的整局进程。败战通常无胜利奖励；明确声明在战后结算的击杀装备契约按其已累计资格发奖，与普通胜利战利品分开。
+
+## 成长战后独立奖励组（2026-09-30）
+
+胜利的基础收益直接到账，与构筑领奖分开。成长配置按本场实际提供的物品类别分别生成装备组和遗物组，组内取舍；当前起测配置为每个有候选的类别最多三个候选、选择一件，也可独立跳过。领取装备不消耗遗物名额，跳过一组不影响另一组或已到账基础收益。候选不足时少给，空组不出现；不推定所有战斗永久必须提供全部类别。类别频率、候选数和节奏仍待试玩。
+
+整份候选随胜利冻结，领奖中途继续游戏恢复原组与剩余候选，不重抽、不重复发基础收益或成长产出。旧版本的一次混合待领奖机会保持原资格，不在迁移时扩大成两个名额。普通遗物默认唯一，取得后不再进入普通供给，明确可重复的内容除外；装备允许同名。商店购买消耗对应现货，其他商品可继续买，购买不自动补货；本批没有新增主动刷新。
+
+当前仍沿用15节点／三区与三选节点的外层基线。本批整合入口、奖励和战前抓手，不将该外层循环标为新的整局方案；用户指出的主循环替代形式仍待R10回接。
 
 ## Alpha Content
 

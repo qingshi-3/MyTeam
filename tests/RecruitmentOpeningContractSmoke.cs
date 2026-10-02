@@ -14,6 +14,9 @@ using TowerAutobattler.UI;
 // Production package, detached memory saves. Rendered mode also drives the real coordinator by input.
 public partial class RecruitmentOpeningContractSmoke : Control
 {
+    private UiInputStage? _stage;
+    private bool OpeningOnly => OS.GetCmdlineUserArgs().Contains("--opening-only");
+
     public override async void _Ready()
     {
         var exit = 0;
@@ -23,9 +26,12 @@ public partial class RecruitmentOpeningContractSmoke : Control
                 GD.Load<GameProjectDefinition>("res://content/project/alpha_project.tres"));
             var package = gate.Package ?? throw new InvalidOperationException(string.Join(';', gate.Report.CoreErrors));
             VerifyOpening(package);
-            VerifySupply(package);
-            VerifyInvalidAuthoring(package);
-            GD.Print("RECRUITMENT_OPENING_CONTRACT_OK persistence atomicity boundaries distribution exhaustion uniqueness legacy-load");
+            if (!OpeningOnly)
+            {
+                VerifySupply(package);
+                VerifyInvalidAuthoring(package);
+            }
+            GD.Print("RECRUITMENT_OPENING_CONTRACT_OK new-draft reload persistence atomicity uniqueness legacy-load");
             if (DisplayServer.GetName() != "headless") await VerifyInput(package);
         }
         catch (Exception exception)
@@ -63,11 +69,24 @@ public partial class RecruitmentOpeningContractSmoke : Control
         Require(!app.ConfirmOpeningRecruitment() && !app.ToggleOpeningHero("unknown") &&
             !app.SelectNode(TowerNodeType.Combat) && !app.Recruit(candidates[0]) && app.CurrentOptions().Count == 0 &&
             Snapshot(run) == before && save.Json == stored, "draft cannot bypass selection or enter run operations");
-        Require(app.BeginOpeningRecruitment(999) && Snapshot(run) == before, "new-game return cannot reroll a pending draft");
         save.Fail = true;
         Require(!app.ToggleOpeningHero(candidates[0]) && Snapshot(run) == before && save.Json == stored, "toggle save failure is atomic");
         save.Fail = false;
         Require(app.ToggleOpeningHero(candidates[0]) && !app.ConfirmOpeningRecruitment(), "one selected is insufficient");
+        before = Snapshot(run); stored = save.Json;
+        save.Fail = true;
+        Require(!app.BeginOpeningRecruitment(999) && ReferenceEquals(app.ActiveRun, run) &&
+            Snapshot(run) == before && save.Json == stored, "failed new opening preserves the selected draft and its save");
+        save.Fail = false;
+        Require(app.BeginOpeningRecruitment(999) && !ReferenceEquals(app.ActiveRun, run) &&
+            app.ActiveRun is { Seed: 999, OpeningRecruitment.SelectedIds.IsEmpty: true } &&
+            Snapshot(run) == before, "new game replaces a pending draft and clears its selections");
+        var expected = new RunApplication(package.Content, new MemorySave(), package.Project);
+        Require(expected.BeginOpeningRecruitment(999) &&
+            app.ActiveRun!.OpeningRecruitment!.CandidateIds.SequenceEqual(expected.ActiveRun!.OpeningRecruitment!.CandidateIds) &&
+            save.Json == Snapshot(app.ActiveRun), "replacement uses the new seed and is saved before publication");
+        candidates = app.ActiveRun!.OpeningRecruitment!.CandidateIds;
+        Require(app.ToggleOpeningHero(candidates[0]), "select a hero in the new draft");
         app = new RunApplication(package.Content, save, package.Project);
         run = app.ActiveRun!;
         Require(run.OpeningRecruitment!.CandidateIds.SequenceEqual(candidates) &&
@@ -194,9 +213,10 @@ public partial class RecruitmentOpeningContractSmoke : Control
 
     private async Task VerifyInput(CompiledGamePackage package)
     {
+        _stage = new UiInputStage(this, true);
         var game = GD.Load<PackedScene>("res://scenes/app/GameRoot.tscn").Instantiate<GameRoot>();
         game.SaveNamespace = $"tests/recruitment-opening/{Guid.NewGuid():N}";
-        AddChild(game);
+        _stage.AddChild(game);
         for (var frame = 0; frame < 180 && game.Content is null; frame++) await Frames(1);
         Require(game.Content is not null, "production root ready");
         game.Flow.Dispose();
@@ -212,19 +232,41 @@ public partial class RecruitmentOpeningContractSmoke : Control
         var tiles = screen.GetNode<GridContainer>("%HeroLibrary").GetChildren().OfType<HeroLibraryTile>().ToArray();
         var confirm = screen.GetNode<Button>("%ConfirmOpening");
         Require(tiles.Length == 6 && confirm.Disabled, "six candidates rendered and confirmation disabled");
-        Require(tiles.All(tile => screen.GetGlobalRect().Encloses(tile.GetGlobalRect())) &&
-            screen.GetGlobalRect().Encloses(confirm.GetGlobalRect()), "all candidates and confirmation visible");
+        var libraryScroll = screen.GetNode<ScrollContainer>("%LibraryScroll");
+        Require(tiles.All(tile => libraryScroll.GetGlobalRect().Encloses(tile.GetGlobalRect())) &&
+            screen.GetGlobalRect().Encloses(confirm.GetGlobalRect()), "all six candidates and confirmation fit without scrolling");
         await Capture("candidates");
         await Click(tiles[0]);
         Require(app.ActiveRun!.OpeningRecruitment!.SelectedIds.SequenceEqual([tiles[0].StableId]) && confirm.Disabled, "click selects one");
+        var firstSeat = screen.GetNode<OpeningHeroSeat>("%FirstSeat");
+        save.Fail = true;
+        await Click(firstSeat);
+        Require(firstSeat.StableId == tiles[0].StableId && !firstSeat.Disabled &&
+            app.ActiveRun.OpeningRecruitment.SelectedIds.SequenceEqual([tiles[0].StableId]) &&
+            screen.GetNode<Label>("%OpeningStatus").Visible,
+            "failed seat cancellation preserves the saved card and visible seat");
+        save.Fail = false;
         await Click(tiles[1]);
         Require(app.ActiveRun.OpeningRecruitment.SelectedIds.Length == 2 && !confirm.Disabled, "click selects second");
+        await Capture("selected");
+        var point = tiles[1].GetGlobalRect().GetCenter();
+        Inject(new InputEventMouseMotion { Position = point, GlobalPosition = point });
+        await Frames(30);
+        Require(tiles[1].Disclosure.IsOpen && !tiles[1].HasNode("DetailsButton"), "hover opens production card without a details button");
+        await Capture("details");
         await Click(tiles[2]);
         Require(app.ActiveRun.OpeningRecruitment.SelectedIds.Length == 2 && screen.PreviewStableId == tiles[2].StableId, "third click previews without adding");
         await Click(tiles[0]);
         Require(confirm.Disabled && app.ActiveRun.OpeningRecruitment.SelectedIds.Length == 1, "click deselects");
-        for (var step = 0; step < 25 && GetViewport().GuiGetFocusOwner() != tiles[0]; step++) await KeyPress(Key.Tab);
-        Require(GetViewport().GuiGetFocusOwner() == tiles[0], "keyboard tab reaches candidate");
+        // Leave mouse inspection, then actually navigate with the keyboard even
+        // when the previous click already focused the first candidate.
+        Inject(new InputEventMouseMotion { Position = new Vector2(800, 150), GlobalPosition = new Vector2(800, 150) });
+        await ToSignal(GetTree().CreateTimer(.5), SceneTreeTimer.SignalName.Timeout);
+        await KeyPress(Key.Tab);
+        for (var step = 0; step < 25 && _stage.Viewport.GuiGetFocusOwner() != tiles[0]; step++) await KeyPress(Key.Tab);
+        Require(_stage.Viewport.GuiGetFocusOwner() == tiles[0], "keyboard tab reaches candidate");
+        await ToSignal(GetTree().CreateTimer(.4), SceneTreeTimer.SignalName.Timeout);
+        Require(tiles[0].Disclosure.IsOpen, "keyboard focus reveals buttonless card details");
         await KeyPress(Key.Enter);
         Require(app.ActiveRun.OpeningRecruitment.SelectedIds.Length == 2 && !confirm.Disabled, "keyboard selection works");
         var snapshot = Snapshot(app.ActiveRun);
@@ -234,6 +276,27 @@ public partial class RecruitmentOpeningContractSmoke : Control
         await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/ContinueButton"));
         Require(screen.IsVisibleInTree() && Snapshot(app.ActiveRun!) == snapshot && !confirm.Disabled, "continue after reload restores entire draft");
         await Capture("selected");
+        for (var attempt = 0; attempt < 3; attempt++)
+        {
+            var previous = app.ActiveRun!;
+            await Click(screen.GetNode<Button>("%BackButton"));
+            await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/NewRunButton"));
+            Require(screen.IsVisibleInTree() && !ReferenceEquals(app.ActiveRun, previous) &&
+                app.ActiveRun!.Seed != previous.Seed && app.ActiveRun.OpeningRecruitment!.SelectedIds.IsEmpty && confirm.Disabled,
+                "each new-game click starts a fresh draft with cleared selections");
+            tiles = screen.GetNode<GridContainer>("%HeroLibrary").GetChildren().OfType<HeroLibraryTile>().ToArray();
+            Require(tiles.Length == 6 && tiles.Select(tile => tile.StableId).SequenceEqual(app.ActiveRun!.OpeningRecruitment!.CandidateIds),
+                "six rendered cards match the newly saved candidates");
+            GD.Print($"RECRUITMENT_NEW_GAME_INPUT seed={app.ActiveRun!.Seed} candidates={string.Join(',', app.ActiveRun.OpeningRecruitment!.CandidateIds)}");
+            if (attempt == 0) await Capture("rerolled");
+            await Click(tiles[0]);
+        }
+        await Click(tiles[1]);
+        snapshot = Snapshot(app.ActiveRun!);
+        await Click(screen.GetNode<Button>("%BackButton"));
+        app = new RunApplication(package.Content, save, package.Project);
+        await Click(screens.MainMenu.GetNode<Button>("Center/Panel/Menu/ContinueButton"));
+        Require(Snapshot(app.ActiveRun!) == snapshot && !confirm.Disabled, "continue restores the replacement draft after reload");
         save.Fail = true;
         await Click(confirm);
         Require(screen.IsVisibleInTree() && Snapshot(app.ActiveRun!) == snapshot, "failed UI confirmation remains retryable");
@@ -242,6 +305,14 @@ public partial class RecruitmentOpeningContractSmoke : Control
         Require(screens.Deployment.IsVisibleInTree() && app.ActiveRun is { OpeningRecruitment: null, Roster.Count: 2 }, "confirmation opens first deployment");
         Require(screens.Deployment.GetNode<Control>("%ReserveBench").IsVisibleInTree(), "persistent reserve bench remains visible");
         await Capture("deployment");
+
+        if (OpeningOnly)
+        {
+            GD.Print("RECRUITMENT_OPENING_INPUT_OK new-game-reroll cleared-selection continue-reload mouse keyboard failed-save confirm deployment isolated-pointer");
+            game.QueueFree();
+            await Frames(3);
+            return;
+        }
 
         // Inspect a mid-run opportunity without simulating a full run or touching player saves.
         var run = app.ActiveRun!;
@@ -264,26 +335,28 @@ public partial class RecruitmentOpeningContractSmoke : Control
     private async Task Click(Control target)
     {
         var point = target.GetGlobalRect().GetCenter();
-        Input.WarpMouse(GetViewport().GetFinalTransform() * point); await Frames(1);
+        Require(target.IsVisibleInTree() && _stage!.Viewport.GetVisibleRect().HasPoint(point), "click target is visible in isolated viewport");
         Inject(new InputEventMouseMotion { Position = point, GlobalPosition = point });
+        await Frames(1);
         Inject(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, ButtonMask = MouseButtonMask.Left, Pressed = true });
         Inject(new InputEventMouseButton { Position = point, GlobalPosition = point, ButtonIndex = MouseButton.Left, Pressed = false });
         await Frames(3);
     }
-    private void Inject(InputEvent input) => Input.ParseInputEvent(input.XformedBy(GetViewport().GetFinalTransform()));
+    private void Inject(InputEvent input) => _stage!.Push(input);
     private async Task KeyPress(Key key)
     {
-        Input.ParseInputEvent(new InputEventKey { Keycode = key, PhysicalKeycode = key, Pressed = true });
-        Input.ParseInputEvent(new InputEventKey { Keycode = key, PhysicalKeycode = key, Pressed = false });
+        Inject(new InputEventKey { Keycode = key, PhysicalKeycode = key, Pressed = true });
+        Inject(new InputEventKey { Keycode = key, PhysicalKeycode = key, Pressed = false });
         await Frames(2);
     }
     private async Task Frames(int count) { for (var i = 0; i < count; i++) await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); }
     private async Task Capture(string name)
     {
-        await ToSignal(RenderingServer.Singleton, RenderingServer.SignalName.FramePostDraw);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        RenderingServer.ForceDraw(false);
         var folder = ProjectSettings.GlobalizePath("res://.godot/ui-review");
         System.IO.Directory.CreateDirectory(folder);
-        GetViewport().GetTexture().GetImage().SavePng($"{folder}/recruitment-opening-{name}.png");
+        (_stage?.Viewport ?? GetViewport()).GetTexture().GetImage().SavePng($"{folder}/recruitment-opening-{name}.png");
     }
     private static string Snapshot(ActiveRunDto run) => JsonSerializer.Serialize(run);
     private static void Require(bool condition, string label) { if (!condition) throw new InvalidOperationException(label); }

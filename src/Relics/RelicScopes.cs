@@ -442,6 +442,7 @@ public sealed class RelicBattleRuntimeContext
     public required Func<string, int, float, float, string, bool> Summon { get; init; }
     public required Func<int> CurrentTick { get; init; }
     public int EmptyDeploymentSlots { get; init; }
+    public Func<int> RemainingGold { get; init; } = () => 0;
 }
 
 public sealed class RelicBattleScope : IDisposable
@@ -521,13 +522,14 @@ public sealed class RelicBattleScope : IDisposable
                 foreach (var binding in instance.Definition.AttributeBindings)
                 {
                     RefreshProjection(instance, binding);
-                    if (binding.Target is not (CompiledRelicPlayerFormationAdjacentTarget or CompiledRelicPlayerSummonsTarget)) continue;
+                    if (binding.Target is not (CompiledRelicPlayerFormationAdjacentTarget or CompiledRelicPlayerSummonsTarget or CompiledRelicPlayerTeamTarget)) continue;
                     foreach (var eventKind in new[]
                              {
                                  BattleCombatEventKind.UnitMoved,
                                  BattleCombatEventKind.UnitSummoned,
                                  BattleCombatEventKind.AllegianceChanged,
-                                 BattleCombatEventKind.UnitDefeated
+                                 BattleCombatEventKind.UnitDefeated,
+                                 BattleCombatEventKind.UnitRevived
                              })
                     {
                         var source = Source(instance, binding.BindingId);
@@ -557,7 +559,8 @@ public sealed class RelicBattleScope : IDisposable
                 if (!instance.Definition.StatusGrants.IsDefaultOrEmpty)
                 {
                     if (context.StatusGrants is null) throw new InvalidOperationException("Relic grants require a Status grant context.");
-                    foreach (var kind in new[] { BattleCombatEventKind.UnitMoved, BattleCombatEventKind.UnitSummoned, BattleCombatEventKind.UnitDefeated })
+                    foreach (var kind in new[] { BattleCombatEventKind.UnitMoved, BattleCombatEventKind.UnitSummoned, BattleCombatEventKind.UnitDefeated,
+                        BattleCombatEventKind.UnitRevived, BattleCombatEventKind.AllegianceChanged })
                     {
                         var source = Source(instance, "passive_grants");
                         _subscriptions.Add(context.CombatBindings.Subscribe(kind, source, 0,
@@ -582,7 +585,7 @@ public sealed class RelicBattleScope : IDisposable
         EnsureActive();
         foreach (var instance in OrderedInstances())
         foreach (var binding in instance.Definition.AttributeBindings)
-            if (binding.Target is CompiledRelicPlayerSummonsTarget)
+            if (binding.Target is CompiledRelicPlayerSummonsTarget or CompiledRelicPlayerTeamTarget)
                 RefreshProjection(instance, binding);
     }
 
@@ -759,6 +762,7 @@ public sealed class RelicBattleScope : IDisposable
                 new BattleAttributeMagnitudeContext(
                     target.Attributes,
                     target.Attributes,
+                    contextValue: key => key == "relic_gold" ? _context!.RemainingGold() : throw new InvalidOperationException("Unknown relic context: " + key),
                     teamCount: TeamCount));
             _modifierProjections.Add(key, new ModifierProjection(target.Attributes, source, handle));
         }
@@ -835,6 +839,7 @@ public sealed class RelicBattleScope : IDisposable
                 new BattleAttributeMagnitudeContext(
                     target.Attributes,
                     target.Attributes,
+                    contextValue: key => key == "relic_gold" ? _context!.RemainingGold() : throw new InvalidOperationException("Unknown relic context: " + key),
                     teamCount: TeamCount));
             _modifierProjections.Add(key, new ModifierProjection(target.Attributes, source, handle));
         }
@@ -858,6 +863,7 @@ public sealed class RelicBattleScope : IDisposable
         var units = Units();
         return target switch
         {
+            CompiledRelicPlayerTeamTarget => units.Where(unit => unit.Team == 0),
             CompiledRelicPlayerArmyTarget => units.Where(unit =>
                 unit.Team == 0 && unit.IsInitial && !unit.IsTemporary && !unit.IsHero),
             CompiledRelicPlayerSummonsTarget => units.Where(unit =>
@@ -897,6 +903,8 @@ public sealed class RelicBattleScope : IDisposable
                 unit.Team == counter.Team && unit.Alive && (counter.IncludeTemporary || !unit.IsTemporary)),
             RelicCounterSourceKind.Attack => MatchesUnit(
                 units, combatEvent.SourceRuntimeId, counter.Team, counter.IncludeTemporary) ? 1 : 0,
+            RelicCounterSourceKind.Kill => MatchesUnit(units, combatEvent.SourceRuntimeId, counter.Team, true) &&
+                MatchesUnit(units, combatEvent.TargetRuntimeId, 1 - counter.Team, counter.IncludeTemporary) ? 1 : 0,
             RelicCounterSourceKind.Death => MatchesUnit(
                 units, combatEvent.TargetRuntimeId, counter.Team, counter.IncludeTemporary) ? 1 : 0,
             _ => throw new InvalidOperationException($"Unsupported Relic counter source: {counter.Source}")
@@ -933,6 +941,7 @@ public sealed class RelicBattleScope : IDisposable
             executions,
             current));
 
+        if (counter.ThresholdEffect is null) return; // Consumed by the atomic run settlement.
         for (var execution = 0; execution < executions; execution++)
         {
             var targetId = ThresholdTarget(counter, combatEvent);

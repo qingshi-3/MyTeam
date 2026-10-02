@@ -9,6 +9,8 @@
 [sub_resource type="Resource" id="guard"]
 script = ExtResource("composition")
 StableId = "crown_combat_guard"
+PressureSummary = "重甲前排抵挡攻击，幼龙的范围射击与鹰手远射形成持续后排压力。"
+RewardGold = 4
 DisplayName = "鳞甲护射"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -18,6 +20,8 @@ Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(7, 3), Vector2i(7, 1), Vector2
 [sub_resource type="Resource" id="line"]
 script = ExtResource("composition")
 StableId = "crown_combat_line"
+PressureSummary = "重甲单位阻挡正面，贯光术士攻击同一直线上的多个目标。"
+RewardResearch = 2
 DisplayName = "重卫贯光"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -26,6 +30,7 @@ Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(7, 3), Vector2i(7, 4), Vector2
 
 [resource]
 script = ExtResource("1")
+OpponentChoiceCount = 3
 StableId = "encounter_crown_combat"
 NodeType = 0
 TitlePattern = "{region}遭遇战"

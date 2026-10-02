@@ -48,7 +48,11 @@ public sealed class RunBattlePreparationService
                 throw new InvalidOperationException("Player formation is invalid for the selected floor rule.");
 
             var relics = _relics.PrepareBattle(Key(run), Bindings(run));
-            var tacticalCommands = TacticalCommandBattlePreparationBuilder.Build(run, _content.Graph);
+            // Growth battles execute the prepared roster and one-shot spell automatically.
+            // Historical loadout ids stay in Run saves but confer no combat intervention.
+            var tacticalCommands = _growthRules is null
+                ? TacticalCommandBattlePreparationBuilder.Build(run, _content.Graph)
+                : null;
             var request = RunBattlePreparationAdapter.CreateRequest(
                 _content,
                 run,
@@ -62,6 +66,9 @@ public sealed class RunBattlePreparationService
                 requireLegalFormation, _growthRules);
             return BattlePreparationAssembler.Assemble(request with
             {
+                Units = encounter.IsElite ? request.Units.Select(unit => unit.Team == 1 && !unit.IsTemporary
+                    ? unit with { HealthRatio = unit.HealthRatio * new RunRelicRules(_content).EliteHealthRatio(run) } : unit).ToImmutableArray() : request.Units,
+                MatrixStatusRules = _project.MatrixStatusRules,
                 EnemyHealthMultiplier = compiledEncounter.EnemyHealthMultiplier * LocalMultiplier(compiledEncounter.LocalHealthMultipliers, run),
                 EnemyDamageMultiplier = compiledEncounter.EnemyDamageMultiplier * LocalMultiplier(compiledEncounter.LocalDamageMultipliers, run)
             });

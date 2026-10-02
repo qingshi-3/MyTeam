@@ -1,6 +1,9 @@
 [gd_resource type="Resource" script_class="UnitDefinition" format=3]
 [ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
 [ext_resource type="Resource" path="res://content/portraits/enemies/enemy_ee08_return_blade.tres" id="portrait"]
+
+[ext_resource type="Resource" path="res://content/vfx/basic_blade.tres" id="attack_visual"]
+
 [resource]
 script = ExtResource("script")
 Portrait = ExtResource("portrait")
@@ -20,5 +23,6 @@ BodyRadius = 0.45
 Armor = 3
 Tags = Array[StringName]([&"enemy", &"elite"])
 AttackDelivery = 1
+AttackVisual = ExtResource("attack_visual")
 ProjectileWindupSeconds = 0.4
 AttackReleaseProgress = 0.52

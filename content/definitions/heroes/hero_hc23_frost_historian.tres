@@ -5,10 +5,13 @@
 
 [ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="ne10_trait_script"]
 
+[ext_resource type="Resource" path="res://content/vfx/projectile.tres" id="attack_visual"]
+
 [sub_resource type="Resource" id="ne10_winter_member"]
 script = ExtResource("ne10_trait_script")
 TraitId = "trait_ne10_winter"
 Value = 1
+
 
 [resource]
 script = ExtResource("r0")
@@ -25,6 +28,7 @@ AttackDamage = 18
 Armor = 2
 AttackRange = 5.2
 AttackDelivery = 1
+AttackVisual = ExtResource("attack_visual")
 ProjectileWindupSeconds = 0.5
 AttackReleaseProgress = 0.8
 AttackCooldown = 1.3

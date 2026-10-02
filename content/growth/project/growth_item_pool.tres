@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "pool_growth_items"
+Kind = 1
+ContentIds = PackedStringArray("item_gilded_contract", "item_blood_chalice", "item_duelist_seal", "item_lone_crown", "item_commander_map", "item_crimson_mail", "equipment_vanguard_insignia", "equipment_rimebrand", "equipment_field_focus", "equipment_ne01_mana_charm", "equipment_ne10_swift_gloves", "equipment_ne10_winter_badge", "item_ne01_opening_bulwark", "item_ne02_bone_vigor", "item_ne10_control_shelter", "item_rl01_card", "item_rl02_bank", "item_rl03_ticket", "item_rl04_idol", "item_rl05_star", "item_rl06_insect", "item_rl07_bowl", "item_rl08_piggy", "item_rl09_padding", "item_rl10_recycler", "item_rl11_crowbar", "item_rl12_crystal", "item_rl13_rounds", "item_rl14_gasoline", "item_rl15_scythe", "item_rl16_aegis", "item_rl17_hammer", "item_rl18_mark", "item_rl19_topaz", "item_rl20_instinct", "item_rl21_hoodie", "item_rl22_riposte", "item_rl24_snuffer", "item_rl25_bounty")

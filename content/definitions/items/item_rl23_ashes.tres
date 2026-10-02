@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_rl23_ashes"
+DisplayName = "返响骨灰"
+Description = "我方单位成功触发入场能力后额外执行一次；不重复普通开战动作，不增加所有召唤技能的召唤数。"
+Rarity = 1
+Price = 16
+Tags = Array[StringName]([&"item"])

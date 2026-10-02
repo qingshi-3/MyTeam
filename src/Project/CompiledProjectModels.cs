@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using Godot;
+using TowerAutobattler.Battle;
 using TowerAutobattler.Abilities;
 using TowerAutobattler.Content;
 using TowerAutobattler.Domain;
@@ -43,7 +44,14 @@ public sealed record CompiledBossTimeline(
     ImmutableArray<CompiledBossPhase> Phases);
 
 public sealed record CompiledEncounterComposition(string StableId, string DisplayName, int MinLocalFloor,
-    int MaxLocalFloor, ImmutableArray<string> EnemyIds, ImmutableArray<Vector2I> Cells);
+    int MaxLocalFloor, ImmutableArray<string> EnemyIds, ImmutableArray<Vector2I> Cells)
+{
+    public string PressureSummary { get; init; } = string.Empty;
+    public int RewardGold { get; init; }
+    public int RewardResearch { get; init; }
+    public int RewardMaterials { get; init; }
+    public bool OpponentChoiceOnly { get; init; }
+}
 
 public sealed record CompiledEncounter(
     string StableId,
@@ -61,6 +69,7 @@ public sealed record CompiledEncounter(
     public ImmutableArray<float> LocalHealthMultipliers { get; init; } = [];
     public ImmutableArray<float> LocalDamageMultipliers { get; init; } = [];
     public ImmutableArray<CompiledEncounterComposition> Compositions { get; init; } = [];
+    public int OpponentChoiceCount { get; init; }
     public string Title(string regionName) => TitlePattern.Replace("{region}", regionName);
 }
 
@@ -83,6 +92,7 @@ public sealed record CompiledCampaign(
 {
     public int TotalFloors => FloorsPerRegion * Regions.Length;
     public CompiledRecruitmentSupply? RecruitmentSupply { get; init; }
+    public bool SeparateItemRewardCategories { get; init; }
     public ImmutableDictionary<RunOfferKind, CompiledRunOffer> RunOffers { get; init; } = ImmutableDictionary<RunOfferKind, CompiledRunOffer>.Empty;
 }
 
@@ -137,7 +147,10 @@ public sealed record CompiledGameProject(
     CompiledCampaign Campaign,
     CompiledRunRules RunRules,
     CompiledProjectPresentation Presentation,
-    ImmutableDictionary<string, PackedScene> FloorRules);
+    ImmutableDictionary<string, PackedScene> FloorRules)
+{
+    public CompiledMatrixStatusRules MatrixStatusRules { get; init; } = CompiledMatrixStatusRules.Default;
+}
 
 public sealed record GameProjectCompilationResult(
     CompiledGameProject? Project,

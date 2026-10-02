@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_rl13_rounds"
+DisplayName = "弑王弹头"
+Description = "我方单位对首领造成20%额外伤害。"
+Rarity = 1
+Price = 16
+Tags = Array[StringName]([&"item"])

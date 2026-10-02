@@ -7,10 +7,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using TowerAutobattler.Attributes;
+using TowerAutobattler.Abilities;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Content;
 using TowerAutobattler.Effects;
 using TowerAutobattler.Statuses;
+using TowerAutobattler.Project;
 
 namespace TowerAutobattler.Relics;
 
@@ -90,6 +92,21 @@ public static partial class RelicDefinitionCompiler
             label,
             report);
         var counters = CompileReactiveCounters(authored.ReactiveCounters, bindingIds, label, report);
+        var runRules = CompileRunRules(authored.RunRules, counters, bindingIds, validContentIds, label, report);
+        attributeBindings = attributeBindings.AddRange(runRules.Where(rule => rule.Kind == RelicRunRuleKind.GoldBattleHealth)
+            .Select(rule => new CompiledRelicAttributeBinding(rule.RuleId, new CompiledRelicPlayerTeamTarget(),
+                RelicAttributeStackPolicy.PerStack, new CompiledAttributeModifier(CombatAttribute.MaxHealth,
+                    AttributeModifierOperation.Add, new CompiledCompositeMagnitude(AttributeMagnitudeOperation.Multiply,
+                        [new CompiledContextValueMagnitude("relic_gold", AttributeCaptureMode.Live), new CompiledConstantMagnitude(rule.Amount)],
+                        AttributeCaptureMode.Live), 0, rule.RuleId))));
+        var repeats = ImmutableArray.CreateBuilder<CompiledRelicAbilityRepeat>();
+        foreach (var repeat in authored.AbilityRepeats ?? [])
+        {
+            if (repeat is null || repeat.Trigger is not (AbilityTriggerKind.OwnerEnteredBattle or AbilityTriggerKind.OwnerDefeated) ||
+                repeat.ExtraExecutions is < 1 or > 3 || repeats.Any(r => r.Trigger == repeat.Trigger))
+            { report.Error($"{label}: repeats require a unique entry/death trigger and 1–3 extra executions."); continue; }
+            repeats.Add(new(repeat.Trigger, repeat.ExtraExecutions));
+        }
         var statusGrants = ImmutableArray.CreateBuilder<CompiledRelicStatusGrant>();
         foreach (var grant in authored.StatusGrants ?? [])
         {
@@ -185,7 +202,7 @@ public static partial class RelicDefinitionCompiler
         }
 
         if (battleModifiers.Length == 0 && attributeBindings.Length == 0 &&
-            battleStartEffects.Length == 0 && counters.Length == 0 && victoryOutcomesAuthored.Length == 0 && statusGrants.Count == 0)
+            battleStartEffects.Length == 0 && counters.Length == 0 && victoryOutcomesAuthored.Length == 0 && statusGrants.Count == 0 && runRules.IsEmpty && repeats.Count == 0)
             report.Error($"{label}: relic must declare at least one battle modifier or victory outcome.");
         if (report.HasCoreErrors) return null;
         var legacy = modifiers.ToImmutable();
@@ -199,7 +216,7 @@ public static partial class RelicDefinitionCompiler
             counters,
             victoryOutcomes,
             Fingerprint(authored.StableId, attributeBindings, battleStartEffects, legacy, counters, victoryOutcomes,
-                statusGrants.ToImmutable()), statusGrants.ToImmutable());
+                statusGrants.ToImmutable(), runRules, repeats.ToImmutable()), statusGrants.ToImmutable(), runRules, repeats.ToImmutable());
     }
 
     private static ImmutableArray<CompiledRelicAttributeBinding> CompileAttributeBindings(
@@ -373,6 +390,16 @@ public static partial class RelicDefinitionCompiler
                 counter.Target != RelicThresholdTargetKind.FirstAliveTeamUnit)
                 report.Error($"{counterLabel}: population/alive counters require a first-alive-team target.");
 
+            if (counter.SettlementOnly)
+            {
+                if (counter.ThresholdEffect is not null)
+                    report.Error($"{counterLabel}: settlement-only counters cannot also execute a battle effect.");
+                compiled.Add(new(counter.CounterId, counter.Scope, counter.ResetPolicy, counter.Source,
+                    Enum.IsDefined(counter.Source) ? EventKind(counter.Source) : BattleCombatEventKind.BattleStarted,
+                    counter.Team, counter.IncludeTemporary, counter.Threshold, counter.Consumption, counter.Priority,
+                    counter.Target, counter.TargetTeam, null));
+                continue;
+            }
             var binding = EffectBindingCompiler.Compile(counter.ThresholdEffect);
             foreach (var error in binding.Report.CoreErrors)
                 report.Error($"{counterLabel}: threshold effect: {error}");
@@ -417,6 +444,7 @@ public static partial class RelicDefinitionCompiler
         RelicCounterSourceKind.Population or RelicCounterSourceKind.Alive => BattleCombatEventKind.BattleStarted,
         RelicCounterSourceKind.Attack => BattleCombatEventKind.AttackLanded,
         RelicCounterSourceKind.Death => BattleCombatEventKind.UnitDefeated,
+        RelicCounterSourceKind.Kill => BattleCombatEventKind.UnitKilled,
         _ => throw new ArgumentOutOfRangeException(nameof(source))
     };
 
@@ -437,9 +465,15 @@ public static partial class RelicDefinitionCompiler
         IEnumerable<CompiledRelicBattleModifier> legacy,
         IEnumerable<CompiledRelicReactiveCounter> counters,
         IEnumerable<CompiledRelicRunOutcome> outcomes,
-        ImmutableArray<CompiledRelicStatusGrant> grants)
+        ImmutableArray<CompiledRelicStatusGrant> grants, ImmutableArray<CompiledRelicRunRule> runRules,
+        ImmutableArray<CompiledRelicAbilityRepeat> repeats)
     {
         var canonical = new StringBuilder(stableId);
+        foreach (var repeat in repeats) canonical.Append("|repeat:").Append(repeat.Trigger).Append(':').Append(repeat.ExtraExecutions);
+        foreach (var rule in runRules)
+            canonical.Append("|run:").Append(rule.RuleId).Append(':').Append(rule.Kind).Append(':')
+                .Append(rule.Amount.ToString("R", CultureInfo.InvariantCulture)).Append(':').Append(rule.Limit)
+                .Append(':').Append(rule.CounterId).Append(':').Append(rule.PoolId).Append(':').AppendJoin(',', rule.ContentIds);
         foreach (var grant in grants)
             canonical.Append("|grant:").Append(grant.BindingId).Append(':').Append(grant.Target.GetType().Name)
                 .Append(':').Append(StatusDefinitionFingerprint.Compute(grant.Status));
@@ -469,16 +503,57 @@ public static partial class RelicDefinitionCompiler
                 .Append(':').Append(counter.Team).Append(':').Append(counter.IncludeTemporary).Append(':')
                 .Append(counter.Threshold).Append(':').Append(counter.Consumption).Append(':').Append(counter.Priority)
                 .Append(':').Append(counter.Target).Append(':').Append(counter.TargetTeam).Append(':')
-                .Append(EffectModelText.BindingFingerprint(counter.ThresholdEffect));
+                .Append(counter.ThresholdEffect is null ? "settlement" : EffectModelText.BindingFingerprint(counter.ThresholdEffect));
         foreach (var outcome in outcomes)
             canonical.Append("|outcome:").Append(outcome.Kind).Append(':').Append(outcome.Amount);
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical.ToString()))).ToLowerInvariant();
+    }
+
+    private static ImmutableArray<CompiledRelicRunRule> CompileRunRules(RelicRunRuleSpec[]? rules,
+        ImmutableArray<CompiledRelicReactiveCounter> counters, ISet<string> ids, IReadOnlySet<string>? contentIds,
+        string label, ValidationReport report)
+    {
+        var result = ImmutableArray.CreateBuilder<CompiledRelicRunRule>();
+        foreach (var rule in rules ?? [])
+        {
+            if (rule is null) { report.Error($"{label}: missing run rule."); continue; }
+            if (string.IsNullOrWhiteSpace(rule.RuleId) || !StableIdPattern.IsMatch(rule.RuleId) || !ids.Add(rule.RuleId))
+                report.Error($"{label}: invalid or duplicate run rule id '{rule.RuleId}'.");
+            if (!Enum.IsDefined(rule.Kind) || !float.IsFinite(rule.Amount) || rule.Amount <= 0 || rule.Amount > 100000 || rule.Limit < 0)
+                report.Error($"{label}: invalid run rule kind, amount or limit.");
+            if (rule.Kind is RelicRunRuleKind.ShopPriceMultiplier or RelicRunRuleKind.EliteStartingHealthMultiplier && rule.Amount > 1)
+                report.Error($"{label}: discount / initial health multiplier must be at most one.");
+            if (rule.Kind == RelicRunRuleKind.VictoryInterest && (rule.Amount > 1 || rule.Limit == 0))
+                report.Error($"{label}: interest requires a rate at most one and an explicit last eligible battle.");
+            var pool = rule.RewardPool;
+            var needsPool = rule.Kind is RelicRunRuleKind.EliteReward or RelicRunRuleKind.CounterReward;
+            if (needsPool && (pool is null || string.IsNullOrWhiteSpace(pool.StableId) || !StableIdPattern.IsMatch(pool.StableId) || pool.Kind != ContentPoolKind.Item ||
+                pool.ContentIds is null ||
+                pool.ContentIds.Length == 0 || pool.ContentIds.Distinct(StringComparer.Ordinal).Count() != pool.ContentIds.Length ||
+                pool.ContentIds.Any(id => contentIds is not null && !contentIds.Contains(id))))
+                report.Error($"{label}: reward rule requires a nonempty, unique, registered item pool.");
+            if (!needsPool && pool is not null) report.Error($"{label}: unexpected reward pool.");
+            if (rule.Kind == RelicRunRuleKind.CounterReward && !counters.Any(c => c.CounterId == rule.CounterId && c.ThresholdEffect is null))
+                report.Error($"{label}: counter reward must reference a settlement-only counter.");
+            if (rule.Kind != RelicRunRuleKind.CounterReward && !string.IsNullOrEmpty(rule.CounterId))
+                report.Error($"{label}: unexpected counter reference.");
+            if (rule.Kind is not (RelicRunRuleKind.ShopPriceMultiplier or RelicRunRuleKind.EliteStartingHealthMultiplier or
+                RelicRunRuleKind.VictoryInterest or RelicRunRuleKind.GoldBattleHealth) && rule.Amount != MathF.Floor(rule.Amount))
+                report.Error($"{label}: this run rule requires an integer amount.");
+            result.Add(new(rule.RuleId, rule.Kind, rule.Amount, rule.Limit, rule.CounterId,
+                pool?.StableId ?? "", pool?.ContentIds is null ? [] : [.. pool.ContentIds]));
+        }
+        foreach (var counter in counters.Where(c => c.ThresholdEffect is null))
+            if (!result.Any(rule => rule.Kind == RelicRunRuleKind.CounterReward && rule.CounterId == counter.CounterId))
+                report.Error($"{label}: settlement counter '{counter.CounterId}' has no reward rule.");
+        return result.ToImmutable();
     }
 
     private static string Magnitude(CompiledAttributeMagnitude magnitude) => AttributeMagnitudeSupport.Fingerprint(magnitude);
 
     private static CompiledRelicUnitTarget? CompileUnitTarget(RelicUnitTargetSpec? target) => target switch
     {
+        RelicPlayerTeamTargetSpec => new CompiledRelicPlayerTeamTarget(),
         RelicPlayerArmyTargetSpec => new CompiledRelicPlayerArmyTarget(),
         RelicPlayerSummonsTargetSpec => new CompiledRelicPlayerSummonsTarget(),
         RelicPlayerHeroesTargetSpec => new CompiledRelicPlayerHeroesTarget(),

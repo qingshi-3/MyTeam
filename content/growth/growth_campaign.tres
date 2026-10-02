@@ -5,7 +5,7 @@
 [ext_resource type="Resource" path="res://content/growth/regions/region_crown_engine.tres" id="4"]
 [ext_resource type="Resource" path="res://content/project/tower_node_table.tres" id="5"]
 [ext_resource type="Resource" path="res://content/growth/project/growth_hero_pool.tres" id="6"]
-[ext_resource type="Resource" path="res://content/project/pools/pool_all_items.tres" id="7"]
+[ext_resource type="Resource" path="res://content/growth/project/growth_item_pool.tres" id="7"]
 [ext_resource type="Resource" path="res://content/growth/project/growth_recruitment_supply.tres" id="8"]
 [resource]
 script = ExtResource("1")
@@ -16,5 +16,6 @@ NodeTable = ExtResource("5")
 StarterPool = ExtResource("6")
 RecruitmentPool = ExtResource("6")
 ItemRewardPool = ExtResource("7")
+SeparateItemRewardCategories = true
 ShopPool = ExtResource("7")
 RecruitmentSupply = ExtResource("8")

@@ -1,18 +1,34 @@
 [gd_resource type="Resource" script_class="AbilityDefinition" format=3]
 [ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
 [ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
-[sub_resource type="Resource" id="op"]
-script = ExtResource("operation")
-Kind = 17
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="matrix_targeting"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="matrix_magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="matrix_execution"]
+
+[sub_resource type="Resource" id="op_targeting"]
+script = ExtResource("matrix_targeting")
 Target = 0
-Amount = 1
-Key = "gx02_venom_walker-shield-spent"
-AttackRatio = 1.4
 Range = 7
 Radius = 2
 MaxTargets = 5
-ContentId = "matrix_spirit_plague"
+
+[sub_resource type="Resource" id="op_magnitude"]
+script = ExtResource("matrix_magnitude")
+Amount = 1
+AttackRatio = 1.4
+
+[sub_resource type="Resource" id="op_execution"]
+script = ExtResource("matrix_execution")
+Key = "gx02_venom_walker-shield-spent"
 DurationTicks = 60
+ContentId = "matrix_spirit_plague"
+
+[sub_resource type="Resource" id="op"]
+script = ExtResource("operation")
+Kind = 17
+Targeting = SubResource("op_targeting")
+Magnitude = SubResource("op_magnitude")
+Execution = SubResource("op_execution")
 
 [resource]
 script = ExtResource("ability")

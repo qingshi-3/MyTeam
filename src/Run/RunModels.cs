@@ -63,7 +63,13 @@ public sealed class ActiveRunDto
     public int BattleNumber { get; set; }
     public bool PendingNode { get; set; }
     public TowerNodeType SelectedNode { get; set; }
+    public string SelectedOpponentOptionId { get; set; } = string.Empty;
+    // Migration-only continuation of a committed pre-selection battle.
+    public bool LegacyPendingOpponent { get; set; }
     public PendingRunOffer? PendingOffer { get; set; }
+    // Remaining independent groups from the same accepted battle. The current group
+    // stays in PendingOffer so restoring or consuming it uses the normal offer flow.
+    public ImmutableArray<PendingRunOffer> PendingRewardGroups { get; set; } = [];
     public string TerminalCompletionId { get; set; } = string.Empty;
     public bool TerminalVictory { get; set; }
     public GrowthRunDto? Growth { get; set; }
@@ -116,6 +122,13 @@ public enum ActiveRunLoadFailureKind
 public sealed record ActiveRunLoadDiagnostic(ActiveRunLoadFailureKind Kind, string Message);
 
 public sealed record TowerNodeOption(TowerNodeType Type, string Title, string Description, int Risk);
+public sealed record OpponentOption(string OptionId, TowerNodeType NodeType, string Title,
+    string PressureSummary, EncounterPlan Encounter)
+{
+    public int RewardGold { get; init; }
+    public int RewardResearch { get; init; }
+    public int RewardMaterials { get; init; }
+}
 public sealed record EncounterPlan(
     string Title,
     string FloorRuleId,

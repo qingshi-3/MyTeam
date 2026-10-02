@@ -17,10 +17,16 @@ public sealed record CompiledRunOffer(string StableId, RunOfferKind Kind, string
     ImmutableArray<CompiledRunChoice> Choices)
 {
     public ImmutableArray<CompiledRunChoice> PoolChoices { get; init; } = [];
+    public RunRewardCategory RewardCategory { get; init; }
 }
 
+public enum RunRewardCategory { None, Equipment, Relic }
 public sealed record PendingRunOffer(string OfferId, RunOfferKind Kind, string DisplayName,
-    bool AllowSkip, bool Repeatable, int FloorIndex, int BattleNumber, ImmutableArray<CompiledRunChoice> Choices);
+    bool AllowSkip, bool Repeatable, int FloorIndex, int BattleNumber, ImmutableArray<CompiledRunChoice> Choices)
+{
+    // None preserves a frozen legacy or explicitly authored opportunity as one group.
+    public RunRewardCategory RewardCategory { get; init; }
+}
 public enum RunDecisionFailure { None, NoOffer, StaleOffer, UnknownChoice, NotEligible, InsufficientResources, InvalidOperation, PersistenceFailed }
 public enum RunChangeKind { Gold, Population, PopulationCap, HeroAdded, ItemAdded, HeroHealth, RunHealth }
 public sealed record RunDecisionChange(RunChangeKind Kind, string SubjectId, string ContentId, double Before, double After);

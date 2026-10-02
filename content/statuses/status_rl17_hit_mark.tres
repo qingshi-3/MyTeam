@@ -1,0 +1,19 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_rl17_armor_broken.tres" id="r1"]
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_rl17_hit_mark"
+DisplayName = "碎甲刻痕"
+Behavior = 2
+Disposition = 0
+OverflowStatus = ExtResource("r1")
+DurationKind = 1
+DurationTicks = 80
+AggregationPolicy = 1
+StackLimit = 5
+OverflowPolicy = 2
+OverflowConsumeStacks = 5
+DurationRefreshPolicy = 1

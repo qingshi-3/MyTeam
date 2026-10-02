@@ -21,12 +21,14 @@ public static class ActiveRunConfigurationValidator
         var rules = project.RunRules;
         if (run is null || run.Roster is null || run.Deployment is null || run.Items is null || run.EquipmentInventory is null ||
             run.EquippedTacticalCommandIds is null || run.PopulationCapSources is null ||
+            run.PendingRewardGroups.IsDefault ||
             run.Version != ActiveRunFormationSchema.CurrentVersion || run.FloorIndex < 0 || run.Gold < 0 || run.BattleNumber < 0 ||
             run.FloorIndex >= project.Campaign.TotalFloors ||
             run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
             run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null ||
             run.Deployment.Any(id => id is null))
             return false;
+        if (run.SelectedOpponentOptionId is null || !ValidateOpponentSelection(run, project)) return false;
         if (!RunHealthPolicy.ValidConsequence(run.LastBattleConsequence) ||
             run.MaximumRunHealth <= 0 || run.CurrentRunHealth < 0 || run.CurrentRunHealth > run.MaximumRunHealth ||
             run.CurrentRunHealth == 0 && (string.IsNullOrEmpty(run.TerminalCompletionId) || run.TerminalVictory))
@@ -50,7 +52,7 @@ public static class ActiveRunConfigurationValidator
                 opening.SelectedIds.Distinct(StringComparer.Ordinal).Count() == opening.SelectedIds.Length &&
                 opening.SelectedIds.All(id => opening.CandidateIds.Contains(id)) &&
                 run.Roster.Count == 0 && run.Deployment.All(string.IsNullOrEmpty) &&
-                run.FloorIndex == 0 && run.BattleNumber == 0 && !run.PendingNode && run.PendingOffer is null &&
+                run.FloorIndex == 0 && run.BattleNumber == 0 && !run.PendingNode && run.PendingOffer is null && run.PendingRewardGroups.IsEmpty &&
                 string.IsNullOrEmpty(run.TerminalCompletionId) && !run.TerminalVictory && run.Seed != 0 &&
                 run.Items.Count == 0 && run.EquipmentInventory.Count == 0 && run.PopulationCapSources.Count == 0 &&
                 run.CurrentPopulation == rules.InitialPopulation && run.Gold == rules.StartingGold;
@@ -65,6 +67,7 @@ public static class ActiveRunConfigurationValidator
                 id => content.TryGet(id, out _),
                 id => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition { IsEnemy: false, IsTestDummy: false },
                 id => content.TryGet(id, out var entry) && entry.Definition is ItemDefinition)) return false;
+        if (!ValidateRewardGroups(run, content)) return false;
         if (run.PendingOffer is { } pending &&
             (pending.Kind == Project.RunOfferKind.CombatReward ? run.PendingNode :
                 !run.PendingNode || RunDecisionService.KindFor(run.SelectedNode) != pending.Kind)) return false;
@@ -117,5 +120,50 @@ public static class ActiveRunConfigurationValidator
                 return false;
         }
         return true;
+    }
+
+    private static bool ValidateRewardGroups(ActiveRunDto run, ContentRegistry content)
+    {
+        if (run.PendingRewardGroups.IsEmpty && run.PendingOffer is not { RewardCategory: not RunRewardCategory.None }) return true;
+        if (run.Growth is null || run.PendingNode || !string.IsNullOrEmpty(run.TerminalCompletionId) ||
+            run.PendingOffer is not { Kind: RunOfferKind.CombatReward } current || run.PendingRewardGroups.Length > 2)
+            return false;
+        var groups = run.PendingRewardGroups.Insert(0, current);
+        if (groups.Select(group => group?.OfferId).Distinct(StringComparer.Ordinal).Count() != groups.Length ||
+            groups.Where(group => group is not null && group.RewardCategory != RunRewardCategory.None)
+                .Select(group => group.RewardCategory).Distinct().Count() !=
+            groups.Count(group => group is not null && group.RewardCategory != RunRewardCategory.None)) return false;
+        foreach (var group in groups)
+        {
+            if (group is null || group.Kind != RunOfferKind.CombatReward || group.Repeatable ||
+                !RunDecisionValidation.ValidOffer(group, run,
+                    id => content.TryGet(id, out _),
+                    id => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition { IsEnemy: false, IsTestDummy: false },
+                    id => content.TryGet(id, out var entry) && entry.Definition is ItemDefinition)) return false;
+            if (group.RewardCategory == RunRewardCategory.None) continue;
+            var expectedKind = group.RewardCategory == RunRewardCategory.Equipment ? ItemProductKind.Equipment : ItemProductKind.Relic;
+            if (!group.AllowSkip || group.Choices.Any(choice => choice.SuccessChance != 1 ||
+                !choice.FailureOperations.IsEmpty || choice.Operations.Length != 1 ||
+                choice.Operations[0] is not { Kind: RunOperationKind.GrantItem, Amount: 1 } operation ||
+                !content.TryGet(operation.ContentId, out var entry) ||
+                entry.Definition is not ItemDefinition item || item.ProductKind != expectedKind)) return false;
+        }
+        return true;
+    }
+
+    private static bool ValidateOpponentSelection(ActiveRunDto run, CompiledGameProject project)
+    {
+        var selected = !string.IsNullOrEmpty(run.SelectedOpponentOptionId);
+        if (!run.PendingNode || !string.IsNullOrEmpty(run.TerminalCompletionId) ||
+            run.SelectedNode is not (TowerNodeType.Combat or TowerNodeType.Elite))
+            return !selected && !run.LegacyPendingOpponent;
+        var tower = new TowerGenerator(project.Campaign);
+        var candidates = tower.OpponentOptions(run, run.SelectedNode);
+        // Already locked ordinary opponents and migration continuations keep their
+        // original plan and reward even though new ordinary battles no longer choose.
+        if (selected)
+            return !run.LegacyPendingOpponent && candidates.Any(option => option.OptionId == run.SelectedOpponentOptionId);
+        if (run.LegacyPendingOpponent) return candidates.Count > 0;
+        return tower.SelectableOpponentOptions(run, run.SelectedNode).Count == 0;
     }
 }

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/statuses/status_rl13_passive.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicPlayerTeamTargetSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicStatusGrantSpec.cs" id="r3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r2")
+
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r3")
+BindingId = "rl13_rounds"
+Target = SubResource("s0")
+Status = ExtResource("r1")
+
+[resource]
+script = ExtResource("r0")
+StableId = "item_rl13_rounds"
+StatusGrants = [SubResource("s1")]

@@ -20,7 +20,8 @@ public enum RelicCounterSourceKind
     Population,
     Alive,
     Attack,
-    Death
+    Death,
+    Kill
 }
 
 public enum RelicThresholdTargetKind
@@ -45,4 +46,5 @@ public partial class RelicReactiveCounterSpec : Resource
     [Export] public RelicThresholdTargetKind Target { get; set; }
     [Export] public int TargetTeam { get; set; }
     [Export] public EffectBindingSpec ThresholdEffect { get; set; } = null!;
+    [Export] public bool SettlementOnly { get; set; }
 }

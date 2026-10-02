@@ -74,7 +74,7 @@ public sealed class GrowthRunService(
             return GrowthCommandResult.Reject("升阶只能在未冻结的战斗整备阶段进行。");
         var hero = run.Roster.SingleOrDefault(candidate => candidate.InstanceId == heroId);
         if (hero is null || !rules!.Heroes.TryGetValue(hero.ContentId, out var definition) ||
-            string.IsNullOrWhiteSpace(definition.AscensionId) || definition.AscendedLoadout is null ||
+            string.IsNullOrWhiteSpace(definition.AscensionId) ||
             !string.IsNullOrEmpty(hero.Growth.AscensionId))
             return GrowthCommandResult.Reject("该英雄没有可用的升阶配置，或已经升阶。");
         var candidates = DiscoveryCandidates(run, heroId);
@@ -264,7 +264,7 @@ public sealed class GrowthRunService(
                 !keys.Add($"{gain.SourceInstanceId}:{gain.AbilityId}:{gain.Slot}")) return false;
             var hero = working.Roster.SingleOrDefault(candidate => candidate.InstanceId == gain.SourceInstanceId);
             if (hero is null || !rules.Heroes.TryGetValue(hero.ContentId, out var definition)) return false;
-            var loadout = string.IsNullOrEmpty(hero.Growth.AscensionId) ? definition.BaseLoadout : definition.AscendedLoadout;
+            var loadout = definition.ResolveBattleLoadout(!string.IsNullOrEmpty(hero.Growth.AscensionId));
             if (!MatchesPermanentOperation(loadout, gain)) return false;
             if (!apply) continue;
             if (gain.Attribute == CombatAttribute.AttackDamage) hero.Growth.AddedAttack += gain.Amount;

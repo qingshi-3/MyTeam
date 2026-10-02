@@ -10,6 +10,47 @@ namespace TowerAutobattler.Project;
 // as authored offers. Runtime never dispatches a rest/event-specific mutation.
 public static class RunOfferDefaults
 {
+    // Each category owns its draw and claim slot. Recipes outside an ordinary
+    // one-item reward remain an explicit separate opportunity rather than being
+    // silently duplicated or decomposed into invented entitlements.
+    public static ImmutableArray<CompiledRunOffer> ItemRewardGroups(
+        CompiledRunOffer definition, Func<string, CatalogEntry> entry)
+    {
+        if (definition.Repeatable) return [definition];
+        RunRewardCategory Category(CompiledRunChoice choice)
+        {
+            if (choice.SuccessChance != 1 || !choice.FailureOperations.IsDefaultOrEmpty ||
+                choice.Operations.Length != 1 ||
+                choice.Operations[0] is not { Kind: RunOperationKind.GrantItem, Amount: 1 } operation ||
+                entry(operation.ContentId).Definition is not ItemDefinition item)
+                return RunRewardCategory.None;
+            return item.ProductKind == ItemProductKind.Equipment ? RunRewardCategory.Equipment : RunRewardCategory.Relic;
+        }
+        var groups = ImmutableArray.CreateBuilder<CompiledRunOffer>();
+        foreach (var category in new[] { RunRewardCategory.Equipment, RunRewardCategory.Relic, RunRewardCategory.None })
+        {
+            var fixedChoices = definition.Choices.Where(choice => Category(choice) == category).ToImmutableArray();
+            var poolChoices = definition.PoolChoices.Where(choice => Category(choice) == category).ToImmutableArray();
+            if (fixedChoices.IsEmpty && poolChoices.IsEmpty) continue;
+            var suffix = category.ToString().ToLowerInvariant();
+            groups.Add(definition with
+            {
+                StableId = definition.StableId + "_" + suffix,
+                DisplayName = category switch
+                {
+                    RunRewardCategory.Equipment => "战斗胜利 · 装备奖励",
+                    RunRewardCategory.Relic => "战斗胜利 · 遗物奖励",
+                    _ => definition.DisplayName
+                },
+                AllowSkip = category == RunRewardCategory.None ? definition.AllowSkip : true,
+                Choices = fixedChoices,
+                PoolChoices = poolChoices,
+                RewardCategory = category
+            });
+        }
+        return groups.ToImmutable();
+    }
+
     // Keep frozen opportunities and rewards. Retire hero-wound choices and extend an
     // unclaimed legacy camp with the distinct Run-health choice, without save-on-read.
     public static PendingRunOffer RefreshHealthChoices(PendingRunOffer offer, CompiledRunRules? rules = null)

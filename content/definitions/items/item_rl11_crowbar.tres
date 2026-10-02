@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_rl11_crowbar"
+DisplayName = "破阵撬棍"
+Description = "我方单位对受击前生命高于90%的敌人造成50%额外伤害。"
+Rarity = 1
+Price = 16
+Tags = Array[StringName]([&"item"])

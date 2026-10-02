@@ -1,0 +1,58 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Attributes/SourceAttributeMagnitudeSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Attributes/CompositeAttributeMagnitudeSpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="r4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Attribute = 19
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+Value = 2.0
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+Operation = 1
+Operands = [SubResource("s0"), SubResource("s1")]
+CaptureMode = 1
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r2")
+Value = 0.1
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r4")
+Attribute = 19
+Operation = 0
+Magnitude = SubResource("s3")
+SlotId = "hoodie_dodge"
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r2")
+Value = 0.8
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("r4")
+Attribute = 6
+Operation = 1
+Magnitude = SubResource("s5")
+SlotId = "hoodie_range"
+
+[sub_resource type="Resource" id="s7"]
+script = ExtResource("r4")
+Attribute = 3
+Operation = 0
+Magnitude = SubResource("s2")
+SlotId = "hoodie_speed"
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_rl21_hoodie"
+DisplayName = "闪影"
+Behavior = 2
+Disposition = 1
+AttributeModifiers = [SubResource("s4"), SubResource("s6"), SubResource("s7")]

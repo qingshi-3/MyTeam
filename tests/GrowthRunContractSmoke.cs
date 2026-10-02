@@ -19,9 +19,11 @@ public partial class GrowthRunContractSmoke : Node
             var published = await GrowthContentPackage.CreateReadyAsync(this);
             var package = published.Package ?? throw new InvalidOperationException(string.Join(';', published.Report.CoreErrors));
             var rules = GrowthContentPackage.LoadRules(package.Content);
+            VerifyOptionalAscensionBenefits(package, rules);
             VerifyCommandsAndRollback(package, rules);
             VerifyDiscoveryCapacityInvariant(package, rules);
             VerifyFreezeSettlementAndClone(package, rules);
+            VerifyEverySpellCostAndConsumedRetry(package, rules);
             VerifyPermanentBattleGain(package, rules);
             VerifyTerminalBattleDoesNotGrantReusableGrowth(package, rules);
             VerifyV7Migration(package, rules);
@@ -30,6 +32,50 @@ public partial class GrowthRunContractSmoke : Node
         }
         catch (Exception error) { code = 1; GD.PrintErr("GROWTH_RUN_CONTRACT_FAILED: " + error); }
         GetTree().Quit(code);
+    }
+
+    private static void VerifyOptionalAscensionBenefits(TowerAutobattler.Composition.CompiledGamePackage package, CompiledGrowthRules rules)
+    {
+        Require(rules.Heroes.Values.Count(hero => hero.AscensionBenefit is null) == 19,
+            "unplanned benefits remain explicitly absent");
+        foreach (var hero in rules.Heroes.Values.Where(hero => hero.AscensionBenefit is null))
+            Require(ReferenceEquals(hero.ResolveBattleLoadout(true), hero.BaseLoadout),
+                "blank ascension preserves authored base abilities: " + hero.ContentId);
+
+        // A producer's authored growth loadout must also survive removing its benefit.
+        var authored = (GrowthRulesDefinition)GD.Load<GrowthRulesDefinition>(GrowthContentPackage.RulesPath).Duplicate(true);
+        var authoringHero = authored.Heroes.Single(hero => hero.ContentId == "hero_mx01");
+        authoringHero.AscensionBenefit = null;
+        authoringHero.AscensionDisplay = null;
+        var withoutDisplayOrBenefit = GrowthRulesCompiler.Compile(authored, package.Content).Heroes[authoringHero.ContentId];
+        Require(ReferenceEquals(withoutDisplayOrBenefit.ResolveBattleLoadout(true), withoutDisplayOrBenefit.BaseLoadout),
+            "eligibility, display and battle benefits are independent");
+
+        var save = new MemorySave();
+        var app = NewRun(package, rules, save, "hero_mx10");
+        var run = app.ActiveRun!;
+        var heroInstance = run.Roster.Single(hero => hero.ContentId == "hero_mx10");
+        run.Growth!.Materials = rules.AscensionCost;
+        var before = Snapshot(run);
+        save.FailWrites = true;
+        Require(!app.AscendHero(heroInstance.InstanceId).Succeeded && Snapshot(app.ActiveRun!) == before,
+            "blank benefit ascension still rolls back cost, identity and discovery on save failure");
+        save.FailWrites = false;
+        Require(app.AscendHero(heroInstance.InstanceId).Succeeded, "blank benefit permits ascension");
+        var saved = new RunApplication(package.Content, save, package.Project, rules).ActiveRun;
+        Require(saved is not null, "blank ascension save passes real load validation");
+        var ascended = saved!.Roster.Single(hero => hero.InstanceId == heroInstance.InstanceId);
+        Require(ascended.Growth.AscensionId == rules.Heroes[ascended.ContentId].AscensionId &&
+            saved.Growth!.Materials == 0 && saved.Growth.PendingDiscovery?.CandidateIds.Count == 3,
+            "saved blank ascension retains identity and frozen reward");
+        Require(ReferenceEquals(RunBattlePreparationAdapter.ProjectGrowth(ascended, rules)!.LoadoutOverride,
+            rules.Heroes[ascended.ContentId].BaseLoadout), "reloaded battle projection retains original abilities");
+
+        string[] retired = ["item_war_drum", "item_field_rations", "item_soul_lantern", "item_last_banner", "item_aegis_standard", "item_clockwork_seed"];
+        foreach (var id in retired)
+            Require(!package.Project.Campaign.ItemRewardPool.ContentIds.Contains(id) &&
+                !package.Project.Campaign.ShopPool.ContentIds.Contains(id) && package.Content.TryGet(id, out _),
+                "retired supply excluded while old-save content remains resolvable: " + id);
     }
 
     private static void VerifyCommandsAndRollback(TowerAutobattler.Composition.CompiledGamePackage package, CompiledGrowthRules rules)
@@ -59,7 +105,7 @@ public partial class GrowthRunContractSmoke : Node
             "craft pays research once");
 
         var battleNode = app.CurrentOptions().First(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite);
-        Require(app.SelectNode(battleNode.Type), "select battle before deployment ascension");
+        Require(SelectTestNode(app, battleNode.Type), "select battle before deployment ascension");
         var deploymentEncounter = app.CurrentEncounter();
         run.Growth.Materials = Math.Max(0, rules.AscensionCost - 1);
         Require(!app.AscendHero(producer.InstanceId).Succeeded && string.IsNullOrEmpty(producer.Growth.AscensionId),
@@ -112,8 +158,7 @@ public partial class GrowthRunContractSmoke : Node
         run.Growth.EquippedSpellId = spell.StableId;
         run.Growth.SpellTargetInstanceId = run.Deployment.First(id => !string.IsNullOrEmpty(id));
         run.Growth.PendingNode = null;
-        run.PendingNode = true;
-        run.SelectedNode = TowerNodeType.Combat;
+        Require(SelectTestNode(app, TowerNodeType.Combat), "select explicit opponent for battle-start retry fixture");
         var encounter = app.CurrentEncounter();
         var legalDeployment = run.Deployment.ToList();
         var deployedId = run.Deployment.First(id => !string.IsNullOrEmpty(id));
@@ -150,7 +195,7 @@ public partial class GrowthRunContractSmoke : Node
         FillRoster(fullApp, rules, fullRun.CurrentPopulation + package.Project.RunRules.ReserveCapacity);
         var fullProducer = fullRun.Roster.First(hero => rules.Heroes.TryGetValue(hero.ContentId, out var value) &&
             !value.ProductionModes.IsEmpty && string.IsNullOrEmpty(hero.Growth.AscensionId));
-        Require(fullApp.SelectNode(fullApp.CurrentOptions().First(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite).Type),
+        Require(SelectTestNode(fullApp, fullApp.CurrentOptions().First(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite).Type),
             "select battle for full-roster ascension rejection");
         fullRun.Growth!.Materials = rules.AscensionCost;
         var fullBefore = Snapshot(fullRun);
@@ -164,7 +209,7 @@ public partial class GrowthRunContractSmoke : Node
         FillRoster(lastSlotApp, rules, capacity - 1);
         var lastSlotProducer = lastSlotRun.Roster.First(hero => rules.Heroes.TryGetValue(hero.ContentId, out var value) &&
             !value.ProductionModes.IsEmpty && string.IsNullOrEmpty(hero.Growth.AscensionId));
-        Require(lastSlotApp.SelectNode(lastSlotApp.CurrentOptions().First(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite).Type),
+        Require(SelectTestNode(lastSlotApp, lastSlotApp.CurrentOptions().First(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite).Type),
             "select battle for last-slot discovery");
         lastSlotRun.Growth!.Materials = rules.AscensionCost;
         Require(lastSlotApp.AscendHero(lastSlotProducer.InstanceId).Succeeded,
@@ -180,7 +225,7 @@ public partial class GrowthRunContractSmoke : Node
         FillRoster(invalidApp, rules, invalidRun.CurrentPopulation + package.Project.RunRules.ReserveCapacity - 1);
         var invalidProducer = invalidRun.Roster.First(hero => rules.Heroes.TryGetValue(hero.ContentId, out var value) &&
             !value.ProductionModes.IsEmpty && string.IsNullOrEmpty(hero.Growth.AscensionId));
-        Require(invalidApp.SelectNode(invalidApp.CurrentOptions().First(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite).Type),
+        Require(SelectTestNode(invalidApp, invalidApp.CurrentOptions().First(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite).Type),
             "select battle for invalid persisted discovery");
         invalidRun.Growth!.Materials = rules.AscensionCost;
         Require(invalidApp.AscendHero(invalidProducer.InstanceId).Succeeded,
@@ -202,6 +247,49 @@ public partial class GrowthRunContractSmoke : Node
             "full roster with pending discovery is validation-rejected without altering the stored run");
     }
 
+    private static void VerifyEverySpellCostAndConsumedRetry(
+        TowerAutobattler.Composition.CompiledGamePackage package, CompiledGrowthRules rules)
+    {
+        foreach (var spell in rules.Spells.Values)
+        {
+            var save = new MemorySave();
+            var app = NewRun(package, rules, save);
+            var run = app.ActiveRun!;
+            run.Growth!.Research = spell.ResearchCost - 1;
+            var before = Snapshot(run);
+            Require(!app.CraftGrowthSpell(spell.StableId).Succeeded && Snapshot(run) == before,
+                $"{spell.StableId}: insufficient research must preserve inventory and research");
+            run.Growth.Research = spell.ResearchCost;
+            Require(app.CraftGrowthSpell(spell.StableId).Succeeded && run.Growth.Research == 0 &&
+                run.Growth.SpellInventory.GetValueOrDefault(spell.StableId) == 1,
+                $"{spell.StableId}: crafting must use its configured cost exactly once");
+            var targetId = run.Deployment.First(id => !string.IsNullOrEmpty(id));
+            Require(app.EquipGrowthSpell(spell.StableId, targetId).Succeeded &&
+                run.Growth.SpellInventory.GetValueOrDefault(spell.StableId) == 1,
+                $"{spell.StableId}: preset selection cannot consume inventory");
+            var battleNode = app.CurrentOptions().First(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite);
+            Require(SelectTestNode(app, battleNode.Type), $"{spell.StableId}: select battle for consumed retry");
+            var encounter = app.CurrentEncounter();
+            before = Snapshot(run);
+            save.FailWrites = true;
+            Require(!app.TryBeginGrowthBattle(encounter).Succeeded && Snapshot(run) == before,
+                $"{spell.StableId}: a failed battle-start save cannot consume the preset");
+            save.FailWrites = false;
+            Require(app.TryBeginGrowthBattle(encounter).Succeeded &&
+                run.Growth.SpellInventory.GetValueOrDefault(spell.StableId) == 0 &&
+                run.Growth.PendingNode is { } started && started.ConsumedSpellId == spell.StableId &&
+                started.SpellTargetInstanceId == targetId,
+                $"{spell.StableId}: start must freeze the consumed spell and its target");
+            var frozen = Snapshot(run);
+            Require(app.TryBeginGrowthBattle(encounter).Succeeded && Snapshot(run) == frozen,
+                $"{spell.StableId}: retry must not spend a second inventory item");
+            var restored = new RunApplication(package.Content, save, package.Project, rules);
+            Require(restored.ActiveRun is { } loaded && Snapshot(loaded) == frozen &&
+                restored.TryBeginGrowthBattle(restored.CurrentEncounter()).Succeeded && Snapshot(restored.ActiveRun!) == frozen,
+                $"{spell.StableId}: save reload must retain the consumed spell and support a free retry");
+        }
+    }
+
     private static void FillRoster(RunApplication app, CompiledGrowthRules rules, int targetCount)
     {
         var run = app.ActiveRun!;
@@ -221,7 +309,7 @@ public partial class GrowthRunContractSmoke : Node
         var save = new MemorySave();
         var app = NewRun(package, rules, save, heroId);
         EnsureFourFrostRoster(app);
-        Require(app.SelectNode(TowerNodeType.Combat), "select permanent-growth battle");
+        Require(SelectTestNode(app, TowerNodeType.Combat), "select permanent-growth battle");
         var encounter = app.CurrentEncounter();
         Require(app.TryBeginGrowthBattle(encounter).Succeeded, "freeze permanent-growth battle");
         using var battle = new BattleSimulation(app.BuildBattleConfig(encounter));
@@ -244,9 +332,11 @@ public partial class GrowthRunContractSmoke : Node
         Require(!app.ResolveBattle(result, encounter).Accepted &&
             committedRun.Roster.Single(hero => hero.InstanceId == "player-hero").Growth.AddedMaxHealth == 16,
             "duplicate battle receipt cannot duplicate permanent gain");
-        var offer = app.PendingOffer!;
-        var choice = offer.AllowSkip ? null : offer.Choices.First(candidate => app.CheckOfferChoice(candidate).Succeeded).StableId;
-        Require(app.ResolveOffer(offer.OfferId, choice).Succeeded, "clear battle reward for next projection");
+        while (app.PendingOffer is { } offer)
+        {
+            var choice = offer.AllowSkip ? null : offer.Choices.First(candidate => app.CheckOfferChoice(candidate).Succeeded).StableId;
+            Require(app.ResolveOffer(offer.OfferId, choice).Succeeded, "clear each independent battle reward for next projection");
+        }
         Require(SelectNextAuthoredBattle(app), "select next authored battle after permanent gain");
         var next = app.BuildBattleConfig(app.CurrentEncounter());
         Require(next.Spawns.Single(spawn => spawn.InstanceId == "player-hero").Unit.MaxHealth >= 416,
@@ -262,7 +352,7 @@ public partial class GrowthRunContractSmoke : Node
         foreach (var hero in source.Roster) hero.Growth = null!;
         sourceSave.Json = Snapshot(source);
         var restored = new RunApplication(package.Content, sourceSave, package.Project, rules);
-        Require(restored.ActiveRun is { Version: 8, Growth: not null } && restored.ActiveRun.Roster.All(hero => hero.Growth is not null) &&
+        Require(restored.ActiveRun is { Version: ActiveRunFormationSchema.CurrentVersion, Growth: not null } && restored.ActiveRun.Roster.All(hero => hero.Growth is not null) &&
             restored.ActiveRun.Growth.History.Count == 0 && restored.ActiveRun.Growth.Materials == 0,
             "v7 migration adds only deterministic empty growth state and does not invent production history");
     }
@@ -311,7 +401,7 @@ public partial class GrowthRunContractSmoke : Node
         var save = new MemorySave();
         var app = NewRun(package, rules, save, "hero_mx01");
         app.ActiveRun!.FloorIndex = package.Project.Campaign.TotalFloors - 1;
-        Require(app.SelectNode(TowerNodeType.Boss), "select final boss");
+        Require(SelectTestNode(app, TowerNodeType.Boss), "select final boss");
         var encounter = app.CurrentEncounter();
         Require(app.TryBeginGrowthBattle(encounter).Succeeded, "freeze final boss growth receipt");
         using var battle = new BattleSimulation(app.BuildBattleConfig(encounter));
@@ -354,7 +444,7 @@ public partial class GrowthRunContractSmoke : Node
         {
             var options = app.CurrentOptions();
             var battle = options.FirstOrDefault(option => option.Type is TowerNodeType.Combat or TowerNodeType.Elite or TowerNodeType.Boss);
-            if (battle is not null) return app.SelectNode(battle.Type);
+            if (battle is not null) return SelectTestNode(app, battle.Type);
             var noncombat = options.FirstOrDefault();
             if (noncombat is null || !app.SelectNode(noncombat.Type) || app.PendingOffer is null) return false;
             while (app.PendingOffer is { } current)
@@ -367,6 +457,9 @@ public partial class GrowthRunContractSmoke : Node
         }
         return false;
     }
+
+    private static bool SelectTestNode(RunApplication app, TowerNodeType type) =>
+        app.SelectNode(type, app.CurrentOpponentOptions(type).FirstOrDefault()?.OptionId);
 
     private static string Snapshot(ActiveRunDto run) => JsonSerializer.Serialize(run);
     private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }

@@ -22,4 +22,5 @@ public partial class EncounterDefinition : Resource
     [Export] public float[] LocalHealthMultipliers { get; set; } = [];
     [Export] public float[] LocalDamageMultipliers { get; set; } = [];
     [Export] public EncounterCompositionDefinition[] Compositions { get; set; } = [];
+    [Export(PropertyHint.Range, "0,3,1")] public int OpponentChoiceCount { get; set; }
 }

@@ -21,6 +21,7 @@ public partial class ExperienceSliceRoot : Control
     private BattleReportScreen _report = null!;
     private ConfirmationDialog _exitDialog = null!;
     private ScreenRouter _router = null!;
+    private Control _environment = null!;
     private string _battleTitle = "";
     private bool _reportShown;
     public ExperienceSliceSession? Session { get; private set; }
@@ -32,6 +33,7 @@ public partial class ExperienceSliceRoot : Control
 
     public override async void _Ready()
     {
+        _environment = GetNode<Control>("Background");
         _panel = GetNode<ExperienceSlicePanel>("Screens/ExperiencePanel");
         _deployment = GetNode<DeploymentScreenController>("Screens/DeploymentScreen");
         _battle = GetNode<BattleScreenController>("Screens/BattleScreen");
@@ -90,7 +92,8 @@ public partial class ExperienceSliceRoot : Control
     private void Show(Control target)
     {
         if (Session is null) return;
-        _router.Show(target, Session.Application.ActiveRun, Session.Application.Content, Session.Application.Rules);
+        _router.Show(target, Session.Application.Run, Session.Application.Content, Session.Application.Rules);
+        _environment.Visible = target != _battle;
     }
     private void ShowPanel()
     {

@@ -17,11 +17,18 @@ public sealed record CompiledGrowthHero(
     float GrowthRate,
     int ResearchYield,
     string AscensionId,
-    string AscensionName,
-    string AscensionDescription,
-    CompiledAbilityLoadout? AscendedLoadout = null,
+    CompiledGrowthAscensionDisplay? AscensionDisplay,
+    CompiledGrowthAscensionBenefit? AscensionBenefit = null,
     CompiledAbilityLoadout? BaseLoadout = null,
-    string MaterialCategory = "");
+    string MaterialCategory = "")
+{
+    public CompiledAbilityLoadout? ResolveBattleLoadout(bool ascended) =>
+        ascended ? AscensionBenefit?.BattleLoadout ?? BaseLoadout : BaseLoadout;
+}
+
+public sealed record CompiledGrowthAscensionDisplay(string DisplayName, string CompletedLabel);
+
+public sealed record CompiledGrowthAscensionBenefit(string Description, CompiledAbilityLoadout BattleLoadout);
 
 public sealed record CompiledGrowthSpell(
     string StableId,

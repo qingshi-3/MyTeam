@@ -13,6 +13,8 @@ namespace TowerAutobattler.Run;
 public sealed class RunDecisionService(ContentRegistry content, CompiledGameProject project, RunProgressionPersistenceService persistence,
     GrowthRunService? growth = null)
 {
+    public RunRelicRules RelicRules => new(content);
+
     public static RunOfferKind? KindFor(TowerNodeType type) => type switch
     {
         TowerNodeType.Recruitment => RunOfferKind.Recruitment,
@@ -24,15 +26,33 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
 
     public PendingRunOffer CreateOffer(ActiveRunDto run, RunOfferKind kind)
     {
-        var campaign = project.Campaign.RunOffers.Count == 0
+        var definition = CampaignWithDefaults().RunOffers[kind];
+        return CreateOffer(run, definition);
+    }
+
+    public ImmutableArray<PendingRunOffer> CreateCombatRewardGroups(ActiveRunDto run)
+    {
+        var campaign = CampaignWithDefaults();
+        var definition = campaign.RunOffers[RunOfferKind.CombatReward];
+        if (run.Growth is null || !campaign.SeparateItemRewardCategories)
+            return [CreateOffer(run, definition)];
+        return RunOfferDefaults.ItemRewardGroups(definition, id => content.TryGet(id, out var entry)
+                ? entry : throw new InvalidOperationException("Missing reward content: " + id))
+            .Select(group => CreateOffer(run, group)).Where(group => !group.Choices.IsEmpty).ToImmutableArray();
+    }
+
+    private CompiledCampaign CampaignWithDefaults() => project.Campaign.RunOffers.Count == 0
             ? RunOfferDefaults.WithDefaults(project.Campaign, project.RunRules,
                 id => content.TryGet(id, out var entry) ? entry : throw new InvalidOperationException("Missing offer content: " + id))
             : project.Campaign;
-        var definition = campaign.RunOffers[kind];
+
+    private PendingRunOffer CreateOffer(ActiveRunDto run, CompiledRunOffer definition)
+    {
         var identity = $"{run.Seed:x16}:{run.FloorIndex}:{run.BattleNumber}:{definition.StableId}";
         var selected = new HashSet<string>(StringComparer.Ordinal);
         var fixedChoices = definition.Choices
-            .Where(choice => RunRecruitmentPolicy.TrySelect(run, choice, selected)).ToImmutableArray();
+            .Where(choice => RunItemSupplyPolicy.CanOffer(run, choice, content) &&
+                RunRecruitmentPolicy.TrySelect(run, choice, selected)).ToImmutableArray();
         var poolOrder = definition.PoolChoices.OrderBy(choice => StableRoll(identity + ":" + choice.StableId)).AsEnumerable();
         if (definition.PoolAction == RunPoolAction.Recruit && project.Campaign.RecruitmentSupply is { } supply)
         {
@@ -47,11 +67,12 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
                 definition.PoolChoiceCount, identity).Select(id => eligible[id]);
         }
         var pooled = poolOrder
-            .Where(choice => RunRecruitmentPolicy.TrySelect(run, choice, selected))
+            .Where(choice => RunItemSupplyPolicy.CanOffer(run, choice, content) &&
+                RunRecruitmentPolicy.TrySelect(run, choice, selected))
             .Take(definition.PoolChoiceCount).ToImmutableArray();
         var choices = fixedChoices.AddRange(pooled);
-        return new PendingRunOffer(identity, kind, definition.DisplayName, definition.AllowSkip || choices.IsEmpty, definition.Repeatable,
-            run.FloorIndex, run.BattleNumber, choices);
+        return new PendingRunOffer(identity, definition.Kind, definition.DisplayName, definition.AllowSkip || choices.IsEmpty, definition.Repeatable,
+            run.FloorIndex, run.BattleNumber, choices) { RewardCategory = definition.RewardCategory };
     }
 
     public RunDecisionResult Resolve(ActiveRunDto? run, string offerId, string? choiceId)
@@ -59,12 +80,13 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
         if (run?.PendingOffer is not { } offer) return RunDecisionResult.Reject(RunDecisionFailure.NoOffer, "没有待处理的选择。");
         if (offer.OfferId != offerId) return RunDecisionResult.Reject(RunDecisionFailure.StaleOffer, "这个选择已失效，请查看当前机会。");
         if (!persistence.ValidateRun(run)) return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "当前征程状态无效，未作修改。");
-        offer = RunRecruitmentPolicy.VisibleOffer(run, RunOfferDefaults.RefreshHealthChoices(offer, project.RunRules));
+        offer = RelicRules.PresentOffer(run, VisibleOffer(run, RunOfferDefaults.RefreshHealthChoices(offer, project.RunRules)));
         var working = persistence.CloneRun(run);
         var chanceSucceeded = true;
         if (choiceId is null)
         {
             if (!offer.AllowSkip) return RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "该选择不能跳过。");
+            RelicRules.SkipReward(working, offer);
         }
         else
         {
@@ -76,6 +98,8 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
             {
                 foreach (var cost in choice.Costs)
                     if (!Apply(working, cost, true)) return RunDecisionResult.Reject(RunDecisionFailure.InsufficientResources, "无法支付全部代价，未作修改。");
+                if (offer.Kind == RunOfferKind.Shop && choice.Costs.Any(cost => cost.Kind == RunOperationKind.SpendGold && cost.Amount > 0))
+                    RelicRules.PaidShopPurchase(working);
                 chanceSucceeded = StableRoll(offer.OfferId + ":outcome:" + choice.StableId) / (double)uint.MaxValue < choice.SuccessChance;
                 if (choice.SuccessChance == 1) chanceSucceeded = true;
                 foreach (var operation in chanceSucceeded ? choice.Operations : choice.FailureOperations)
@@ -85,7 +109,12 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
         }
         if (choiceId is null || !offer.Repeatable)
         {
-            working.PendingOffer = null;
+            if (offer.Kind == RunOfferKind.CombatReward && !working.PendingRewardGroups.IsEmpty)
+            {
+                working.PendingOffer = working.PendingRewardGroups[0];
+                working.PendingRewardGroups = working.PendingRewardGroups.RemoveAt(0);
+            }
+            else working.PendingOffer = null;
             if (offer.Kind != RunOfferKind.CombatReward)
             {
                 if (growth is not null && !growth.SettleNode(working))
@@ -94,7 +123,15 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
                 working.PendingNode = false;
             }
         }
-        else working.PendingOffer = RunRecruitmentPolicy.VisibleOffer(working, offer);
+        else
+        {
+            // Repeatable permits buying other inventory in this visit. It never
+            // replenishes the just-sold stock or implicitly redraws the shelf.
+            working.PendingOffer = VisibleOffer(working, working.PendingOffer! with
+            {
+                Choices = working.PendingOffer!.Choices.Where(choice => choice.StableId != choiceId).ToImmutableArray()
+            });
+        }
         if (!persistence.ValidateRun(working)) return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "结果不符合征程规则，未作修改。");
         var changes = Changes(run, working);
         if (!persistence.TryPublish(working, run)) return RunDecisionResult.Reject(RunDecisionFailure.PersistenceFailed, "保存失败，机会、代价和原状态均已保留，请重试。");
@@ -105,6 +142,8 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
     {
         if (!RunRecruitmentPolicy.CanOffer(run, choice))
             return RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "普通招募不能取得同名英雄（包含后备）。");
+        if (!RunItemSupplyPolicy.CanOffer(run, choice, content))
+            return RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "已拥有该唯一遗物，不能重复取得。");
         foreach (var condition in choice.Conditions)
         {
             var satisfied = condition.Kind switch
@@ -133,11 +172,14 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
         return new(true, RunDecisionFailure.None, "");
     }
 
+    private PendingRunOffer VisibleOffer(ActiveRunDto run, PendingRunOffer offer) =>
+        RunItemSupplyPolicy.VisibleOffer(run, RunRecruitmentPolicy.VisibleOffer(run, offer), content);
+
     private bool Apply(ActiveRunDto run, CompiledRunOperation operation, bool isCost)
     {
         switch (operation.Kind)
         {
-            case RunOperationKind.GainGold: run.Gold = checked(run.Gold + operation.Amount); return true;
+            case RunOperationKind.GainGold: RelicRules.GainGold(run, operation.Amount); return true;
             case RunOperationKind.RecoverRunHealth:
                 run.CurrentRunHealth = RunHealthPolicy.Recover(run, operation.Amount); return true;
             case RunOperationKind.SpendGold:

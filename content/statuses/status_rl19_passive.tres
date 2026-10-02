@@ -1,0 +1,49 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/ShieldEffectSpec.cs" id="r1"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectTriggerSpec.cs" id="r2"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/OwnerTargetQuerySpec.cs" id="r3"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingLimitsSpec.cs" id="r4"]
+[ext_resource type="Script" path="res://src/Effects/Authoring/EffectBindingSpec.cs" id="r5"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusCombatReactiveBindingSpec.cs" id="r6"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Amount = 15
+AmountSource = 0
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("r2")
+
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("r3")
+
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("r4")
+
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("r5")
+StableId = "effect_status_rl19_passive"
+Trigger = SubResource("s1")
+TargetQuery = SubResource("s2")
+Effects = [SubResource("s0")]
+Limits = SubResource("s3")
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("r6")
+EventKind = 14
+OwnerRole = 0
+Binding = SubResource("s4")
+UseOverheal = false
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_rl19_passive"
+DisplayName = "黄玉守护"
+Behavior = 2
+Disposition = 1
+CombatReactiveBindings = [SubResource("s5")]

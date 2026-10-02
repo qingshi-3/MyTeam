@@ -17,11 +17,12 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/BattleReportScreen.tscn" id="15"]
 [ext_resource type="PackedScene" path="res://scenes/ui/RecruitmentScreen.tscn" id="16"]
 [ext_resource type="Resource" path="res://content/growth/growth_project.tres" id="17"]
+[ext_resource type="Resource" path="res://content/growth/growth_rules.tres" id="growth_rules"]
 [ext_resource type="Script" path="res://src/App/AppScreenHost.cs" id="18"]
 [ext_resource type="PackedScene" path="res://scenes/ui/BattleLabScreen.tscn" id="19"]
 [ext_resource type="PackedScene" path="res://scenes/audio/FeedbackAudio.tscn" id="audio"]
 
-[ext_resource type="Texture2D" path="res://assets/ui/tavern/reference-background.png" id="tabletop"]
+[ext_resource type="PackedScene" path="res://scenes/environments/CourtyardBackdrop.tscn" id="courtyard"]
 
 [ext_resource type="Resource" path="res://content/validation_matrix/matrix_lab_presets.tres" id="matrix_presets"]
 
@@ -35,22 +36,13 @@ grow_vertical = 2
 theme = ExtResource("2")
 script = ExtResource("1")
 ProjectDefinition = ExtResource("17")
+RulesDefinition = ExtResource("growth_rules")
 SaveNamespace = "growth-journey"
 
 [node name="UiAudio" parent="." instance=ExtResource("audio")]
 
-[node name="Background" type="TextureRect" parent="." unique_id=962434456]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("tabletop")
-texture_filter = 2
-expand_mode = 1
-stretch_mode = 6
+[node name="Background" parent="." instance=ExtResource("courtyard")]
+layout_mode = 0
 
 [node name="Screens" type="Control" parent="." unique_id=325918878]
 layout_mode = 1
@@ -120,4 +112,3 @@ layout_mode = 1
 [node name="ArmyOverview" parent="." unique_id=593151342 instance=ExtResource("14")]
 visible = false
 layout_mode = 1
-

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_rl25_bounty"
+DisplayName = "战利品契约"
+Description = "本局每击杀5个非临时敌人，战斗结束后从装备池获得1件装备。剩余击杀跨战斗保留；胜负均结算。当前测试池：精工瞄具。"
+Rarity = 1
+Price = 16
+Tags = Array[StringName]([&"item"])

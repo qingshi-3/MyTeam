@@ -33,6 +33,13 @@ public sealed class RunRewardEconomyService
         _ = loadedRun;
     }
 
+    public RunRelicRules RelicRules => new(_content);
+
+    internal bool GrantToProjection(ActiveRunDto run, string itemId) =>
+        _content.TryGet(itemId, out var entry) && entry.Definition is ItemDefinition definition &&
+        RunItemSupplyPolicy.CanAcquire(run, itemId, _content) && TryNextInstanceSequence(run, out var sequence) &&
+        AddItem(run, itemId, definition.ProductKind, sequence);
+
     public ActiveRunDto? CreateNewRun(string heroId, ulong seed, IReadOnlyCollection<string> unlockedHeroIds)
     {
         if (!unlockedHeroIds.Contains(heroId) || !_content.TryGet(heroId, out var heroEntry) ||
@@ -108,7 +115,8 @@ public sealed class RunRewardEconomyService
             Place(working, hero.InstanceId, cells[index]);
         }
         working.SelectedNode = TowerNodeType.Combat;
-        working.PendingNode = true;
+        // Growth players inspect and choose their first opponent after drafting.
+        working.PendingNode = working.Growth is null;
         return _persistence.ValidateRun(working) && _persistence.TryPublish(working, run);
     }
 
@@ -126,6 +134,7 @@ public sealed class RunRewardEconomyService
             run.Seed ^ (ulong)(run.FloorIndex + 1 + salt) * 0x94D049BB133111EBUL);
         var selectedHeroes = new HashSet<string>(StringComparer.Ordinal);
         return source.ContentIds.Select(Required)
+            .Where(entry => entry.Definition is not ItemDefinition || RunItemSupplyPolicy.CanAcquire(run, entry.StableId, _content))
             .Where(entry => entry.Definition is not UnitDefinition ||
                 !RunRecruitmentPolicy.IsOwned(run, entry.StableId) && selectedHeroes.Add(entry.StableId))
             .OrderBy(_ => random.NextInt(0, int.MaxValue))
@@ -192,7 +201,7 @@ public sealed class RunRewardEconomyService
     {
         if (run is null || !_persistence.ValidateRun(run) || !_content.TryGet(itemId, out var entry) ||
             entry.Definition is not ItemDefinition definition || definition.Price < 0 ||
-            run.Gold < definition.Price)
+            run.Gold < definition.Price || !RunItemSupplyPolicy.CanAcquire(run, itemId, _content))
             return false;
         var working = _persistence.CloneRun(run);
         if (!TryNextInstanceSequence(working, out var sequence)) return false;
@@ -204,7 +213,7 @@ public sealed class RunRewardEconomyService
     public bool GrantItem(ActiveRunDto? run, string itemId)
     {
         if (run is null || !_persistence.ValidateRun(run) || !_content.TryGet(itemId, out var entry) ||
-            entry.Definition is not ItemDefinition definition)
+            entry.Definition is not ItemDefinition definition || !RunItemSupplyPolicy.CanAcquire(run, itemId, _content))
             return false;
         var working = _persistence.CloneRun(run);
         if (!TryNextInstanceSequence(working, out var sequence) ||
@@ -247,12 +256,24 @@ public sealed class RunRewardEconomyService
             unit.HealthRatio = 1f;
         run.BattleNumber++;
         run.Gold = Math.Max(0, run.Gold - result.GoldSpent);
+        var goldBeforeRewards = run.Gold;
         run.Gold += encounter.IsBoss
             ? _rules.BossBattleGold
             : encounter.IsElite ? _rules.EliteBattleGold : _rules.NormalBattleGold;
         if (run.Roster.Count > 0 && _rules.StartingHeroEconomy.TryGetValue(run.Roster[0].ContentId, out var economy))
             run.Gold = checked(run.Gold + economy.BattleGoldBonus);
         run.Gold += relicGoldDelta;
+        if (run.Growth is not null && !string.IsNullOrEmpty(run.SelectedOpponentOptionId))
+        {
+            var option = new TowerGenerator(_project.Campaign).OpponentOptions(run, encounter.NodeType)
+                .Single(candidate => candidate.OptionId == run.SelectedOpponentOptionId);
+            run.Gold = checked(run.Gold + option.RewardGold);
+            run.Growth.Research = checked(run.Growth.Research + option.RewardResearch);
+            run.Growth.Materials = checked(run.Growth.Materials + option.RewardMaterials);
+        }
+        var earnedGold = run.Gold - goldBeforeRewards;
+        run.Gold = goldBeforeRewards;
+        RelicRules.GainGold(run, earnedGold);
     }
 
     private RosterHeroInstanceDto? AddRosterHero(

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicRunRuleSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+RuleId = "rl10_recycler"
+Kind = 8
+Amount = 5
+Limit = 0
+
+[resource]
+script = ExtResource("r0")
+StableId = "item_rl10_recycler"
+RunRules = [SubResource("s0")]

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Godot;
 using TowerAutobattler.Content;
+using TowerAutobattler.Run;
 using TowerAutobattler.UI;
 
 namespace TowerAutobattler.Experience;
@@ -70,7 +71,7 @@ public partial class ExperienceSlicePanel : Control
             ExperienceStage.PrepareSecond => ("这件装备，给谁更合适？", "已有装备可以无损转移。替换槽位时，旧装备回背包；候命英雄的装备不会在本场生效。"),
             _ => (session.LastResult?.Outcome == TowerAutobattler.Battle.BattleOutcome.PlayerVictory ? "这一段体验完成了" : "这次没有通过，换个选择再试", "先看真实结果，再决定换奖励、换人还是换站位。固定样本不代表随机局胜率。")
         };
-        _team.Text = app.ActiveRun is { } run ? string.Join("  /  ", run.Roster.Select(h =>
+        _team.Text = app.Run is { } run ? string.Join("  /  ", run.Roster.Select(h =>
             $"{session.Name(h.ContentId)} {h.HealthRatio:P0}{(run.Deployment.Contains(h.InstanceId) ? "" : "·候命")}")) : "本次队伍已在战斗中失败；可从保留的检查点重试。";
         var choiceStage = session.Stage is ExperienceStage.Relic or ExperienceStage.Equipment;
         _items.Visible = choiceStage; _recruits.Visible = session.Stage == ExperienceStage.Recruit;
@@ -96,8 +97,12 @@ public partial class ExperienceSlicePanel : Control
             ChoiceCardListBinder.SyncUnits(_recruits, session.Definition.RecruitIds.Select(id =>
             {
                 var unit = (UnitDefinition)Required(id).Definition;
-                return new UnitChoiceCardViewModel(id, unit, unit.Description, "点击选择职责");
+                var owned = RunRecruitmentPolicy.IsOwned(session.Run, id);
+                return new UnitChoiceCardViewModel(id, unit, unit.Description,
+                    owned ? "已在队伍中" : "点击选择职责", Disabled: owned);
             }).ToArray(), _unitTemplate, _icons, SelectChoice);
+        if (_recruits.Visible && session.Definition.RecruitIds.All(id => RunRecruitmentPolicy.IsOwned(session.Run, id)))
+            _hint.Text = "当前候选英雄均已在队伍中，无需重复招募。可以跳过，继续布阵。";
         if (_equipment.Visible) BindEquipment();
         if (!string.IsNullOrEmpty(_selected) && !session.IsPreparing) SelectChoice(_selected);
         _history.Text = string.Join("\n\n", session.History.Select(a =>

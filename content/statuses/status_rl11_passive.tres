@@ -1,0 +1,18 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDamageRuleSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+Condition = 0
+Threshold = 0.9
+Multiplier = 1.5
+
+[resource]
+script = ExtResource("r0")
+StableId = "status_rl11_passive"
+DisplayName = "破阵"
+Behavior = 2
+Disposition = 1
+DamageRules = [SubResource("s0")]

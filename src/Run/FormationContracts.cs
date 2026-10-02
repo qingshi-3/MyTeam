@@ -63,7 +63,7 @@ public sealed record FormationMoveCommand(
 
 public static class ActiveRunFormationSchema
 {
-    public const int CurrentVersion = 8;
+    public const int CurrentVersion = 10;
     private const int LegacyDeploymentCapacity = 6;
 
     public static void InitializeVersion4(ActiveRunDto run)
@@ -100,6 +100,25 @@ public static class ActiveRunFormationSchema
         if (run.Version == CurrentVersion)
             return run.LegacyHeroId is null && run.LegacyHeroHealthRatio == 0 &&
                    run.LegacyHeroCell is null && run.LegacyDeploymentCells is null;
+        // A historical pending opportunity keeps exactly its frozen claim right;
+        // migration neither splits it into extra rewards nor redraws candidates.
+        if (run.PendingRewardGroups.IsDefault || !run.PendingRewardGroups.IsEmpty ||
+            run.PendingOffer is { RewardCategory: not RunRewardCategory.None }) return false;
+        if (run.Version == 9)
+        {
+            if (run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
+                run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null) return false;
+            run.Version = CurrentVersion;
+            return true;
+        }
+        if (!string.IsNullOrEmpty(run.SelectedOpponentOptionId) || run.LegacyPendingOpponent) return false;
+        if (run.Version == 8)
+        {
+            if (run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
+                run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null) return false;
+            run.Version = CurrentVersion;
+            return true;
+        }
         if (run.Version == 7)
         {
             if (run.Roster is null || run.Roster.Any(hero => hero is null) || run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||

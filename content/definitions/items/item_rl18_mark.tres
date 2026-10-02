@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_rl18_mark"
+DisplayName = "厄兆印记"
+Description = "我方单位对身上至少有3种不同减益的敌人造成30%额外伤害；同种状态多层只算一种。"
+Rarity = 1
+Price = 16
+Tags = Array[StringName]([&"item"])

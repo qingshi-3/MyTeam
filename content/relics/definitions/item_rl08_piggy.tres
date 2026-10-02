@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="r0"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicRunRuleSpec.cs" id="r1"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r1")
+RuleId = "rl08_piggy"
+Kind = 6
+Amount = 0.2
+Limit = 8
+
+[resource]
+script = ExtResource("r0")
+StableId = "item_rl08_piggy"
+RunRules = [SubResource("s0")]

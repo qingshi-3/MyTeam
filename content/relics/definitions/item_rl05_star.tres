@@ -1,0 +1,18 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="r0"]
+[ext_resource type="Resource" path="res://content/relics/pools/pool_relic_elite_bonus.tres" id="r1"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicRunRuleSpec.cs" id="r2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("r2")
+RuleId = "rl05_star"
+Kind = 4
+Amount = 1
+Limit = 0
+RewardPool = ExtResource("r1")
+
+[resource]
+script = ExtResource("r0")
+StableId = "item_rl05_star"
+RunRules = [SubResource("s0")]

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="r0"]
+
+[resource]
+script = ExtResource("r0")
+Id = "item_rl07_bowl"
+DisplayName = "回响之钵"
+Description = "放弃一组战后奖励时，最大与当前征程生命各增加2。"
+Rarity = 1
+Price = 16
+Tags = Array[StringName]([&"item"])

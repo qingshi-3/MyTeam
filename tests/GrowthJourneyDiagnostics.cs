@@ -276,7 +276,7 @@ public partial class GrowthJourneyDiagnostics : Node
 
     private static TowerAutobattler.Abilities.CompiledAbilityLoadout? EffectiveLoadout(
         RosterHeroInstanceDto hero, CompiledGrowthHero definition) =>
-        !string.IsNullOrEmpty(hero.Growth.AscensionId) ? definition.AscendedLoadout : definition.BaseLoadout;
+        definition.ResolveBattleLoadout(!string.IsNullOrEmpty(hero.Growth.AscensionId));
 
     private static string GrowthTarget(ActiveRunDto run, Strategy strategy)
     {

@@ -87,6 +87,10 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
                 "旧征程停在非战斗节点，旧格式无法证明收益是否已领取，不能安全重建选择资格；原存档已保留，未重复发奖或重置进度。");
             return null;
         }
+        if (stored.Version < 9 && loaded.Growth is not null && loaded.PendingNode &&
+            loaded.SelectedNode is TowerNodeType.Combat or TowerNodeType.Elite &&
+            new TowerGenerator(_project.Campaign).OpponentOptions(loaded, loaded.SelectedNode).Count > 0)
+            loaded.LegacyPendingOpponent = true;
         if (!ValidateRun(loaded))
         {
             LastActiveRunLoadDiagnostic = new ActiveRunLoadDiagnostic(
@@ -138,6 +142,8 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         var working = CloneRun(run);
         working.FloorIndex++;
         working.PendingNode = false;
+        working.SelectedOpponentOptionId = string.Empty;
+        working.LegacyPendingOpponent = false;
         if (ValidateRun(working)) TryPublish(working, run);
     }
 
@@ -297,7 +303,10 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         BattleNumber = source.BattleNumber,
         PendingNode = source.PendingNode,
         SelectedNode = source.SelectedNode,
+        SelectedOpponentOptionId = source.SelectedOpponentOptionId,
+        LegacyPendingOpponent = source.LegacyPendingOpponent,
         PendingOffer = source.PendingOffer,
+        PendingRewardGroups = source.PendingRewardGroups,
         TerminalCompletionId = source.TerminalCompletionId,
         TerminalVictory = source.TerminalVictory,
         Growth = source.Growth is null ? null! : new GrowthRunDto
@@ -348,7 +357,10 @@ public sealed class RunProgressionPersistenceService : IRunFormationPersistence,
         target.BattleNumber = copy.BattleNumber;
         target.PendingNode = copy.PendingNode;
         target.SelectedNode = copy.SelectedNode;
+        target.SelectedOpponentOptionId = copy.SelectedOpponentOptionId;
+        target.LegacyPendingOpponent = copy.LegacyPendingOpponent;
         target.PendingOffer = copy.PendingOffer;
+        target.PendingRewardGroups = copy.PendingRewardGroups;
         target.TerminalCompletionId = copy.TerminalCompletionId;
         target.TerminalVictory = copy.TerminalVictory;
         target.Growth = copy.Growth;

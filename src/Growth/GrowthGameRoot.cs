@@ -1,15 +1,24 @@
 using System.Threading.Tasks;
+using Godot;
 using TowerAutobattler.App;
 using TowerAutobattler.Composition;
-using TowerAutobattler.Content;
 
 namespace TowerAutobattler.Growth;
 
 public partial class GrowthGameRoot : GameRoot
 {
-    protected override Task<GamePackagePublicationResult> PublishPackageAsync() =>
-        GrowthContentPackage.CreateReadyAsync(this);
+    // The composition root owns the authored rules for its entire lifetime,
+    // including failed bootstraps and retries; compiled rules carry no Resource state.
+    [Export] public GrowthRulesDefinition? RulesDefinition { get; set; }
+    private AuthoredContentPackage? _authoredPackage;
 
-    protected override CompiledGrowthRules? CreateGrowthRules(ContentRegistry content) =>
-        GrowthContentPackage.LoadRules(content);
+    protected override Task<GamePackagePublicationResult> PublishPackageAsync() =>
+        GamePackagePublisher.CreateAuthoredReadyAsync(this,
+            _authoredPackage ??= GrowthContentPackage.LoadAuthored(RulesDefinition));
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        _authoredPackage = null;
+    }
 }

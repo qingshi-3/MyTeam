@@ -13,6 +13,9 @@ public static partial class GameProjectCompiler
         EncounterDefinition authored, CompilationContext context, int floorsPerRegion)
     {
         var source = Source(authored);
+        if (authored.OpponentChoiceCount is < 0 or > 3 ||
+            authored.OpponentChoiceCount > 0 && authored.NodeType is not (TowerNodeType.Combat or TowerNodeType.Elite))
+            context.Report.Error($"{source}: opponent choices allow 1–3 ordinary/elite formations; bosses remain mandatory.");
         foreach (var curve in new[] { authored.LocalHealthMultipliers, authored.LocalDamageMultipliers })
             if (curve is null || (curve.Length != 0 && curve.Length != floorsPerRegion) ||
                 curve.Any(value => !float.IsFinite(value) || value <= 0 || value > 10))
@@ -31,6 +34,12 @@ public static partial class GameProjectCompiler
                 composition.MaxLocalFloor < composition.MinLocalFloor)
                 context.Report.Error($"{source}: composition requires unique identity, display name and a valid local floor range.");
             var enemies = composition.EnemyIds ?? [];
+            if (composition.RewardGold is < 0 or > 100 || composition.RewardResearch is < 0 or > 100 ||
+                composition.RewardMaterials is < 0 or > 100 ||
+                authored.OpponentChoiceCount > 0 && (string.IsNullOrWhiteSpace(composition.PressureSummary) ||
+                    composition.RewardGold + composition.RewardResearch + composition.RewardMaterials == 0) ||
+                composition.OpponentChoiceOnly && authored.OpponentChoiceCount == 0)
+                context.Report.Error($"{source}: selectable formation requires a pressure summary and bounded nonnegative victory rewards.");
             var cells = composition.Cells?.ToArray() ?? [];
             if (enemies.Length is < 1 or > 8 || cells.Length != enemies.Length || cells.Distinct().Count() != cells.Length ||
                 cells.Any(cell => !BattlefieldLayout.IsInBounds(cell) || cell.X < BattlefieldLayout.Width - BattlefieldLayout.PlayerDeploymentColumns))
@@ -47,16 +56,25 @@ public static partial class GameProjectCompiler
                 (enemies.FirstOrDefault() != authored.LeadEnemyId || enemies.Count(id => id == authored.LeadEnemyId) != 1))
                 context.Report.Error($"{source}: boss composition must start with exactly one encounter boss.");
             result.Add(new(composition.StableId, composition.DisplayName, composition.MinLocalFloor,
-                composition.MaxLocalFloor, [.. enemies], [.. cells]));
+                composition.MaxLocalFloor, [.. enemies], [.. cells])
+            {
+                PressureSummary = composition.PressureSummary,
+                RewardGold = composition.RewardGold,
+                RewardResearch = composition.RewardResearch,
+                RewardMaterials = composition.RewardMaterials,
+                OpponentChoiceOnly = composition.OpponentChoiceOnly
+            });
         }
         if (result.Count > 0)
         {
             if (authored.AlternateLeadEnemyIds.Length > 0)
                 context.Report.Error($"{source}: compositions cannot also randomize alternate leaders.");
             for (var floor = 0; floor < floorsPerRegion; floor++)
-                if (!result.Any(entry => entry.MinLocalFloor <= floor && floor <= entry.MaxLocalFloor))
+                if (!result.Any(entry => !entry.OpponentChoiceOnly && entry.MinLocalFloor <= floor && floor <= entry.MaxLocalFloor))
                     context.Report.Error($"{source}: no composition covers local floor {floor}.");
         }
+        if (authored.OpponentChoiceCount > 0 && result.Count == 0)
+            context.Report.Error($"{source}: opponent choices require complete authored formations.");
         return result.ToImmutable();
     }
 }

@@ -21,7 +21,10 @@ public static class GrowthContentPackage
     public const string ProjectPath = "res://content/growth/growth_project.tres";
     public const string RulesPath = "res://content/growth/growth_rules.tres";
 
-    public static Task<GamePackagePublicationResult> CreateReadyAsync(Node treeOwner)
+    public static Task<GamePackagePublicationResult> CreateReadyAsync(Node treeOwner, GrowthRulesDefinition? authoredRules = null)
+        => GamePackagePublisher.CreateAuthoredReadyAsync(treeOwner, LoadAuthored(authoredRules));
+
+    internal static AuthoredContentPackage LoadAuthored(GrowthRulesDefinition? authoredRules = null)
     {
         var manifest = JsonSerializer.Deserialize<Dictionary<string, string[]>>(
             FileAccess.GetFileAsString("res://content/growth/manifest.json"))
@@ -29,17 +32,18 @@ public static class GrowthContentPackage
         T[] Load<T>(string key) where T : Resource => manifest[key].Select(path => GD.Load<T>(path) ??
             throw new InvalidOperationException($"Growth dependency could not be loaded: {path}")).ToArray();
         var project = GD.Load<GameProjectDefinition>(ProjectPath) ?? throw new InvalidOperationException("Growth project is missing.");
-        var rules = GD.Load<GrowthRulesDefinition>(RulesPath) ?? throw new InvalidOperationException("Growth rules are missing.");
+        var rules = authoredRules ?? GD.Load<GrowthRulesDefinition>(RulesPath) ?? throw new InvalidOperationException("Growth rules are missing.");
         var package = new AuthoredContentPackage(project, project.Content, Load<AbilityLoadoutDefinition>("Loadouts"),
             Load<AbilityDefinition>("Abilities"), Load<StatusDefinition>("Statuses"), Load<RelicDefinition>("Relics"))
         {
+            GrowthRules = rules,
             Equipment = Load<EquipmentDefinition>("Equipment"), Traits = Load<TraitDefinition>("Traits"),
             TacticalCommands = Load<TacticalCommandDefinition>("TacticalCommands"),
             TacticalCommandScenes = Load<PackedScene>("TacticalCommandScenes"),
-            AdditionalLoadoutReferences = rules.Heroes.SelectMany(hero => new[] { hero.BaseLoadout, hero.AscendedLoadout })
+            AdditionalLoadoutReferences = rules.Heroes.SelectMany(hero => new[] { hero.BaseLoadout, hero.AscensionBenefit?.BattleLoadout })
                 .Concat(rules.Spells.Select(spell => spell.BattleLoadout)).Where(loadout => loadout is not null).ToArray()
         };
-        return GamePackagePublisher.CreateAuthoredReadyAsync(treeOwner, package);
+        return package;
     }
 
     public static CompiledGrowthRules LoadRules(ContentRegistry content) => GrowthRulesCompiler.Compile(

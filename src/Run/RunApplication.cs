@@ -63,7 +63,8 @@ public sealed class RunApplication
     public MetaProgressDto Meta => _persistence.Meta;
     public SettingsDto Settings => _persistence.Settings;
     public ActiveRunLoadDiagnostic? ActiveRunLoadDiagnostic => _persistence.LastActiveRunLoadDiagnostic;
-    public ActiveRunDto? ActiveRun { get; private set; }
+    internal ActiveRunDto? ActiveRun { get; private set; }
+    public RunView? Run => ActiveRun is { } value ? RunView.For(value) : null;
     public ContentRegistry Content => _content;
     public CompiledGameProject Project => _project;
     public CompiledRunRules Rules => _project.RunRules;
@@ -84,8 +85,7 @@ public sealed class RunApplication
 
     public bool BeginOpeningRecruitment(ulong seed)
     {
-        // Returning to New Game while drafting resumes the same saved opportunity.
-        if (ActiveRun?.OpeningRecruitment is not null) return true;
+        // Explicit new-game requests replace even an unfinished opening, only after saving.
         var run = _rewards.CreateOpening(seed);
         if (run is null) return false;
         _nodes.ResetRunLifecycle();
@@ -107,9 +107,14 @@ public sealed class RunApplication
 
     public IReadOnlyList<TowerNodeOption> CurrentOptions() => _nodes.CurrentOptions(ActiveRun);
 
+    // Only choices the player may make now; committed older choices resolve through CurrentEncounter.
+    public IReadOnlyList<OpponentOption> CurrentOpponentOptions(TowerNodeType type) =>
+        _nodes.CurrentOpponentOptions(ActiveRun, type);
+
     public EncounterPlan CurrentEncounter() => _nodes.CurrentEncounter(ActiveRun);
 
-    public bool SelectNode(TowerNodeType type) => _nodes.SelectNode(ActiveRun, type);
+    public bool SelectNode(TowerNodeType type, string? opponentOptionId = null) =>
+        _nodes.SelectNode(ActiveRun, type, opponentOptionId);
     public GrowthCommandResult CheckGrowthAction() => _growth.CheckAction(ActiveRun);
     public GrowthCommandResult SetGrowthAssignment(string producerInstanceId, string targetInstanceId, GrowthProductionMode mode) =>
         _growth.SetAssignment(ActiveRun, producerInstanceId, targetInstanceId, mode);
@@ -127,7 +132,10 @@ public sealed class RunApplication
         return _growth.BeginBattle(run, encounter);
     }
     public PendingRunOffer? PendingOffer => ActiveRun?.PendingOffer is { } offer
-        ? RunRecruitmentPolicy.VisibleOffer(ActiveRun, RunOfferDefaults.RefreshHealthChoices(offer, Rules)) : null;
+        ? _decisions.RelicRules.PresentOffer(ActiveRun, RunItemSupplyPolicy.VisibleOffer(ActiveRun,
+            RunRecruitmentPolicy.VisibleOffer(ActiveRun, RunOfferDefaults.RefreshHealthChoices(offer, Rules)), _content)) : null;
+    public string RewardSkipText => ActiveRun is { } run && PendingOffer is { } offer
+        ? _decisions.RelicRules.SkipText(run, offer) : "跳过";
     public RunDecisionResult ResolveOffer(string offerId, string? choiceId) => PreparationEditingLocked
         ? RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "战斗尚未完成结算。")
         : _decisions.Resolve(ActiveRun, offerId, choiceId);

@@ -9,6 +9,8 @@
 [sub_resource type="Resource" id="swap"]
 script = ExtResource("composition")
 StableId = "crown_elite_swap"
+PressureSummary = "换位妖使交换最远合法目标，贯光与幼龙在后方制造多目标压力。"
+RewardResearch = 4
 DisplayName = "换位火网"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -18,6 +20,8 @@ Cells = Array[Vector2i]([Vector2i(9, 3), Vector2i(7, 2), Vector2i(7, 3), Vector2
 [sub_resource type="Resource" id="impact"]
 script = ExtResource("composition")
 StableId = "crown_elite_impact"
+PressureSummary = "践踏巨兽冲阵推挤，回刃往返路径攻击，双鹰手持续远射。"
+RewardMaterials = 2
 DisplayName = "冲阵回刃"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -26,6 +30,7 @@ Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(9, 2), Vector2i(7, 1), Vector2
 
 [resource]
 script = ExtResource("1")
+OpponentChoiceCount = 3
 StableId = "encounter_crown_elite"
 NodeType = 1
 TitlePattern = "{region}精英战"

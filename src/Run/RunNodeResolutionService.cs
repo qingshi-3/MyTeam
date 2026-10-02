@@ -8,13 +8,20 @@ using TowerAutobattler.Growth;
 
 namespace TowerAutobattler.Run;
 
-public sealed record RunBattleResolution(
-    bool Accepted,
-    bool FacadeReturnValue,
-    ActiveRunDto? ActiveRun,
-    BattleOutcome Outcome,
-    RunBattleResolutionFailure Failure)
+public sealed record RunBattleResolution
 {
+    internal RunBattleResolution(bool accepted, bool facadeReturnValue, ActiveRunDto? activeRun,
+        BattleOutcome outcome, RunBattleResolutionFailure failure)
+    {
+        Accepted = accepted; FacadeReturnValue = facadeReturnValue; ActiveRun = activeRun;
+        Outcome = outcome; Failure = failure;
+    }
+    public bool Accepted { get; }
+    public bool FacadeReturnValue { get; }
+    internal ActiveRunDto? ActiveRun { get; }
+    public RunView? Run => ActiveRun is { } value ? RunView.For(value) : null;
+    public BattleOutcome Outcome { get; }
+    public RunBattleResolutionFailure Failure { get; }
     public RunBattleConsequence? Consequence { get; init; }
 }
 
@@ -62,14 +69,25 @@ public sealed class RunNodeResolutionService
         ? throw new InvalidOperationException("No active run")
         : _tower.Encounter(run, run.SelectedNode);
 
-    public bool SelectNode(ActiveRunDto? run, TowerNodeType type)
+    public IReadOnlyList<OpponentOption> CurrentOpponentOptions(ActiveRunDto? run, TowerNodeType type) =>
+        run is null || run.OpeningRecruitment is not null || run.PendingNode || run.PendingOffer is not null ||
+        run.Growth?.PendingDiscovery is not null || !string.IsNullOrEmpty(run.TerminalCompletionId) ||
+        !_tower.Options(run).Any(option => option.Type == type) ? [] : _tower.SelectableOpponentOptions(run, type);
+
+    public bool SelectNode(ActiveRunDto? run, TowerNodeType type, string? opponentOptionId = null)
     {
         if (run is null || run.OpeningRecruitment is not null || run.PendingNode || run.PendingOffer is not null || run.Growth?.PendingDiscovery is not null || !string.IsNullOrEmpty(run.TerminalCompletionId) ||
             !_persistence.ValidateRun(run) || !_tower.Options(run).Any(option => option.Type == type))
             return false;
+        var opponents = _tower.SelectableOpponentOptions(run, type);
+        if (opponents.Count > 0 ? !opponents.Any(option => option.OptionId == opponentOptionId) :
+            !string.IsNullOrEmpty(opponentOptionId)) return false;
         var working = _persistence.CloneRun(run);
         working.SelectedNode = type;
         working.PendingNode = true;
+        working.SelectedOpponentOptionId = opponentOptionId ?? string.Empty;
+        working.LegacyPendingOpponent = false;
+        _rewards.RelicRules.EnterNode(working, type);
         if (RunDecisionService.KindFor(type) is { } kind)
         {
             if (_growth is not null && !_growth.FreezeNonCombat(working)) return false;
@@ -95,8 +113,8 @@ public sealed class RunNodeResolutionService
                 ? new(true, active.TerminalVictory, null, active.LastBattleConsequence?.Outcome ?? result.Outcome, RunBattleResolutionFailure.None)
                     { Consequence = active.LastBattleConsequence }
                 : new(false, false, active, result.Outcome, RunBattleResolutionFailure.PersistenceFailed);
-        if (active is null || !active.PendingNode || !EncounterMatchesCurrent(active, encounter) ||
-            !_persistence.ValidateRun(active) || !BattleIdentityMatches(active, result, encounter) ||
+        if (active is null || !active.PendingNode || !_persistence.ValidateRun(active) ||
+            !EncounterMatchesCurrent(active, encounter) || !BattleIdentityMatches(active, result, encounter) ||
             result.Outcome is not (BattleOutcome.PlayerVictory or BattleOutcome.PlayerDefeat or BattleOutcome.Timeout) ||
             result.GoldSpent < 0 || result.GoldSpent > active.Gold ||
             result.RelicTransition is not { } transition ||
@@ -149,8 +167,10 @@ public sealed class RunNodeResolutionService
 
         var finalVictory = victory && working.FloorIndex == _project.Campaign.TotalFloors - 1 && encounter.IsBoss;
         var ended = finalVictory || !victory && (encounter.IsBoss || working.CurrentRunHealth == 0);
-        working.LastBattleConsequence = new(result.Outcome, active.CurrentRunHealth, working.CurrentRunHealth,
+        working.LastBattleConsequence = new(result.Outcome, active.CurrentRunHealth, victory ? active.CurrentRunHealth : working.CurrentRunHealth,
             working.MaximumRunHealth, encounter.IsBoss, ended);
+        if (!_rewards.RelicRules.SettleBattle(working, result, encounter, active.Gold, _rewards.GrantToProjection))
+            return new(false, false, active, result.Outcome, RunBattleResolutionFailure.Rejected);
         if (_growth is not null && !_growth.ApplyBattlePermanentGains(working, result.PermanentGains, !ended))
             return new(false, false, active, result.Outcome, RunBattleResolutionFailure.Rejected);
         if (ended)
@@ -159,6 +179,8 @@ public sealed class RunNodeResolutionService
             // reusable growth. Remove the consumed battle snapshot before validating
             // the post-battle counter, which has already advanced by one.
             if (working.Growth is not null) working.Growth.PendingNode = null;
+            working.SelectedOpponentOptionId = string.Empty;
+            working.LegacyPendingOpponent = false;
             working.TerminalCompletionId = Guid.NewGuid().ToString("N");
             working.TerminalVictory = finalVictory;
             if (!_persistence.ValidateRun(working))
@@ -176,7 +198,11 @@ public sealed class RunNodeResolutionService
 
         working.FloorIndex++;
         working.PendingNode = false;
-        working.PendingOffer = victory ? _decisions.CreateOffer(working, Project.RunOfferKind.CombatReward) : null;
+        working.SelectedOpponentOptionId = string.Empty;
+        working.LegacyPendingOpponent = false;
+        var rewardGroups = victory ? _decisions.CreateCombatRewardGroups(working) : [];
+        working.PendingOffer = rewardGroups.IsEmpty ? null : rewardGroups[0];
+        working.PendingRewardGroups = rewardGroups.IsEmpty ? [] : rewardGroups.RemoveAt(0);
         if (!_persistence.ValidateRun(working))
             return new(false, false, active, result.Outcome, RunBattleResolutionFailure.Rejected);
         if (!_persistence.TryPublish(working, active))
@@ -206,5 +232,6 @@ public sealed class RunNodeResolutionService
         identity.NodeType == encounter.NodeType &&
         identity.RunSeed == run.Seed &&
         identity.FloorIndex == run.FloorIndex &&
-        identity.BattleNumber == run.BattleNumber;
+        identity.BattleNumber == run.BattleNumber &&
+        identity.CompositionId == encounter.CompositionId;
 }

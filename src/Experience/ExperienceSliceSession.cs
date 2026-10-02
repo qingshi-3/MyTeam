@@ -64,7 +64,7 @@ public sealed class ExperienceSliceSession
     public bool CanRetryAfterFirst => _afterFirst is not null;
     public bool IsPreparing => Stage is ExperienceStage.PrepareFirst or ExperienceStage.PrepareSecond;
     public bool IsBattle => Stage is ExperienceStage.BattleFirst or ExperienceStage.BattleSecond;
-    public ActiveRunDto Run => Application.ActiveRun ?? throw new InvalidOperationException("试验队伍已结束。");
+    internal ActiveRunDto Run => Application.ActiveRun ?? throw new InvalidOperationException("试验队伍已结束。");
     public BattleResult? LastResult => _results.LastOrDefault();
     public string Name(string id) => _content.TryGet(id, out var entry) ? entry.Definition switch
     { UnitDefinition unit => unit.DisplayName, ItemDefinition item => item.DisplayName, _ => id } : id;
@@ -223,7 +223,7 @@ public sealed class ExperienceSliceSession
 
     private static IReadOnlyList<ExperienceStats> Stats(RunApplication app, EncounterPlan encounter)
     {
-        using var preview = new BattleSimulation(app.BuildBattleConfig(encounter, false));
+        var preview = BattlePreparationProjection.Build(app.BuildBattleConfig(encounter, false));
         return preview.Units.Where(u => u.Team == 0 && !u.IsTemporary).Select(u =>
             new ExperienceStats(u.SourceInstanceId, u.Definition.DisplayName, u.MaxHealth, u.Damage, u.Armor, u.HealingPower, u.LifeSteal)).ToArray();
     }

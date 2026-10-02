@@ -9,6 +9,7 @@ using TowerAutobattler.Content;
 using TowerAutobattler.Domain;
 using TowerAutobattler.UI;
 using TowerAutobattler.Run;
+using TowerAutobattler.Traits;
 
 namespace TowerAutobattler.Project;
 
@@ -51,6 +52,13 @@ public static partial class GameProjectCompiler
             campaign = RunOfferDefaults.WithDefaults(campaign, rules, id => context.Entry(id));
         }
         var presentation = CompilePresentation(authored.Presentation!, report);
+        if (authored.MatrixStatusRules is null && authored.ResourcePath.StartsWith("res://content/", StringComparison.Ordinal))
+            report.Error($"{source}: missing MatrixStatusRulesDefinition.");
+        var matrixRules = authored.MatrixStatusRules is { } statusRules
+            ? CompiledMatrixStatusRules.Compile(statusRules, report, contentGraph.Traits
+                .SelectMany(t => t.Breakpoints).SelectMany(b => b.Mechanics.IsDefault ? [] : b.Mechanics)
+                .Where(m => m.Kind == TraitMechanicKind.ChillOnAttack).Select(m => m.Count).DefaultIfEmpty(2).Max())
+            : CompiledMatrixStatusRules.Default;
         if (report.HasCoreErrors || campaign is null || rules is null || presentation is null)
             return new GameProjectCompilationResult(null, report);
 
@@ -61,7 +69,7 @@ public static partial class GameProjectCompiler
                 campaign,
                 rules,
                 presentation,
-                context.FloorRules),
+                context.FloorRules) { MatrixStatusRules = matrixRules },
             report);
     }
 
@@ -147,7 +155,8 @@ public static partial class GameProjectCompiler
             shop)
         {
             RunOffers = CompileRunOffers(authored, context),
-            RecruitmentSupply = CompileRecruitmentSupply(authored, recruitment, context)
+            RecruitmentSupply = CompileRecruitmentSupply(authored, recruitment, context),
+            SeparateItemRewardCategories = authored.SeparateItemRewardCategories
         };
     }
 
@@ -251,7 +260,8 @@ public static partial class GameProjectCompiler
         {
             LocalHealthMultipliers = [.. authored.LocalHealthMultipliers],
             LocalDamageMultipliers = [.. authored.LocalDamageMultipliers],
-            Compositions = compositions
+            Compositions = compositions,
+            OpponentChoiceCount = authored.OpponentChoiceCount
         };
     }
 

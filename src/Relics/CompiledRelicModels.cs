@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using TowerAutobattler.Attributes;
+using TowerAutobattler.Abilities;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Effects;
 using TowerAutobattler.Statuses;
@@ -16,6 +17,7 @@ public sealed record CompiledRelicRunOutcome(
     int Amount);
 
 public abstract record CompiledRelicUnitTarget;
+public sealed record CompiledRelicPlayerTeamTarget : CompiledRelicUnitTarget;
 public sealed record CompiledRelicPlayerArmyTarget : CompiledRelicUnitTarget;
 public sealed record CompiledRelicPlayerSummonsTarget : CompiledRelicUnitTarget;
 public sealed record CompiledRelicPlayerHeroesTarget : CompiledRelicUnitTarget;
@@ -58,7 +60,10 @@ public sealed record CompiledRelicReactiveCounter(
     int Priority,
     RelicThresholdTargetKind Target,
     int TargetTeam,
-    CompiledEffectBinding ThresholdEffect);
+    CompiledEffectBinding? ThresholdEffect);
+
+public sealed record CompiledRelicRunRule(string RuleId, RelicRunRuleKind Kind, float Amount, int Limit,
+    string CounterId, string PoolId, ImmutableArray<string> ContentIds);
 
 public sealed record CompiledRelicDefinition(
     string StableId,
@@ -69,7 +74,11 @@ public sealed record CompiledRelicDefinition(
     ImmutableArray<CompiledRelicReactiveCounter> ReactiveCounters,
     ImmutableArray<CompiledRelicRunOutcome> VictoryOutcomes,
     string Fingerprint,
-    ImmutableArray<CompiledRelicStatusGrant> StatusGrants = default);
+    ImmutableArray<CompiledRelicStatusGrant> StatusGrants = default,
+    ImmutableArray<CompiledRelicRunRule> RunRules = default,
+    ImmutableArray<CompiledRelicAbilityRepeat> AbilityRepeats = default);
+
+public sealed record CompiledRelicAbilityRepeat(AbilityTriggerKind Trigger, int ExtraExecutions);
 
 public sealed record CompiledRelicStatusGrant(string BindingId, CompiledRelicUnitTarget Target, CompiledStatusDefinition Status);
 

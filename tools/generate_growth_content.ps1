@@ -166,26 +166,8 @@ MaxUses = 1
 Operations = [$opRef]
 "@
   } else {
-    Write-Utf8 $abilityPath @"
-[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
-[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
-[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
-[sub_resource type="Resource" id="shield"]
-script = ExtResource("operation")
-Kind = 2
-Target = 0
-Amount = 20
-DurationTicks = 25
-[resource]
-script = ExtResource("ability")
-StableId = "${id}_growth_ascend"
-DisplayName = "升阶战备"
-Description = "开战获得一层短时防护，确保晚来功能位立即参与战斗。"
-ActivationKind = 1
-Trigger = 1
-MaxUses = 1
-Operations = [SubResource("shield")]
-"@
+    # Unplanned benefits stay absent. Never generate a generic fallback effect.
+    continue
   }
   $passivePath = if($id -eq 'hero_mx03'){'res://content/growth/abilities/hero_mx03_ascended_p.tres'}else{"res://content/validation_matrix/abilities/${id}_p.tres"}
   Write-Utf8 "$root\loadouts\${id}_ascended.tres" @"
@@ -264,39 +246,14 @@ ManaCost = 70
 CooldownTicks = 1
 Operations = [$opRefs]
 "@
- Write-Utf8 "$root\abilities\${id}_ascend.tres" @"
-[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
-[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
-[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
-[sub_resource type="Resource" id="op"]
-script = ExtResource("operation")
-Kind = 2
-Target = 0
-Amount = 32
-DurationTicks = 30
-[resource]
-script = ExtResource("ability")
-StableId = "${id}_ascend"
-DisplayName = "$($g[1])·强化"
-Description = "升阶后获得额外短盾，使高阶功能可立即兑现。"
-ActivationKind = 1
-Trigger = 1
-MaxUses = 1
-Operations = [SubResource("op")]
-"@
- foreach($suffix in @('base','ascended')) {
-  $extra=if($suffix -eq 'ascended'){', ExtResource("asc")'}else{''}
-  $asc=if($suffix -eq 'ascended'){"[ext_resource type=`"Resource`" path=`"res://content/growth/abilities/${id}_ascend.tres`" id=`"asc`"]"}else{''}
-  Write-Utf8 "$root\loadouts\${id}_${suffix}.tres" @"
+ Write-Utf8 "$root\loadouts\${id}_base.tres" @"
 [gd_resource type="Resource" script_class="AbilityLoadoutDefinition" format=3]
 [ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="script"]
 [ext_resource type="Resource" path="res://content/growth/abilities/${id}_a.tres" id="a"]
-$asc
 [resource]
 script = ExtResource("script")
-Abilities = [ExtResource("a")$extra]
+Abilities = [ExtResource("a")]
 "@
- }
  $portraitNumber=44 + [array]::IndexOf($gx,$g)
  $portraitSource=Join-Path $PSScriptRoot "..\content\validation_matrix\portraits\hero_mx$('{0:d2}' -f $portraitNumber).tres"
  $portraitText=(Get-Content -Raw $portraitSource) -replace "StableId = `"hero_mx$('{0:d2}' -f $portraitNumber)`"", "StableId = `"$id`""
@@ -519,7 +476,7 @@ Write-Utf8 "$root\growth_campaign.tres" @'
 [ext_resource type="Resource" path="res://content/growth/regions/region_crown_engine.tres" id="4"]
 [ext_resource type="Resource" path="res://content/project/tower_node_table.tres" id="5"]
 [ext_resource type="Resource" path="res://content/growth/project/growth_hero_pool.tres" id="6"]
-[ext_resource type="Resource" path="res://content/project/pools/pool_all_items.tres" id="7"]
+[ext_resource type="Resource" path="res://content/growth/project/growth_item_pool.tres" id="7"]
 [ext_resource type="Resource" path="res://content/growth/project/growth_recruitment_supply.tres" id="8"]
 [resource]
 script = ExtResource("1")
@@ -535,12 +492,13 @@ RecruitmentSupply = ExtResource("8")
 '@
 Copy-Item (Join-Path $PSScriptRoot '..\content\validation_matrix\matrix_run_rules.tres') "$root\growth_run_rules.tres" -Force
 Write-Utf8 "$root\growth_project.tres" @'
-[gd_resource type="Resource" script_class="GameProjectDefinition" load_steps=6 format=3]
+[gd_resource type="Resource" script_class="GameProjectDefinition" load_steps=7 format=3]
 [ext_resource type="Script" path="res://src/Project/GameProjectDefinition.cs" id="1"]
 [ext_resource type="Resource" path="res://content/growth/growth_catalog.tres" id="2"]
 [ext_resource type="Resource" path="res://content/growth/growth_campaign.tres" id="3"]
 [ext_resource type="Resource" path="res://content/growth/growth_run_rules.tres" id="4"]
 [ext_resource type="Resource" path="res://content/project/alpha_presentation.tres" id="5"]
+[ext_resource type="Resource" path="res://content/project/matrix_status_rules.tres" id="matrix_rules"]
 [resource]
 script = ExtResource("1")
 StableId = "project_growth"
@@ -548,6 +506,7 @@ Content = ExtResource("2")
 Campaign = ExtResource("3")
 RunRules = ExtResource("4")
 Presentation = ExtResource("5")
+MatrixStatusRules = ExtResource("matrix_rules")
 '@
 
 # MX25's growth slice replaces the repeatable mana skill with one battle-start drone.
@@ -643,13 +602,14 @@ Abilities = [ExtResource("a"), ExtResource("p"), ExtResource("permanent")$ascIte
 $rulesRefs=@(
  '[ext_resource type="Script" path="res://src/Growth/GrowthRulesDefinition.cs" id="rules"]',
  '[ext_resource type="Script" path="res://src/Growth/GrowthHeroDefinition.cs" id="hero_script"]',
- '[ext_resource type="Script" path="res://src/Growth/GrowthSpellDefinition.cs" id="spell_script"]')
+ '[ext_resource type="Script" path="res://src/Growth/GrowthSpellDefinition.cs" id="spell_script"]',
+ '[ext_resource type="Script" path="res://src/Growth/GrowthAscensionBenefitDefinition.cs" id="benefit_script"]')
 $heroBlocks=@(); $heroResourceRefs=@()
 $allGrowthIds=$baseIds + ($gx | ForEach-Object {$_[0]})
 for($i=0;$i -lt $allGrowthIds.Count;$i++){
  $id=$allGrowthIds[$i]; $ascPath=if($id -like 'gx*'){"res://content/growth/loadouts/${id}_ascended.tres"}elseif($id -eq 'hero_mx25'){"res://content/growth/loadouts/hero_mx25_growth_ascended.tres"}elseif($id -eq 'hero_mx01'){"res://content/growth/loadouts/hero_mx01_growth_ascended.tres"}else{"res://content/growth/loadouts/${id}_ascended.tres"}
  $basePath=if($id -like 'gx*'){"res://content/growth/loadouts/${id}_base.tres"}elseif($id -eq 'hero_mx25'){"res://content/growth/loadouts/hero_mx25_growth_base.tres"}elseif($id -eq 'hero_mx01'){"res://content/growth/loadouts/hero_mx01_growth_base.tres"}else{"res://content/validation_matrix/loadouts/${id}.tres"}
- $rulesRefs += "[ext_resource type=`"Resource`" path=`"$ascPath`" id=`"asc$i`"]"
+ if($important.ContainsKey($id)) { $rulesRefs += "[ext_resource type=`"Resource`" path=`"$ascPath`" id=`"asc$i`"]" }
  $rulesRefs += "[ext_resource type=`"Resource`" path=`"$basePath`" id=`"base$i`"]"
  $modes=if($id -eq 'hero_mx25'){"ProductionModes = PackedInt32Array(0, 1, 2)`nResearchYield = 1"}elseif($id -eq 'hero_mx10'){'ProductionModes = PackedInt32Array(1)'}elseif($id -eq 'hero_mx30'){'ProductionModes = PackedInt32Array(0, 1)'}else{'ProductionModes = PackedInt32Array()'}
  $desc=switch($id){
@@ -660,7 +620,17 @@ for($i=0;$i -lt $allGrowthIds.Count;$i++){
   'hero_mx22' {'主动结束后返还一层短盾。'}
   'hero_mx23' {'护盾击破后短时维持攻速。'}
   'hero_mx25' {'协同工单：开战工蜂与近邻形成一次额外保护。'}
-  default {'获得开战短盾，使该功能位晚来后立即参与战斗。'}
+  default {''}
+ }
+ $benefitRef = ''
+ if($important.ContainsKey($id)) {
+  $heroBlocks += @"
+[sub_resource type="Resource" id="benefit$i"]
+script = ExtResource("benefit_script")
+Description = "$desc"
+BattleLoadout = ExtResource("asc$i")
+"@
+  $benefitRef = "AscensionBenefit = SubResource(`"benefit$i`")"
  }
  $heroBlocks += @"
 [sub_resource type="Resource" id="hero$i"]
@@ -669,9 +639,7 @@ ContentId = "$id"
 $modes
 GrowthRate = 0.04
 AscensionId = "${id}_growth_ascension"
-AscensionName = "一次升阶"
-AscensionDescription = "$desc"
-AscendedLoadout = ExtResource("asc$i")
+$benefitRef
 BaseLoadout = ExtResource("base$i")
 MaterialCategory = "general"
 "@
@@ -717,3 +685,9 @@ $manifest.Loadouts = @($matrixManifest.Loadouts) + @(Get-ChildItem "$root\loadou
 $manifest.Abilities = @($matrixManifest.Abilities) + @(Get-ChildItem "$root\abilities\*.tres" | ForEach-Object { 'res://content/growth/abilities/'+$_.Name })
 Write-Utf8 "$root\manifest.json" ($manifest | ConvertTo-Json -Depth 6)
 
+
+# Templates remain concise; normalize their Matrix parameter blocks before use.
+$matrixMigrationPython = Get-Command python3 -ErrorAction SilentlyContinue
+if (-not $matrixMigrationPython) { $matrixMigrationPython = Get-Command python -ErrorAction Stop }
+& $matrixMigrationPython.Source (Join-Path $PSScriptRoot 'migrate_matrix_authoring.py') --root $root
+if ($LASTEXITCODE -ne 0) { throw '矩阵参数资源迁移失败。' }

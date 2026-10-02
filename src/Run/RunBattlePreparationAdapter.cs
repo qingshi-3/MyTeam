@@ -87,7 +87,8 @@ public static class RunBattlePreparationAdapter
                 encounter.NodeType,
                 run.Seed,
                 run.FloorIndex,
-                run.BattleNumber),
+                run.BattleNumber,
+                encounter.CompositionId),
             floorRule,
             units.ToImmutable(),
             placements.ToImmutable(),
@@ -104,13 +105,16 @@ public static class RunBattlePreparationAdapter
                 : BattlePlacementValidation.None);
     }
 
-    public static BattleUnitGrowth? ProjectGrowth(RosterHeroInstanceDto hero,
-        CompiledGrowthRules? rules, GrowthRunDto? runGrowth = null)
+    internal static BattleUnitGrowth? ProjectGrowth(RosterHeroInstanceDto hero,
+        CompiledGrowthRules? rules, GrowthRunDto? runGrowth = null) =>
+        ProjectGrowth(RosterHeroView.For(hero), rules, runGrowth is null ? null : GrowthRunView.For(runGrowth));
+
+    public static BattleUnitGrowth? ProjectGrowth(RosterHeroView hero,
+        CompiledGrowthRules? rules, GrowthRunView? runGrowth = null)
     {
         if (rules is null) return null;
         rules.Heroes.TryGetValue(hero.ContentId, out var definition);
-        var loadout = string.IsNullOrEmpty(hero.Growth.AscensionId)
-            ? definition?.BaseLoadout : definition?.AscendedLoadout;
+        var loadout = definition?.ResolveBattleLoadout(!string.IsNullOrEmpty(hero.Growth.AscensionId));
         // Preview reads the selection; an already-started battle reads its paid snapshot.
         var started = runGrowth?.PendingNode is { IsBattle: true } node ? node : null;
         var spellId = started?.ConsumedSpellId ?? runGrowth?.EquippedSpellId ?? "";

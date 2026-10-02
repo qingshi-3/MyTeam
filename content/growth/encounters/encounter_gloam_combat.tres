@@ -9,6 +9,8 @@
 [sub_resource type="Resource" id="swarm"]
 script = ExtResource("composition")
 StableId = "gloam_combat_swarm"
+PressureSummary = "尸群保护后排咒师，咒师范围攻击会同时伤害聚集单位。"
+RewardResearch = 2
 DisplayName = "尸群掩护"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -18,6 +20,8 @@ Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(7, 1), Vector2i(7, 4), Vector2
 [sub_resource type="Resource" id="beam"]
 script = ExtResource("composition")
 StableId = "gloam_combat_beam"
+PressureSummary = "两名掠夺者近战吸血续航，贯光术士沿直线攻击多个目标。"
+RewardMaterials = 1
 DisplayName = "掠夺者光阵"
 MinLocalFloor = 0
 MaxLocalFloor = 4
@@ -26,6 +30,7 @@ Cells = Array[Vector2i]([Vector2i(7, 2), Vector2i(7, 3), Vector2i(7, 4), Vector2
 
 [resource]
 script = ExtResource("1")
+OpponentChoiceCount = 3
 StableId = "encounter_gloam_combat"
 NodeType = 0
 TitlePattern = "{region}遭遇战"

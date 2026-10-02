@@ -25,6 +25,8 @@ public partial class GrowthBattleGainSmoke : Node
             VerifyRollback(index);
             VerifyMx03AscensionRetainsChillChain(index, rules);
             VerifyGuardFormationDistribution(index, rules);
+            VerifyShatterFrontTargetLimitAndOneShot(index, rules);
+            VerifySuppressFrontTargetLimitAndExpiry(index, rules);
             GD.Print("GROWTH_BATTLE_GAIN_SMOKE_OK");
             GetTree().Quit();
         }
@@ -156,7 +158,7 @@ public partial class GrowthBattleGainSmoke : Node
         var growth = rules.Heroes["hero_mx03"];
         var basePassive = growth.BaseLoadout?.Find("hero_mx03_p")
             ?? throw new InvalidOperationException("MX03 base passive missing");
-        var ascendedPassive = growth.AscendedLoadout?.Find("hero_mx03_growth_ascended_p")
+        var ascendedPassive = growth.AscensionBenefit?.BattleLoadout.Find("hero_mx03_growth_ascended_p")
             ?? throw new InvalidOperationException("MX03 ascended passive missing");
 
         Require(!AlternatingTargetsApplyChill(index, basePassive),
@@ -253,5 +255,74 @@ public partial class GrowthBattleGainSmoke : Node
             "MX03 alternating-target fixture did not hit three different enemies and leave the payoff target alive");
         return battle.CombatEvents.Any(e => e.Kind == BattleCombatEventKind.StatusApplied &&
             e.SubjectStableId == "matrix_chill" && e.SourceRuntimeId == owner.RuntimeId);
+    }
+
+    private static BattleConfig OpeningSpellConfig(BattleLabContentIndex index, CompiledAbilityLoadout spell)
+    {
+        var config = Laboratory(index, ["hero_mx01", "hero_mx02"],
+            ["soldier_dummy_static", "soldier_dummy_static", "soldier_dummy_static", "soldier_dummy_static"], 20260930);
+        var enemyCells = new[] { new Vector2I(6, 2), new Vector2I(6, 0), new Vector2I(7, 2), new Vector2I(8, 4) };
+        var enemyIndex = 0;
+        for (var i = 0; i < config.Spawns.Count; i++)
+        {
+            var spawn = config.Spawns[i];
+            config.Spawns[i] = spawn with
+            {
+                Cell = spawn.Team == 1 ? enemyCells[enemyIndex++] : new Vector2I(1, i + 1),
+                Unit = spawn.Unit with
+                {
+                    AbilityLoadout = spawn.Unit.ContentId == "hero_mx01" ? spell : null,
+                    MaxHealth = 100000,
+                    Armor = 0,
+                    AttributeDefinition = null,
+                    Behavior = spawn.Unit.Behavior with { Stationary = true, DisableBasicAttacks = true }
+                }
+            };
+        }
+        return config;
+    }
+
+    private static void VerifyShatterFrontTargetLimitAndOneShot(BattleLabContentIndex index, CompiledGrowthRules rules)
+    {
+        const string abilityId = "growth_spell_shatter_front";
+        using var battle = new BattleSimulation(OpeningSpellConfig(index, rules.Spells["shatter_front"].BattleLoadout));
+        var owner = battle.Units.Single(unit => unit.Definition.ContentId == "hero_mx01");
+        var closest = battle.Units.Where(unit => unit.Team == 1)
+            .OrderBy(unit => unit.Position.DistanceSquaredTo(owner.Position))
+            .ThenBy(unit => unit.RuntimeId, StringComparer.Ordinal).Take(3).Select(unit => unit.RuntimeId).ToHashSet();
+        var spellHits = battle.CombatEvents.Where(fact => fact.Kind == BattleCombatEventKind.DamageResolved &&
+            fact.Source.StableId == abilityId).ToArray();
+        Require(spellHits.Length == 3 && spellHits.Select(fact => fact.TargetRuntimeId).ToHashSet().SetEquals(closest) &&
+            spellHits.All(fact => Math.Abs(fact.RequestedValue - 70) < .01f && Math.Abs(fact.EffectiveValue - 70) < .01f),
+            "shatter front did not damage exactly the nearest three enemies through the shared damage pipeline");
+        Require(battle.Units.Where(unit => unit.Team == 0 || !closest.Contains(unit.RuntimeId))
+            .All(unit => Math.Abs(unit.Health - unit.MaxHealth) < .01f),
+            "shatter front damaged an ally or exceeded its target limit");
+        for (var tick = 0; tick < 100; tick++) battle.Step();
+        Require(battle.CombatEvents.Count(fact => fact.Kind == BattleCombatEventKind.AbilityResolved &&
+            fact.SubjectStableId == abilityId) == 1 &&
+            battle.CombatEvents.Count(fact => fact.Kind == BattleCombatEventKind.DamageResolved && fact.Source.StableId == abilityId) == 3,
+            "shatter front repeated its opening damage after battle start");
+    }
+
+    private static void VerifySuppressFrontTargetLimitAndExpiry(BattleLabContentIndex index, CompiledGrowthRules rules)
+    {
+        const string abilityId = "growth_spell_suppress_front";
+        using var battle = new BattleSimulation(OpeningSpellConfig(index, rules.Spells["suppress_front"].BattleLoadout));
+        var owner = battle.Units.Single(unit => unit.Definition.ContentId == "hero_mx01");
+        var closest = battle.Units.Where(unit => unit.Team == 1)
+            .OrderBy(unit => unit.Position.DistanceSquaredTo(owner.Position))
+            .ThenBy(unit => unit.RuntimeId, StringComparer.Ordinal).Take(2).Select(unit => unit.RuntimeId).ToHashSet();
+        float Speed(BattleUnitState unit) => unit.Attributes.GetValue(CombatAttribute.AttackSpeed);
+        Require(battle.Units.All(unit => Math.Abs(Speed(unit) - (closest.Contains(unit.RuntimeId) ? .65f : 1f)) < .01f),
+            "suppress front did not reduce only the nearest two enemy attack speeds");
+        while (battle.TickIndex < 79) battle.Step();
+        Require(battle.Units.Where(unit => closest.Contains(unit.RuntimeId)).All(unit => Math.Abs(Speed(unit) - .65f) < .01f),
+            "suppress front expired before its eight-second preparation window");
+        while (battle.TickIndex < 81) battle.Step();
+        Require(battle.Units.All(unit => Math.Abs(Speed(unit) - 1f) < .01f) &&
+            battle.CombatEvents.Count(fact => fact.Kind == BattleCombatEventKind.AbilityResolved && fact.SubjectStableId == abilityId) == 1 &&
+            !battle.CombatEvents.Any(fact => fact.Kind == BattleCombatEventKind.ControlApplied),
+            "suppress front failed to restore attack speed, repeated its opening trigger, or acted as a hard interrupt");
     }
 }
