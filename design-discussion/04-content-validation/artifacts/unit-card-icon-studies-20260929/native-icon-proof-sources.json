@@ -1,0 +1,131 @@
+{
+  "scope": "Static preview; native geometry retained; production resources untouched",
+  "records": [
+    {
+      "label": "攻击",
+      "source": "assets/ui/icons/keyword-attack.svg",
+      "sha256": "fc376cbeaf72cce1301fa3e35cffd08f0cfe946e46ae10d122a2fd19445056a2",
+      "geometryPreserved": true
+    },
+    {
+      "label": "法强",
+      "source": "assets/ui/icons/keyword-magic-damage.svg",
+      "sha256": "826fac760ad9406085f23ad37f5677b47c06f02a6f19c34301b9a68c5471f00e",
+      "geometryPreserved": true
+    },
+    {
+      "label": "生命",
+      "source": "assets/ui/icons/health.svg",
+      "sha256": "94138b4eef875fdfebd8ad553b9f3cc1c0af37b5bd5cc8b30cd4af2e318f71af",
+      "geometryPreserved": true
+    },
+    {
+      "label": "防御",
+      "source": "assets/ui/icons/keyword-armor.svg",
+      "sha256": "5e85df818706e2ce6ef2f2290ad08cfa307d1ac0977cc01d60736a1fa236fa58",
+      "geometryPreserved": true
+    },
+    {
+      "label": "攻击速度",
+      "source": "assets/ui/icons/keyword-attack-speed.svg",
+      "sha256": "7d43cb5d04551280d76c87acc40d7872087b00e1931e9e33c055be6e4ac9afa8",
+      "geometryPreserved": true
+    },
+    {
+      "label": "攻击距离",
+      "source": "assets/ui/icons/reach.svg",
+      "sha256": "de889f39fb51c53972118446812c4eef461be77e04e09a109b7cbe6d8c4cfb3e",
+      "geometryPreserved": true
+    },
+    {
+      "label": "暴击率",
+      "source": "assets/ui/icons/critical-chance.svg",
+      "sha256": "154fce2f841dc503a5e327c81962dc4c334d3c05567867d79c119fc64cb8d28c",
+      "geometryPreserved": true
+    },
+    {
+      "label": "暴击伤害",
+      "source": "assets/ui/icons/critical-damage.svg",
+      "sha256": "d7a1201c2f7ebdf6c78aef90287d2851a9a9fd6d9e6d84d87968ff137d953e3c",
+      "geometryPreserved": true
+    },
+    {
+      "label": "吸血",
+      "source": "assets/ui/icons/keyword-lifesteal.svg",
+      "sha256": "30647144e2a63f7363c9e7b657c3eaff2630208cad5eabb250f5d3d00afcd69f",
+      "geometryPreserved": true
+    },
+    {
+      "label": "闪避",
+      "source": "assets/ui/icons/keyword-dodge.svg",
+      "sha256": "cd2711de60dcf98bb15952238d2ee542d66be4922eaa2aa99b2eb8042f24b20c",
+      "geometryPreserved": true
+    },
+    {
+      "label": "控制抗性",
+      "source": "assets/ui/icons/control-resistance.svg",
+      "sha256": "47f80870689d300ad861a34db2f281c5d77d621afd221ddeef03e4f89a7b0517",
+      "geometryPreserved": true
+    },
+    {
+      "label": "移动速度",
+      "source": "assets/ui/icons/move-speed.svg",
+      "sha256": "14277c89dbe82a23ce833f2d82e7b589e3cc7556c563a0a169d255fc6be748e0",
+      "geometryPreserved": true
+    },
+    {
+      "label": "法力上限",
+      "source": "assets/ui/icons/mana.svg",
+      "sha256": "092474a82991a72e56954211329e28b947dccf9899e4159b84cc4a5f8ce1a44b",
+      "geometryPreserved": true
+    },
+    {
+      "label": "初始法力",
+      "source": "assets/ui/icons/mana-start.svg",
+      "sha256": "7b179874534720dc6b4cfbf12cf46ada46b2f568fb04b7b70e61b087c1b780cc",
+      "geometryPreserved": true
+    },
+    {
+      "label": "每秒回蓝",
+      "source": "assets/ui/icons/mana-regeneration.svg",
+      "sha256": "5ba63cfaca1bdda5519c01f16d195c99f5a627024f1267c4c817918264ddfbdb",
+      "geometryPreserved": true
+    },
+    {
+      "label": "攻击回蓝",
+      "source": "assets/ui/icons/mana-attack.svg",
+      "sha256": "918259567ca091c614dfb4b91f67cf7ae71aa289cc5c85db91b0ea447c2954e0",
+      "geometryPreserved": true
+    },
+    {
+      "label": "受击回蓝",
+      "source": "assets/ui/icons/mana-damage.svg",
+      "sha256": "0321e9a2effb0783115c664a6c2d8e1eabf09fed371b10d042a0f48c957931a4",
+      "geometryPreserved": true
+    },
+    {
+      "label": "单次回蓝上限",
+      "source": "assets/ui/icons/mana-hit-cap.svg",
+      "sha256": "34ecb38fb3b9faf6bca62004645e1765a56a0e0c48ddd84ecdc7e27032c616cc",
+      "geometryPreserved": true
+    },
+    {
+      "label": "治疗强度",
+      "source": "assets/ui/icons/healing.svg",
+      "sha256": "234443127c8c34153b22767391ab6c2bf5b2de62a3e75b717c3ddf198e5ae41b",
+      "geometryPreserved": true
+    },
+    {
+      "label": "主动技能",
+      "source": "assets/ui/icons/skill-active.svg",
+      "sha256": "27121ba21e30ebb678d25f2df503de08eec06b621ae4619eba74cb1ac118de14",
+      "geometryPreserved": true
+    },
+    {
+      "label": "被动技能",
+      "source": "assets/ui/icons/skill-passive.svg",
+      "sha256": "f0bc24c6e12856160f558e89fcd2325bfb23272cce1ad67cef6a711817d45425",
+      "geometryPreserved": true
+    }
+  ]
+}

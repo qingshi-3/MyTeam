@@ -1,0 +1,371 @@
+{
+  "date": "2026-09-30",
+  "authorization": "继续把剩余未优化的立绘执行一下优化",
+  "method": "built-in image_gen, individual character edits",
+  "lockedAssets": {
+    "f1_general": "acf600d865a641bd81ad2b428747469c3a866573945a1d533f6c027a107af682",
+    "f3_aymarahealer": "5cc4e990ca34925d64ead4e7013278595c46d4877c5be9b0bc82cf0058459d13",
+    "f6_sister": "a96c1fa9445d0841dd496e202dff6d8cb38e2f19bce282689f7fca894fe5d942"
+  },
+  "items": [
+    {
+      "id": "boss_borealjuggernaut",
+      "runtimeFile": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "sha256": "58894d9abfee75bf2d8410ac70abfee81bc2d87fb83fb7d5c5a8c48bed5afb33",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/boss_borealjuggernaut.png",
+      "previousSha256": "a50dc331d8ef3db79255a5824031f5c8f7e7c7733420b1320272b0b17d3a0566"
+    },
+    {
+      "id": "boss_decepticleprime",
+      "runtimeFile": "assets/portraits/illustrations/boss_decepticleprime.png",
+      "sha256": "061bd6ca2cbc72674d8353932fd9339af624dfd87390aeaa40c93f4fb1c0fa1a",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/boss_decepticleprime.png",
+      "previousSha256": "42d6e72dd3ab075286484e82b2068905674a41222cb2afe1af8cf17797f3f65e"
+    },
+    {
+      "id": "boss_shadowlord",
+      "runtimeFile": "assets/portraits/illustrations/boss_shadowlord.png",
+      "sha256": "d3814abf5367ce601e95883689f4a6966f6240c42de25ea2ea018925fc7b41be",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/boss_shadowlord.png",
+      "previousSha256": "79b307b28683543188cb4e59e76a168083065695391d93487f03808bb0663605"
+    },
+    {
+      "id": "boss_vampire",
+      "runtimeFile": "assets/portraits/illustrations/boss_vampire.png",
+      "sha256": "993f472fd3c31e1454469d86b6f0050a45c586443f36a1f00a73b517f541e237",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/boss_vampire.png",
+      "previousSha256": "a136fddb92f614cb579e265599914edfb34b466d3a5531c5785860ec443a61e3"
+    },
+    {
+      "id": "boss_wujin",
+      "runtimeFile": "assets/portraits/illustrations/boss_wujin.png",
+      "sha256": "e24d3e66d9054f92ac41afb89f0a7b13c9556f1a498248fa9df846e1256948f1",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/boss_wujin.png",
+      "previousSha256": "e2e507a3dee04b550479bc00c25cdae752e0d07a33557db948f4d707c9b59cf5"
+    },
+    {
+      "id": "f1_ranged",
+      "runtimeFile": "assets/portraits/illustrations/f1_ranged.png",
+      "sha256": "6849a08c1a24975dd7862d4e718f8eaffa4ec98129a5ddbdca872af45c156d58",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f1_ranged.png",
+      "previousSha256": "461cdbd150e64fed6e1f3dafda0850c8190f47427f71df2b79a6b2b883b7d691"
+    },
+    {
+      "id": "f1_sister",
+      "runtimeFile": "assets/portraits/illustrations/f1_sister.png",
+      "sha256": "8c1f630872ecf9efa7647c391626f249f6ec03211c9d4ca474986087a0c9a290",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f1_sister.png",
+      "previousSha256": "72060f0137f9b6ec7348aecccbb1a7fca44af921685a30a1b0d9de5308f5a22a"
+    },
+    {
+      "id": "f1_sunforgelancer",
+      "runtimeFile": "assets/portraits/illustrations/f1_sunforgelancer.png",
+      "sha256": "cac9f0fea6a8d38108d5fa2665d8a7252a7cd722e678d93129844f404436f387",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f1_sunforgelancer.png",
+      "previousSha256": "d042cf27b995a8547f41fd8c4ee9beac7241108050027c804a7a39a5a3bc53f9"
+    },
+    {
+      "id": "f1_tank",
+      "runtimeFile": "assets/portraits/illustrations/f1_tank.png",
+      "sha256": "d1fe1593615ec68ee57374fd1bef883e109eea2e0811b9ba137eeff80cb25857",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f1_tank.png",
+      "previousSha256": "3eb06812da2af4de850c429bd79fa0bd71816bdad426cb5bc0f9ce8fe15bbe13"
+    },
+    {
+      "id": "f2_general",
+      "runtimeFile": "assets/portraits/illustrations/f2_general.png",
+      "sha256": "e6a8d92e1677a049a335a4ab6c31d41a8505c01c3950b6b17bd4e59047102fa0",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f2_general.png",
+      "previousSha256": "23d957a8c4b7ecdeb75c0bee7ddecfebabc04a1c2f984898a16d6a0862bf76e8"
+    },
+    {
+      "id": "f2_lanternfox",
+      "runtimeFile": "assets/portraits/illustrations/f2_lanternfox.png",
+      "sha256": "a35c7ede6d29987e73a50cca682cd19775dd3f5509effc0e6824d378c26f1b30",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f2_lanternfox.png",
+      "previousSha256": "1b23c8da781531acfe45d5a474bc27f111af2b855855fce77b21de014f99149f"
+    },
+    {
+      "id": "f2_melee",
+      "runtimeFile": "assets/portraits/illustrations/f2_melee.png",
+      "sha256": "713f3d5e2f4a11fad91063662dff97370210ecfc20fca7451c7c3de7b393ae7a",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f2_melee.png",
+      "previousSha256": "78a40ad982b0e00fa1b6fa6bf4ab743469128eebea72689b7b9922f6b0b11ed5"
+    },
+    {
+      "id": "f2_ranged",
+      "runtimeFile": "assets/portraits/illustrations/f2_ranged.png",
+      "sha256": "b81259718c7d4d36fb083efe4580424a8a0eca83aeb40fc14abc44d91ba6b56e",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f2_ranged.png",
+      "previousSha256": "0f7f150658b6b7c1a32ad57cb830d3e43882f750e5de19060cb95e0278ef5040"
+    },
+    {
+      "id": "f2_spellthief",
+      "runtimeFile": "assets/portraits/illustrations/f2_spellthief.png",
+      "sha256": "83fde655f168335b7c928f4837981a49118e92499929a615fa2a04df7e837490",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f2_spellthief.png",
+      "previousSha256": "bc4de8a7ab821ebfbbf5bf4511f9e83643188320a06ac09133c8f6a48b13bfea"
+    },
+    {
+      "id": "f3_dervish",
+      "runtimeFile": "assets/portraits/illustrations/f3_dervish.png",
+      "sha256": "63fe6ad6300ced9604751c257da0728c677c7fc8cf6ac49c50d680c6d724f85c",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f3_dervish.png",
+      "previousSha256": "c854911c4b73ddccad1aa8805967597b3b6f40c57ff14af993ca0075dc49ba30"
+    },
+    {
+      "id": "f3_dunecaster",
+      "runtimeFile": "assets/portraits/illustrations/f3_dunecaster.png",
+      "sha256": "499e1a20fcdf1437f36d979f7cd4ea8388fbf6fb34711deefdde329ab43ed6ea",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f3_dunecaster.png",
+      "previousSha256": "903b720f6bd9df04c28740b2838401fee9b5300588ecf38524b62c64ce5c9aab"
+    },
+    {
+      "id": "f3_general",
+      "runtimeFile": "assets/portraits/illustrations/f3_general.png",
+      "sha256": "b28ae82ca38cb70bfaeeb4db7d7194c433bfdbc1fa0056c1c204795ae5fccfff",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f3_general.png",
+      "previousSha256": "029db6d9353c33fac9aa0b911ee7bb6a8ac99b9edaaebc7db5ecfe9cead9ebad"
+    },
+    {
+      "id": "f3_irondervish",
+      "runtimeFile": "assets/portraits/illustrations/f3_irondervish.png",
+      "sha256": "d6c245fb924a2baf537cd4bf2e8664515dd895f61c71f1a2ad4abb19308aad1b",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f3_irondervish.png",
+      "previousSha256": "0ff5e6c39f535c53a306680563fd70abe3aa8dadc031cd02bda6ca8559e8c46a"
+    },
+    {
+      "id": "f4_bloodbaronette",
+      "runtimeFile": "assets/portraits/illustrations/f4_bloodbaronette.png",
+      "sha256": "00c6a84ec60b56d22852a2b88b916ec64a01d7d9b584e3fc4ccda265e76bb768",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f4_bloodbaronette.png",
+      "previousSha256": "016c9acdb456ecd63eebabbe1d7330ae3bff48da671c9db4ffcf82f3a5dfc549"
+    },
+    {
+      "id": "f4_crawler",
+      "runtimeFile": "assets/portraits/illustrations/f4_crawler.png",
+      "sha256": "e6a7addca0f3edd1a55a7c7fc0dcb55986bcf83688b01777f2fd1062748a6fc7",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f4_crawler.png",
+      "previousSha256": "904366ffa96b6fedba263fa76f40cead5100270612c1fe4a86efb7219165f980"
+    },
+    {
+      "id": "f4_darkspine",
+      "runtimeFile": "assets/portraits/illustrations/f4_darkspine.png",
+      "sha256": "2422cd2a53af254242c36ef35763136dfdb49610d0327dcb5ee984839466309b",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f4_darkspine.png",
+      "previousSha256": "50ea4db8834ae8df0c2c1eb98c18d939b97e3d428dd1f8b3384cd666a259a2e9"
+    },
+    {
+      "id": "f4_general",
+      "runtimeFile": "assets/portraits/illustrations/f4_general.png",
+      "sha256": "00b9da9b1bb6f3880f2b0d8ddfa7e7053bce3f6100b22405f3b97f0996fe3aae",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f4_general.png",
+      "previousSha256": "8afd2538eb5f2f0d7d206720955fa0844d344fc92ec5ee6fe1df6cc9dd1e73da"
+    },
+    {
+      "id": "f4_mech",
+      "runtimeFile": "assets/portraits/illustrations/f4_mech.png",
+      "sha256": "0975625f59218d2bded75d439e6f80fb99dcc769ae2977c99038de70ee3219c2",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f4_mech.png",
+      "previousSha256": "d9c846ee1b93312dd951a4bd29aca84011c08b7f76ee7788fae7606602ab69cb"
+    },
+    {
+      "id": "f5_drogon",
+      "runtimeFile": "assets/portraits/illustrations/f5_drogon.png",
+      "sha256": "4dd8db6ff4d41e465bfc5f6761dabd2eb41f4e31d0e2a2a1b320333a4d98b190",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f5_drogon.png",
+      "previousSha256": "9c95af95f934bb7f7cf39f91847cd96a398b25adbf313fccd34a40af96c29eb5"
+    },
+    {
+      "id": "f5_firebreather",
+      "runtimeFile": "assets/portraits/illustrations/f5_firebreather.png",
+      "sha256": "af7e8ccce468ff69a9600f32a04988f6154a633e724fbfeaa0cb0ef930b4e42b",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f5_firebreather.png",
+      "previousSha256": "02a573060544fc0e0d267cd4a9596f4dc541f5864ea3599fe82ac1ba04c4fc3e"
+    },
+    {
+      "id": "f5_general",
+      "runtimeFile": "assets/portraits/illustrations/f5_general.png",
+      "sha256": "3b207065a135d4064b7452899959873de0538802cbdac84947d848e965df7549",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f5_general.png",
+      "previousSha256": "5d3b13db492f0f0f8bdc9e618f8940dccc2b8eb0ea274a73cee289b9b2b1575e"
+    },
+    {
+      "id": "f5_spiritharvester",
+      "runtimeFile": "assets/portraits/illustrations/f5_spiritharvester.png",
+      "sha256": "efd32e3626d36cfce010b7461d0510a7c89417eec47e57627963e7b9787f2574",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f5_spiritharvester.png",
+      "previousSha256": "114cedd6e1760a7e428621ac6a975a164223de7a2012c137757e6ec40bb72179"
+    },
+    {
+      "id": "f5_tank",
+      "runtimeFile": "assets/portraits/illustrations/f5_tank.png",
+      "sha256": "e746ab1cf30a3afec3a90718a04630c92c977c695fcd76ca6187d6feebeafc07",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f5_tank.png",
+      "previousSha256": "bda2c7349546807425b873f43de9f983e66aefe88b973b97c925f7cef1b53482"
+    },
+    {
+      "id": "f6_crystalbeetle",
+      "runtimeFile": "assets/portraits/illustrations/f6_crystalbeetle.png",
+      "sha256": "0e0a93bc7c9a4d5a34c3545988ff73014039ce0cb04aaa945098ee4b9e1c45b3",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f6_crystalbeetle.png",
+      "previousSha256": "13f98112fb79d42b89b0dee21964ea5297fae1fe02eb576de91361454abc1d83"
+    },
+    {
+      "id": "f6_freeblade",
+      "runtimeFile": "assets/portraits/illustrations/f6_freeblade.png",
+      "sha256": "f06f15cfc3bac6de5f51194c2d5f2546a0bb91e8a92bb9360bbe6b6a26e16c62",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f6_freeblade.png",
+      "previousSha256": "6d1d70548bf1b85e635dd43854080197c6c66a0016f5d1f49e0a8bc8c6f46163"
+    },
+    {
+      "id": "f6_frostbitehawker",
+      "runtimeFile": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "sha256": "c8a13ffbe61ec56b74b82544ec42641141996eee700c2725d3c6a00a4ceb8920",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f6_frostbitehawker.png",
+      "previousSha256": "bef99c62412a91eddb00836634181a8456302bb2ad70b3b1165f5ac52fc6cc26"
+    },
+    {
+      "id": "f6_general",
+      "runtimeFile": "assets/portraits/illustrations/f6_general.png",
+      "sha256": "290b0fad994afc788b4f01de0fb028e863dfcfe2e69e626f5492daa38f2ceba5",
+      "previousFile": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f6_general.png",
+      "previousSha256": "fbd2b0b45e16b5268bd4d268d4a7ccd23ada0ad01613243233cd073b2c76f5c7"
+    }
+  ],
+  "changedPortraitResources": [
+    "content/portraits/heroes/hero_hc19_overheal_priest.tres",
+    "content/portraits/heroes/hero_hc35_hook_hunter.tres",
+    "content/portraits/heroes/hero_hc09_breach_scribe.tres",
+    "content/portraits/heroes/hero_hc20_blood_drummer.tres",
+    "content/portraits/heroes/hero_hc15_shield_grower.tres",
+    "content/portraits/heroes/hero_hc34_shockshield_guard.tres",
+    "content/portraits/heroes/hero_hc10_ember_cashout.tres",
+    "content/portraits/heroes/hero_hc14_stone_fist.tres",
+    "content/portraits/heroes/hero_hc32_sky_monk.tres",
+    "content/portraits/heroes/hero_hc07_death_echo.tres",
+    "content/portraits/heroes/hero_hc23_frost_historian.tres",
+    "content/portraits/heroes/hero_hc25_death_provider.tres",
+    "content/portraits/heroes/hero_hc08_poison_keeper.tres",
+    "content/portraits/heroes/hero_hc22_dodge_assassin.tres",
+    "content/portraits/heroes/hero_hc11_triad_weaver.tres",
+    "content/portraits/heroes/hero_hc17_pain_vessel.tres",
+    "content/portraits/heroes/hero_hc04_crit_duelist.tres",
+    "content/portraits/heroes/hero_hc27_ally_consumer.tres",
+    "content/portraits/heroes/hero_hc26_ash_returner.tres",
+    "content/portraits/heroes/hero_hc33_rift_assassin.tres",
+    "content/portraits/heroes/hero_hc31_breach_lancer.tres",
+    "content/portraits/heroes/hero_hc12_control_clock.tres",
+    "content/portraits/heroes/hero_hc01_crossbow.tres",
+    "content/portraits/heroes/hero_hc29_mind_binder.tres",
+    "content/portraits/heroes/hero_hc24_swarm_keeper.tres",
+    "content/portraits/heroes/hero_hc13_shield_crit.tres",
+    "content/portraits/heroes/hero_hc03_iron_guard.tres",
+    "content/portraits/heroes/hero_hc36_cyclone_weaver.tres",
+    "content/portraits/heroes/hero_hc16_shield_bomber.tres",
+    "content/portraits/heroes/hero_hc05_tide_caster.tres",
+    "content/portraits/heroes/hero_hc21_last_stand.tres",
+    "content/portraits/heroes/hero_hc28_corpse_raiser.tres"
+  ],
+  "cardCropAdjustments": {
+    "content/portraits/heroes/hero_hc05_tide_caster.tres": {
+      "beforeFocus": [
+        0.5,
+        0.32
+      ],
+      "beforeZoom": 1.2,
+      "afterFocus": [
+        0.62,
+        0.32
+      ],
+      "afterZoom": 1.6
+    },
+    "content/portraits/heroes/hero_hc36_cyclone_weaver.tres": {
+      "beforeFocus": [
+        0.5,
+        0.32
+      ],
+      "beforeZoom": 1.2,
+      "afterFocus": [
+        0.62,
+        0.32
+      ],
+      "afterZoom": 1.6
+    },
+    "content/portraits/heroes/hero_hc07_death_echo.tres": {
+      "beforeFocus": [
+        0.6,
+        0.6
+      ],
+      "beforeZoom": 1.3,
+      "afterFocus": [
+        0.6,
+        0.6
+      ],
+      "afterZoom": 1.0
+    }
+  },
+  "verification": {
+    "pngCount": 32,
+    "dimensions": [
+      1024,
+      1536
+    ],
+    "installedHashesMatchAfter": true,
+    "beforeHashesMatchPlan": true,
+    "lockedThreeHashesUnchanged": true,
+    "dotnetBuild": {
+      "result": "pass",
+      "warnings": 0,
+      "errors": 0,
+      "log": "build.log"
+    },
+    "godotImport": {
+      "result": "pass",
+      "exitCode": 0,
+      "log": "import.log"
+    },
+    "portraitContract": {
+      "result": "pass",
+      "illustratedHeroes": 35,
+      "animationFallbacks": 3,
+      "log": "contract.log"
+    },
+    "productionComponentRendering": {
+      "distinctNewImagesWithHeroBindings": 25,
+      "remainingNewImagesWithoutHeroBindings": 7,
+      "viewport": [
+        960,
+        540
+      ],
+      "log": "runtime.log",
+      "isolatedClickCallbacks": 1,
+      "nativeDesktopMouseMoved": false
+    },
+    "targetedCropRendering": {
+      "result": "pass",
+      "ids": [
+        "f3_dunecaster",
+        "f2_lanternfox"
+      ],
+      "log": "runtime-crop-final.log",
+      "isolatedClicks": 0,
+      "smallPortraitParametersChanged": false
+    },
+    "discardedCropReviewAttempt": {
+      "log": "runtime-crop.log",
+      "result": "fixture assertion failed before completing targeted review",
+      "detail": "A repeated click callback assertion did not fire during the first crop-only fixture run; that attempt was stopped. The final crop-only run checked rendering without repeating the initial batch input check. Initial batch click evidence is retained separately."
+    },
+    "independentScopeAudit": "32 current and before hashes, 32 resource bindings, 35 manifest rows and locked three checked read-only by another agent",
+    "visualReview": "All 32 final artworks inspected by the generating agent; all 25 rendered production card and small-portrait windows inspected by root and a delegated reviewer. Two card crops adjusted and inspected again.",
+    "fullGameFlowValidated": false,
+    "userAestheticApproval": false,
+    "portraitContractAfterCrop": {
+      "result": "pass",
+      "log": "contract-final.log",
+      "illustratedHeroes": 35,
+      "animationFallbacks": 3
+    }
+  }
+}

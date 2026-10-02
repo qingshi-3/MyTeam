@@ -1,0 +1,18 @@
+{
+  "character": "山岳旗手",
+  "key": "f1_general",
+  "status": "awaiting_user_feedback",
+  "tool": "built-in image_gen.imagegen",
+  "input": "/Users/qingshi/Documents/GodotProjects/MyTeam/assets/portraits/illustrations/f1_general.png",
+  "style_reference": "../surge-conductor/after-outfit-v2.png",
+  "prompt_file": "prompt.txt",
+  "generated_source": "/Users/qingshi/.codex/generated_images/01a0eb96-2a0d-7ee2-be32-604c85651f14/exec-b86a77ca-bb48-485a-9c24-0e051cf9f7af.png",
+  "output": "after.png",
+  "dimensions": [
+    1024,
+    1536
+  ],
+  "sha256": "00f542f3b60aaf2c5d9671700631181129c373509d1beee377effe618d05d3e6",
+  "source_unchanged": true,
+  "runtime_replaced": false
+}

@@ -1,0 +1,455 @@
+{
+  "date": "2026-09-25",
+  "tool": "built-in image_gen.imagegen",
+  "purpose": "Transparent derivative figures for UI-owned cropping and foreground occlusion. Original illustrations retained; large and small UI portraits share the derivative with independent framing.",
+  "prompt": "Use case: background-extraction. This is a STRICT extraction of the attached existing finished character illustration for real game UI compositing, NOT a redraw or a new design. Remove ONLY the pale gray backdrop and floor/contact shadow, including all gray spaces between the bow and bowstring, between limbs and ribbons, and through the hair silhouette. Deliver one 1024x1536 RGBA PNG with actual transparent alpha. Preserve the original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, hands, bow and string, arrow, clothing, colors, shading, and fine gold ornament as closely as possible. Keep semi-transparent antialiased edges clean; no pale fringe, gray rectangle, outline, shadow, glow, extra border, or new background. Full character and complete weapon remain exactly as in source. The attached image is the edit target and sole identity authority. Do not beautify, reinterpret, re-pose, reframe, recolor, simplify, or add anything. We will handle cropping and lighting in Godot; return only the unchanged extracted figure on transparent pixels.",
+  "assets": [
+    {
+      "id": "f1_ranged",
+      "source": "assets/portraits/illustrations/f1_ranged.png",
+      "file": "assets/portraits/illustrations/cutouts/f1_ranged.png",
+      "generated": "C:/Users/qs/.codex/generated_images/01a0d48f-e4ad-7df0-930a-eff1417fdec1/exec-96bb2131-aa05-459c-917f-3985d6a442f3.png",
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved.",
+      "source_sha256": "461cdbd150e64fed6e1f3dafda0850c8190f47427f71df2b79a6b2b883b7d691",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.566
+      }
+    },
+    {
+      "id": "f6_sister",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the white hair, fur cloak, horns, massive blue mechanical gauntlets and existing blue energy. Remove backdrop between the fingers, horns, cloak and energy arcs.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-65ad45b5-c972-46d4-bd8c-776774990dcf.png",
+      "source": "assets/portraits/illustrations/f6_sister.png",
+      "file": "assets/portraits/illustrations/cutouts/f6_sister.png",
+      "source_sha256": "ebeaa5d120ba3dcb8691567f56feef430c5cc947356aef3e19d8187d0af288a4",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.5
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f2_spellthief",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve white hair, dark clothing, slim weapon and translucent teal magical ribbons. Remove gray backdrop inside all ribbon loops and between the limbs.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-a4b8dab6-39eb-44da-9912-11f2d385fd8a.png",
+      "source": "assets/portraits/illustrations/f2_spellthief.png",
+      "file": "assets/portraits/illustrations/cutouts/f2_spellthief.png",
+      "source_sha256": "bc4de8a7ab821ebfbbf5bf4511f9e83643188320a06ac09133c8f6a48b13bfea",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.591
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "boss_borealjuggernaut",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the blue armored quadruped monster, its horns, all crystal spikes, jaws and claws. Transparent empty gaps under the body and between legs.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-810275c0-6b9e-4307-8a5e-5217743f66d3.png",
+      "source": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "file": "assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png",
+      "source_sha256": "a50dc331d8ef3db79255a5824031f5c8f7e7c7733420b1320272b0b17d3a0566",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.62
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f4_crawler",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the purple crouching four-legged monster, membrane spines, glowing eyes and mouth. Transparent empty gaps between legs and spines. Do not change the teeth or limb anatomy.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-95da69a1-a357-4634-8fd8-16a08b12d68a.png",
+      "source": "assets/portraits/illustrations/f4_crawler.png",
+      "file": "assets/portraits/illustrations/cutouts/f4_crawler.png",
+      "source_sha256": "904366ffa96b6fedba263fa76f40cead5100270612c1fe4a86efb7219165f980",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.711
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f1_tank",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the white and gold armored knight, purple cloak, sun-shaped mace and large shield. Remove backdrop inside the halo and between weapon and cloak.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-5cb5ff0c-3b6d-4426-9c6b-88097be9c02b.png",
+      "source": "assets/portraits/illustrations/f1_tank.png",
+      "file": "assets/portraits/illustrations/cutouts/f1_tank.png",
+      "source_sha256": "3eb06812da2af4de850c429bd79fa0bd71816bdad426cb5bc0f9ce8fe15bbe13",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.329
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f1_general",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the red-haired knight, gold armor, blue cloth and entire greatsword.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-46bcf868-db43-47aa-8d97-761f805dac24.png",
+      "source": "assets/portraits/illustrations/f1_general.png",
+      "file": "assets/portraits/illustrations/cutouts/f1_general.png",
+      "source_sha256": "d6a7209d1a34891c288a7055420566244791ec14b4b590e54da073d618db4064",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.479
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f1_sister",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the blonde knight, enormous white/gold hammer, halo and blue-white flowing ribbons. Remove all backdrop within the halo.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-b6f0f960-b882-4084-88ac-a3f15b1ada21.png",
+      "source": "assets/portraits/illustrations/f1_sister.png",
+      "file": "assets/portraits/illustrations/cutouts/f1_sister.png",
+      "source_sha256": "72060f0137f9b6ec7348aecccbb1a7fca44af921685a30a1b0d9de5308f5a22a",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.443
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f1_sunforgelancer",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the blonde knight, forward-pointing lance, halo and all flowing hair and fabric.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-508baeeb-dba0-4cb3-81fa-9b578c3e68f5.png",
+      "source": "assets/portraits/illustrations/f1_sunforgelancer.png",
+      "file": "assets/portraits/illustrations/cutouts/f1_sunforgelancer.png",
+      "source_sha256": "d042cf27b995a8547f41fd8c4ee9beac7241108050027c804a7a39a5a3bc53f9",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.529
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f2_lanternfox",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the dark purple fox, huge tail, face, orange eyes and claws. All gaps between legs and under tail must be transparent.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-d68563a5-eeed-46ec-8186-86558fdd426e.png",
+      "source": "assets/portraits/illustrations/f2_lanternfox.png",
+      "file": "assets/portraits/illustrations/cutouts/f2_lanternfox.png",
+      "source_sha256": "1b23c8da781531acfe45d5a474bc27f111af2b855855fce77b21de014f99149f",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.568
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f2_melee",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the black-robed swordsman, red scarf and pointed hat, katana and its fine edge.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-b8221d46-d5a8-482c-92f5-2a1cea947061.png",
+      "source": "assets/portraits/illustrations/f2_melee.png",
+      "file": "assets/portraits/illustrations/cutouts/f2_melee.png",
+      "source_sha256": "78a40ad982b0e00fa1b6fa6bf4ab743469128eebea72689b7b9922f6b0b11ed5",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.589
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f3_aymarahealer",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the white-haired woman, white translucent dress and hair, gold circular staff and halo. Preserve semitransparency of sheer fabric and remove gray through its gaps.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-310b7f9c-9925-4163-af2a-64cad7bbd24f.png",
+      "source": "assets/portraits/illustrations/f3_aymarahealer.png",
+      "file": "assets/portraits/illustrations/cutouts/f3_aymarahealer.png",
+      "source_sha256": "aa5d2918f11efba7c86c10e089ac152459ed699999b45ec1f873e0519994030d",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.548
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f3_dervish",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the masked spirit, brown swirling ribbon body, metallic talons and turquoise gems. All open gaps BETWEEN the spiral ribbons must be transparent, not filled.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-02a08c6e-b493-4b9a-a60c-645179829ed2.png",
+      "source": "assets/portraits/illustrations/f3_dervish.png",
+      "file": "assets/portraits/illustrations/cutouts/f3_dervish.png",
+      "source_sha256": "c854911c4b73ddccad1aa8805967597b3b6f40c57ff14af993ca0075dc49ba30",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.719
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f3_dunecaster",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the silver-haired man, long black/gold robe, raised fingers and existing floating cyan triangle. Preserve triangle glow without adding more.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-8400479b-3f96-4837-9c54-2f307d3fc71c.png",
+      "source": "assets/portraits/illustrations/f3_dunecaster.png",
+      "file": "assets/portraits/illustrations/cutouts/f3_dunecaster.png",
+      "source_sha256": "903b720f6bd9df04c28740b2838401fee9b5300588ecf38524b62c64ce5c9aab",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.553
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f3_general",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the black-haired man, tall golden horns, black/gold armor, flowing ivory cloth and long curved polearm.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-0be11e6a-a5b7-4050-947e-2c6bc281e83e.png",
+      "source": "assets/portraits/illustrations/f3_general.png",
+      "file": "assets/portraits/illustrations/cutouts/f3_general.png",
+      "source_sha256": "029db6d9353c33fac9aa0b911ee7bb6a8ac99b9edaaebc7db5ecfe9cead9ebad",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.649
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f4_bloodbaronette",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve blue hair, dark dress, thin staff, red crescent blade and blue gem. Preserve the small metal ornaments.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-17763a49-adf2-4e75-8aae-694624d714dc.png",
+      "source": "assets/portraits/illustrations/f4_bloodbaronette.png",
+      "file": "assets/portraits/illustrations/cutouts/f4_bloodbaronette.png",
+      "source_sha256": "016c9acdb456ecd63eebabbe1d7330ae3bff48da671c9db4ffcf82f3a5dfc549",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.704
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f4_darkspine",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the hunched purple armored monster, massive fists, long back spikes, blue eyes and purple joints. Keep the void between its arms and torso transparent.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-38e2c454-2960-4e86-9678-7309fb1cc4cc.png",
+      "source": "assets/portraits/illustrations/f4_darkspine.png",
+      "file": "assets/portraits/illustrations/cutouts/f4_darkspine.png",
+      "source_sha256": "50ea4db8834ae8df0c2c1eb98c18d939b97e3d428dd1f8b3384cd666a259a2e9",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.547
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f4_general",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the horned pale woman, flowing silver hair, black-purple armor, cloak and long double-crescent polearm.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-143201ec-4123-4ccd-a539-b5d28363ac10.png",
+      "source": "assets/portraits/illustrations/f4_general.png",
+      "file": "assets/portraits/illustrations/cutouts/f4_general.png",
+      "source_sha256": "8afd2538eb5f2f0d7d206720955fa0844d344fc92ec5ee6fe1df6cc9dd1e73da",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.493
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f4_mech",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the tall narrow purple crystalline robot, thin spiky limbs and red-edged polearm. Preserve empty spaces between all the mechanical parts.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-aeee9185-d557-4ee3-b232-1d1edb207507.png",
+      "source": "assets/portraits/illustrations/f4_mech.png",
+      "file": "assets/portraits/illustrations/cutouts/f4_mech.png",
+      "source_sha256": "d9c846ee1b93312dd951a4bd29aca84011c08b7f76ee7788fae7606602ab69cb",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.606
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f5_drogon",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the upright emerald dragon, turquoise fins, ivory horns, face and sweeping tail.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-48b0d12e-f4c3-4c19-99d2-797b081bbaab.png",
+      "source": "assets/portraits/illustrations/f5_drogon.png",
+      "file": "assets/portraits/illustrations/cutouts/f5_drogon.png",
+      "source_sha256": "9c95af95f934bb7f7cf39f91847cd96a398b25adbf313fccd34a40af96c29eb5",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.526
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f5_firebreather",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the green armored scorpion creature with curved tail and small existing tail flame. Remove gray backdrop enclosed within the tail's arch and leg gaps.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-df503b03-619e-4c0b-a8d6-6a93d8b9f9db.png",
+      "source": "assets/portraits/illustrations/f5_firebreather.png",
+      "file": "assets/portraits/illustrations/cutouts/f5_firebreather.png",
+      "source_sha256": "02a573060544fc0e0d267cd4a9596f4dc541f5864ea3599fe82ac1ba04c4fc3e",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.652
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f5_general",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the muscular green horned dragon-man, skin, dark spines, gold rings, burgundy cloth and tail.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-0f2529b5-08c9-4fa5-badf-2ec6309044bb.png",
+      "source": "assets/portraits/illustrations/f5_general.png",
+      "file": "assets/portraits/illustrations/cutouts/f5_general.png",
+      "source_sha256": "5d3b13db492f0f0f8bdc9e618f8940dccc2b8eb0ea274a73cee289b9b2b1575e",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.431
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f5_spiritharvester",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the green hovering insect, amber eye, enormous curved blade-like horns and legs. Remove all backdrop in the central horn loop and between thin limbs.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-088fccfe-d443-4814-a36d-32eb9445cfb0.png",
+      "source": "assets/portraits/illustrations/f5_spiritharvester.png",
+      "file": "assets/portraits/illustrations/cutouts/f5_spiritharvester.png",
+      "source_sha256": "114cedd6e1760a7e428621ac6a975a164223de7a2012c137757e6ec40bb72179",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.69
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f5_tank",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the squat green mechanical beast, black cube backpack, red hoses, massive fist and cylindrical weapon.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-ce19ec27-9825-4d7d-8b33-79217b736eab.png",
+      "source": "assets/portraits/illustrations/f5_tank.png",
+      "file": "assets/portraits/illustrations/cutouts/f5_tank.png",
+      "source_sha256": "bda2c7349546807425b873f43de9f983e66aefe88b973b97c925f7cef1b53482",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.48
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f6_crystalbeetle",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the white translucent crystal beetle, curved thin tail holding a blue orb, blue eyes and delicate legs. Keep the gaps between the translucent crystals and tail loop transparent.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-b83b0ab9-2263-40ec-aace-258d305ca5e3.png",
+      "source": "assets/portraits/illustrations/f6_crystalbeetle.png",
+      "file": "assets/portraits/illustrations/cutouts/f6_crystalbeetle.png",
+      "source_sha256": "13f98112fb79d42b89b0dee21964ea5297fae1fe02eb576de91361454abc1d83",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.671
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f6_freeblade",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the adult male swordsman, long pale lavender hair, ice-blue sword, red sash and dark fitted clothing, all exactly as in source.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-111093c6-9590-4fda-bbdd-6b5296a73bad.png",
+      "source": "assets/portraits/illustrations/f6_freeblade.png",
+      "file": "assets/portraits/illustrations/cutouts/f6_freeblade.png",
+      "source_sha256": "6d1d70548bf1b85e635dd43854080197c6c66a0016f5d1f49e0a8bc8c6f46163",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.476
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f6_frostbitehawker",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the bird warrior, beak, white and lavender feathers, two blue daggers, claws and clothing. Keep fine feather edges.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-98ddbf17-27b2-418f-91c3-9f830add9448.png",
+      "source": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "file": "assets/portraits/illustrations/cutouts/f6_frostbitehawker.png",
+      "source_sha256": "bef99c62412a91eddb00836634181a8456302bb2ad70b3b1165f5ac52fc6cc26",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.5
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    },
+    {
+      "id": "f6_general",
+      "prompt": "Use case: background-extraction. STRICT extraction of the attached finished character illustration for real game UI compositing. Remove ONLY the gray/white backdrop and floor/contact shadow, including gaps inside the figure silhouette. Deliver a 1024x1536 RGBA PNG with actual transparent alpha, never a painted checkerboard. Preserve original canvas dimensions, placement, scale, pose, face, eyes, every hair strand, fingers, weapons, clothing, colors, brushwork and shading as closely as possible. Preserve semitransparent energy already present. Clean antialiased edges with no pale fringe. Do not redraw, redesign, beautify, re-pose, reframe, recolor, add outline, add drop shadow or add scenery. The attached image is the edit target and sole identity authority. UI framing and cropping happen later in Godot. Return only the extracted original figure. Preserve the short lavender-haired woman, raised arm holding the vertical blue blade, flowing purple-red sash, slim dark armor and original proportions.",
+      "generated": "C:\\Users\\qs\\.codex\\generated_images\\01a0d48f-e4ad-7df0-930a-eff1417fdec1\\exec-d0a1158f-dbf7-4601-8614-6e0c9bd131d8.png",
+      "source": "assets/portraits/illustrations/f6_general.png",
+      "file": "assets/portraits/illustrations/cutouts/f6_general.png",
+      "source_sha256": "fbd2b0b45e16b5268bd4d268d4a7ccd23ada0ad01613243233cd073b2c76f5c7",
+      "alpha": {
+        "size": [
+          1024,
+          1536
+        ],
+        "transparent_fraction": 0.74
+      },
+      "review": "Generated figure inspected against source. Final large-card composition inspected in authored RosterHeroCard and small-portrait crop reviewed in Godot; per-character framing tuned. Production roster, recruitment and opening selection renders inspected. Generative extraction has local line/scale differences and is not pixel-identical background removal. Original source hash preserved."
+    }
+  ]
+}

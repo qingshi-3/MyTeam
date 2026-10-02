@@ -1,0 +1,53 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started 项目初始化 (5 steps)
+[   0% ] first_scan_filesystem | 正在扫描文件结构……
+[  16% ] first_scan_filesystem | 正在加载全局类名……
+[  33% ] first_scan_filesystem | 正在校验 GDExtension……
+[  50% ] first_scan_filesystem | 正在创建自动加载脚本……
+[  66% ] first_scan_filesystem | 正在初始化插件……
+[  83% ] first_scan_filesystem | 正在启动文件扫描……
+[ DONE ] first_scan_filesystem
+
+[   0% ] _update_scan_actions | Started 正在扫描动作…… (17 steps)
+[   0% ] _update_scan_actions | f6_sister.png
+[   5% ] _update_scan_actions | f6_sister.png
+[  11% ] _update_scan_actions | bit1_out.bmp
+[  16% ] _update_scan_actions | bit4_out.bmp
+[  22% ] _update_scan_actions | bit4_RLE.bmp
+[  27% ] _update_scan_actions | bit4_RLE_out.bmp
+[  33% ] _update_scan_actions | bit8_out.bmp
+[  38% ] _update_scan_actions | bit8_RLE.bmp
+[  44% ] _update_scan_actions | bit8_RLE_out.bmp
+[  50% ] _update_scan_actions | bit16_565_out.bmp
+[  55% ] _update_scan_actions | bit16_a444_out.bmp
+[  61% ] _update_scan_actions | bit16_a555_out.bmp
+[  66% ] _update_scan_actions | bit16_x444_out.bmp
+[  72% ] _update_scan_actions | bit16_x555_out.bmp
+[  77% ] _update_scan_actions | bit24_out.bmp
+[  83% ] _update_scan_actions | bit32_alpha_out.bmp
+[  88% ] _update_scan_actions | bit32_out.bmp
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started 正在导入或重新导入资产 (2 steps)
+[   0% ] reimport | 正在准备重新导入文件……
+[  33% ] reimport | 正在准备重新导入文件……
+[   0% ] reimport | 正在执行重新导入的前置操作……
+[   0% ] reimport | f6_sister.png
+[  33% ] reimport | f6_sister.png
+[  66% ] reimport | 正在结束资产导入……
+[ DONE ] reimport
+
+[   0% ] reimport | Started 正在导入或重新导入资产 (2 steps)
+[   0% ] reimport | 正在执行重新导入的后置操作……
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started 正在加载编辑器 (5 steps)
+[   0% ] loading_editor_layout | 正在加载编辑器布局……
+[  16% ] loading_editor_layout | 正在加载停靠面板……
+[  33% ] loading_editor_layout | 正在重新打开场景……
+[  50% ] loading_editor_layout | 正在加载中央编辑器布局……
+[  66% ] loading_editor_layout | 正在加载插件窗口布局……
+[  83% ] loading_editor_layout | 编辑器布局就绪。
+[ DONE ] loading_editor_layout
+

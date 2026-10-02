@@ -1,0 +1,13 @@
+{
+  "project_id": "appgprj_6abe48ac2f608191be3d6a8953528827",
+  "version_id": "appgprj_6abe48ac2f608191be3d6a8953528827~appgver_300d6f1d91248191adeb272ddfbbd4ef",
+  "deployment_id": "appgdep_6abe5a051b8c81919bb899c80e07acbb",
+  "status": "succeeded",
+  "url": "https://myteam-main-flow-prototype.liuq5043.chatgpt.site",
+  "commit_sha": "f67b57699cdfead3a2d00f36ff9c8da37243f033",
+  "sourceSha256": "e286db4846028d9df132fb9ee7c98a535f67d4106f99b1eb9cc2e5a46316e4b1",
+  "audience": "existing owner-private",
+  "sandbox": "allow-scripts",
+  "outerCspPreserved": true,
+  "innerCspPreserved": true
+}

@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "input": "knight-face-east-asian.png",
+  "prompt": "knight-proportions-v2-prompt.txt",
+  "generated_source": "/Users/qingshi/.codex/generated_images/01a0eb96-2a0d-7ee2-be32-604c85651f14/exec-595e241e-5ff3-41c9-9e12-fc46c503ac39.png",
+  "output": "knight-proportions-v2.png",
+  "dimensions": [
+    1024,
+    1536
+  ],
+  "sha256": "2e449a7d27fce7fb96f05b909ebff5ca7e8806a492329fedccd694d0237a868b",
+  "change": "调整头身和头肩关系，回调过长下半身，保留当前脸部方向、金甲蓝衣及强描边",
+  "status": "user_accepted",
+  "visually_inspected": true,
+  "proportion_numbers_are_prompt_targets_not_measurements": true,
+  "runtime_replaced": false,
+  "approval": "可以 就这三个了"
+}

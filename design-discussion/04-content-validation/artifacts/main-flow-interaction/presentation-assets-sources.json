@@ -1,0 +1,31 @@
+{
+  "usage": "Existing project resources; presentation-only thumbnails, runtime resources unchanged.",
+  "sources": {
+    "mx01": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+    "mx03": "assets/portraits/illustrations/f6_frostbitehawker.png",
+    "mx23": "assets/portraits/illustrations/f1_ranged.png",
+    "mx25": "assets/portraits/illustrations/f1_sister.png",
+    "mx30": "assets/portraits/illustrations/f1_sister.png",
+    "mx04": "assets/portraits/illustrations/f3_dunecaster.png",
+    "mx24": "assets/portraits/illustrations/f1_sunforgelancer.png",
+    "mx36": "assets/portraits/illustrations/f1_sister.png",
+    "mx02": "assets/portraits/illustrations/f5_tank.png",
+    "mx05": "assets/portraits/illustrations/f3_general.png",
+    "mx21": "assets/donor-units/f1_invincibuddy/frames.tres: AtlasTexture_099",
+    "focus": "assets/ui/items/equipment_field_focus.png",
+    "armor": "assets/ui/items/equipment_vanguard_insignia.png",
+    "glove": "assets/ui/items/equipment_ne10_swift_gloves.png",
+    "contract": "assets/ui/items/item_gilded_contract.png",
+    "duel": "assets/ui/items/item_duelist_seal.png",
+    "crown": "assets/ui/items/item_lone_crown.png",
+    "chalice": "assets/ui/items/item_blood_chalice.png",
+    "backdrop": "assets/environments/sunlit-courtyard/courtyard.png",
+    "node-combat": "assets/ui/icons/tower-combat.svg",
+    "node-elite": "assets/ui/icons/tower-elite.svg",
+    "node-boss": "assets/ui/icons/tower-boss.svg",
+    "node-recruitment": "assets/ui/icons/tower-recruitment.svg",
+    "node-shop": "assets/ui/icons/tower-shop.svg",
+    "node-event": "assets/ui/icons/tower-event.svg",
+    "node-rest": "assets/ui/icons/tower-rest.svg"
+  }
+}

@@ -1,0 +1,1327 @@
+{
+  "date": "2026-10-01",
+  "scope": "Current working tree; static resource and code review, no new combat simulation or real-input validation",
+  "heroes": [
+    {
+      "id": "hero_mx01",
+      "name": "冻原盾卫",
+      "tier": 1,
+      "traits": [
+        "mx_guard",
+        "mx_frost"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx01.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx02",
+      "name": "裂冰斗士",
+      "tier": 2,
+      "traits": [
+        "mx_fighter",
+        "mx_frost"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx02.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx03",
+      "name": "寒羽游侠",
+      "tier": 1,
+      "traits": [
+        "mx_ranger",
+        "mx_frost"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx03.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx04",
+      "name": "雪幕术士",
+      "tier": 3,
+      "traits": [
+        "mx_mage",
+        "mx_frost"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx04.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx05",
+      "name": "雪灯医者",
+      "tier": 2,
+      "traits": [
+        "mx_support",
+        "mx_frost"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx05.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx10",
+      "name": "药藤师",
+      "tier": 2,
+      "traits": [
+        "mx_support",
+        "mx_poison"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx10.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx21",
+      "name": "铆盾卫",
+      "tier": 1,
+      "traits": [
+        "mx_guard",
+        "mx_construct"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx21.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx22",
+      "name": "碎盾锤",
+      "tier": 2,
+      "traits": [
+        "mx_fighter",
+        "mx_construct"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx22.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx23",
+      "name": "机弩手",
+      "tier": 1,
+      "traits": [
+        "mx_ranger",
+        "mx_construct"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx23.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx24",
+      "name": "磁轨术士",
+      "tier": 3,
+      "traits": [
+        "mx_mage",
+        "mx_construct"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx24.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx25",
+      "name": "工蜂监工",
+      "tier": 2,
+      "traits": [
+        "mx_summoner",
+        "mx_construct"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx25.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx30",
+      "name": "血契祭司",
+      "tier": 2,
+      "traits": [
+        "mx_support",
+        "mx_blood"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx30.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx36",
+      "name": "霜毒斥候",
+      "tier": 3,
+      "traits": [
+        "mx_assassin",
+        "mx_frost",
+        "mx_poison"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx36.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx39",
+      "name": "冥铸守门人",
+      "tier": 3,
+      "traits": [
+        "mx_guard",
+        "mx_death",
+        "mx_construct"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx39.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx40",
+      "name": "赤炉破阵者",
+      "tier": 3,
+      "traits": [
+        "mx_fighter",
+        "mx_construct",
+        "mx_blood"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx40.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx42",
+      "name": "极光唤灵者",
+      "tier": 3,
+      "traits": [
+        "mx_summoner",
+        "mx_astral",
+        "mx_frost"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx42.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx43",
+      "name": "构装卫师",
+      "tier": 3,
+      "traits": [
+        "mx_guard",
+        "mx_support",
+        "mx_construct"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx43.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx44",
+      "name": "霜弦咏者",
+      "tier": 4,
+      "traits": [
+        "mx_ranger",
+        "mx_mage",
+        "mx_frost"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx44.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx45",
+      "name": "幽刃斗将",
+      "tier": 4,
+      "traits": [
+        "mx_fighter",
+        "mx_assassin",
+        "mx_death"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx45.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx46",
+      "name": "棘核寄生体",
+      "tier": 4,
+      "traits": [
+        "mx_poison"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx46.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx47",
+      "name": "星界观测者",
+      "tier": 4,
+      "traits": [
+        "mx_astral"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx47.tres",
+      "is_hero": true
+    },
+    {
+      "id": "hero_mx48",
+      "name": "铁弩佣兵",
+      "tier": 4,
+      "traits": [
+        "mx_ranger"
+      ],
+      "source": "content/validation_matrix/definitions/hero_mx48.tres",
+      "is_hero": true
+    },
+    {
+      "id": "gx01_vine_plague",
+      "name": "蔓疫织者",
+      "tier": 4,
+      "traits": [
+        "mx_mage",
+        "mx_poison"
+      ],
+      "source": "content/growth/definitions/gx01_vine_plague.tres",
+      "is_hero": true
+    },
+    {
+      "id": "gx02_venom_walker",
+      "name": "负毒行者",
+      "tier": 4,
+      "traits": [
+        "mx_summoner",
+        "mx_poison"
+      ],
+      "source": "content/growth/definitions/gx02_venom_walker.tres",
+      "is_hero": true
+    },
+    {
+      "id": "gx03_array_gunner",
+      "name": "阵列炮师",
+      "tier": 4,
+      "traits": [
+        "mx_ranger",
+        "mx_construct"
+      ],
+      "source": "content/growth/definitions/gx03_array_gunner.tres",
+      "is_hero": true
+    },
+    {
+      "id": "gx04_phase_anchor",
+      "name": "稳相锚卫",
+      "tier": 4,
+      "traits": [
+        "mx_guard",
+        "mx_construct"
+      ],
+      "source": "content/growth/definitions/gx04_phase_anchor.tres",
+      "is_hero": true
+    }
+  ],
+  "traits": [
+    {
+      "id": "mx_assassin",
+      "name": "突袭者",
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "available_members": [
+        "hero_mx36",
+        "hero_mx45"
+      ],
+      "maximum_native_contribution": 2,
+      "unreachable_thresholds": [
+        3,
+        4
+      ],
+      "source": "content/validation_matrix/traits/mx_assassin.tres"
+    },
+    {
+      "id": "mx_astral",
+      "name": "星辉",
+      "thresholds": [
+        2,
+        3,
+        5
+      ],
+      "available_members": [
+        "hero_mx42",
+        "hero_mx47"
+      ],
+      "maximum_native_contribution": 2,
+      "unreachable_thresholds": [
+        3,
+        5
+      ],
+      "source": "content/validation_matrix/traits/mx_astral.tres"
+    },
+    {
+      "id": "mx_blood",
+      "name": "血誓",
+      "thresholds": [
+        2,
+        3,
+        5
+      ],
+      "available_members": [
+        "hero_mx30",
+        "hero_mx40"
+      ],
+      "maximum_native_contribution": 2,
+      "unreachable_thresholds": [
+        3,
+        5
+      ],
+      "source": "content/validation_matrix/traits/mx_blood.tres"
+    },
+    {
+      "id": "mx_construct",
+      "name": "构装",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "available_members": [
+        "hero_mx21",
+        "hero_mx22",
+        "hero_mx23",
+        "hero_mx24",
+        "hero_mx25",
+        "hero_mx39",
+        "hero_mx40",
+        "hero_mx43",
+        "gx03_array_gunner",
+        "gx04_phase_anchor"
+      ],
+      "maximum_native_contribution": 10,
+      "unreachable_thresholds": [],
+      "source": "content/validation_matrix/traits/mx_construct.tres"
+    },
+    {
+      "id": "mx_death",
+      "name": "亡契",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "available_members": [
+        "hero_mx39",
+        "hero_mx45"
+      ],
+      "maximum_native_contribution": 2,
+      "unreachable_thresholds": [
+        4,
+        6
+      ],
+      "source": "content/validation_matrix/traits/mx_death.tres"
+    },
+    {
+      "id": "mx_ember",
+      "name": "灰烬",
+      "thresholds": [
+        2,
+        3,
+        5
+      ],
+      "available_members": [],
+      "maximum_native_contribution": 0,
+      "unreachable_thresholds": [
+        2,
+        3,
+        5
+      ],
+      "source": "content/validation_matrix/traits/mx_ember.tres"
+    },
+    {
+      "id": "mx_fighter",
+      "name": "斗士",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "available_members": [
+        "hero_mx02",
+        "hero_mx22",
+        "hero_mx40",
+        "hero_mx45"
+      ],
+      "maximum_native_contribution": 4,
+      "unreachable_thresholds": [
+        6
+      ],
+      "source": "content/validation_matrix/traits/mx_fighter.tres"
+    },
+    {
+      "id": "mx_frost",
+      "name": "霜羽",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "available_members": [
+        "hero_mx01",
+        "hero_mx02",
+        "hero_mx03",
+        "hero_mx04",
+        "hero_mx05",
+        "hero_mx36",
+        "hero_mx42",
+        "hero_mx44"
+      ],
+      "maximum_native_contribution": 8,
+      "unreachable_thresholds": [],
+      "source": "content/validation_matrix/traits/mx_frost.tres"
+    },
+    {
+      "id": "mx_guard",
+      "name": "护卫",
+      "thresholds": [
+        2,
+        4
+      ],
+      "available_members": [
+        "hero_mx01",
+        "hero_mx21",
+        "hero_mx39",
+        "hero_mx43",
+        "gx04_phase_anchor"
+      ],
+      "maximum_native_contribution": 5,
+      "unreachable_thresholds": [],
+      "source": "content/validation_matrix/traits/mx_guard.tres"
+    },
+    {
+      "id": "mx_mage",
+      "name": "术士",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "available_members": [
+        "hero_mx04",
+        "hero_mx24",
+        "hero_mx44",
+        "gx01_vine_plague"
+      ],
+      "maximum_native_contribution": 4,
+      "unreachable_thresholds": [
+        6
+      ],
+      "source": "content/validation_matrix/traits/mx_mage.tres"
+    },
+    {
+      "id": "mx_poison",
+      "name": "棘毒",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "available_members": [
+        "hero_mx10",
+        "hero_mx36",
+        "hero_mx46",
+        "gx01_vine_plague",
+        "gx02_venom_walker"
+      ],
+      "maximum_native_contribution": 5,
+      "unreachable_thresholds": [
+        6
+      ],
+      "source": "content/validation_matrix/traits/mx_poison.tres"
+    },
+    {
+      "id": "mx_ranger",
+      "name": "射手",
+      "thresholds": [
+        2,
+        4
+      ],
+      "available_members": [
+        "hero_mx03",
+        "hero_mx23",
+        "hero_mx44",
+        "hero_mx48",
+        "gx03_array_gunner"
+      ],
+      "maximum_native_contribution": 5,
+      "unreachable_thresholds": [],
+      "source": "content/validation_matrix/traits/mx_ranger.tres"
+    },
+    {
+      "id": "mx_summoner",
+      "name": "统御者",
+      "thresholds": [
+        2,
+        3,
+        4
+      ],
+      "available_members": [
+        "hero_mx25",
+        "hero_mx42",
+        "gx02_venom_walker"
+      ],
+      "maximum_native_contribution": 3,
+      "unreachable_thresholds": [
+        4
+      ],
+      "source": "content/validation_matrix/traits/mx_summoner.tres"
+    },
+    {
+      "id": "mx_support",
+      "name": "祝祷者",
+      "thresholds": [
+        2,
+        3
+      ],
+      "available_members": [
+        "hero_mx05",
+        "hero_mx10",
+        "hero_mx30",
+        "hero_mx43"
+      ],
+      "maximum_native_contribution": 4,
+      "unreachable_thresholds": [],
+      "source": "content/validation_matrix/traits/mx_support.tres"
+    }
+  ],
+  "items": [
+    {
+      "id": "item_war_drum",
+      "name": "行军战鼓",
+      "description": "士兵伤害提高10%。",
+      "kind": "relic",
+      "price": 12,
+      "target_scripts": [
+        "RelicPlayerArmyTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_war_drum.tres"
+    },
+    {
+      "id": "item_field_rations",
+      "name": "远征口粮",
+      "description": "士兵生命提高12%。",
+      "kind": "relic",
+      "price": 10,
+      "target_scripts": [
+        "RelicPlayerArmyTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_field_rations.tres"
+    },
+    {
+      "id": "item_gilded_contract",
+      "name": "鎏金军契",
+      "description": "每场胜利额外获得3金币。",
+      "kind": "relic",
+      "price": 16,
+      "target_scripts": [],
+      "traits": [],
+      "source": "content/relics/definitions/item_gilded_contract.tres"
+    },
+    {
+      "id": "item_aegis_standard",
+      "name": "壁垒军旗",
+      "description": "战斗开始时全军获得15点护盾。",
+      "kind": "relic",
+      "price": 17,
+      "target_scripts": [],
+      "traits": [],
+      "source": "content/relics/definitions/item_aegis_standard.tres"
+    },
+    {
+      "id": "item_blood_chalice",
+      "name": "鲜血圣杯",
+      "description": "英雄获得15%吸血。",
+      "kind": "relic",
+      "price": 22,
+      "target_scripts": [
+        "RelicPlayerHeroesTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_blood_chalice.tres"
+    },
+    {
+      "id": "item_duelist_seal",
+      "name": "决斗印玺",
+      "description": "英雄伤害提高25%。",
+      "kind": "relic",
+      "price": 22,
+      "target_scripts": [
+        "RelicPlayerHeroesTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_duelist_seal.tres"
+    },
+    {
+      "id": "item_lone_crown",
+      "name": "孤王之冠",
+      "description": "每个空部署位额外提供8%英雄伤害。",
+      "kind": "relic",
+      "price": 24,
+      "target_scripts": [
+        "RelicPlayerEmptySlotHeroesTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_lone_crown.tres"
+    },
+    {
+      "id": "item_clockwork_seed",
+      "name": "构装机芯",
+      "description": "每场战斗获得一个临时构造体。",
+      "kind": "relic",
+      "price": 24,
+      "target_scripts": [],
+      "traits": [],
+      "source": "content/relics/definitions/item_clockwork_seed.tres"
+    },
+    {
+      "id": "item_soul_lantern",
+      "name": "引魂灯",
+      "description": "士兵生命与伤害各提高6%。",
+      "kind": "relic",
+      "price": 18,
+      "target_scripts": [
+        "RelicPlayerArmyTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_soul_lantern.tres"
+    },
+    {
+      "id": "item_commander_map",
+      "name": "统帅阵图",
+      "description": "相邻友军获得4点护甲与8%伤害。",
+      "kind": "relic",
+      "price": 22,
+      "target_scripts": [
+        "RelicPlayerFormationAdjacentTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_commander_map.tres"
+    },
+    {
+      "id": "item_crimson_mail",
+      "name": "猩红战衣",
+      "description": "英雄生命提高30%。",
+      "kind": "relic",
+      "price": 23,
+      "target_scripts": [
+        "RelicPlayerHeroesTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_crimson_mail.tres"
+    },
+    {
+      "id": "item_last_banner",
+      "name": "最后军旗",
+      "description": "士兵生命与伤害提高 15%。",
+      "kind": "relic",
+      "price": 34,
+      "target_scripts": [
+        "RelicPlayerArmyTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_last_banner.tres"
+    },
+    {
+      "id": "equipment_vanguard_insignia",
+      "name": "先锋徽甲",
+      "description": "装备者获得 12 点护甲。仅作用于持有它的常驻英雄。",
+      "kind": "equipment",
+      "price": 18,
+      "target_scripts": [],
+      "traits": [],
+      "source": "content/equipment/definitions/equipment_vanguard_insignia.tres"
+    },
+    {
+      "id": "equipment_rimebrand",
+      "name": "霜痕战刃",
+      "description": "持有者每次命中都会积蓄攻速，并为目标叠加寒霜；3 层寒霜转化为冻结。两件霜痕战刃激活凛冬盟约。",
+      "kind": "equipment",
+      "price": 18,
+      "target_scripts": [],
+      "traits": [
+        "trait_winterbound"
+      ],
+      "source": "content/equipment/definitions/equipment_rimebrand.tres"
+    },
+    {
+      "id": "equipment_field_focus",
+      "name": "精工瞄具",
+      "description": "装备者的攻击伤害 +10。只强化该英雄的攻击，不提高治疗量；如果持有者忙于治疗或无法接敌，收益不会兑现。",
+      "kind": "equipment",
+      "price": 18,
+      "target_scripts": [],
+      "traits": [],
+      "source": "content/equipment/definitions/equipment_field_focus.tres"
+    },
+    {
+      "id": "equipment_ne01_mana_charm",
+      "name": "蓄能护符",
+      "description": "持有者每秒额外恢复 3 法力，帮助毒云覆盖、白骨补员和原有主动反复施放。",
+      "kind": "equipment",
+      "price": 18,
+      "target_scripts": [],
+      "traits": [],
+      "source": "content/equipment/definitions/equipment_ne01_mana_charm.tres"
+    },
+    {
+      "id": "equipment_ne10_swift_gloves",
+      "name": "疾攻手套",
+      "description": "持有者攻速增加 0.25；提高普攻、按攻速连射与攻击命中触发的供给频率。",
+      "kind": "equipment",
+      "price": 18,
+      "target_scripts": [],
+      "traits": [],
+      "source": "content/equipment/definitions/equipment_ne10_swift_gloves.tres"
+    },
+    {
+      "id": "equipment_ne10_winter_badge",
+      "name": "霜羽徽章",
+      "description": "持有者攻速增加 0.10，并成为霜羽同盟成员。同一单位最多算 1 名成员，徽章不额外赠送冻结技能。",
+      "kind": "equipment",
+      "price": 18,
+      "target_scripts": [],
+      "traits": [
+        "trait_ne10_winter"
+      ],
+      "source": "content/equipment/definitions/equipment_ne10_winter_badge.tres"
+    },
+    {
+      "id": "item_ne01_opening_bulwark",
+      "name": "整军壁垒",
+      "description": "开场为我方全军各提供 40 护盾，帮助撑过毒与召唤的启动期；战中后来生成的召唤物不补发。",
+      "kind": "relic",
+      "price": 24,
+      "target_scripts": [],
+      "traits": [],
+      "source": "content/relics/definitions/item_ne01_opening_bulwark.tres"
+    },
+    {
+      "id": "item_ne02_bone_vigor",
+      "name": "丰骨匣",
+      "description": "我方临时召唤小兵最大生命提高 30%，包括战中后来生成的单位。生命提高会同时增加承伤时间和按最大生命计算的殉爆伤害。",
+      "kind": "relic",
+      "price": 24,
+      "target_scripts": [
+        "RelicPlayerSummonsTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_ne02_bone_vigor.tres"
+    },
+    {
+      "id": "item_ne10_control_shelter",
+      "name": "缚敌护符",
+      "description": "我方英雄每成功让一名敌人无法行动，自身获得 12 点护盾。",
+      "kind": "relic",
+      "price": 24,
+      "target_scripts": [
+        "RelicPlayerHeroesTargetSpec"
+      ],
+      "traits": [],
+      "source": "content/relics/definitions/item_ne10_control_shelter.tres"
+    }
+  ],
+  "ascensions": [
+    {
+      "id": "hero_mx01",
+      "description": "本场首次施加控制后，为2.5格内至多2名友方单位（可包含自身）提供35点护盾，持续3秒。",
+      "source": "content/growth/abilities/hero_mx01_ascend.tres"
+    },
+    {
+      "id": "hero_mx02",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx02_ascend.tres"
+    },
+    {
+      "id": "hero_mx03",
+      "description": "开战时获得15%攻速，持续3.5秒；连续命中次数不会因更换目标而清零。",
+      "source": "content/growth/abilities/hero_mx03_ascend.tres"
+    },
+    {
+      "id": "hero_mx04",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx04_ascend.tres"
+    },
+    {
+      "id": "hero_mx05",
+      "description": "本场首次有友军施加控制后，为生命比例最低的至多2名友军提供28点护盾，持续3秒。",
+      "source": "content/growth/abilities/hero_mx05_ascend.tres"
+    },
+    {
+      "id": "hero_mx10",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx10_ascend.tres"
+    },
+    {
+      "id": "hero_mx21",
+      "description": "开战时为2.5格内至多2名友方单位（含自身）提供36点护盾，持续3秒。",
+      "source": "content/growth/abilities/hero_mx21_ascend.tres"
+    },
+    {
+      "id": "hero_mx22",
+      "description": "施法消耗护盾后，为自身返还24点护盾，持续2秒。",
+      "source": "content/growth/abilities/hero_mx22_ascend.tres"
+    },
+    {
+      "id": "hero_mx23",
+      "description": "本场首次被敌人击破护盾后，获得18%攻速，持续1.5秒。",
+      "source": "content/growth/abilities/hero_mx23_ascend.tres"
+    },
+    {
+      "id": "hero_mx24",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx24_ascend.tres"
+    },
+    {
+      "id": "hero_mx25",
+      "description": "开战时为2.5格内至多2名友方单位（含自身）提供30点护盾，持续3秒。",
+      "source": "content/growth/abilities/hero_mx25_ascend.tres"
+    },
+    {
+      "id": "hero_mx30",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx30_ascend.tres"
+    },
+    {
+      "id": "hero_mx36",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx36_ascend.tres"
+    },
+    {
+      "id": "hero_mx39",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx39_ascend.tres"
+    },
+    {
+      "id": "hero_mx40",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx40_ascend.tres"
+    },
+    {
+      "id": "hero_mx42",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx42_ascend.tres"
+    },
+    {
+      "id": "hero_mx43",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx43_ascend.tres"
+    },
+    {
+      "id": "hero_mx44",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx44_ascend.tres"
+    },
+    {
+      "id": "hero_mx45",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx45_ascend.tres"
+    },
+    {
+      "id": "hero_mx46",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx46_ascend.tres"
+    },
+    {
+      "id": "hero_mx47",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx47_ascend.tres"
+    },
+    {
+      "id": "hero_mx48",
+      "description": "开战时获得20点护盾，持续2.5秒。",
+      "source": "content/growth/abilities/hero_mx48_ascend.tres"
+    },
+    {
+      "id": "gx01_vine_plague",
+      "description": "开战时获得32点护盾，持续3秒。",
+      "source": "content/growth/abilities/gx01_vine_plague_ascend.tres"
+    },
+    {
+      "id": "gx02_venom_walker",
+      "description": "开战时获得32点护盾，持续3秒。",
+      "source": "content/growth/abilities/gx02_venom_walker_ascend.tres"
+    },
+    {
+      "id": "gx03_array_gunner",
+      "description": "开战时获得32点护盾，持续3秒。",
+      "source": "content/growth/abilities/gx03_array_gunner_ascend.tres"
+    },
+    {
+      "id": "gx04_phase_anchor",
+      "description": "开战时获得32点护盾，持续3秒。",
+      "source": "content/growth/abilities/gx04_phase_anchor_ascend.tres"
+    }
+  ],
+  "summary": {
+    "heroes": 26,
+    "matrix_traits": 14,
+    "matrix_tiers": 39,
+    "unreachable_matrix_tiers": 15,
+    "equipment": 6,
+    "relics": 15,
+    "relics_requiring_absent_persistent_soldiers": [
+      "item_war_drum",
+      "item_field_rations",
+      "item_soul_lantern",
+      "item_last_banner"
+    ],
+    "generic_opening_self_shield_ascensions": 19
+  },
+  "first_discovery_pool": [
+    "hero_mx04",
+    "hero_mx24",
+    "hero_mx36",
+    "hero_mx39",
+    "hero_mx40",
+    "hero_mx42",
+    "hero_mx43"
+  ],
+  "advanced_discovery_pool": [
+    "hero_mx44",
+    "hero_mx45",
+    "hero_mx46",
+    "hero_mx47",
+    "hero_mx48",
+    "gx01_vine_plague",
+    "gx02_venom_walker",
+    "gx03_array_gunner",
+    "gx04_phase_anchor"
+  ],
+  "source_sha256": {
+    "content/growth/project/growth_hero_pool.tres": "fbf18cac5e97c3c90c8dd8562c44019b762b789826d4680ac9b8ad94dadec710",
+    "content/growth/project/growth_recruitment_supply.tres": "12ad0fda9af667c722a61c7c4cc7f326cfcf89944346c7d5deb820f8473e5400",
+    "content/validation_matrix/definitions/hero_mx01.tres": "15d1d9cc05f003038dcd1e9f525ea7aab10e3bc1ff86dab9120adaa0637177a3",
+    "content/validation_matrix/definitions/hero_mx02.tres": "793c4d7fd85f6579b7e7fe960dbc464390640791e93c154b176cdc1f92583dec",
+    "content/validation_matrix/definitions/hero_mx03.tres": "b06c3f9ba7ef5c4d86d25d7bd92d55279764f989a0e9b9993801fea2cbe33aab",
+    "content/validation_matrix/definitions/hero_mx04.tres": "b8687d3c4d469c0fcb087c4b063e95aa9c89d9827f078afad085366586050b27",
+    "content/validation_matrix/definitions/hero_mx05.tres": "35001663e29b03a833484af95409b26c3a3d70bbca5d19027c7a9a8388e7fc6f",
+    "content/validation_matrix/definitions/hero_mx10.tres": "97c93cc5e2f85e6f212ef980b0572b7a4b7313da4340f49379b6c3fcd513d997",
+    "content/validation_matrix/definitions/hero_mx21.tres": "69c421cbf1aac293a101d602d210888c6827939fe3c94033d3174d52484d1bd7",
+    "content/validation_matrix/definitions/hero_mx22.tres": "f2841b6dcb2a4abd8078b6bde71a86a6c1c60783da41f7725f92352408e6ead1",
+    "content/validation_matrix/definitions/hero_mx23.tres": "86a06bf9097a488ef4dd753f5499a56776205f2fadbe69137f9ab8ae894efcef",
+    "content/validation_matrix/definitions/hero_mx24.tres": "0b0d9d08848021f355b148f8f231facd0d34812955c65243119597afc4db4aca",
+    "content/validation_matrix/definitions/hero_mx25.tres": "a1fefc0cffbcedcfe4ddd6e32d866358eedc22af438d59ce18b4244d14227791",
+    "content/validation_matrix/definitions/hero_mx30.tres": "495cdd9cc2da69c35ad783540bd6668bafd9c22f95ab60eec0992f6b15374cb0",
+    "content/validation_matrix/definitions/hero_mx36.tres": "4b1e8e46581cf3ec0ab6663944b7d664417c2dd6493b4c23921dc3301361dd0d",
+    "content/validation_matrix/definitions/hero_mx39.tres": "e1e05e1ef1683bb7d168ed30f583d2f1c79dffafee93ee01bee9bc21eaa84dde",
+    "content/validation_matrix/definitions/hero_mx40.tres": "ca9b295e3090a8965f3648e311f6d2edc8447e03f60ca6fb1708bf81f1b74f4f",
+    "content/validation_matrix/definitions/hero_mx42.tres": "b2c847b239c41d9341926ebdb19dcceec73e4f6f34da9aa891eb8bfa658153c2",
+    "content/validation_matrix/definitions/hero_mx43.tres": "fcd228b10fdf0861c5704e78ddeaa0ed023487c0e0d957f79eca9a6144cdc54a",
+    "content/validation_matrix/definitions/hero_mx44.tres": "9881d402ee42b07f8d2c2251b36097325627bfe8270d18468e25f5c79a92ce34",
+    "content/validation_matrix/definitions/hero_mx45.tres": "8b7523425fb928780d542487fa945579ce3cabb8f570347b04cf513de5e3b101",
+    "content/validation_matrix/definitions/hero_mx46.tres": "58d54d589b1e2d7a50fd497bb4d97290f8a19ef7f68591459b7dab91ba5478d1",
+    "content/validation_matrix/definitions/hero_mx47.tres": "f959bd1ef2aa002bc9d147fd89a8c233a6dcd0d32c174c50a8a4457a8b1fc562",
+    "content/validation_matrix/definitions/hero_mx48.tres": "16a3d144abe9ced705c605d29b2ffa715202739f71366858c97a8b3ab39ed046",
+    "content/growth/definitions/gx01_vine_plague.tres": "6e637d0fd2fec3ea41370d134b426a9aee33b47a88e22c2b93a7684fbe723624",
+    "content/growth/definitions/gx02_venom_walker.tres": "2540833ddc9e99f756d4642db47ebb36a0f06bb190e159c3ac303fb89fb4d966",
+    "content/growth/definitions/gx03_array_gunner.tres": "880ff60e7d912f5cc5cad59933350299fff8760e64336c452925f99374e5e0d5",
+    "content/growth/definitions/gx04_phase_anchor.tres": "8978710ec7ce14b2c422f9c89235d0b14ed97cecf74ed1f41dbb057ff8c2164b",
+    "content/validation_matrix/traits/mx_assassin.tres": "d1479913b66e448f79cc0ddddfb328b8e8bdffae03662881c2f3ebe060a3b0c2",
+    "content/validation_matrix/traits/mx_astral.tres": "8f6a8d130c718a0d46cfe5e3fb9408988c194678d7885197b80d1e42dc40aa92",
+    "content/validation_matrix/traits/mx_blood.tres": "2f7e40b08a1af5eec8e61190aaf5ca5cab7f6bcd516ba80d42612b16487cae00",
+    "content/validation_matrix/traits/mx_construct.tres": "e236c3b7fd9e3f1dfe2d7c958fc2ca7be0f59e1a808308f14cef9bbce06db0ea",
+    "content/validation_matrix/traits/mx_death.tres": "eadf89a03ef349f98e26bc645c4071281cd6594064e300c0f3baeccc7c1993ea",
+    "content/validation_matrix/traits/mx_ember.tres": "8c845880c57a1a2c5438019f60be5055a95124edebc94d794d37a7d3b42789ca",
+    "content/validation_matrix/traits/mx_fighter.tres": "e9cec2182ecce0b4c98ac4af5a30069ff9e4ebccf3c00872d3d57679588c3bd4",
+    "content/validation_matrix/traits/mx_frost.tres": "88d148c05645c83c1301240fbd3a7accd5dad78652df2a846c9b4f40131acea7",
+    "content/validation_matrix/traits/mx_guard.tres": "c30e31503fc7ba3863d18d7c5b2a915f035f5c9f1f493ac2982fefb5cdb2ec22",
+    "content/validation_matrix/traits/mx_mage.tres": "38721518ada5e0b8531114a20a21d54cb6ad237931ec41b028b94f0f363b4787",
+    "content/validation_matrix/traits/mx_poison.tres": "855092e2fadf2682653ffd28dcb4da56eac34b1317d72eca530d0053663c47f1",
+    "content/validation_matrix/traits/mx_ranger.tres": "c81425e55277c32b856e66b0644d10c5e9bd31d091314022101a970674d54eec",
+    "content/validation_matrix/traits/mx_summoner.tres": "45845edac0253c9e89e1874a8152929f91a676595a53b18ba17c39401b1a967b",
+    "content/validation_matrix/traits/mx_support.tres": "10e0748d6fbc7f39f8b3ff2433e855fba13424ac3552e6fad12d43733422b39e",
+    "content/project/pools/pool_all_items.tres": "f60bb7aa4d98b68f9049a702b21352b77cdf441b1046486148ead260070499bd",
+    "content/definitions/items/item_war_drum.tres": "a29c24772d94ed358077c26afa5bd963b3fe79489847e043fa85df1b9e7b427c",
+    "content/relics/definitions/item_war_drum.tres": "6bea6f7f1823cba7857b31be4b979c94f19c79df2a1e4663c525a02a7bb9150c",
+    "content/definitions/items/item_field_rations.tres": "df063c8875d1892e62e821dff996014aad331372fc2a3f8cec52031d1a8d2acf",
+    "content/relics/definitions/item_field_rations.tres": "bf773af6d668d7e2a055e1cc4edd30c12eb604dd25073ea8a56201f453359a4a",
+    "content/definitions/items/item_gilded_contract.tres": "1731e70aa86e289b72eecebe3780593d53a152d7004ed18f77cdd5b8099e0fd8",
+    "content/relics/definitions/item_gilded_contract.tres": "b9c0ab5edd25a8595c68b685cad0136664b7be7461b39ffb0487379762f1944e",
+    "content/definitions/items/item_aegis_standard.tres": "086d9f6e91265e4b2620728f4aab6dae8b190be5667aebd65470b62684c7fa1f",
+    "content/relics/definitions/item_aegis_standard.tres": "8b5a5e5c7354d49901fa6797eed9e01635424b81c3e132741e8e203ff29f3655",
+    "content/definitions/items/item_blood_chalice.tres": "9e169e65362fcbb497cf7e39fb967b17583f53f4e0710d347bdc57720f881ffc",
+    "content/relics/definitions/item_blood_chalice.tres": "3ef07fb0004efafccfa318713b6028443a4f12eb9f5ce04cb32c9bc35b5e5e5d",
+    "content/definitions/items/item_duelist_seal.tres": "d80ebc092632603a88f395df754d9d19162c87a87c903f121003a6533af8591c",
+    "content/relics/definitions/item_duelist_seal.tres": "9cfae22d89b7ea7067bee32b9851e83674770c2f7d9165823f8b6c9f86c11edb",
+    "content/definitions/items/item_lone_crown.tres": "748c0a47c03e408497f34da3b54e346d84d5f4d6b34fa330faeea1e6e91b050b",
+    "content/relics/definitions/item_lone_crown.tres": "c9f9dd7bb60ca398ae0b2b1a9f47f66714769f643edcd3a2dffbac6f0a8515e5",
+    "content/definitions/items/item_clockwork_seed.tres": "da504d394c2ecad8f58e4c53f4133480f1cb6668cfd188e083dfb5111f566178",
+    "content/relics/definitions/item_clockwork_seed.tres": "ed3ac33b11f93416128eaa95e1c7d252b42cd4073027cf175ed887ad6bd88547",
+    "content/definitions/items/item_soul_lantern.tres": "e39f134921931900c8ecfd990bb2e87fff828685546827a008fbdbc3c163da5c",
+    "content/relics/definitions/item_soul_lantern.tres": "7775a55b84532c9252871dc6d1e787efa091fa1512922d08af09893072a6ec24",
+    "content/definitions/items/item_commander_map.tres": "e1980ffe74e8146157e606cbc10634f592d767f8ba9c57667cb7527e3c217037",
+    "content/relics/definitions/item_commander_map.tres": "527e658e039c28191a213dc1b549e9692076758b78880d0d74a7d264a21f7321",
+    "content/definitions/items/item_crimson_mail.tres": "79eec341ae48449065d2f0574d85ced80416d2417c3d6c14954eb9b225d14fe3",
+    "content/relics/definitions/item_crimson_mail.tres": "f16b163e39c6e34ca8d450e65f52255cbfa51cb8fdcce0ea87666b6a1aa25139",
+    "content/definitions/items/item_last_banner.tres": "45aaeb850b43ac1c8d8f1d800a77c5b18fd591a88714054202a4820bb995bfd4",
+    "content/relics/definitions/item_last_banner.tres": "ee73c8c508d8fc3393e050a38f0052e285ffd2a2484c624f0f7bda89b42bb80c",
+    "content/definitions/items/equipment_vanguard_insignia.tres": "644d11e4a2f9cf3cd15f5d100cec60f250869438b6f1c198856546fa39695179",
+    "content/equipment/definitions/equipment_vanguard_insignia.tres": "6ec94c7c4639f9767402526d613cfc30817a882c250bd61cd33f2b875afff38c",
+    "content/definitions/items/equipment_rimebrand.tres": "fb5715e4fd3e95da7342f1854422909d400b56bb07c1946d6f62d51413b86ff5",
+    "content/equipment/definitions/equipment_rimebrand.tres": "e9938d7a4ec783b89c9288bf71501204ff6a3b844b46b238f93a3476889b8f11",
+    "content/definitions/items/equipment_field_focus.tres": "071f898d4481cf07c32fd3b8d7dd1bce793ebff350edd514b7972b4d9f2c6428",
+    "content/equipment/definitions/equipment_field_focus.tres": "1ce19a63da9b43bef925296d923f7ab82cb83e41eacb5588c0d1888239b63b43",
+    "content/definitions/items/equipment_ne01_mana_charm.tres": "7791823d26123a4a7c85e41291bef5618ed26dc81a28fadbb05015589991c335",
+    "content/equipment/definitions/equipment_ne01_mana_charm.tres": "9d090bb7099502393058074b163686fa39612b4778eafd32a91d3c933a8de4d7",
+    "content/definitions/items/equipment_ne10_swift_gloves.tres": "9f68649104de74f09d660d7000be0f9dbd777f2fea0a65a422d8d9348815f162",
+    "content/equipment/definitions/equipment_ne10_swift_gloves.tres": "8329d2be51598989b50e945b1fc27c20abcca8ed266d643b7c2b576778573262",
+    "content/definitions/items/equipment_ne10_winter_badge.tres": "7ba272b60f72fffb35029f4dd45bb8dd25c7f528b727e74d9adf35be00fa59e9",
+    "content/equipment/definitions/equipment_ne10_winter_badge.tres": "f43242720dcb69256e5f7a90fef56948394a9355163cb3e0e41e22a251a797d9",
+    "content/definitions/items/item_ne01_opening_bulwark.tres": "8edb1ebc5ae8ab40d7ea02de4acfb205d3444433662e9fa78de101bcf56367e9",
+    "content/relics/definitions/item_ne01_opening_bulwark.tres": "aa0bfb0affe9b44e7a7e5ade46bc953a211fdb5ca877e30ab150f6db43049f03",
+    "content/definitions/items/item_ne02_bone_vigor.tres": "308df331048fb8cbe5d25820087f1f53bbf5fe8c23104430d4a891ab9e943082",
+    "content/relics/definitions/item_ne02_bone_vigor.tres": "9165eef41d06047402f191e16ddaa54ff25d6aa9311e5f2b681d3c1874df0e78",
+    "content/definitions/items/item_ne10_control_shelter.tres": "5b9970341aebe71f2432b4f6eb709bd8801d940a58046eb7a2816bc9c2f9ccaa",
+    "content/relics/definitions/item_ne10_control_shelter.tres": "b88d713520cf5b4d4b1a2a81dd0f92675639520ff26c9c7b92e6cd37e9c0e3ec",
+    "content/growth/growth_rules.tres": "cd7502b3ca37bec8cc425d70a1273c93ff7018d77cb818da7080ee35938b8180",
+    "content/growth/abilities/hero_mx01_ascend.tres": "03c9a7a7561eb1048ae4d45c1f88dcd1d0a214370c63a9ac73db7c2233bd526c",
+    "content/growth/abilities/hero_mx02_ascend.tres": "4da7ed6379613c618bf1410ad49a09e3c79cfa66e825dd3e2e2293287b5d4bfc",
+    "content/growth/abilities/hero_mx03_ascend.tres": "26fe34356a1dcf2342bb16dc734c7df3bd51b416d44c8fe834b5f22406463383",
+    "content/growth/abilities/hero_mx04_ascend.tres": "618e6d91c1fb81c09aac42d928c3f655eb2fc7a9a7e8f1df6031124a8b549d88",
+    "content/growth/abilities/hero_mx05_ascend.tres": "3822039eefbe6e6193745697ab06a303c384eebc03a906fdf3ea684121229cef",
+    "content/growth/abilities/hero_mx10_ascend.tres": "53937e0dc0e38d0b0abf045f53980255de819ccf68ee29a52b1515cb2b318923",
+    "content/growth/abilities/hero_mx21_ascend.tres": "cb130df2048b6896906627bfe2bb62751535999ff7dffafb428885e0dd351d01",
+    "content/growth/abilities/hero_mx22_ascend.tres": "2fb24152a6050b7074d22abcf0957a2ac32e56bcf6bddec2cfe326543f0a9210",
+    "content/growth/abilities/hero_mx23_ascend.tres": "a57266497b20f419d83fe92089e0465ce20b96de17243725e89544a41885d320",
+    "content/growth/abilities/hero_mx24_ascend.tres": "07a45fb4a2c025669b0f46a485ebdb7f9b552945e791524151f0600ae1d9705d",
+    "content/growth/abilities/hero_mx25_ascend.tres": "77753f726126acf0936a63f4468ddd3e31b6c578a0c772583648688be62d0530",
+    "content/growth/abilities/hero_mx30_ascend.tres": "70ae26887cd44fb024663c91f55ebcc0554760c00d10994bcd6ec99085234976",
+    "content/growth/abilities/hero_mx36_ascend.tres": "ffb7e79bbfc9075476a18f6bd50df6b5630dcd577725dbb2b8090dab9d3272c7",
+    "content/growth/abilities/hero_mx39_ascend.tres": "e2ca8683e162854d267446ff278f2d97d37502ff24637082bfec99caa7a52597",
+    "content/growth/abilities/hero_mx40_ascend.tres": "aa51ab70628ab41ca5a73c85248d3e74a53496ae75032e06621762aa7d370396",
+    "content/growth/abilities/hero_mx42_ascend.tres": "6a95d03433a6e541488f30ea7db18361d27b998a8ea9fb0c6479be3f58f60570",
+    "content/growth/abilities/hero_mx43_ascend.tres": "7f819e589329b6aa7888b4186d15422d397b584444a97cdce4cb5b4f910e0d9b",
+    "content/growth/abilities/hero_mx44_ascend.tres": "7b98df0b7514ee761c28a3d81c59503f0cd0b7324c701850f121f4740779bfee",
+    "content/growth/abilities/hero_mx45_ascend.tres": "256d3d4396684c720c3cef0ca431d5ccc0de2224f8ca54fc1ff39b1a9ee18e75",
+    "content/growth/abilities/hero_mx46_ascend.tres": "0a315df364f9253d0bcb7e265ddd2ed4c82ccad8e0dfd280c9c02353042a2d8c",
+    "content/growth/abilities/hero_mx47_ascend.tres": "09bab6dc9952032d875da39e429095d57bff40389d1c12a62fa5acd96619eecc",
+    "content/growth/abilities/hero_mx48_ascend.tres": "c406b2346f6d73a49e1453e4f2705bbc3070b81babe915d58473388425acc530",
+    "content/growth/abilities/gx01_vine_plague_ascend.tres": "de7318d0416187b11fa1f22bda7f8df43a7b894b69b4c4dc2647fafbb0391a9e",
+    "content/growth/abilities/gx02_venom_walker_ascend.tres": "f136fbd3b9ccd831193c9b74f416d831ffa233bf16f311b876cad9a191493762",
+    "content/growth/abilities/gx03_array_gunner_ascend.tres": "26960cdb2b2ab63bc11fbad7e710f3562e34e45153c2d43f710ce82734a7db99",
+    "content/growth/abilities/gx04_phase_anchor_ascend.tres": "9549d198e20e0d5810c696dd9a526f36082d935112770fea1034a7f161344c7c",
+    "project.godot": "e7eeadad3fe78e9551f7a7fc32af53354e56f0e8ac3f2889d1b3fc19129adf3c",
+    "content/growth/growth_campaign.tres": "99624e310fcf7e692a52be477632f6bb08558f40d98661a2bac826f019f33542",
+    "content/growth/growth_run_rules.tres": "64076daf3acb3cda04fa68d7f96cc9d757ac9e75457599aee0aedeafff221852",
+    "content/growth/manifest.json": "5ed567140f74b0c8f59a0afe7442668a2dbe98e30d9c6591179413ba5eccaedb",
+    "src/Traits/TraitSnapshotBuilder.cs": "985ae976dc9052d28e505afd4586ea5b78d15d1ca144acdbbe4f66e5a91d1e9f",
+    "src/Relics/RelicScopes.cs": "82c6e87381c2f8dfbd2404146cf0a5a5f92ec2686273e7d2949d7b6e20350c7d",
+    "src/Equipment/EquipmentScopes.cs": "7f1f59521cfa23b1b0cd8fc3d5f72d342526130b887da789fb005385fdadfa94",
+    "src/Battle/BattleMatrixAbilities.cs": "938fb937e7a4bf68fc85cbdbfa4ce546f77b5368ff43cfa6d2002a2e93823077",
+    "src/Battle/BattleTraitMechanics.cs": "ec6da2ff82c9988aba97e439385da8d1a02d7437f5092eb02334ded5ccf7c8b5",
+    "src/Project/RunOfferDefaults.cs": "f9b88c991aa54c6beb74308553c9f008b821861c6cd41ef5ed77ac15bd1f0bfe",
+    "src/Project/TowerNodeTableDefinition.cs": "f3df62655498b34851fcdfe771693d0e07ec4b71164e0cf42d8d83ffded6e636",
+    "src/Run/TowerGenerator.cs": "04014d445762a7b732e15049060b4947c90ecf408f1ff0b517415b234ba02a80",
+    "src/UI/RunTraitModels.cs": "e97c5a17340c249df0941e925232ca80db6f92e6eb373487b94a11e527c5afc2",
+    "src/Project/RunRulesDefinition.cs": "d9079fe300229560ab969555aea95d2f01f136af94af81df0ca17d2db85f0f26",
+    "src/Run/RunItemSupplyPolicy.cs": "f408463c3b245a5ed90c7f012654b9b69e882d44ab1b5029cad564eba09f0f68",
+    "content/validation_matrix/loadouts/hero_mx02.tres": "5defa65cb9295526de5bf23e4b2992cfd535d831031d6bd3afdf5bfc077cc426",
+    "content/growth/loadouts/hero_mx02_ascended.tres": "598f62daefefa474b53e830e701d9afdf7895ec5641a576b3cbdf3f481a0a816",
+    "content/validation_matrix/loadouts/hero_mx04.tres": "7217c16cf94f0b64e4355e2833a56b3b2f9b7a8766b5f621cc84951d4d9655d2",
+    "content/growth/loadouts/hero_mx04_ascended.tres": "3867a3b5b1f6e8e5c34bdfd405f12307ec4104eef516d6b64df22590cb60e98f",
+    "content/validation_matrix/loadouts/hero_mx10.tres": "a32a11fecfab477e75718300d117fb351f04a30d2a208b82a4ec2e878c1df954",
+    "content/growth/loadouts/hero_mx10_ascended.tres": "982a848d06fbcec3a3c55b535d31535e31f68d0035d4dbc9025533960870588c",
+    "content/validation_matrix/loadouts/hero_mx24.tres": "c41ee78d48ecb23898b9aa6f63db6db7b151c326930e3da84975fe9942843877",
+    "content/growth/loadouts/hero_mx24_ascended.tres": "a0e21b04e42125f3c16595d2857461f9088a181d475f471b3ad6cd1f121e6fe7",
+    "content/validation_matrix/loadouts/hero_mx30.tres": "56cad28239d974cb137e6538e98cbda08978813c3e20d1473ad469e48900a303",
+    "content/growth/loadouts/hero_mx30_ascended.tres": "4bf52731d436fc61457e27f6c4871c2cb03b8e519ef05db4a4ad756e0f337944",
+    "content/validation_matrix/loadouts/hero_mx36.tres": "ea1ea1101d3d736af068c89bb75aef544145fbbd48b18c40f7162ecafd869e28",
+    "content/growth/loadouts/hero_mx36_ascended.tres": "302fb93402bf716473e96ff4b524afb99c60a10095317a347093070d79e59a6e",
+    "content/validation_matrix/loadouts/hero_mx39.tres": "5d2239b728ec3fa3c53643435126ad522365d4d941569021749c9e7c789381c1",
+    "content/growth/loadouts/hero_mx39_ascended.tres": "d35bed2094b01f34bc345f681ed825db38db7b515da1766322e6cb3cf816c811",
+    "content/validation_matrix/loadouts/hero_mx40.tres": "affb1f224858886346b22ce0ec4a12710a6d41bf17ccd68c7599d69a50a076c4",
+    "content/growth/loadouts/hero_mx40_ascended.tres": "17424d4e579f750435a700c73d5def448c761b84a5a3d2996fcab4e3a326b697",
+    "content/validation_matrix/loadouts/hero_mx42.tres": "6b860c30c4fdfed97b3fd221f075013e4d6902cd520557090cd8f50253b69fb5",
+    "content/growth/loadouts/hero_mx42_ascended.tres": "f6265711cbe37debd6e06accf9af3d3b64f3536fce7ebd69655bdc733a8d493d",
+    "content/validation_matrix/loadouts/hero_mx43.tres": "8d6a37aacf8d96a1544d4dfcaf6ca0c3349f703ed727c0b4ce7727c3e3694f1f",
+    "content/growth/loadouts/hero_mx43_ascended.tres": "5142fb70f2d9a21e1a27c852bc2682e2b975e29c5b03ea07648f976872b5186f",
+    "content/validation_matrix/loadouts/hero_mx44.tres": "b7cd68e51f416aa847599828200dbd67f49673fc42c5b48358c885d85d0aad1d",
+    "content/growth/loadouts/hero_mx44_ascended.tres": "e69e2e4e3c4ebbefc53072cff71f744953581b667d4f75a95a7f8ceead4b04e0",
+    "content/validation_matrix/loadouts/hero_mx45.tres": "5a6b88aa6339ece8345f565d061b9cde797aa22323af9d1dc666fc7ece73dcab",
+    "content/growth/loadouts/hero_mx45_ascended.tres": "72211e58d92d5cc2f74c8e9a6e8ef1327a7bf009f2b3109ced094a8b26c5b789",
+    "content/validation_matrix/loadouts/hero_mx46.tres": "743ac30a1bd6adcc0f90feceec648c257197945024d945c7deb49cf2ca82297e",
+    "content/growth/loadouts/hero_mx46_ascended.tres": "780f982fbd11a10cb24dd2dce2a58b2abe12517114aa4599940e664ea779e334",
+    "content/validation_matrix/loadouts/hero_mx47.tres": "2ff1eb883d2654ffc7d14c1198ca7d16d73d8165fee705b103e626e583c02dfc",
+    "content/growth/loadouts/hero_mx47_ascended.tres": "4b801d29e24effdb70103663197c0e50c2fd2bf2fef5080524b59e61e9ae8936",
+    "content/validation_matrix/loadouts/hero_mx48.tres": "d1d7bb244f26c2ccb7598cd69adbb8d730b92e457e3ae6bfa1f413ce0618be62",
+    "content/growth/loadouts/hero_mx48_ascended.tres": "e4a1c1dde633402857940008e434669d1f14c67985f58a1a06f2661c514b9203",
+    "content/growth/loadouts/gx01_vine_plague_base.tres": "468fe1df64512bf7dcc1bc3a16e572e0f27b0d5bd932d82b57a05cf34479fb8b",
+    "content/growth/loadouts/gx01_vine_plague_ascended.tres": "9f0c9e7ba5e8a5a436a4ca9a7efcd15abf4cc5fbc48f569802b1df77ecb72784",
+    "content/growth/loadouts/gx02_venom_walker_base.tres": "0368e42d3e39cc8069e381f9b18bd996d89efa76978a38f6f9be64694540c208",
+    "content/growth/loadouts/gx02_venom_walker_ascended.tres": "bd7e6cb94a48613e269f439e873311d24302594ad13b530caf4587d087370248",
+    "content/growth/loadouts/gx03_array_gunner_base.tres": "75bf8e1a5e514cc1a9294c873949d8df07b0474ef4de16c19730a1d6c9d834a4",
+    "content/growth/loadouts/gx03_array_gunner_ascended.tres": "68e98d6dabcf70c17473b6db90a48dd466727ba3363dfafdbc5772f25416f4f4",
+    "content/growth/loadouts/gx04_phase_anchor_base.tres": "659882221d7a0e8d71a5b6797caafae436f86ed3713d7bddac928d00a07ca028",
+    "content/growth/loadouts/gx04_phase_anchor_ascended.tres": "06e6ebd90b1659f6057356cbbae06ac2a6d191274bf460ca7b4a41a04ff703c1"
+  },
+  "generic_shield_loadout_comparison": [
+    {
+      "hero": "hero_mx02",
+      "base": "content/validation_matrix/loadouts/hero_mx02.tres",
+      "ascended": "content/growth/loadouts/hero_mx02_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx02_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx04",
+      "base": "content/validation_matrix/loadouts/hero_mx04.tres",
+      "ascended": "content/growth/loadouts/hero_mx04_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx04_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx10",
+      "base": "content/validation_matrix/loadouts/hero_mx10.tres",
+      "ascended": "content/growth/loadouts/hero_mx10_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx10_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx24",
+      "base": "content/validation_matrix/loadouts/hero_mx24.tres",
+      "ascended": "content/growth/loadouts/hero_mx24_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx24_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx30",
+      "base": "content/validation_matrix/loadouts/hero_mx30.tres",
+      "ascended": "content/growth/loadouts/hero_mx30_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx30_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx36",
+      "base": "content/validation_matrix/loadouts/hero_mx36.tres",
+      "ascended": "content/growth/loadouts/hero_mx36_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx36_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx39",
+      "base": "content/validation_matrix/loadouts/hero_mx39.tres",
+      "ascended": "content/growth/loadouts/hero_mx39_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx39_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx40",
+      "base": "content/validation_matrix/loadouts/hero_mx40.tres",
+      "ascended": "content/growth/loadouts/hero_mx40_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx40_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx42",
+      "base": "content/validation_matrix/loadouts/hero_mx42.tres",
+      "ascended": "content/growth/loadouts/hero_mx42_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx42_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx43",
+      "base": "content/validation_matrix/loadouts/hero_mx43.tres",
+      "ascended": "content/growth/loadouts/hero_mx43_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx43_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx44",
+      "base": "content/validation_matrix/loadouts/hero_mx44.tres",
+      "ascended": "content/growth/loadouts/hero_mx44_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx44_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx45",
+      "base": "content/validation_matrix/loadouts/hero_mx45.tres",
+      "ascended": "content/growth/loadouts/hero_mx45_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx45_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx46",
+      "base": "content/validation_matrix/loadouts/hero_mx46.tres",
+      "ascended": "content/growth/loadouts/hero_mx46_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx46_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx47",
+      "base": "content/validation_matrix/loadouts/hero_mx47.tres",
+      "ascended": "content/growth/loadouts/hero_mx47_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx47_ascend.tres"
+      ]
+    },
+    {
+      "hero": "hero_mx48",
+      "base": "content/validation_matrix/loadouts/hero_mx48.tres",
+      "ascended": "content/growth/loadouts/hero_mx48_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/hero_mx48_ascend.tres"
+      ]
+    },
+    {
+      "hero": "gx01_vine_plague",
+      "base": "content/growth/loadouts/gx01_vine_plague_base.tres",
+      "ascended": "content/growth/loadouts/gx01_vine_plague_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/gx01_vine_plague_ascend.tres"
+      ]
+    },
+    {
+      "hero": "gx02_venom_walker",
+      "base": "content/growth/loadouts/gx02_venom_walker_base.tres",
+      "ascended": "content/growth/loadouts/gx02_venom_walker_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/gx02_venom_walker_ascend.tres"
+      ]
+    },
+    {
+      "hero": "gx03_array_gunner",
+      "base": "content/growth/loadouts/gx03_array_gunner_base.tres",
+      "ascended": "content/growth/loadouts/gx03_array_gunner_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/gx03_array_gunner_ascend.tres"
+      ]
+    },
+    {
+      "hero": "gx04_phase_anchor",
+      "base": "content/growth/loadouts/gx04_phase_anchor_base.tres",
+      "ascended": "content/growth/loadouts/gx04_phase_anchor_ascended.tres",
+      "removed": [],
+      "added": [
+        "res://content/growth/abilities/gx04_phase_anchor_ascend.tres"
+      ]
+    }
+  ],
+  "ordinary_node_category_sets": [
+    [
+      "Combat",
+      "Event",
+      "Shop"
+    ],
+    [
+      "Elite",
+      "Recruitment",
+      "Rest"
+    ]
+  ]
+}

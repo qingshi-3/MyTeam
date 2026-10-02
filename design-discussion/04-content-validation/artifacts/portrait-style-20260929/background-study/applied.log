@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2 Pro
+
+PORTRAIT_BACKGROUND_APPLIED f1_general texture=res://assets/portraits/illustrations/f1_general.png size=(960, 540)
+PORTRAIT_BACKGROUND_APPLIED f6_sister texture=res://assets/portraits/illustrations/f6_sister.png size=(960, 540)
+PORTRAIT_BACKGROUND_APPLIED f3_aymarahealer texture=res://assets/portraits/illustrations/f3_aymarahealer.png size=(960, 540)

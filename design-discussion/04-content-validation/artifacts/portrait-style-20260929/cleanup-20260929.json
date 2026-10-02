@@ -1,0 +1,159 @@
+{
+  "reason": "按用户要求清理生图过程中的重复与废弃文件",
+  "removed_count": 28,
+  "exact_duplicate_images": 11,
+  "rejected_drafts": 6,
+  "removed": [
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/healer-before.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/healer-pilot/after-proportions-v2.png",
+      "sha256": "4866205be0422f3fda83aebad4c22b23b48e8425c9af20f066e1f8cea436424d",
+      "bytes": 1914215
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/surge-conductor-before.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/after-outfit-v2.png",
+      "sha256": "e4eed3700522b917ac8d54673fe4fbc1c0cb71c2bf60edf90bd0cc3c1d6d25d0",
+      "bytes": 1777532
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/style-reference.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/healer-pilot/after-proportions-v2.png",
+      "sha256": "4866205be0422f3fda83aebad4c22b23b48e8425c9af20f066e1f8cea436424d",
+      "bytes": 1914215
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/runtime-backup/f1_general.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/mountain-standard/before.png",
+      "sha256": "d6a7209d1a34891c288a7055420566244791ec14b4b590e54da073d618db4064",
+      "bytes": 2180159
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/runtime-backup/f3_aymarahealer.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/healer-pilot/before.png",
+      "sha256": "aa5d2918f11efba7c86c10e089ac152459ed699999b45ec1f873e0519994030d",
+      "bytes": 1785026
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/outline-pass/runtime-backup/f6_sister.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/after-outfit-v2.png",
+      "sha256": "e4eed3700522b917ac8d54673fe4fbc1c0cb71c2bf60edf90bd0cc3c1d6d25d0",
+      "bytes": 1777532
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/replacement-backup/original.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/before.png",
+      "sha256": "ebeaa5d120ba3dcb8691567f56feef430c5cc947356aef3e19d8187d0af288a4",
+      "bytes": 1904208
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/after-outfit-v2-cutout.png",
+      "kind": "exact_duplicate",
+      "retained": "assets/portraits/illustrations/cutouts/f6_sister.png",
+      "sha256": "fb73dd0056bf5db4ebd3abeb83278fffeb61f04d61804e2745a8c14d879717be",
+      "bytes": 1805949
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/healer-pilot/style-reference.png",
+      "kind": "exact_duplicate",
+      "retained": "outputs/imagegen/anime-style-transfer-20260929/01-silver-mage-defined-lines.png",
+      "sha256": "39d5494cbe6f47eb920880dce94762297a94f3b170e85b8bc3153845d957ce82",
+      "bytes": 1691297
+    },
+    {
+      "path": ".godot/surge-portrait-review/runtime-default.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/runtime-default.png",
+      "sha256": "bbf68da890f45e2154b4e152726e7f79e7680527b09547804a2b05ae8135fb52",
+      "bytes": 704800
+    },
+    {
+      "path": ".godot/surge-portrait-review/runtime-pressed.png",
+      "kind": "exact_duplicate",
+      "retained": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/surge-conductor/runtime-pressed.png",
+      "sha256": "aab30f76550992c79bb9ee7b6017ae6645b0585d90302828c04efeb7e1015989",
+      "bytes": 701926
+    },
+    {
+      "path": "outputs/imagegen/anime-style-transfer-20260929/drafts/01-silver-mage-v1.png",
+      "kind": "rejected_draft"
+    },
+    {
+      "path": "outputs/imagegen/anime-style-transfer-20260929/drafts/01-silver-mage-v2-rejected.png",
+      "kind": "rejected_draft"
+    },
+    {
+      "path": "outputs/imagegen/anime-style-transfer-20260929/drafts/02-blackhair-swordswoman-v1.png",
+      "kind": "rejected_draft"
+    },
+    {
+      "path": "outputs/imagegen/anime-style-transfer-20260929/drafts/02-blackhair-swordswoman-v2-rejected.png",
+      "kind": "rejected_draft"
+    },
+    {
+      "path": "outputs/imagegen/anime-style-transfer-20260929/drafts/03-auburn-city-reader-v1.png",
+      "kind": "rejected_draft"
+    },
+    {
+      "path": "outputs/imagegen/anime-style-transfer-20260929/drafts/03-auburn-city-reader-v2-rejected.png",
+      "kind": "rejected_draft"
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/genshin-direction.png.import",
+      "kind": "unused_preview_import_sidecar"
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/wuthering-direction.png.import",
+      "kind": "unused_preview_import_sidecar"
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/jean-restrained-direction.png.import",
+      "kind": "unused_preview_import_sidecar"
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/user-approved-composition.png.import",
+      "kind": "unused_preview_import_sidecar"
+    },
+    {
+      "path": "design-discussion/04-content-validation/artifacts/portrait-style-20260929/user-jean-style-reference.png.import",
+      "kind": "unused_preview_import_sidecar"
+    },
+    {
+      "path": ".godot/portrait-direct-review/review.gd",
+      "kind": "finished_temporary_review"
+    },
+    {
+      "path": ".godot/portrait-direct-review/review.tscn",
+      "kind": "finished_temporary_review"
+    },
+    {
+      "path": ".godot/portrait-direct-build.log",
+      "kind": "finished_temporary_review"
+    },
+    {
+      "path": ".godot/portrait-direct-import.log",
+      "kind": "finished_temporary_review"
+    },
+    {
+      "path": ".godot/portrait-direct-contract.log",
+      "kind": "finished_temporary_review"
+    },
+    {
+      "path": ".godot/portrait-direct-runtime.log",
+      "kind": "finished_temporary_review"
+    }
+  ],
+  "runtime_images_unchanged": true,
+  "prompts_preserved": true,
+  "one_copy_of_rollback_sources_retained": true,
+  "reference_paths_updated": true,
+  "new_broken_html_links": 0,
+  "codex_generated_originals_untouched": true
+}

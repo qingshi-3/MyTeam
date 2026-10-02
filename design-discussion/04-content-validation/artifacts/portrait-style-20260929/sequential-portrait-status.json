@@ -1,0 +1,77 @@
+{
+  "date": "2026-09-29",
+  "workflow": "一张一张优化，每张交付后等待用户反馈再进行下一张",
+  "entries": [
+    {
+      "key": "f3_aymarahealer",
+      "name": "济世医师",
+      "status": "user_accepted_replaced",
+      "file": "outline-pass/healer-after.png",
+      "sha256": "f12c28b46852d2ce4cf38253b6162c09daadf60e9ed56cca7350e87320a80218",
+      "approval_quote": "可以 就这三个了，可以考虑不抠图直接拿这个机械的通过代码读取立绘就行",
+      "runtime_replacement_performed": true,
+      "runtime_files": [
+        "assets/portraits/illustrations/f3_aymarahealer.png"
+      ],
+      "runtime_mode": "direct_original",
+      "accepted_revision": {
+        "file": "outline-pass/healer-after.png",
+        "sha256": "f12c28b46852d2ce4cf38253b6162c09daadf60e9ed56cca7350e87320a80218",
+        "change": "仅加深加粗外围轮廓并加强主要遮挡线，内部细线和原有上色保持",
+        "status": "user_accepted",
+        "runtime_replaced": false
+      }
+    },
+    {
+      "key": "f6_sister",
+      "name": "共鸣使",
+      "status": "user_accepted_replaced",
+      "file": "outline-pass/surge-conductor-after.png",
+      "sha256": "c894425a6f67c0fbf67fe986a58b3ebd4860d6049f8ce8f102b2c53bf8b0b6a9",
+      "revision": "按用户批注重新组织服装结构",
+      "approval_quote": "可以 就这三个了，可以考虑不抠图直接拿这个机械的通过代码读取立绘就行",
+      "runtime_replacement_performed": true,
+      "runtime_files": [
+        "assets/portraits/illustrations/f6_sister.png"
+      ],
+      "runtime_mode": "direct_original",
+      "accepted_revision": {
+        "file": "outline-pass/surge-conductor-after.png",
+        "sha256": "c894425a6f67c0fbf67fe986a58b3ebd4860d6049f8ce8f102b2c53bf8b0b6a9",
+        "change": "仅加深加粗外围轮廓并加强主要遮挡线，内部细线和原有上色保持",
+        "status": "user_accepted",
+        "runtime_replaced": false
+      }
+    },
+    {
+      "key": "f1_general",
+      "name": "山岳旗手",
+      "status": "user_accepted_replaced",
+      "file": "outline-pass/knight-proportions-v2.png",
+      "sha256": "2e449a7d27fce7fb96f05b909ebff5ca7e8806a492329fedccd694d0237a868b",
+      "revision": "调整头身和头肩关系，回调过长下半身，保留当前脸部方向、金甲蓝衣及强描边",
+      "rejected_files": [
+        "mountain-standard/after.png",
+        "mountain-standard/after-face-v2.png",
+        "mountain-standard/veteran-gold-v2.png"
+      ],
+      "approved_scope": "用户明确指定本次上传版本为骑士造型基准，覆盖先前候选选择",
+      "selected_base": "outline-pass/knight-before.png",
+      "approval_quote": "可以 就这三个了，可以考虑不抠图直接拿这个机械的通过代码读取立绘就行",
+      "runtime_replacement_performed": true,
+      "runtime_files": [
+        "assets/portraits/illustrations/f1_general.png"
+      ],
+      "runtime_mode": "direct_original",
+      "accepted_revision": {
+        "file": "outline-pass/knight-proportions-v2.png",
+        "sha256": "2e449a7d27fce7fb96f05b909ebff5ca7e8806a492329fedccd694d0237a868b",
+        "change": "调整头身和头肩关系，回调过长下半身，保留当前脸部方向、金甲蓝衣及强描边",
+        "status": "user_accepted",
+        "runtime_replaced": false
+      }
+    }
+  ],
+  "runtime_replacement_performed": true,
+  "current_revision_scope": "three_approved_portraits_installed_directly"
+}

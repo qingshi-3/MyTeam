@@ -1,0 +1,23 @@
+{
+  "feedback": "面部好丑啊，发型也是，市面上男性动漫单位不是很多吗，老练的骑士或者年轻的骑士，这个太油腻了",
+  "tool": "built-in image_gen.imagegen",
+  "input": "after.png",
+  "reference": {
+    "character": "Percival",
+    "official_page": "https://relink-ragnarok.granbluefantasy.com/en/characters/percival/",
+    "image_url": "https://relink-ragnarok.granbluefantasy.com/_app/immutable/assets/characters_13.CFbyXXFK.png",
+    "local_file": "reference-percival.png",
+    "use": "仅研究成年男性动漫骑士面部与有组织的短发，不移植装备或人物身份"
+  },
+  "prompt_file": "face-hair-prompt.txt",
+  "generated_source": "/Users/qingshi/.codex/generated_images/01a0eb96-2a0d-7ee2-be32-604c85651f14/exec-5805ede4-6655-4b3d-b505-718d0228bd38.png",
+  "output": "after-face-v2.png",
+  "dimensions": [
+    1024,
+    1536
+  ],
+  "sha256": "e9831ab282f83b734495e8cdf877e40463a1c8fca478e00a924708c717e0bfa8",
+  "status": "user_rejected",
+  "runtime_replaced": false,
+  "subsequent_feedback": "用户否定整体骑士风格及描边，要求重新设计成熟骑士"
+}

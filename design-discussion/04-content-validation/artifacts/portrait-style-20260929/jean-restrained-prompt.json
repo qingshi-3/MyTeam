@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-29",
+  "tool": "built-in image_gen",
+  "status": "preview-awaiting-user-feedback",
+  "purpose": "定向减少高光、碎发和零碎装饰；不替换运行素材",
+  "prompt": "Use case: style-transfer.\n把图2的双人卡牌重新绘制为图1（琴）的干净、克制的二维动漫立绘画法。图1是首要画法标准；图2只提供角色身份、配色、卡框与布局，绝对不要继承图2的油亮渲染和乱飞头发。\n保留图2左右两张灰石框卡、满幅人物、少量武器/肩部出框的构图。左边成年红发男性指挥官，蓝金铠甲、大剑；右边成年金发紫瞳女性骑士，白紫金衣甲、太阳冠、长枪。不要复制琴的角色、服装、标志或海报背景。\n画法严格向图1看齐：清楚而细的有色轮廓线，干净的局部固有色，每个大形以一个主色和一到两个明确的阴影块塑形，少量柔和过渡。脸部是真正二维动漫脸，简洁鼻口，男性有成熟沉稳感，避免细长尖下巴。皮肤不发亮，无3D体积光。\n核心修改1：大幅削减高光。金属以沉静的赭金色大面和简洁暗面区分，只有少数结构转折保留短小低对比亮边；不画白色长条反射、不做镜面、电镀、油亮、亮面塑料、珠光或强轮廓光。布料和头发以清楚大色面表达，不做满屏明暗碎切面。\n核心修改2：头发收整。男红发向后自然梳拢，额前只有几束有序刘海，后发沿肩背下落；女金发整齐束拢，长发以少数完整的大束顺肩背下垂。像图1一样发型轮廓有秩序。移除图2所有细小飞丝、毛躁发梢、发光散发与向四周爆开的发束，不要风吹效果。保留红发、金发和总体长度，不另创夸张发型。\n核心修改3：减少衣甲零碎装饰和细碎褶皱，保留辨识度最高的胸前纹章、宽肩甲、主色织物和太阳冠，冠的形状保留但反光收敛。不增加挂件。画面细节量和材质表现接近图1，不是精细CG、不写实、不厚涂、不油画。\n灰石框和暗底保持原布局，主体大小保持满框且脸部无遮挡，少量宽阔轮廓越框即可，不靠乱发制造出框。无文字、无标志、无水印。输出一张横向双卡对照图。",
+  "referenced_image_paths": [
+    "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-452ddf76-94b3-4869-ac86-7273638e56d5.png",
+    "/Users/qingshi/Documents/GodotProjects/MyTeam/design-discussion/04-content-validation/artifacts/portrait-style-20260929/genshin-direction.png"
+  ],
+  "archived_user_reference": "user-jean-style-reference.png",
+  "transparent_background": false,
+  "source": "/Users/qingshi/.codex/generated_images/01a0e87a-7adc-7212-810f-f9bef1fe2ac1/exec-91ece157-caf8-493d-a2ee-5d6e8e13195d.png",
+  "output": "jean-restrained-direction.png",
+  "review": "已查看生成结果。大块甲面高光收敛、女性长发成束，男性仍有少量上挑轮廓；满幅和局部越框保持。未认定达到参考图质量，未获用户最终认可；武器仍延伸到画布边界，不是可直接使用的分层资源。"
+}

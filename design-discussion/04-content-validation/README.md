@@ -1,5 +1,9 @@
 # 内容规划与小批检验
 
+2026-10-02 羁绊参考入口：[首批 66 项候选与云顶独有单位索引](artifacts/content-audit-20261001/trait-shortlist.md)，范围和综合研究要求见 [D69](decisions.md)。原编号固定；刀塔霸业与王者模拟战退出参考。后续围绕对应版本的羁绊、全部成员、数值／技能、装备、站位和实际表现一起设计。
+
+2026-10-01 当前恢复入口：[内容留白与整局抉择重设计](artifacts/content-audit-20261001/redesign.md)。D65 已授权占位清理与升阶解耦并要求重做所有抉择；19 项升阶收益留白、6 件遗物退出成长普通供给已接入。具体新事件、候选配方和节奏是待审方案，不能读成已采用。
+
 ## 2026-09-27 实施与验证交付状态
 
 [成长征程设计与运行验证](artifacts/growth-route/README.md)已完成本次 goal 工程交付：真实 `GrowthGameRoot`、独立地区／遭遇、26单位代表包、成长生产、一次材料升阶＋固定三选一、研究法术、MX01跨战收益及隔离v8存档均已接通，Alpha不变。最终构建0警告0错误，合同与真实工坊输入通过并查看新截图；MX03换目标保层、v7节点续行与满员发现拒载已验证。连续路线、已知限制和证据索引见[最终验证](artifacts/growth-route/runtime/final-validation.md)与[活动任务](../../work-items/active/growth-and-composition-design.md)。最终平衡与玩家体验仍待手动验收；49名全量重构不属于本 goal。

@@ -1,0 +1,21 @@
+{
+  "sourceSha256": "016789e4e0e7b0b0057a6a90b50b9c9cc2e725f336dd4a1b4c54cd20b8b33f2f",
+  "errors": [],
+  "seats": [
+    {
+      "contained": true,
+      "round": "50%"
+    },
+    {
+      "contained": true,
+      "round": "50%"
+    }
+  ],
+  "checks": [
+    "最终版未选、选一位、选两位与详情截图更新",
+    "头像限制在圆形席位内",
+    "选取、详情、取消、再次选取与飞行清理通过",
+    "正常速度录制 opening-interaction.webm"
+  ],
+  "earlierChecks": "review.json 的完整交互检查保持适用；此后仅修订头像定位 CSS"
+}

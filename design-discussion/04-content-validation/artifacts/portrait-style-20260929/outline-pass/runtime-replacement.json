@@ -1,0 +1,144 @@
+{
+  "approval": "可以 就这三个了，可以考虑不抠图直接拿这个机械的通过代码读取立绘就行",
+  "mode": "direct-original-png-with-existing-background",
+  "runtime_code_changed": false,
+  "items": [
+    {
+      "key": "f1_general",
+      "hero": "hero_hc30_armor_broadcaster",
+      "name": "山岳旗手",
+      "source": "knight-proportions-v2.png",
+      "record": "knight-proportions-v2.json",
+      "prompt": "knight-proportions-v2-prompt.txt",
+      "runtime_file": "assets/portraits/illustrations/f1_general.png",
+      "portrait": "content/portraits/heroes/hero_hc30_armor_broadcaster.tres",
+      "sha256": "2e449a7d27fce7fb96f05b909ebff5ca7e8806a492329fedccd694d0237a868b",
+      "dimensions": [
+        1024,
+        1536
+      ]
+    },
+    {
+      "key": "f3_aymarahealer",
+      "hero": "hero_hc18_healing_reader",
+      "name": "济世医师",
+      "source": "healer-after.png",
+      "record": "generation.json",
+      "prompt": "prompts.txt",
+      "runtime_file": "assets/portraits/illustrations/f3_aymarahealer.png",
+      "portrait": "content/portraits/heroes/hero_hc18_healing_reader.tres",
+      "sha256": "f12c28b46852d2ce4cf38253b6162c09daadf60e9ed56cca7350e87320a80218",
+      "dimensions": [
+        1024,
+        1536
+      ]
+    },
+    {
+      "key": "f6_sister",
+      "hero": "hero_hc06_surge_conductor",
+      "name": "共鸣使",
+      "source": "surge-conductor-after.png",
+      "record": "generation.json",
+      "prompt": "prompts.txt",
+      "runtime_file": "assets/portraits/illustrations/f6_sister.png",
+      "portrait": "content/portraits/heroes/hero_hc06_surge_conductor.tres",
+      "sha256": "c894425a6f67c0fbf67fe986a58b3ebd4860d6049f8ce8f102b2c53bf8b0b6a9",
+      "dimensions": [
+        1024,
+        1536
+      ]
+    }
+  ],
+  "before_portrait_hashes": {
+    "assets/portraits/illustrations/f2_lanternfox.png": "1b23c8da781531acfe45d5a474bc27f111af2b855855fce77b21de014f99149f",
+    "assets/portraits/illustrations/f6_sister.png": "e4eed3700522b917ac8d54673fe4fbc1c0cb71c2bf60edf90bd0cc3c1d6d25d0",
+    "assets/portraits/illustrations/f6_general.png": "fbd2b0b45e16b5268bd4d268d4a7ccd23ada0ad01613243233cd073b2c76f5c7",
+    "assets/portraits/illustrations/f4_mech.png": "d9c846ee1b93312dd951a4bd29aca84011c08b7f76ee7788fae7606602ab69cb",
+    "assets/portraits/illustrations/boss_wujin.png": "e2e507a3dee04b550479bc00c25cdae752e0d07a33557db948f4d707c9b59cf5",
+    "assets/portraits/illustrations/f4_crawler.png": "904366ffa96b6fedba263fa76f40cead5100270612c1fe4a86efb7219165f980",
+    "assets/portraits/illustrations/f3_general.png": "029db6d9353c33fac9aa0b911ee7bb6a8ac99b9edaaebc7db5ecfe9cead9ebad",
+    "assets/portraits/illustrations/f6_crystalbeetle.png": "13f98112fb79d42b89b0dee21964ea5297fae1fe02eb576de91361454abc1d83",
+    "assets/portraits/illustrations/f2_spellthief.png": "bc4de8a7ab821ebfbbf5bf4511f9e83643188320a06ac09133c8f6a48b13bfea",
+    "assets/portraits/illustrations/f1_tank.png": "3eb06812da2af4de850c429bd79fa0bd71816bdad426cb5bc0f9ce8fe15bbe13",
+    "assets/portraits/illustrations/f6_frostbitehawker.png": "bef99c62412a91eddb00836634181a8456302bb2ad70b3b1165f5ac52fc6cc26",
+    "assets/portraits/illustrations/boss_decepticleprime.png": "42d6e72dd3ab075286484e82b2068905674a41222cb2afe1af8cf17797f3f65e",
+    "assets/portraits/illustrations/f1_ranged.png": "461cdbd150e64fed6e1f3dafda0850c8190f47427f71df2b79a6b2b883b7d691",
+    "assets/portraits/illustrations/f3_dervish.png": "c854911c4b73ddccad1aa8805967597b3b6f40c57ff14af993ca0075dc49ba30",
+    "assets/portraits/illustrations/f5_general.png": "5d3b13db492f0f0f8bdc9e618f8940dccc2b8eb0ea274a73cee289b9b2b1575e",
+    "assets/portraits/illustrations/boss_borealjuggernaut.png": "a50dc331d8ef3db79255a5824031f5c8f7e7c7733420b1320272b0b17d3a0566",
+    "assets/portraits/illustrations/f1_sister.png": "72060f0137f9b6ec7348aecccbb1a7fca44af921685a30a1b0d9de5308f5a22a",
+    "assets/portraits/illustrations/f5_spiritharvester.png": "114cedd6e1760a7e428621ac6a975a164223de7a2012c137757e6ec40bb72179",
+    "assets/portraits/illustrations/f2_general.png": "23d957a8c4b7ecdeb75c0bee7ddecfebabc04a1c2f984898a16d6a0862bf76e8",
+    "assets/portraits/illustrations/f2_ranged.png": "0f7f150658b6b7c1a32ad57cb830d3e43882f750e5de19060cb95e0278ef5040",
+    "assets/portraits/illustrations/f5_tank.png": "bda2c7349546807425b873f43de9f983e66aefe88b973b97c925f7cef1b53482",
+    "assets/portraits/illustrations/f3_irondervish.png": "0ff5e6c39f535c53a306680563fd70abe3aa8dadc031cd02bda6ca8559e8c46a",
+    "assets/portraits/illustrations/f3_aymarahealer.png": "aa5d2918f11efba7c86c10e089ac152459ed699999b45ec1f873e0519994030d",
+    "assets/portraits/illustrations/f5_firebreather.png": "02a573060544fc0e0d267cd4a9596f4dc541f5864ea3599fe82ac1ba04c4fc3e",
+    "assets/portraits/illustrations/f4_darkspine.png": "50ea4db8834ae8df0c2c1eb98c18d939b97e3d428dd1f8b3384cd666a259a2e9",
+    "assets/portraits/illustrations/f2_melee.png": "78a40ad982b0e00fa1b6fa6bf4ab743469128eebea72689b7b9922f6b0b11ed5",
+    "assets/portraits/illustrations/boss_vampire.png": "a136fddb92f614cb579e265599914edfb34b466d3a5531c5785860ec443a61e3",
+    "assets/portraits/illustrations/f5_drogon.png": "9c95af95f934bb7f7cf39f91847cd96a398b25adbf313fccd34a40af96c29eb5",
+    "assets/portraits/illustrations/f4_general.png": "8afd2538eb5f2f0d7d206720955fa0844d344fc92ec5ee6fe1df6cc9dd1e73da",
+    "assets/portraits/illustrations/boss_shadowlord.png": "79b307b28683543188cb4e59e76a168083065695391d93487f03808bb0663605",
+    "assets/portraits/illustrations/f6_freeblade.png": "6d1d70548bf1b85e635dd43854080197c6c66a0016f5d1f49e0a8bc8c6f46163",
+    "assets/portraits/illustrations/f4_bloodbaronette.png": "016c9acdb456ecd63eebabbe1d7330ae3bff48da671c9db4ffcf82f3a5dfc549",
+    "assets/portraits/illustrations/f3_dunecaster.png": "903b720f6bd9df04c28740b2838401fee9b5300588ecf38524b62c64ce5c9aab",
+    "assets/portraits/illustrations/f1_sunforgelancer.png": "d042cf27b995a8547f41fd8c4ee9beac7241108050027c804a7a39a5a3bc53f9",
+    "assets/portraits/illustrations/f1_general.png": "d6a7209d1a34891c288a7055420566244791ec14b4b590e54da073d618db4064"
+  },
+  "before_cutout_hashes": {
+    "assets/portraits/illustrations/cutouts/f2_lanternfox.png": "f4e4cf9ae6f299b3c16176936599ca2a25cd261cf18d723cb03244ce8224fb8a",
+    "assets/portraits/illustrations/cutouts/f6_sister.png": "fb73dd0056bf5db4ebd3abeb83278fffeb61f04d61804e2745a8c14d879717be",
+    "assets/portraits/illustrations/cutouts/f6_general.png": "888f417b5d3c2ca7d73b01dd79a4f038c9ac3d95207762cbfda34b97ce1b63f0",
+    "assets/portraits/illustrations/cutouts/f4_mech.png": "d33631c25dd68fe292371dbfb0d83a199217e02c9a12e223673a86d345710815",
+    "assets/portraits/illustrations/cutouts/f4_crawler.png": "9fe86217b178633bf093fdee5ea9e0ff69ec23286e4396f690eb426ed5816847",
+    "assets/portraits/illustrations/cutouts/f3_general.png": "7587a26e937a571d009ca821844f62560e5404371f97f1c3c5511b3471bab543",
+    "assets/portraits/illustrations/cutouts/f6_crystalbeetle.png": "e64bd48729a321791a300c7eb2895eb7fb986a6aea14fc425a2c8242b6eaa876",
+    "assets/portraits/illustrations/cutouts/f2_spellthief.png": "93af18a5f31483eddeb3ed1736478434ab962b37c5233c742902d06ff5778168",
+    "assets/portraits/illustrations/cutouts/f1_tank.png": "7c77125655d88ec5095c1e887ff979b7a1d8fd6213ab8592a31229973812264c",
+    "assets/portraits/illustrations/cutouts/f6_frostbitehawker.png": "82130b682b2ab0c6abec60a789aa8e480404621c2393a4971b2afd7697320b9b",
+    "assets/portraits/illustrations/cutouts/f1_ranged.png": "958212d20022eafe45b164c3a6261e1366e270a35af1985891aad0b6cfca16e3",
+    "assets/portraits/illustrations/cutouts/f3_dervish.png": "af799001764a0e687772d27ffd061f70639fd16897fcc5d53d773a8567af2a7a",
+    "assets/portraits/illustrations/cutouts/f5_general.png": "5d5d363ed299b0754bc542154de8da4a8533c7f7917667123f92083f82eb8ea7",
+    "assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png": "2ecfbdead32abf10231d037c588cf55d68dee4c38926f66983966f68b9ab555e",
+    "assets/portraits/illustrations/cutouts/f1_sister.png": "0c4fb12c32087abc11193ffe7e02a2b309bf89ea2d06528133064005f002f9d3",
+    "assets/portraits/illustrations/cutouts/f5_spiritharvester.png": "b2f72fb56dd281afd95312d341822943db62a74d5f3d1bd489a1c230237a111a",
+    "assets/portraits/illustrations/cutouts/f5_tank.png": "416a1bf2f2b8651e5c495e788be62a8ad74a6d18092682eb8e8d0f19bc19cafa",
+    "assets/portraits/illustrations/cutouts/f3_aymarahealer.png": "8786c3340d7c24239a710ce68cd0101090e46fddeb1d7a6dcacac526804cd46d",
+    "assets/portraits/illustrations/cutouts/f5_firebreather.png": "557ad902876ca1b475412a9282bf026edc54f078041d65734b8422e2378acc82",
+    "assets/portraits/illustrations/cutouts/f4_darkspine.png": "9a095c8abb5c4f42b49d09749f6de36f28a199f4d6911fb0ae15f2313cba1307",
+    "assets/portraits/illustrations/cutouts/f2_melee.png": "a2d0bd6e9956ee0499bc1097e19bd9903abaf3cb203cf8ca5678032f9f89fd3e",
+    "assets/portraits/illustrations/cutouts/f5_drogon.png": "b9655b48f10ec3aabccb1e4b378637591ebc2e7bc7fa48c0bb8e643bcc4fd901",
+    "assets/portraits/illustrations/cutouts/f4_general.png": "61fa05f565db60f2c3c8d254c536f816f427eeeefb73f5bb7e4f5d5437a80e4e",
+    "assets/portraits/illustrations/cutouts/f6_freeblade.png": "7cc2d23510033fcfa193618cbb70040b6c62204a6681a2f9c2692ae856729545",
+    "assets/portraits/illustrations/cutouts/f4_bloodbaronette.png": "3aec112a3f325070377468d0745df7fe424e37670b8d2a0ddf6b02e67d9b4367",
+    "assets/portraits/illustrations/cutouts/f3_dunecaster.png": "7ec8867f1edcd27eb980bcf983b765f4287ee31e89a8f939ee12f59f6dde2616",
+    "assets/portraits/illustrations/cutouts/f1_sunforgelancer.png": "fde8bedcbb001295e811ad0af0e696333f6e2ace70d4eed03a9856431382e6bd",
+    "assets/portraits/illustrations/cutouts/f1_general.png": "cd517ccba274c8f0f6047e515aabbd0a8502a7f855b9edf06df121e49b152a56"
+  },
+  "validation": {
+    "status": "completed",
+    "build": "0 warnings, 0 errors",
+    "portrait_contract": "UI_PORTRAIT_PRESENTATION_OK",
+    "runtime_viewport": [
+      960,
+      540
+    ],
+    "runtime_textures": "all three direct original PNGs, CardIllustration unset",
+    "isolated_clicks": 3,
+    "desktop_mouse_moved": false,
+    "screenshots": [
+      "runtime/f1_general.png",
+      "runtime/f3_aymarahealer.png",
+      "runtime/f6_sister.png"
+    ],
+    "limits": "Targeted production card and small-portrait component review with real resource data and viewport input; not a full gameplay flow. Repeated mouse-enter notifications produced two harmless fixture warnings. Original pale backgrounds and existing masks remain."
+  },
+  "changed_portraits": [
+    "assets/portraits/illustrations/f6_sister.png",
+    "assets/portraits/illustrations/f3_aymarahealer.png",
+    "assets/portraits/illustrations/f1_general.png"
+  ],
+  "other_images_unchanged": true,
+  "cutouts_unchanged": true
+}

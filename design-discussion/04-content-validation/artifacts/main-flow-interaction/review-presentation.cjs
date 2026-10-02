@@ -1,0 +1,37 @@
+const {chromium}=require('/Users/qingshi/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const out=path.join(__dirname,'qa','presentation');fs.mkdirSync(out,{recursive:true});
+(async()=>{
+ const browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+ const context=await browser.newContext({viewport:{width:992,height:650},recordVideo:{dir:path.join(out,'video'),size:{width:992,height:650}}});
+ const page=await context.newPage(),errors=[],metrics=[],checks=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:8764/preview.html');const f=page.frameLocator('iframe');
+ await f.locator('.screen .brand').waitFor();
+ const click=(act,v)=>f.locator('[data-act="'+act+'"]'+(v!==undefined?'[data-value="'+v+'"]':'')).first().click();
+ const jump=async id=>{if(await f.locator('.review').isHidden())await click('review-toggle');await f.locator('[data-field=page]').selectOption(id);await click('review-toggle');await page.waitForTimeout(270);};
+ const snap=name=>f.locator('.screen').screenshot({path:path.join(out,name+'.png')});
+ const ok=name=>{checks.push(name);console.log('PASS '+name);};
+ await snap('menu');
+ assert.equal(await f.locator('.review').isHidden(),true);
+ assert.equal(await f.locator('.screen').innerText().then(t=>/组建军团|继续未完成|布局稿|示例数值/.test(t)),false);ok('默认体验隐藏审阅工具及说明文案');
+ await click('new');await page.waitForTimeout(300);await snap('opening');
+ const ids=await f.locator('.hero-card [data-act=choose]').evaluateAll(ns=>ns.map(n=>n.dataset.value));
+ await f.locator('.hero-card').first().hover();await page.waitForTimeout(220);
+ await click('choose',ids[0]);await page.waitForTimeout(350);
+ await click('choose',ids[1]);await page.waitForTimeout(350);await snap('opening-selected');
+ assert.equal(await f.locator('.candidate.chosen').count(),2);assert.equal(await f.locator('.seat.filled').count(),2);assert.equal(await f.locator('[data-act=confirm-opening]').isEnabled(),true);
+ await f.locator('.seat.filled').first().click();assert.equal(await f.locator('.seat.filled').count(),1);assert.equal(await f.locator('[data-act=confirm-opening]').isDisabled(),true);ok('点选、席位落定、取消与确认状态一致');
+ await click('choose',ids[0]);await click('confirm-opening');await page.waitForTimeout(300);await snap('route');
+ await jump('recruit');await click('hero-detail','mx23');assert.equal(await f.locator('.dialog').count(),1);assert.equal(await f.locator('.candidate.chosen').count(),0);await page.keyboard.press('Escape');ok('信息按钮不误选，详情与 Esc 可用');
+ await click('choose','mx23');await page.waitForTimeout(350);await snap('recruit');await click('confirm-recruit','recruit');assert.equal(await f.locator('[data-field=page]').inputValue(),'route');ok('整卡选择与确认招募');
+ await jump('spells');await click('target','mx03');await click('preset');await page.waitForTimeout(350);await snap('spells');assert.match(await f.locator('.preset-chip').innerText(),/寒羽游侠/);await click('clear-spell');assert.equal(await f.locator('.preset-chip').count(),0);assert.match(await f.locator('[data-act=spell][data-value=slow]').innerText(),/×1/);ok('法术预案以目标连接展示，取消保留库存');
+ await jump('prepare');const a=await f.locator('[data-cell="0"]').boundingBox(),b=await f.locator('[data-cell="4"]').boundingBox();await page.mouse.move(a.x+a.width/2,a.y+a.height/2);await page.mouse.down();await page.mouse.move(b.x+b.width/2,b.y+b.height/2,{steps:14});await page.waitForTimeout(180);assert.equal(await f.locator('.drop-ready').count(),1);await page.mouse.up();assert.match(await f.locator('[data-cell="4"]').innerText(),/冻原盾卫/);assert.equal(await f.locator('.drag-source').count(),0);await page.waitForTimeout(250);await snap('prepare');ok('真实拖动的源位置、落点与落下反馈');
+ await jump('recruit');await click('review-toggle');await f.locator('[data-field=scenario]').selectOption('savefail');await click('review-toggle');await click('choose','mx21');assert.equal(await f.locator('.candidate.chosen').count(),0);assert.match(await f.locator('.toast.error').innerText(),/保存失败/);ok('失败不播放成功选中反馈');
+ await click('review-toggle');await f.locator('[data-field=scenario]').selectOption('normal');const pages=await f.locator('[data-field=page] option').evaluateAll(ns=>ns.map(n=>n.value));
+ for(const id of pages){await jump(id);const m=await f.locator('.screen').evaluate(screen=>{const r=screen.getBoundingClientRect(),body=screen.querySelector('.body').getBoundingClientRect();const clipped=[...screen.querySelectorAll('.content button,.content select,.content h2,.content h3,.candidate')].filter(e=>{const a=e.getBoundingClientRect();return a.width&&a.height&&(a.right>r.right+1||a.left<r.left-1||a.bottom>body.bottom+1);}).map(e=>({text:e.textContent.slice(0,30),class:e.className}));return{width:r.width,height:r.height,clipped};});metrics.push({id,...m});if(['opponent','roster','production','ascension','shop','reward','report'].includes(id))await snap(id);}
+ fs.writeFileSync(path.join(out,'review.json'),JSON.stringify({checks,errors,metrics},null,2));
+ console.log(JSON.stringify({errors,clipped:metrics.filter(x=>x.clipped.length)}));
+ await context.close();await browser.close();
+ assert.deepEqual(errors,[]);assert.deepEqual(metrics.filter(x=>x.clipped.length),[]);
+})().catch(e=>{console.error(e);process.exit(1)});

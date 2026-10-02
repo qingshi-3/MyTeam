@@ -1,0 +1,15 @@
+{
+  "wide": {
+    "width": 1600,
+    "height": 900,
+    "overflow": false,
+    "overlaps": []
+  },
+  "narrow": {
+    "width": 320,
+    "height": 1045,
+    "overflow": false,
+    "overlaps": []
+  },
+  "reviewStates": "0/1/2 passed"
+}

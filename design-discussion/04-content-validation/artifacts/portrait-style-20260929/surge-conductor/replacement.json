@@ -1,0 +1,63 @@
+{
+  "date": "2026-09-29",
+  "approval": "接受替换掉",
+  "key": "f6_sister",
+  "replaced": [
+    "assets/portraits/illustrations/f6_sister.png",
+    "assets/portraits/illustrations/cutouts/f6_sister.png"
+  ],
+  "original_source": "after-outfit-v2.png",
+  "cutout_source": "/Users/qingshi/.codex/generated_images/01a0eb96-2a0d-7ee2-be32-604c85651f14/exec-f2a98eb5-65d9-4880-adf0-9b359a2d991d.png",
+  "cutout_prompt": "Use case: background-extraction.\nOnly remove the background from this user-approved finished character illustration for the game's UI. The input is the sole edit target and identity authority. Deliver an actual transparent RGBA PNG, preserving the original 1024x1536 canvas, character placement, scale, pose, head/face/eyes, warm skin, silver short hair, purple double-horn headpiece, newly approved continuous navy sleeveless tunic, red waist sash, black pants, white gloves, ivory fur cloak, black boots, giant blue-silver gauntlet and cyan flame. Preserve the exact approved outfit: no hanging waist rings, straps or streamers may reappear.\nRemove only the pale grey backdrop and ground/contact shadow, including background gaps between the horns, arms, legs, cloak and flame. Keep the white hair and white cloak opaque, with clean antialiased edges. Retain the existing flame's cyan colors and appropriate edge transparency. Preserve all visible ink lines, colors, shading and existing shapes as closely as possible. No redesign, new pose, resizing, recentering, recoloring, new lighting, edge glow or extra shadow. No painted checkerboard; genuine alpha transparency. Return only the same isolated finished figure.\n",
+  "alpha": {
+    "size": [
+      1024,
+      1536
+    ],
+    "transparent_fraction": 0.4824053446451823,
+    "semi_transparent_fraction": 0.5175946553548177,
+    "alpha_range": [
+      0,
+      254
+    ]
+  },
+  "backup": "replacement-backup/",
+  "other_image_hashes_unchanged": true,
+  "runtime_review": {
+    "status": "completed",
+    "engine": "Godot 4.7.2 mono",
+    "host_window": [
+      960,
+      540
+    ],
+    "isolated_viewport": [
+      1600,
+      900
+    ],
+    "scene": "res://.godot/surge-portrait-review/review.tscn",
+    "production_scenes": [
+      "res://scenes/ui/components/RosterHeroCard.tscn",
+      "res://scenes/ui/components/UnitPortrait.tscn"
+    ],
+    "source_definition": "res://content/definitions/heroes/hero_hc06_surge_conductor.tres",
+    "checks": [
+      "原图与透明源已重新导入",
+      "实际查看默认大卡、小肖像及按压状态",
+      "SubViewport真实鼠标移动/按下/释放，卡片pressed触发1次",
+      "用户桌面鼠标未移动"
+    ],
+    "screenshots": [
+      "runtime-default.png",
+      "runtime-pressed.png"
+    ],
+    "logs": [
+      "import.log",
+      "runtime.log"
+    ],
+    "limits": "定向素材与卡片组件检查，卡面基础字段直接读取真实定义；不是自然完整整备流程或完整游戏交互回归。未修改代码，因此未重建.NET。"
+  },
+  "final_changed_portraits": [
+    "assets/portraits/illustrations/f6_sister.png",
+    "assets/portraits/illustrations/cutouts/f6_sister.png"
+  ]
+}

@@ -1,0 +1,951 @@
+{
+  "date": "2026-10-01",
+  "cause": "The previous replacement covered content/portraits/heroes but missed independent growth and validation_matrix portraits used by the default GrowthGameRoot. CardIllustration still selected old transparent images before the updated Illustration.",
+  "method": "Remove obsolete CardIllustration overrides from growth/matrix portraits and bind existing same-identity full PNGs for soldiers/enemies. Reuse current crop fields and existing Illustration presentation; runtime and animation code unchanged.",
+  "items": [
+    {
+      "portrait": "content/growth/portraits/gx01_vine_plague.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_frostbitehawker/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f6_frostbitehawker.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f6_frostbitehawker.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"gx01_vine_plague\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.34)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "8b743e010253868f496687a2d269587451526bc65f1d5da00b42364add7d072e"
+    },
+    {
+      "portrait": "content/growth/portraits/gx02_venom_walker.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"gx02_venom_walker\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "9ced8df40d18ee77758103f2c1c4fe735f660a7356c06a233ebe9650cf279fee"
+    },
+    {
+      "portrait": "content/growth/portraits/gx03_array_gunner.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"gx03_array_gunner\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "1f3ede6290b20a54caf152a6fdac58ca3428a1b06785afa3335c9683e17bcbab"
+    },
+    {
+      "portrait": "content/growth/portraits/gx04_phase_anchor.tres",
+      "illustration": "assets/portraits/illustrations/f3_dervish.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_dervish/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f3_dervish.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f3_dervish.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"gx04_phase_anchor\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.4)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.24)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "0fa4b94300bf339b953b4260a938cbc34a12673858bfd74ba1e5f602be65035e"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx01.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_borealjuggernaut/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/boss_borealjuggernaut.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx01\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.45\nOffsetRatio = Vector2(0, 0)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.62, 0.52)\nCardIllustrationZoom = 1.25\nIllustrationFocus = Vector2(0.62, 0.53)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "f35fa77d7bdd7853ff8fd9e3d622cb398120f220b0e52e89aaafbd1e5bacf7a1"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx02.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_tank/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f5_tank.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f5_tank.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx02\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.57, 0.46)\nCardIllustrationZoom = 1.1\nIllustrationFocus = Vector2(0.5, 0.42)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "ce090eb8cc20024e3e7a2c90ed6fe09c0e37011e5b4214e77531515860a59e5d"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx03.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_frostbitehawker/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f6_frostbitehawker.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f6_frostbitehawker.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx03\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.34)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "df97d937c749e41a76885049204012c4d5a8c943650a2e5217bec54620940c4b"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx04.tres",
+      "illustration": "assets/portraits/illustrations/f3_dunecaster.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_dunecaster/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f3_dunecaster.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f3_dunecaster.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx04\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.22)\nIllustrationZoom = 1.1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "5458a9f84efc2a4c9168d15c9cb7122f75cd5712386acfa7be646d1eab82647c"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx05.tres",
+      "illustration": "assets/portraits/illustrations/f3_general.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_general/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f3_general.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f3_general.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx05\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.4)\nCardIllustrationZoom = 1.4\nIllustrationFocus = Vector2(0.5, 0.29)\nIllustrationZoom = 1.3\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "b58f18417f78cf61211a6fa3e369018b6e666514d8f6cf7bed3f4774870f04a5"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx06.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_borealjuggernaut/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/boss_borealjuggernaut.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx06\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.45\nOffsetRatio = Vector2(0, 0)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.62, 0.52)\nCardIllustrationZoom = 1.25\nIllustrationFocus = Vector2(0.62, 0.53)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "c397e30b7d8fdf75b96be37a5cf84d3d80b4eeeb0055636dd29c535eb61b505d"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx07.tres",
+      "illustration": "assets/portraits/illustrations/f4_darkspine.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_darkspine/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f4_darkspine.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f4_darkspine.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx07\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.53, 0.48)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.56)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "c1b9a77f34083bf3db81a6daf58f693a5f052cd981d82abb9cf913a9d4d04681"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx08.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx08\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "f818121683f3250f75780b1c8e434d30c5587d2185d5bc649d1417c9fee72490"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx09.tres",
+      "illustration": "assets/portraits/illustrations/f4_darkspine.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_darkspine/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f4_darkspine.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f4_darkspine.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx09\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.53, 0.48)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.56)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "f7620ac8244fd6c89174d0451c5317a79b37366cf49586882173c556ff22e3fa"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx10.tres",
+      "illustration": "assets/portraits/illustrations/f3_aymarahealer.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_aymarahealer/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f3_aymarahealer.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f3_aymarahealer.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx10\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.37)\nCardIllustrationZoom = 1.35\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.5\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "babeac8c7e332a7876d2b6ad0db06c305c9c0ce3234b327b61c8eaecd9c2368e"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx11.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx11\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "fa5a2cd3535d2ceaef251ff2627ec5f6043506c1efae783beb8bc1db4b4cad47"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx12.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_ranged.png\" id=\"illustration\"]\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_ranged.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx12\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "f902f341e1f1a9dd026f5b95140eab8dc1590da1ede970b1375f01a4afe3de62"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx13.tres",
+      "illustration": "assets/portraits/illustrations/f6_freeblade.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_freeblade/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f6_freeblade.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f6_freeblade.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx13\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "cdd3f3de4de73e47c0d0a2f646e74b434e1d7ac053217d91b61746792e798dc2"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx14.tres",
+      "illustration": "assets/portraits/illustrations/f5_firebreather.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_firebreather/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f5_firebreather.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f5_firebreather.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx14\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.53, 0.52)\nCardIllustrationZoom = 1.1\nIllustrationFocus = Vector2(0.5, 0.71)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "085f4e5d6e154dd3f8a6d5767e3ede11bed0c664cc6cb53eae1408c2e93e0b46"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx15.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_crawler/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f4_crawler.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f4_crawler.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx15\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.61, 0.54)\nCardIllustrationZoom = 1.25\nIllustrationFocus = Vector2(0.58, 0.55)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "435057d7d1939eaa4e4a334919430397cc127506e702766f1b4e4bd48464e5db"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx16.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_borealjuggernaut/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/boss_borealjuggernaut.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx16\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.45\nOffsetRatio = Vector2(0, 0)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.62, 0.52)\nCardIllustrationZoom = 1.25\nIllustrationFocus = Vector2(0.62, 0.53)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "b2b36813a99f7673c13d1153a28ba8a6f20b86fb3104cfd9b3d48aaf626c2c7e"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx17.tres",
+      "illustration": "assets/portraits/illustrations/f5_drogon.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_drogon/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f5_drogon.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f5_drogon.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx17\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.43, 0.4)\nCardIllustrationZoom = 1.1\nIllustrationFocus = Vector2(0.45, 0.27)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "e596350580a6c337e219e88ee6df054033e5393ec94ca672f6423b51c6948d6f"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx18.tres",
+      "illustration": "assets/portraits/illustrations/f6_freeblade.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_freeblade/frames.tres\" id=\"r0\"]\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f6_freeblade.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f6_freeblade.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r1\")\nStableId = \"hero_mx18\"\nFrames = ExtResource(\"r0\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "2bc39928471bd4755a634ca960bd682ac865491774ecc73667954e8eb6cca261"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx19.tres",
+      "illustration": "assets/portraits/illustrations/f2_lanternfox.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f2_lanternfox/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f2_lanternfox.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f2_lanternfox.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx19\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.6, 0.6)\nCardIllustrationZoom = 1.3\nIllustrationFocus = Vector2(0.55, 0.59)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "26b950c257348d0e2a1c73ec61ca2f78994475da6b1de37ed1a23dd39104a6f0"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx20.tres",
+      "illustration": "assets/portraits/illustrations/f5_spiritharvester.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_spiritharvester/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f5_spiritharvester.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f5_spiritharvester.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx20\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.48)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.52)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "8c2db4d89065b46294ef2e4439a38ac7d944b08408f7969b987f8a71501cf11d"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx22.tres",
+      "illustration": "assets/portraits/illustrations/f4_mech.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_mech/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f4_mech.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f4_mech.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx22\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "16257b79c2448ac06038e7d68b5ccc01e3ddee7583a2ad53fb7e1f65eb48856e"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx23.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_ranged.png\" id=\"illustration\"]\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_ranged.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx23\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "fca7b7d755d011c42bbe45e93ce4e8aa3e9f7a38611ba60c2747c48fa8b7466c"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx24.tres",
+      "illustration": "assets/portraits/illustrations/f1_sunforgelancer.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sunforgelancer/frames.tres\" id=\"r0\"]\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sunforgelancer.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sunforgelancer.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r1\")\nStableId = \"hero_mx24\"\nFrames = ExtResource(\"r0\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "7b1f5f4791c165f8a40fa236d530bf1adcef2d96f7c3282005c6fa0051e15821"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx25.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx25\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "03447903473ee08ed1150d3afbd27749b914413780fc528e2afdc75d39e86b5a"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx26.tres",
+      "illustration": "assets/portraits/illustrations/f5_general.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_general/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f5_general.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f5_general.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx26\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.28)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "641755e137287d0223347a2ab2ef58059be27f24ee00ac3fbc537d704a808245"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx27.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_ranged.png\" id=\"illustration\"]\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_ranged.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx27\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "552372988afa9437b53ce4d93e4cda964e40440b386fbdb98194b094777c799f"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx28.tres",
+      "illustration": "assets/portraits/illustrations/f2_melee.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f2_melee/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f2_melee.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f2_melee.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx28\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "d8664a2e2d15400283573ec7b5f2ffcd33d3d26fd291eee9453973d32bb18fc7"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx29.tres",
+      "illustration": "assets/portraits/illustrations/f4_general.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_general/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f4_general.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f4_general.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx29\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "72871a5cca02a2215b3468293d8f8ad2f0ead2f909cd792581ce6cae69f9546f"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx30.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx30\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "18eeba2470472b0916fe481ca317b01e9df541201d3f34dba3b999baf5adce83"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx31.tres",
+      "illustration": "assets/portraits/illustrations/f1_general.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_general/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_general.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_general.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx31\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.23)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "1f3a8c8743fa7668ae0d3809531ddbcfdf664bf867f62a2dac9fbb7b3b7a9790"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx32.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_ranged.png\" id=\"illustration\"]\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_ranged.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx32\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "3acd4b94354ef79e7068c6d39f5cc1655613c5034edb9b5549d82daa12a8c720"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx33.tres",
+      "illustration": "assets/portraits/illustrations/f6_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f6_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f6_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx33\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "634c7a2fc865f5962b9c590edfe0eb87c63ee91da772d9dee023d9a129849242"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx34.tres",
+      "illustration": "assets/portraits/illustrations/f3_aymarahealer.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_aymarahealer/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f3_aymarahealer.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f3_aymarahealer.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx34\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.37)\nCardIllustrationZoom = 1.35\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.5\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "66f3d499619f35fe4d28dfbd61de56d85c9c883cb67f7a608136bdf3a5dcc21e"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx35.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_crawler/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f4_crawler.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f4_crawler.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx35\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.61, 0.54)\nCardIllustrationZoom = 1.25\nIllustrationFocus = Vector2(0.58, 0.55)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "8da2c3941a9d8d7e7932e008ee56fdda43bc7da7e1259dae4ec3b6bbac5a4a5c"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx36.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx36\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "67c7f3637345c87d1239982ff7cc0c0db1f3a5283e36bd7d2bf7a634c1fcef94"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx37.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx37\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "82bf8c700412c032498cbfc2b6f1e0ef7b1482639a905e7527c03506cfed9553"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx38.tres",
+      "illustration": "assets/portraits/illustrations/f6_general.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_general/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f6_general.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f6_general.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx38\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.55, 0.48)\nCardIllustrationZoom = 1.65\nIllustrationFocus = Vector2(0.55, 0.41)\nIllustrationZoom = 1.55\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "b5318e80f7dfc0434d8f2c574c4d17827e1651fd2f9ab29909b7713427f5f58f"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx39.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_borealjuggernaut/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/boss_borealjuggernaut.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx39\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.45\nOffsetRatio = Vector2(0, 0)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.62, 0.52)\nCardIllustrationZoom = 1.25\nIllustrationFocus = Vector2(0.62, 0.53)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "34bce1c9199ec893f776ccf026fae0b84a346160b12514d21991cf222167c502"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx40.tres",
+      "illustration": "assets/portraits/illustrations/f1_sunforgelancer.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sunforgelancer/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sunforgelancer.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sunforgelancer.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx40\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "1341bd5d5525d1df70b69a1eeb88860ff188dedb26194310123eb7f1bed5a6ef"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx41.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx41\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "9de4c81240569709f5880616ba4e3fd65479e93f4421124955d7ee240665f8bc"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx42.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx42\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "e7fd7ebdd6cb65562f04109a2d9f81007776a45b39ae154dffd5d20b7857c671"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx43.tres",
+      "illustration": "assets/portraits/illustrations/f1_tank.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_tank/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_tank.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_tank.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx43\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.27)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "972e172528e0bf269db9b8acd26bf3c561bb61e6d47531fc51ffec4a429a0027"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx44.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_frostbitehawker/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f6_frostbitehawker.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f6_frostbitehawker.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx44\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.34)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "9fd19c6e737d5a78e626908cbe281555c94982bc500f57355fdfe2fe916fb0b3"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx45.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx45\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "ba910540c33efdf21f7cd7922b18bce7aedb71fd7b8d88c6d9d29b78a46db366"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx46.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx46\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "04fa3e3dc5130db2049ea6c25f44658253f8cdfee749bb15ae68b1ba4522d6a9"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx47.tres",
+      "illustration": "assets/portraits/illustrations/f3_dervish.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_dervish/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f3_dervish.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f3_dervish.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"hero_mx47\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.4)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.24)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "157b0e81ecd4ae0b8907c6bcf3a3cd3e461f0e96175644a7eaf55f81c3b25e9f"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/hero_mx48.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_ranged.png\" id=\"illustration\"]\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_ranged.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"hero_mx48\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "da40dffb8e66ac21d6d0911c5e5347f88e150d77d18f2df8381de37d92f1a16e"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_astral.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_ranged.png\" id=\"illustration\"]\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_ranged.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"matrix_spirit_astral\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "42a7aeda5bb9412b9cda5648b6df7b9bbe5dff959afd46f7c9a6e0dc8e7c0730"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_aurora.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_ranged.png\" id=\"illustration\"]\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_ranged.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"matrix_spirit_aurora\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.5, 0.25)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "8ab85c378123f79e515d1d28d9c8b5ddd6ef76818a604ec204a4a788fe9c893f"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_bone.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"matrix_spirit_bone\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "a8b33e6d0cc64d2406aa06171707ffc148c1aad682b79772137f19fd1e04ce8e"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_drone.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_borealjuggernaut/frames.tres\" id=\"frames\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/boss_borealjuggernaut.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/boss_borealjuggernaut.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"matrix_spirit_drone\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.45\nOffsetRatio = Vector2(0, 0)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.62, 0.52)\nCardIllustrationZoom = 1.25\nIllustrationFocus = Vector2(0.62, 0.53)\nIllustrationZoom = 1\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "147d120d6c61c5ed42fca000d8801dcf811165274c2c8a57bc90badc29732efd"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_fire.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"matrix_spirit_fire\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "d640e0e3598e18bb59af8f764fb107aaab2792e297cdf2778cdff35b14aed954"
+    },
+    {
+      "portrait": "content/validation_matrix/portraits/matrix_spirit_plague.tres",
+      "illustration": "assets/portraits/illustrations/f1_sister.png",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_sister/frames.tres\" id=\"r1\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/f1_sister.png\" id=\"illustration\"]\n\n[ext_resource type=\"Texture2D\" path=\"res://assets/portraits/illustrations/cutouts/f1_sister.png\" id=\"card_illustration\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"matrix_spirit_plague\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\nIllustration = ExtResource(\"illustration\")\nCardIllustration = ExtResource(\"card_illustration\")\nCardIllustrationFocus = Vector2(0.5, 0.32)\nCardIllustrationZoom = 1.2\nIllustrationFocus = Vector2(0.62, 0.29)\nIllustrationZoom = 1.15\n",
+      "previousMode": "old_cutout_override",
+      "currentResourceSha256": "e846ef8485df89cc743dbdc942b2adcd7c8bb577c11299eba0dbb0b2a5dd19ba"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_bc_insect.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "frames": "res://assets/donor-units/f4_crawler/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_crawler/frames.tres\" id=\"r1\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"soldier_bc_insect\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\n",
+      "cropSource": "content/portraits/heroes/hero_hc24_swarm_keeper.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.61, 0.54)",
+        "CardIllustrationZoom": "1.25",
+        "IllustrationFocus": "Vector2(0.58, 0.55)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "23341c024021696a21d0a9bddae0479aa69f535f35352d9ed47a53ae2c95f83e"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_bc_morsel.tres",
+      "illustration": "assets/portraits/illustrations/f6_crystalbeetle.png",
+      "frames": "res://assets/donor-units/f6_crystalbeetle/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_crystalbeetle/frames.tres\" id=\"r1\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"soldier_bc_morsel\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\n",
+      "cropSource": "content/portraits/heroes/hero_hc27_ally_consumer.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.58, 0.55)",
+        "CardIllustrationZoom": "1.1",
+        "IllustrationFocus": "Vector2(0.56, 0.56)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "1cc7062940bff1f03e89aae2be9db1f5f3f406655e0e6015d20b959c3d45d4e7"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_bc_raised.tres",
+      "illustration": "assets/portraits/illustrations/f4_darkspine.png",
+      "frames": "res://assets/donor-units/f4_darkspine/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_darkspine/frames.tres\" id=\"r1\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"soldier_bc_raised\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\n",
+      "cropSource": "content/portraits/heroes/hero_hc08_poison_keeper.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.53, 0.48)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.56)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "3957c9fde234ce1f69be32e2e5296619e48d38f6f7074e6a10246a680809e104"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_bc_skeleton.tres",
+      "illustration": "assets/portraits/illustrations/f3_irondervish.png",
+      "frames": "res://assets/donor-units/f3_irondervish/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"r0\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_irondervish/frames.tres\" id=\"r1\"]\n\n[resource]\nscript = ExtResource(\"r0\")\nStableId = \"soldier_bc_skeleton\"\nFrames = ExtResource(\"r1\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\n",
+      "cropSource": "src/Content/UnitPortraitDefinition.cs",
+      "cropReason": "No existing same-identity bound portrait; retain exported default crop parameters without local tuning.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.4)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.32)",
+        "IllustrationZoom": "1"
+      },
+      "usesDefaultCrop": true,
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "572e28cd940c828efcd29d27361913404658a269f45691a0e15be2402b6f792c"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_dummy_melee.tres",
+      "illustration": "assets/portraits/illustrations/f2_melee.png",
+      "frames": "res://assets/donor-units/f2_melee/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f2_melee/frames.tres\" id=\"frames\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"soldier_dummy_melee\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc04_crit_duelist.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.25)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "62dc6118c49c7d421a096732a807c349a387cc0a350e0cec38f235df9cbd364f"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_dummy_ranged.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "frames": "res://assets/donor-units/f1_ranged/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"frames\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"soldier_dummy_ranged\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc01_crossbow.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.25)",
+        "IllustrationZoom": "1.15"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "711d69eafe0967d2e391dffa00f04bfc5ae66d010fa6c1fb47809ee9a8b714e0"
+    },
+    {
+      "portrait": "content/portraits/soldiers/soldier_dummy_static.tres",
+      "illustration": "assets/portraits/illustrations/f1_tank.png",
+      "frames": "res://assets/donor-units/f1_tank/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_tank/frames.tres\" id=\"frames\"]\n\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"soldier_dummy_static\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc15_shield_grower.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.27)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "eef1b91af8c5e9782f78b291520d6878243bf12ee6900b4942f6d3d65cd583e6"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_blood_reaver.tres",
+      "illustration": "assets/portraits/illustrations/f4_bloodbaronette.png",
+      "frames": "res://assets/donor-units/f4_bloodbaronette/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_bloodbaronette/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_blood_reaver\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.06)\n",
+      "cropSource": "content/portraits/heroes/hero_hc20_blood_drummer.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.56, 0.38)",
+        "CardIllustrationZoom": "1.15",
+        "IllustrationFocus": "Vector2(0.5, 0.25)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "372372c008de3f2040d7c1fa3ea5cf38d471d1eb449d6ef456f6361db7a636cb"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_boreal_boss.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "frames": "res://assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_borealjuggernaut/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_boreal_boss\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.45\nOffsetRatio = Vector2(0, 0)\n",
+      "cropSource": "content/portraits/heroes/hero_hc03_iron_guard.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.62, 0.52)",
+        "CardIllustrationZoom": "1.25",
+        "IllustrationFocus": "Vector2(0.62, 0.53)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "b5d77a38a4bd611cc4557f1c6339ec097cd07c60be4f676686ac81272a479fd6"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_brood_larva.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "frames": "res://assets/donor-units/f4_crawler/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_crawler/frames.tres\" id=\"frames\"]\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"enemy_brood_larva\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.7\n",
+      "cropSource": "content/portraits/heroes/hero_hc24_swarm_keeper.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.61, 0.54)",
+        "CardIllustrationZoom": "1.25",
+        "IllustrationFocus": "Vector2(0.58, 0.55)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "574a4d270b37796b5886fbbcab2bbbe9f9c3786eac372c9bed08b841978576a6"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_carrion.tres",
+      "illustration": "assets/portraits/illustrations/f4_crawler.png",
+      "frames": "res://assets/donor-units/f4_crawler/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f4_crawler/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_carrion\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2.2\nOffsetRatio = Vector2(0, 0.08)\n",
+      "cropSource": "content/portraits/heroes/hero_hc24_swarm_keeper.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.61, 0.54)",
+        "CardIllustrationZoom": "1.25",
+        "IllustrationFocus": "Vector2(0.58, 0.55)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "a65a34890ed8dbc1377d144db949ec3857e1959b709bb784eeeb29c841607c13"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_clockwork_boss.tres",
+      "illustration": "assets/portraits/illustrations/boss_decepticleprime.png",
+      "frames": "res://assets/donor-units/boss_decepticleprime/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_decepticleprime/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_clockwork_boss\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.45\nOffsetRatio = Vector2(0, 0)\n",
+      "cropSource": "src/Content/UnitPortraitDefinition.cs",
+      "cropReason": "No existing same-identity bound portrait; retain exported default crop parameters without local tuning.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.4)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.32)",
+        "IllustrationZoom": "1"
+      },
+      "usesDefaultCrop": true,
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "5f1932e486c488426b7a66e59515e2b642325498d669541fd2271e9fb440026d"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_crossbow.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "frames": "res://assets/donor-units/f1_ranged/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_crossbow\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc01_crossbow.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.25)",
+        "IllustrationZoom": "1.15"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "ddc8acfc0dfbf5d714efb646f285cfec133f263aaa86f29fc848892dd2b0a337"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_cutpurse.tres",
+      "illustration": "assets/portraits/illustrations/f2_melee.png",
+      "frames": "res://assets/donor-units/f2_melee/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f2_melee/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_cutpurse\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.06)\n",
+      "cropSource": "content/portraits/heroes/hero_hc04_crit_duelist.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.25)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "1afeca8a9fa7cf78183b586956694be8b0a78fa2ae5f7aa3b76b4ecb4c7d072e"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_eb01_rampart_warden.tres",
+      "illustration": "assets/portraits/illustrations/boss_borealjuggernaut.png",
+      "frames": "res://assets/donor-units/boss_borealjuggernaut/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_borealjuggernaut/frames.tres\" id=\"frames\"]\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"enemy_eb01_rampart_warden\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.7\n",
+      "cropSource": "content/portraits/heroes/hero_hc03_iron_guard.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.62, 0.52)",
+        "CardIllustrationZoom": "1.25",
+        "IllustrationFocus": "Vector2(0.62, 0.53)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "f3a40b21e0649fb45d068f69eea09ee1d1073b439563684073d4c1b55c8e9404"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_eb02_shell_matriarch.tres",
+      "illustration": "assets/portraits/illustrations/f6_crystalbeetle.png",
+      "frames": "res://assets/donor-units/f6_crystalbeetle/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_crystalbeetle/frames.tres\" id=\"frames\"]\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"enemy_eb02_shell_matriarch\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.7\n",
+      "cropSource": "content/portraits/heroes/hero_hc27_ally_consumer.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.58, 0.55)",
+        "CardIllustrationZoom": "1.1",
+        "IllustrationFocus": "Vector2(0.56, 0.56)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "fcf121e0cdf330896f70231f3a5ed64c22cf5f38ddc7d98e7c65154c4b19b921"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ee03_trample_brute.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "frames": "res://assets/donor-units/f5_tank/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_tank/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_ee03_trample_brute\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.8\nOffsetRatio = Vector2(0, 0.04)\n",
+      "cropSource": "content/portraits/heroes/hero_hc14_stone_fist.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.57, 0.46)",
+        "CardIllustrationZoom": "1.1",
+        "IllustrationFocus": "Vector2(0.5, 0.42)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "9adf7d6f6591e88c1c61f034511f53e28b581b4581beab9c80b2498069e582dd"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ee07_furnace_lizard.tres",
+      "illustration": "assets/portraits/illustrations/f5_firebreather.png",
+      "frames": "res://assets/donor-units/f5_firebreather/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_firebreather/frames.tres\" id=\"frames\"]\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"enemy_ee07_furnace_lizard\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.7\n",
+      "cropSource": "content/portraits/heroes/hero_hc10_ember_cashout.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.53, 0.52)",
+        "CardIllustrationZoom": "1.1",
+        "IllustrationFocus": "Vector2(0.5, 0.71)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "fe8bec41eb85bbf5e816367589d61d04e70762d588a0f66f7404276e28ec85fe"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ee08_return_blade.tres",
+      "illustration": "assets/portraits/illustrations/f3_irondervish.png",
+      "frames": "res://assets/donor-units/f3_irondervish/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_irondervish/frames.tres\" id=\"frames\"]\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"enemy_ee08_return_blade\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.7\n",
+      "cropSource": "src/Content/UnitPortraitDefinition.cs",
+      "cropReason": "No existing same-identity bound portrait; retain exported default crop parameters without local tuning.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.4)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.32)",
+        "IllustrationZoom": "1"
+      },
+      "usesDefaultCrop": true,
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "eb3e017b7852e320097b973330355ab53951b8310e17b99a9e595c37a2571eba"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ee09_swap_envoy.tres",
+      "illustration": "assets/portraits/illustrations/f2_spellthief.png",
+      "frames": "res://assets/donor-units/f2_spellthief/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" format=3]\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"script\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f2_spellthief/frames.tres\" id=\"frames\"]\n[resource]\nscript = ExtResource(\"script\")\nStableId = \"enemy_ee09_swap_envoy\"\nFrames = ExtResource(\"frames\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.7\n",
+      "cropSource": "content/portraits/heroes/hero_hc09_breach_scribe.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.53, 0.25)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "d374f354e770827cfb775df4aaf3b1567cd7a204fa4a3a1cb042d57c0ff8df57"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_es01_piercing_crossbow.tres",
+      "illustration": "assets/portraits/illustrations/f1_ranged.png",
+      "frames": "res://assets/donor-units/f1_ranged/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_ranged/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_es01_piercing_crossbow\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc01_crossbow.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.25)",
+        "IllustrationZoom": "1.15"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "17baf35c6ae0aedf2d5c55d913aef230617ecd0551f035d3122b0fc83346e69c"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_es04_prism_caster.tres",
+      "illustration": "assets/portraits/illustrations/f3_dunecaster.png",
+      "frames": "res://assets/donor-units/f3_dunecaster/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_dunecaster/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_es04_prism_caster\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc05_tide_caster.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.62, 0.32)",
+        "CardIllustrationZoom": "1.6",
+        "IllustrationFocus": "Vector2(0.5, 0.22)",
+        "IllustrationZoom": "1.1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "832a2b14301eb105ec97a1798af0515826b8be3a9321ade99c407e4b569775d7"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_hexer.tres",
+      "illustration": "assets/portraits/illustrations/f3_dunecaster.png",
+      "frames": "res://assets/donor-units/f3_dunecaster/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f3_dunecaster/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_hexer\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc05_tide_caster.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.62, 0.32)",
+        "CardIllustrationZoom": "1.6",
+        "IllustrationFocus": "Vector2(0.5, 0.22)",
+        "IllustrationZoom": "1.1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "65ddeb81bdba0ca16c3a41bceaa3c0beda888d45dd62ba734ef32530cc16b960"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ice_blade.tres",
+      "illustration": "assets/portraits/illustrations/f6_freeblade.png",
+      "frames": "res://assets/donor-units/f6_freeblade/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_freeblade/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_ice_blade\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc22_dodge_assassin.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.25)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "3ab234d763dd7699cfe007d244a5f1dd8139cd69b743b1b73faedd695371776e"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_ice_hawker.tres",
+      "illustration": "assets/portraits/illustrations/f6_frostbitehawker.png",
+      "frames": "res://assets/donor-units/f6_frostbitehawker/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f6_frostbitehawker/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_ice_hawker\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 2\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc23_frost_historian.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.34)",
+        "IllustrationZoom": "1.15"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "f051645946bffad5a5798aa1a7d14d09acf7e1c13251edc5410949569f1fa3ec"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_resistance_dummy.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "frames": "res://assets/donor-units/f5_tank/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_tank/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_resistance_dummy\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.8\nOffsetRatio = Vector2(0, 0.04)\n",
+      "cropSource": "content/portraits/heroes/hero_hc14_stone_fist.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.57, 0.46)",
+        "CardIllustrationZoom": "1.1",
+        "IllustrationFocus": "Vector2(0.5, 0.42)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "886dda31fe5b9d2df0378d42589a29d7d3a2e2df4442531a4681fce5c9f94e27"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_rust_guard.tres",
+      "illustration": "assets/portraits/illustrations/f1_tank.png",
+      "frames": "res://assets/donor-units/f1_tank/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f1_tank/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_rust_guard\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.9\nOffsetRatio = Vector2(0, 0.05)\n",
+      "cropSource": "content/portraits/heroes/hero_hc15_shield_grower.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.32)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.27)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "db9c9c6c1c33f71010cd2495dd68a41b85ba0e7815a355304dd822346d2ca71f"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_scale_brute.tres",
+      "illustration": "assets/portraits/illustrations/f5_tank.png",
+      "frames": "res://assets/donor-units/f5_tank/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_tank/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_scale_brute\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.8\nOffsetRatio = Vector2(0, 0.04)\n",
+      "cropSource": "content/portraits/heroes/hero_hc14_stone_fist.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.57, 0.46)",
+        "CardIllustrationZoom": "1.1",
+        "IllustrationFocus": "Vector2(0.5, 0.42)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "ad8ce2c99cdc398458c3c25a06a1506cf6a5ecf3741f59e3d3d582751826816f"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_shadow_boss.tres",
+      "illustration": "assets/portraits/illustrations/boss_shadowlord.png",
+      "frames": "res://assets/donor-units/boss_shadowlord/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/boss_shadowlord/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_shadow_boss\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.45\nOffsetRatio = Vector2(0, 0)\n",
+      "cropSource": "src/Content/UnitPortraitDefinition.cs",
+      "cropReason": "No existing same-identity bound portrait; retain exported default crop parameters without local tuning.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.5, 0.4)",
+        "CardIllustrationZoom": "1.2",
+        "IllustrationFocus": "Vector2(0.5, 0.32)",
+        "IllustrationZoom": "1"
+      },
+      "usesDefaultCrop": true,
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "d3a7f0544d5970b9d16e1a632360819d5a62c4f8ba32b9e45d5060fc89efa357"
+    },
+    {
+      "portrait": "content/portraits/enemies/enemy_wyrm.tres",
+      "illustration": "assets/portraits/illustrations/f5_drogon.png",
+      "frames": "res://assets/donor-units/f5_drogon/frames.tres",
+      "previousText": "[gd_resource type=\"Resource\" script_class=\"UnitPortraitDefinition\" load_steps=3 format=3]\n\n[ext_resource type=\"Script\" path=\"res://src/Content/UnitPortraitDefinition.cs\" id=\"1\"]\n[ext_resource type=\"SpriteFrames\" path=\"res://assets/donor-units/f5_drogon/frames.tres\" id=\"2\"]\n\n[resource]\nscript = ExtResource(\"1\")\nStableId = \"enemy_wyrm\"\nFrames = ExtResource(\"2\")\nAnimationName = &\"idle\"\nFrameIndex = 0\nZoom = 1.6\nOffsetRatio = Vector2(0, 0)\n",
+      "cropSource": "content/portraits/heroes/hero_hc26_ash_returner.tres",
+      "cropReason": "Reuse current same-identity static portrait crop fields.",
+      "cropFields": {
+        "CardIllustrationFocus": "Vector2(0.43, 0.4)",
+        "CardIllustrationZoom": "1.1",
+        "IllustrationFocus": "Vector2(0.45, 0.27)",
+        "IllustrationZoom": "1"
+      },
+      "previousMode": "animation_fallback_with_available_art",
+      "currentResourceSha256": "c7261e920412f1758254ca5c377bf5122ee367b4c567c7bdd46969afb92e9ddd"
+    }
+  ],
+  "verification": {
+    "build": {
+      "result": "pass",
+      "warnings": 0,
+      "errors": 0,
+      "log": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001/build.log"
+    },
+    "portraitContract": {
+      "result": "pass",
+      "portraitResourcesChecked": 129,
+      "fullIllustrationBindings": 122,
+      "genuineAnimationFallbacks": 7,
+      "boardAnimationUnchanged": true,
+      "log": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001/contract.log"
+    },
+    "defaultGameInput": {
+      "result": "functional pass",
+      "scene": "res://scenes/app/GrowthGameRoot.tscn",
+      "pages": [
+        "opening six-choice selection",
+        "heroes and equipment"
+      ],
+      "openingCandidates": 6,
+      "openingIllustrationTexturesChecked": 5,
+      "openingGenuineMissingArtFallbacks": 1,
+      "rosterTexturesChecked": 3,
+      "initialSixIllustratedCandidatesAlsoPassed": true,
+      "actions": [
+        "new run",
+        "select two candidates",
+        "confirm selection",
+        "open army",
+        "close army"
+      ],
+      "hostViewport": [
+        960,
+        540
+      ],
+      "isolatedContentViewport": [
+        1600,
+        900
+      ],
+      "formalSaveUnchanged": true,
+      "nativeDesktopMouseMoved": false,
+      "log": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001/default-game-input.log",
+      "initialInputLog": "design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001/default-game-input-initial.log",
+      "exitDiagnostics": "After success, Godot reports 2 leaked ObjectDB instances and 2 resources in use. These counts match previously recorded growth-test cleanup diagnostics; this fix does not claim an error-free process log."
+    },
+    "allOldCutoutReferencesRemoved": true,
+    "existing32PngHashesUnchanged": true,
+    "exactImportedTextureSourceHashesCurrent": true,
+    "animationFieldsUnchangedFor30NewBindings": true,
+    "noNewArtworkGenerated": true,
+    "userAestheticApproval": false,
+    "fullGameFlowValidated": false
+  },
+  "counts": {
+    "removedOldCutoutOverrides": 57,
+    "addedAvailableIllustrationBindings": 30,
+    "changedPortraitResources": 87
+  }
+}

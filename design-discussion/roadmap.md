@@ -1,5 +1,160 @@
 # 讨论总览
 
+
+2026-10-02 羁绊初选与独有单位：[D69](04-content-validation/decisions.md)记录用户选定的[66 项候选及云顶单体参考索引](04-content-validation/artifacts/content-audit-20261001/trait-shortlist.md)，保留原输入顺序、赛季、中英文名和来源。另记 125 条云顶单单位独有羁绊的版本记录及 11 条共享身份／独立单位群边界，219／317 与初选重合。刀塔霸业、王者模拟战共 88 条已移出参考，总表保留 784 条且原编号不重排；769–805、822–872 不再复用。下一步按这些编号联查对应版本全部成员的数值、技能、装备、站位和实际技能表现，成套设计羁绊与英雄，独有机制也用于 Boss／玩家补充参考。当前完成索引与归属整理，不冒称全部单位详研或实施已经完成。
+
+2026-10-01发现主导的三项设计：[R10-D09／Q10](03-run-mechanisms/journey-and-pressure/route-progression/proposals.md#r10-q10发现主导的探索循环完整设计2026-10-01)记录用户认可发现推动队伍与旅程，并要求完整设计翻开前依据、值得改变计划的发现与发现后调整。DC01–DC06给出分层信息／可信轻线索、按一次探查或回访处理计费、六类发现、战前决定窗口和有限回退供给，附6次遭遇纸面账本；新增核对Mobius开发访谈与Against the Storm官方Wiki，既有培养／后备／败战边界已回读。体验主次已确认，计费／内容／服务仍为Agent候选，总额度／终局／n待衔接。下一步评审三项是否共同支持好奇与转向，尤其未知探查及回访成本，不重新选主体验、不默认钥印关口套餐。未改正式规则或运行，无试玩。
+
+2026-10-01探索与规划体验重审：[R10-D08／Q09](03-run-mechanisms/journey-and-pressure/route-progression/proposals.md#r10-q09先确定探索与规划的体验主次2026-10-01)承接用户要求先明确暗牌翻牌探索还是明牌发育规划，二者均有价值。Agent承认前轮以路线代价修补自由跑图时忽略了发现改变目标的作用，撤下PA01作为默认下一步的推荐；保留地图每局随机、迷雾和轻提示方向，三选二／钥印／次数／关口均未定。已用EX01／EX02比较有限信息、决策时点、意外发现与计划兑现，探索主导仅为Agent倾向。下一步用相同内容的玩家有限视角过程确认核心动机，再确定结构；全知图不作探索体验证明。本轮无新外部机制调研、原型、权威或运行修改。
+
+2026-10-01地图路线取舍纠偏：[R10-D07／Q08补充](03-run-mechanisms/journey-and-pressure/route-progression/proposals.md#d07补充路线代价与空间作用)记录用户接受限定遭遇作为候选，但指出全图自由跑会失去沿途风险与收益取舍。已核对《征服之歌》官方地区／连接／守军生成文档，比较PA01–PA05；Agent撤回把自由全图访问＋统一预算当作足够结构的推荐，优先提议地区连接有前置遭遇、保留环路与已通道路回访。港口短险／长稳及林地补给三路例子为纸面候选，未采用或验证平衡。旧16×16图只保留内容分布，不作为已实现新约束的证明。下一步以实际可达与沿途成本评审路线，再联动随机供给、预算和终战；未改正式规则或运行。
+
+2026-10-01 开局样板接入：用户明确“做一下”，授权直接将六选二样板适配到正式游戏。保留真实候选、属性／技能／成长与羁绊的既有入口和保存流程，使用灰石样板材质、双头像席位与整卡悬停，不加对号。这一屏已接入，定向构建／真实输入通过，原速录制与未定体验项归[界面活动任务](../work-items/active/ui-material-overhaul.md)；此前先改网页的建议不再是当前执行路线，其他主流程暂不扩展。
+
+2026-10-01 UI 样板交付：[D66](04-content-validation/decisions.md)记录用户对开局六选二局部动效的正向反馈，以及对整体素材偏素、不够好看的判断。用户随后明确“先把这个样板做好”，已交付[六选二整屏视觉与交互状态](04-content-validation/artifacts/main-flow-interaction/opening-sample/README.md)，含专用背景、灰石卡框、实体图标、双席位、三种状态对照与动态录制，更新原 Sites 项目。当前仅为开局视觉样板，其他主流程仍属上一阶段交互稿；浏览器正确性不扩大为用户观感认可或 Godot 接入。随后按用户反馈，将悬停改为外框与立绘整卡统一缩放，去掉重复的选中对号，保留高亮与席位。用户随后指出样板遗漏既有词条、技能图标及单位卡阅读逻辑；现稿不能作为功能完整的实装规格。下一步先恢复现有卡的完整信息与交互状态，再校准视觉和决定扩展；当前只完成核对与边界澄清，未开始 Godot 接入。
+
+2026-10-01随机大陆与终战条件：[R10-D06／Q08](03-run-mechanisms/journey-and-pressure/route-progression/proposals.md#r10-q08随机大陆终战资格与行动限制2026-10-01)记录用户明确8×8偏小、每局地图随机，并要求共同考虑Boss分布、发育空间、资格／钥匙、行动限制及地图外终战。16×16可换种子示意图已给出，三选二区域Boss、地图外终战及按遭遇计费的行动预算为Agent候选；n、局长、预算和终战模式均未获采用。生成校验区分几何可达与真实战力／购买力，6个样例的输入／连通检查不等于随机平衡完成。下一步评价资格过程与压力方式，再定规模和内容配比；Q07固定小地图保留为内容例子，无倒计时不再是当前前提。只更新讨论与图示，未接入Godot或改正式规则。
+
+2026-10-01 羁绊效果检索（历史全库；当前范围以 2026-10-02 D69 为准）：依用户对反复漏项的纠正，按目录重写[5 款游戏 872 条版本化羁绊记录](04-content-validation/artifacts/content-audit-20261001/trait-library.md)，保留两列与 001–872 前标；云顶 S1–S18 及七个季中版本 731 条、多多自走棋 37 条、刀塔霸业 37 条、SNKRX 16 条、王者指定历史版本 51 条。补齐目录内职业、单英雄独有与强化专属羁绊，另列版本差异和特殊激活条件；表尾保留逐版本计数与资料边界，不将重复版本数冒称为不同机制数或全部游戏历史全集。已检查编号、排重、字段及来源；此轮仅为 D65 内容重设计补充参考，未采用机制、改变 M03 模型或修改运行／正式规则。
+
+2026-10-01交互稿表现纠偏：[D66](04-content-validation/decisions.md)记录用户否定常驻设计说明与操作解释。已清理主流程稿的说明副文案，以整卡点选、头像席位、勾记／边缘、法术目标连接及局部动效表达状态；修正卡片裁切与选敌信息挤压，保留规则／代价／风险，审阅工具默认收起。当前范围、素材和浏览器输入／录制证据见[稿件入口](04-content-validation/artifacts/main-flow-interaction/README.md)，更新原 Sites 项目，未接入 Godot；最终观感待用户评价。
+
+2026-10-01 通用遗物逻辑接入：[D68](04-content-validation/decisions.md)承接用户“直接接入”及“图标先不做”的明确范围。25 项逻辑／独立场景已完成，24 项进入成长供给；入场能力重复因无当前受益能力而暂不供给。战后装备使用可配置单项测试池；规则、事务及隔离真实输入通过，效果风格／数值／图标待用户。下一入口为[效果清单](../gameplay-design/generic-relics.md)与[活动任务](../work-items/active/generic-relic-integration.md)，不据此冻结整局推进或宣称整体抉择已重设计。
+
+
+2026-10-01完整迷雾大陆稿：[R10-D05／Q07](03-run-mechanisms/journey-and-pressure/route-progression/proposals.md#r10-q07雾冠边境8×8奇幻大陆完整地图稿2026-10-01)承接用户要求完整地图与轻量提示。已画8×8雾冠边境、填充64格用途、六种地貌、四个出生候选，补齐揭雾／通行／交战、固定供给、普通失败、Boss结束、地方关系与三条四邻路线；交互图、地图数据和截图归R10既有专题。数量推断不作为本稿核心；无探索体力／倒计时、回访固定库存等均为Agent待评审提案，与旧T05和线性败战续行的差异已列明。验证只覆盖设计数据和选格显示，不代表平衡或试玩通过；下一步根据用户对整张地图和逐格内容的反馈修订。未改运行和正式规则。
+
+2026-10-01完整主流程交互稿：[D66 补充](04-content-validation/decisions.md)扩大产出为完整交互稿，保留当前主流程功能并排除实验室／体验／预览等开发界面，未要求本轮实际删除工程。已交付[20 页可点击初稿及页面／状态／功能映射](04-content-validation/artifacts/main-flow-interaction/README.md)，重点解决三选一同屏、法术与工坊分区及跨页返回关系。浏览器核查与限制随稿保存；不是 Godot 实现或最终美术，下一步评审完整主流程和页面职责。R10／D65 的具体推进与内容仍可变，不以交互稿冻结旧地图或示例数值。
+
+2026-10-01迷雾棋盘方向：[R10-D04／Q06](03-run-mechanisms/journey-and-pressure/route-progression/proposals.md#r10-q06有提示的迷雾棋盘探索2026-10-01)记录用户认为世界旅行范围过大，转向单局`n×n`迷雾棋盘、随机起点、逐格探索和辅助推断；下方Q05整套旅行发散与其下一步不再是当前入口。已定点核对Dragonsweeper、Desktop Dungeons及尚未正式发售的Dungeon Sweeper一手介绍，整理发现／打通分离、少数提示关系、阵容需求选路、局部布局、有限节奏与软叙事候选。下一步围绕一张小棋盘的连续选择核对线索、通路与成长关系，继续讨论探索代价、内容密度和终局；`n`、邻接、翻开触发和Boss条件均未定，未制作原型、修改正式规则或运行实现。
+
+2026-10-01通用遗物方向修正：[D67](04-content-validation/decisions.md)明确大部分遗物可以独立单位设计，优先从成熟作品收集机制、做必要适配；效果可先完整制作，产物通过配置池连接，单项已有装备足以作为初始测试池。已整理[四作 24 项参考与接口边界](04-content-validation/artifacts/content-audit-20261001/relic-library.md)，修正“当前配套未齐就整个效果留白”的过宽判断。具体条目与示例参数未采用，未改运行或权威；下一步继续扩充可复用通用机制，并将已选机制与内容池分开实现，不冻结现有英雄名单或 15 节点验证流程。
+
+
+2026-10-01伙伴冒险发散：[R10-D03／Q05](03-run-mechanisms/journey-and-pressure/route-progression/proposals.md)记录用户以路飞式旅程提出地图、随机出生、地域招募、往返结伴与世界Boss终局的候选方向。已核对Unicorn Overlord、Battle Brothers历史开发日志、Wartales及Legion TD 2官方材料，展开J01–J08旅行、C01–C05伙伴、F01–F04终局；[G01-D05／Q04](01-global-boundaries/battlefield-experience/proposals.md)展开BT01–BT10非歼灭目标，明确纯自动边界与新增任务AI依赖。当前是发散与示意旅程，未采用整套世界／供给／任务规则，也未实施；下一步依据用户兴趣组合连续路线，检查起点可达性、成长投入、回访价值、失败与终局收束，不默认大地图、无限刷取、实时调兵或既有三区。
+
+2026-10-01整套 UI 规划：[D66](04-content-validation/decisions.md)记录用户对单位三选一滚屏、选敌／法术临时布局及素材重复的反馈，明确先梳理功能布局和完整视觉体系，再做重石板／碎屑与边缘光效。[Q25／UI15](04-content-validation/content-outline.md#ui15整套-ui-的功能布局与视觉体系规划2026-10-01agent-建议)建议先做页面地图及单位抉择／选敌／战前法术三个真实内容布局样板，再用选择与管理两类整屏样板建立素材家族，之后接入和动效。已核对当前结构、既有静图和官方导航指导，未制作／接入；具体布局未获采用。下一步承接用户反馈，R10／D65 的流程与内容仍可变化，不冻结当前三选节点或工坊长表单。
+
+2026-10-01 内容清理与重设计：用户以 [2.3-D65](04-content-validation/decisions.md)要求低完成度内容留白、遗物优化／退役，并明确升阶英雄三选一在内的整体抉择全部重设计。已移除 19 项模板升阶收益、将 6 件遗物退出成长普通供给，拆分升阶过程／可选收益／常驻展示／提交后表现事件。[新稿与完整待办](04-content-validation/artifacts/content-audit-20261001/redesign.md)是下一恢复入口；新抉择配方尚未采用或接入，不以清理通过代替完整重设计验收。
+
+2026-10-01整局进程重启：[R10-D02／Q04](03-run-mechanisms/journey-and-pressure/route-progression/proposals.md)承接用户要求从零思考“战斗—三选一”以外的整局推进，并将环境／软叙事和玩法过程共同设计。R10此前暂缓由此恢复，O01–O19／NL01–NL09／X01–X02均未选定；G03体验目标、R11最新败战续行与此前撤回的区域倒推已核对。补查Monster Train、DD2、Loop Hero官方材料，形成进程关系比较与一段明确标为假设的连续过程。下一步是从开局到终局的联合流程稿，比较不同计划、关键件缺席与成熟阵容兑现；本轮未选择新世界、地图、任务系统或数值，未改变运行／正式规则。P01环境讨论沿此回接，不再单独先定故事或按旧节点配天气。
+
+2026-10-01牧师光柱：[P01-D41／S74](02-foundation-models/combat-presentation/evidence.md)承接用户要求牧师法杖在受击敌人身上降下光柱。HC18／HC19／MX34已绑定，保留原投射伤害规则；用户接受动作方向但指出初版特效丑。当前仅修通透暖白光芯／淡金外晕、脚点面与碎光，两名正式牧师原速6.030秒及实际输入、预览检查通过；[材质前后对照与边界](../outputs/ranged-styles-20261001/README.md)。新材质待用户，恢复归既有远程攻击活动任务；原规则一致性证据保留。
+
+2026-10-01内容审查：[成长征程审查](04-content-validation/artifacts/content-audit-20261001/README.md)核对默认入口26英雄、14矩阵羁绊39档、6装备、15遗物及征程抉择。确认4件士兵遗物无合法对象、冰系装备接口分裂、15档供给不可达、19项升阶为通用开场小盾；另记录物品配套、奖励时点、事件与节点竞争不足。仅静态审查与讨论记录，未改游戏或确认新方案；后续先处理内容一致性与可达性，再补机制和供给，最终强弱／体验待验证。
+
+2026-10-01环境软叙事：[P01-D40／S75／A05](02-foundation-models/combat-presentation/proposals.md)承接用户认可雨雪雷雨样板，并希望环境随旅程传达可忽略的背景故事。用户随后明确现有内容是临时实现，禁止据此倒推；已撤回以现有三区／炉塔为起点的推荐，保留历史记录。当前从期望体验、玩家身份、世界因果和旅程意义独立构思，再组织环境表达。StS创作者访谈与GDC方法仍是参考；新世界观、内容及实施未获采用，运行时与正式规则未改。
+
+2026-10-01远程普攻表现：[P01-D39／S73](02-foundation-models/combat-presentation/evidence.md)记录用户要求参考《元气骑士》并明确只改与单位匹配的表现、保留伤害规则。新增11类共享资源、60份定义显式绑定，五组正式单位与预览真实输入／规则一致性检查通过；[前后原速视频及边界](../outputs/ranged-styles-20261001/README.md)。新效果观感待用户评价，恢复归既有远程攻击活动任务。
+
+2026-10-01背景天气：[P01-D38／S72](02-foundation-models/combat-presentation/evidence.md)记录独立雨／雪／雷雨背景的依据和实现。共享生产场景、静态美术参数与原生天气预览已接入，不增加领域天气；构建、隔离真实输入、实例隔离及三段约9秒原速记录见[结果](../outputs/environment-weather-20261001/README.md)。正式默认晴天，新效果观感待用户评价。
+
+2026-10-01立绘引用纠漏：用户指出多个页面仍显示旧图，已查出默认成长模式复用的57份matrix／growth肖像保留旧CardIllustration，现统一改为读取正式新PNG，并补齐已有同身份图片的敌人／士兵绑定。默认新局六选二与英雄装备页实际输入、Texture路径及修前资源文本归[修正记录](04-content-validation/artifacts/portrait-rollout-20260930/runtime-reference-fix-20261001.json)，既有肖像检查覆盖全部目录，动画与正式存档保持。下方9月30日接入完成只覆盖旧英雄目录，实际恢复状态以本条及[立绘任务](../work-items/active/unit-anime-illustrations.md)为准。
+
+2026-10-01光束层次：[P01-D37／S71](02-foundation-models/combat-presentation/evidence.md)记录向阳地表降低提亮、共享三层柔光横截面及HUD光影隔离。保持云影／足迹配合；正式真实输入、10秒战斗及约16秒共用场景原速检查完成，[视频与边界](../outputs/courtyard-light-layers-20261001/README.md)。新的明度与光束层次待用户评价。
+
+2026-10-01云影与日光空间配合：[P01-D36／S70](02-foundation-models/combat-presentation/evidence.md)承接用户错位截图及优化授权，从共享地面受光区重建空气光路，保留已认可云团／方向与全局背景。正式真实输入、10秒战斗及约16秒共用环境原速录制见[结果](../outputs/courtyard-light-path-20261001/README.md)。二维近似与实际检查边界已记，新联动观感待用户评价。
+
+2026-10-01全局庭院背景：[P01-D35／S69](02-foundation-models/combat-presentation/evidence.md)记录用户认可当前云影效果并授权全局应用。五个应用根统一庭院、非战斗页重暗罩移除，已通过正式Growth真实页面输入与约8秒原速录制；[截图与视频](../outputs/global-courtyard-20261001/README.md)。已认可shader参数保持，当前全局接入观感待用户评价。
+
+2026-10-01云影细化：[P01-D34／S68](02-foundation-models/combat-presentation/evidence.md)记录去掉固定叶影、四尺度柔软云团及共享透光，保留顶部平行入光和部分落地。低并发构建及正式Run真实输入／暂停验证通过；[10秒正常速度前后视频](../outputs/battle-cloud-detail-20261001/README.md)供用户评价，恢复点归原活动任务。
+
+2026-10-01日光落点修订：[P01-D33](02-foundation-models/combat-presentation/decisions.md)要求顶部入光，部分落在地面。已采用三处不同深度的宽柔收尾及地面受光斑，一束继续贯出；空气／地表共享落点与云遮光，保持平行方向和动态。制作依据与正式Run／独立分层检查见[S67](02-foundation-models/combat-presentation/evidence.md)，10秒原速前后视频见[结果](../outputs/battle-grounded-sunlight-20261001/README.md)，恢复点归原活动任务。仅展示层，观感待用户评价。
+
+2026-10-01云影／光束动态继续修订：[P01-D32](02-foundation-models/combat-presentation/decisions.md)指出上一版仍不够动态。已采用大小云团同向差速移动，共享较小云层控制平行光带中连续移动的透光区域，增强束内流动；保持D31画外照入与平行形状。正式960×540真实输入、约10秒原速录制及实际渲染变化见[S66](02-foundation-models/combat-presentation/evidence.md)和[结果](../outputs/battle-weather-motion-20261001/README.md)，恢复点归原活动任务。仅展示层，新动态观感待用户评价。
+
+2026-10-01平行日光带修订：用户[P01-D31](02-foundation-models/combat-presentation/decisions.md)指出光束像撕裂痕迹，要求从画面外平行照入。已仅修改空气shader为同方向、等宽、柔边光带，移除场内尖头、锥形扩散及窄亮芯，保留共享云影对透光亮度的控制。官方方向光依据、二维适配及正式Run／独立空气形状检查见[S65](02-foundation-models/combat-presentation/evidence.md)，10秒正常速度前后视频与验证限制归[结果](../outputs/battle-parallel-sunlight-20261001/README.md)及[活动任务](../work-items/active/combat-vfx-and-preview.md)。仅展示层，新观感待用户评价。
+
+2026-10-01云影／光束联动修订：用户[P01-D30](02-foundation-models/combat-presentation/decisions.md)指出上一版仍像静态且缺少配合。已增强中央云影的持续右下移动，让同一遮光场控制整束亮度与可见宽度，太阳方向固定；来源、二维适配与当前参数见[S64](02-foundation-models/combat-presentation/evidence.md)。带羁绊栏的正式成长战斗真实输入、约10秒正常速度前后视频与暂停分层对照归[结果](../outputs/battle-light-coherence-20261001/README.md)，恢复点归[活动任务](../work-items/active/combat-vfx-and-preview.md)。保留过暗弃用迭代和此前用户否定的历史，不把时钟检查当作观感认可；仅展示层修订。
+
+2026-10-01正式战斗压暗层定位修复：用户截图暴露常驻羁绊／遗物栏缩进后的蒙版接缝。场地已满屏，两层界面渐变仍锚定BattleScreen；已改挂BattleEnvironment，补验此前实验室未覆盖的正式Run分支。960×540正式入口／真实路线开战／暂停与规则输入、实际覆盖范围及前后截图见[S63补充](02-foundation-models/combat-presentation/evidence.md)和[结果](../outputs/battle-shade-20261001/README.md)，恢复点归[活动任务](../work-items/active/combat-vfx-and-preview.md)。本轮只是展示定位修复，不改变云影方向、业务或场地投影，新观感待用户评价。
+
+2026-10-01庭院云影修订：用户[P01-D29](02-foundation-models/combat-presentation/decisions.md)否定整片阴影往返，明确要求云影。已固定树冠投影与光束轴线，让大尺度柔软云影持续沿右下风向移动，地面／角色／光束共享遮光；去掉正弦折返与周期呼吸。源码研究、方向／规模／分层说明见[S63](02-foundation-models/combat-presentation/evidence.md)，同尺寸正常速度前后各约16秒正式环境录制、8秒正式战斗实输入以及验证限制归[活动任务](../work-items/active/combat-vfx-and-preview.md)和[结果](../outputs/battle-environment-motion-20261001/README.md)。保留展示层范围与被否定的旧树影历史，新版本观感待用户评价。
+
+2026-09-30庭院动态表现修订：用户指出首版视觉接近目标，但缺少呼吸感与丁达尔光效，见[P01-D28](02-foundation-models/combat-presentation/decisions.md)。已在原满屏庭院上分离均匀底图／树冠遮罩，接入实时树影、地表与角色共用受光、带雾丝／浮尘的斜向空气光束；首轮偏弱后调整半影和散射。960×540正式实输入与8.012秒正常速度录制、独立分层及双实例检查完成，来源与验证边界见[S62](02-foundation-models/combat-presentation/evidence.md)及[活动任务](../work-items/active/combat-vfx-and-preview.md)。保持展示层范围，新动态观感待用户评价，首版静态记录保留作历史。
+
+2026-09-30场地样板实施：[P01-D27](02-foundation-models/combat-presentation/decisions.md)明确授权“做一个看看”并以满屏战斗场地替换旧全局背景。首个透光遗迹庭院已接入：正式根场景与BattleScreen共享预制环境，取消常态战斗底格并适配角色明暗，960×540正式实输入、部署点选／拖动和正常速度录制完成；不改变玩法或窗口模式。证据见P01-S61，执行／退出诊断与范围限制归[活动任务](../work-items/active/combat-vfx-and-preview.md)，首个样板观感仍待用户评价。
+
+2026-09-30主流程纠正：用户指出默认入口仍旧Alpha、战后装备／遗物混发，要求选敌低频集中精英／Boss。活动任务已接默认成长新局／继续、R08独立分类奖励及v10恢复；新普通战直接整备，精英选敌，旧v9承诺保留。现有Boss没有完整备选，不伪造选择。默认真实输入验证包括首普通实战、独立领奖／重载、节点自然研究产出及第二场精英法术开战；证据由[活动任务](../work-items/active/opponent-choice-and-prebattle-spells.md)维护。用户所指三选节点／单战的替代外层仍待R10澄清与回接，不将局部整合当作完整主循环收口。
+
+2026-09-30场地美术方向收敛：用户喜欢《征服之歌》的感觉，明确不突出六边形、希望一体化场景并增加光照／光线，提供像素场景透光参考。[D26](02-foundation-models/combat-presentation/decisions.md)记录方向；[S60](02-foundation-models/combat-presentation/evidence.md)原样保存附件并区分静图观察、动态未知与Godot实现能力；[A04](02-foundation-models/combat-presentation/proposals.md)将Agent推荐从灰石哨厅调整为连续像素铺面、场地光影、柔和光束及角色融合的透光遗迹候选。下一步继续细化素材与实际场地构图；房间题材和制作／接入范围未定，未新增运行资源、业务逻辑或新场地体验／性能验收，旧推荐保留为历史。
+
+2026-09-30战斗场地展示层调研：用户要求先多方面研究沉浸感方案，范围不涉及业务逻辑。已核对现有纯色10×6棋盘、正式战斗资源检查截图与单位unshaded材质，回读TFT场地制作／音频、BB地点环境、Riot可读性、Godot渲染及素材授权，并实际查看DD／Hades／Songs官方图库与TFT宣传合图。来源、排除项与静态／动态观察边界见[P01-S59](02-foundation-models/combat-presentation/evidence.md#p01-s59战斗场地展示层调研2026-09-30)；[P01-A04](02-foundation-models/combat-presentation/proposals.md#p01-a04战斗场地的展示层改进2026-09-30待讨论)保留ENV01–ENV10可组合改进、三种生产路线与灰石哨厅候选。下一步承接用户对美术方向和范围的反馈；未制作新场地、试听参考音频、完成动态／输入／性能验收或修改正式规则，旧P01特效授权不扩为场地授权。
+
+2026-09-30单位战斗表现局部接入：用户授权薄暗描边、脚底阴影和真实命中提亮，见P01-D24及[表现活动任务](../work-items/active/combat-vfx-and-preview.md)。构建、命中时序／生命周期和隔离真实暂停输入通过；同一暂停时刻三组静态比较与完整版本原速录制已保存。连续补录出现未定位运行异常，不算稳定性通过；下一步承接描边、阴影和命中力度的用户体验反馈。
+
+2026-09-30选敌与法术首版完成：用户明确下一步实现后，AP03／AP05已接入成长征程普通／精英战，支持比较具体敌阵、压力／收益／失败代价，确认保存后整备；整备“战前法术”直达工坊，护阵／蓄势及新增破阵／压制正式开战一次消费。成长不启用旧Alpha战中指令。v9保持旧已选遭遇，新节点显式选敌，Boss仍固定。构建、专项与960×540真实输入／读档／开战验证通过，证据及退出清理提示见[活动任务](../work-items/active/opponent-choice-and-prebattle-spells.md)。本批规则按授权局部同步，其他AP候选及自然路线平衡仍待讨论／试玩；下条“未实施”保留为授权前历史。
+
+2026-09-30敌人抓手重点确认：[R12-D03](03-run-mechanisms/journey-and-pressure/threat-preview/decisions.md)记录用户明确AP03战前法术／单场投入与AP05具体选敌最有效、创作空间最大，一定要做；AP01可做但影响站位的特色单位较少，常态保持前排承伤和后排远程，其他方案适当辅助。此前Agent的AP01／AP02优先推荐由此更新。[Q03后续](03-run-mechanisms/journey-and-pressure/threat-preview/proposals.md)建议联合展开敌人压力与奖励、法术功能／取得／消耗、选择前情报；候选数量、使用额度及Boss选择权未定。已确认但未合并，未新增运行实施或测试。
+
+2026-09-30剩余立绘优化接入：用户要求继续优化其余32张，已用内置 imagegen 逐张整理描边、发束、衣褶、比例和配色背景，保留此前三张定稿。完整PNG已替换正式路径，相关32份英雄肖像资源沿用Illustration回退，不新增运行逻辑；[前后对照／完整提示词／正式卡面](04-content-validation/artifacts/portrait-rollout-20260930/index.html)及来源已保存。构建、导入、既有肖像检查和25种本轮有绑定外形的960×540正式大小肖像渲染通过，包含一次隔离点击及两处大卡取景修正。最终新图审美待用户反馈，范围与恢复见[立绘活动任务](../work-items/active/unit-anime-illustrations.md)，不记作完整流程验收。
+
+2026-09-29单位卡继续局部优化：按用户提供的 D 左侧卡面整理顶部圆形技能与皮革装备扣、等距同起点的左右属性、底部数值重点；hover 时仅在卡内边缘渐显黑色渐变，中心立绘保留。原外框、名称条本体、立绘和已确认词条符号不改，不新增逐项底板或回蓝值。接入与检查见 [UI 活动任务](../work-items/active/ui-material-overhaul.md)，最终审美与手感仍待用户确认。
+
+2026-09-29单位卡进入实际接入：用户认可最新“原剑＋宽条拖尾”，授权 UI 优化且明确原外框不改。保留原灰石框／名称栏／立绘及向内展开结构，接入彩色物件图标、14 项展示条目与初始／上限法力；不动回蓝机制和战斗 HUD。当前实施与验证结果见 [UI 活动任务](../work-items/active/ui-material-overhaul.md)，此前“仅静态稿”记录作为过程保留，不再代表当前状态。
+
+2026-09-29攻速当前要求明确为“指定原剑＋宽条拖尾”：用户否定下条整枚替换参考形状的执行，黑白图只参考拖尾。已生成[保留原剑的组合稿](04-content-validation/artifacts/unit-card-icon-studies-20260929/physical-refinement.md)，仍是局部形状审稿，透明空隙残留／小尺寸与实机检查尚不能记为通过；未改生产资源。
+
+2026-09-29攻速拖尾再纠偏：用户用黑白参考明确要求成束宽条拖影，否定下条烟雾细丝稿。已直接按用户参考制作[宽条结构局部预览](04-content-validation/artifacts/unit-card-icon-studies-20260929/physical-refinement.md)，旧稿作废为候选、保留失败记录。新稿仍待用户评价，未改游戏资源或验证小尺寸表现。
+
+2026-09-29攻速制作方向确认并补充：用户确认调研方向，且明确可以同时加拖尾。已用内置 imagegen 完成[独立攻速局部稿](04-content-validation/artifacts/unit-card-icon-studies-20260929/physical-refinement.md)：清晰柄根、弧形渐虚剑身、两道顺势淡出轨迹。当前为深底静态稿待评价，非透明生产资源；未改其余图标／名称栏，未做小尺寸与实机验收。下条“仅调研”由本条推进，方向确认不扩为本稿品质认可。
+
+2026-09-29攻速先调研：用户要求上网查证；已实际查看 Blade drag／Quick slash、Brotato 攻速升级图及当前稿，读取 Riot 小图标设计说明，[证据与适配建议见 Q25](04-content-validation/evidence.md#攻速图标定向调研2026-09-29)。区分动作符号与实际属性图标，问题收敛为“静止弯刀＋局部模糊”未表达挥动形变；当前只完成调研，未生成新稿或改运行资源，建议不记为用户认可。
+
+2026-09-29暴击率局部减法：用户指出中央闪电语义无依据，[最新局部稿](04-content-validation/artifacts/unit-card-icon-studies-20260929/physical-refinement.md)已移除闪电并补齐爆发图形中心，其他图标保持；待反馈，未改运行资源。
+
+2026-09-29攻速单项纠偏：用户要求剑身弯曲且越靠近剑尖越虚，否定直剑外加独立拖尾。[局部修订稿](04-content-validation/artifacts/unit-card-icon-studies-20260929/physical-refinement.md)已完成并查看，其他图标／法力展示保持；待用户反馈，未接入运行资源。
+
+2026-09-29单位卡定向收敛：[精修稿](04-content-validation/artifacts/unit-card-icon-studies-20260929/physical-refinement.md)已增强攻速动势，吸血改红／治疗改绿，法强去水晶切面、法力水滴改实心。用户取消单位卡回蓝数值展示，初始法力并入上限为 `n/m`（初始／上限，示例 `20/60`），不删除回蓝机制；见 D53／UI14。当前静态稿待反馈，运行组件尚未替换，下条 21 项审稿已缩减为 16 项。
+
+2026-09-29单位卡图标精修：用户否定上一轮仅换色／薄浮雕的质量，要求攻击及其他图标认真细化。已完成[21 项实物精修稿](04-content-validation/artifacts/unit-card-icon-studies-20260929/physical-refinement.md)，沿用旧符号身份，细化斧刃、柄部、盾面、骨牙与其他材料结构；已移除误混的旧小尺寸示例。当前待稿件反馈，未替换游戏资源、未做实机小尺寸验收；下条原路径稿不再视作候选完成品。
+
+2026-09-29单位卡最新纠偏：D 的实物风格与最新底部名称栏获认可，新造词条图形被否定；用户要求沿用既有图标体系，仅做材质优化。已完成[原 SVG 路径局部预览](04-content-validation/artifacts/unit-card-icon-studies-20260929/native-icon-material-proof.png)，名称栏左侧恢复现用战斧＋22；19 项属性与 2 个技能类别均保持源几何。下一步承接局部材质反馈，不继续另造语义图标，尚未替换运行资源。范围见 [D53](04-content-validation/decisions.md)。下条新稿待评状态由本条更新。
+
+2026-09-29单位卡方向已澄清：用户倾向 **D 战利品挂件**（实体盾牌／药瓶／皮革扣），要求整套图标细节优化，明确否定攻击和生命徽章上多余的交叉剑。[去冗余修订稿与用户裁图](04-content-validation/artifacts/unit-card-icon-studies-20260929/relic-refinement.md)已保存，当前待本稿反馈，未接入正式资源；偏好不等于认可所有图标。下述 D／E／F 待选状态由本条更新。
+
+2026-09-29三张立绘最新：用户采纳角色稿后要求统一配色背景，现已用蓝灰骑士、灰紫共鸣使、灰绿济世医师覆盖完整PNG，沿用Illustration读取和原取景参数。[成图／提示词／正式卡面](04-content-validation/artifacts/portrait-style-20260929/background-study/index.html)已保存；哈希、导入与960×540正式大小肖像读取检查通过，新背景最终观感待反馈。此前角色替换的构建及三次隔离点击证据留在[原接入记录](04-content-validation/artifacts/portrait-style-20260929/outline-pass/runtime-replacement.json)，本轮未重跑交互或新增加载逻辑。
+
+2026-09-29单位卡大胆探索：用户否定 A／B／C 区别太小，要求放开设计。已画 [D 战利品挂件／E 秘法星仪／F 英雄战报](04-content-validation/artifacts/unit-card-icon-studies-20260929/radical-directions.md)，差异覆盖图标本体、字重、技能与装备形体；保持已认可的信息位置，当前待反馈，未接入正式代码或素材。下条首轮选向状态保留为历史。
+
+2026-09-29男性立绘恢复点：用户要求选一名男性尝试优化，[山岳旗手试稿](04-content-validation/artifacts/portrait-style-20260929/mountain-standard/index.html)已生成，待反馈；正式图片尚未替换。
+
+2026-09-29单位卡细节试稿：用户基本认可当前整体结构，要求先画几版词条／图标优化方案。[A 哑光刻印、B 矿物手绘、C 墨线符号](04-content-validation/artifacts/unit-card-icon-studies-20260929/prompts.md)已生成，包含整卡和局部放大；当前等待用户选向，未修改运行代码或替换素材。结构认可不扩为细节品质认可，边界见 D53。
+
+2026-09-29共鸣使替换完成：用户接受衣装逻辑修订并要求替换，正式原图与透明衍生图均已更新，旧图已备份。完成两资源导入、正式卡片／小肖像取景及隔离点击检查；[替换证据](04-content-validation/artifacts/portrait-style-20260929/surge-conductor/replacement.json)明确组件检查边界。济世医师保持此前采纳状态；尚未开始第三张。
+
+2026-09-29共鸣使最新返修：按用户浏览器批注整理服装穿着层次，已保存[衣装逻辑修订稿与对照](04-content-validation/artifacts/portrait-style-20260929/surge-conductor/outfit-comparison.html)。济世医师保持已采纳，共鸣使继续待本张反馈；尚未开始第三张或替换运行素材。
+
+2026-09-29立绘当前恢复点：用户已采纳[济世医师比例修正版](04-content-validation/artifacts/portrait-style-20260929/healer-pilot/after-proportions-v2.png)，要求一张一张来。第二张[共鸣使](04-content-validation/artifacts/portrait-style-20260929/surge-conductor/README.md)已生成并保存对照与提示词，待用户评价本张后再继续，尚未接入运行资源。下方此前比例待评记录已由本次采纳更新。
+
+2026-09-29济世医师后续：用户评价画稿改善，指出人体比例缺陷。已生成[比例修正版与对照](04-content-validation/artifacts/portrait-style-20260929/healer-pilot/proportions.html)，保留画法、调整头身与肩胯腿部关系；下一步评价比例，仍为独立试稿。
+
+2026-09-29立绘最新恢复点：用户认可加强外轮廓后的整套绘法，并授权先优化一张现有立绘。[济世医师试改与前后对照](04-content-validation/artifacts/portrait-style-20260929/healer-pilot/README.md)已生成，通用提示词与完整生成词均已保存。当前待用户评价这张新稿，原立绘与运行引用未替换；认可范围见[D53](04-content-validation/decisions.md)，执行记录见[单位动漫立绘](../work-items/active/unit-anime-illustrations.md)。
+
+2026-09-29单位卡承载修订：最新 [UI14](04-content-validation/content-outline.md) 将技能和 3 个装备位合为顶部一行、统一向下弹入，取消底部装备预留，立绘铺到下沿，底部由姓名条收口。招募操作保持灰石框外下方，属性保持无底板的图标＋数字；加宽、单项提示与真实配装命令不变。输入与实机检查归 [UI 活动任务](../work-items/active/ui-material-overhaul.md)，体验仍待用户确认。下条“底部装备”是被本次纠正的阶段，不再是当前分工。
+
+2026-09-29单位卡最新纠偏：用户继续明确“往里弹”、卡框需要加宽。[UI14](04-content-validation/content-outline.md)现为四组逐项从各边进入并停在框内：左右属性、顶部技能、底部 3 个装备位。取消框外大边距，同步加宽外框与立绘开窗，单项提示、明确选人与配装命令保持；修正初始聚焦滚动裁掉第一排技能的问题。实际输入与取景验证归[活动任务](../work-items/active/ui-material-overhaul.md)，体验待用户确认。此前框外展开及下条整框面板均为被纠正的实施历史，立绘画法仍另行确认。
+
+2026-09-29单位卡接入：用户明确“改一下”，[UI14](04-content-validation/content-outline.md)的满幅／局部出框及常驻核心信息已接入开局候选、招募、英雄与装备／全局军团。次要信息以悬停预览、点击固定的附属面板展开，保留完整属性和实际装备／确认操作；进度与验证见[活动任务](../work-items/active/ui-material-overhaul.md)。未替换尚待确认的立绘小样。下方单卡尚未实施的条目保留为历史阶段，下一步是实际界面体验反馈，画风仍单独确认。
+
+2026-09-29画法收敛：[D53](04-content-validation/decisions.md)记录用户提供琴立绘，明确纠正上一轮金属油亮和头发杂乱。以实际图片为主要画法参考完成一张[修订双卡](04-content-validation/artifacts/portrait-style-20260929/README.md)，减少高光／碎发／碎装饰，保留已认可的满幅和局部出框；当前仍是待反馈小样，未替换游戏素材。下一步确认画法是否贴近该图，再讨论单卡交互，未扩大到全量重绘。
+
+2026-09-29立绘样稿与单位卡新倾向：[D53](04-content-validation/decisions.md)记录首轮四种偏写实及第二轮三种动漫小样均被否定，最新参照明确为《原神》《鸣潮》立绘。使用实际参考图完成两张新[对照样稿](04-content-validation/artifacts/portrait-style-20260929/README.md)，未替换运行素材，待反馈。用户另认可满幅＋局部出框构图，倾向核心信息常驻、其余 hover／点击渐显弹出；[UI14](04-content-validation/content-outline.md)分开记录用户方向与 Agent 交互建议，尚未定字段／时序或改正式组件。下一步是画风反馈与单卡交互方案确认，既有玩法讨论状态保持。
+
+2026-09-29立绘审美反馈：[Q25 / D53](04-content-validation/decisions.md)记录用户认为现有单位身份匹配尚可，但人物单薄、男性普遍美型尖长脸、画风轻浮并与厚重 UI 不协调。已查看代表原图与既有卡框检查图，诊断及下一步候选归[立绘任务](../work-items/active/unit-anime-illustrations.md#2026-09-29造型与画风反馈仅诊断)。女性美女造型可保留，不据此将全部男性改成粗犷壮汉或全面转写实；具体画风与样板未确认，本轮只分析、记录，未生成或替换素材，既有玩法讨论状态不变。
+
+2026-09-28纯自动战斗适配：用户要求结合本项目筛选，明确战中没有抓手。[R12-Q03](03-run-mechanisms/journey-and-pressure/threat-preview/proposals.md)形成AP01–AP10：部署关系、功能配套、战前消耗法术、长期投资、具体选敌、自选加难，以及保留的战前行为预设、任务目标、侦察、试打。Agent推荐前四发挥现有模式，优先讨论新增选敌，沿R13既定方向发展单场条件；战中意图仅作解释，不作即时解题依据。静态核查补入成长法术及真正开战冻结／消费，未运行验证。下一步以同一核心审查具体敌人能被哪些实际选择改变；候选未采用，未新增实施范围。
+
+2026-09-28新增抓手续议：用户提出也可增加抓手，例如“对人可选”，本轮按“对手可选”理解。[R12-Q02](03-run-mechanisms/journey-and-pressure/threat-preview/proposals.md)补入EP11具体PvE选敌（The Bazaar三选一及2026年4月加入配装查看）和EP12任务／战场选择（Into the Breach），分别区别于EP03类别选路与EP07自选加难。历史预览不足与奖励集中反馈保留版本边界；下一步比较选敌前情报、放弃收益、必经考验与长期投入保护。均为调研候选，未采用或新增实施授权。
+
+2026-09-28先调研再决定：用户明确抓手、投入与透题的前述观点只是玩家想法，D64／R12-D02已从Agent过早记录的“确认”纠正为待验证假设；既有D35／R12-D01保持。[R12-Q02证据](03-run-mechanisms/journey-and-pressure/threat-preview/evidence.md)复用并重筛780深记录／106发现记录，补查开发者访谈、GDC、官方历史公告与规则资料，形成EP01–EP10：当回合意图、远期Boss、未知敌池、多路径自动反制、动态对手范围、侦察投入、自选Trial、诅咒风险归属、删除不相容终考及信息可读性。[比较与下一步](03-run-mechanisms/journey-and-pressure/threat-preview/proposals.md)保持候选，未证明统一提前量、自然供给成功率或本项目适用性。下一步先讨论未知程度、必经／自选难题与真实调整成本，再审少量现有遭遇；未新增实施范围。下方同日“确认”条目为历史记录，不再作为采用依据。
+
+2026-09-28难题与透题联动：[R12-D02](03-run-mechanisms/journey-and-pressure/threat-preview/decisions.md)确认敌人难题应同时设计信息披露，预告时点匹配应对抓手的准备周期。羁绊成型前提示／战前提示范围技能是用户举例，不形成一一对应；同一问题可能跨单位、羁绊、遗物、装备和站位解决。下一步在[Q26](04-content-validation/content-outline.md)联合梳理具体难题、解法投入、需要获知的事实和剩余准备机会。分层公开方式及具体提前量未定，未改实现。
+
+2026-09-28抓手优先确认与澄清：[D64](04-content-validation/decisions.md)记录用户要求从玩家抓手出发设计敌人难题，并明确选单位、凑羁绊、拿遗物、拿装备、调站位等各有不同投入难度，需分别看。[Q26展开](04-content-validation/content-outline.md)改以这些构筑／准备选择组织，比较取得、资源／位置、等待、转型损失与机会成本；不限定即时操作，不给类别固定难易排序。下一步逐项梳理具体抓手及其投入，再映射敌人压力；具体数值／可达标准仍待讨论，未新增战中权限、供给制度或实现范围。
+
+2026-09-28敌人与成型关系续议：[Q26补充](04-content-validation/content-outline.md)承接用户对只看自身发育及成型后遭硬克制的担忧。Agent建议区分信息可查、理解强度与每场改阵，保留优势战，让部分遭遇影响局部配置、关键Boss影响沿途准备；成型可因已知短板失败，但不靠无预告／唯一解／临时否定长期投入制造难度。现有贯穿、换位、墙与虫卵提供空间行为基础，尚未证明足以改变自然成长决策；自动攻击不能直接照搬可主动少出牌的高频惩罚。下一步讨论同一核心对不同敌人会改变哪些选择及忽略的代价。仅建议与局部资料核对，未形成新决定或改运行。
+
 2026-09-27最新实施与验证：[成长征程运行包](04-content-validation/artifacts/growth-route/README.md)已完成本次 goal 工程交付：真实 `GrowthGameRoot`、独立地区／遭遇、26单位代表包、成长生产、一次材料升阶＋固定三选一、研究法术、MX01跨战收益及隔离v8存档均已接通，Alpha不变。最终构建0警告0错误，合同与真实工坊输入通过并查看新截图；MX03换目标保层、v7节点续行和满员发现拒载等路径已验证。连续路线结果与限制见[最终验证](04-content-validation/artifacts/growth-route/runtime/final-validation.md)及[活动任务](../work-items/active/growth-and-composition-design.md)。最终平衡与玩家体验仍待手动验收，49名全量重构不属于本 goal。
 
 2026-09-27设计执行（实施前历史）：[首轮产物](04-content-validation/artifacts/growth-route/README.md)当时完成节点成长预算、七职业／七体系49位职责、三种成套样例、连续资源账及公共规则／UI草案。枚举531,441条节点选择，原49和扩展53池各70,000条供给抽样；发现原池高阶三选一短缺、生产源不稳定、避战经营成本与晚来成长窗口等问题并回改方案。当时提出原始基础项每机会4%与材料4份作为起测标尺，尚未接入运行；这些参数后来成为独立成长征程的可调基线，当前状态以上条实施记录为准。完整[分阶段路线](04-content-validation/content-outline.md)保持。

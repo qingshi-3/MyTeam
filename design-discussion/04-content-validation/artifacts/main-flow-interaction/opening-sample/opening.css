@@ -1,0 +1,81 @@
+/* The opening sample owns its art and proportions; other flow screens retain their layout. */
+#myteam-flow .sample-review{display:flex;gap:6px;align-items:center;flex-wrap:wrap;width:100%;padding-top:8px;border-top:1px solid #6f756044;margin-top:7px}
+#myteam-flow .sample-review>span{font-size:12px;color:#b5b7a8;margin-right:4px}
+#myteam-flow .sample-review button{font-size:12px;min-height:28px;padding:3px 9px}
+#myteam-flow .screen[data-page=opening]{height:auto;min-height:540px;aspect-ratio:16/9;grid-template-rows:48px minmax(0,1fr)100px;background:#101920 var(--opening-backdrop) center/cover no-repeat;border:0;border-radius:4px;box-shadow:0 18px 55px #0005;overflow:hidden}
+#myteam-flow .screen[data-page=opening]::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#080f194d,transparent 28%,#070b1110 75%,#090c1370);z-index:-1;pointer-events:none}
+#myteam-flow .screen[data-page=opening]::after{inset:0;border:1px solid #a6a39835;box-shadow:inset 0 0 40px #0006;z-index:9}
+#myteam-flow .screen[data-page=opening] .top{background:transparent;border:0;padding:8px 26px;color:#d5ceba}
+#myteam-flow .screen[data-page=opening] .brand{font-size:14px;letter-spacing:3px;opacity:.8}
+#myteam-flow .screen[data-page=opening] .top button{background:#131b2380;border:1px solid #9f9c8240;box-shadow:none;border-radius:50%;width:29px;height:29px;padding:5px}
+#myteam-flow .screen[data-page=opening] .content{padding:2px 24px 0;gap:0;display:flex;align-items:stretch;justify-content:center;min-height:0}
+#myteam-flow .screen[data-page=opening] .heading{justify-content:center;min-height:68px;margin-bottom:8px;position:relative;flex-shrink:0;align-items:center}
+#myteam-flow .screen[data-page=opening] .heading .copy{flex:0 0 auto;justify-content:center}
+#myteam-flow .screen[data-page=opening] .heading::before,#myteam-flow .screen[data-page=opening] .heading::after{content:"";width:75px;height:1px;background:linear-gradient(90deg,transparent,#c0b49690)}
+#myteam-flow .screen[data-page=opening] .heading::after{transform:rotate(180deg)}
+#myteam-flow .screen[data-page=opening] .heading h2{font:500 clamp(27px,3.4cqw,48px)/1.1 "Songti SC","Noto Serif SC",serif;letter-spacing:.2em;margin-left:.2em;color:#f0e5cd;text-shadow:0 3px 10px #000,0 0 25px #ddca9a25}
+#myteam-flow .screen[data-page=opening] .opening{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;align-items:center;flex:0 0 auto;padding:0;margin:0;perspective:1200px}
+#myteam-flow .screen[data-page=opening] .hero-card{aspect-ratio:2/3;height:auto;min-height:0;border:0;background:transparent;box-shadow:none;overflow:visible;isolation:isolate;transition:transform .22s cubic-bezier(.2,.8,.2,1),filter .22s;filter:drop-shadow(0 12px 8px #0009)}
+#myteam-flow .screen[data-page=opening] .hero-card::after{display:none}
+#myteam-flow .screen[data-page=opening] .hero-card .stone-frame{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;object-fit:contain}
+#myteam-flow .screen[data-page=opening] .hero-card .portrait{inset:10% 9% 26%;background:radial-gradient(ellipse at 50% 30%,var(--hero-wash,#527087) 0%,#111d27 77%);border-radius:12% 12% 2% 2%;overflow:hidden;z-index:0}
+#myteam-flow .screen[data-page=opening] .hero-card .portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#121a2470,transparent 35%);pointer-events:none}
+#myteam-flow .screen[data-page=opening] .hero-card .portrait img{width:150%;height:125%;max-width:none;position:absolute;left:-25%;top:0;object-fit:cover;object-position:50% 12%;filter:drop-shadow(0 7px 6px #0007);transform:translateY(0) scale(1);transition:transform .3s ease}
+#myteam-flow .screen[data-page=opening] .hero-card[data-hero=mx01] .portrait img{width:135%;height:115%;left:-30%;object-position:65% 54%}
+#myteam-flow .screen[data-page=opening] .hero-card[data-hero=mx03] .portrait img{object-position:54% 13%}
+#myteam-flow .screen[data-page=opening] .hero-card[data-hero=mx02] .portrait img{width:130%;height:115%;left:-20%;object-position:55% 40%}
+#myteam-flow .screen[data-page=opening] .hero-card:hover{transform:translateY(-7px) scale(1.04);filter:drop-shadow(0 18px 9px #000b);z-index:7}
+#myteam-flow .screen[data-page=opening] .hero-card:hover .portrait img{transform:none}
+#myteam-flow .screen[data-page=opening] .hero-card.chosen{transform:translateY(-9px);filter:drop-shadow(0 14px 8px #000a)}
+#myteam-flow .screen[data-page=opening] .hero-card.chosen:hover{transform:translateY(-9px) scale(1.04)}
+#myteam-flow .screen[data-page=opening] .hero-card.chosen .stone-frame{filter:drop-shadow(0 1px 1px #e0c98b) drop-shadow(0 0 8px #d6ae4b35)}
+#myteam-flow .screen[data-page=opening] .hero-card.chosen::before{content:"";position:absolute;inset:12% 6% 9%;border-radius:4px;box-shadow:0 0 15px #d2b36055;z-index:-1}
+#myteam-flow .screen[data-page=opening] .hero-card.unavailable{filter:saturate(.7) brightness(.76) drop-shadow(0 9px 8px #0009)}
+#myteam-flow .screen[data-page=opening] .hero-card.unavailable:hover{transform:none}
+#myteam-flow .screen[data-page=opening] .hero-card .card-select{inset:4% 3%;z-index:4;border:0;box-shadow:none;background:transparent!important;border-radius:12px;width:auto;height:auto;opacity:1;padding:0}
+#myteam-flow .screen[data-page=opening] .hero-card .card-select:disabled{opacity:1}
+#myteam-flow .screen[data-page=opening] .hero-card .card-info{inset:75% 12% auto;gap:1px;z-index:3;align-items:center;color:#f2e6cf;text-shadow:0 2px 2px #000}
+#myteam-flow .screen[data-page=opening] .hero-card h3{font:500 clamp(13px,1.46cqw,23px)/1.2 "Songti SC","Noto Serif SC",serif;letter-spacing:.02em;margin:0;white-space:nowrap}
+#myteam-flow .screen[data-page=opening] .hero-card .facts{display:flex;width:100%;justify-content:space-between;gap:2px;padding:0;border:0;color:#e8dfd0}
+#myteam-flow .screen[data-page=opening] .hero-card .facts span{font:500 clamp(11px,1.25cqw,18px)/1.1 Georgia,serif;gap:2px;display:flex;align-items:center;font-variant-numeric:tabular-nums}
+#myteam-flow .screen[data-page=opening] .hero-card .facts svg{width:11px;height:11px;color:#e0c486;flex-shrink:0;stroke-width:1.8}
+#myteam-flow .screen[data-page=opening] .hero-card .facts span:last-child svg{color:#dd9b87}
+#myteam-flow .screen[data-page=opening] .hero-card .card-traits{inset:auto 0 -20px;justify-content:center;gap:4px;pointer-events:auto;z-index:4;white-space:nowrap}
+#myteam-flow .screen[data-page=opening] .opening-trait{color:#c7c4b5;font-size:11px;display:flex;gap:3px;align-items:center;text-shadow:0 2px 3px #000}
+#myteam-flow .screen[data-page=opening] .opening-trait svg{width:11px;height:11px;color:#aca991}
+#myteam-flow .screen[data-page=opening] .opening-trait+.opening-trait{border-left:1px solid #8e8e7760;padding-left:5px}
+#myteam-flow .screen[data-page=opening] .hero-card .card-details{top:10%;right:11%;width:23px;height:23px;min-height:0;border-radius:50%;background:#15212ee8;border:1px solid #c6b58a8c;color:#eee1bf;z-index:5;box-shadow:0 2px 4px #0008;padding:0}
+#myteam-flow .screen[data-page=opening] .hero-card .card-details svg{width:13px;height:13px}
+#myteam-flow .screen[data-page=opening] .hero-card .stat-object{width:clamp(13px,1.35cqw,22px);height:clamp(13px,1.35cqw,22px);object-fit:contain;filter:drop-shadow(0 1px 1px #0008)}
+#myteam-flow .screen[data-page=opening] .seat[data-seat=mx01] img{object-position:67% 51%}
+#myteam-flow .screen[data-page=opening] .foot{background:linear-gradient(180deg,transparent,#080e17aa);border:0;padding:5px 30px 13px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
+#myteam-flow .screen[data-page=opening] .foot>.status{width:auto;order:0;min-height:0;flex-basis:auto}
+#myteam-flow .screen[data-page=opening] .foot>button:first-child{justify-self:start;padding:10px;color:#d0c7b4;font-size:13px;min-height:36px}
+#myteam-flow .screen[data-page=opening] .selection-tray{gap:10px;position:relative}
+#myteam-flow .screen[data-page=opening] .selection-tray::before,#myteam-flow .screen[data-page=opening] .selection-tray::after{width:40px;background:linear-gradient(90deg,transparent,#a2997366)}
+#myteam-flow .screen[data-page=opening] .selection-tray::after{transform:rotate(180deg)}
+#myteam-flow .screen[data-page=opening] .seat{width:70px;height:70px;background:#101820;border:0;box-shadow:inset 0 3px 12px #000;border-radius:50%;overflow:visible;padding:12px;color:#6e7c83}
+#myteam-flow .screen[data-page=opening] .seat::after{content:"";position:absolute;inset:-3%;background:var(--opening-ring) center/contain no-repeat;pointer-events:none}
+#myteam-flow .screen[data-page=opening] .seat img{position:absolute;left:17%;top:17%;border-radius:50%;object-position:50% 17%;background:radial-gradient(#3b5365,#101922);width:66%;height:66%;filter:drop-shadow(0 1px 3px #000)}
+#myteam-flow .screen[data-page=opening] .seat.filled{box-shadow:0 0 0 1px #d4b370,0 0 20px #d4b37030}
+#myteam-flow .screen[data-page=opening] .seat.filled::before{content:"×";position:absolute;z-index:2;bottom:0;right:-1px;background:#202b33;border:1px solid #c4b28a;color:#eee0c1;border-radius:50%;width:18px;height:18px;font-size:15px;line-height:15px}
+#myteam-flow .screen[data-page=opening] .seat svg{width:22px;height:22px;opacity:.65}
+#myteam-flow .screen[data-page=opening] .foot>button.primary{justify-self:end;min-width:0;width:180px;height:61px;min-height:0;background:var(--opening-button) center/100% 100% no-repeat;border:0;box-shadow:none;font:500 19px/1 "Songti SC",serif;letter-spacing:6px;padding:0 0 3px 6px;color:#eee3c8;text-shadow:0 2px 2px #000;transition:filter .2s,transform .15s}
+#myteam-flow .screen[data-page=opening] .foot>button.primary:disabled{filter:saturate(.25) brightness(.63);opacity:.7}
+#myteam-flow .screen[data-page=opening] .foot>button.primary:not(:disabled){filter:drop-shadow(0 0 11px #49b9cb35)}
+#myteam-flow .screen[data-page=opening] .foot>button.primary:not(:disabled):hover{filter:brightness(1.12) drop-shadow(0 0 12px #49b9cb50);transform:translateY(-2px)}
+#myteam-flow .screen[data-page=opening] .foot>button.primary:not(:disabled):active{transform:translateY(2px);filter:brightness(.9)}
+#myteam-flow .screen[data-page=opening] .overlay{background:#070c14ae;backdrop-filter:blur(6px);padding:35px;z-index:15}
+#myteam-flow .screen[data-page=opening] .dialog{max-width:600px;width:90%;border:2px solid #847c6b;border-bottom-width:5px;border-radius:7px;background:linear-gradient(135deg,#34424b,#161e27 80%);box-shadow:inset 0 1px #c2b69466,0 28px 70px #000a;padding:22px}
+#myteam-flow .screen[data-page=opening] .dialog-hero{grid-template-columns:44% 1fr;gap:20px;align-items:center}
+#myteam-flow .screen[data-page=opening] .dialog-hero>img{max-height:280px;height:auto;background:radial-gradient(#66879966,transparent 65%);object-fit:contain}
+#myteam-flow .screen[data-page=opening] .dialog h2{font:500 25px/1.25 "Songti SC",serif;color:#eee0c0}
+#myteam-flow .screen[data-page=opening] .dialog p{font-size:14px;line-height:1.65}
+#myteam-flow .screen[data-page=opening] .dialog .metricrow{grid-template-columns:repeat(2,1fr)}
+#myteam-flow .screen[data-page=opening] .dialog .metricrow>div{padding:5px 0;background:transparent;border:0}
+@container (min-width:1150px){#myteam-flow .screen[data-page=opening]{grid-template-rows:70px minmax(0,1fr)145px}#myteam-flow .screen[data-page=opening] .content{padding:0 3cqw}#myteam-flow .screen[data-page=opening] .opening{gap:1.2cqw}#myteam-flow .screen[data-page=opening] .heading{min-height:8cqw;margin-bottom:1cqw}#myteam-flow .screen[data-page=opening] .hero-card .card-info{gap:3px}#myteam-flow .screen[data-page=opening] .hero-card .facts svg{width:1.25cqw;height:1.25cqw}#myteam-flow .screen[data-page=opening] .hero-card .card-details{width:2.3cqw;height:2.3cqw}#myteam-flow .screen[data-page=opening] .hero-card .card-details svg{width:1.3cqw;height:1.3cqw}#myteam-flow .screen[data-page=opening] .opening-trait{font-size:1.15cqw}#myteam-flow .screen[data-page=opening] .hero-card .card-traits{bottom:-2cqw;gap:.6cqw}#myteam-flow .screen[data-page=opening] .seat{width:6.8cqw;height:6.8cqw;padding:1.2cqw}#myteam-flow .screen[data-page=opening] .foot>button.primary{width:18cqw;height:6cqw;font-size:2cqw}#myteam-flow .screen[data-page=opening] .foot{padding:0 4cqw 1.5cqw}}
+@container (max-width:850px){#myteam-flow .screen[data-page=opening]{aspect-ratio:auto;grid-template-rows:48px minmax(0,1fr)100px;overflow:visible}#myteam-flow .screen[data-page=opening] .content{padding:0 24px 40px;min-height:0}#myteam-flow .screen[data-page=opening] .opening{grid-template-columns:repeat(3,minmax(0,1fr));gap:38px 13px}#myteam-flow .screen[data-page=opening] .hero-card h3{font-size:18px}#myteam-flow .screen[data-page=opening] .hero-card .facts span{font-size:14px}#myteam-flow .screen[data-page=opening] .hero-card .card-info{gap:7px}}
+@container (max-width:580px){#myteam-flow .screen[data-page=opening] .opening{grid-template-columns:repeat(2,minmax(0,1fr));gap:38px 8px}#myteam-flow .screen[data-page=opening] .content{padding:0 12px 32px}#myteam-flow .screen[data-page=opening] .top .brand{width:auto}#myteam-flow .screen[data-page=opening] .hero-card h3{font-size:14px}#myteam-flow .screen[data-page=opening] .hero-card .facts span{font-size:12px}#myteam-flow .screen[data-page=opening] .hero-card .card-info{gap:6px}#myteam-flow .screen[data-page=opening] .foot{grid-template-columns:1fr auto;padding:12px;gap:8px}#myteam-flow .screen[data-page=opening] .foot>.status{grid-column:1/-1;grid-row:1;justify-content:center}#myteam-flow .screen[data-page=opening]{grid-template-rows:48px minmax(0,1fr)165px}#myteam-flow .screen[data-page=opening] .foot>button.primary{width:156px;height:52px}#myteam-flow .screen[data-page=opening] .dialog{width:100%;padding:15px}#myteam-flow .screen[data-page=opening] .overlay{padding:10px}#myteam-flow .screen[data-page=opening] .dialog-hero{grid-template-columns:1fr}#myteam-flow .screen[data-page=opening] .dialog-hero>img{height:140px;margin:auto}}
+
+#myteam-flow .screen[data-page=opening] .card-details{font:italic 500 15px/1 Georgia,serif}
+#myteam-flow .screen[data-page=opening] .seat-rank{font:400 21px/1 Georgia,serif;color:#81929b50;text-shadow:0 2px 2px #000}

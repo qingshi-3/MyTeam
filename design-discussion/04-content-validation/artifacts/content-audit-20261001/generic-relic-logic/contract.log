@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+
+GENERIC_RELIC_RUN_OK
+GENERIC_RELIC_BATTLE_OK
+GENERIC_RELIC_REPEAT_OK
+GENERIC_RELIC_BOUNTY_OK
+GENERIC_RELIC_CONTRACT_OK definitions=25 icons=blank run=discount-bank-heal-interest-skip-pools battle=conditional-crit-overheal-burn-shred-haste-dodge repeat=entry-death bounty=real-kills-save-retry-once

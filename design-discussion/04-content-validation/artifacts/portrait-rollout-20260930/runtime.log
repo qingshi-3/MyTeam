@@ -1,0 +1,29 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M2 Pro
+
+PORTRAIT_ROLLOUT_RENDER boss_borealjuggernaut texture=res://assets/portraits/illustrations/boss_borealjuggernaut.png
+PORTRAIT_ROLLOUT_RENDER f1_ranged texture=res://assets/portraits/illustrations/f1_ranged.png
+PORTRAIT_ROLLOUT_RENDER f1_sister texture=res://assets/portraits/illustrations/f1_sister.png
+PORTRAIT_ROLLOUT_RENDER f1_sunforgelancer texture=res://assets/portraits/illustrations/f1_sunforgelancer.png
+PORTRAIT_ROLLOUT_RENDER f1_tank texture=res://assets/portraits/illustrations/f1_tank.png
+PORTRAIT_ROLLOUT_RENDER f2_lanternfox texture=res://assets/portraits/illustrations/f2_lanternfox.png
+PORTRAIT_ROLLOUT_RENDER f2_melee texture=res://assets/portraits/illustrations/f2_melee.png
+PORTRAIT_ROLLOUT_RENDER f2_spellthief texture=res://assets/portraits/illustrations/f2_spellthief.png
+PORTRAIT_ROLLOUT_RENDER f3_dervish texture=res://assets/portraits/illustrations/f3_dervish.png
+PORTRAIT_ROLLOUT_RENDER f3_dunecaster texture=res://assets/portraits/illustrations/f3_dunecaster.png
+PORTRAIT_ROLLOUT_RENDER f3_general texture=res://assets/portraits/illustrations/f3_general.png
+PORTRAIT_ROLLOUT_RENDER f4_bloodbaronette texture=res://assets/portraits/illustrations/f4_bloodbaronette.png
+PORTRAIT_ROLLOUT_RENDER f4_crawler texture=res://assets/portraits/illustrations/f4_crawler.png
+PORTRAIT_ROLLOUT_RENDER f4_darkspine texture=res://assets/portraits/illustrations/f4_darkspine.png
+PORTRAIT_ROLLOUT_RENDER f4_general texture=res://assets/portraits/illustrations/f4_general.png
+PORTRAIT_ROLLOUT_RENDER f4_mech texture=res://assets/portraits/illustrations/f4_mech.png
+PORTRAIT_ROLLOUT_RENDER f5_drogon texture=res://assets/portraits/illustrations/f5_drogon.png
+PORTRAIT_ROLLOUT_RENDER f5_firebreather texture=res://assets/portraits/illustrations/f5_firebreather.png
+PORTRAIT_ROLLOUT_RENDER f5_general texture=res://assets/portraits/illustrations/f5_general.png
+PORTRAIT_ROLLOUT_RENDER f5_spiritharvester texture=res://assets/portraits/illustrations/f5_spiritharvester.png
+PORTRAIT_ROLLOUT_RENDER f5_tank texture=res://assets/portraits/illustrations/f5_tank.png
+PORTRAIT_ROLLOUT_RENDER f6_crystalbeetle texture=res://assets/portraits/illustrations/f6_crystalbeetle.png
+PORTRAIT_ROLLOUT_RENDER f6_freeblade texture=res://assets/portraits/illustrations/f6_freeblade.png
+PORTRAIT_ROLLOUT_RENDER f6_frostbitehawker texture=res://assets/portraits/illustrations/f6_frostbitehawker.png
+PORTRAIT_ROLLOUT_RENDER f6_general texture=res://assets/portraits/illustrations/f6_general.png
+PORTRAIT_ROLLOUT_COMPLETE count=25 isolated_clicks=1 native_mouse_unchanged=true

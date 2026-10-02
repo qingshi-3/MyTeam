@@ -1,0 +1,134 @@
+{
+  "checks": [
+    "默认体验隐藏审阅工具及说明文案",
+    "点选、席位落定、取消与确认状态一致",
+    "信息按钮不误选，详情与 Esc 可用",
+    "整卡选择与确认招募",
+    "法术预案以目标连接展示，取消保留库存",
+    "真实拖动的源位置、落点与落下反馈",
+    "失败不播放成功选中反馈"
+  ],
+  "errors": [],
+  "metrics": [
+    {
+      "id": "menu",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "opening",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "route",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "recruit",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "opponent",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "prepare",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "spells",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "roster",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "overview",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "production",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "ascension",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "discovery",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "shop",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "event",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "rest",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "battle",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "report",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "reward",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "result",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    },
+    {
+      "id": "settings",
+      "width": 960,
+      "height": 540,
+      "clipped": []
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "reports": [
+    {
+      "seed": 731905,
+      "start": 33,
+      "bosses": [
+        225,
+        253,
+        166
+      ],
+      "startDistances": [
+        12,
+        25,
+        13
+      ],
+      "safeCells": 192
+    },
+    {
+      "seed": 3812329581,
+      "start": 173,
+      "bosses": [
+        200,
+        71,
+        128
+      ],
+      "startDistances": [
+        7,
+        14,
+        17
+      ],
+      "safeCells": 191
+    },
+    {
+      "seed": 3514126056,
+      "start": 196,
+      "bosses": [
+        204,
+        38,
+        240
+      ],
+      "startDistances": [
+        12,
+        12,
+        7
+      ],
+      "safeCells": 193
+    },
+    {
+      "seed": 1367106855,
+      "start": 223,
+      "bosses": [
+        216,
+        108,
+        20
+      ],
+      "startDistances": [
+        9,
+        10,
+        23
+      ],
+      "safeCells": 193
+    },
+    {
+      "seed": 3504119898,
+      "start": 204,
+      "bosses": [
+        109,
+        40,
+        151
+      ],
+      "startDistances": [
+        7,
+        14,
+        10
+      ],
+      "safeCells": 194
+    },
+    {
+      "seed": 1750135793,
+      "start": 50,
+      "bosses": [
+        182,
+        153,
+        129
+      ],
+      "startDistances": [
+        12,
+        13,
+        14
+      ],
+      "safeCells": 188
+    }
+  ],
+  "fit": {
+    "width": 288,
+    "scrollWidth": 288,
+    "outer": 288,
+    "bodyScroll": 288
+  },
+  "errors": [],
+  "scope": "Six illustrative seeds; geometry and isolated browser interactions only. Does not validate combat balance, meaningful route choices, resource sufficiency, or production generation."
+}

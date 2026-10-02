@@ -1,0 +1,286 @@
+{
+  "errors": [],
+  "metrics": [
+    {
+      "id": "menu",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "opening",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -793.5
+        },
+        {
+          "bottom": -15,
+          "right": -639
+        },
+        {
+          "bottom": -15,
+          "right": -484.5
+        },
+        {
+          "bottom": -15,
+          "right": -330
+        },
+        {
+          "bottom": -15,
+          "right": -175.5
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "route",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -571
+        },
+        {
+          "bottom": -15,
+          "right": -296
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "recruit",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -571
+        },
+        {
+          "bottom": -15,
+          "right": -296
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "opponent",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -571
+        },
+        {
+          "bottom": -15,
+          "right": -296
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "prepare",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "spells",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "roster",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "overview",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "production",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "ascension",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "discovery",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -641.671875
+        },
+        {
+          "bottom": -15,
+          "right": -331.34375
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "shop",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -571
+        },
+        {
+          "bottom": -15,
+          "right": -296
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "event",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -433.5
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "rest",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -433.5
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "battle",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "report",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "reward",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": [
+        {
+          "bottom": -15,
+          "right": -571
+        },
+        {
+          "bottom": -15,
+          "right": -296
+        },
+        {
+          "bottom": -15,
+          "right": -21
+        }
+      ]
+    },
+    {
+      "id": "result",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    },
+    {
+      "id": "settings",
+      "width": 960,
+      "height": 540,
+      "bodyHeight": 444,
+      "clipping": [],
+      "candidates": []
+    }
+  ]
+}

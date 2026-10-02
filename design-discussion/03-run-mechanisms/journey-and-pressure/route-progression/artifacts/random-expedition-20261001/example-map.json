@@ -1,0 +1,1807 @@
+{
+  "cells": [
+    {
+      "i": 0,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 1,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 2,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 3,
+      "kind": "wall",
+      "region": 0,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 4,
+      "kind": "event",
+      "region": 0,
+      "name": "淹没书库"
+    },
+    {
+      "i": 5,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 6,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 7,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 8,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 9,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 10,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 11,
+      "kind": "wall",
+      "region": 5,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 12,
+      "kind": "wall",
+      "region": 5,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 13,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 14,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 15,
+      "kind": "wall",
+      "region": 5,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 16,
+      "kind": "recruit",
+      "region": 0,
+      "name": "游侠树屋"
+    },
+    {
+      "i": 17,
+      "kind": "recruit",
+      "region": 0,
+      "name": "兽骑营帐"
+    },
+    {
+      "i": 18,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 19,
+      "kind": "wall",
+      "region": 0,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 20,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 21,
+      "kind": "wall",
+      "region": 0,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 22,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 23,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 24,
+      "kind": "event",
+      "region": 5,
+      "name": "搁浅船骸"
+    },
+    {
+      "i": 25,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 26,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 27,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 28,
+      "kind": "shop",
+      "region": 5,
+      "name": "流亡工坊"
+    },
+    {
+      "i": 29,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 30,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 31,
+      "kind": "wall",
+      "region": 5,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 32,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 33,
+      "kind": "start",
+      "region": 0,
+      "name": "旅队出发地"
+    },
+    {
+      "i": 34,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 35,
+      "kind": "battle",
+      "region": 0,
+      "name": "狼群"
+    },
+    {
+      "i": 36,
+      "kind": "wall",
+      "region": 0,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 37,
+      "kind": "wall",
+      "region": 0,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 38,
+      "kind": "wall",
+      "region": 0,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 39,
+      "kind": "loot",
+      "region": 0,
+      "name": "旅队货箱"
+    },
+    {
+      "i": 40,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 41,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 42,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 43,
+      "kind": "event",
+      "region": 5,
+      "name": "风车田庄"
+    },
+    {
+      "i": 44,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 45,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 46,
+      "kind": "wall",
+      "region": 5,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 47,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 48,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 49,
+      "kind": "loot",
+      "region": 0,
+      "name": "旧王军械"
+    },
+    {
+      "i": 50,
+      "kind": "shop",
+      "region": 0,
+      "name": "妖精集市"
+    },
+    {
+      "i": 51,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 52,
+      "kind": "battle",
+      "region": 0,
+      "name": "狼群"
+    },
+    {
+      "i": 53,
+      "kind": "wall",
+      "region": 0,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 54,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 55,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 56,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 57,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 58,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 59,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 60,
+      "kind": "wall",
+      "region": 5,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 61,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 62,
+      "kind": "wall",
+      "region": 1,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 63,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 64,
+      "kind": "battle",
+      "region": 0,
+      "name": "狼群"
+    },
+    {
+      "i": 65,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 66,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 67,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 68,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 69,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 70,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 71,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 72,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 73,
+      "kind": "wall",
+      "region": 5,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 74,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 75,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 76,
+      "kind": "path",
+      "region": 5,
+      "name": "烬冠高地通路"
+    },
+    {
+      "i": 77,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 78,
+      "kind": "wall",
+      "region": 1,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 79,
+      "kind": "landmark",
+      "region": 1,
+      "name": "星落观台"
+    },
+    {
+      "i": 80,
+      "kind": "camp",
+      "region": 3,
+      "name": "牧歌营火"
+    },
+    {
+      "i": 81,
+      "kind": "battle",
+      "region": 3,
+      "name": "岩甲蟹"
+    },
+    {
+      "i": 82,
+      "kind": "wall",
+      "region": 0,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 83,
+      "kind": "loot",
+      "region": 0,
+      "name": "旧王军械"
+    },
+    {
+      "i": 84,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 85,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 86,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 87,
+      "kind": "path",
+      "region": 0,
+      "name": "寒脊雪岭通路"
+    },
+    {
+      "i": 88,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 89,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 90,
+      "kind": "landmark",
+      "region": 1,
+      "name": "海崖灯塔"
+    },
+    {
+      "i": 91,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 92,
+      "kind": "wall",
+      "region": 1,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 93,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 94,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 95,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 96,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 97,
+      "kind": "loot",
+      "region": 3,
+      "name": "月苔药圃"
+    },
+    {
+      "i": 98,
+      "kind": "wall",
+      "region": 3,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 99,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 100,
+      "kind": "landmark",
+      "region": 3,
+      "name": "星落观台"
+    },
+    {
+      "i": 101,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 102,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 103,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 104,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 105,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 106,
+      "kind": "battle",
+      "region": 1,
+      "name": "巨蛛"
+    },
+    {
+      "i": 107,
+      "kind": "recruit",
+      "region": 1,
+      "name": "铁砧小屋"
+    },
+    {
+      "i": 108,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 109,
+      "kind": "wall",
+      "region": 1,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 110,
+      "kind": "elite",
+      "region": 1,
+      "name": "萤语强敌"
+    },
+    {
+      "i": 111,
+      "kind": "wall",
+      "region": 1,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 112,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 113,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 114,
+      "kind": "camp",
+      "region": 3,
+      "name": "鹿灵泉眼"
+    },
+    {
+      "i": 115,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 116,
+      "kind": "elite",
+      "region": 3,
+      "name": "潮痕强敌"
+    },
+    {
+      "i": 117,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 118,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 119,
+      "kind": "recruit",
+      "region": 1,
+      "name": "兽骑营帐"
+    },
+    {
+      "i": 120,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 121,
+      "kind": "elite",
+      "region": 1,
+      "name": "萤语强敌"
+    },
+    {
+      "i": 122,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 123,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 124,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 125,
+      "kind": "recruit",
+      "region": 1,
+      "name": "游侠树屋"
+    },
+    {
+      "i": 126,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 127,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 128,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 129,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 130,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 131,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 132,
+      "kind": "wall",
+      "region": 3,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 133,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 134,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 135,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 136,
+      "kind": "event",
+      "region": 1,
+      "name": "石像花园"
+    },
+    {
+      "i": 137,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 138,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 139,
+      "kind": "battle",
+      "region": 1,
+      "name": "巨蛛"
+    },
+    {
+      "i": 140,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 141,
+      "kind": "event",
+      "region": 1,
+      "name": "淹没书库"
+    },
+    {
+      "i": 142,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 143,
+      "kind": "wall",
+      "region": 1,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 144,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 145,
+      "kind": "battle",
+      "region": 3,
+      "name": "岩甲蟹"
+    },
+    {
+      "i": 146,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 147,
+      "kind": "wall",
+      "region": 3,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 148,
+      "kind": "wall",
+      "region": 3,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 149,
+      "kind": "wall",
+      "region": 3,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 150,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 151,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 152,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 153,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 154,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 155,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 156,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 157,
+      "kind": "wall",
+      "region": 1,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 158,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 159,
+      "kind": "battle",
+      "region": 1,
+      "name": "巨蛛"
+    },
+    {
+      "i": 160,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 161,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 162,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 163,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 164,
+      "kind": "event",
+      "region": 3,
+      "name": "石像花园"
+    },
+    {
+      "i": 165,
+      "kind": "wall",
+      "region": 3,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 166,
+      "kind": "boss",
+      "region": 3,
+      "name": "海骸船长"
+    },
+    {
+      "i": 167,
+      "kind": "path",
+      "region": 3,
+      "name": "潮痕海岸通路"
+    },
+    {
+      "i": 168,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 169,
+      "kind": "shop",
+      "region": 1,
+      "name": "行商货摊"
+    },
+    {
+      "i": 170,
+      "kind": "wall",
+      "region": 1,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 171,
+      "kind": "loot",
+      "region": 1,
+      "name": "旧王军械"
+    },
+    {
+      "i": 172,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 173,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 174,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 175,
+      "kind": "path",
+      "region": 1,
+      "name": "萤语密林通路"
+    },
+    {
+      "i": 176,
+      "kind": "battle",
+      "region": 3,
+      "name": "岩甲蟹"
+    },
+    {
+      "i": 177,
+      "kind": "loot",
+      "region": 3,
+      "name": "旧王军械"
+    },
+    {
+      "i": 178,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 179,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 180,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 181,
+      "kind": "battle",
+      "region": 4,
+      "name": "豺狼人"
+    },
+    {
+      "i": 182,
+      "kind": "camp",
+      "region": 4,
+      "name": "摆渡人家"
+    },
+    {
+      "i": 183,
+      "kind": "event",
+      "region": 4,
+      "name": "淹没书库"
+    },
+    {
+      "i": 184,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 185,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 186,
+      "kind": "wall",
+      "region": 2,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 187,
+      "kind": "wall",
+      "region": 2,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 188,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 189,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 190,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 191,
+      "kind": "shop",
+      "region": 2,
+      "name": "流亡工坊"
+    },
+    {
+      "i": 192,
+      "kind": "camp",
+      "region": 4,
+      "name": "山民火塘"
+    },
+    {
+      "i": 193,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 194,
+      "kind": "battle",
+      "region": 4,
+      "name": "豺狼人"
+    },
+    {
+      "i": 195,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 196,
+      "kind": "wall",
+      "region": 4,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 197,
+      "kind": "camp",
+      "region": 4,
+      "name": "牧歌营火"
+    },
+    {
+      "i": 198,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 199,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 200,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 201,
+      "kind": "camp",
+      "region": 2,
+      "name": "牧歌营火"
+    },
+    {
+      "i": 202,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 203,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 204,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 205,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 206,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 207,
+      "kind": "wall",
+      "region": 2,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 208,
+      "kind": "recruit",
+      "region": 4,
+      "name": "旅人酒馆"
+    },
+    {
+      "i": 209,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 210,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 211,
+      "kind": "wall",
+      "region": 4,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 212,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 213,
+      "kind": "wall",
+      "region": 4,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 214,
+      "kind": "battle",
+      "region": 4,
+      "name": "豺狼人"
+    },
+    {
+      "i": 215,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 216,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 217,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 218,
+      "kind": "wall",
+      "region": 2,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 219,
+      "kind": "shop",
+      "region": 2,
+      "name": "流亡工坊"
+    },
+    {
+      "i": 220,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 221,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 222,
+      "kind": "battle",
+      "region": 2,
+      "name": "毒蛇"
+    },
+    {
+      "i": 223,
+      "kind": "wall",
+      "region": 2,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 224,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 225,
+      "kind": "boss",
+      "region": 4,
+      "name": "狮鹫领主"
+    },
+    {
+      "i": 226,
+      "kind": "wall",
+      "region": 4,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 227,
+      "kind": "shop",
+      "region": 4,
+      "name": "行商货摊"
+    },
+    {
+      "i": 228,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 229,
+      "kind": "event",
+      "region": 4,
+      "name": "搁浅船骸"
+    },
+    {
+      "i": 230,
+      "kind": "wall",
+      "region": 4,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 231,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 232,
+      "kind": "wall",
+      "region": 2,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 233,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 234,
+      "kind": "camp",
+      "region": 2,
+      "name": "鹿灵泉眼"
+    },
+    {
+      "i": 235,
+      "kind": "recruit",
+      "region": 2,
+      "name": "兽骑营帐"
+    },
+    {
+      "i": 236,
+      "kind": "battle",
+      "region": 2,
+      "name": "毒蛇"
+    },
+    {
+      "i": 237,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 238,
+      "kind": "shop",
+      "region": 2,
+      "name": "妖精集市"
+    },
+    {
+      "i": 239,
+      "kind": "event",
+      "region": 2,
+      "name": "石像花园"
+    },
+    {
+      "i": 240,
+      "kind": "event",
+      "region": 4,
+      "name": "石像花园"
+    },
+    {
+      "i": 241,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 242,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 243,
+      "kind": "loot",
+      "region": 4,
+      "name": "浅湾珍珠"
+    },
+    {
+      "i": 244,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 245,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 246,
+      "kind": "wall",
+      "region": 4,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 247,
+      "kind": "path",
+      "region": 4,
+      "name": "金穗原野通路"
+    },
+    {
+      "i": 248,
+      "kind": "recruit",
+      "region": 2,
+      "name": "旅人酒馆"
+    },
+    {
+      "i": 249,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 250,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 251,
+      "kind": "wall",
+      "region": 2,
+      "name": "山崖／深水"
+    },
+    {
+      "i": 252,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 253,
+      "kind": "boss",
+      "region": 2,
+      "name": "淤泥蛇母"
+    },
+    {
+      "i": 254,
+      "kind": "path",
+      "region": 2,
+      "name": "苇湾河谷通路"
+    },
+    {
+      "i": 255,
+      "kind": "battle",
+      "region": 2,
+      "name": "毒蛇"
+    }
+  ],
+  "start": 33,
+  "bosses": [
+    225,
+    253,
+    166
+  ],
+  "opening": [
+    17,
+    16,
+    50,
+    80,
+    64,
+    52,
+    97
+  ],
+  "hubs": [
+    {
+      "boss": 225,
+      "places": [
+        208,
+        227,
+        192,
+        176,
+        194,
+        240
+      ]
+    },
+    {
+      "boss": 253,
+      "places": [
+        235,
+        219,
+        234,
+        222,
+        236,
+        239
+      ]
+    },
+    {
+      "boss": 166,
+      "places": [
+        119,
+        169,
+        197,
+        181,
+        214,
+        183
+      ]
+    }
+  ],
+  "fromStart": {
+    "0": 3,
+    "1": 2,
+    "2": 3,
+    "4": 15,
+    "5": 14,
+    "6": 13,
+    "7": 12,
+    "8": 13,
+    "9": 14,
+    "10": 15,
+    "13": 18,
+    "14": 19,
+    "16": 2,
+    "17": 1,
+    "18": 2,
+    "20": 16,
+    "22": 12,
+    "23": 11,
+    "24": 12,
+    "25": 13,
+    "26": 14,
+    "27": 15,
+    "28": 16,
+    "29": 17,
+    "30": 18,
+    "32": 1,
+    "33": 0,
+    "34": 1,
+    "35": 2,
+    "39": 10,
+    "40": 11,
+    "41": 12,
+    "42": 13,
+    "43": 14,
+    "44": 15,
+    "45": 16,
+    "47": 22,
+    "48": 2,
+    "49": 1,
+    "50": 2,
+    "51": 3,
+    "52": 4,
+    "54": 8,
+    "55": 9,
+    "56": 10,
+    "57": 11,
+    "58": 12,
+    "59": 13,
+    "61": 17,
+    "63": 21,
+    "64": 3,
+    "65": 2,
+    "66": 3,
+    "67": 4,
+    "68": 5,
+    "69": 6,
+    "70": 7,
+    "71": 8,
+    "72": 9,
+    "74": 13,
+    "75": 14,
+    "76": 15,
+    "77": 16,
+    "79": 20,
+    "80": 4,
+    "81": 3,
+    "83": 5,
+    "84": 6,
+    "85": 7,
+    "86": 8,
+    "87": 9,
+    "88": 10,
+    "89": 11,
+    "90": 12,
+    "91": 13,
+    "93": 17,
+    "94": 18,
+    "95": 19,
+    "96": 5,
+    "97": 4,
+    "99": 6,
+    "100": 7,
+    "101": 8,
+    "102": 9,
+    "103": 10,
+    "104": 11,
+    "105": 12,
+    "106": 13,
+    "107": 14,
+    "108": 15,
+    "110": 19,
+    "112": 6,
+    "113": 5,
+    "114": 6,
+    "115": 7,
+    "116": 8,
+    "117": 9,
+    "118": 10,
+    "119": 11,
+    "120": 12,
+    "121": 13,
+    "122": 14,
+    "123": 15,
+    "124": 16,
+    "125": 17,
+    "126": 18,
+    "127": 19,
+    "128": 7,
+    "129": 6,
+    "130": 7,
+    "131": 8,
+    "133": 10,
+    "134": 11,
+    "135": 12,
+    "136": 13,
+    "137": 14,
+    "138": 15,
+    "139": 16,
+    "140": 17,
+    "141": 18,
+    "142": 19,
+    "144": 8,
+    "145": 7,
+    "146": 8,
+    "150": 12,
+    "151": 13,
+    "152": 14,
+    "153": 15,
+    "154": 16,
+    "155": 17,
+    "156": 18,
+    "158": 20,
+    "159": 21,
+    "160": 9,
+    "161": 8,
+    "162": 9,
+    "163": 10,
+    "164": 11,
+    "166": 13,
+    "167": 14,
+    "168": 15,
+    "169": 16,
+    "171": 18,
+    "172": 19,
+    "173": 20,
+    "174": 21,
+    "175": 22,
+    "176": 10,
+    "177": 9,
+    "178": 10,
+    "179": 11,
+    "180": 12,
+    "181": 13,
+    "182": 14,
+    "183": 15,
+    "184": 16,
+    "185": 17,
+    "188": 20,
+    "189": 21,
+    "190": 22,
+    "191": 23,
+    "192": 11,
+    "193": 10,
+    "194": 11,
+    "195": 12,
+    "197": 14,
+    "198": 15,
+    "199": 16,
+    "200": 17,
+    "201": 18,
+    "202": 19,
+    "203": 20,
+    "204": 21,
+    "205": 22,
+    "206": 23,
+    "208": 12,
+    "209": 11,
+    "210": 12,
+    "212": 18,
+    "214": 16,
+    "215": 17,
+    "216": 18,
+    "217": 19,
+    "219": 21,
+    "220": 22,
+    "221": 23,
+    "222": 24,
+    "224": 13,
+    "225": 12,
+    "227": 16,
+    "228": 17,
+    "229": 18,
+    "231": 18,
+    "233": 20,
+    "234": 21,
+    "235": 22,
+    "236": 23,
+    "237": 24,
+    "238": 25,
+    "239": 26,
+    "240": 14,
+    "241": 13,
+    "242": 14,
+    "243": 15,
+    "244": 16,
+    "245": 17,
+    "247": 19,
+    "248": 20,
+    "249": 21,
+    "250": 22,
+    "252": 24,
+    "253": 25,
+    "254": 26,
+    "255": 27
+  },
+  "seed": 731905
+}

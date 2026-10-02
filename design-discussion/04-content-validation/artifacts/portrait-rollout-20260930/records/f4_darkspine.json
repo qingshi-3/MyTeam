@@ -1,0 +1,16 @@
+{
+  "id": "f4_darkspine",
+  "generated_original": "/Users/qingshi/.codex/generated_images/01a0f0eb-190f-7011-a728-d9727d823dd4/exec-2810548b-0f1e-47be-98fa-f9221f6edde8.png",
+  "before": "/Users/qingshi/Documents/GodotProjects/MyTeam/design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f4_darkspine.png",
+  "after": "/Users/qingshi/Documents/GodotProjects/MyTeam/design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/after/f4_darkspine.png",
+  "prompt": "Use case: stylized-concept style-transfer. Image1 authoritative nonhuman darkspine creature target; image2 adopted healer supplies only bold drawing line hierarchy, controlled volume and quiet background. Repaint creature as refined2D anime game roster illustration. Preserve bulky broad-shouldered dark purple/indigo crystal-armored golem beast, small angular armored head with cyan slit eyes, five prominent swept-back tall cyan-tipped dorsal/shoulder spines, massive clawed forearms, powerful jointed crouched legs and purple crystal joints/cores. Retain low looming stance, pointed armor silhouette and complete creature. Nonhuman throughout; no skin, human face or costume.\nMaterial cleanup is essential: replace many tiny jagged shiny facets and marbled fracture streaks by broad coherent dark-indigo carapace plates, clearly separated by dark overlap shadows. Retain a FEW signature crystal facets at exposed purple joints and luminous blue spine tips. Limited broad highlights only, no countless triangular specular shards or scratch/noise texture. Strong deep near-black tapered outer contours approximately3–5px at1024width, medium structural overlap lines, fine sparse internal lines, matching image2. Readable connected elbows/knees/claws; all five tallest spine tips, hands and feet inside canvas with space. Quiet medium-dark slate gray-blue gradient backdrop, softly lighter behind upper body and deeper edges, restrained foot contact shadow, no scenery, mist, particles, additional aura or symbols. One opaque1024x1536 portrait, not photorealistic or3D.",
+  "tool_mode": "built-in imagegen edit",
+  "visual_review": "Preserved bulky nonhuman golem/beast, indigo plate shell, cyan head slit and five tall blue-tipped spines, purple joint crystals, massive forearms and crouched stance. Removed scratch-like streaks and reduced noisy specular fragmentation; darker contour/overlap hierarchy. Full spine tips, claws and feet visible on quiet slate backdrop. Signature crystal facets intentionally remain at crystal tips/joints.",
+  "before_sha256": "50ea4db8834ae8df0c2c1eb98c18d939b97e3d428dd1f8b3384cd666a259a2e9",
+  "after_sha256": "2422cd2a53af254242c36ef35763136dfdb49610d0327dcb5ee984839466309b",
+  "size": [
+    1024,
+    1536
+  ],
+  "bytes": 2050627
+}

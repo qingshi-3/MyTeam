@@ -1,0 +1,39 @@
+{
+  "cells": 64,
+  "barriers": 9,
+  "interactions": [
+    "G6 updates relationship",
+    "H1 updates finale",
+    "A7 restores opening"
+  ],
+  "checks": [
+    {
+      "viewport": 800,
+      "scheme": "light",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "cells": 64,
+      "overflowingLabels": []
+    },
+    {
+      "viewport": 352,
+      "scheme": "light",
+      "width": 320,
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "cells": 64,
+      "overflowingLabels": []
+    },
+    {
+      "viewport": 800,
+      "scheme": "dark",
+      "width": 768,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "cells": 64,
+      "overflowingLabels": []
+    }
+  ],
+  "errors": []
+}

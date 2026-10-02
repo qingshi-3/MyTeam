@@ -1,0 +1,22 @@
+{
+  "feedback": "有没有其他样式，这个更是丑，感觉和上边的女性都不是一个画风的",
+  "revision": "参考已采纳女性绘法，重做金甲战袍骑士，保留成熟头脸与黄甲蓝衣，收敛碎高光",
+  "tool": "built-in image_gen.imagegen",
+  "style_references": [
+    "../healer-pilot/after-proportions-v2.png",
+    "../surge-conductor/after-outfit-v2.png"
+  ],
+  "head_identity_reference": "veteran-gold-v2.png",
+  "prompt_file": "anime-coat-v3-prompts.txt",
+  "first_generated_source": "/Users/qingshi/.codex/generated_images/01a0eb96-2a0d-7ee2-be32-604c85651f14/exec-fd273b20-bbe9-4d95-b8dc-e0d703a7d9f8.png",
+  "generated_source": "/Users/qingshi/.codex/generated_images/01a0eb96-2a0d-7ee2-be32-604c85651f14/exec-f1390408-cf23-42aa-9fca-b2cae65859d4.png",
+  "output": "anime-coat-v3.png",
+  "dimensions": [
+    1024,
+    1536
+  ],
+  "sha256": "9e3a6ac3a6ed3cbb7b53a4db06acea2fe0186fc9ae382cd1d56cf32132c6ce03",
+  "status": "awaiting_user_feedback",
+  "runtime_replaced": false,
+  "visually_inspected": true
+}

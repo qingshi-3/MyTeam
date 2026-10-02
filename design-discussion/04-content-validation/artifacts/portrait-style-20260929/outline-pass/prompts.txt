@@ -1,0 +1,41 @@
+=== knight ===
+Edit the provided portrait with ONLY a controlled line-art strengthening pass. The user selected this exact image; its character design and color painting are fixed. Keep the same face, expression, hairstyle, anatomy, proportions, pose, clothing, ornaments, weapon, composition, crop, background, colors, lighting, highlights and shadow shapes. Do not redesign, simplify the painting, repaint materials, add details or change the character's style.
+
+The only intended visible change is DEEPER AND SOMEWHAT THICKER LINEWORK with a clear hierarchy:
+- Strengthen the existing OUTER SILHOUETTE lines to about 1.7–2 times their present visual weight, using very dark color-coordinated charcoal brown, navy or violet near-black. Make the figure, light hair, clothing edges and solid equipment stand distinctly against the light background, including when the full-body picture is viewed small. This must be a noticeable increase, not a barely perceptible touch-up.
+- Strengthen existing major overlap/contact lines by a smaller amount: clothing against body, garment layers, armor overlaps, gripping hand against weapon. These should remain lighter/thinner than the outside silhouette.
+- Keep facial features, eyelashes, eyebrows, hair interior strands, fabric interior folds, ornaments and other small details fine and controlled. Do not turn the face into a heavily inked comic face. Do not trace every shading patch, reflection or highlight.
+- Preserve beautiful natural line variation, tapered ends and clean joins. Follow the existing outline precisely. No uniform heavy sticker border, no double edge, no halo, no fake drop shadow, no pixelated thickening or oversharpening.
+- Keep all existing colored surfaces and soft shading intact. Do not globally darken the portrait or increase contrast inside its painted surfaces. Do not flatten the rendering.
+
+One full-body edited portrait, same aspect ratio and framing. No added text, no comparison layout.
+
+Selected male knight: preserve this exact youthful adult red-haired face and all its current details, golden armor, blue cloak, large ornate sword and current standing pose. Do not substitute any gray-templed mature knight or another costume from conversation history. Deepen the boundaries of shoulder silhouette, armor profile, cape, boots and sword; keep all gold reflections exactly as in this selected version.
+
+=== surge-conductor ===
+Edit the provided portrait with ONLY a controlled line-art strengthening pass. The user selected this exact image; its character design and color painting are fixed. Keep the same face, expression, hairstyle, anatomy, proportions, pose, clothing, ornaments, weapon, composition, crop, background, colors, lighting, highlights and shadow shapes. Do not redesign, simplify the painting, repaint materials, add details or change the character's style.
+
+The only intended visible change is DEEPER AND SOMEWHAT THICKER LINEWORK with a clear hierarchy:
+- Strengthen the existing OUTER SILHOUETTE lines to about 1.7–2 times their present visual weight, using very dark color-coordinated charcoal brown, navy or violet near-black. Make the figure, light hair, clothing edges and solid equipment stand distinctly against the light background, including when the full-body picture is viewed small. This must be a noticeable increase, not a barely perceptible touch-up.
+- Strengthen existing major overlap/contact lines by a smaller amount: clothing against body, garment layers, armor overlaps, gripping hand against weapon. These should remain lighter/thinner than the outside silhouette.
+- Keep facial features, eyelashes, eyebrows, hair interior strands, fabric interior folds, ornaments and other small details fine and controlled. Do not turn the face into a heavily inked comic face. Do not trace every shading patch, reflection or highlight.
+- Preserve beautiful natural line variation, tapered ends and clean joins. Follow the existing outline precisely. No uniform heavy sticker border, no double edge, no halo, no fake drop shadow, no pixelated thickening or oversharpening.
+- Keep all existing colored surfaces and soft shading intact. Do not globally darken the portrait or increase contrast inside its painted surfaces. Do not flatten the rendering.
+
+One full-body edited portrait, same aspect ratio and framing. No added text, no comparison layout.
+
+Female surge conductor: preserve exact tan face, short silver hair, violet horn headpiece, coherent blue outfit, red waistband, black leggings, white fur cape and mechanical gauntlet. Increase the clarity of the exterior white-fur silhouette and silver-hair contour without adding new fur tufts or strand lines. Preserve the cyan flame's luminous color edges and inner glow; do not put a thick black outline around the luminous flame.
+
+=== healer ===
+Edit the provided portrait with ONLY a controlled line-art strengthening pass. The user selected this exact image; its character design and color painting are fixed. Keep the same face, expression, hairstyle, anatomy, proportions, pose, clothing, ornaments, weapon, composition, crop, background, colors, lighting, highlights and shadow shapes. Do not redesign, simplify the painting, repaint materials, add details or change the character's style.
+
+The only intended visible change is DEEPER AND SOMEWHAT THICKER LINEWORK with a clear hierarchy:
+- Strengthen the existing OUTER SILHOUETTE lines to about 1.7–2 times their present visual weight, using very dark color-coordinated charcoal brown, navy or violet near-black. Make the figure, light hair, clothing edges and solid equipment stand distinctly against the light background, including when the full-body picture is viewed small. This must be a noticeable increase, not a barely perceptible touch-up.
+- Strengthen existing major overlap/contact lines by a smaller amount: clothing against body, garment layers, armor overlaps, gripping hand against weapon. These should remain lighter/thinner than the outside silhouette.
+- Keep facial features, eyelashes, eyebrows, hair interior strands, fabric interior folds, ornaments and other small details fine and controlled. Do not turn the face into a heavily inked comic face. Do not trace every shading patch, reflection or highlight.
+- Preserve beautiful natural line variation, tapered ends and clean joins. Follow the existing outline precisely. No uniform heavy sticker border, no double edge, no halo, no fake drop shadow, no pixelated thickening or oversharpening.
+- Keep all existing colored surfaces and soft shading intact. Do not globally darken the portrait or increase contrast inside its painted surfaces. Do not flatten the rendering.
+
+One full-body edited portrait, same aspect ratio and framing. No added text, no comparison layout.
+
+Female healer: preserve exact face, lavender-white hair, halo, ornate gold staff, white/lavender/black costume, gold patterns, hand gesture and current corrected anatomy. Make the pale hair and outer white sleeves and skirt silhouette clearly stronger against the pale background. Keep gold print on fabric delicate, do not turn it into raised metal or thick black pattern outlines. Preserve the staff orb's luminous surface; strengthen solid staff and halo boundaries, not glow.

@@ -1,0 +1,16 @@
+{
+  "id": "f4_general",
+  "generated_original": "/Users/qingshi/.codex/generated_images/01a0f0eb-190f-7011-a728-d9727d823dd4/exec-8224d55d-dcfc-49e3-acb1-3f19a8dc8455.png",
+  "before": "/Users/qingshi/Documents/GodotProjects/MyTeam/design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/before/f4_general.png",
+  "after": "/Users/qingshi/Documents/GodotProjects/MyTeam/design-discussion/04-content-validation/artifacts/portrait-rollout-20260930/after/f4_general.png",
+  "prompt": "Use case: stylized-concept style-transfer. Image1 authoritative adult female dark-elf general; image2 adopted healer only for strong contour hierarchy and refined2D anime shading. Preserve light lavender skin, magenta eyes, pointed elf ears, paired tall branching dark violet horns, very long silver/lilac hair, dark purple armor with original magenta diamond accents, black long cape with red-purple lining, and the tall double-ended polearm with luminous red crescent blades at BOTH ends. Keep left hand gripping staff and right open gesture, turned elegant stance, full body identity. No new armor jewels, no transferred healer clothing.\nRequired actual style optimization: tidy silver hair into a few broad flowing masses and organized locks, remove flyaway thicket. Consolidate cape and skirt into smooth continuous matte dark cloth with a few large gravity folds. Armor is physically coherent plates with only a few broad grouped highlights, remove tiny shiny triangular speckles, chains and gratuitous filigree while keeping horned/spiked silhouette and original magenta accents. Skin softly shaded, no plastic shine. Natural balanced adult proportions around7.5–8heads EXCLUDINGhorns: clearly increase face/head scale relative to body and reduce excessively long thighs while retaining graceful stance. Readable fingers and stable feet.\nStrong near-black silhouette outlines approximately3–5px at1024canvas width around horns, hair masses, shoulders, hands, cape and legs; fine sparse inner face lines, medium overlap lines like image2. Do not use pale thin lavender contour. Both polearm crescents, horn tips, cape edges and both heels must fit with breathing room within1024x1536. Opaque quiet desaturated smoky gray-violet gradient, subtle brighter upper-body area, darker edges, faint grounded shadow. No scenery, aura, particles, symbols, text, watermark, noisy textures or3D render.",
+  "tool_mode": "built-in imagegen edit",
+  "visual_review": "Preserves adult female lavender-skinned elf general, magenta eyes, branching horns, full silver hair, purple armor, red-lined black cape and both red polearm crescents. Hair now organized large masses, cloth broad matte folds, removed belt-chain clutter. Open right hand legible, both feet and complete weapon/horns within frame. Gray-violet backdrop, darker exterior contours. Tall fantasy proportions remain and are available for final root review.",
+  "before_sha256": "8afd2538eb5f2f0d7d206720955fa0844d344fc92ec5ee6fe1df6cc9dd1e73da",
+  "after_sha256": "00b9da9b1bb6f3880f2b0d8ddfa7e7053bce3f6100b22405f3b97f0996fe3aae",
+  "size": [
+    1024,
+    1536
+  ],
+  "bytes": 2059862
+}

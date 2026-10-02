@@ -1,0 +1,16 @@
+{
+  "mode": "built-in image_gen",
+  "date": "2026-10-01",
+  "reference": "../../ui-study-20260925/user-approved-card.png",
+  "assets": [
+    {
+      "file": "assets/mustering-hall.png",
+      "prompt": "Create a polished fantasy game UI environment background, landscape 16:9, 1920x1080. An ancient stone mustering hall at the foot of a tower, painterly stylized premium strategy card game art. Camera front-facing with slight downward view onto a broad dark slate stone table at the bottom 20 percent, enormous muted bluish grey carved stone pillars at far left and far right, a distant arched doorway centered at top with pale cool daylight and mist, very subtle warm braziers at far edges. Composition is strictly background for six character cards over the middle: the central 85 percent must stay quiet, dark, atmospheric and low-detail; bright accents confined to upper doorway and far left/right edges. Broad chunky hand carved architecture, broad bevels and soft bounced light, warm desaturated sandstone edges, cool midnight slate shadows. Elegant dimensional painterly material quality. No characters, no cards, no buttons, no words, no text, no interface labels, no logos, no filigree, no ornate gold trim, no noisy gritty texture, no highly glossy surfaces. Full bleed composition, no enclosing picture frame. The background must support colorful character portraits and never compete with them."
+    },
+    {
+      "file": "assets/hero-stone-frame.png",
+      "prompt": "Create ONE production fantasy game UI character card frame, portrait 2:3, transparent background, matching the attached reference image's approved hand painted chunky grey stone material. The attached image is style and construction reference only. Refine it into a premium sculpted slate stone frame with a straight wide beveled outer silhouette, gently shaped crown, four solid broad angular corner blocks and recessed seams. Warm grey broad bevels on a cooler slate body; matte soft bounced upper-left light and deep contact shadows; large smooth stone surfaces, minimal irregular cracks. Shape should feel expertly carved, substantial and tactile, not a ruined rocky arch. Frame edge occupies about 7 percent of width per side, consistent but not mechanically symmetrical. Main portrait window is fully TRANSPARENT and occupies the upper 76 percent of frame height. A dark opaque inset slate name-and-stats plaque fills the lower 20 percent, separated with a single subtle broad stone ledge, plenty of empty untextured space for real rendered text later. All outside of frame and upper portrait window are actual alpha transparency, not black or checkerboard. Lower plaque is opaque. No characters, no icons, no letters, no numbers, no words, no label placeholders, no glowing border, no gold filigree, no gems, no small decorative rings, no glossy specular shine. The entire object fits image with a small transparent margin. Straight on orthographic front view, production 2D UI sprite."
+    }
+  ],
+  "scope": "Opening UI sample only. Existing runtime assets are unchanged. Cutout portraits and portrait stone ring/button use existing project sources."
+}

@@ -1,0 +1,19 @@
+{
+  "feedback": "头好了，但是和原始单位的素材对不上了吧，黄色盔甲是要的，但是能不能不要搞得这么土鳖",
+  "tool": "built-in image_gen.imagegen",
+  "input": "veteran-redesign.png",
+  "prompt_file": "veteran-gold-v2-prompt.txt",
+  "generated_source": "/Users/qingshi/.codex/generated_images/01a0eb96-2a0d-7ee2-be32-604c85651f14/exec-77b52e36-bfc2-47c1-a77c-2690e5d8d184.png",
+  "output": "veteran-gold-v2.png",
+  "dimensions": [
+    1024,
+    1536
+  ],
+  "sha256": "406e9bf5ec8b68130790694626f82f4b64e50527d6f797f9ed5e80ee61f10ecc",
+  "approved_scope": "此前头脸获认可；不扩展为整张立绘认可",
+  "revision": "保留头脸、姿态与深色轮廓，恢复金黄色甲及深蓝布料，保留大块简洁甲面、减少杂乱光斑和刻饰",
+  "inspection": "已查看成图，头脸与姿态视觉上保持，金黄甲与蓝披风明确；待用户审美确认",
+  "status": "user_rejected",
+  "runtime_replaced": false,
+  "subsequent_feedback": "有没有其他样式，这个更是丑，感觉和上边的女性都不是一个画风的"
+}
