@@ -7,7 +7,7 @@ public enum RelicRunRuleKind
 {
     ShopPriceMultiplier, NodeGoldUntilPurchase, ShopHealing, GoldGainHealing,
     EliteReward, RewardSkipMaximumHealth, VictoryInterest, GoldBattleHealth,
-    EquipmentSkipGold, EliteStartingHealthMultiplier, CounterReward
+    EquipmentSkipGold, EliteStartingHealthMultiplier, CounterReward, VictoryNativeKillReward
 }
 
 // Static configuration only. Counters and the spent-bank flag live on the run instance.

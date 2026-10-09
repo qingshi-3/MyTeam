@@ -29,7 +29,7 @@ public enum CombatAttribute
     DodgeChance
 }
 
-public enum AttributeModifierOperation { Add, Multiply, Override }
+public enum AttributeModifierOperation { Add, Multiply, Override, PostMultiplyAdd = 3, BaseAdd = 4 }
 public enum AttributeCaptureMode { Snapshot, Live }
 public enum AttributeTeamCountKind { Persistent, Deployed, Alive }
 public enum CombatSourceKind { None, Unit, Ability, Status, Equipment, Trait, Relic, TacticalCommand, FloorRule, System }

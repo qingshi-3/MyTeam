@@ -14,6 +14,7 @@ public partial class ChargedLineAbilityOperationSpec : AbilityOperationSpec
     [Export] public float Range { get; set; } = 16;
     [Export] public float Radius { get; set; } = .18f;
     [Export] public int ChargeTicks { get; set; } = 12;
+    [Export] public float SpellPowerMultiplier { get; set; }
     [Export] public float AttackMultiplier { get; set; } = 1.2f;
     [Export] public int MaximumHits { get; set; } = 2;
     [Export] public float SubsequentHitMultiplier { get; set; } = 2f / 3f;

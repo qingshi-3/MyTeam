@@ -184,6 +184,13 @@ public static partial class TraitDefinitionCompiler
                 if (mechanic.Kind == TraitMechanicKind.DeathResource && mechanic.Enabled &&
                     (string.IsNullOrWhiteSpace(mechanic.SummonContentId) || !StableIdPattern.IsMatch(mechanic.SummonContentId)))
                     report.Error($"{breakpointLabel}: death resource product requires a valid content id.");
+                if (mechanic.Kind == TraitMechanicKind.FreezeOnAttack && (mechanic.Amount > 1 || mechanic.DurationTicks <= 0) ||
+                    mechanic.Kind == TraitMechanicKind.AdditionalAttacks && (mechanic.Amount > 1 || mechanic.Count is < 1 or > 16 || mechanic.Secondary <= 0) ||
+                    mechanic.Kind == TraitMechanicKind.OpeningCopy && (mechanic.Count != 1 || mechanic.Amount is <= 0 or > 1 || mechanic.Secondary is <= 0 or > 1) ||
+                    mechanic.Kind == TraitMechanicKind.CastStartShield && (mechanic.Amount <= 0 || mechanic.DurationTicks <= 0) ||
+                    mechanic.Kind == TraitMechanicKind.DelayedTeamStrike && (mechanic.DurationTicks <= 0 || mechanic.Count <= 0 || mechanic.Limit <= 0) ||
+                    mechanic.Kind == TraitMechanicKind.CriticalTraining && mechanic.Amount > 1)
+                    report.Error($"{breakpointLabel}: invalid roster mechanic bounds.");
                 mechanics.Add(new(mechanic.Kind, mechanic.Amount, mechanic.Secondary, mechanic.Threshold,
                     mechanic.Extra, mechanic.Count, mechanic.Limit, mechanic.DurationTicks,
                     mechanic.CooldownTicks, mechanic.Enabled, mechanic.SummonContentId));

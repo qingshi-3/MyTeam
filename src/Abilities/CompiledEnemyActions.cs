@@ -7,9 +7,11 @@ public abstract record CompiledEnemyAction : CompiledAbilityOperation
     public virtual ImmutableArray<string> ContentDependencies => [];
 }
 public sealed record CompiledConeBreath(float Range, float AngleDegrees, int WindupTicks,
-    int PulseIntervalTicks, int PulseCount, int RecoveryTicks, float AttackMultiplier, string Vfx) : CompiledEnemyAction;
+    int PulseIntervalTicks, int PulseCount, int RecoveryTicks, float AttackMultiplier, string Vfx,
+    int AfterglowDurationTicks = 0, int AfterglowIntervalTicks = 5, float AfterglowAttackMultiplier = 0) : CompiledEnemyAction;
 public sealed record CompiledReturningBlade(float Range, float Radius, float Speed, float AttackMultiplier, string Vfx) : CompiledEnemyAction;
 public sealed record CompiledPositionSwap(float Range, int PrepareTicks, int RecoveryTicks, string Vfx) : CompiledEnemyAction;
+public sealed record CompiledEnemyOriginalAttackCycle(int Every, int WindupTicks, float DamageMultiplier) : CompiledEnemyAction;
 public sealed record CompiledRampart(string WallContentId, int RaiseTicks, int IntervalTicks, int FissureWindupTicks,
     int RecoveryTicks, int WallLifetimeTicks, float Range, float FissureRadius, float AttackMultiplier, string Vfx) : CompiledEnemyAction
 {
@@ -21,3 +23,7 @@ public sealed record CompiledBroodPhase(string EggContentId, string LarvaContent
 {
     public override ImmutableArray<string> ContentDependencies => [EggContentId, LarvaContentId];
 }
+
+public sealed record CompiledEnemySeatGuard(ImmutableArray<Godot.Vector2I> GuardCells, float DamageMultiplier) : CompiledEnemyAction;
+public sealed record CompiledEnemyStoneQuake(float Radius, int WindupTicks, int PulseIntervalTicks, int PulseCount,
+    int RecoveryTicks, float AttackMultiplier, float ArmorMultiplier, float CompletionArmor, int ArmorDurationTicks) : CompiledEnemyAction;

@@ -31,7 +31,7 @@ internal sealed class BattleMatrixQueries(IBattleMatrixReadWorld world)
             return _world.Units.Where(u => u.Alive && u.Team != owner.Team && u.Position.DistanceTo(fixedCenter) <= op.Radius +
                 (op.Key.Length > 0 ? _world.Counter(owner.RuntimeId, op.Key) * op.RadiusPerCounter : 0) && MatchesCondition(op.TargetCondition, u, op.HealthThreshold))
                 .OrderBy(u => u.Position.DistanceSquaredTo(fixedCenter)).ThenBy(u => u.RuntimeId, StringComparer.Ordinal).Take(op.MaxTargets).ToArray();
-        var origin = center ?? (op.Target is MatrixTargetKind.EventNearbyAllies or MatrixTargetKind.EventNearbyEnemies
+        var origin = op.Target == MatrixTargetKind.OtherEnemiesNearTarget ? eventTarget?.Position ?? owner.Position : center ?? (op.Target is MatrixTargetKind.EventNearbyAllies or MatrixTargetKind.EventNearbyEnemies
             ? eventTarget?.Position ?? owner.Position : owner.Position);
         if (op.Target == MatrixTargetKind.NearWoundedAllyEnemies) origin = _world.Units.Where(u => u.Alive && u.Team == owner.Team)
             .OrderBy(u => u.Health / u.MaxHealth).ThenBy(u => u.RuntimeId, StringComparer.Ordinal).FirstOrDefault()?.Position ?? owner.Position;
@@ -43,18 +43,19 @@ internal sealed class BattleMatrixQueries(IBattleMatrixReadWorld world)
             MatrixTargetKind.EventTarget => eventTarget is null ? [] : [eventTarget],
             MatrixTargetKind.EventVictim => _world.FindUnit(eventTarget?.ActionTargetRuntimeId ?? "") is { } victim ? [victim] : [],
             MatrixTargetKind.CurrentEnemy => _world.Units.Where(u => u.RuntimeId == explicitTarget && u.Team != owner.Team),
+            MatrixTargetKind.CurrentOrNearestEnemy => _world.Units.Where(u => u.Team != owner.Team),
             MatrixTargetKind.OwnedSummons => _world.Units.Where(u => u.Team == owner.Team && u.SummonerRuntimeId == owner.RuntimeId),
             MatrixTargetKind.TemporaryAllies => _world.Units.Where(u => u.Team == owner.Team && u.IsTemporary),
             MatrixTargetKind.NearestCaster => _world.Units.Where(u => u.Team == owner.Team && u.HasManaSkill),
             MatrixTargetKind.NearestBoostableCaster => _world.Units.Where(u => u.Team == owner.Team && u.HasManaSkill &&
-                u.Definition.AbilityLoadout?.Abilities.Any(a => a.IsActiveSkill && a.Operations.Any(HasBoostableValue)) == true),
-            MatrixTargetKind.NearestWoundedAlly => _world.Units.Where(u => u.Team == owner.Team && u.Health < u.MaxHealth),
+                u.AbilityLoadout?.Abilities.Any(a => a.IsActiveSkill && a.Operations.Any(HasBoostableValue)) == true),
+            MatrixTargetKind.NearestWoundedAlly or MatrixTargetKind.LowestWoundedHealthAllies => _world.Units.Where(u => u.Team == owner.Team && u.Health < u.MaxHealth),
             MatrixTargetKind.NearestSummoner => _world.Units.Where(u => u.Team == owner.Team && u.Definition.Tags.Contains("summoner")),
             MatrixTargetKind.LowestHealthAllies or MatrixTargetKind.NearestAllies or MatrixTargetKind.LowestManaAllies or MatrixTargetKind.FrontAlly or MatrixTargetKind.EventNearbyAllies or MatrixTargetKind.NearEventSourceAllies => _world.Units.Where(u => u.Team == owner.Team),
             _ => _world.Units.Where(u => u.Team != owner.Team)
         };
         candidates = candidates.Where(u => u.Alive && (!op.ExcludeSelf || u != owner) &&
-            (op.Target != MatrixTargetKind.OtherEnemy || u.RuntimeId != explicitTarget) && u.Position.DistanceTo(origin) <= op.Range &&
+            (op.Target is not (MatrixTargetKind.OtherEnemy or MatrixTargetKind.OtherEnemiesNearTarget) || u.RuntimeId != explicitTarget) && u.Position.DistanceTo(origin) <= op.Range &&
             MatchesCondition(op.TargetCondition, u, op.HealthThreshold));
         if (op.Target == MatrixTargetKind.LowestManaAllies) candidates = candidates.Where(u => u.MaxMana > 0 && u.CurrentMana < u.MaxMana);
         if (op.Target == MatrixTargetKind.FrontEnemies)
@@ -67,7 +68,12 @@ internal sealed class BattleMatrixQueries(IBattleMatrixReadWorld world)
         }
         candidates = op.Target switch
         {
-            MatrixTargetKind.LowestHealthAllies or MatrixTargetKind.LowestHealthEnemies => candidates.OrderBy(u => u.Health / u.MaxHealth).ThenBy(u => u.RuntimeId, StringComparer.Ordinal),
+            MatrixTargetKind.CurrentOrNearestEnemy => candidates.OrderBy(u => u.RuntimeId == explicitTarget ||
+                u.RuntimeId == owner.ActionTargetRuntimeId ? 0 : 1).ThenBy(u => u.Position.DistanceSquaredTo(origin))
+                .ThenBy(u => u.RuntimeId, StringComparer.Ordinal),
+            MatrixTargetKind.LowestHealthAllies or MatrixTargetKind.LowestHealthEnemies or MatrixTargetKind.LowestWoundedHealthAllies => candidates.OrderBy(u => u.Health / u.MaxHealth).ThenBy(u => u.RuntimeId, StringComparer.Ordinal),
+            MatrixTargetKind.BacklineEnemy => candidates.OrderByDescending(u => owner.Team == 0 ? u.Position.X : -u.Position.X).ThenBy(u => u.RuntimeId, StringComparer.Ordinal),
+            MatrixTargetKind.LowestAbsoluteHealthEnemy => candidates.OrderBy(u => u.Health).ThenBy(u => u.RuntimeId, StringComparer.Ordinal),
             MatrixTargetKind.LowestManaAllies => candidates.OrderBy(u => u.CurrentMana / u.MaxMana).ThenBy(u => u.RuntimeId, StringComparer.Ordinal),
             MatrixTargetKind.MostPoisonEnemies => candidates.OrderByDescending(u => _world.Poison(u.RuntimeId)).ThenBy(u => u.RuntimeId, StringComparer.Ordinal),
             MatrixTargetKind.MostEmberEnemies => candidates.OrderByDescending(u => _world.Ember(u.RuntimeId)).ThenBy(u => u.RuntimeId, StringComparer.Ordinal),
@@ -88,6 +94,7 @@ internal sealed class BattleMatrixQueries(IBattleMatrixReadWorld world)
 
     internal bool MatchesCondition(MatrixCondition condition, BattleUnitView? unit, float threshold) => condition switch
     {
+        MatrixCondition.Isolated => unit is not null && !_world.Units.Any(u => u.Alive && u.Team == unit.Team && u.RuntimeId != unit.RuntimeId && u.Position.DistanceTo(unit.Position) <= 1.5f),
         MatrixCondition.None => true,
         MatrixCondition.Poisoned => unit is not null && _world.Poison(unit.RuntimeId) > 0,
         MatrixCondition.EmberMarked => unit is not null && _world.Ember(unit.RuntimeId) > 0,
@@ -106,7 +113,9 @@ internal sealed class BattleMatrixQueries(IBattleMatrixReadWorld world)
     {
         CompiledMatrixOperation matrix => MatrixAbilityCompiler.Flatten(matrix).Any(o =>
             o.Kind is MatrixOperationKind.Damage or MatrixOperationKind.Heal or MatrixOperationKind.Shield or
-                MatrixOperationKind.Mana or MatrixOperationKind.DashStrike or MatrixOperationKind.SkillVolley or MatrixOperationKind.LineDamage),
+                MatrixOperationKind.Mana or MatrixOperationKind.DashStrike or MatrixOperationKind.SkillVolley or MatrixOperationKind.LineDamage or
+                MatrixOperationKind.OptionalMeleeStrike or MatrixOperationKind.BlinkLineDisarm or MatrixOperationKind.GroundStorm or
+                MatrixOperationKind.RandomEnemyChannel or MatrixOperationKind.RetreatDualShot or MatrixOperationKind.HealingSeriesShield or MatrixOperationKind.KillRefundAttack),
         CompiledEffectAbilityOperation effect => !effect.Binding.Effects.IsEmpty,
         CompiledProjectileSequenceAbilityOperation => true,
         CompiledDisplacementOperation motion => motion.ImpactDamage > 0 || motion.AttackRatio > 0,

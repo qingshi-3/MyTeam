@@ -14,4 +14,5 @@ public partial class GritPunchAbilityOperationSpec : AbilityOperationSpec
     [Export] public int ShieldTicks { get; set; } = 30;
     [Export] public float AttackRatio { get; set; } = 1;
     [Export] public float GritDamageRatio { get; set; } = .8f;
+    [Export] public float SuccessHealGritRatio { get; set; }
 }

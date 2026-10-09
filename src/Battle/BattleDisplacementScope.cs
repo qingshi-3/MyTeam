@@ -22,7 +22,7 @@ internal interface IBattleDisplacementWorld
     float Damage(string source, BattleUnitState owner, BattleUnitState target, float raw, CombatSourceRef origin, EffectDamageType type);
     CombatDamageClass DamageClass(CombatSourceRef origin);
     void Arrived(BattleUnitState owner, BattleUnitState target, CombatSourceRef origin);
-    void Finished(CombatSourceRef origin);
+    void Finished(CombatSourceRef origin,bool completed);
     void Resolve(Action work);
     void Publish(BattleCombatEventDraft fact);
     void Present(string type, string source, string target, float value, Vector2 position, string cue,
@@ -70,6 +70,44 @@ internal sealed class BattleDisplacementScope(IBattleDisplacementWorld world, Ba
     public bool IsDisplacing(BattleUnitState unit) => _displacements.ContainsKey(unit.RuntimeId);
     public bool IsAirborne(BattleUnitState unit) => _displacements.TryGetValue(unit.RuntimeId, out var motion) &&
         motion.Operation.Kind == DisplacementKind.Leap;
+
+    public bool TryBlinkBeside(BattleUnitState owner, BattleUnitState target, float maximumDistance, CombatSourceRef origin)
+    {
+        if (!owner.Alive || !target.Alive || owner.Team == target.Team || IsDisplacing(owner)) return false;
+        var operation = new CompiledDisplacementOperation(DisplacementKind.Blink, new CompiledExplicitTargetQuery(),
+            maximumDistance, 1, .05f, false, false, 0, 0, 0, EffectDamageType.Normal, null, 0);
+        var plan = BuildDisplacementPlans(operation, owner, [target]).FirstOrDefault();
+        if (plan is null) return false;
+        var start = owner.Position;
+        var motion = new DisplacementMotion(owner.RuntimeId, owner.RuntimeId, target.RuntimeId,
+            owner.Team, owner.Team, start, plan.End, start, world.Tick, operation, origin);
+        EmitDisplacement(motion, owner, 0, false);
+        owner.Position = plan.End;
+        world.ReleaseUnit(owner.RuntimeId);
+        SetActionTarget(owner, target);
+        EmitDisplacement(motion, owner, 1, true);
+        world.Publish(new(BattleCombatEventKind.UnitMoved, origin, owner.RuntimeId, "", world.Tick,
+            Cell: ToCombatCell(owner.Cell), Position: ToCombatPoint(owner.Position), ActionId: origin.InstanceId));
+        return true;
+    }
+
+    public bool TryRetreatMaintainingReach(BattleUnitState owner,BattleUnitState target,float distance,float reach,CombatSourceRef origin)
+    {
+        if(!owner.Alive||!target.Alive||IsDisplacing(owner))return false;
+        var direction=(owner.Position-target.Position).Normalized();
+        if(direction.IsZeroApprox())return false;
+        var end=ClipDisplacementTravel(owner,owner.Position,owner.Position+direction*distance);
+        if(owner.Position.DistanceTo(end)<.04f||!CanLandDisplacement(owner,end)||
+            end.DistanceTo(target.Position)>owner.BodyRadius+target.BodyRadius+reach+.0001f)return false;
+        var operation=new CompiledDisplacementOperation(DisplacementKind.Knockback,new CompiledExplicitTargetQuery(),
+            distance,2,0,false,false,0,0,0,EffectDamageType.Normal,null,0);
+        var motion=new DisplacementMotion(owner.RuntimeId,owner.RuntimeId,target.RuntimeId,owner.Team,owner.Team,
+            owner.Position,end,owner.Position,world.Tick,operation,origin);
+        _displacements=_displacements.SetItem(owner.RuntimeId,motion);
+        world.ReleaseUnit(owner.RuntimeId);
+        EmitDisplacement(motion,owner,0,false);
+        return true;
+    }
 
     public IReadOnlyList<DisplacementReservation> CaptureDisplacementReservations() =>
         _displacements.Values.OrderBy(motion => motion.MoverId, StringComparer.Ordinal)
@@ -314,11 +352,13 @@ internal sealed class BattleDisplacementScope(IBattleDisplacementWorld world, Ba
         world.ReleaseUnit(mover.RuntimeId);
         if (mover.Alive) mover.Mode = BattleUnitMode.Seeking;
         EmitDisplacement(motion, mover, progress, true);
+        var completed=false;
         try
         {
         if (motion.Cancelled || !mover.Alive) return;
         var source = world.Units.First(unit => unit.RuntimeId == motion.SourceId);
         if (!source.Alive || source.Team != motion.SourceTeam || mover.Team != motion.MoverTeam) return;
+        completed=true;
         var operation = motion.Operation;
         var targets = world.Units.Where(unit => unit.Alive && unit.Team != source.Team &&
             (operation.ImpactRadius > 0
@@ -347,7 +387,7 @@ internal sealed class BattleDisplacementScope(IBattleDisplacementWorld world, Ba
             if (target.Alive) world.Arrived(source, target, motion.Origin);
         }
         }
-        finally { world.Finished(motion.Origin); }
+        finally { world.Finished(motion.Origin,completed); }
     }
 
     private void EmitDisplacement(DisplacementMotion motion, BattleUnitState mover, float progress, bool finished) =>

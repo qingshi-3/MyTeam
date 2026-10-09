@@ -17,9 +17,12 @@ internal interface IBattleAttackWorld
     IReadOnlyList<BattleUnitState> Units { get; }
     CombatSourceRef Source(string id, BattleUnitState? unit = null);
     float DamageValue(BattleUnitState unit);
+    EnemyOriginalAttackPreparation PrepareOriginalAttack(string ownerRuntimeId);
+    bool ProtectedFromAttack(BattleUnitState target);
     float Damage(string sourceRuntimeId, BattleUnitState? source, BattleUnitState target, float raw,
         CombatSourceRef origin = default, EffectDamageType damageType = EffectDamageType.Normal,
-        CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "");
+        CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "",
+        BattleDamageStatisticsAttribution statisticsAttribution = default, bool isAreaDamage = false, CombatPoint? attackIncomingDirection = null);
     float Heal(string source, BattleUnitState target, float amount);
     float ReadCounter(BattleUnitState unit, string key);
     void WriteCounter(BattleUnitState unit, string key, float value);
@@ -43,20 +46,26 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
     { owner.ActionTargetRuntimeId = target.RuntimeId; owner.ActionTargetName = target.Definition.DisplayName; }
     public void Attack(BattleUnitState attacker, BattleUnitState target)
     {
+        if (!attacker.Alive || !target.Alive || target.Team==attacker.Team ||
+            !BattlefieldSpace.IsWithinReach(attacker,target,attacker.AttackRange) || !world.HasLineAccess(attacker,target) ||
+            statuses.HasTag(attacker.RuntimeId, StatusDefinitionCompiler.AttackDisabledTag)) return;
+        var preparation=world.PrepareOriginalAttack(attacker.RuntimeId);
         attacker.AttackCooldown = attacker.Definition.AttackHitGrowth is null ? attacker.EffectiveAttackTicks : 0;
-        if (attacker.AttackDelivery == Content.AttackDelivery.Projectile && attacker.Definition.ProjectileWindupSeconds > 0)
+        if (preparation.WindupTicks>0 || attacker.AttackDelivery == Content.AttackDelivery.Projectile && attacker.Definition.ProjectileWindupSeconds > 0)
         {
             attacker.Mode = BattleUnitMode.Attacking;
             attacker.LastActionKind = BattleActionKind.Attack;
             attacker.WaitingTicks = 0;
-            BeginProjectileWindup(attacker, target);
+            BeginProjectileWindup(attacker, target,multiplier:preparation.DamageMultiplier,
+                fixedWindupTicks:preparation.WindupTicks>0?preparation.WindupTicks:null);
             return;
         }
-        ResolveAttack(attacker, target);
+        ResolveAttack(attacker, target,damageMultiplier:preparation.DamageMultiplier);
     }
 
-    public void ResolveAttack(BattleUnitState attacker, BattleUnitState target, bool timed = false)
+    public void ResolveAttack(BattleUnitState attacker, BattleUnitState target, bool timed = false, float damageMultiplier = 1)
     {
+        if (statuses.HasTag(attacker.RuntimeId, StatusDefinitionCompiler.AttackDisabledTag)) return;
         using var resolution = pipeline.BeginAuthoritativeResolution();
         statistics.Attack(attacker.RuntimeId);
         SelectAttackChainTarget(attacker, target);
@@ -72,8 +81,8 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
             target.RuntimeId,
             world.Tick,
             Cell: ToCombatCell(target.Cell),
-            Position: ToCombatPoint(target.Position)));
-        var rawDamage = world.DamageValue(attacker);
+            Position: ToCombatPoint(target.Position), ActionId: $"attack:{attacker.RuntimeId}:{statistics.AttackActions(attacker.RuntimeId)}"));
+        var rawDamage = world.DamageValue(attacker)*damageMultiplier;
         if (attacker.Definition.Behavior.LowHealthDamageBonus > 0 && attacker.Health / attacker.MaxHealth <= .4f)
             rawDamage *= 1f + attacker.Definition.Behavior.LowHealthDamageBonus;
         BattleHeroMana.OnAttack(attacker, world.Tick);
@@ -91,27 +100,31 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
     }
 
     // Shared impact rules execute only after an instant attack or an authoritative projectile collision.
-    public void ResolveAttackHit(BattleUnitState attacker, BattleUnitState target, float rawDamage, bool instantPiercing, string actionId = "")
+    public bool ResolveAttackHit(BattleUnitState attacker, BattleUnitState target, float rawDamage, bool instantPiercing, string actionId = "",
+        BattleDamageStatisticsAttribution statisticsAttribution = default, CombatPoint? attackIncomingDirection = null)
     {
         using var resolution = pipeline.BeginAuthoritativeResolution();
         var source = world.Source(attacker.RuntimeId, attacker);
-        if (!target.Alive) { resolution.Commit(); return; }
+        if (!target.Alive) { resolution.Commit(); return false; }
         var dodge = target.Attributes.GetValue(CombatAttribute.DodgeChance);
-        if (dodge > 0 && target.DisabledTicks <= 0 && !statuses.HasTag(target.RuntimeId,StatusDefinitionCompiler.ActionDisabledTag) && nextFloat() < dodge)
+        if (world.ProtectedFromAttack(target) ||
+            dodge > 0 && target.DisabledTicks <= 0 && !statuses.HasTag(target.RuntimeId,StatusDefinitionCompiler.ActionDisabledTag) && nextFloat() < dodge)
         {
             world.Publish(new BattleCombatEventDraft(BattleCombatEventKind.AttackDodged,source,attacker.RuntimeId,target.RuntimeId,world.Tick));
             world.Present("dodge",attacker.RuntimeId,target.RuntimeId,0,target.Position,"hit");
-            resolution.Commit(); return;
+            resolution.Commit(); return false;
         }
         var chance = attacker.Attributes.GetValue(CombatAttribute.CriticalChance);
         var critical = chance > 0 && nextFloat() < chance;
         if (critical) rawDamage *= attacker.Attributes.GetValue(CombatAttribute.CriticalDamage);
         if (string.IsNullOrEmpty(actionId)) actionId = $"attack:{attacker.RuntimeId}:{statistics.AttackActions(attacker.RuntimeId)}";
         var damage = world.Damage(attacker.RuntimeId, attacker, target, rawDamage,
-            damageClass: CombatDamageClass.BasicAttack, actionId: actionId);
+            damageClass: CombatDamageClass.BasicAttack, actionId: actionId, statisticsAttribution: statisticsAttribution,
+            attackIncomingDirection:attackIncomingDirection??ToCombatPoint((attacker.Position-target.Position).Normalized()));
+        var directKill=!target.Alive&&damage>0;
         if (critical)
             world.Publish(new BattleCombatEventDraft(BattleCombatEventKind.CriticalHit,source,attacker.RuntimeId,target.RuntimeId,
-                world.Tick,RequestedValue:rawDamage,EffectiveValue:damage));
+                world.Tick,RequestedValue:rawDamage,EffectiveValue:damage,DamageClass:CombatDamageClass.BasicAttack,ActionId:actionId));
         RegisterGrowingHit(attacker, target);
         if (attacker.Alive && attacker.LifeSteal > 0)
             world.Heal(attacker.RuntimeId, attacker, damage * attacker.LifeSteal);
@@ -137,7 +150,10 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
                          other != target &&
                          Math.Max(0f, other.Position.DistanceTo(target.Position) - other.BodyRadius) <=
                          attacker.Definition.SplashRadius + .0001f).ToArray())
-                world.Damage(attacker.RuntimeId, attacker, splash, rawDamage * .45f);
+                world.Damage(attacker.RuntimeId, attacker, splash, rawDamage * .45f,
+                    damageClass:CombatDamageClass.BasicAttack,actionId:actionId,
+                    statisticsAttribution: statisticsAttribution.IsSpecified ? statisticsAttribution : new(source, CombatDamageClass.BasicAttack),isAreaDamage:true,
+                    attackIncomingDirection:ToCombatPoint((target.Position-splash.Position).Normalized()));
         if (instantPiercing && attacker.Definition.Behavior.PiercingLine)
         {
             var attackDelta = target.Position - attacker.Position;
@@ -161,7 +177,10 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
                 .ThenBy(candidate => candidate.Unit.RuntimeId, StringComparer.Ordinal)
                 .Select(candidate => candidate.Unit)
                 .FirstOrDefault();
-            if (behind is not null) world.Damage(attacker.RuntimeId, attacker, behind, rawDamage * .35f);
+            if (behind is not null) world.Damage(attacker.RuntimeId, attacker, behind, rawDamage * .35f,
+                damageClass:CombatDamageClass.BasicAttack,actionId:actionId,
+                statisticsAttribution: statisticsAttribution.IsSpecified ? statisticsAttribution : new(source, CombatDamageClass.BasicAttack),isAreaDamage:true,
+                attackIncomingDirection:ToCombatPoint(-direction));
         }
         if (attacker.Definition.Behavior.SlowOnHitTicks > 0 && target.Alive)
         {
@@ -169,6 +188,7 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
             target.MoveCooldown += attacker.Definition.Behavior.SlowOnHitTicks;
         }
         resolution.Commit();
+        return directKill;
     }
 
     public void SelectAttackChainTarget(BattleUnitState owner, BattleUnitState target)
@@ -275,7 +295,7 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
         owner.ManaLockedUntilTick = Math.Max(owner.ManaLockedUntilTick, world.Tick + 1);
     }
     public void BeginProjectileWindup(BattleUnitState owner, BattleUnitState target,
-        CombatSourceRef skillOrigin = default, float multiplier = 1, float intervalRatio = 1)
+        CombatSourceRef skillOrigin = default, float multiplier = 1, float intervalRatio = 1, int? fixedWindupTicks = null)
     {
         var definition = owner.Definition;
         var baseWindup = Math.Min(definition.ProjectileWindupSeconds,
@@ -283,7 +303,7 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
         var seconds = baseWindup * intervalRatio / owner.Attributes.GetValue(CombatAttribute.AttackSpeed);
         // The action and its release use the same quantized simulation duration. At extreme
         // speed several independent windups may mature together; there is no one-shot cap.
-        var ticks = Math.Max(1, (int)Math.Ceiling(seconds / BattleTiming.TickSeconds - .00001));
+        var ticks = fixedWindupTicks??Math.Max(1, (int)Math.Ceiling(seconds / BattleTiming.TickSeconds - .00001));
         owner.ProjectileWindups = owner.ProjectileWindups.Add(new(target.RuntimeId, world.Tick + ticks, multiplier, skillOrigin));
         SelectAttackChainTarget(owner, target);
         SetActionTarget(owner, target);
@@ -298,6 +318,11 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
         owner.ProjectileWindups = owner.ProjectileWindups.Where(shot => shot.ReleaseTick > world.Tick).ToImmutableArray();
         foreach (var shot in ready)
         {
+            if (!shot.SkillOrigin.IsSpecified && statuses.HasTag(owner.RuntimeId, StatusDefinitionCompiler.AttackDisabledTag))
+            {
+                world.Present("attack_cancel", owner.RuntimeId, shot.TargetId, 0, owner.Position, "");
+                continue;
+            }
             var target = world.Units.FirstOrDefault(unit => unit.RuntimeId == shot.TargetId && unit.Alive && unit.Team != owner.Team);
             if (!owner.Alive || target is null || !BattlefieldSpace.IsWithinReach(owner, target, owner.AttackRange) || !world.HasLineAccess(owner, target))
             {
@@ -311,7 +336,7 @@ internal sealed class BattleAttackScope(IBattleAttackWorld world, BattleCombatEv
                 world.Present("skill_arrow", owner.RuntimeId, target.RuntimeId, damage, target.Position, "");
                 owner.ManaLockedUntilTick = Math.Max(owner.ManaLockedUntilTick, world.Tick + 1);
             }
-            else ResolveAttack(owner, target, timed: true);
+            else ResolveAttack(owner, target, timed: true,damageMultiplier:shot.DamageMultiplier);
         }
         return ready.Length > 0;
     }

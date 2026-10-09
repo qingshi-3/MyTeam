@@ -21,10 +21,17 @@ internal interface IBattleTraitQueries
 internal interface IBattleTraitCommands
 {
     void Damage(string source, string target, float amount, CombatSourceRef origin,
-        EffectDamageType damageType = EffectDamageType.Normal, CombatDamageClass damageClass = CombatDamageClass.Other);
+        EffectDamageType damageType = EffectDamageType.Normal, CombatDamageClass damageClass = CombatDamageClass.Other,
+        bool isAreaDamage = false);
     void Heal(string source, string target, float amount, CombatSourceRef origin);
     float Shield(string source, string target, float amount, CombatSourceRef origin);
     void GainMana(string target, float amount);
+    float NextRandom();
+    void AddBaseHealth(string target, float ratio, CombatSourceRef origin);
+    void AddAttribute(string target, CombatAttribute attribute, float amount, CombatSourceRef origin);
+    void AdditionalAttack(string source, string target, float amount, string actionId,
+        BattleDamageStatisticsAttribution statisticsAttribution = default);
+    void Present(string source, string target, string cue);
     void RemoveShield(string target, float amount);
     void BuffSummonHealth(string target, float amount, CombatSourceRef origin);
     string? SpawnNear(UnitSnapshot profile, int team, Vector2 position, float health, float damage, string source);
@@ -56,7 +63,7 @@ internal sealed class BattleTraitBindings(string scopeId)
                         !string.IsNullOrEmpty(u.SourceInstanceId) && c.OwnerRuntimeId == u.SourceInstanceId))
                     .Select(u => u.RuntimeId).ToImmutableHashSet(StringComparer.Ordinal))))
             .OrderBy(b => b.Team).ThenBy(b => b.Id, StringComparer.Ordinal).ToImmutableArray();
-        var hasMatrix = units.Any(u => u.Definition.AbilityLoadout is { } loadout &&
+        var hasMatrix = units.Any(u => u.AbilityLoadout is { } loadout &&
             loadout.Abilities.Any(a => a.Operations.Any(o => o is CompiledMatrixOperation)));
         ObserveBreaks = hasMatrix || Entries.Any(b => b.Spec.Kind == TraitMechanicKind.BarrierRetaliation);
         NeedsEvents = hasMatrix || !Entries.IsEmpty;

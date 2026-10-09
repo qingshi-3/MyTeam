@@ -34,7 +34,9 @@ public sealed class RelicRunScope : IDisposable
     {
         if (string.IsNullOrWhiteSpace(runKey.HeroId))
             throw new ArgumentException("Relic run owner requires a hero id.", nameof(runKey));
-        if (runKey.FloorIndex < 0 || runKey.BattleNumber < 0)
+        if (runKey.OriginKey is null || (runKey.OriginKey.Length > 0 && string.IsNullOrWhiteSpace(runKey.OriginKey)))
+            throw new ArgumentException("Relic run origin is invalid.", nameof(runKey));
+        if (runKey.BattleNumber < 0 || (runKey.OriginKey.Length == 0 ? runKey.FloorIndex < 0 : runKey.FloorIndex != -1))
             throw new ArgumentOutOfRangeException(nameof(runKey));
         _runKey = runKey;
     }
@@ -350,8 +352,14 @@ public sealed class RelicRunScope : IDisposable
 
     internal static string TransitionIdentity(RelicRunKey runKey, string sourceFingerprint)
     {
-        var text = string.Create(CultureInfo.InvariantCulture,
-            $"{runKey.Seed:x16}:{runKey.HeroId}:{runKey.FloorIndex}:{runKey.BattleNumber}:{sourceFingerprint}");
+        // Legacy bytes are deliberately unchanged: old frozen receipts must
+        // validate after introducing maps. Origin-key receipts use a separate,
+        // length-delimited protocol and never substitute an action as a floor.
+        var text = runKey.OriginKey.Length == 0
+            ? string.Create(CultureInfo.InvariantCulture,
+                $"{runKey.Seed:x16}:{runKey.HeroId}:{runKey.FloorIndex}:{runKey.BattleNumber}:{sourceFingerprint}")
+            : string.Create(CultureInfo.InvariantCulture,
+                $"origin-v1:{runKey.OriginKey.Length}:{runKey.OriginKey}:{runKey.Seed:x16}:{runKey.HeroId.Length}:{runKey.HeroId}:{runKey.BattleNumber}:{sourceFingerprint}");
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant();
     }
 
@@ -430,7 +438,9 @@ public sealed record RelicBattleUnitBinding(
     CombatCell Cell,
     BattleAttributeSet Attributes,
     CombatPoint Position = default,
-    float BodyRadius = 0f);
+    float BodyRadius = 0f,
+    float Health = 0f,
+    bool IsBoss = false);
 
 public sealed class RelicBattleRuntimeContext
 {
@@ -443,9 +453,10 @@ public sealed class RelicBattleRuntimeContext
     public required Func<int> CurrentTick { get; init; }
     public int EmptyDeploymentSlots { get; init; }
     public Func<int> RemainingGold { get; init; } = () => 0;
+    public Action<string, float, CombatSourceRef>? HealUnit { get; init; }
 }
 
-public sealed class RelicBattleScope : IDisposable
+public sealed partial class RelicBattleScope : IDisposable
 {
     private readonly RelicBattlePreparation _preparation;
     private readonly Dictionary<string, BattleRuntimeInstance> _instances;
@@ -568,6 +579,7 @@ public sealed class RelicBattleScope : IDisposable
                     }
                 }
             }
+            ActivateCombatRules();
             RefreshStatusGrants();
         }
         catch
@@ -1036,6 +1048,7 @@ public sealed class RelicBattleScope : IDisposable
     private void Cleanup(bool bestEffort)
     {
         Exception? failure = null;
+        ClearCombatRules();
         try { if (_grantIds.Count > 0) _context?.StatusGrants?.Replace(_grantIds.ToImmutableArray(), []); }
         catch (Exception exception) { failure = exception; }
         _grantIds.Clear();
@@ -1133,6 +1146,8 @@ public sealed class RelicBattleScope : IDisposable
         private readonly long _transitionSequence;
         private readonly bool _battleStartExecuted;
         private readonly HashSet<string> _grantIds;
+        private readonly ImmutableHashSet<(string Instance, string Rule)> _timedCombatConsumed;
+        private readonly ImmutableHashSet<(string Instance, string Rule, long Event)> _criticalCombatConsumed;
 
         internal RelicStateCheckpoint(RelicBattleScope owner)
         {
@@ -1145,6 +1160,8 @@ public sealed class RelicBattleScope : IDisposable
             _transitionSequence = owner._counterTransitionSequence;
             _battleStartExecuted = owner._battleStartExecuted;
             _grantIds = new HashSet<string>(owner._grantIds, StringComparer.Ordinal);
+            _timedCombatConsumed = owner._timedCombatConsumed;
+            _criticalCombatConsumed = owner._criticalCombatConsumed;
         }
 
         internal void Restore(RelicBattleScope owner)
@@ -1167,6 +1184,8 @@ public sealed class RelicBattleScope : IDisposable
             owner._counterTransitionSequence = _transitionSequence;
             owner._battleStartExecuted = _battleStartExecuted;
             owner._grantIds = new HashSet<string>(_grantIds, StringComparer.Ordinal);
+            owner._timedCombatConsumed = _timedCombatConsumed;
+            owner._criticalCombatConsumed = _criticalCombatConsumed;
         }
     }
 

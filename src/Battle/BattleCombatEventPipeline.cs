@@ -13,7 +13,7 @@ public enum BattleCombatEventKind
     BattleStarted, BattleCompleted, AttackDeclared, AttackLanded, AbilityResolved,
     DamageResolved, HealingResolved, ShieldResolved,
     StatusApplied, StatusStackChanged, StatusRemoved,
-    UnitSummoned, UnitMoved, UnitDefeated, UnitKilled, SkillHitLanded, CriticalHit, AttackDodged, HealthLost, ManaSkillResolved, ControlApplied, UnitRevived, AllegianceChanged
+    UnitSummoned, UnitMoved, UnitDefeated, UnitKilled, SkillHitLanded, CriticalHit, AttackDodged, HealthLost, ManaSkillResolved, ControlApplied, UnitRevived, AllegianceChanged, UnitTransformed
 }
 
 public enum BattleCombatCalculationKind { Damage, Healing, Shield }
@@ -31,7 +31,8 @@ public sealed record BattleCombatEventDraft(
     string SubjectStableId = "", int PreviousStacks = 0, int CurrentStacks = 0, string Reason = "",
     CombatPoint Position = default, EffectDamageType DamageType = EffectDamageType.Normal,
     CombatDamageClass DamageClass = CombatDamageClass.Other, string ActionId = "",
-    float SourceHealthRatio = -1, float TargetHealthRatio = -1);
+    float SourceHealthRatio = -1, float TargetHealthRatio = -1,
+    bool IsAreaDamage = false, CombatPoint? AttackIncomingDirection = null);
 
 public sealed record BattleCombatEvent(
     long Sequence, string ScopeId, BattleIdentity? Identity, string ChainId, int Depth, BattleCombatEventKind Kind,
@@ -40,7 +41,8 @@ public sealed record BattleCombatEvent(
     string SubjectStableId, int PreviousStacks, int CurrentStacks, string Reason, CombatPoint Position,
     EffectDamageType DamageType = EffectDamageType.Normal,
     CombatDamageClass DamageClass = CombatDamageClass.Other, string ActionId = "",
-    float SourceHealthRatio = -1, float TargetHealthRatio = -1);
+    float SourceHealthRatio = -1, float TargetHealthRatio = -1,
+    bool IsAreaDamage = false, CombatPoint? AttackIncomingDirection = null);
 
 public sealed record BattleCombatPublishResult(
     bool Accepted, BattleCombatPublishRejection Rejection, BattleCombatEvent? Event, string Message);
@@ -48,7 +50,8 @@ public sealed record BattleCombatPublishResult(
 public sealed record BattleCombatCalculationRequest(
     BattleCombatCalculationKind Kind, CombatSourceRef Source, string SourceRuntimeId,
     string TargetRuntimeId, int Tick, float RequestedAmount, EffectDamageType DamageType = EffectDamageType.Normal,
-    CombatDamageClass DamageClass = CombatDamageClass.Other, string ActionId = "");
+    CombatDamageClass DamageClass = CombatDamageClass.Other, string ActionId = "",
+    bool IsAreaDamage = false, CombatPoint? AttackIncomingDirection = null);
 
 public sealed record BattleCombatCalculationContribution(
     CombatSourceRef Source, int Priority, float Before, float After);
@@ -445,7 +448,8 @@ public sealed class BattleCombatEventPipeline : IDisposable
             draft.SourceRuntimeId, draft.TargetRuntimeId, draft.Tick,
             draft.RequestedValue, draft.AppliedValue, draft.EffectiveValue, draft.Cell,
             draft.SubjectStableId, draft.PreviousStacks, draft.CurrentStacks, draft.Reason, draft.Position, draft.DamageType,
-            draft.DamageClass, draft.ActionId, draft.SourceHealthRatio, draft.TargetHealthRatio);
+            draft.DamageClass, draft.ActionId, draft.SourceHealthRatio, draft.TargetHealthRatio,
+            draft.IsAreaDamage, draft.AttackIncomingDirection);
         _events.Add(combatEvent);
         AddTrace(chainId, depth, "event", draft.Source, draft.Kind.ToString());
         var listeners = _eventSnapshots.GetValueOrDefault(draft.Kind) ?? [];

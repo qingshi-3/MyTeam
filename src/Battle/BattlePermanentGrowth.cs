@@ -13,7 +13,7 @@ public sealed record BattlePermanentGain(
     CombatAttribute Attribute,
     float Amount);
 
-internal sealed class BattlePermanentGrowthScope
+internal sealed partial class BattlePermanentGrowthScope
 {
     public ImmutableArray<BattlePermanentGain> Gains => _permanentGains;
     internal sealed class Checkpoint
@@ -21,12 +21,14 @@ internal sealed class BattlePermanentGrowthScope
         private readonly BattlePermanentGrowthScope _owner;
         private readonly ImmutableArray<BattlePermanentGain> _gains;
         private readonly ImmutableHashSet<string> _keys;
+        private readonly RememberedState _remembered;
         internal Checkpoint(BattlePermanentGrowthScope owner)
-        { _owner = owner; _gains = owner._permanentGains; _keys = owner._permanentGainKeys; }
+        { _owner = owner; _gains = owner._permanentGains; _keys = owner._permanentGainKeys; _remembered = owner._rememberedState; }
         internal void Restore(BattlePermanentGrowthScope owner)
         {
             if (!ReferenceEquals(owner, _owner)) throw new InvalidOperationException("Checkpoint belongs to another permanent growth scope.");
             owner._permanentGains = _gains; owner._permanentGainKeys = _keys;
+            owner._rememberedState = _remembered;
         }
     }
     public Checkpoint Capture() => new(this);
@@ -48,7 +50,7 @@ internal sealed class BattlePermanentGrowthScope
 
         var amount = operation.Amount;
         var previousMaximum = owner.MaxHealth;
-        owner.Attributes.SetBaseValue(operation.Attribute, owner.Attributes.GetBaseValue(operation.Attribute) + amount);
+        owner.Attributes.AddBaseValue(operation.Attribute, amount);
         if (operation.Attribute == CombatAttribute.MaxHealth)
             owner.Health = Math.Min(owner.MaxHealth, owner.Health + Math.Max(0, owner.MaxHealth - previousMaximum));
         _permanentGainKeys = _permanentGainKeys.Add(key);

@@ -29,6 +29,7 @@ internal sealed record CompiledStatusPublication(
 public static partial class StatusDefinitionCompiler
 {
     public const string ActionDisabledTag = "state.action_disabled";
+    public const string AttackDisabledTag = "state.attack_disabled";
 
     private static readonly Regex StableIdPattern = StableIdRegex();
     private static readonly Regex TagPattern = TagRegex();

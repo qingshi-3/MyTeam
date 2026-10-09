@@ -25,7 +25,7 @@ internal interface IBattleMatrixReactionWorld : IBattleMatrixReadWorld
 // its existing world transaction, which also captures this module's checkpoint.
 internal sealed class BattleMatrixReactionScope(IBattleMatrixReactionWorld world, BattleMatrixQueries queries)
 {
-    internal sealed record Rule(string Owner, string Key, CompiledMatrixOperation Operation, CombatSourceRef Origin);
+    internal sealed record Rule(string Owner, string Key, CompiledMatrixOperation Operation, CombatSourceRef Origin, int Expires = int.MaxValue);
     internal sealed record State(ImmutableArray<Rule> Rules, ImmutableArray<BattleCombatEvent> Pending,
         ImmutableDictionary<string, float> Counters, ImmutableDictionary<string, int> Ready,
         ImmutableHashSet<string> Used, ImmutableDictionary<string, ImmutableHashSet<MatrixCondition>> DeathConditions)
@@ -50,6 +50,11 @@ internal sealed class BattleMatrixReactionScope(IBattleMatrixReactionWorld world
     internal void Clear() => _state = State.Empty;
     internal void Register(string owner, string key, CompiledMatrixOperation operation, CombatSourceRef origin)
     {
+        if (operation.Kind == MatrixOperationKind.AttackReaction)
+        {
+            _state = _state with { Rules = _state.Rules.Where(r => r.Key != key).ToImmutableArray().Add(new(owner, key, operation, origin, _world.Tick + operation.DurationTicks)) };
+            return;
+        }
         if (!_state.Rules.Any(r => r.Key == key)) _state = _state with { Rules = _state.Rules.Add(new(owner, key, operation, origin)) };
     }
     internal bool WantsEvent(BattleCombatEvent fact) => !_state.Rules.IsEmpty &&
@@ -139,6 +144,8 @@ internal sealed class BattleMatrixReactionScope(IBattleMatrixReactionWorld world
     private void RunRule(Rule rule, BattleCombatEvent? fact)
     {
         var op = rule.Operation; var owner = _world.FindUnit(rule.Owner);
+        if (_world.Tick >= rule.Expires || op.Kind == MatrixOperationKind.AttackReaction &&
+            fact?.ActionId.StartsWith("derived:", StringComparison.Ordinal) == true) return;
         if (owner is null || (op.LivingOwnerRequired && !owner.Alive) || !_queries.MatchesCondition(op.OwnerCondition, owner, op.HealthThreshold)) return;
         if (op.RequiredCounter.Length > 0 && _world.Counter(owner.RuntimeId, op.RequiredCounter) < op.CounterThreshold) return;
         if (fact is null && op.Event != MatrixEventKind.Tick) return;
@@ -147,7 +154,7 @@ internal sealed class BattleMatrixReactionScope(IBattleMatrixReactionWorld world
         if (fact is not null && (!MatrixEventMatches(op.Event, fact) || !MatrixRelationMatches(op.SourceRelation, owner, source) ||
             !MatrixRelationMatches(op.TargetRelation, owner, target) || fact.EffectiveValue < op.MinimumEventValue)) return;
         if (op.ActiveSkillOnly && (fact is null || fact.Source.Kind != CombatSourceKind.Ability ||
-            source?.Definition.AbilityLoadout?.Find(fact.Source.StableId)?.IsActiveSkill != true)) return;
+            source?.AbilityLoadout?.Find(fact.Source.StableId)?.IsActiveSkill != true)) return;
         if (op.Event == MatrixEventKind.PoisonApplied && target is not null && _world.Poison(target.RuntimeId) < op.CounterThreshold) return;
         var conditionMatches = fact?.Kind == BattleCombatEventKind.UnitDefeated && target is not null &&
             _state.DeathConditions.TryGetValue(target.RuntimeId, out var prior)

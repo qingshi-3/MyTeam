@@ -65,6 +65,8 @@ public sealed record CompiledRelicReactiveCounter(
 public sealed record CompiledRelicRunRule(string RuleId, RelicRunRuleKind Kind, float Amount, int Limit,
     string CounterId, string PoolId, ImmutableArray<string> ContentIds);
 
+public sealed record CompiledRelicCombatRule(string RuleId, RelicCombatRuleKind Kind, float Amount, float Threshold, int Tick);
+
 public sealed record CompiledRelicDefinition(
     string StableId,
     string ResourcePath,
@@ -76,7 +78,8 @@ public sealed record CompiledRelicDefinition(
     string Fingerprint,
     ImmutableArray<CompiledRelicStatusGrant> StatusGrants = default,
     ImmutableArray<CompiledRelicRunRule> RunRules = default,
-    ImmutableArray<CompiledRelicAbilityRepeat> AbilityRepeats = default);
+    ImmutableArray<CompiledRelicAbilityRepeat> AbilityRepeats = default,
+    ImmutableArray<CompiledRelicCombatRule> CombatRules = default);
 
 public sealed record CompiledRelicAbilityRepeat(AbilityTriggerKind Trigger, int ExtraExecutions);
 
@@ -88,7 +91,10 @@ public sealed record RelicRunKey(
     ulong Seed,
     string HeroId,
     int FloorIndex,
-    int BattleNumber);
+    int BattleNumber)
+{
+    public string OriginKey { get; init; } = string.Empty;
+}
 
 public sealed record RelicRunInstanceSnapshot(
     string InstanceId,

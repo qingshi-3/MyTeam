@@ -28,13 +28,17 @@ internal interface IBattleEnemyQueries
     bool HasAttackInFlight(string id);
     CompiledBroodPhase? Brood(string id);
     bool HasLineAccess(Vector2 from, Vector2 to);
+    bool IsInitialNative(string id) => false;
     bool CanOccupy(Vector2 position, float radius);
 }
 internal interface IBattleEnemyCommands
 {
     void BeginCast(string ownerId, string targetId, string displayName);
+    void PeriodicHit(string sourceId, string targetId, float damage, CombatSourceRef origin) => throw new NotSupportedException();
+    void SeatGuardMarker(string sourceId, string targetId, bool active) => throw new NotSupportedException();
+    void CompletionArmor(string ownerId, float amount, int ticks) => throw new NotSupportedException();
     void ContinueCast(string ownerId);
-    void Hit(string sourceId, string targetId, float damage, CombatSourceRef origin, EffectDamageType type);
+    void Hit(string sourceId, string targetId, float damage, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false);
     string? Spawn(UnitSnapshot profile, int team, Vector2 position, string ownerId);
     void Swap(string firstId, string secondId);
     void InterruptForForm(string ownerId);
@@ -51,8 +55,12 @@ internal interface IBattleEnemyTransactions
 }
 
 internal sealed record BattleBroodProgress(int BreakStart, bool Transformed, int NextSpawn, int Batches);
+internal readonly record struct EnemyOriginalAttackPreparation(int WindupTicks, float DamageMultiplier)
+{
+    internal static EnemyOriginalAttackPreparation Normal => new(0, 1);
+}
 
-internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEnemyCommands commands, IBattleEnemyTransactions transactions)
+internal sealed partial class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEnemyCommands commands, IBattleEnemyTransactions transactions)
 {
     private const int Width = BattlefieldLayout.Width;
     private const int Height = BattlefieldLayout.Height;
@@ -64,11 +72,15 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
         CombatSourceRef Origin, Vector2 Start, Vector2 End, Vector2 Position, float Damage,
         bool Returning, ImmutableArray<string> HitIds);
     private sealed record EnemyProduct(string UnitId, string OwnerId, int ExpireTick, string HatchContentId = "");
+    private sealed record OriginalAttackCycle(CompiledEnemyOriginalAttackCycle Rule, int Started = 0);
     private sealed record EnemyActionState(ImmutableDictionary<string, EnemyCast> Casts,
         ImmutableDictionary<int, BladeFlight> Blades, ImmutableDictionary<string, BattleBroodProgress> Broods,
-        ImmutableArray<EnemyProduct> Products, int Sequence = 0);
+        ImmutableArray<EnemyProduct> Products, ImmutableDictionary<string, OriginalAttackCycle> AttackCycles,
+        ImmutableDictionary<string, SeatGuard> SeatGuards, ImmutableDictionary<int, ConeAfterglow> Afterglows, int Sequence = 0);
     private static EnemyActionState Empty => new(ImmutableDictionary<string, EnemyCast>.Empty,
-        ImmutableDictionary<int, BladeFlight>.Empty, ImmutableDictionary<string, BattleBroodProgress>.Empty, []);
+        ImmutableDictionary<int, BladeFlight>.Empty, ImmutableDictionary<string, BattleBroodProgress>.Empty, [],
+        ImmutableDictionary<string, OriginalAttackCycle>.Empty, ImmutableDictionary<string, SeatGuard>.Empty,
+        ImmutableDictionary<int, ConeAfterglow>.Empty);
     private EnemyActionState _enemyActions = Empty;
     public bool IsBusy(string id) => _enemyActions.Casts.ContainsKey(id) || _enemyActions.Blades.Values.Any(blade => blade.OwnerId == id) ||
         (_enemyActions.Broods.TryGetValue(id, out var brood) && !brood.Transformed);
@@ -78,6 +90,17 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
         (_enemyActions.Casts.TryGetValue(id, out var cast) && cast.Origin.StableId == abilityId) ||
         _enemyActions.Blades.Values.Any(blade => blade.OwnerId == id && blade.Origin.StableId == abilityId);
     public void Clear() => _enemyActions = Empty;
+    // Called exactly once after a legal original attack is admitted, before its
+    // windup is prepared. Cancellation spends the cycle; extra hits never call it.
+    public EnemyOriginalAttackPreparation PrepareOriginalAttack(string ownerId)
+    {
+        if (!_enemyActions.AttackCycles.TryGetValue(ownerId, out var cycle)) return EnemyOriginalAttackPreparation.Normal;
+        var started = cycle.Started + 1;
+        var empowered = started == cycle.Rule.Every;
+        _enemyActions = _enemyActions with { AttackCycles = _enemyActions.AttackCycles.SetItem(ownerId,
+            cycle with { Started = empowered ? 0 : started }) };
+        return empowered ? new(cycle.Rule.WindupTicks, cycle.Rule.DamageMultiplier) : EnemyOriginalAttackPreparation.Normal;
+    }
     public Checkpoint Capture() => new(this);
     public void Restore(Checkpoint checkpoint) => checkpoint.Restore(this);
     internal sealed class Checkpoint
@@ -99,8 +122,9 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
 
     private string SelectEnemyActionTarget(BattleUnitView owner, CompiledEnemyAction operation)
     {
+        if (operation is CompiledEnemyOriginalAttackCycle or CompiledEnemySeatGuard) return owner.RuntimeId;
         var range = operation switch { CompiledConeBreath x => x.Range, CompiledReturningBlade x => x.Range,
-            CompiledPositionSwap x => x.Range, CompiledRampart x => x.Range, _ => owner.BodyRadius + 2 };
+            CompiledPositionSwap x => x.Range, CompiledRampart x => x.Range, CompiledEnemyStoneQuake x => x.Radius, _ => owner.BodyRadius + 2 };
         var targets = read.Units.Where(u => u.Alive && u.Team != owner.Team && !IsRampart(u.RuntimeId) &&
             owner.Position.DistanceTo(u.Position) <= range + (operation is CompiledConeBreath ? u.BodyRadius : 0) &&
             (operation is CompiledPositionSwap ? CanSwapBodies(owner, u) : read.HasLineAccess(owner.Position,u.Position)));
@@ -111,6 +135,11 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
 
     private bool PrepareEnemyAction(BattleUnitView owner, CompiledEnemyAction operation, string targetId)
     {
+        if (operation is CompiledEnemySeatGuard)
+            return owner.Alive && targetId == owner.RuntimeId && TickIndex == 0 && read.IsInitialNative(owner.RuntimeId) &&
+                !_enemyActions.SeatGuards.ContainsKey(owner.RuntimeId);
+        if (operation is CompiledEnemyOriginalAttackCycle)
+            return owner.Alive && targetId == owner.RuntimeId && !_enemyActions.AttackCycles.ContainsKey(owner.RuntimeId);
         if (IsBusy(owner.RuntimeId) || read.Displacing(owner.RuntimeId) || read.HasAttackInFlight(owner.RuntimeId)) return false;
         if (operation is CompiledBroodPhase && _enemyActions.Broods.ContainsKey(owner.RuntimeId)) return false;
         if (operation.ContentDependencies.Any(id => !read.Profiles.ContainsKey(id))) return false;
@@ -119,6 +148,17 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
 
     private void BeginEnemyAction(BattleUnitView owner, BattleUnitView target, CompiledEnemyAction operation, string displayName, CombatSourceRef origin)
     {
+        if (operation is CompiledEnemyOriginalAttackCycle cycle)
+        {
+            if (!_enemyActions.AttackCycles.ContainsKey(owner.RuntimeId))
+                _enemyActions = _enemyActions with { AttackCycles = _enemyActions.AttackCycles.Add(owner.RuntimeId, new(cycle)) };
+            return;
+        }
+        if (operation is CompiledEnemySeatGuard guard)
+        {
+            RegisterSeatGuard(owner, guard);
+            return;
+        }
         var direction = (target.Position-owner.Position).Normalized();
         if (direction.IsZeroApprox()) direction = owner.Team == 0 ? Vector2.Right : Vector2.Left;
         var range = operation switch { CompiledConeBreath x => x.Range, CompiledReturningBlade x => x.Range,
@@ -133,6 +173,7 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
         switch (operation)
         {
             case CompiledConeBreath x: EmitEnemyAction(cast,x.Vfx,"prepare",x.WindupTicks,x.Range,x.AngleDegrees); break;
+            case CompiledEnemyStoneQuake x: EmitEnemyAction(cast,"stone_quake","prepare",x.WindupTicks,x.Radius); break;
             case CompiledReturningBlade:
                 // Authored hand-release timing, with no extra charge stage or warning line.
                 var seconds = Math.Max(BattleTiming.TickSeconds,owner.Definition.ProjectileWindupSeconds);
@@ -157,7 +198,7 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
 
     public void Advance()
     {
-        if (_enemyActions.Casts.IsEmpty && _enemyActions.Products.IsEmpty &&
+        if (_enemyActions.Casts.IsEmpty && _enemyActions.Products.IsEmpty && _enemyActions.Afterglows.IsEmpty &&
             !read.Units.Any(unit => unit.Alive && read.Brood(unit.RuntimeId) is not null)) return;
         transactions.Resolve(() =>
         {
@@ -179,9 +220,13 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
                         {
                             if (cast.Step == 0) EmitEnemyAction(cast,x.Vfx,"release",x.PulseCount*x.PulseIntervalTicks,x.Range,x.AngleDegrees);
                             HitCone(owner,cast,x.Range,x.AngleDegrees,x.AttackMultiplier,EffectDamageType.Normal);
+                            if (cast.Step + 1 == x.PulseCount && x.AfterglowDurationTicks > 0) ReleaseAfterglow(owner, cast, x);
                             SetEnemyCast(cast with { Step = cast.Step+1 });
                         }
                         if (elapsed >= x.WindupTicks+x.PulseCount*x.PulseIntervalTicks+x.RecoveryTicks) Cancel(owner.RuntimeId);
+                        break;
+                    case CompiledEnemyStoneQuake x:
+                        AdvanceStoneQuake(owner, cast, x, elapsed);
                         break;
                     case CompiledReturningBlade x:
                         if (cast.Step == 0 && elapsed >= Math.Max(1,Mathf.CeilToInt(owner.Definition.ProjectileWindupSeconds/BattleTiming.TickSeconds)))
@@ -221,7 +266,7 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
                         {
                             foreach (var hit in read.Units.Where(u => u.Alive && u.Team != owner.Team &&
                                 LineHitTime(cast.Start,cast.End-cast.Start,x.FissureRadius,u) is not null).OrderBy(u => u.RuntimeId,StringComparer.Ordinal).ToArray())
-                                commands.Hit(owner.RuntimeId,hit.RuntimeId,owner.Damage*x.AttackMultiplier,cast.Origin,EffectDamageType.Normal);
+                                commands.Hit(owner.RuntimeId,hit.RuntimeId,owner.Damage*x.AttackMultiplier,cast.Origin,EffectDamageType.Normal,isAreaDamage:true);
                             EmitEnemyAction(cast,x.Vfx,"release",5,x.FissureRadius);
                             RemoveProducts(owner.RuntimeId, wallsOnly:true);
                             SetEnemyCast(cast with { Step = 3 });
@@ -233,6 +278,7 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
                         break;
                 }
             }
+            AdvanceAfterglows();
         });
     }
 
@@ -247,7 +293,7 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
         if (!_enemyActions.Casts.TryGetValue(ownerId,out var cast)) return;
         _enemyActions = _enemyActions with { Casts = _enemyActions.Casts.Remove(ownerId) };
         var vfx = cast.Operation switch { CompiledConeBreath x => x.Vfx, CompiledPositionSwap x => x.Vfx,
-            CompiledRampart x => x.Vfx, _ => "" };
+            CompiledRampart x => x.Vfx, CompiledEnemyStoneQuake => "stone_quake", _ => "" };
         if (vfx != "") EmitEnemyAction(cast,vfx,"end",1);
         if (cast.Operation is CompiledRampart) RemoveProducts(ownerId,wallsOnly:true);
         // Already released blades deliberately survive control, displacement and caster death.
@@ -265,7 +311,7 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
             if (distance-target.BodyRadius > range ||
                 (distance > target.BodyRadius && Math.Abs(heading.AngleTo(offset)) > Mathf.DegToRad(angle/2)+extraAngle) ||
                 !read.HasLineAccess(cast.Start,target.Position)) continue;
-            commands.Hit(owner.RuntimeId,target.RuntimeId,owner.Damage*multiplier,cast.Origin,damageType);
+            commands.Hit(owner.RuntimeId,target.RuntimeId,owner.Damage*multiplier,cast.Origin,damageType,isAreaDamage:true);
             Emit("line_impact",owner.RuntimeId,target.RuntimeId,0,target.Position,"");
         }
     }
@@ -308,7 +354,7 @@ internal sealed class BattleEnemyActionScope(IBattleEnemyQueries read, IBattleEn
                 var wall = IsRampart(hit.Unit.RuntimeId);
                 transactions.ResolveHit(() =>
                 {
-                    if (hit.Unit.Team != blade.Team) commands.Hit(source.RuntimeId,hit.Unit.RuntimeId,blade.Damage,blade.Origin,EffectDamageType.Normal);
+                    if (hit.Unit.Team != blade.Team) commands.Hit(source.RuntimeId,hit.Unit.RuntimeId,blade.Damage,blade.Origin,EffectDamageType.Normal,isAreaDamage:true);
                     blade = blade with { HitIds = blade.HitIds.Add(hit.Unit.RuntimeId) };
                     Emit("line_impact",source.RuntimeId,hit.Unit.RuntimeId,0,hit.Unit.Position,"");
                 });

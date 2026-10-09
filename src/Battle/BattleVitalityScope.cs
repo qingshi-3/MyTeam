@@ -68,7 +68,9 @@ internal sealed class BattleVitalityScope(IBattleVitalityWorld world, BattleConf
     }
     public float Damage(string sourceRuntimeId, BattleUnitState? source, BattleUnitState target, float raw,
         CombatSourceRef origin = default, EffectDamageType damageType = EffectDamageType.Normal,
-        CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "")
+        CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "",
+        BattleDamageStatisticsAttribution statisticsAttribution = default,
+        bool isAreaDamage = false, CombatPoint? attackIncomingDirection = null)
     {
         if (!target.Alive) return 0;
         using var resolution = pipeline.BeginAuthoritativeResolution();
@@ -90,7 +92,7 @@ internal sealed class BattleVitalityScope(IBattleVitalityWorld world, BattleConf
             sourceRuntimeId,
             target.RuntimeId,
             world.Tick,
-            Math.Max(0, raw), damageType, damageClass, actionId));
+            Math.Max(0, raw), damageType, damageClass, actionId, isAreaDamage, attackIncomingDirection));
         raw = calculated.ResolvedAmount;
         var resistance = damageType switch
         {
@@ -114,7 +116,10 @@ internal sealed class BattleVitalityScope(IBattleVitalityWorld world, BattleConf
         var healthRemoved = Math.Min(healthBefore, damage);
         var effectiveDamage = absorbed + healthRemoved;
         BattleHeroMana.OnDamage(target, effectiveDamage, world.Tick);
-        statistics.Damage(sourceRuntimeId, target.RuntimeId, effectiveDamage, absorbed, wasAlive && !target.Alive);
+        statistics.Damage(sourceRuntimeId, target.RuntimeId, effectiveDamage, absorbed, wasAlive && !target.Alive,
+            healthRemoved, Math.Max(0, resolvedDamage - absorbed - healthRemoved),
+            statisticsAttribution.IsSpecified ? statisticsAttribution.Origin : combatSource,
+            statisticsAttribution.IsSpecified ? statisticsAttribution.DamageClass : damageClass, damageType);
         world.Publish(new BattleCombatEventDraft(
             BattleCombatEventKind.DamageResolved,
             combatSource,
@@ -126,11 +131,13 @@ internal sealed class BattleVitalityScope(IBattleVitalityWorld world, BattleConf
             EffectiveValue: effectiveDamage,
             Cell: ToCombatCell(target.Cell),
             Position: ToCombatPoint(target.Position),
-            DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
+            DamageType: damageType, DamageClass: damageClass, ActionId: actionId,
+            IsAreaDamage: isAreaDamage, AttackIncomingDirection: attackIncomingDirection));
         if (healthRemoved > 0)
             world.Publish(new BattleCombatEventDraft(BattleCombatEventKind.HealthLost,combatSource,sourceRuntimeId,target.RuntimeId,
                 world.Tick,EffectiveValue:healthRemoved,DamageType:damageType,DamageClass:damageClass,ActionId:actionId,
-                SourceHealthRatio:sourceHealthRatio,TargetHealthRatio:target.Health / target.MaxHealth));
+                SourceHealthRatio:sourceHealthRatio,TargetHealthRatio:target.Health / target.MaxHealth,
+                IsAreaDamage:isAreaDamage,AttackIncomingDirection:attackIncomingDirection));
         if (!target.Alive)
         {
             world.BeforeDeath(target);
@@ -149,7 +156,8 @@ internal sealed class BattleVitalityScope(IBattleVitalityWorld world, BattleConf
                 EffectiveValue: effectiveDamage,
                 Cell: ToCombatCell(target.Cell),
                 Position: ToCombatPoint(target.Position),
-                DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
+                DamageType: damageType, DamageClass: damageClass, ActionId: actionId,
+            IsAreaDamage: isAreaDamage, AttackIncomingDirection: attackIncomingDirection));
             if (creditedKiller is not null)
                 world.Publish(new BattleCombatEventDraft(
                     BattleCombatEventKind.UnitKilled,
@@ -161,7 +169,8 @@ internal sealed class BattleVitalityScope(IBattleVitalityWorld world, BattleConf
                     EffectiveValue: effectiveDamage,
                     Cell: ToCombatCell(target.Cell),
                     Position: ToCombatPoint(target.Position),
-                    DamageType: damageType, DamageClass: damageClass, ActionId: actionId));
+                    DamageType: damageType, DamageClass: damageClass, ActionId: actionId,
+            IsAreaDamage: isAreaDamage, AttackIncomingDirection: attackIncomingDirection));
             world.CancelProjectiles(target);
             world.Present("defeated", sourceRuntimeId, target.RuntimeId, damage, target.Position, "defeated");
             HandleDeath(source, target);
@@ -188,7 +197,7 @@ internal sealed class BattleVitalityScope(IBattleVitalityWorld world, BattleConf
         target.Health = Math.Min(target.MaxHealth, target.Health + calculated.ResolvedAmount);
         world.HealthChanged(target);
         var effectiveHealing = target.Health - before;
-        statistics.Heal(sourceRuntimeId, effectiveHealing);
+        statistics.Heal(sourceRuntimeId, target.RuntimeId, effectiveHealing, calculated.ResolvedAmount, combatSource);
         world.Publish(new BattleCombatEventDraft(
             BattleCombatEventKind.HealingResolved,
             combatSource,
@@ -219,6 +228,7 @@ internal sealed class BattleVitalityScope(IBattleVitalityWorld world, BattleConf
             world.Tick,
             amount));
         target.Shield += calculated.ResolvedAmount;
+        statistics.Shield(sourceRuntimeId, calculated.ResolvedAmount);
         if (calculated.ResolvedAmount > 0)
             world.Present("vfx", sourceRuntimeId, target.RuntimeId, calculated.ResolvedAmount, target.Position, "",
                 vfx: new BattleVfxCue(BattleVfxPhase.ShieldActive, "shield"));

@@ -39,6 +39,7 @@ public partial class AbilityDefinition : Resource
     [Export] public int CooldownTicks { get; set; }
     [Export] public int MaxUses { get; set; }
     [Export] public int IntervalTicks { get; set; }
+    [Export] public int FirstTriggerTick { get; set; }
     [Export] public AbilityAutomaticTargetKind AutomaticTarget { get; set; }
     [Export] public Godot.Collections.Array<AbilityOperationSpec> Operations { get; set; } = [];
     [Export] public AbilityPresentationSpec? Presentation { get; set; }

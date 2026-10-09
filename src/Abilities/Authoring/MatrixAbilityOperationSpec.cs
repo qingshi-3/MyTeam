@@ -10,7 +10,9 @@ public enum MatrixOperationKind
     PayHealth, ConsumeShield, ConsumePoison, TransferPoison, TimedAttribute,
     NextSkillBoost, NextAttackBoost, ExtendSummon, Summon, RegisterReaction,
     Delay, DashStrike, DeathGift, EchoDeathGift, Taunt, SkillVolley, LineDamage, ScalePoison, ExtraShot, Sequence,
-    PermanentAttribute
+    PermanentAttribute, Control, Transform, OverrideAttribute, AdditionalAttack, AttackReaction, Windup, Retreat, LeapWithFallback, AttackDodgeAura, RememberAllyFixedGains, BindOpeningAllies, GrantRememberableAttribute,
+    OptionalMeleeStrike, AttackSpeedForOriginalAttacks, BlinkLineDisarm, FrontalAttackGuard, GroundStorm,
+    RandomEnemyChannel, RetreatDualShot, HealingSeriesShield, KillRefundAttack
 }
 public enum MatrixTargetKind
 {
@@ -18,7 +20,8 @@ public enum MatrixTargetKind
     MostEmberEnemies, DenseEnemies, LowestHealthAllies, NearestAllies,
     NearestCaster, OwnedSummons, TemporaryAllies, EventSource, EventTarget,
     EventNearbyEnemies, EventNearbyAllies, LowestManaAllies, FrontAlly, OtherEnemy, EventVictim,
-    NearWoundedAllyEnemies, NearestSummoner, NearEventSourceAllies, FrontEnemies, NearestWoundedAlly, NearestBoostableCaster
+    NearWoundedAllyEnemies, NearestSummoner, NearEventSourceAllies, FrontEnemies, NearestWoundedAlly, NearestBoostableCaster, BacklineEnemy, LowestAbsoluteHealthEnemy, OtherEnemiesNearTarget,
+    LowestWoundedHealthAllies, CurrentOrNearestEnemy
 }
 public enum MatrixEventKind
 {
@@ -26,7 +29,7 @@ public enum MatrixEventKind
     ManaCast, Death, Control, PoisonTransferred, EmberDetonated, SummonHit, PoisonApplied
 }
 public enum MatrixRelation { Any, Owner, Ally, OtherAlly, Enemy, OwnedSummon }
-public enum MatrixCondition { None, Poisoned, Chilled, EmberMarked, Controlled, LowHealth, Shielded, Unshielded, Frozen }
+public enum MatrixCondition { None, Poisoned, Chilled, EmberMarked, Controlled, LowHealth, Shielded, Unshielded, Frozen, Isolated }
 
 [GlobalClass]
 public partial class MatrixAbilityOperationSpec : AbilityOperationSpec
@@ -53,6 +56,7 @@ public partial class MatrixAbilityOperationSpec : AbilityOperationSpec
     public bool CounterOnTarget { get => Targeting?.CounterOnTarget ?? false; set => (Targeting ??= new()).CounterOnTarget = value; }
     public bool LandingSide { get => Targeting?.LandingSide ?? false; set => (Targeting ??= new()).LandingSide = value; }
     public float Amount { get => Magnitude?.Amount ?? 0; set => (Magnitude ??= new()).Amount = value; }
+    public float SpellPowerRatio { get => Magnitude?.SpellPowerRatio ?? 0; set => (Magnitude ??= new()).SpellPowerRatio = value; }
     public float AttackRatio { get => Magnitude?.AttackRatio ?? 0; set => (Magnitude ??= new()).AttackRatio = value; }
     public float OwnerHealthRatio { get => Magnitude?.OwnerHealthRatio ?? 0; set => (Magnitude ??= new()).OwnerHealthRatio = value; }
     public float TargetHealthRatio { get => Magnitude?.TargetHealthRatio ?? 0; set => (Magnitude ??= new()).TargetHealthRatio = value; }

@@ -25,6 +25,10 @@ public sealed partial class BattleSimulation
     private void CancelEnemyAction(string id) => _enemyRuntime.Cancel(id);
     private void RemoveEnemyProducts(string id, bool wallsOnly = false) => _enemyRuntime.RemoveProducts(id, wallsOnly);
 
+    private void RegisterEnemyDamageCalculations() => _abilityCombatSubscriptions.Add(
+        _combatPipeline.SubscribeCalculation(BattleCombatCalculationKind.Damage,
+            CombatSourceRef.System("enemy_seat_guard"), 40, _enemyRuntime.ModifyIncomingDamage));
+
     // Integration only: state and enemy rules live in BattleEnemyActionScope.
     private sealed class EnemyWorld(BattleSimulation battle) : IBattleEnemyQueries, IBattleEnemyCommands, IBattleEnemyTransactions
     {
@@ -39,6 +43,8 @@ public sealed partial class BattleSimulation
         public bool Airborne(string id) => battle.IsAirborne(Unit(id));
         public bool HasAttackInFlight(string id) => Unit(id).ProjectileSequence is not null || !Unit(id).ProjectileWindups.IsEmpty;
         public CompiledBroodPhase? Brood(string id) => battle._abilityScope?.FindOperation<CompiledBroodPhase>(id);
+        public bool IsInitialNative(string id) => battle._config.Spawns.Any(spawn =>
+            spawn.InstanceId == id && !spawn.IsTemporary);
         public bool HasLineAccess(Vector2 from, Vector2 to) => battle.HasLineAccess(from, to);
         public bool CanOccupy(Vector2 position, float radius) => battle.CanOccupyPosition(position, radius);
         public void BeginCast(string ownerId, string targetId, string displayName)
@@ -51,8 +57,37 @@ public sealed partial class BattleSimulation
             battle._movement?.ReleaseUnit(ownerId);
         }
         public void ContinueCast(string id) => Unit(id).Mode = BattleUnitMode.Casting;
-        public void Hit(string source, string target, float damage, CombatSourceRef origin, EffectDamageType type) =>
-            battle.ResolveLineSkillHit(Unit(source), Unit(target), damage, origin, type);
+        public void Hit(string source, string target, float damage, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false) =>
+            battle.ResolveLineSkillHit(Unit(source), Unit(target), damage, origin, type, isAreaDamage);
+        public void PeriodicHit(string source, string target, float damage, CombatSourceRef origin) =>
+            battle.ApplyDamage(source, Unit(source), Unit(target), damage, origin,
+                EffectDamageType.Normal, CombatDamageClass.Periodic, isAreaDamage: true);
+        private static string GuardGrant(string source, string target) => $"enemy_seat_guard:{source}:{target}";
+        public void SeatGuardMarker(string source, string target, bool active)
+        {
+            var grant = GuardGrant(source, target);
+            if (!active) { battle._statusScope.RevokeGrant(grant); return; }
+            var status = BattleMechanicStatus.Create("enemy_seat_guard", "岩座守护", 1) with
+            {
+                DurationKind = StatusDurationKind.Permanent, DurationTicks = 0,
+                AggregationPolicy = StatusAggregationPolicy.BySource,
+                DispelCategory = StatusDispelCategory.NonDispellable,
+                Description = "受到伤害降低20%；岩座守护者死亡时失效。"
+            };
+            battle._statusScope.ReplaceGrants([], [new(status, source, target, battle.TickIndex, grant)]);
+        }
+        public void CompletionArmor(string id, float amount, int ticks)
+        {
+            var status = BattleMechanicStatus.Create("enemy_stone_armor", "岩震余势", ticks,
+                modifiers: [new(CombatAttribute.Armor, AttributeModifierOperation.Add, new CompiledConstantMagnitude(amount), 0, "stone_armor")]) with
+            {
+                AggregationPolicy = StatusAggregationPolicy.BySource,
+                OverflowPolicy = StatusOverflowPolicy.RefreshDuration,
+                DurationRefreshPolicy = StatusDurationRefreshPolicy.Reset,
+                Description = $"完整岩震后防御增加{amount:0.#}。"
+            };
+            battle._statusScope.Apply(status, id, id, battle.TickIndex);
+        }
         public string? Spawn(UnitSnapshot profile, int team, Vector2 position, string ownerId)
         {
             var id = $"s-{team}-{battle._summonCounter}";

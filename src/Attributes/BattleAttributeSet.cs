@@ -45,9 +45,12 @@ public sealed class BattleAttributeSet
             return _completedBases.TryGetValue(attribute, out var completed)
                 ? completed
                 : throw new KeyNotFoundException($"Attribute '{attribute}' is not defined.");
-        return _baseOverrides.TryGetValue(attribute, out var overridden)
-            ? overridden
-            : Definition.Find(attribute).BaseValue;
+        var value = _baseOverrides.TryGetValue(attribute, out var overridden)
+            ? overridden : Definition.Find(attribute).BaseValue;
+        foreach (var modifier in OrderedModifiers(attribute))
+            if (modifier.Modifier.Operation == AttributeModifierOperation.BaseAdd)
+                value = Finite(value + ResolveMagnitude(modifier), attribute);
+        return value;
     }
 
     public float GetValue(CombatAttribute attribute)
@@ -61,18 +64,17 @@ public sealed class BattleAttributeSet
         try
         {
             var definition = Definition.Find(attribute);
-            if (!_orderedModifiers.TryGetValue(attribute, out var ordered))
-            {
-                ordered = BuildModifierOrder(attribute);
-                _orderedModifiers.Add(attribute, ordered);
-            }
-            var running = _baseOverrides.TryGetValue(attribute, out var overridden) ? overridden : definition.BaseValue;
+            var ordered = OrderedModifiers(attribute);
+            var running = GetBaseValue(attribute);
             foreach (var item in ordered)
                 if (item.Modifier.Operation == AttributeModifierOperation.Add)
                     running = Finite(running + ResolveMagnitude(item), attribute);
             foreach (var item in ordered)
                 if (item.Modifier.Operation == AttributeModifierOperation.Multiply)
                     running = Finite(running * ResolveMagnitude(item), attribute);
+            foreach (var item in ordered)
+                if (item.Modifier.Operation == AttributeModifierOperation.PostMultiplyAdd)
+                    running = Finite(running + ResolveMagnitude(item), attribute);
             RuntimeModifier? winner = null;
             foreach (var item in ordered)
                 if (item.Modifier.Operation == AttributeModifierOperation.Override) winner = item;
@@ -85,12 +87,30 @@ public sealed class BattleAttributeSet
         }
     }
 
+    private RuntimeModifier[] OrderedModifiers(CombatAttribute attribute)
+    {
+        if (_orderedModifiers.TryGetValue(attribute, out var ordered)) return ordered;
+        ordered = BuildModifierOrder(attribute);
+        _orderedModifiers.Add(attribute, ordered);
+        return ordered;
+    }
+
     private RuntimeModifier[] BuildModifierOrder(CombatAttribute attribute) => _modifiers.Count == 0 ? [] :
         _modifiers.Values.Where(item => item.Modifier.Attribute == attribute)
             .OrderBy(item => item.Modifier.Priority)
             .ThenBy(item => item.ApplicationSequence)
             .ThenBy(item => item.Source)
             .ThenBy(item => item.Modifier.SlotId, StringComparer.Ordinal).ToArray();
+
+    // Permanent base increments must not fold removable base contributions
+    // (for example a belt) back into the unit's own stored base.
+    public void AddBaseValue(CombatAttribute attribute, float amount)
+    {
+        EnsureActive();
+        var current = _baseOverrides.TryGetValue(attribute, out var overridden)
+            ? overridden : Definition.Find(attribute).BaseValue;
+        SetBaseValue(attribute, Finite(current + amount, attribute));
+    }
 
     public void SetBaseValue(CombatAttribute attribute, float value)
     {
@@ -117,6 +137,8 @@ public sealed class BattleAttributeSet
     {
         EnsureActive();
         ArgumentNullException.ThrowIfNull(modifier);
+        if (modifier.Operation == AttributeModifierOperation.BaseAdd && modifier.Magnitude is not CompiledConstantMagnitude)
+            throw new ArgumentException("Base-add modifiers require a constant magnitude.", nameof(modifier));
         Definition.Find(modifier.Attribute);
         if (!source.IsSpecified) throw new ArgumentException("Attribute modifier source is required.", nameof(source));
         if (string.IsNullOrWhiteSpace(modifier.SlotId)) throw new ArgumentException("Attribute modifier slot is required.", nameof(modifier));

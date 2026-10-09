@@ -23,7 +23,7 @@ internal interface IBattleTechniqueWorld
     CombatSourceRef AbilityOrigin(CompiledAbilityDefinition ability, string ownerId);
     float ReadCounter(BattleUnitState unit, string key);
     void WriteCounter(BattleUnitState unit, string key, float value);
-    void Hit(BattleUnitState source, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type);
+    void Hit(BattleUnitState source, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false);
     float Heal(string source, BattleUnitState target, float amount, CombatSourceRef origin);
     void TimedShield(string source, string target, float amount, int duration, CombatSourceRef origin);
     void ReleaseUnit(string id);
@@ -75,7 +75,7 @@ internal sealed class BattleTechniqueScope(IBattleTechniqueWorld world, BattleSt
     private sealed record GritLedger(string Owner, string Key, ImmutableArray<GritSample> Samples);
     private sealed record TimedShield(string Owner, int Expires, float Remaining);
     private sealed record PunchCast(string Owner, int Team, Vector2 Start, Vector2 End, int StartTick,
-        float Damage, CompiledGritPunchOperation Skill, CombatSourceRef Origin);
+        float Damage, CompiledGritPunchOperation Skill, CombatSourceRef Origin, float ConsumedGrit = 0);
     private sealed record HookCast(string Owner, int Team, Vector2 Start, Vector2 End, Vector2 Position,
         int StartTick, CompiledHookOperation Skill, CombatSourceRef Origin, int ReturningAt = -1, string Caught = "");
     // One immutable graph; the normal world transaction captures this together with health,
@@ -128,7 +128,7 @@ internal sealed class BattleTechniqueScope(IBattleTechniqueWorld world, BattleSt
                 targets = [targetId]; return true;
             case CompiledGritPunchOperation punch:
                 if (target is not { Alive: true } || target.Team == owner.Team || world.IsDisplacing(owner) ||
-                    !owner.Definition.AbilityLoadout!.Abilities.Any(a => a.Operations.Contains(punch) && actions.HasQueuedUnitAction(owner, a.StableId)) ||
+                    !owner.AbilityLoadout!.Abilities.Any(a => a.Operations.Contains(punch) && actions.HasQueuedUnitAction(owner, a.StableId)) ||
                     owner.Position.DistanceTo(target.Position) > punch.Range || !world.HasLineAccess(owner,target)) return false;
                 targets = [targetId];
                 return true;
@@ -201,7 +201,7 @@ internal sealed class BattleTechniqueScope(IBattleTechniqueWorld world, BattleSt
                 var travel = direction*punch.Range;
                 var terrain = BattlefieldSpace.FirstTerrainHitFraction(owner.Position,travel,punch.Radius,Width,Height,c=>world.CanOccupy(c));
                 var cast = new PunchCast(owner.RuntimeId,owner.Team,owner.Position,owner.Position+travel*terrain,world.Tick,
-                    owner.Damage*punch.AttackRatio+stored*punch.GritDamageRatio,punch,origin);
+                    owner.Damage*punch.AttackRatio+stored*punch.GritDamageRatio,punch,origin,stored);
                 _techniques = _techniques with { Punches = _techniques.Punches.SetItem(owner.RuntimeId,cast) };
                 HoldTechnique(owner);
                 EmitPunch("line_charge",cast);
@@ -286,8 +286,13 @@ internal sealed class BattleTechniqueScope(IBattleTechniqueWorld world, BattleSt
                     .Select(u=>(Unit:u,Time:world.LineHitTime(cast.Start,cast.End-cast.Start,cast.Skill.Radius,u)))
                     .Where(h=>h.Time is not null).OrderBy(h=>h.Time).ThenBy(h=>h.Unit.RuntimeId,StringComparer.Ordinal).ToArray())
                 {
-                    world.Hit(owner,hit.Unit,cast.Damage,cast.Origin,EffectDamageType.Normal);
+                    world.Hit(owner,hit.Unit,cast.Damage,cast.Origin,EffectDamageType.Normal,isAreaDamage:true);
                     world.Present("line_impact",owner.RuntimeId,hit.Unit.RuntimeId,0,hit.Unit.Position,"");
+                }
+                if(cast.Skill.SuccessHealGritRatio>0 && owner.Alive)
+                {
+                    var healed=world.Heal(owner.RuntimeId,owner,cast.ConsumedGrit*cast.Skill.SuccessHealGritRatio,cast.Origin);
+                    if(healed>0)world.Present("heal",owner.RuntimeId,owner.RuntimeId,healed,owner.Position,"heal");
                 }
                 owner.AttackCooldown=Math.Max(owner.AttackCooldown,4);
             }
@@ -389,12 +394,12 @@ internal sealed class BattleTechniqueScope(IBattleTechniqueWorld world, BattleSt
     private sealed record GritTriggerLatch(bool BelowHalf = false, bool CriticalUsed = false);
 
     private static CompiledGritStorageOperation GritStorageFor(BattleUnitState owner, string key) =>
-        owner.Definition.AbilityLoadout!.Abilities.SelectMany(a => a.Operations)
+        owner.AbilityLoadout!.Abilities.SelectMany(a => a.Operations)
             .OfType<CompiledGritStorageOperation>().Single(s => s.CounterKey == key);
 
     public void RefreshGritActionRequests(BattleUnitState owner)
     {
-        if (!owner.Alive || owner.Definition.AbilityLoadout is not { } loadout) return;
+        if (!owner.Alive || owner.AbilityLoadout is not { } loadout) return;
         foreach (var ability in loadout.Abilities.Where(a => a.Trigger == AbilityTriggerKind.ActionQueued))
         foreach (var punch in ability.Operations.OfType<CompiledGritPunchOperation>())
         {

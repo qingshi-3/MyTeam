@@ -57,14 +57,15 @@ public sealed record CompiledAbilityDefinition(
     ImmutableArray<CompiledAbilityOperation> Operations,
     CompiledAbilityPresentation? Presentation,
     AbilityAutomaticTargetKind AutomaticTarget = AbilityAutomaticTargetKind.CurrentEnemy,
-    bool Echoable = false, string AuthoredDescription = "")
+    bool Echoable = false, string AuthoredDescription = "", int FirstTriggerTick = 0)
 {
     public bool IsActiveSkill => Trigger is AbilityTriggerKind.ManaFull or AbilityTriggerKind.ActionQueued;
 
     // UI classification also includes authored enemy cast actions. Periodic passive
     // maintenance remains passive; this does not change combat event routing.
     public bool IsDisplayedActiveSkill => IsActiveSkill || Operations.Any(operation =>
-        operation is CompiledChargedLineOperation or CompiledTrampleOperation or CompiledEnemyAction);
+        operation is CompiledChargedLineOperation or CompiledTrampleOperation ||
+        operation is CompiledEnemyAction and not CompiledEnemyOriginalAttackCycle and not CompiledEnemySeatGuard);
 }
 
 public sealed record CompiledAbilityLoadout(

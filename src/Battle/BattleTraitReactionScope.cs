@@ -11,7 +11,7 @@ using TowerAutobattler.Traits;
 
 namespace TowerAutobattler.Battle;
 
-internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattleTraitCommands commands,
+internal sealed partial class BattleTraitReactionScope(IBattleTraitQueries read, IBattleTraitCommands commands,
     IBattleTraitTransactions transactions, BattleTraitBindings bindings, BattleStatusScope statuses,
     BattleElementStatusScope elements, BattleSupportEffectScope support)
 {
@@ -29,7 +29,7 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
     private float TraitCounter(string key) => _state.Counters.GetValueOrDefault(key);
     private void TraitWrite(string key, float value) => _state = _state with { Counters = _state.Counters.SetItem(key, value) };
     private CombatSourceRef TraitOrigin(BattleTraitBinding binding, string owner) => bindings.Origin(binding, owner);
-    private IEnumerable<BattleTraitBinding> TraitFor(string owner, TraitMechanicKind kind) => bindings.For(owner, kind);
+    private IEnumerable<BattleTraitBinding> TraitFor(string owner, TraitMechanicKind kind) => _traitMechanicBindings.Where(b => b.Spec.Kind == kind && IsMember(b, owner));
     public void Observe(BattleCombatEvent fact)
     {
         support.Observe(fact);
@@ -51,7 +51,7 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
     public void Clear() => _state = State.Empty;
     private static string TraitKey(BattleTraitBinding b, string owner, string suffix) => $"{b.Team}:{b.Id}:{b.Spec.Kind}:{owner}:{suffix}";
     private IEnumerable<BattleUnitView> TraitLiving(BattleTraitBinding b) => read.Units
-        .Where(u => u.Alive && u.Team == b.Team && b.Members.Contains(u.RuntimeId))
+        .Where(u => u.Alive && u.Team == b.Team && IsMember(b, u.RuntimeId))
         .OrderBy(u => u.RuntimeId, StringComparer.Ordinal);
     private IEnumerable<BattleUnitView> TraitNear(BattleUnitView center, int team, float range, bool includeSelf = false) =>
         read.Units.Where(u => u.Alive && u.Team == team && (includeSelf || u != center) &&
@@ -66,11 +66,15 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
 
     public bool IsInterested(BattleCombatEvent e)
     {
+        if (e.Kind == BattleCombatEventKind.BattleStarted && !_traitMechanicBindings.IsEmpty) return true;
+        if (e.Kind == BattleCombatEventKind.UnitTransformed && TraitFor(e.SourceRuntimeId, TraitMechanicKind.TransformHealth).Any()) return true;
+        if (e.Kind == BattleCombatEventKind.AttackLanded && _traitMechanicBindings.Any(b => IsMember(b, e.SourceRuntimeId) &&
+            b.Spec.Kind is TraitMechanicKind.FreezeOnAttack or TraitMechanicKind.AdditionalAttacks)) return true;
         if (e.Kind == BattleCombatEventKind.DamageResolved && support.HasUnlinkedBreak(e)) return true;
         foreach (var b in _traitMechanicBindings)
         {
-            var source = b.Members.Contains(e.SourceRuntimeId);
-            var target = b.Members.Contains(e.TargetRuntimeId);
+            var source = IsMember(b, e.SourceRuntimeId);
+            var target = IsMember(b, e.TargetRuntimeId);
             var kind = b.Spec.Kind;
             if (e.Kind == BattleCombatEventKind.BattleStarted && kind == TraitMechanicKind.BarrierRetaliation) return true;
             if (e.Kind == BattleCombatEventKind.AttackLanded && source &&
@@ -137,7 +141,8 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
                 amount *= 1 + TraitCounter($"castboost_action:{r.Source.InstanceId}");
             return amount;
         }
-        foreach (var b in _traitMechanicBindings.Where(b => b.Members.Contains(source.RuntimeId)))
+        if (TraitCounter($"copy_damage:{source.RuntimeId}") is > 0 and var factor) amount *= factor;
+        foreach (var b in _traitMechanicBindings.Where(b => IsMember(b, source.RuntimeId)))
         {
             var m = b.Spec;
             if (m.Kind == TraitMechanicKind.DamageTakenRamp)
@@ -166,6 +171,7 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
 
     private void TraitMechanicsOnEvent(BattleCombatEvent e)
     {
+        RosterTraitEvent(e);
         var source = TraitUnit(e.SourceRuntimeId);
         var target = TraitUnit(e.TargetRuntimeId);
         if (e.Kind == BattleCombatEventKind.BattleStarted)
@@ -178,8 +184,8 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
         foreach (var b in _traitMechanicBindings)
         {
             var m = b.Spec;
-            var sourceMember = source is not null && b.Members.Contains(source.RuntimeId);
-            var targetMember = target is not null && b.Members.Contains(target.RuntimeId);
+            var sourceMember = source is not null && IsMember(b, source.RuntimeId);
+            var targetMember = target is not null && IsMember(b, target.RuntimeId);
             if (e.Kind == BattleCombatEventKind.HealthLost && targetMember && target is { Alive: true } &&
                 source is not null && source.Team != target.Team)
             {
@@ -190,7 +196,7 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
                     TraitWrite(TraitKey(b, target.RuntimeId, "used"), 1);
                     support.ApplyShield(target.RuntimeId, target.RuntimeId, target.MaxHealth * m.Amount,
                         m.DurationTicks, TraitOrigin(b, target.RuntimeId));
-                    var ally = TraitNear(target, target.Team, float.MaxValue).FirstOrDefault(u => !u.IsTemporary && !b.Members.Contains(u.RuntimeId) &&
+                    var ally = TraitNear(target, target.Team, float.MaxValue).FirstOrDefault(u => !u.IsTemporary && !IsMember(b, u.RuntimeId) &&
                         TraitCounter(TraitKey(b, u.RuntimeId, "received")) < m.Limit);
                     if (ally is not null)
                     {
@@ -262,6 +268,9 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
     public void BeginAbility(string ownerId, string actionId, bool actualManaSkill)
     {
         if (!actualManaSkill || string.IsNullOrEmpty(actionId)) return;
+        foreach (var b in TraitFor(ownerId, TraitMechanicKind.CastStartShield))
+            if (TraitUnit(ownerId) is { Alive: true } unit)
+                support.RefreshShield(ownerId, ownerId, unit.MaxHealth * b.Spec.Amount, b.Spec.DurationTicks, TraitOrigin(b, ownerId));
         var boost = TraitCounter($"castboost:{ownerId}");
         if (boost <= 0) return;
         TraitWrite($"castboost_action:{actionId}", boost);
@@ -332,7 +341,7 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
             commands.Damage(source.RuntimeId, target.RuntimeId, damage, TraitOrigin(b, source.RuntimeId), damageClass: CombatDamageClass.Derived);
             if (b.Spec.Extra > 0)
                 foreach (var other in TraitNear(target, target.Team, 1.5f).ToArray())
-                    commands.Damage(source.RuntimeId, other.RuntimeId, damage * b.Spec.Extra, TraitOrigin(b, source.RuntimeId), damageClass: CombatDamageClass.Derived);
+                    commands.Damage(source.RuntimeId, other.RuntimeId, damage * b.Spec.Extra, TraitOrigin(b, source.RuntimeId), damageClass: CombatDamageClass.Derived, isAreaDamage: true);
             commands.Publish(new(BattleCombatEventKind.StatusStackChanged, TraitOrigin(b, source.RuntimeId), source.RuntimeId,
                 target.RuntimeId, TickIndex, SubjectStableId: "matrix_ember_detonation", PreviousStacks: b.Spec.Count));
         }
@@ -430,7 +439,7 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
             if (!derivedCounter && m.Secondary > 0 && TraitReady(TraitKey(b, unit.RuntimeId, "break_cd"), m.CooldownTicks))
                 foreach (var enemy in TraitNear(unit, 1 - unit.Team, 1.5f).ToArray())
                     commands.Damage(unit.RuntimeId, enemy.RuntimeId, Math.Min(broken.Absorbed * m.Secondary, unit.Definition.Damage * 1.2f),
-                        TraitOrigin(b, unit.RuntimeId), damageClass: CombatDamageClass.Derived);
+                        TraitOrigin(b, unit.RuntimeId), damageClass: CombatDamageClass.Derived, isAreaDamage: true);
             if (m.Extra > 0 && TraitCounter(TraitKey(b, unit.RuntimeId, "repair")) == 0)
             {
                 TraitWrite(TraitKey(b, unit.RuntimeId, "repair"), 1);
@@ -480,10 +489,12 @@ internal sealed class BattleTraitReactionScope(IBattleTraitQueries read, IBattle
     public void Advance()
     {
         if (!support.HasPending && !elements.HasPending && _state.Products.IsEmpty &&
+            !_traitMechanicBindings.Any(b => b.Spec.Kind == TraitMechanicKind.DelayedTeamStrike && TraitCounter(TraitKey(b, "team", "fired")) == 0) &&
             !_traitMechanicBindings.Any(b => b.Spec.Kind == TraitMechanicKind.DeathResource &&
                 TraitCounter(TraitKey(b, "team", "souls")) >= b.Spec.Count)) return;
         transactions.Resolve(() =>
         {
+            AdvanceDelayedTeamStrike();
             support.Advance();
             elements.Advance();
             foreach (var b in _traitMechanicBindings.Where(b => b.Spec.Kind == TraitMechanicKind.DeathResource)) TraitSpendSouls(b);

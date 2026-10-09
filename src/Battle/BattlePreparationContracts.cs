@@ -69,7 +69,8 @@ public sealed record BattlePreparationRequest(
     float EnemyHealthMultiplier = 1, float EnemyDamageMultiplier = 1,
     HeroRuleSnapshot? HeroRuleOverride = null,
     ImmutableArray<BossTimelineSnapshot> AdditionalBossTimelines = default,
-    CompiledMatrixStatusRules? MatrixStatusRules = null);
+    CompiledMatrixStatusRules? MatrixStatusRules = null,
+    bool CaptureDetailedStatistics = false);
 
 public static class BattlePreparationAssembler
 {
@@ -92,12 +93,14 @@ public static class BattlePreparationAssembler
         var equipment = BuildEquipment(request.Content.Graph, request.Units);
         var traits = BuildTraits(request.Content.Graph, request.Units, request.ExplicitTraitContributions);
         var relicSummons = BuildRelicSummons(request.Content, request.Relics);
-        var tacticalSummons = BuildTacticalSummons(request.Content, request.TacticalCommands);
+        var tacticalSummons = BuildTacticalSummons(request.Content, request.TacticalCommands,
+            OpeningCopyMemberContentIds(traits, request.Units));
         var heroSummon = SnapshotOptional(request.Content, heroRule.SummonContentId);
         var itemSummon = SnapshotOptional(request.Content, request.Modifiers.SummonContentId);
 
         return new BattleConfig
         {
+            CaptureDetailedStatistics = request.CaptureDetailedStatistics,
             MatrixStatusRules = request.MatrixStatusRules ?? CompiledMatrixStatusRules.Default,
             Seed = request.Seed,
             Identity = request.Identity,
@@ -123,6 +126,7 @@ public static class BattlePreparationAssembler
     private static ImmutableArray<BattleSpawn> BuildSpawns(BattlePreparationRequest request)
     {
         var builder = ImmutableArray.CreateBuilder<BattleSpawn>();
+        var assignedTimelineBosses = new HashSet<string>(StringComparer.Ordinal);
         foreach (var placement in request.Placements)
         {
             if (placement is null || string.IsNullOrWhiteSpace(placement.UnitInstanceId))
@@ -142,10 +146,17 @@ public static class BattlePreparationAssembler
                     throw new InvalidOperationException("此单位没有可测试的保层升阶。");
                 snapshot = snapshot with { AttackHitGrowth = growth with { ResetOnTargetChange = false } };
             }
-            if (request.BossTimeline?.BossContentId == snapshot.ContentId ||
-                !request.AdditionalBossTimelines.IsDefaultOrEmpty && request.AdditionalBossTimelines.Any(
-                    timeline => timeline.BossContentId == snapshot.ContentId))
-                snapshot = snapshot with { AbilityLoadout = null };
+            var timeline = request.BossTimeline?.BossContentId == snapshot.ContentId ? request.BossTimeline :
+                request.AdditionalBossTimelines.IsDefaultOrEmpty ? null :
+                    request.AdditionalBossTimelines.FirstOrDefault(candidate => candidate.BossContentId == snapshot.ContentId);
+            if (source.Team == 1 && !source.IsTemporary && timeline is not null && !timeline.Phases.IsDefaultOrEmpty &&
+                assignedTimelineBosses.Add(snapshot.ContentId))
+            {
+                var phase = timeline.Phases[0];
+                foreach(var candidate in timeline.Phases.Skip(1))
+                    if(source.HealthRatio <= candidate.StartHealthRatio) phase = candidate;
+                snapshot = snapshot with { IsBoss = true, AbilityLoadout = phase.AbilityLoadout };
+            }
             builder.Add(new BattleSpawn(
                 snapshot,
                 source.Team,
@@ -295,7 +306,8 @@ public static class BattlePreparationAssembler
 
     private static IReadOnlyDictionary<string, UnitSnapshot> BuildTacticalSummons(
         ContentRegistry content,
-        TacticalCommandBattlePreparation? preparation)
+        TacticalCommandBattlePreparation? preparation,
+        IEnumerable<string> openingCopyMemberContentIds)
     {
         var summons = ImmutableDictionary.CreateBuilder<string, UnitSnapshot>(StringComparer.Ordinal);
         // The shared spawn registry serves automatic heroes and lifecycle products as
@@ -311,12 +323,28 @@ public static class BattlePreparationAssembler
                      .Concat(content.Graph.Traits.SelectMany(trait => trait.Breakpoints)
                          .SelectMany(tier => tier.Mechanics.IsDefault ? [] : tier.Mechanics)
                          .Select(mechanic => mechanic.SummonContentId))
+                     .Concat(openingCopyMemberContentIds)
                      .Where(contentId => !string.IsNullOrWhiteSpace(contentId))
                      .Distinct(StringComparer.Ordinal)
                      .OrderBy(contentId => contentId, StringComparer.Ordinal))
             summons.Add(contentId, SnapshotOptional(content, contentId) ?? throw new InvalidOperationException(
                 $"Battle ability references an unavailable summon unit: {contentId}"));
         return summons.ToImmutable();
+    }
+
+    private static IEnumerable<string> OpeningCopyMemberContentIds(TraitBattlePreparation traits,
+        ImmutableArray<BattlePreparationUnitSource> units)
+    {
+        var activeCopies = TraitSnapshotBuilder.Build(traits.Definitions, traits.Contributions).Values
+            .Where(value => value.ActiveBreakpoint is { } tier && !tier.Mechanics.IsDefaultOrEmpty &&
+                tier.Mechanics.Any(mechanic => mechanic.Kind == TraitMechanicKind.OpeningCopy)).ToArray();
+        // Match the runtime trait binding through owner identity, including equipment
+        // contributions. Copies use authored clean profiles, never prepared spawns
+        // carrying permanent growth, equipped modifiers or encounter multipliers.
+        return units.Where(unit => unit.IsDeployed && !unit.IsTemporary &&
+                activeCopies.Any(value => value.Team == unit.Team &&
+                    value.Contributions.Any(contribution => contribution.OwnerRuntimeId == unit.InstanceId)))
+            .Select(unit => unit.ContentId);
     }
 
     private static UnitSnapshot SnapshotRequired(

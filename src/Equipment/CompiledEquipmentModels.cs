@@ -13,7 +13,14 @@ public sealed record CompiledEquipmentDefinition(
     ImmutableArray<CompiledEquipmentReactiveStatusBinding> ReactiveStatusBindings,
     ImmutableArray<CompiledTraitContribution> TraitContributions,
     string Fingerprint,
-    ImmutableArray<CompiledStatusDefinition> GrantedStatuses = default);
+    ImmutableArray<CompiledStatusDefinition> GrantedStatuses = default,
+    ImmutableArray<CompiledAttributeModifier> UniqueAttributeModifiers = default,
+    CompiledEquipmentControlGuard? ControlGuard = null,
+    CompiledEquipmentLifeSteal? LifeSteal = null);
+
+public sealed record CompiledEquipmentLifeSteal(string RuleId, float Ratio, float AreaEfficiency);
+
+public sealed record CompiledEquipmentControlGuard(string RuleId, int WindowTicks, float SubsequentDurationMultiplier);
 
 public sealed record CompiledEquipmentReactiveStatusBinding(
     BattleCombatEventKind EventKind,
@@ -21,7 +28,8 @@ public sealed record CompiledEquipmentReactiveStatusBinding(
     EquipmentReactiveStatusSource Source,
     int Priority,
     CompiledStatusDefinition Status,
-    StatusReactiveOwnerRole OwnerRole = StatusReactiveOwnerRole.OwnerIsSource);
+    StatusReactiveOwnerRole OwnerRole = StatusReactiveOwnerRole.OwnerIsSource,
+    string UniqueRuleId = "");
 
 public sealed class EquipmentInstanceState
 {

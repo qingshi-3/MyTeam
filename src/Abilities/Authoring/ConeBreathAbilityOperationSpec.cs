@@ -10,5 +10,8 @@ public partial class ConeBreathAbilityOperationSpec : AbilityOperationSpec
     [Export] public int PulseCount { get; set; } = 3;
     [Export] public int RecoveryTicks { get; set; } = 12;
     [Export] public float AttackMultiplier { get; set; } = .65f;
+    [Export] public int AfterglowDurationTicks { get; set; }
+    [Export] public int AfterglowIntervalTicks { get; set; } = 5;
+    [Export] public float AfterglowAttackMultiplier { get; set; }
     [Export] public string Vfx { get; set; } = "cone_breath";
 }

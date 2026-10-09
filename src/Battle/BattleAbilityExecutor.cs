@@ -6,7 +6,8 @@ using TowerAutobattler.Abilities;
 
 namespace TowerAutobattler.Battle;
 
-internal sealed record BattleAbilityCaster(bool Alive, bool AutomaticBlocked, bool Displacing, bool ManaReady, bool Controlled);
+internal sealed record BattleAbilityCaster(bool Alive, bool AutomaticBlocked, bool Displacing, bool ManaReady, bool Controlled,
+    bool ActionHeld = false);
 internal sealed record BattleAbilityCast(float ManaSpent, string ActionId);
 internal sealed record BattleAbilityInvocation(CompiledAbilityDefinition Ability, string SourceId, string OwnerId,
     string TargetId, int Tick, AbilityWorldSnapshot Snapshot);
@@ -48,6 +49,8 @@ internal sealed class BattleAbilityExecutor(IBattleAbilityHost host, BattleAbili
             return Failed(AbilityActivationFailure.SourceUnavailable, "英雄或能力拥有者已无法行动。");
         if (ability.GoldCost > host.RemainingGold)
             return Failed(AbilityActivationFailure.InsufficientGold, $"金币不足：需要 {ability.GoldCost} 金币。");
+        if (ability.IsActiveSkill && caster.ActionHeld)
+            return Failed(AbilityActivationFailure.ConditionsUnmet, "当前持态期间不能开始新的主动技能。");
         if (ability.ActivationKind == AbilityActivationKind.Automatic && caster.AutomaticBlocked)
             return Failed(AbilityActivationFailure.ConditionsUnmet, "受控期间不能施法。");
         if (ability.Trigger == AbilityTriggerKind.ManaFull)
@@ -85,6 +88,8 @@ internal sealed class BattleAbilityExecutor(IBattleAbilityHost host, BattleAbili
         var caster = host.ReadCaster(plan.OwnerId, plan.Tick);
         if (caster is null || (!caster.Alive && plan.Ability.Trigger != AbilityTriggerKind.OwnerDefeated))
             return CommitFailed(AbilityActivationFailure.SourceUnavailable, "英雄或能力拥有者已无法行动。");
+        if (plan.Ability.IsActiveSkill && caster.ActionHeld)
+            return CommitFailed(AbilityActivationFailure.ConditionsUnmet, "当前持态期间不能开始新的主动技能。");
         if (plan.Ability.Trigger == AbilityTriggerKind.ManaFull &&
             (caster.Displacing || !caster.ManaReady || caster.Controlled))
             return CommitFailed(AbilityActivationFailure.ConditionsUnmet, "施法条件在提交前失效。");

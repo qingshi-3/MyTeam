@@ -37,7 +37,7 @@ public sealed partial class BattleSimulation
         public CombatSourceRef AbilityOrigin(CompiledAbilityDefinition ability, string ownerId) => owner.AbilityOrigin(ability, ownerId);
         public float ReadCounter(BattleUnitState unit, string key) => owner.ReadCounter(unit, key);
         public void WriteCounter(BattleUnitState unit, string key, float value) => owner.WriteCounter(unit, key, value);
-        public void Hit(BattleUnitState source, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type) => owner.ResolveLineSkillHit(source, target, amount, origin, type);
+        public void Hit(BattleUnitState source, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false) => owner.ResolveLineSkillHit(source, target, amount, origin, type, isAreaDamage);
         public float Heal(string source, BattleUnitState target, float amount, CombatSourceRef origin) => owner.HealLiving(source, target, amount, origin);
         public void TimedShield(string source, string target, float amount, int duration, CombatSourceRef origin) => owner.MatrixApplyTimedShield(source, target, amount, duration, origin);
         public void ReleaseUnit(string id) => owner._movement?.ReleaseUnit(id);

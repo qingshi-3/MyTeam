@@ -20,6 +20,7 @@ public sealed class BattleUnitView
     public string SummonerRuntimeId => _state.SummonerRuntimeId;
     public bool HasManaSkill => _state.HasManaSkill;
     public UnitSnapshot Definition => _state.Definition;
+    public TowerAutobattler.Abilities.CompiledAbilityLoadout? AbilityLoadout => _state.AbilityLoadout;
     public BattleAttributeView Attributes { get; }
     public int Team => _state.Team;
     public Vector2I Cell => _state.Cell;

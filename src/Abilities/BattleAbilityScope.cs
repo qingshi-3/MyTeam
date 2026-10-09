@@ -107,7 +107,8 @@ public sealed class BattleAbilityScope : IDisposable
                                instance.Definition.ActivationKind == AbilityActivationKind.Automatic &&
                                (instance.Definition.Trigger == AbilityTriggerKind.BattleStarted && tick == 0 ||
                                 instance.Definition.Trigger == AbilityTriggerKind.PeriodicTick && tick > 0 &&
-                                tick % instance.Definition.IntervalTicks == 0 ||
+                                tick >= instance.Definition.FirstTriggerTick &&
+                                (tick - instance.Definition.FirstTriggerTick) % instance.Definition.IntervalTicks == 0 ||
                                 instance.Definition.Trigger == AbilityTriggerKind.ManaFull && tick > 0))
             .OrderBy(instance => instance.Definition.StableId, StringComparer.Ordinal)
             .Select(instance => TryActivate(

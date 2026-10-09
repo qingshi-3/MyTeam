@@ -65,6 +65,7 @@ public static partial class AbilityDefinitionCompiler
         }
         if (abilities.Count == 0) report.Error("Ability loadout must contain at least one ability.");
         ValidateTechniqueLoadout(abilities, report);
+        ValidateRememberedLoadout(abilities, report);
         if (abilities.Count(ability => ability.Trigger == AbilityTriggerKind.ManaFull) > 1)
             report.Error("Ability loadout may contain only one mana-full skill.");
         return new AbilityLoadoutCompilationResult(
@@ -140,6 +141,7 @@ public static partial class AbilityDefinitionCompiler
             if (loadoutAbilities.Count == 0)
                 loadoutReport.Error("Ability loadout must contain at least one ability.");
             ValidateTechniqueLoadout(loadoutAbilities, loadoutReport);
+            ValidateRememberedLoadout(loadoutAbilities, loadoutReport);
             if (loadoutAbilities.Count(ability => ability.Trigger == AbilityTriggerKind.ManaFull) > 1)
                 loadoutReport.Error("Ability loadout may contain only one mana-full skill.");
             if (!loadoutReport.HasCoreErrors)
@@ -186,6 +188,9 @@ public static partial class AbilityDefinitionCompiler
             report.Error($"{label}: automatic target kind is invalid.");
         if (authored.ManaCost < 0 || authored.GoldCost < 0 || authored.CooldownTicks < 0 || authored.MaxUses < 0)
             report.Error($"{label}: costs, cooldown, and maximum uses cannot be negative.");
+        if (authored.FirstTriggerTick < 0 || authored.FirstTriggerTick > 3600 || authored.FirstTriggerTick > 0 &&
+            (authored.ActivationKind != AbilityActivationKind.Automatic || authored.Trigger != AbilityTriggerKind.PeriodicTick))
+            report.Error($"{label}: first trigger tick is bounded and only supported by automatic periodic abilities.");
         ValidateEntryContract(authored, label, report);
 
         var operations = ImmutableArray.CreateBuilder<CompiledAbilityOperation>();
@@ -204,6 +209,7 @@ public static partial class AbilityDefinitionCompiler
                 t.Metric is BattleValueMetric.EventEffective or BattleValueMetric.EventOverheal or BattleValueMetric.EventOrdinal))
                 report.Error($"{label}: event-based values require an event-triggered ability.");
         ValidateAtomicOperationShape(operations, label, report);
+        ValidateRememberedAbility(authored, operations, label, report);
         foreach (var technique in operations.OfType<CompiledCombatTechniqueOperation>())
         {
             var expected = technique switch {
@@ -217,10 +223,14 @@ public static partial class AbilityDefinitionCompiler
         }
         if (authored.Trigger == AbilityTriggerKind.ActionQueued && !operations.Any(o => o is CompiledGritPunchOperation))
             report.Error($"{label}: queued automatic actions require a supported condition producer.");
-        if (operations.Any(operation => operation is CompiledChargedLineOperation or CompiledEnemyAction) &&
+        if (operations.Any(operation => operation is CompiledEnemyOriginalAttackCycle or CompiledEnemySeatGuard) &&
+            (operations.Count != 1 || authored.ActivationKind != AbilityActivationKind.Triggered ||
+             authored.Trigger != AbilityTriggerKind.OwnerEnteredBattle || authored.MaxUses != 1 || authored.Echoable))
+            report.Error($"{label}: original attack cycle requires a sole, once-only owner entry registration.");
+        if (operations.Any(operation => operation is CompiledChargedLineOperation || operation is CompiledEnemyAction and not CompiledEnemyOriginalAttackCycle and not CompiledEnemySeatGuard) &&
             (operations.Count != 1 || authored.ActivationKind != AbilityActivationKind.Automatic ||
-             authored.Trigger != AbilityTriggerKind.PeriodicTick || authored.AutomaticTarget != AbilityAutomaticTargetKind.CurrentEnemy))
-            report.Error($"{label}: a charged line must be the sole operation of an automatic periodic enemy-targeting ability.");
+             (authored.Trigger != AbilityTriggerKind.PeriodicTick && !(authored.Trigger == AbilityTriggerKind.ManaFull && operations[0] is CompiledConeBreath or CompiledChargedLineOperation)) || authored.AutomaticTarget != AbilityAutomaticTargetKind.CurrentEnemy))
+            report.Error($"{label}: a timed enemy action requires a sole automatic periodic operation; cone breath and charged line also support mana-full activation.");
         if (operations.Any(operation => operation is CompiledTrampleOperation) &&
             (operations.Count != 1 || authored.ActivationKind != AbilityActivationKind.Automatic ||
              authored.Trigger is not (AbilityTriggerKind.PeriodicTick or AbilityTriggerKind.ManaFull) ||
@@ -262,7 +272,7 @@ public static partial class AbilityDefinitionCompiler
             authored.IntervalTicks,
             operations.ToImmutable(),
             presentation,
-            authored.AutomaticTarget, authored.Echoable, authored.Description);
+            authored.AutomaticTarget, authored.Echoable, authored.Description, authored.FirstTriggerTick);
         return provisional with { Description = string.IsNullOrWhiteSpace(authored.Description) ? AbilityDescriptionRenderer.Describe(provisional) : authored.Description };
     }
 
@@ -364,21 +374,22 @@ public static partial class AbilityDefinitionCompiler
                 return new CompiledTrampleOperation(trample.Range, trample.Distance, trample.Speed,
                     trample.ChargeTicks, trample.RecoveryTicks, trample.SideDistance, trample.AttackMultiplier,
                     trample.WarningVfx, trample.RushVfx);
-            case ConeBreathAbilityOperationSpec or ReturningBladeAbilityOperationSpec or PositionSwapAbilityOperationSpec or RampartAbilityOperationSpec or BroodPhaseAbilityOperationSpec:
+            case ConeBreathAbilityOperationSpec or ReturningBladeAbilityOperationSpec or PositionSwapAbilityOperationSpec or RampartAbilityOperationSpec or BroodPhaseAbilityOperationSpec or EnemyOriginalAttackCycleSpec or EnemySeatGuardSpec or EnemyStoneQuakeSpec:
                 return CompileEnemyAction(authored, operationLabel, report);
             case ChargedLineAbilityOperationSpec line:
                 if (!Enum.IsDefined(line.Delivery) || !Enum.IsDefined(line.DamageType) ||
                     !float.IsFinite(line.Range) || line.Range <= 0 || line.Range > 64 ||
                     !float.IsFinite(line.Radius) || line.Radius <= 0 || line.Radius > 1 ||
                     line.ChargeTicks < 1 || line.ChargeTicks > 100 || line.MaximumHits < 1 || line.MaximumHits > 16 ||
-                    !float.IsFinite(line.AttackMultiplier) || line.AttackMultiplier <= 0 ||
+                    !float.IsFinite(line.AttackMultiplier) || line.AttackMultiplier < 0 ||
+                    !float.IsFinite(line.SpellPowerMultiplier) || line.SpellPowerMultiplier < 0 || line.AttackMultiplier + line.SpellPowerMultiplier <= 0 ||
                     !float.IsFinite(line.SubsequentHitMultiplier) || line.SubsequentHitMultiplier is < 0 or > 1 ||
                     !float.IsFinite(line.ProjectileSpeed) || line.ProjectileSpeed is <= 0 or > 100 ||
                     string.IsNullOrWhiteSpace(line.ChargeVfx) || string.IsNullOrWhiteSpace(line.ReleaseVfx))
                     report.Error($"{operationLabel}: charged line parameters are invalid.");
                 return new CompiledChargedLineOperation(line.Delivery, line.DamageType, line.Range, line.Radius,
                     line.ChargeTicks, line.AttackMultiplier, line.MaximumHits, line.SubsequentHitMultiplier,
-                    line.ProjectileSpeed, line.HoldPosition, line.ChargeVfx, line.ReleaseVfx);
+                    line.ProjectileSpeed, line.HoldPosition, line.ChargeVfx, line.ReleaseVfx, line.SpellPowerMultiplier);
             case DuelAbilityOperationSpec or CounterattackAbilityOperationSpec or GritStorageAbilityOperationSpec or GritPunchAbilityOperationSpec or HookAbilityOperationSpec:
                 return CompileTechnique(authored, operationLabel, report);
             case BattleValueAbilityOperationSpec or ConsumeStatusAbilityOperationSpec or EchoAbilityOperationSpec or LifecycleAbilityOperationSpec or DisplacementAbilityOperationSpec:
@@ -547,6 +558,9 @@ public static class AbilityDescriptionRenderer
 
         var parts = operations.Select(operation => operation switch
         {
+            CompiledEnemyOriginalAttackCycle cycle => $"每第{cycle.Every}次原始攻击先蓄势{cycle.WindupTicks * BattleTiming.TickSeconds:0.#}秒，造成{cycle.DamageMultiplier * 100:0}%攻击伤害；开始后被打断不退回计数",
+            CompiledEnemySeatGuard guard => $"开场保护指定位置的三个常驻伙伴，使其所受伤害乘{guard.DamageMultiplier:0.##}；自身死亡后解除",
+            CompiledEnemyStoneQuake quake => $"原地蓄势{quake.WindupTicks * BattleTiming.TickSeconds:0.#}秒后连续{quake.PulseCount}次震击{quake.Radius:0.#}格范围，每次造成{quake.AttackMultiplier * 100:0}%攻击加{quake.ArmorMultiplier:0.#}倍防御伤害；完整结束后防御增加{quake.CompletionArmor:0.#}，持续{quake.ArmorDurationTicks * BattleTiming.TickSeconds:0.#}秒",
             CompiledTrampleOperation trample =>
                 $"蓄力 {trample.ChargeTicks * BattleTiming.TickSeconds:0.#} 秒后直线冲锋，将沿途单位撞向两侧；每个敌人受到一次 {trample.AttackMultiplier * 100:0}% 攻击力伤害，友军仅被推开。",
             CompiledChargedLineOperation line =>

@@ -47,7 +47,11 @@ internal static class ContentPrimitiveValidator
             foreach (var binding in status.CombatReactiveBindings) Effect(binding.Binding, status.StableId);
         }
         foreach (var equipment in graph.Equipment)
+        {
         foreach (var modifier in equipment.AttributeModifiers) Magnitude(modifier.Magnitude, equipment.StableId);
+        if (!equipment.UniqueAttributeModifiers.IsDefaultOrEmpty)
+            foreach (var modifier in equipment.UniqueAttributeModifiers) Magnitude(modifier.Magnitude, equipment.StableId);
+        }
         foreach (var trait in graph.Traits)
         foreach (var tier in trait.Breakpoints)
         foreach (var modifier in tier.AttributeModifiers) Magnitude(modifier.Magnitude, trait.StableId);

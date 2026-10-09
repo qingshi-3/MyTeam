@@ -25,7 +25,8 @@ public sealed record BattlePreparedUnit(string RuntimeId, string SourceInstanceI
     public float LifeSteal => Attributes.GetValue(CombatAttribute.LifeSteal);
 }
 
-public sealed record BattlePreparationSnapshot(ImmutableArray<BattlePreparedUnit> Units, TraitSnapshot Traits);
+public sealed record BattlePreparationSnapshot(ImmutableArray<BattlePreparedUnit> Units, TraitSnapshot Traits,
+    ImmutableArray<BattleOpeningAllyLink> OpeningAllyLinks = default);
 
 // One projection boundary for deployment, opponent browsing, reserves and laboratory.
 // It reuses authoritative initialization, including grants and battle-start effects.
@@ -43,9 +44,10 @@ public sealed partial class BattleSimulation
     }
 
     internal static BattlePreparationSnapshot CapturePreparation(BattleSimulation world) => new(
-        world.UnitViews.Select(unit => new BattlePreparedUnit(unit.RuntimeId, unit.SourceInstanceId, unit.Definition,
+        world.UnitViews.Select(unit => new BattlePreparedUnit(unit.RuntimeId, unit.SourceInstanceId,
+            unit.Definition with { AbilityLoadout = unit.AbilityLoadout },
             unit.Team, unit.Position, unit.Cell, unit.BodyRadius, unit.IsTemporary, unit.Health, unit.Shield,
             unit.CurrentMana, unit.MaxMana, new BattlePreparedAttributes(Enum.GetValues<CombatAttribute>()
                 .ToImmutableDictionary(attribute => attribute, attribute => unit.Attributes.GetValue(attribute))),
-            unit.Statuses)).ToImmutableArray(), world.TraitSnapshot);
+            unit.Statuses)).ToImmutableArray(), world.TraitSnapshot, world.OpeningAllyLinks);
 }

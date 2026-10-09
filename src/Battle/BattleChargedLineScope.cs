@@ -61,7 +61,7 @@ internal sealed class BattleChargedLineScope(IBattleDirectedActionWorld world, B
         using var resolution = pipeline.BeginAuthoritativeResolution();
         EmitChargedLine("line_release", owner, cast, "");
         var operation = cast.Operation;
-        var damage = owner.Damage * operation.AttackMultiplier;
+        var damage = owner.Damage * operation.AttackMultiplier + owner.Attributes.GetValue(CombatAttribute.SpellPower) * operation.SpellPowerMultiplier;
         if (operation.Delivery == ChargedLineDelivery.Projectile)
         {
             var distance = cast.Start.DistanceTo(cast.End);
@@ -89,7 +89,7 @@ internal sealed class BattleChargedLineScope(IBattleDirectedActionWorld world, B
             {
                 if (!hit.Target.Alive) continue;
                 world.Hit(owner, hit.Target, damage * Mathf.Pow(operation.SubsequentHitMultiplier, count),
-                    cast.Origin, operation.DamageType);
+                    cast.Origin, operation.DamageType, isAreaDamage:operation.MaximumHits > 1);
                 world.Present("line_impact", owner.RuntimeId, hit.Target.RuntimeId, 0, hit.Target.Position, "");
                 if (++count >= operation.MaximumHits) break;
             }
@@ -107,7 +107,7 @@ internal sealed class BattleChargedLineScope(IBattleDirectedActionWorld world, B
     }
 
     public bool ShouldHoldForChargedLine(BattleUnitState owner) =>
-        owner.Definition.AbilityLoadout is { } loadout &&
+        owner.AbilityLoadout is { } loadout &&
         loadout.Abilities.SelectMany(ability => ability.Operations).OfType<CompiledChargedLineOperation>()
             .Any(line => line.HoldPosition && world.Units.Any(target => CanAimChargedLine(owner, target, line))) &&
         !world.Units.Any(target => target.Alive && target.Team != owner.Team &&

@@ -127,7 +127,7 @@ internal sealed class BattleTrampleScope(IBattleDirectedActionWorld world, Battl
                 owner.Trample = cast;
                 if (target.Team != owner.Team)
                     world.Hit(owner, target, owner.Damage * cast.Operation.AttackMultiplier,
-                        cast.Origin, EffectDamageType.Normal);
+                        cast.Origin, EffectDamageType.Normal, isAreaDamage:true);
                 world.Present("trample_impact", owner.RuntimeId, target.RuntimeId, 0, target.Position, "");
             }
             if (!owner.Alive || owner.Trample is null) return;

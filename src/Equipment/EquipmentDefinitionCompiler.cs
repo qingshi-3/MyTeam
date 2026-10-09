@@ -82,9 +82,10 @@ public static partial class EquipmentDefinitionCompiler
             report.Error($"{label}: invalid stable id '{authored.StableId}'.");
 
         if ((authored.AttributeModifiers is null || authored.AttributeModifiers.Length == 0) &&
+            (authored.UniqueAttributeModifiers is null || authored.UniqueAttributeModifiers.Length == 0) &&
             (authored.ReactiveStatusBindings is null || authored.ReactiveStatusBindings.Length == 0) &&
             (authored.TraitContributions is null || authored.TraitContributions.Length == 0) &&
-            (authored.GrantedStatuses is null || authored.GrantedStatuses.Length == 0))
+            (authored.GrantedStatuses is null || authored.GrantedStatuses.Length == 0) && authored.ControlGuard is null && authored.LifeSteal is null)
             report.Error($"{label}: equipment must declare an Attribute modifier, reactive Status binding, or Trait contribution.");
 
         var compiled = ImmutableArray.CreateBuilder<CompiledAttributeModifier>();
@@ -107,6 +108,19 @@ public static partial class EquipmentDefinitionCompiler
             compiled.Add(result.Modifier);
         }
 
+        var unique = ImmutableArray.CreateBuilder<CompiledAttributeModifier>();
+        foreach (var authoredModifier in authored.UniqueAttributeModifiers ?? [])
+        {
+            var result = AttributeDefinitionCompiler.Compile(authoredModifier);
+            report.Merge(result.Report);
+            if (result.Modifier is not { } modifier) continue;
+            if (modifier.Magnitude is not CompiledConstantMagnitude)
+                report.Error($"{label}: unique equipment modifiers require constant magnitudes.");
+            if (!slots.Add((modifier.Attribute, modifier.SlotId)))
+                report.Error($"{label}: duplicate regular/unique attribute slot '{modifier.SlotId}'.");
+            unique.Add(modifier);
+        }
+
         var contributions = TraitDefinitionCompiler.CompileContributions(
             authored.TraitContributions ?? [],
             label);
@@ -124,6 +138,8 @@ public static partial class EquipmentDefinitionCompiler
                 report.Error($"{bindingLabel} is missing.");
                 continue;
             }
+            if (binding.UniqueRuleId is null || binding.UniqueRuleId.Length > 0 && !StableIdPattern.IsMatch(binding.UniqueRuleId))
+                report.Error($"{bindingLabel}: unique rule id is invalid.");
             if (!Enum.IsDefined(binding.EventKind))
                 report.Error($"{bindingLabel}: event kind is invalid.");
             else if (!IsReactiveEvent(binding.EventKind))
@@ -166,7 +182,25 @@ public static partial class EquipmentDefinitionCompiler
                 binding.Target,
                 binding.Source,
                 binding.Priority,
-                status, binding.OwnerRole));
+                status, binding.OwnerRole, binding.UniqueRuleId ?? ""));
+        }
+        CompiledEquipmentLifeSteal? lifeSteal = null;
+        if (authored.LifeSteal is { } steal)
+        {
+            if (string.IsNullOrWhiteSpace(steal.RuleId) || !StableIdPattern.IsMatch(steal.RuleId) ||
+                !float.IsFinite(steal.Ratio) || steal.Ratio is <= 0 or > 1 ||
+                !float.IsFinite(steal.AreaEfficiency) || steal.AreaEfficiency is <= 0 or > 1)
+                report.Error($"{label}: life steal needs a stable rule id and finite ratios in (0,1].");
+            else lifeSteal = new(steal.RuleId, steal.Ratio, steal.AreaEfficiency);
+        }
+        CompiledEquipmentControlGuard? guard = null;
+        if (authored.ControlGuard is { } control)
+        {
+            if (string.IsNullOrWhiteSpace(control.RuleId) || !StableIdPattern.IsMatch(control.RuleId) ||
+                control.WindowTicks is < 1 or > 3600 || !float.IsFinite(control.SubsequentDurationMultiplier) ||
+                control.SubsequentDurationMultiplier is <= 0 or > 1)
+                report.Error($"{label}: control guard requires a stable rule id, bounded positive window and duration multiplier in (0,1].");
+            else guard = new(control.RuleId, control.WindowTicks, control.SubsequentDurationMultiplier);
         }
         var grants = StatusGrantCompiler.Compile(authored.GrantedStatuses ?? [], resolveStatus, report, label);
         if (report.HasCoreErrors) return null;
@@ -178,7 +212,7 @@ public static partial class EquipmentDefinitionCompiler
             ordered,
             orderedReactive,
             contributions.Contributions,
-            Fingerprint(authored.StableId, ordered, orderedReactive, contributions.Contributions, grants), grants);
+            Fingerprint(authored.StableId, ordered, orderedReactive, contributions.Contributions, grants, unique, guard, lifeSteal), grants, unique.ToImmutable(), guard, lifeSteal);
     }
 
     private static string Fingerprint(
@@ -186,16 +220,23 @@ public static partial class EquipmentDefinitionCompiler
         IEnumerable<CompiledAttributeModifier> modifiers,
         IEnumerable<CompiledEquipmentReactiveStatusBinding> reactive,
         IEnumerable<CompiledTraitContribution> contributions,
-        ImmutableArray<CompiledStatusDefinition> grants)
+        ImmutableArray<CompiledStatusDefinition> grants,
+        IEnumerable<CompiledAttributeModifier> unique,
+        CompiledEquipmentControlGuard? guard, CompiledEquipmentLifeSteal? lifeSteal)
     {
         var canonical = stableId + "|" + string.Join("|", modifiers.Select(modifier =>
             $"{modifier.Attribute}:{modifier.Operation}:{Magnitude(modifier.Magnitude)}:" +
             $"{modifier.Priority}:{modifier.SlotId}")) + "|reactive=" +
             string.Join("|", reactive.Select(binding =>
-                $"{binding.EventKind}:{binding.Target}:{binding.Source}:{binding.Priority}:{binding.OwnerRole}:" +
+                $"{binding.EventKind}:{binding.Target}:{binding.Source}:{binding.Priority}:{binding.OwnerRole}:{binding.UniqueRuleId}:" +
                 StatusDefinitionFingerprint.Compute(binding.Status))) + "|traits=" +
             string.Join("|", contributions.Select(contribution =>
-                $"{contribution.TraitId}:{contribution.Value}")) + "|grants=" + string.Join("|", grants.Select(StatusDefinitionFingerprint.Compute));
+                $"{contribution.TraitId}:{contribution.Value}")) + "|grants=" + string.Join("|", grants.Select(StatusDefinitionFingerprint.Compute)) + "|unique=" + string.Join("|", unique.Select(modifier =>
+                $"{modifier.Attribute}:{modifier.Operation}:{Magnitude(modifier.Magnitude)}:{modifier.Priority}:{modifier.SlotId}"));
+        if (guard is not null) canonical += $"|control-guard={guard.RuleId}:{guard.WindowTicks}:" +
+            guard.SubsequentDurationMultiplier.ToString("R", CultureInfo.InvariantCulture);
+        if (lifeSteal is not null) canonical += $"|life-steal={lifeSteal.RuleId}:" +
+            lifeSteal.Ratio.ToString("R", CultureInfo.InvariantCulture) + ":" + lifeSteal.AreaEfficiency.ToString("R", CultureInfo.InvariantCulture);
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical))).ToLowerInvariant();
     }
 

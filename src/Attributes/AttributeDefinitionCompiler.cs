@@ -61,6 +61,8 @@ public static class AttributeDefinitionCompiler
         if (!Enum.IsDefined(authored.Operation)) report.Error("Modifier operation is invalid.");
         if (string.IsNullOrWhiteSpace(authored.SlotId)) report.Error("Modifier slot id is required.");
         var magnitude = CompileMagnitude(authored.Magnitude, report);
+        if (authored.Operation == AttributeModifierOperation.BaseAdd && magnitude is not CompiledConstantMagnitude)
+            report.Error("Base-add modifiers require a constant magnitude.");
         return report.HasCoreErrors || magnitude is null
             ? new AttributeModifierCompilationResult(null, report)
             : new AttributeModifierCompilationResult(

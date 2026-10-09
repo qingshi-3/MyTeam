@@ -84,6 +84,7 @@ public static partial class RelicDefinitionCompiler
             report.Error($"{label}: invalid stable id '{authored.StableId}'.");
 
         var bindingIds = new HashSet<string>(StringComparer.Ordinal);
+        var combatRules = CompileCombatRules(authored.CombatRules, bindingIds, label, report);
         var attributeBindings = CompileAttributeBindings(authored.AttributeBindings, bindingIds, label, report);
         var battleStartEffects = CompileBattleStartEffects(
             authored.BattleStartEffects,
@@ -202,7 +203,7 @@ public static partial class RelicDefinitionCompiler
         }
 
         if (battleModifiers.Length == 0 && attributeBindings.Length == 0 &&
-            battleStartEffects.Length == 0 && counters.Length == 0 && victoryOutcomesAuthored.Length == 0 && statusGrants.Count == 0 && runRules.IsEmpty && repeats.Count == 0)
+            battleStartEffects.Length == 0 && counters.Length == 0 && victoryOutcomesAuthored.Length == 0 && statusGrants.Count == 0 && runRules.IsEmpty && repeats.Count == 0 && combatRules.IsEmpty)
             report.Error($"{label}: relic must declare at least one battle modifier or victory outcome.");
         if (report.HasCoreErrors) return null;
         var legacy = modifiers.ToImmutable();
@@ -216,7 +217,7 @@ public static partial class RelicDefinitionCompiler
             counters,
             victoryOutcomes,
             Fingerprint(authored.StableId, attributeBindings, battleStartEffects, legacy, counters, victoryOutcomes,
-                statusGrants.ToImmutable(), runRules, repeats.ToImmutable()), statusGrants.ToImmutable(), runRules, repeats.ToImmutable());
+                statusGrants.ToImmutable(), runRules, repeats.ToImmutable(), combatRules), statusGrants.ToImmutable(), runRules, repeats.ToImmutable(), combatRules);
     }
 
     private static ImmutableArray<CompiledRelicAttributeBinding> CompileAttributeBindings(
@@ -466,9 +467,13 @@ public static partial class RelicDefinitionCompiler
         IEnumerable<CompiledRelicReactiveCounter> counters,
         IEnumerable<CompiledRelicRunOutcome> outcomes,
         ImmutableArray<CompiledRelicStatusGrant> grants, ImmutableArray<CompiledRelicRunRule> runRules,
-        ImmutableArray<CompiledRelicAbilityRepeat> repeats)
+        ImmutableArray<CompiledRelicAbilityRepeat> repeats, ImmutableArray<CompiledRelicCombatRule> combatRules)
     {
         var canonical = new StringBuilder(stableId);
+        foreach (var rule in combatRules)
+            canonical.Append("|combat:").Append(rule.RuleId).Append(':').Append(rule.Kind).Append(':')
+                .Append(rule.Amount.ToString("R", CultureInfo.InvariantCulture)).Append(':')
+                .Append(rule.Threshold.ToString("R", CultureInfo.InvariantCulture)).Append(':').Append(rule.Tick);
         foreach (var repeat in repeats) canonical.Append("|repeat:").Append(repeat.Trigger).Append(':').Append(repeat.ExtraExecutions);
         foreach (var rule in runRules)
             canonical.Append("|run:").Append(rule.RuleId).Append(':').Append(rule.Kind).Append(':')
@@ -526,7 +531,9 @@ public static partial class RelicDefinitionCompiler
             if (rule.Kind == RelicRunRuleKind.VictoryInterest && (rule.Amount > 1 || rule.Limit == 0))
                 report.Error($"{label}: interest requires a rate at most one and an explicit last eligible battle.");
             var pool = rule.RewardPool;
-            var needsPool = rule.Kind is RelicRunRuleKind.EliteReward or RelicRunRuleKind.CounterReward;
+            var needsPool = rule.Kind is RelicRunRuleKind.EliteReward or RelicRunRuleKind.CounterReward or RelicRunRuleKind.VictoryNativeKillReward;
+            if (rule.Kind == RelicRunRuleKind.VictoryNativeKillReward && rule.Limit <= 0)
+                report.Error($"{label}: native-kill reward requires a positive threshold.");
             if (needsPool && (pool is null || string.IsNullOrWhiteSpace(pool.StableId) || !StableIdPattern.IsMatch(pool.StableId) || pool.Kind != ContentPoolKind.Item ||
                 pool.ContentIds is null ||
                 pool.ContentIds.Length == 0 || pool.ContentIds.Distinct(StringComparer.Ordinal).Count() != pool.ContentIds.Length ||

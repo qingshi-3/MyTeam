@@ -14,7 +14,9 @@ public sealed partial class BattleSimulation
 {
     private readonly BattleAttackScope _attacks;
     private void Attack(BattleUnitState owner, BattleUnitState target) => _attacks.Attack(owner, target);
-    private void ResolveAttackHit(BattleUnitState owner, BattleUnitState target, float raw, bool instantPiercing, string actionId = "") => _attacks.ResolveAttackHit(owner, target, raw, instantPiercing, actionId);
+    private bool ResolveAttackHit(BattleUnitState owner, BattleUnitState target, float raw, bool instantPiercing, string actionId = "",
+        BattleDamageStatisticsAttribution statisticsAttribution = default, CombatPoint? attackIncomingDirection = null) =>
+        _attacks.ResolveAttackHit(owner, target, raw, instantPiercing, actionId, statisticsAttribution, attackIncomingDirection);
     private void SelectAttackChainTarget(BattleUnitState owner, BattleUnitState target) => _attacks.SelectAttackChainTarget(owner, target);
     private void RegisterGrowingHit(BattleUnitState owner, BattleUnitState target) => _attacks.RegisterGrowingHit(owner, target);
     private void AdvanceGrowingAttacks(BattleUnitState owner, BattleUnitState target) => _attacks.AdvanceGrowingAttacks(owner, target);
@@ -28,11 +30,14 @@ public sealed partial class BattleSimulation
         public int Tick => owner.TickIndex;
         public IReadOnlyList<BattleUnitState> Units => owner._units;
         public CombatSourceRef Source(string id, BattleUnitState? unit = null) => owner.ResolveCombatSource(id, unit);
+        public bool ProtectedFromAttack(BattleUnitState target) => owner._matrixRuntime.ProtectsFromAttack(target);
         public float DamageValue(BattleUnitState unit) => owner.EffectiveDamage(unit);
+        public EnemyOriginalAttackPreparation PrepareOriginalAttack(string ownerRuntimeId) => owner._enemyRuntime.PrepareOriginalAttack(ownerRuntimeId);
         public float Damage(string sourceRuntimeId, BattleUnitState? source, BattleUnitState target, float raw,
             CombatSourceRef origin = default, EffectDamageType damageType = EffectDamageType.Normal,
-            CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "") =>
-            owner.ApplyDamage(sourceRuntimeId, source, target, raw, origin, damageType, damageClass, actionId);
+            CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "",
+            BattleDamageStatisticsAttribution statisticsAttribution = default, bool isAreaDamage = false, CombatPoint? attackIncomingDirection = null) =>
+            owner.ApplyDamage(sourceRuntimeId, source, target, raw, origin, damageType, damageClass, actionId, statisticsAttribution, isAreaDamage, attackIncomingDirection);
         public float Heal(string source, BattleUnitState target, float amount) => owner.HealLiving(source, target, amount);
         public float ReadCounter(BattleUnitState unit, string key) => owner.ReadCounter(unit, key);
         public void WriteCounter(BattleUnitState unit, string key, float value) => owner.WriteCounter(unit, key, value);

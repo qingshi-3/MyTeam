@@ -22,7 +22,8 @@ internal static class ContentItemCompiler
         foreach (var rule in relic.RunRules.IsDefault ? [] : relic.RunRules)
         foreach (var id in rule.ContentIds)
         {
-            var expectedKind = rule.Kind == RelicRunRuleKind.CounterReward ? ItemProductKind.Equipment : ItemProductKind.Relic;
+            var expectedKind = rule.Kind is RelicRunRuleKind.CounterReward or RelicRunRuleKind.VictoryNativeKillReward
+                ? ItemProductKind.Equipment : ItemProductKind.Relic;
             if (!ContentReferenceCollector.CatalogEntriesForValidation(catalog).Any(entry => entry?.StableId == id &&
                 entry.Definition is ItemDefinition item && item.ProductKind == expectedKind))
                 report.Error($"{relic.StableId}: reward pool '{rule.PoolId}' must contain only {expectedKind} items: {id}");

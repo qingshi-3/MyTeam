@@ -27,7 +27,7 @@ public sealed partial class BattleSimulation
                      BattleCombatEventKind.DamageResolved, BattleCombatEventKind.HealthLost,
                      BattleCombatEventKind.UnitKilled, BattleCombatEventKind.UnitDefeated,
                      BattleCombatEventKind.HealingResolved, BattleCombatEventKind.ShieldResolved,
-                     BattleCombatEventKind.ManaSkillResolved })
+                     BattleCombatEventKind.ManaSkillResolved, BattleCombatEventKind.UnitTransformed })
             _combatPipeline.Subscribe(kind, origin, 30, (e, sink) =>
             {
                 if (!_traitReactions.IsInterested(e)) return;
@@ -82,10 +82,27 @@ public sealed partial class BattleSimulation
                 unit.ProjectileWindups.Any(projectile => projectile.SkillOrigin.IsSpecified);
         }
         public void Damage(string source, string target, float amount, CombatSourceRef origin,
-            EffectDamageType damageType = EffectDamageType.Normal, CombatDamageClass damageClass = CombatDamageClass.Other) =>
-            owner.ApplyDamage(source, owner._units.FirstOrDefault(unit => unit.RuntimeId == source), Unit(target), amount, origin, damageType, damageClass);
+            EffectDamageType damageType = EffectDamageType.Normal, CombatDamageClass damageClass = CombatDamageClass.Other,
+            bool isAreaDamage = false) =>
+            owner.ApplyDamage(source, owner._units.FirstOrDefault(unit => unit.RuntimeId == source), Unit(target), amount, origin, damageType, damageClass, isAreaDamage: isAreaDamage);
         public void Heal(string source, string target, float amount, CombatSourceRef origin) => owner.HealLiving(source, Unit(target), amount, origin);
         public float Shield(string source, string target, float amount, CombatSourceRef origin) => owner.ApplyShield(source, Unit(target), amount, origin);
+        public float NextRandom() => owner._random.NextFloat();
+        public void AddBaseHealth(string target, float ratio, CombatSourceRef origin)
+        {
+            var unit = Unit(target);
+            var previous = unit.MaxHealth;
+            AddAttribute(target, CombatAttribute.MaxHealth, unit.Attributes.GetBaseValue(CombatAttribute.MaxHealth) * ratio, origin);
+            unit.Health += unit.MaxHealth - previous;
+        }
+        public void AddAttribute(string target, CombatAttribute attribute, float amount, CombatSourceRef origin) =>
+            Unit(target).Attributes.ApplyModifier(new(attribute, AttributeModifierOperation.Add,
+                new CompiledConstantMagnitude(amount), 0, origin.StableId), origin);
+        public void AdditionalAttack(string source, string target, float amount, string actionId,
+            BattleDamageStatisticsAttribution statisticsAttribution = default) =>
+            owner.ResolveAdditionalAttack(Unit(source), Unit(target), amount, actionId, statisticsAttribution);
+        public void Present(string source, string target, string cue) =>
+            owner.Emit("ability", source, target, 0, Unit(target).Position, cue);
         public void GainMana(string target, float amount) => BattleHeroMana.Gain(Unit(target), amount, Tick);
         public void RemoveShield(string target, float amount) { var unit = Unit(target); unit.Shield = Math.Max(0, unit.Shield - amount); }
         public void BuffSummonHealth(string target, float amount, CombatSourceRef origin)

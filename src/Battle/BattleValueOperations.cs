@@ -18,7 +18,7 @@ internal interface IBattleValueWorld
     IReadOnlyList<BattleUnitState> Units { get; }
     EffectWorldSnapshot Snapshot(int tick);
     CombatSourceRef AbilityOrigin(CompiledAbilityDefinition ability, string ownerId);
-    float Damage(string source, BattleUnitState owner, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type);
+    float Damage(string source, BattleUnitState owner, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false);
     float Heal(string source, BattleUnitState target, float amount, CombatSourceRef origin);
     float Shield(string source, BattleUnitState target, float amount, CombatSourceRef origin);
     void ShieldConsumed(BattleUnitState target, float amount, bool enemyDamage, CombatSourceRef origin);
@@ -29,6 +29,9 @@ internal interface IBattleValueWorld
 internal sealed class BattleValueOperations(IBattleValueWorld world, BattleValueLedger values,
     BattleLifecycleScope lifecycles, BattleStatusScope statuses, BattleStatistics statistics)
 {
+    private static bool TargetsArea(CompiledEffectTargetQuery query) => query is CompiledRelativeTeamTargetQuery or
+        CompiledFilteredTargetQuery { MaxTargets: not 1 };
+
     private float ReadBattleValue(CompiledBattleValueOperation operation, BattleUnitState owner, BattleUnitState target)
     {
         double value = operation.Amount;
@@ -77,7 +80,7 @@ internal sealed class BattleValueOperations(IBattleValueWorld world, BattleValue
         BattleTargetPolicy.BehindAlly => target.Alive && target != owner && target.Team == owner.Team &&
             (target.Position.X-owner.Position.X) * (owner.Team == 0 ? 1 : -1) < -.1f,
         BattleTargetPolicy.EchoableAlly => target.Alive && target != owner && target.Team == owner.Team &&
-            target.Definition.AbilityLoadout?.Abilities.Any(a => a.Echoable) == true,
+            target.AbilityLoadout?.Abilities.Any(a => a.Echoable) == true,
         _ => false };
 
     public ImmutableArray<string> ResolveBattleTargets(CompiledEffectTargetQuery query, BattleUnitState owner,
@@ -143,7 +146,7 @@ internal sealed class BattleValueOperations(IBattleValueWorld world, BattleValue
                     switch (value.Action)
                     {
                         case BattleValueAction.Damage:
-                            world.Damage(owner.RuntimeId,owner,target,Math.Max(0,amount),origin,value.DamageType); break;
+                            world.Damage(owner.RuntimeId,owner,target,Math.Max(0,amount),origin,value.DamageType,isAreaDamage:TargetsArea(value.TargetQuery)); break;
                         case BattleValueAction.Heal:
                             var healed = world.Heal(owner.RuntimeId,target,Math.Max(0,amount),origin);
                             if (healed > 0) world.Present("heal",owner.RuntimeId,id,healed,target.Position,"heal");
@@ -174,12 +177,12 @@ internal sealed class BattleValueOperations(IBattleValueWorld world, BattleValue
                     var target = world.Units.First(u => u.RuntimeId == id);
                     if (!target.Alive) continue;
                     var stored = statuses.ConsumePeriodicDamage(id,consume.StatusId,world.Tick);
-                    if (stored > 0) world.Damage(owner.RuntimeId,owner,target,stored*consume.DamageMultiplier,origin,consume.DamageType);
+                    if (stored > 0) world.Damage(owner.RuntimeId,owner,target,stored*consume.DamageMultiplier,origin,consume.DamageType,isAreaDamage:TargetsArea(consume.TargetQuery));
                 }
                 break;
             case CompiledEchoOperation:
                 var donor = world.Units.First(u => u.RuntimeId == resolved.TargetIds[0]);
-                foreach (var echo in donor.Definition.AbilityLoadout!.Abilities.Where(a => a.Echoable).OrderBy(a => a.StableId,StringComparer.Ordinal))
+                foreach (var echo in donor.AbilityLoadout!.Abilities.Where(a => a.Echoable).OrderBy(a => a.StableId,StringComparer.Ordinal))
                     world.EnqueueEcho(donor.RuntimeId, echo, owner.RuntimeId);
                 break;
             case CompiledLifecycleOperation lifecycle: lifecycles.ExecuteLifecycleOperation(lifecycle,resolved.TargetIds,owner,origin); break;

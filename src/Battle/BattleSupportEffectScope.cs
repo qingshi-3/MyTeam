@@ -15,7 +15,7 @@ internal sealed record BattleBrokenShield(string Target, float Absorbed, CombatS
 
 internal sealed class BattleSupportEffectScope(IBattleTraitQueries read, IBattleTraitCommands commands, BattleTraitBindings bindings)
 {
-    private sealed record TraitShield(string Source, string Target, int Expires, float Remaining);
+    private sealed record TraitShield(string Source, string Target, int Expires, float Remaining, string Key = "");
     private sealed record TraitMana(string Source, string Target, float Amount);
     private sealed record State(ImmutableArray<TraitShield> Shields, ImmutableArray<TraitMana> Mana,
         ImmutableArray<BattleBrokenShield> Broken, ImmutableDictionary<string, float> Absorbed)
@@ -74,6 +74,15 @@ internal sealed class BattleSupportEffectScope(IBattleTraitQueries read, IBattle
         if (granted > 0) _state = _state with
         { Shields = _state.Shields.Add(new(sourceId, targetId, TickIndex + Math.Max(1, durationTicks + extra), granted)) };
         return granted;
+    }
+
+    public void RefreshShield(string source, string target, float amount, int duration, CombatSourceRef origin)
+    {
+        var key = $"{source}:{target}:{origin.StableId}";
+        var previous = _state.Shields.Where(s => s.Key == key).Sum(s => s.Remaining);
+        _state = _state with { Shields = _state.Shields.Where(s => s.Key != key).ToImmutableArray() };
+        var extra = amount > previous ? commands.Shield(source, target, amount - previous, origin) : 0;
+        _state = _state with { Shields = _state.Shields.Add(new(source, target, TickIndex + Math.Max(1, duration), previous + extra, key)) };
     }
 
     public void ShieldConsumed(BattleUnitView target, float amount, bool enemyDamage, CombatSourceRef origin)

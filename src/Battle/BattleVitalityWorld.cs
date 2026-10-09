@@ -23,8 +23,10 @@ public sealed partial class BattleSimulation
 {
     private float ApplyDamage(string sourceRuntimeId, BattleUnitState? source, BattleUnitState target, float raw,
         CombatSourceRef origin = default, EffectDamageType damageType = EffectDamageType.Normal,
-        CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "") =>
-        _vitality.Damage(sourceRuntimeId, source, target, raw, origin, damageType, damageClass, actionId);
+        CombatDamageClass damageClass = CombatDamageClass.Other, string actionId = "",
+        BattleDamageStatisticsAttribution statisticsAttribution = default,
+        bool isAreaDamage = false, CombatPoint? attackIncomingDirection = null) =>
+        _vitality.Damage(sourceRuntimeId, source, target, raw, origin, damageType, damageClass, actionId, statisticsAttribution, isAreaDamage, attackIncomingDirection);
     private float HealLiving(string sourceRuntimeId, BattleUnitState target, float amount, CombatSourceRef origin = default) =>
         _vitality.Heal(sourceRuntimeId, target, amount, origin);
     private float ApplyShield(string sourceRuntimeId, BattleUnitState target, float amount, CombatSourceRef origin = default) =>
@@ -53,6 +55,7 @@ public sealed partial class BattleSimulation
         }
         public void CancelActionsAndGrants(BattleUnitState target)
         {
+            owner._enemyRuntime.ObserveDefeated(target.RuntimeId);
             owner.RemoveDefeatedTechniques(target);
             owner.CancelEnemyAction(target.RuntimeId);
             owner.RemoveEnemyProducts(target.RuntimeId);

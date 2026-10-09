@@ -7,6 +7,7 @@ namespace TowerAutobattler.Abilities;
 public partial class MatrixMagnitudeParameters : Resource
 {
     [Export] public float Amount { get; set; }
+    [Export] public float SpellPowerRatio { get; set; }
     [Export] public float AttackRatio { get; set; }
     [Export] public float OwnerHealthRatio { get; set; }
     [Export] public float TargetHealthRatio { get; set; }

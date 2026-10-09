@@ -17,7 +17,8 @@ public sealed partial class BattleSimulation
         foreach (var kind in Enum.GetValues<BattleCombatEventKind>())
             _abilityCombatSubscriptions.Add(_combatPipeline.Subscribe(kind, origin, 40, (e, sink) =>
             {
-                if (!_matrixReactions.WantsEvent(e)) return;
+                if (!_matrixReactions.WantsEvent(e) && !_matrixRuntime.WantsOriginalAttack(e) &&
+                    !(e.Kind == BattleCombatEventKind.ControlApplied && _matrixRuntime.HasInterruptibleAction(e.TargetRuntimeId))) return;
                 if (!sink.Enqueue(origin, 40, _ => ObserveMatrixAbilityEvent(e)))
                     throw new InvalidOperationException("Matrix ability reaction exceeded combat chain budget.");
             }));

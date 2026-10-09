@@ -20,6 +20,7 @@ public enum EquipmentReactiveStatusSource
 [GlobalClass]
 public partial class EquipmentReactiveStatusBindingSpec : Resource
 {
+    [Export] public string UniqueRuleId { get; set; } = string.Empty;
     [Export] public BattleCombatEventKind EventKind { get; set; }
     [Export] public EquipmentReactiveStatusTarget Target { get; set; }
     [Export] public EquipmentReactiveStatusSource Source { get; set; }

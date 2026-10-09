@@ -32,7 +32,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     private readonly List<BattleEvent> _events = [];
     private readonly StringBuilder _digest = new();
     private readonly BattleVitalityScope _vitality;
-    private readonly BattleStatistics _statistics = new();
+    private readonly BattleStatistics _statistics;
     private readonly Dictionary<string, int> _bossPhaseIndexes = new(StringComparer.Ordinal);
     private readonly BattleEffectCompatibilityAdapter _effectCompatibility;
     private readonly BattleAttributeScope _attributeScope;
@@ -96,6 +96,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     {
         _preparationOnly = preparationOnly;
         _config = config;
+        _statistics = new(config.CaptureDetailedStatistics && !preparationOnly);
         PendingEvents = _events.AsReadOnly();
         UnitViews = new(() => _units.Count, index => BattleUnitView.For(_units[index]));
         var enemyWorld = new EnemyWorld(this);
@@ -108,6 +109,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         _statusPresentationCueView = _statusPresentationCues.AsReadOnly();
         _attributeScope = new BattleAttributeScope($"battle_{config.Seed}_attributes");
         _combatPipeline = new BattleCombatEventPipeline($"battle_{config.Seed}_combat", identity: config.Identity);
+        RegisterEnemyDamageCalculations();
         _effectCompatibility = new BattleEffectCompatibilityAdapter(
             $"battle_{config.Seed}",
             new LegacyBattleMutationPort(CaptureEffectSnapshot, CommitCompatibilityMutation));
@@ -128,7 +130,13 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                 request.SourceAttributes, request.TargetAttributes,
                 contextValue: key => throw new InvalidOperationException($"Status context key '{key}' has no battle binding."),
                 teamCount: TeamCount,
-                traitValue: (traitId, team) => CurrentTraitSnapshot.Value(traitId, team)));
+                traitValue: (traitId, team) => CurrentTraitSnapshot.Value(traitId, team)),
+            controlGuardResolver: ownerId => _equipmentScope?.ResolveControlGuard(ownerId),
+            controlGuardSink: fact =>
+            {
+                var recipient = _units.FirstOrDefault(unit => unit.RuntimeId == fact.OwnerId);
+                if (recipient is not null) Emit("vfx", fact.OwnerId, fact.OwnerId, 0, recipient.Position, "", vfx: new BattleVfxCue(BattleVfxPhase.Burst, "cleanse"));
+            });
         _values = new BattleValueLedger(() => TickIndex, () => _units, _statistics);
         _lifecycleRuntime = new BattleLifecycleScope(new LifecycleWorld(this), _values, _statistics, _statusScope, _projectileScope);
         _valueOperations = new BattleValueOperations(new ValueWorld(this), _values, _lifecycleRuntime, _statusScope, _statistics);
@@ -204,6 +212,13 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                 _equipmentScope.Activate(new EquipmentBattleRuntimeContext
                 {
                     CombatBindings = equipmentBindings,
+                    QueryUnit = runtimeId => _units.FirstOrDefault(unit => unit.RuntimeId == runtimeId) is { } unit
+                        ? new EquipmentCombatUnit(unit.RuntimeId, unit.Team, unit.Alive) : null,
+                    HealUnit = (runtimeId, amount, origin) =>
+                    {
+                        var target = _units.FirstOrDefault(unit => unit.RuntimeId == runtimeId);
+                        if (target is not null) HealLiving(runtimeId, target, amount, origin);
+                    },
                     CanReceiveStatus = runtimeId => _units.Any(unit =>
                         unit.RuntimeId == runtimeId && unit.Alive),
                     ApplyStatuses = applications => _statusScope.ApplyBatch(applications),
@@ -221,6 +236,11 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
                     {
                         CombatBindings = relicBindings,
                         QueryUnits = QueryRelicUnits,
+                        HealUnit = (runtimeId, amount, origin) =>
+                        {
+                            var target = _units.FirstOrDefault(unit => unit.RuntimeId == runtimeId);
+                            if (target is not null) HealLiving(runtimeId, target, amount, origin);
+                        },
                         RemainingGold = () => RemainingGold,
                         ExecuteEffect = ExecuteRelicEffect,
                         ExecuteAttributedEffect = ExecuteRelicEffect,
@@ -302,6 +322,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         if (_preparationOnly) throw new InvalidOperationException("A preparation world cannot advance combat.");
         if (Outcome != BattleOutcome.Running) return Outcome;
         TickIndex++;
+        _statistics.AdvanceTick(TickIndex);
         try
         {
             AdvanceBattleLifecycles();
@@ -341,6 +362,19 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             AdvanceHookFlights(previousPositions);
             AdvanceReturningBlades(previousPositions);
             DrainAbilityReactions();
+            if (_relicScope?.HasDueEndOfTickRules == true)
+            {
+                var checkpoint = new BattleWorldStateCheckpoint(this);
+                try
+                {
+                    using var resolution = _combatPipeline.BeginAuthoritativeResolution();
+                    _relicScope.EndOfTick();
+                    resolution.Commit();
+                    DrainAbilityReactions();
+                    checkpoint.Commit();
+                }
+                catch { checkpoint.Rollback(); throw; }
+            }
             ResolveOutcome();
         }
         catch
@@ -450,12 +484,14 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     }
 
 
+    public ImmutableArray<BattleOpeningAllyLink> OpeningAllyLinks => _permanentGrowth.OpeningLinks;
+
     public BattleResult CreateResult()
     {
         var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(_digest.ToString()))).ToLowerInvariant();
         var units = _statistics.ReadReports(UnitViews, ActiveBattleTicks);
         return new BattleResult(Outcome, TickIndex, hash, units, GoldSpent, SuccessfulTacticalCommandUses,
-            _relicScope?.Transition, _config.Identity, _permanentGrowth.Gains);
+            _relicScope?.Transition, _config.Identity, _permanentGrowth.Gains, _permanentGrowth.RememberedGains);
     }
 
     private void AddConfiguredSummons()
@@ -479,7 +515,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             ToCombatCell(unit.Cell),
             unit.Attributes,
             ToCombatPoint(unit.Position),
-            unit.BodyRadius))
+            unit.BodyRadius, unit.Health, unit.Definition.IsBoss))
         .ToImmutableArray();
 
     private void ExecuteRelicEffect(
@@ -545,9 +581,9 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     {
         _abilityScope = new BattleAbilityScope($"battle_{_config.Seed}_abilities", this, 0);
         BindAbilityCombatEvents();
-        foreach (var unit in _units.Where(unit => unit.Definition.AbilityLoadout is not null && !IsTimelineBoss(unit))
+        foreach (var unit in _units.Where(unit => unit.AbilityLoadout is not null && !IsTimelineBoss(unit))
                      .OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal))
-            _abilityScope.RegisterLoadout(unit.RuntimeId, unit.Definition.AbilityLoadout!);
+            _abilityScope.RegisterLoadout(unit.RuntimeId, unit.AbilityLoadout!);
         foreach (var boss in _units.Where(IsTimelineBoss).OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal))
             SynchronizeBossPhase(boss, initial: true, initialHealthRatio: initialHealthRatios.GetValueOrDefault(boss.RuntimeId, 1f));
     }
@@ -572,6 +608,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         var phase = timeline.Phases[nextIndex];
         var loadout = phase.AbilityLoadout ??
             new CompiledAbilityLoadout(ImmutableArray<CompiledAbilityDefinition>.Empty);
+        unit.CurrentAbilityLoadout = loadout;
+        unit.CurrentMana = Math.Clamp(unit.CurrentMana, 0, unit.MaxMana);
         if (initial)
             _abilityScope.RegisterLoadout(unit.RuntimeId, loadout, TickIndex);
         else
@@ -587,11 +625,12 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
     private void ActivateBattleStartedAbilities()
     {
         if (_abilityScope is null) return;
-        foreach (var unit in _units.Where(unit => unit.Alive).OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal))
-        {
-            _abilityScope.ActivateAutomatic(unit.RuntimeId, 0);
+        var initial = _units.Where(unit => unit.Alive).OrderBy(unit => unit.RuntimeId, StringComparer.Ordinal).ToArray();
+        // Entry bindings/qualifications for all bodies precede any tick-zero cast.
+        foreach (var unit in initial)
             ActivateTriggeredWithRepeats(unit.RuntimeId, AbilityTriggerKind.OwnerEnteredBattle, "");
-        }
+        foreach (var unit in initial)
+            _abilityScope.ActivateAutomatic(unit.RuntimeId, 0);
     }
 
     private string SelectAutomaticTarget(BattleUnitState owner, CompiledAbilityDefinition ability) => _targeting.SelectAutomaticTarget(owner, ability);
@@ -721,6 +760,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         using (var statusResolution = _combatPipeline.BeginAuthoritativeResolution())
         {
             actionsDisabled = _statusScope.HasTag(unit.RuntimeId, StatusDefinitionCompiler.ActionDisabledTag);
+            if (_statistics.CapturesDetails)
+                _statistics.ControlTick(unit.RuntimeId, unit.Statuses, actionsDisabled, unit.DisabledTicks > 0, TickIndex);
             _statusScope.AdvanceOwner(unit.RuntimeId, TickIndex);
             statusResolution.Commit();
         }
@@ -753,7 +794,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             _movement!.ReleaseGoal(unit.RuntimeId);
             return;
         }
-        if (EnemyActionBusy(unit) || TechniqueBusy(unit) || UnitActionRecovering(unit)) { unit.Mode=BattleUnitMode.Casting; _movement!.ReleaseGoal(unit.RuntimeId); return; }
+        if (EnemyActionBusy(unit) || TechniqueBusy(unit) || UnitActionRecovering(unit) || MatrixHoldsAction(unit.RuntimeId)) { unit.Mode=BattleUnitMode.Casting; _movement!.ReleaseGoal(unit.RuntimeId); return; }
         if (unit.Trample is not null) { _movement!.ReleaseGoal(unit.RuntimeId); return; }
         if (AdvanceChargedLine(unit)) return;
         var releasedProjectile = AdvanceProjectileWindups(unit);
@@ -784,7 +825,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         var queuedResult = !releasedProjectile ? TryStartQueuedUnitAction(unit) : null;
         var automaticResults = queuedResult is { Succeeded: true } ? ImmutableArray.Create(queuedResult) : !releasedProjectile
             ? _abilityScope?.ActivateAutomatic(unit.RuntimeId, TickIndex) ?? [] : [];
-        if (!unit.Alive || EnemyActionBusy(unit) || TechniqueBusy(unit) || unit.Trample is not null || unit.ChargedLine is not null || IsDisplacing(unit) || TickIndex < unit.ManaLockedUntilTick) return;
+        if (!unit.Alive || EnemyActionBusy(unit) || TechniqueBusy(unit) || MatrixHoldsAction(unit.RuntimeId) || unit.Trample is not null || unit.ChargedLine is not null || IsDisplacing(unit) || TickIndex < unit.ManaLockedUntilTick) return;
         ApplyPeriodicBehavior(unit);
         if (!unit.Alive) return;
         if (unit.AttackCooldown > 0) unit.AttackCooldown--;
@@ -821,6 +862,8 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         if (BattlefieldSpace.IsWithinReach(unit, target, unit.AttackRange) && HasLineAccess(unit, target))
         {
             _movement!.ReleaseGoal(unit.RuntimeId);
+            if (_statusScope.HasTag(unit.RuntimeId, StatusDefinitionCompiler.AttackDisabledTag))
+            { unit.Mode = BattleUnitMode.Waiting; return; }
             if (unit.Definition.AttackHitGrowth is not null)
                 AdvanceGrowingAttacks(unit, target);
             else if (unit.AttackCooldown == 0) Attack(unit, target);
@@ -1345,6 +1388,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         var result = _combatPipeline.Publish(draft);
         if (!result.Accepted)
             throw new InvalidOperationException($"Combat event '{draft.Kind}' was rejected: {result.Message}");
+        _statistics.Observe(draft);
     }
 
     private static CombatCell ToCombatCell(Vector2I cell) => new(cell.X, cell.Y);
@@ -1586,6 +1630,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
         int WaitingTicks,
         ImmutableArray<StatusRuntimeSnapshot> Statuses,
         string BossPhaseId,
+        CompiledAbilityLoadout? CurrentAbilityLoadout,
         BattleUnitMode Mode,
         BattleActionKind LastActionKind,
         string ActionTargetRuntimeId,
@@ -1607,6 +1652,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             unit.WaitingTicks,
             unit.Statuses,
             unit.BossPhaseId,
+            unit.CurrentAbilityLoadout,
             unit.Mode,
             unit.LastActionKind,
             unit.ActionTargetRuntimeId,
@@ -1629,6 +1675,7 @@ public sealed partial class BattleSimulation : IDisposable, IAbilityRuntimeWorld
             Unit.WaitingTicks = WaitingTicks;
             Unit.Statuses = Statuses;
             Unit.BossPhaseId = BossPhaseId;
+            Unit.CurrentAbilityLoadout = CurrentAbilityLoadout;
             Unit.Mode = Mode;
             Unit.LastActionKind = LastActionKind;
             Unit.ActionTargetRuntimeId = ActionTargetRuntimeId;

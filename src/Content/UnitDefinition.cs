@@ -40,6 +40,8 @@ public partial class UnitDefinition : Resource
     [Export] public float MoveInterval { get; set; } = 0.45f;
     [Export(PropertyHint.Range, "0.1,1.5,0.01")] public float BodyRadius { get; set; } = .32f;
     [Export] public float Armor { get; set; }
+    [Export(PropertyHint.Range, "0,1,0.01")] public float CriticalChance { get; set; }
+    [Export] public float CriticalDamage { get; set; } = 1.5f;
     [Export] public float SpellPower { get; set; }
     [Export] public float HealPower { get; set; }
     [Export] public float SplashRadius { get; set; }

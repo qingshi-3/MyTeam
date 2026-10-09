@@ -21,6 +21,7 @@ public sealed partial class BattleSimulation
             switch (operation)
             {
                 case CompiledEnemyAction enemyAction:
+                    if (enemyAction is CompiledEnemyOriginalAttackCycle or CompiledEnemySeatGuard) explicitTargetId = owner.RuntimeId;
                     if (!battle.PrepareEnemyAction(owner,enemyAction,explicitTargetId))
                         return BattleAbilityOperationPreparation.Reject("当前没有合法的机制目标或召唤资源。");
                     return new([explicitTargetId]);

@@ -22,13 +22,13 @@ public sealed partial class BattleSimulation
     private bool ShouldHoldForChargedLine(BattleUnitState owner) => _chargedLines.ShouldHoldForChargedLine(owner);
     private static float? LineHitTime(Vector2 start, Vector2 delta, float radius, BattleUnitState target) => BattleCollisionQueries.LineHitTime(start, delta, radius, target);
     private void ResolveLineSkillHit(BattleUnitState source, BattleUnitState target, float damage,
-        CombatSourceRef origin, Effects.EffectDamageType damageType)
+        CombatSourceRef origin, Effects.EffectDamageType damageType, bool isAreaDamage = false)
     {
-        var applied = ApplyDamage(source.RuntimeId, source, target, damage, origin, damageType);
+        var applied = ApplyDamage(source.RuntimeId, source, target, damage, origin, damageType, isAreaDamage:isAreaDamage);
         RegisterGrowingHit(source, target);
         PublishCombat(new BattleCombatEventDraft(BattleCombatEventKind.SkillHitLanded, origin,
             source.RuntimeId, target.RuntimeId, TickIndex, RequestedValue: damage, AppliedValue: applied,
-            EffectiveValue: applied, DamageType: damageType, DamageClass:DamageClassFor(origin), ActionId:origin.InstanceId));
+            EffectiveValue: applied, DamageType: damageType, DamageClass:DamageClassFor(origin), ActionId:origin.InstanceId, IsAreaDamage:isAreaDamage));
     }
 
 }

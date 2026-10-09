@@ -102,7 +102,7 @@ internal sealed class BattleProjectileScope(IBattleProjectileWorld world)
             var candidates = new List<(ProjectileTarget Unit, float Time)>();
             foreach (var target in _world.ReadTargets().Where(unit => (projectile.HitIds.Length < projectile.MaximumHits || unit.IsWall) &&
                          unit.Alive && (unit.Team != projectile.Team || unit.IsWall) &&
-                         !projectile.HitIds.Contains(unit.RuntimeId)))
+                         unit.RuntimeId!=projectile.ExcludedTargetId&&!projectile.HitIds.Contains(unit.RuntimeId)))
             {
                 var start = previousPositions.TryGetValue(target.RuntimeId, out var previous) ? previous : target.Position;
                 var movement = (target.Position - start) * (seconds / BattleTiming.TickSeconds);

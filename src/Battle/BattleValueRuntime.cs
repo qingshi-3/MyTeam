@@ -33,7 +33,7 @@ public sealed partial class BattleSimulation
         public IReadOnlyList<BattleUnitState> Units => owner._units;
         public EffectWorldSnapshot Snapshot(int tick) => owner.CaptureEffectSnapshot(tick);
         public CombatSourceRef AbilityOrigin(CompiledAbilityDefinition ability, string ownerId) => owner.AbilityOrigin(ability, ownerId);
-        public float Damage(string source, BattleUnitState attacker, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type) => owner.ApplyDamage(source, attacker, target, amount, origin, type);
+        public float Damage(string source, BattleUnitState attacker, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false) => owner.ApplyDamage(source, attacker, target, amount, origin, type, isAreaDamage:isAreaDamage);
         public float Heal(string source, BattleUnitState target, float amount, CombatSourceRef origin) => owner.HealLiving(source, target, amount, origin);
         public float Shield(string source, BattleUnitState target, float amount, CombatSourceRef origin) => owner.ApplyShield(source, target, amount, origin);
         public void ShieldConsumed(BattleUnitState target, float amount, bool enemyDamage, CombatSourceRef origin) => owner.TraitMechanicsShieldConsumed(target, amount, enemyDamage, origin);

@@ -17,7 +17,11 @@ public sealed partial class BattleSimulation
     private void ExecuteLifecycleOperation(CompiledLifecycleOperation op, ImmutableArray<string> targets, BattleUnitState owner, CombatSourceRef origin) => _lifecycleRuntime.ExecuteLifecycleOperation(op, targets, owner, origin);
     private void AdvanceBattleLifecycles() => _lifecycleRuntime.AdvanceBattleLifecycles();
     private void ReleaseBattleLifecycleBindings(string id) => _lifecycleRuntime.ReleaseBattleLifecycleBindings(id);
-    private void InterruptBattleChannels(string id) => _lifecycleRuntime.InterruptBattleChannels(id);
+    private void InterruptBattleChannels(string id)
+    {
+        _matrixRuntime.CancelCompletedHeroActions(id);
+        _lifecycleRuntime.InterruptBattleChannels(id);
+    }
 
     private sealed class LifecycleWorld(BattleSimulation owner) : IBattleLifecycleWorld
     {

@@ -8,7 +8,9 @@ public enum TraitMechanicKind
     HealthThresholdRescue, DamageTakenRamp, RepeatedTargetAttack, WoundedTargetReward,
     ActiveDamageAndRefund, SupportProtection, OwnedSummonBonus, ChillOnAttack,
     PoisonOnAttack, ActiveHitMarks, DeathResource, BarrierRetaliation,
-    LowHealthLeech, SharedCastResource
+    LowHealthLeech, SharedCastResource,
+    FreezeOnAttack, AdditionalAttacks, CastStartShield, DelayedTeamStrike, OpeningCopy,
+    TransformHealth, BaseHealthBonus, CriticalTraining
 }
 
 [GlobalClass]

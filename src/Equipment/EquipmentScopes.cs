@@ -48,7 +48,7 @@ public static class EquipmentBattlePreparationBuilder
     }
 }
 
-public sealed class EquipmentBattleScope : IDisposable
+public sealed partial class EquipmentBattleScope : IDisposable
 {
     private readonly Dictionary<string, RuntimeEquipmentInstance> _instances = new(StringComparer.Ordinal);
     private readonly string _sourceFingerprint;
@@ -76,7 +76,8 @@ public sealed class EquipmentBattleScope : IDisposable
         var ownerSlots = new HashSet<(string Owner, int Slot)>();
         try
         {
-            foreach (var snapshot in preparation.Instances)
+            var uniqueOwners = new HashSet<(string Owner, string Rule)>();
+            foreach (var snapshot in preparation.Instances.OrderBy(value => value.SlotIndex).ThenBy(value => value.InstanceId, StringComparer.Ordinal))
             {
                 if (snapshot.Definition is null || snapshot.ContentId != snapshot.Definition.StableId ||
                     string.IsNullOrWhiteSpace(snapshot.InstanceId) ||
@@ -107,6 +108,7 @@ public sealed class EquipmentBattleScope : IDisposable
                         modifier,
                         source,
                         new BattleAttributeMagnitudeContext(owner.Attributes, owner.Attributes)));
+                if (uniqueOwners.Add((owner.RuntimeId, snapshot.Definition.StableId))) ApplyUniqueModifiers(runtime);
             }
         }
         catch
@@ -119,9 +121,17 @@ public sealed class EquipmentBattleScope : IDisposable
     public string ScopeId { get; }
     public bool IsCompleted => _transition is not null;
     public int LiveInstanceCount => _instances.Count;
-    public int LiveModifierHandleCount => _instances.Values.Sum(instance => instance.Handles.Count);
+    public int LiveModifierHandleCount => _instances.Values.Sum(instance => instance.Handles.Count + instance.UniqueHandles.Count);
     public int LiveSubscriptionCount => _instances.Values.Sum(instance => instance.Subscriptions.Count);
     public EquipmentBattleTransitionResult? Transition => _transition;
+
+    // Qualification only; first-use state belongs to the transactional Status scope.
+    public CompiledEquipmentControlGuard? ResolveControlGuard(string ownerRuntimeId) => IsCompleted ? null :
+        _instances.Values.Where(instance => instance.Owner.RuntimeId == ownerRuntimeId &&
+            instance.Snapshot.Definition.ControlGuard is not null)
+        .OrderBy(instance => instance.Snapshot.SlotIndex)
+        .ThenBy(instance => instance.Snapshot.InstanceId, StringComparer.Ordinal)
+        .Select(instance => instance.Snapshot.Definition.ControlGuard).FirstOrDefault();
 
     public void Activate(EquipmentBattleRuntimeContext context)
     {
@@ -146,6 +156,7 @@ public sealed class EquipmentBattleScope : IDisposable
                     bindings[0].Priority,
                     (combatEvent, reactions) => OnCombatEvent(instance, bindings, combatEvent, reactions)));
             }
+            ActivateLifeSteal(context);
             var grants = _instances.Values.SelectMany(instance => GrantRequests(instance)).ToImmutableArray();
             if (!grants.IsEmpty)
             {
@@ -175,6 +186,12 @@ public sealed class EquipmentBattleScope : IDisposable
         RevokeGrants(instance);
         Remove(instance, bestEffort: false);
         _instances.Remove(equipmentInstanceId);
+        var replacement = _instances.Values.Where(value => value.Owner.RuntimeId == instance.Owner.RuntimeId &&
+            value.Snapshot.Definition.StableId == instance.Snapshot.Definition.StableId)
+            .OrderBy(value => value.Snapshot.SlotIndex).ThenBy(value => value.Snapshot.InstanceId, StringComparer.Ordinal).FirstOrDefault();
+        if (replacement is not null && !_instances.Values.Any(value => value.Owner.RuntimeId == instance.Owner.RuntimeId &&
+            value.Snapshot.Definition.StableId == instance.Snapshot.Definition.StableId && value.UniqueHandles.Count > 0))
+            ApplyUniqueModifiers(replacement);
         return true;
     }
 
@@ -215,16 +232,26 @@ public sealed class EquipmentBattleScope : IDisposable
         if (!bestEffort && failure is not null) throw failure;
     }
 
+    private static void ApplyUniqueModifiers(RuntimeEquipmentInstance instance)
+    {
+        var modifiers = instance.Snapshot.Definition.UniqueAttributeModifiers;
+        if (modifiers.IsDefaultOrEmpty) return;
+        foreach (var modifier in modifiers)
+            instance.UniqueHandles.Add(instance.Owner.Attributes.ApplyModifier(modifier, instance.Source,
+                new BattleAttributeMagnitudeContext(instance.Owner.Attributes, instance.Owner.Attributes)));
+    }
+
     private static void Remove(RuntimeEquipmentInstance instance, bool bestEffort)
     {
         Exception? failure = null;
         try { DisposeSubscriptions(instance, bestEffort); }
         catch (Exception exception) { failure = exception; }
-        foreach (var handle in instance.Handles.ToImmutable().Reverse())
+        foreach (var handle in instance.Handles.Concat(instance.UniqueHandles).Reverse())
             if (!instance.Owner.Attributes.Remove(handle) && !bestEffort)
                 failure ??= new InvalidOperationException(
                     $"Equipment modifier handle could not be removed: {instance.Snapshot.InstanceId}");
         instance.Handles.Clear();
+        instance.UniqueHandles.Clear();
         if (!bestEffort && failure is not null) throw failure;
     }
 
@@ -238,7 +265,9 @@ public sealed class EquipmentBattleScope : IDisposable
         if (context is null || IsCompleted)
             return;
         var applications = bindings.Where(binding => (binding.OwnerRole == StatusReactiveOwnerRole.OwnerIsSource
-                ? combatEvent.SourceRuntimeId : combatEvent.TargetRuntimeId) == instance.Owner.RuntimeId)
+                ? combatEvent.SourceRuntimeId : combatEvent.TargetRuntimeId) == instance.Owner.RuntimeId &&
+                (binding.UniqueRuleId.Length == 0 || IsFirstProvider(instance, value =>
+                    value.Snapshot.Definition.ReactiveStatusBindings.Any(candidate => candidate.UniqueRuleId == binding.UniqueRuleId))))
             .Select(binding => new StatusApplicationRequest(
                 binding.Status,
                 binding.Source == EquipmentReactiveStatusSource.Owner
@@ -307,11 +336,16 @@ public sealed class EquipmentBattleScope : IDisposable
         public CombatSourceRef Source { get; } = source;
         public ImmutableArray<AttributeModifierHandle>.Builder Handles { get; } = handles;
         public ImmutableArray<IDisposable>.Builder Subscriptions { get; } = subscriptions;
+        public ImmutableArray<AttributeModifierHandle>.Builder UniqueHandles { get; } = ImmutableArray.CreateBuilder<AttributeModifierHandle>();
     }
 }
 
+public sealed record EquipmentCombatUnit(string RuntimeId, int Team, bool Alive);
+
 public sealed class EquipmentBattleRuntimeContext
 {
+    public Func<string, EquipmentCombatUnit?>? QueryUnit { get; init; }
+    public Action<string, float, CombatSourceRef>? HealUnit { get; init; }
     public StatusGrantRuntimeContext? StatusGrants { get; init; }
     public required BattleCombatBindingRegistry CombatBindings { get; init; }
     public required Func<string, bool> CanReceiveStatus { get; init; }

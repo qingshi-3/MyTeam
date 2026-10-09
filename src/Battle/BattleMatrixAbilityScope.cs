@@ -6,6 +6,7 @@ using Godot;
 using TowerAutobattler.Abilities;
 using TowerAutobattler.Attributes;
 using TowerAutobattler.Effects;
+using TowerAutobattler.Statuses;
 
 namespace TowerAutobattler.Battle;
 
@@ -16,13 +17,25 @@ internal interface IBattleMatrixOperationWorld
     IReadOnlyDictionary<string, UnitSnapshot> SummonProfiles { get; }
     CombatSourceRef AbilityOrigin(CompiledAbilityDefinition ability, string ownerId);
     bool HasLineAccess(BattleUnitState source, BattleUnitState target);
+    bool HasLineAccess(Vector2 from, Vector2 to);
+    int NextIndex(int count);
+    bool CanOccupyTerrain(Vector2I cell);
     Vector2? FindOpenNear(Vector2 origin, int team, float radius);
     bool SpawnNear(UnitSnapshot profile, int team, Vector2 origin, float health, float damage, string source);
     bool ExtraSummon(string id);
     void FireSequenceShot(BattleUnitState unit);
-    void LaunchProjectile(BattleUnitState owner, BattleUnitState target, float damage, CombatSourceRef origin);
+    void Control(string source, string target, int ticks);
+    void ApplyAuraStatus(string owner, int ticks, float radius);
+    void ApplyDisarm(string source, string target, int ticks);
+    void ApplyMatrixMarker(string source, string target, string id, string label, int ticks, float magnitude, bool harmful = false);
+    void ClearMatrixMarker(string source,string target,string id);
+    bool AdditionalAttack(BattleUnitState source, BattleUnitState target, float damage, string actionId,
+        BattleDamageStatisticsAttribution statisticsAttribution = default);
+    void LaunchProjectile(BattleUnitState owner, BattleUnitState target, float damage, CombatSourceRef origin,
+        float bounceRange = 0, float bounceSpellRatio = 0, Vector2? launchPosition = null, string excludedTargetId = "");
     float Damage(string sourceId, BattleUnitState owner, BattleUnitState target, float amount, CombatSourceRef origin,
-        EffectDamageType type, CombatDamageClass damageClass, string actionId);
+        EffectDamageType type, CombatDamageClass damageClass, string actionId,
+        BattleDamageStatisticsAttribution statisticsAttribution = default, bool isAreaDamage = false, CombatPoint? attackIncomingDirection = null);
     float Heal(string source, BattleUnitState target, float amount, CombatSourceRef origin);
     void Retire(BattleUnitState unit, string ownerId, string reason);
     void Resolve(Action work);
@@ -30,7 +43,7 @@ internal interface IBattleMatrixOperationWorld
     void Present(string type, string source, string target, float value, Vector2 position, string cue);
 }
 
-internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world, BattleMatrixQueries queries,
+internal sealed partial class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world, BattleMatrixQueries queries,
     BattleMatrixReactionScope reactions, BattleDisplacementScope displacements, BattleElementStatusScope elements,
     BattleSupportEffectScope support, BattleStatistics statistics, BattlePermanentGrowthScope growth)
 {
@@ -51,20 +64,27 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
     public void Restore(Checkpoint checkpoint) => checkpoint.Restore(this);
     private void ClearState() => _matrixAbilities = MatrixAbilityState.Empty;
     private sealed record MatrixJob(string Owner, string Target, int ReadyTick, CompiledMatrixOperation Operation,
-        CombatSourceRef Origin, BattleCombatEvent? Event, Vector2? Center);
+        CombatSourceRef Origin, BattleCombatEvent? Event, Vector2? Center, bool Interruptible = false, string Series = "", bool SelfAtOwner = false);
     private sealed record MatrixBuff(string Owner, string Source, string Key, int Expires, AttributeModifierHandle Handle,
         MatrixCondition OwnerCondition,MatrixCondition TargetCondition,float HealthThreshold);
     private sealed record MatrixBoost(string Owner, string Key, bool Skill, float Amount, int Expires);
     private sealed record MatrixProduct(string Unit, string Owner, int Expires, int Extensions);
+    private sealed record MatrixAura(BattleUnitState Owner, int Expires, float Radius);
     private sealed record MatrixArrival(string Owner,CompiledMatrixOperation Operation,CombatSourceRef Origin);
+    private sealed record MatrixAttackSpeedLease(string Owner, string Key, int Remaining, int Expires,
+        AttributeModifierHandle Handle, string LastAction = "");
     private sealed record MatrixAbilityState(ImmutableArray<MatrixJob> Jobs,
         ImmutableArray<MatrixBuff> Buffs, ImmutableArray<MatrixBoost> Boosts, ImmutableArray<MatrixProduct> Products,
         ImmutableDictionary<string,float> Counters, ImmutableDictionary<string,string> Targets,
-        ImmutableDictionary<string,float> ActionFactors, ImmutableDictionary<string,MatrixArrival> Arrivals)
+        ImmutableDictionary<string,float> ActionFactors, ImmutableDictionary<string,MatrixArrival> Arrivals,
+        ImmutableArray<MatrixAura> Auras, ImmutableArray<MatrixAttackSpeedLease> AttackSpeedLeases,
+        ImmutableArray<MatrixGuard> Guards, ImmutableArray<MatrixStorm> Storms, ImmutableArray<MatrixStormSlow> StormSlows,
+        ImmutableArray<MatrixChannel> Channels, ImmutableArray<MatrixHealingSeries> HealingSeries,
+        ImmutableArray<MatrixManaRefund> ManaRefunds, ImmutableArray<MatrixDualShot> DualShots, int ZoneSequence = 0)
     {
         public static MatrixAbilityState Empty => new([],[],[],[],ImmutableDictionary<string,float>.Empty,
             ImmutableDictionary<string,string>.Empty,ImmutableDictionary<string,float>.Empty,
-            ImmutableDictionary<string,MatrixArrival>.Empty);
+            ImmutableDictionary<string,MatrixArrival>.Empty, [], [], [], [], [], [], [], [], []);
     }
     private MatrixAbilityState _matrixAbilities = MatrixAbilityState.Empty;
     public float Counter(string key) => _matrixAbilities.Counters.GetValueOrDefault(key);
@@ -78,7 +98,7 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
     public bool PrepareMatrixOperation(CompiledMatrixOperation operation,BattleUnitState owner,string target,
         out ImmutableArray<string> targets)
     {
-        targets = (operation.Kind is MatrixOperationKind.RegisterReaction or MatrixOperationKind.DeathGift)
+        targets = (operation.Kind is MatrixOperationKind.RegisterReaction or MatrixOperationKind.AttackReaction or MatrixOperationKind.DeathGift)
             ? ImmutableArray.Create(owner.RuntimeId) : MatrixTargets(operation,owner,target,null).Select(u=>u.RuntimeId).ToImmutableArray();
         if(operation.Kind==MatrixOperationKind.Summon && (!world.SummonProfiles.ContainsKey(operation.ContentId) ||
             world.Units.Count(u=>u.Alive && u.SummonerRuntimeId==owner.RuntimeId && u.Definition.ContentId==operation.ContentId)>=operation.Maximum)) return false;
@@ -140,7 +160,7 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
 
     private float MatrixAmount(CompiledMatrixOperation op,BattleUnitState owner,BattleUnitState target,BattleCombatEvent? fact)
     {
-        var amount=op.Amount+owner.Damage*op.AttackRatio+owner.MaxHealth*op.OwnerHealthRatio+
+        var amount=op.Amount+owner.Attributes.GetValue(CombatAttribute.SpellPower)*op.SpellPowerRatio+owner.Damage*op.AttackRatio+owner.MaxHealth*op.OwnerHealthRatio+
             target.MaxHealth*op.TargetHealthRatio+(fact?.EffectiveValue??0)*op.EventRatio+
             (MatrixUnit(fact?.TargetRuntimeId??"")?.MaxHealth??0)*op.EventTargetHealthRatio+
             MatrixCounter(op.CounterOnTarget?target:owner,op.Key)*op.CounterRatio;
@@ -155,10 +175,46 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
         if(!MatrixConditionMatches(op.OwnerCondition,owner,op.HealthThreshold)) return;
         var targets=prepared.IsDefault?MatrixTargets(op,owner,explicitTarget,fact,center).ToArray():
             prepared.Select(MatrixUnit).Where(u=>u is not null).Cast<BattleUnitState>().ToArray();
-        if(op.Kind==MatrixOperationKind.RegisterReaction)
+        if(op.Kind is MatrixOperationKind.RegisterReaction or MatrixOperationKind.AttackReaction)
         {
             var key=$"{owner.RuntimeId}:{slot}";
             reactions.Register(owner.RuntimeId, key, op, origin);
+            return;
+        }
+        if(op.Kind is MatrixOperationKind.OptionalMeleeStrike or MatrixOperationKind.AttackSpeedForOriginalAttacks or MatrixOperationKind.BlinkLineDisarm or MatrixOperationKind.FrontalAttackGuard or MatrixOperationKind.GroundStorm)
+        {
+            ExecuteHeroAction(op, owner, explicitTarget, origin, center);
+            return;
+        }
+        if(op.Kind is MatrixOperationKind.RandomEnemyChannel or MatrixOperationKind.RetreatDualShot or MatrixOperationKind.HealingSeriesShield)
+        {StartCompletedHeroAction(op,owner,explicitTarget,origin);return;}
+        if(op.Kind==MatrixOperationKind.RememberAllyFixedGains)
+        {
+            growth.RegisterRememberer(owner,op,origin);
+            return;
+        }
+        if(op.Kind==MatrixOperationKind.BindOpeningAllies)
+        {
+            foreach(var link in growth.BindOpeningAllies(owner,op,world.Units))
+                if(MatrixUnit(link.TargetRuntimeId) is { } linked)
+                    world.Present("opening_ally_link",owner.RuntimeId,linked.RuntimeId,0,linked.Position,"");
+            return;
+        }
+        if(op.Kind==MatrixOperationKind.GrantRememberableAttribute)
+        {
+            foreach(var target in growth.ApplyRememberableAttribute(owner,op,origin,world.Tick))
+                world.Present(op.Attribute==CombatAttribute.AttackDamage?"rememberable_attack":"rememberable_health",
+                    owner.RuntimeId,target.RuntimeId,op.Amount,target.Position,"");
+            return;
+        }
+        if(op.Kind==MatrixOperationKind.AttackDodgeAura)
+        {
+            // One lease per provider; overlap is boolean protection, never a stacked chance.
+            _matrixAbilities = _matrixAbilities with { Auras = _matrixAbilities.Auras
+                .Where(a => a.Owner != owner).ToImmutableArray().Add(new(owner, world.Tick + op.DurationTicks, op.Radius)) };
+            world.ApplyAuraStatus(owner.RuntimeId, op.DurationTicks, op.Radius);
+            world.Present("attack_aura_start", owner.RuntimeId, owner.RuntimeId, op.DurationTicks, owner.Position, "");
+            world.Present("attack_aura_radius", owner.RuntimeId, owner.RuntimeId, op.Radius, owner.Position, "");
             return;
         }
         if(op.Kind==MatrixOperationKind.DeathGift)
@@ -169,13 +225,46 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
             reactions.Register(owner.RuntimeId, key, rule, origin);
             return;
         }
-        if(op.Kind==MatrixOperationKind.Delay)
+        if(op.Kind==MatrixOperationKind.Transform)
+        {
+            if(MatrixCounter(owner,"_form")>0)return;
+            MatrixWrite(owner,"_form",1);
+            // Form mana removal is independent of the short action recovery.
+            owner.ManaLockedUntilTick=world.Tick;
+            owner.CurrentMana=0;
+            MatrixAttribute(owner,op with { Kind=MatrixOperationKind.OverrideAttribute, Attribute=CombatAttribute.MaxMana, DurationTicks=3600 },0,origin,slot);
+            owner.AttackDeliveryOverride=op.Range>=1.5f?TowerAutobattler.Content.AttackDelivery.Projectile:TowerAutobattler.Content.AttackDelivery.Melee;
+            MatrixAttribute(owner,op with { Kind=MatrixOperationKind.OverrideAttribute, Attribute=CombatAttribute.AttackRange, DurationTicks=3600 },op.Range,origin,slot);
+            foreach(var child in op.Effects)MatrixExecute(child,owner,explicitTarget,origin,fact,null,slot+":"+child.Attribute+":"+child.Kind);
+            owner.LastAbilityName="已换形";
+            world.Publish(new(BattleCombatEventKind.UnitTransformed,origin,owner.RuntimeId,owner.RuntimeId,world.Tick,ActionId:origin.InstanceId));
+            world.Present("ability",owner.RuntimeId,owner.RuntimeId,0,owner.Position,"skill_cast");
+            return;
+        }
+        if(op.Kind is MatrixOperationKind.Delay or MatrixOperationKind.Windup)
         {
             var anchor=targets.FirstOrDefault()?.Position??center??owner.Position;
+            if(op.Kind==MatrixOperationKind.Windup)
+            {
+                // The channel's pending job owns its windup hold. Do not merge it
+                // into the legacy global disable counter, which also carries real control.
+                if(!op.Effects.Any(child=>child.Kind==MatrixOperationKind.RandomEnemyChannel))
+                    owner.DisabledTicks=Math.Max(owner.DisabledTicks,op.DurationTicks);
+                owner.ManaLockedUntilTick=Math.Max(owner.ManaLockedUntilTick,world.Tick+op.DurationTicks);
+            }
+            var series=op.Key.Length==0?"":$"{owner.RuntimeId}:{explicitTarget}:{op.Key}";
+            var firstTick=world.Tick+op.DurationTicks;
+            if(series.Length>0)
+            {
+                var previous=_matrixAbilities.Jobs.Where(j=>j.Series==series).ToArray();
+                if(previous.Length>0)firstTick=Math.Min(firstTick,previous.Min(j=>j.ReadyTick));
+                _matrixAbilities=_matrixAbilities with {Jobs=_matrixAbilities.Jobs.Where(j=>j.Series!=series).ToImmutableArray()};
+            }
             for(var pulse=0;pulse<op.Count;pulse++)
             foreach(var child in op.Effects)
                 _matrixAbilities=_matrixAbilities with {Jobs=_matrixAbilities.Jobs.Add(new(owner.RuntimeId,explicitTarget,
-                    world.Tick+op.DurationTicks+pulse*op.IntervalTicks,child,origin,fact,anchor))};
+                    firstTick+pulse*op.IntervalTicks,child,origin,fact,anchor,op.Kind==MatrixOperationKind.Windup,series,
+                    op.Target==MatrixTargetKind.CurrentOrNearestEnemy))};
             return;
         }
         if(op.Kind==MatrixOperationKind.Sequence)
@@ -219,7 +308,7 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
             owner.ProjectileSequence=new(new CompiledProjectileSequenceAbilityOperation(op.Count,Math.Max(.1f,op.Amount),multiplier,op.MaxTargets,op.EventRatio),origin,targets[0].RuntimeId,op.Count);
             world.FireSequenceShot(owner);
         }
-        else if(op.Kind==MatrixOperationKind.DashStrike)
+        else if(op.Kind is MatrixOperationKind.DashStrike or MatrixOperationKind.LeapWithFallback)
         {
             var motion=MatrixDisplacement(op,owner);
             if(targets.Length>0&&MatrixCanStrikeInPlace(motion,owner,targets[0]))
@@ -240,6 +329,8 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
                 if(!op.Effects.IsEmpty)_matrixAbilities=_matrixAbilities with{Arrivals=_matrixAbilities.Arrivals.SetItem(origin.InstanceId,new(owner.RuntimeId,op,origin))};
                 displacements.ExecuteDisplacementOperation(motion,legal,owner,origin);
             }
+            else if(op.Kind==MatrixOperationKind.LeapWithFallback)
+                foreach(var child in op.Effects)MatrixExecute(child,owner,owner.RuntimeId,origin,null,null,slot);
         }
         else if(op.Kind==MatrixOperationKind.LineDamage)
         {
@@ -250,7 +341,7 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
                 var along=(target.Position-owner.Position).Dot(direction);
                 var across=Math.Abs((target.Position-owner.Position).Cross(direction));
                 if(along<0||along>op.Range||across>op.Radius+target.BodyRadius)continue;
-                MatrixHit(owner,target,MatrixAmount(op,owner,target,fact),origin);
+                MatrixHit(owner,target,MatrixAmount(op,owner,target,fact),origin,isAreaDamage:true);
             }
         }
         else foreach(var target in targets)
@@ -259,12 +350,37 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
             var amount=MatrixAmount(op,owner,target,fact);
             switch(op.Kind)
             {
-                case MatrixOperationKind.Damage: MatrixHit(owner,target,amount,origin); break;
-                case MatrixOperationKind.Heal: world.Heal(owner.RuntimeId,target,amount,origin); break;
+                case MatrixOperationKind.Control:
+                    world.Control(owner.RuntimeId,target.RuntimeId,Math.Min((int)op.Maximum,op.DurationTicks+(int)(owner.Position.DistanceTo(target.Position)*op.Amount)));break;
+                case MatrixOperationKind.AdditionalAttack:
+                    world.AdditionalAttack(owner,target,amount,$"derived:{fact?.ActionId??origin.InstanceId}:{slot}:{target.RuntimeId}",
+                        new(origin, fact is null && owner.AbilityLoadout?.Find(origin.StableId)?.IsActiveSkill == true
+                            ? CombatDamageClass.ActiveSkill : CombatDamageClass.Derived));break;
+                case MatrixOperationKind.KillRefundAttack:
+                    var nativeTarget=!target.IsTemporary&&string.IsNullOrEmpty(target.SummonerRuntimeId);
+                    if(world.AdditionalAttack(owner,target,owner.Damage*op.AttackRatio,$"derived:{origin.InstanceId}:pounce",
+                        new(origin,CombatDamageClass.ActiveSkill))&&nativeTarget&&
+                        Counter("kill-refund:"+origin.InstanceId)==0)
+                    {
+                        Write("kill-refund:"+origin.InstanceId,1);
+                        _matrixAbilities=_matrixAbilities with {ManaRefunds=_matrixAbilities.ManaRefunds.Add(new(owner.RuntimeId,origin.InstanceId,
+                            Math.Max(world.Tick+1,owner.ManaLockedUntilTick),op.Amount))};
+                    }
+                    break;
+                case MatrixOperationKind.Retreat:
+                    var direction=(owner.Position-target.Position).Normalized();
+                    var destination=world.FindOpenNear(owner.Position+direction*op.Amount,owner.Team,owner.BodyRadius);
+                    if(destination is not null && owner.Position.DistanceTo(destination.Value)<=op.Amount+.0001f && (destination.Value-owner.Position).Dot(direction)>=0){owner.Position=destination.Value;world.Present("ability",owner.RuntimeId,owner.RuntimeId,0,owner.Position,"move");}
+                    break;
+                case MatrixOperationKind.Damage: MatrixHit(owner,target,amount,origin,MatrixDamageIsArea(op)); break;
+                case MatrixOperationKind.Heal:
+                    var healed=world.Heal(owner.RuntimeId,target,amount,origin);
+                    if(healed>0)world.Present("heal",owner.RuntimeId,target.RuntimeId,healed,target.Position,"heal");
+                    break;
                 case MatrixOperationKind.Shield: support.ApplyShield(owner.RuntimeId,target.RuntimeId,
                     op.ShieldCap>0?Math.Min(amount,Math.Max(0,op.ShieldCap-target.Shield)):amount,op.DurationTicks,origin); break;
                 case MatrixOperationKind.Mana:
-                    var manaFactor=origin.Kind==CombatSourceKind.Ability&&owner.Definition.AbilityLoadout?.Find(origin.StableId)?.IsActiveSkill==true
+                    var manaFactor=origin.Kind==CombatSourceKind.Ability&&owner.AbilityLoadout?.Find(origin.StableId)?.IsActiveSkill==true
                         ? MatrixActionFactor(owner,true,origin.InstanceId):1;
                     support.GrantMana(owner.RuntimeId,target.RuntimeId,amount*manaFactor,true);break;
                 case MatrixOperationKind.Chill: elements.ApplyChill(owner.RuntimeId,target.RuntimeId,Math.Max(1,(int)amount)); break;
@@ -293,7 +409,7 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
                 case MatrixOperationKind.TransferPoison:
                     var from=MatrixUnit(explicitTarget);
                     if(from is not null&&from!=target)elements.TransferPoison(from.RuntimeId,target.RuntimeId,Math.Min(op.Count,elements.ReadPoison(from.RuntimeId))); break;
-                case MatrixOperationKind.TimedAttribute: MatrixAttribute(target,op,amount,origin,slot); break;
+                case MatrixOperationKind.TimedAttribute or MatrixOperationKind.OverrideAttribute: MatrixAttribute(target,op,amount,origin,slot); break;
                 case MatrixOperationKind.PermanentAttribute: growth.ApplyPermanentAttribute(owner,target,op,origin,slot); break;
                 case MatrixOperationKind.NextSkillBoost or MatrixOperationKind.NextAttackBoost:
                     var boostKey=$"{target.RuntimeId}:{op.Key}:{op.Kind}";
@@ -316,7 +432,7 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
 
     private CompiledDisplacementOperation MatrixDisplacement(CompiledMatrixOperation op,BattleUnitState owner) => new(op.LandingSide?DisplacementKind.Leap:DisplacementKind.Charge,
         new CompiledExplicitTargetQuery(),
-        op.Range,Math.Max(1,op.DurationTicks),.1f,false,false,op.Amount+MatrixCounter(owner,op.Key)*op.CounterRatio,op.AttackRatio,op.Radius,EffectDamageType.Normal,null,0,
+        op.Range,Math.Max(1,op.DurationTicks),.1f,op.Target==MatrixTargetKind.BacklineEnemy,false,op.Amount+MatrixCounter(owner,op.Key)*op.CounterRatio,op.AttackRatio,op.Radius,EffectDamageType.Normal,null,0,
         LandingAngleRadians:op.LandingSide?Mathf.Pi/2:0);
 
     public void MatrixDisplacementArrived(BattleUnitState source,BattleUnitState target,CombatSourceRef origin)
@@ -324,41 +440,72 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
         if(string.IsNullOrEmpty(origin.InstanceId)||!_matrixAbilities.Arrivals.TryGetValue(origin.InstanceId,out var pending))return;
         foreach(var child in pending.Operation.Effects)MatrixExecute(child,source,target.RuntimeId,origin,null,null,origin.StableId);
     }
-    public void MatrixDisplacementFinished(CombatSourceRef origin)
+    public void MatrixDisplacementFinished(CombatSourceRef origin,bool completed = true)
     {
         // Non-ability displacements also share this lifecycle and may carry a default origin.
         if(string.IsNullOrEmpty(origin.InstanceId))return;
+        CompleteDualShotMovement(origin,completed);
         _matrixAbilities=_matrixAbilities with{Arrivals=_matrixAbilities.Arrivals.Remove(origin.InstanceId)};
     }
 
-    private void MatrixHit(BattleUnitState owner,BattleUnitState target,float amount,CombatSourceRef origin)
+    private void MatrixHit(BattleUnitState owner,BattleUnitState target,float amount,CombatSourceRef origin,bool isAreaDamage = false)
     {
         if(!target.Alive)return;
-        var active=owner.Definition.AbilityLoadout?.Find(origin.StableId)?.IsActiveSkill==true;
+        var active=owner.AbilityLoadout?.Find(origin.StableId)?.IsActiveSkill==true;
         var vitality=target.Health+target.Shield;
         world.Damage(owner.RuntimeId,owner,target,amount,origin,EffectDamageType.Normal,
-            active?CombatDamageClass.ActiveSkill:CombatDamageClass.Derived,origin.InstanceId);
+            active?CombatDamageClass.ActiveSkill:CombatDamageClass.Derived,origin.InstanceId,isAreaDamage:isAreaDamage);
         var damage=Math.Max(0,vitality-target.Health-target.Shield);
         if(active)world.Publish(new BattleCombatEventDraft(BattleCombatEventKind.SkillHitLanded,origin,owner.RuntimeId,target.RuntimeId,
-            world.Tick,amount,damage,damage,SubjectStableId:origin.StableId,DamageClass:CombatDamageClass.ActiveSkill,ActionId:origin.InstanceId));
+            world.Tick,amount,damage,damage,SubjectStableId:origin.StableId,DamageClass:CombatDamageClass.ActiveSkill,ActionId:origin.InstanceId,IsAreaDamage:isAreaDamage));
     }
+
+    private static bool MatrixDamageIsArea(CompiledMatrixOperation op) => op.Radius>0 || op.MaxTargets>1 ||
+        op.Target is MatrixTargetKind.DenseEnemies or MatrixTargetKind.FrontEnemies or MatrixTargetKind.EventNearbyEnemies or
+            MatrixTargetKind.OtherEnemiesNearTarget or MatrixTargetKind.NearWoundedAllyEnemies;
 
     private void MatrixAttribute(BattleUnitState target,CompiledMatrixOperation op,float amount,CombatSourceRef origin,string slot)
     {
         var key=$"{origin.OwnerRuntimeId}:{slot}:{target.RuntimeId}:{op.Attribute}";
         foreach(var previous in _matrixAbilities.Buffs.Where(b=>b.Key==key))target.Attributes.Remove(previous.Handle);
-        var handle=target.Attributes.ApplyModifier(new CompiledAttributeModifier(op.Attribute,AttributeModifierOperation.Add,
+        var handle=target.Attributes.ApplyModifier(new CompiledAttributeModifier(op.Attribute,op.Kind==MatrixOperationKind.OverrideAttribute?AttributeModifierOperation.Override:AttributeModifierOperation.Add,
             new CompiledConstantMagnitude(amount),0,key),origin);
         _matrixAbilities=_matrixAbilities with {Buffs=_matrixAbilities.Buffs.Where(b=>b.Key!=key).ToImmutableArray().Add(new(target.RuntimeId,origin.OwnerRuntimeId,key,world.Tick+op.DurationTicks,handle,op.OwnerCondition,op.TargetCondition,op.HealthThreshold))};
     }
 
+    public bool ProtectsFromAttack(BattleUnitState target)
+    {
+        // Only impact queries inspect the bounded active-provider set; no all-unit aura scan per frame.
+        foreach (var aura in _matrixAbilities.Auras)
+            if (aura.Expires > world.Tick && aura.Owner.Alive && aura.Owner.Team == target.Team &&
+                aura.Owner.Position.DistanceSquaredTo(target.Position) <= aura.Radius * aura.Radius + .0001f)
+                return true;
+        return false;
+    }
+
+    public bool HasWindup(string owner) => _matrixAbilities.Jobs.Any(j => j.Owner == owner && j.Interruptible);
+    public void ObserveControl(BattleCombatEvent fact)
+    {
+        if (fact.Kind == BattleCombatEventKind.ControlApplied)
+        {
+            _matrixAbilities = _matrixAbilities with { Jobs = _matrixAbilities.Jobs.Where(j => j.Owner != fact.TargetRuntimeId || !j.Interruptible).ToImmutableArray() };
+            CancelCompletedHeroActions(fact.TargetRuntimeId);
+        }
+    }
+
     public void AdvanceMatrixAbilities()
     {
+        var staleAura = _matrixAbilities.Auras.Any(a => !a.Owner.Alive || a.Expires <= world.Tick);
+        var staleSpeedLease = _matrixAbilities.AttackSpeedLeases.Any(lease => lease.Expires <= world.Tick || MatrixUnit(lease.Owner)?.Alive != true);
         if(_matrixAbilities.Buffs.IsEmpty&&_matrixAbilities.Boosts.IsEmpty&&_matrixAbilities.Products.IsEmpty&&
-            _matrixAbilities.Jobs.IsEmpty&&!reactions.HasPendingOrPeriodic)return;
+            _matrixAbilities.Jobs.IsEmpty&&_matrixAbilities.Guards.IsEmpty&&_matrixAbilities.Storms.IsEmpty&&_matrixAbilities.StormSlows.IsEmpty&&
+            _matrixAbilities.Channels.IsEmpty&&_matrixAbilities.HealingSeries.IsEmpty&&_matrixAbilities.ManaRefunds.IsEmpty&&!staleAura&&!staleSpeedLease&&!reactions.HasPendingOrPeriodic)return;
         world.Resolve(() =>
         {
         MatrixPruneBuffs();
+        PruneOriginalAttackSpeedLeases();
+        PruneGuards();
+        if(staleAura) _matrixAbilities = _matrixAbilities with { Auras = _matrixAbilities.Auras.Where(a => a.Owner.Alive && a.Expires > world.Tick).ToImmutableArray() };
         _matrixAbilities=_matrixAbilities with{Boosts=_matrixAbilities.Boosts.Where(b=>b.Expires>world.Tick&&MatrixUnit(b.Owner)?.Alive==true).ToImmutableArray()};
         foreach(var product in _matrixAbilities.Products.ToArray())
         {
@@ -372,8 +519,13 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
             _matrixAbilities=_matrixAbilities with{Jobs=_matrixAbilities.Jobs.Remove(job)};
             if(MatrixUnit(job.Owner) is not {Alive:true} owner)continue;
             if(job.Operation.Kind==MatrixOperationKind.Taunt&&job.Operation.DurationTicks<=0)continue;
-            MatrixExecute(job.Operation,owner,job.Target,job.Origin,job.Event,job.Center,job.Origin.StableId);
+            // The new target carrier locks an enemy without turning a Self payoff
+            // into an area query around that enemy. Older sequences retain their anchors.
+            var center = job.SelfAtOwner && job.Operation.Target == MatrixTargetKind.Self ? null : job.Center;
+            MatrixExecute(job.Operation,owner,job.Target,job.Origin,job.Event,center,job.Origin.StableId);
         }
+        AdvanceStorms();
+        AdvanceCompletedHeroActions();
         });
         reactions.AdvancePeriodic();
         reactions.Drain();
@@ -390,9 +542,10 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
     // Register as a calculation subscriber. One cast token shares its lease across every arrow/target.
     public float MatrixAbilityCalculation(BattleCombatCalculationRequest request,float amount)
     {
+        amount=ApplyFrontalGuard(request,amount);
         var source=MatrixUnit(request.SourceRuntimeId);if(source is null)return amount;
         var skill=request.DamageClass==CombatDamageClass.ActiveSkill || request.Kind!=BattleCombatCalculationKind.Damage&&
-            source.Definition.AbilityLoadout?.Find(request.Source.StableId)?.IsActiveSkill==true;
+            source.AbilityLoadout?.Find(request.Source.StableId)?.IsActiveSkill==true;
         var basic=request.Kind==BattleCombatCalculationKind.Damage&&request.DamageClass==CombatDamageClass.BasicAttack;
         if(!skill&&!basic)return amount;
         var fallback=skill?request.Source.InstanceId:$"{request.Tick}:{statistics.AttackActions(source.RuntimeId)}";
@@ -414,6 +567,8 @@ internal sealed class BattleMatrixAbilityScope(IBattleMatrixOperationWorld world
     public void ClearMatrixAbilities()
     {
         foreach(var buff in _matrixAbilities.Buffs)MatrixUnit(buff.Owner)?.Attributes.Remove(buff.Handle);
+        foreach(var lease in _matrixAbilities.AttackSpeedLeases)MatrixUnit(lease.Owner)?.Attributes.Remove(lease.Handle);
+        foreach(var slow in _matrixAbilities.StormSlows)MatrixUnit(slow.Target)?.Attributes.Remove(slow.Handle);
         ClearState();
         reactions.Clear();
     }

@@ -38,7 +38,7 @@ public sealed partial class BattleSimulation
         public float Damage(string source, BattleUnitState attacker, BattleUnitState target, float raw, CombatSourceRef origin, EffectDamageType type) => owner.ApplyDamage(source, attacker, target, raw, origin, type);
         public CombatDamageClass DamageClass(CombatSourceRef origin) => owner.DamageClassFor(origin);
         public void Arrived(BattleUnitState source, BattleUnitState target, CombatSourceRef origin) => owner.MatrixDisplacementArrived(source, target, origin);
-        public void Finished(CombatSourceRef origin) => owner.MatrixDisplacementFinished(origin);
+        public void Finished(CombatSourceRef origin,bool completed) => owner.MatrixDisplacementFinished(origin,completed);
         public void Resolve(Action work)
         {
             var checkpoint = new BattleWorldStateCheckpoint(owner);

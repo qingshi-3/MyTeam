@@ -23,7 +23,7 @@ internal interface IBattleDirectedActionWorld
     void ReleaseGoal(string id);
     void CancelEnemyAction(string id);
     void CancelRangedActions(BattleUnitState unit);
-    void Hit(BattleUnitState source, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type);
+    void Hit(BattleUnitState source, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false);
     void Resolve(Action work);
     void Publish(BattleCombatEventDraft fact);
     void Present(string type, string source, string target, float value, Vector2 position, string cue,
@@ -51,7 +51,7 @@ public sealed partial class BattleSimulation
             owner.InterruptBattleChannels(unit.RuntimeId);
             owner._movement?.ReleaseUnit(unit.RuntimeId);
         }
-        public void Hit(BattleUnitState source, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type) => owner.ResolveLineSkillHit(source, target, amount, origin, type);
+        public void Hit(BattleUnitState source, BattleUnitState target, float amount, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false) => owner.ResolveLineSkillHit(source, target, amount, origin, type, isAreaDamage);
         public void Resolve(Action work)
         {
             var checkpoint = new BattleWorldStateCheckpoint(owner);

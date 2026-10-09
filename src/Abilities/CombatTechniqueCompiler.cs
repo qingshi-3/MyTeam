@@ -9,7 +9,7 @@ public sealed record CompiledDuelOperation(int DurationTicks, float BreakDistanc
 public sealed record CompiledCounterattackOperation(int HitsRequired, float AttackRatio, float LifestealRatio) : CompiledCombatTechniqueOperation;
 public sealed record CompiledGritStorageOperation(string CounterKey, int WindowTicks, float MaximumHealthRatio) : CompiledCombatTechniqueOperation;
 public sealed record CompiledGritPunchOperation(string CounterKey, float LowHealthRatio, float CriticalHealthRatio,
-    float Range, float Radius, int ChargeTicks, int RecoveryTicks, int ShieldTicks, float AttackRatio, float GritDamageRatio) : CompiledCombatTechniqueOperation;
+    float Range, float Radius, int ChargeTicks, int RecoveryTicks, int ShieldTicks, float AttackRatio, float GritDamageRatio, float SuccessHealGritRatio = 0) : CompiledCombatTechniqueOperation;
 public sealed record CompiledHookOperation(float Range, float Radius, float Speed, int WindupTicks, int ReturnTicks,
     float AttackRatio, bool ExcludeBoss) : CompiledCombatTechniqueOperation;
 
@@ -30,9 +30,9 @@ public static partial class AbilityDefinitionCompiler
                 B(p.CriticalHealthRatio, .01f, .99f) && B(p.LowHealthRatio, .01f, 1) && p.CriticalHealthRatio < p.LowHealthRatio &&
                 B(p.Range, .1f, 10) && B(p.Radius, .1f, 3) && p.ChargeTicks is > 0 and <= 50 &&
                 p.RecoveryTicks is > 0 and <= 50 &&
-                p.ShieldTicks is > 0 and <= 100 && B(p.AttackRatio, 0, 10) && B(p.GritDamageRatio, 0, 5) =>
+                p.ShieldTicks is > 0 and <= 100 && B(p.AttackRatio, 0, 10) && B(p.GritDamageRatio, 0, 5) && B(p.SuccessHealGritRatio, 0, 1) =>
                 new CompiledGritPunchOperation(p.CounterKey,p.LowHealthRatio,p.CriticalHealthRatio,p.Range,p.Radius,
-                    p.ChargeTicks,p.RecoveryTicks,p.ShieldTicks,p.AttackRatio,p.GritDamageRatio),
+                    p.ChargeTicks,p.RecoveryTicks,p.ShieldTicks,p.AttackRatio,p.GritDamageRatio,p.SuccessHealGritRatio),
             HookAbilityOperationSpec h when B(h.Range, .1f, 20) && B(h.Radius, .01f, 1) && B(h.Speed, 1, 30) &&
                 h.WindupTicks is > 0 and <= 30 && h.ReturnTicks is > 0 and <= 30 && B(h.AttackRatio, 0, 10) =>
                 new CompiledHookOperation(h.Range,h.Radius,h.Speed,h.WindupTicks,h.ReturnTicks,h.AttackRatio,h.ExcludeBoss),

@@ -4,8 +4,11 @@ using System.Collections.Immutable;
 using System.Linq;
 using TowerAutobattler.Attributes;
 using TowerAutobattler.Battle;
+using TowerAutobattler.Equipment;
 
 namespace TowerAutobattler.Statuses;
+
+public sealed record StatusControlGuardTriggered(string OwnerId, string SourceId, string RuleId, int Tick);
 
 public sealed class BattleStatusScope : IDisposable
 {
@@ -26,6 +29,10 @@ public sealed class BattleStatusScope : IDisposable
     private int _lastTick;
     private bool _insideMutation;
     private bool _worldTransactionActive;
+    private readonly Func<string, CompiledEquipmentControlGuard?> _controlGuardResolver;
+    private readonly Action<StatusControlGuardTriggered> _controlGuardSink;
+    private ImmutableDictionary<(string Owner, string Rule), int> _controlGuardWindows =
+        ImmutableDictionary<(string Owner, string Rule), int>.Empty;
 
     public BattleStatusScope(
         string scopeId,
@@ -61,7 +68,9 @@ public sealed class BattleStatusScope : IDisposable
         Action<StatusPresentationCue>? cueSink,
         Func<StatusMagnitudeContextRequest, BattleAttributeMagnitudeContext>? magnitudeContextFactory = null,
         Func<StatusCombatReactiveSubscriptionRequest, IDisposable>? combatReactiveRegistrar = null,
-        Func<StatusEffectInvocation, bool>? reactiveEffectSink = null)
+        Func<StatusEffectInvocation, bool>? reactiveEffectSink = null,
+        Func<string, CompiledEquipmentControlGuard?>? controlGuardResolver = null,
+        Action<StatusControlGuardTriggered>? controlGuardSink = null)
     {
         if (string.IsNullOrWhiteSpace(scopeId))
             throw new ArgumentException("Status scope id is required.", nameof(scopeId));
@@ -77,6 +86,8 @@ public sealed class BattleStatusScope : IDisposable
         _subscriptions = new StatusReactiveSubscriptionScope(() => _instances.Values, () => _transition is not null,
             combatReactiveRegistrar, reactiveEffectSink ?? _effectSink);
         _deferredPeriodicEffects = true;
+        _controlGuardResolver = controlGuardResolver ?? (_ => null);
+        _controlGuardSink = controlGuardSink ?? (_ => { });
     }
 
     public string ScopeId => _scopeId;
@@ -496,6 +507,7 @@ public sealed class BattleStatusScope : IDisposable
             var failure = _subscriptions.Clear();
             _instances.Clear();
             _periodicReceipts.Clear();
+            _controlGuardWindows = _controlGuardWindows.Clear();
 
             foreach (var effect in batch.Effects)
                 try
@@ -547,6 +559,22 @@ public sealed class BattleStatusScope : IDisposable
         if (depth > 64) throw new InvalidOperationException("Status transition depth exceeded the compiled acyclic limit.");
         var applicationSequence = ++_applicationSequence;
         var duration = StatusControlDuration.ResolveTicks(definition, _attributeResolver(ownerId));
+        // Reject the first hard-control contribution before tags, modifiers or control
+        // facts exist. A successful interception must not fail the source's ability.
+        if (string.IsNullOrEmpty(grantId) && definition.Behavior == StatusBehaviorKind.DisableActions &&
+            definition.DurationKind == StatusDurationKind.TimedTicks && duration > 0 &&
+            _controlGuardResolver(ownerId) is { } guard)
+        {
+            var guardKey = (ownerId, guard.RuleId);
+            if (!_controlGuardWindows.TryGetValue(guardKey, out var until))
+            {
+                _controlGuardWindows = _controlGuardWindows.Add(guardKey, checked(tick + guard.WindowTicks));
+                batch.ControlGuards.Add(new(ownerId, sourceId, guard.RuleId, tick));
+                return new StatusApplicationResult(true, string.Empty, null, 0);
+            }
+            if (tick < until)
+                duration = Math.Max(1, (int)Math.Ceiling(duration * (double)guard.SubsequentDurationMultiplier));
+        }
         if (definition.DurationKind == StatusDurationKind.Instant)
         {
             var instant = new StatusRuntimeInstance(definition, ownerId, applicationSequence, tick, duration);
@@ -747,13 +775,15 @@ public sealed class BattleStatusScope : IDisposable
             _ownerChanged(owner, SnapshotOwner(owner));
         foreach (var lifecycle in batch.Lifecycles) _lifecycleSink(lifecycle);
         foreach (var cue in batch.Cues) _cueSink(cue);
+        foreach (var guard in batch.ControlGuards) _controlGuardSink(guard);
     }
 
     private ScopeState CaptureState() => new(
         _instances.ToDictionary(pair => pair.Key, pair => pair.Value.Clone()),
         _periodicReceipts.Capture(),
         _applicationSequence,
-        _lastTick);
+        _lastTick,
+        _controlGuardWindows);
 
     private void RestoreState(ScopeState backup)
     {
@@ -762,6 +792,7 @@ public sealed class BattleStatusScope : IDisposable
         _periodicReceipts.Restore(backup.PeriodicReceipts);
         _applicationSequence = backup.ApplicationSequence;
         _lastTick = backup.LastTick;
+        _controlGuardWindows = backup.ControlGuardWindows;
     }
 
     private void CommitWorldTransaction(WorldStateCheckpoint checkpoint)
@@ -1017,7 +1048,8 @@ public sealed class BattleStatusScope : IDisposable
         Dictionary<StatusKey, StatusRuntimeInstance> Instances,
         StatusPeriodicReceiptLedger.Checkpoint PeriodicReceipts,
         long ApplicationSequence,
-        int LastTick);
+        int LastTick,
+        ImmutableDictionary<(string Owner, string Rule), int> ControlGuardWindows);
 
     internal sealed class WorldStateCheckpoint
     {
@@ -1067,6 +1099,7 @@ public sealed class BattleStatusScope : IDisposable
         public List<StatusEffectInvocation> Effects { get; } = [];
         public List<StatusLifecycleEvent> Lifecycles { get; } = [];
         public List<StatusPresentationCue> Cues { get; } = [];
+        public List<StatusControlGuardTriggered> ControlGuards { get; } = [];
     }
 
 }

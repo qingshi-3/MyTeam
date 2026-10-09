@@ -30,7 +30,8 @@ public sealed partial class BattleSimulation
             return new(unit.Alive, battle.EnemyActionBusy(unit) || battle.TechniqueBusy(unit) ||
                 battle.UnitActionRecovering(unit) || battle.DuelOpponent(unit) is not null ||
                 unit.Trample is not null || unit.ChargedLine is not null || controlled,
-                battle.IsDisplacing(unit), BattleHeroMana.IsReady(unit, tick), controlled);
+                battle.IsDisplacing(unit), BattleHeroMana.IsReady(unit, tick), controlled,
+                battle.MatrixHoldsAction(id));
         }
 
         public AbilityCommitResult ExecuteAtomically(Func<AbilityCommitResult> work)

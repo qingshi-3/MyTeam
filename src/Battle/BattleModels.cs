@@ -32,7 +32,7 @@ public sealed record UnitSnapshot(
     float ProjectileSpeed = 8f, float ProjectileRadius = .07f, float ProjectileLifetime = 3f,
     AttackHitGrowthSnapshot? AttackHitGrowth = null,
     float ProjectileWindupSeconds = 0, float AttackReleaseProgress = .8f,
-    string AttackVisualId = "projectile");
+    string AttackVisualId = "projectile", bool AllowTemporaryMana = false);
 
 public sealed record ProjectileWindupState(string TargetId, int ReleaseTick, float DamageMultiplier,
     CombatSourceRef SkillOrigin);
@@ -87,7 +87,12 @@ public sealed record BattleIdentity(
     ulong RunSeed,
     int FloorIndex,
     int BattleNumber,
-    string CompositionId = "");
+    string CompositionId = "")
+{
+    // Empty retains the legacy tower protocol. An action-origin battle has no
+    // floor (FloorIndex = -1) and is bound to its immutable committed action.
+    public string OriginKey { get; init; } = string.Empty;
+}
 
 public sealed record BossPhaseSnapshot(
     string StableId,
@@ -102,6 +107,8 @@ public sealed record BossTimelineSnapshot(
 
 public sealed class BattleConfig
 {
+    // Detailed aggregates are opt-in for laboratories; production retains the compact report.
+    public bool CaptureDetailedStatistics { get; init; }
     public CompiledMatrixStatusRules MatrixStatusRules { get; init; } = CompiledMatrixStatusRules.Default;
     public ulong Seed { get; init; }
     public BattleIdentity? Identity { get; init; }
@@ -177,7 +184,9 @@ public sealed class BattleUnitState
     public float Health { get; set; }
     public float CurrentMana { get; set; }
     public float MaxMana => HasManaSkill ? Attributes.GetValue(CombatAttribute.MaxMana) : 0;
-    public bool HasManaSkill => !IsTemporary && Definition.AbilityLoadout is { } loadout &&
+    public CompiledAbilityLoadout? CurrentAbilityLoadout { get; set; }
+    public CompiledAbilityLoadout? AbilityLoadout => CurrentAbilityLoadout ?? Definition.AbilityLoadout;
+    public bool HasManaSkill => (!IsTemporary || Definition.AllowTemporaryMana) && AbilityLoadout is { } loadout &&
         System.Linq.Enumerable.Any(loadout.Abilities, ability => ability.Trigger == AbilityTriggerKind.ManaFull);
     public int ManaLockedUntilTick { get; set; }
     public string LastAbilityName { get; set; } = string.Empty;
@@ -252,7 +261,8 @@ public sealed record BattleUnitReportSnapshot(
     int? DefeatTick = null,
     int AttackActions = 0,
     int EffectiveHealingEvents = 0,
-    Vector2 FinalPosition = default, int ActiveTicks = -1);
+    Vector2 FinalPosition = default, int ActiveTicks = -1,
+    BattleUnitDetailedStatisticsSnapshot? DetailedStatistics = null);
 
 public sealed record BattleResult(
     BattleOutcome Outcome,
@@ -263,4 +273,5 @@ public sealed record BattleResult(
     int SuccessfulTacticalCommandUses = 0,
     RelicBattleTransitionResult? RelicTransition = null,
     BattleIdentity? Identity = null,
-    ImmutableArray<BattlePermanentGain> PermanentGains = default);
+    ImmutableArray<BattlePermanentGain> PermanentGains = default,
+    ImmutableArray<BattleRememberedGain> RememberedGains = default);
