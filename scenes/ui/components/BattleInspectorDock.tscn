@@ -115,11 +115,31 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="Controls" type="HBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
+[node name="StatisticsClock" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "模拟时间 0.0 秒"
+autowrap_mode = 3
+
+[node name="StatisticsBody" type="HBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="Ranking" type="VBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.36
+theme_override_constants/separation = 8
+
+[node name="Controls" type="HBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="StatAllies" type="Button" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/Controls"]
+[node name="StatAllies" type="Button" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking/Controls"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"CompactButton"
@@ -128,7 +148,7 @@ button_pressed = true
 text = "我方"
 tooltip_text = "查看我方单位本场统计，包含临时单位。"
 
-[node name="StatEnemies" type="Button" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/Controls"]
+[node name="StatEnemies" type="Button" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking/Controls"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"CompactButton"
@@ -136,7 +156,7 @@ toggle_mode = true
 text = "敌方"
 tooltip_text = "查看敌方单位本场统计。"
 
-[node name="StatMetric" type="OptionButton" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/Controls"]
+[node name="StatMetric" type="OptionButton" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking/Controls"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -150,37 +170,90 @@ popup/item_2/text = "治疗"
 popup/item_2/id = 2
 tooltip_text = "伤害与承伤包含护盾吸收；治疗只统计实际恢复生命，不包含过量治疗。"
 
-[node name="StatTotal" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
+[node name="StatTotal" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 17
 text = "我方 · 总伤害 0"
 autowrap_mode = 3
 
-[node name="StatisticsNote" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
+[node name="StatisticsNote" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.72, 0.69, 0.62, 1)
 text = "按开场阵营统计；含召唤物，治疗不含过疗\n条长相对本侧最高值；伤害与承伤含护盾吸收"
 autowrap_mode = 3
 
-[node name="StatsScroll" type="ScrollContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
+[node name="StatsScroll" type="ScrollContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 3
 follow_focus = true
 
-[node name="StatRows" type="VBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatsScroll"]
+[node name="StatRows" type="VBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking/StatsScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="EmptyStatistics" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
+[node name="EmptyStatistics" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/Ranking"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "战斗开始后显示单位统计"
 autowrap_mode = 3
+
+[node name="StatisticsDetail" type="VBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.64
+theme_override_constants/separation = 8
+
+[node name="Actions" type="HBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/StatisticsDetail"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DetailHeading" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/StatisticsDetail/Actions"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SectionTitleLabel"
+text = "单位数据"
+
+[node name="InspectStatisticsUnit" type="Button" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/StatisticsDetail/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+text = "单位资料"
+
+[node name="ExportStatistics" type="Button" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/StatisticsDetail/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+text = "导出本场 JSON"
+tooltip_text = "导出双方阵容、种子、当前时间和全部累计统计；仅点击时写入本地文件。"
+
+[node name="StatisticsDetailText" type="RichTextLabel" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage/StatisticsBody/StatisticsDetail"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+selection_enabled = true
+theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/bold_font_size = 18
+theme_override_constants/line_separation = 5
+theme_override_constants/table_h_separation = 14
+theme_override_constants/table_v_separation = 5
+text = "点击左侧单位查看明细。"
+
+[node name="ExportFeedback" type="Label" parent="InspectorPopup/ExpandedInspector/Inset/Layout/StatisticsPage"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = ""
+autowrap_mode = 3
+max_lines_visible = 2
 
 [node name="UnitDetailsPage" type="VBoxContainer" parent="InspectorPopup/ExpandedInspector/Inset/Layout"]
 unique_name_in_owner = true

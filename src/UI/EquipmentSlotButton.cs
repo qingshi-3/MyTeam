@@ -47,6 +47,9 @@ public partial class EquipmentSlotButton : Button, IUiMotionHost
             : _itemName;
         Text = slotIndex >= 0 ? (item is null ? (InlinePresentation ? "＋" : "空槽") : string.Empty)
             : WorkbenchPresentation ? string.Empty : item?.DisplayName ?? "空槽";
+        var fallback = GetNode<Label>("NoIconLabel");
+        fallback.Visible = item is not null && item.Icon is null && (slotIndex >= 0 || WorkbenchPresentation);
+        fallback.Text = item?.DisplayName ?? string.Empty;
         VerticalIconAlignment = slotIndex >= 0 || WorkbenchPresentation ? VerticalAlignment.Center : VerticalAlignment.Top;
         var ordinal = GetNode<Label>("SlotOrdinal");
         ordinal.Visible = slotIndex >= 0 && !InlinePresentation;

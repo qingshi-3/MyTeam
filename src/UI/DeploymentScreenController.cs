@@ -85,7 +85,7 @@ public partial class DeploymentScreenController : Control
         _equipmentPopup = GetNode<ContextPopup>("%EquipmentPopup");
         _equipmentPopup.VisibilityChanged += OnEquipmentOverlayVisibilityChanged;
         foreach (var chrome in new CanvasItem[] { GetNode<CanvasItem>("Margin/Layout/Header"),
-                     GetNode<CanvasItem>("%RunRisk"), _bench, _status, GetNode<CanvasItem>("Margin/Layout/Actions") })
+                     GetNode<CanvasItem>("%RunRisk"), GetNode<CanvasItem>("%OpeningPartners"), _bench, _status, GetNode<CanvasItem>("Margin/Layout/Actions") })
             _inspectionChrome.Add(chrome, chrome.Modulate);
         _encounterPopup = GetNode<ContextPopup>("%EncounterPopup");
         _unitButton = GetNode<Button>("%UnitDetailsButton");
@@ -186,9 +186,18 @@ public partial class DeploymentScreenController : Control
         _pieces = pieces;
         _enemies = enemies ?? [];
         _prepared.Clear();
-        foreach (var unit in BattlePreparationProjection.Build(config).Units)
+        var preparation = BattlePreparationProjection.Build(config);
+        foreach (var unit in preparation.Units)
                 _prepared[unit.SourceInstanceId] = new PreparedUnitDetails(unit.Definition,
                     unit.Attributes.Values, unit.Health, unit.Shield);
+        var links = preparation.OpeningAllyLinks.IsDefault ? [] : preparation.OpeningAllyLinks.Where(link =>
+            preparation.Units.Any(unit => unit.RuntimeId == link.SourceRuntimeId && unit.Team == 0 && !unit.IsTemporary)).ToArray();
+        var partners = GetNode<Label>("%OpeningPartners");
+        partners.Visible = links.Length > 0;
+        partners.Text = string.Join("；", links.GroupBy(link => link.SourceRuntimeId).Select(group =>
+            $"开场伙伴：{preparation.Units.Single(unit => unit.RuntimeId == group.Key).Definition.DisplayName} → " +
+            string.Join("、", group.Select(link => preparation.Units.Single(unit => unit.RuntimeId == link.TargetRuntimeId).Definition.DisplayName)))) +
+            (links.Length > 0 ? "（开战时固定，移动不改配对）" : "");
         _reserveCapacity = Math.Max(0, reserveCapacity);
         if (!string.IsNullOrEmpty(_selectedId) && !ContainsPiece(_selectedId)) _selectedId = string.Empty;
         Refresh();

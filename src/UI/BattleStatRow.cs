@@ -24,7 +24,7 @@ public partial class BattleStatRow : Button
         Pressed += OnSelected;
     }
 
-    public void Bind(BattleUnitReportSnapshot unit, UnitPortraitDefinition? portrait, string metric, float value, float maximum)
+    public void Bind(BattleUnitReportSnapshot unit, UnitPortraitDefinition? portrait, string metric, float value, float maximum, bool timeMetric = false)
     {
         _runtimeId = unit.RuntimeId;
         if (_contentId != unit.ContentId)
@@ -32,15 +32,15 @@ public partial class BattleStatRow : Button
             _contentId = unit.ContentId;
             _portrait.Bind(portrait, SemanticIcons.Catalog.ResolveIcon(unit.IsHero ? "hero" : "unit"));
         }
-        _name.Text = unit.DisplayName + (unit.Alive ? "" : " · 阵亡");
-        _value.Text = value.ToString("0");
+        _name.Text = unit.DisplayName + (unit.IsTemporary ? " · 召唤物" : "") + (unit.Alive ? "" : " · 阵亡");
+        _value.Text = value.ToString(timeMetric ? "0.0" : "0") + (timeMetric ? "秒" : "");
         _bar.Value = maximum > 0 ? value / maximum * 100 : 0;
         BattleLabHoverHint.Bind(this, new BattleLabTooltipInfo(unit.DisplayName,
             Subtitle: unit.Alive ? "仍在战场" : "已阵亡 · 保留本场累计",
             Stats: $"本场{metric} {value:0}\n造成伤害 {unit.DamageDealt:0} · 承受伤害 {unit.DamageTaken:0}\n" +
                 $"有效治疗 {unit.HealingDone:0} · 护盾吸收 {unit.ShieldAbsorbed:0}",
             Abilities: "伤害与承伤包含护盾吸收；治疗不含过疗。\n条长相对于本侧当前指标最高的单位。",
-            Hint: "点击查看单位详情"));
+            Hint: unit.DetailedStatistics is null ? "点击查看单位详情" : "点击查看伤害组成与控制明细"));
     }
 
     private void OnSelected() => UnitSelected?.Invoke(_runtimeId);

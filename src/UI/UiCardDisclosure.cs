@@ -60,7 +60,7 @@ public partial class UiCardDisclosure : Node, IUiMotionHost
             (hovered == _owner || _owner.IsAncestorOf(hovered));
         var focused = GetViewport().GuiGetFocusOwner();
         var focusInside = focused is not null && (focused == _toggle ||
-            _toggle is null && _keyboardNavigation && focused == _owner) || IsOpen && focused is not null &&
+            _toggle is null && _keyboardNavigation && (focused == _owner || _owner.IsAncestorOf(focused))) || IsOpen && focused is not null &&
             _groups.Any(group => group.IsAncestorOf(focused));
         if (!inside && !focusInside) _dismissed = false;
         if (GetViewport().GuiIsDragging()) { if (inside) Open(); _leave = 0; return; }

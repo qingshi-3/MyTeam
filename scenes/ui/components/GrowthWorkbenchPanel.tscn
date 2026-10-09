@@ -31,7 +31,7 @@ theme_type_variation = &"BattleLabFold"
 
 [node name="Rules" type="Label" parent="GrowthRules"]
 layout_mode = 2
-text = "生产按英雄初始属性计算并逐次累加，成长仅在本局有效。进入节点时，生产者与受益者需要已经上阵；满足条件后，战斗中阵亡不会取消本次收益。最终节点不产出。法术在战斗正式开始时消耗，预览与整备不会消耗库存。"
+text = "生产量按各英雄配置：树种同时给予固定攻击与生命，其他生产可按初始属性比例或产出研究。成长仅在本局有效。每次有效非终局行动按提交前冻结出战名单结算；生产者与指定受益者均须上阵，也可培养自己，未指定不会产出。满足条件后，战斗中阵亡不取消非终局收益。移动、预览与免费回访不产出；法术仅在正式开战时消耗。"
 autowrap_mode = 2
 theme_type_variation = &"SecondaryLabel"
 

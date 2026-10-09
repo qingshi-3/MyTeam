@@ -1,0 +1,24 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxInstance.cs" id="root"]
+[ext_resource type="Script" path="res://src/Vfx/VfxGroundPlane.cs" id="plane"]
+[ext_resource type="Script" path="res://src/Vfx/VfxSpriteTrack.cs" id="track"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/stone_quake.gdshader" id="shader"]
+[sub_resource type="ShaderMaterial" id="edge"]
+resource_local_to_scene = true
+shader = ExtResource("shader")
+[node name="stone_quake" type="Node2D"]
+script = ExtResource("root")
+[node name="GroundPlane" type="Node2D" parent="."]
+script = ExtResource("plane")
+DefaultRadius = 2
+FollowDisplayPosition = false
+[node name="RangeBoundary" type="Sprite2D" parent="GroundPlane"]
+texture = ExtResource("surface")
+material = SubResource("edge")
+script = ExtResource("track")
+ShaderLifecycle = true
+StartScale = 1.0
+EndScale = 1.0
+Duration = 3
+SustainedPulseAmount = 0.0

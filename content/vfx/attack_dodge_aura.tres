@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/attack_dodge_aura.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "attack_dodge_aura"
+DisplayName = "庇护领域边界"
+PreviewNote = "功能范围边界；跟随古树，精确显示1.5格，正式状态到期或死亡结束。沿用已有范围边界，不代表最终特效美术。"
+Scene = ExtResource("scene")
+Duration = 2.5
+Persistent = true
+Ground = true
+UsesRadius = true
+FlattenGround = false
+ReferenceRadius = 1.5
+Size = 180
+ReleaseDuration = 0.05

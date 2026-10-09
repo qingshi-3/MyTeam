@@ -126,6 +126,9 @@ public partial class ArmyOverviewController : Control, IUiMotionHost
     private void OnEquipmentChanged()
     {
         if (_application?.Run is not { } run) return;
+        // A transfer selects its receiver before notifying the host. Preserve
+        // that selection during Bind, which runs before HeroSelected is emitted.
+        _inspectedHero = _equipmentPanel.SelectedHeroId;
         Bind(ArmyOverviewFactory.Build(run, _application.Content, _application.Rules));
         EquipmentChanged?.Invoke();
     }
@@ -195,6 +198,7 @@ public partial class ArmyOverviewController : Control, IUiMotionHost
         _pageToggle.Text = NextPageTitle(pages);
         _growthPanel.GetNode<OptionButton>("%Producer").GrabFocus();
     }
+    public void OpenArmyOverview() => Open();
     public void Close()
     {
         BattleLabHoverHint.HideAll(true);

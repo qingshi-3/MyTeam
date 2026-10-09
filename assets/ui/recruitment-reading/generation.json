@@ -1,0 +1,31 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "date": "2026-10-03",
+  "purpose": "招募卡阅读层材质；没有烘焙文字、图标或业务信息。",
+  "assets": [
+    {
+      "file": "header-plaque.png",
+      "source": "res://assets/ui/tavern/card-skill-plaque.png",
+      "initialPrompt": "Use case: precise-object-edit. Create a production UI MATERIAL sprite variant of the reference, not a screenshot or mockup. Match its hand-painted gray limestone, broad restrained bevel, warm charcoal recessed center, soft upper-left lighting. Center must be fully opaque, very dark warm slate with only subtle broad tonal variation, easy to read cream text over it. No text, numbers, symbols, icons, gems or ornament. Real transparent alpha outside only. Face-on orthographic view, no perspective. Keep the surface simple, substantial, matte and quiet. Avoid skinny gold borders, glitter, grain noise, glossy continuous highlights. Make ONE compact horizontal rounded chamfered plaque, width to height exactly 2:1. Corners are gently clipped, border only 8% of height, remaining face is a broad blank reading area. No rivets. It will be used at 76x38 pixels over a graystone character card. Center the whole silhouette on a transparent 1024x1024 canvas, approximately x64..960 and y288..736; nothing else.",
+      "revisionPrompt": "Precisely edit this UI sprite: change the silhouette proportions from the current very long horizontal strip to a COMPACT 2:1 plaque, twice as wide as tall. Keep the graystone material and opaque dark warm charcoal inset. Enlarge the vertical dimension greatly and reduce horizontal span; final object bounding box must be about x120..1160,y360..880 on the 1280 square transparent canvas. Rebuild the corners in proportion, don't stretch them. Border thickness 32 px all around, dark inner surface occupies 88% of width and 82% of height. A broad blank surface for two cream glyphs at 76x38 in game. No text, no symbols, no icons, no rivets. Flat face-on orthographic. Single isolated object, transparent outside, fully opaque interior. Matte broad handpainted planes, quiet, no extra decoration.",
+      "note": "初稿比例不适配角标，最终使用重新制作的2:1轮廓；原有素材不修改。"
+    },
+    {
+      "file": "detail-inset.png",
+      "source": "res://assets/ui/tavern/workbench-list.png",
+      "prompt": "Use case: precise-object-edit. Create a production UI MATERIAL sprite variant of the reference, not a screenshot or mockup. Match its hand-painted gray limestone, broad restrained bevel, warm charcoal recessed center, soft upper-left lighting. Center must be fully opaque, very dark warm slate with only subtle broad tonal variation, easy to read cream text over it. No text, numbers, symbols, icons, gems or ornament. Real transparent alpha outside only. Face-on orthographic view, no perspective. Keep the surface simple, substantial, matte and quiet. Avoid skinny gold borders, glitter, grain noise, glossy continuous highlights. Make ONE broad information inset panel, silhouette width to height exactly 1.38:1. Elegant shallow arch across the top, gently chamfered corners, straight long sides and flat bottom. A thin but dimensional hand-painted graystone rim (about 3% of panel width), no large corner stones; interior about 92% of the width is fully opaque deep warm charcoal. It will contain two columns of cream stats at 266x194 pixels. Center entire silhouette on a transparent 1024x1024 canvas approximately x48..976 and y176..848, nothing else.",
+      "note": "初稿拱顶遮挡面部，保留为派生来源；最终使用detail-inset-flat.png。"
+    },
+    {
+      "file": "detail-inset-flat.png",
+      "source": "detail-inset.png",
+      "prompt": "Precise UI sprite edit. Change ONLY the contour of this stone information panel: REMOVE THE ARCH COMPLETELY. Top edge must be perfectly horizontal. Keep a wide rectangle with gently clipped corners, bounding box about x56..1198 and y252..1036 on this 1254x1254 canvas, width:height 1.46:1. Border should remain a restrained thin hand-painted gray limestone bevel, about 24px thick; opaque deep warm charcoal interior is 94% of width. No large corner blocks, no ornaments, no lettering. This will be a 262x180 px stats inset, so top/bottom data safe margin must be only 6px at that final size. Keep the reference material and soft light, quiet opaque matte center, transparent outside. Flat face-on view, no perspective. Exactly one blank UI panel, not a mockup.",
+      "integration": "OfferUnitDetailSurface.tscn uses authored AtlasTexture regions. Corners uniformly scale 70x70 to 16x16; only straight edges and quiet center extend. No text or glyphs are baked."
+    },
+    {
+      "file": "res://scenes/ui/components/offer_unit_core_plaque_texture.tres",
+      "source": "res://assets/ui/tavern/card-skill-plaque.png",
+      "note": "Godot AtlasTexture选取既有素材区域，TextureRect等比居中；原PNG未改。"
+    }
+  ]
+}

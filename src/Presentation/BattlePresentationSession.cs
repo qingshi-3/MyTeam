@@ -123,7 +123,7 @@ internal sealed class BattlePresentationSession(
         }
         _rangedAttackLayer.Present(events, _paused);
         if (_simulation is not null && !events.Any(e => e.Type == "battle_finished"))
-            _rangedAttackLayer.SynchronizeUnits(_simulation.UnitViews);
+            _rangedAttackLayer.SynchronizeUnits(_simulation.UnitViews, _simulation.FrontalGuards, _simulation.GroundStorms);
         foreach (var battleEvent in events)
         {
             if (battleEvent.Type != "move" || string.IsNullOrWhiteSpace(battleEvent.SourceRuntimeId) ||
@@ -197,6 +197,7 @@ internal sealed class BattlePresentationSession(
     public void SyncPresenters(string cue, IReadOnlySet<string>? preserveCue = null)
     {
         if (_simulation is null) return;
+        var guards = _simulation.FrontalGuards.ToDictionary(value => value.OwnerRuntimeId, StringComparer.Ordinal);
         foreach (var state in _simulation.UnitViews)
         {
             EnsurePresenter(state.RuntimeId);
@@ -205,6 +206,8 @@ internal sealed class BattlePresentationSession(
                 presenter.RefreshPresentation(state.Alive && preserveCue?.Contains(state.RuntimeId) == true ? "" : state.Alive ? cue : "defeated",
                     state.Health, state.MaxHealth);
                 presenter.RefreshBattleForm(state.BodyRadius);
+                if (state.Alive && guards.TryGetValue(state.RuntimeId, out var guard))
+                    presenter.FaceToward(_board.LogicalToLocal(state.Position + guard.Direction));
                 presenter.RefreshCombatResources(state.CurrentMana, state.MaxMana, state.Shield, state.Statuses, state.Alive,
                     _simulation.ReadUnitSkills(state.RuntimeId).Primary);
             }
@@ -263,6 +266,7 @@ internal sealed class BattlePresentationSession(
     public void SnapPresentersToAuthority()
     {
         if (_simulation is null) return;
+        var guards = _simulation.FrontalGuards.ToDictionary(value => value.OwnerRuntimeId, StringComparer.Ordinal);
         foreach (var state in _simulation.UnitViews)
         {
             EnsurePresenter(state.RuntimeId);

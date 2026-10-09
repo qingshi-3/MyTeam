@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://src/UI/HeroSelectScreen.cs" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/HeroLibraryTile.tscn" id="2"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningHeroLibraryTile.tscn" id="OpeningTile"]
 
 [ext_resource type="Theme" path="res://content/ui/opening_theme.tres" id="OpeningTheme"]
-[ext_resource type="Texture2D" path="res://assets/ui/opening/mustering-hall.png" id="Hall"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningHeroSeat.tscn" id="Seat"]
 
 [sub_resource type="StyleBoxEmpty" id="OpeningRow"]
@@ -24,16 +23,14 @@ OpeningHeroLibraryTileScene = ExtResource("OpeningTile")
 OpeningLibraryStyle = SubResource("OpeningRow")
 OpeningTheme = ExtResource("OpeningTheme")
 
-[node name="OpeningBackdrop" type="TextureRect" parent="."]
+[node name="OpeningBackdrop" type="ColorRect" parent="."]
 visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-texture = ExtResource("Hall")
-expand_mode = 1
-stretch_mode = 6
+color = Color(0.025, 0.035, 0.035, 0.36)
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -43,13 +40,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 72
+theme_override_constants/margin_top = 18
 theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 32
+theme_override_constants/margin_bottom = 12
 
 [node name="Layout" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Margin/Layout"]
 layout_mode = 2
@@ -114,7 +111,7 @@ size_flags_stretch_ratio = 1.15
 
 [node name="Footer" type="Control" parent="Margin/Layout"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 148)
+custom_minimum_size = Vector2(0, 106)
 mouse_filter = 2
 
 [node name="BackButton" type="Button" parent="Margin/Layout/Footer"]
@@ -169,9 +166,9 @@ anchor_left = 1.0
 anchor_right = 1.0
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = -288.0
-offset_top = -48.0
-offset_bottom = 48.0
+offset_left = -224.0
+offset_top = -34.0
+offset_bottom = 34.0
 disabled = true
 text = "启程"
 

@@ -1,0 +1,493 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://src/UI/ExpeditionScreenController.cs" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/ui/expedition/ExpeditionMapCell.tscn" id="cell"]
+[ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="theme"]
+[ext_resource type="PackedScene" path="res://scenes/ui/expedition/ExpeditionPartyLight.tscn" id="party_light"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/icons/roster-deployed.svg" id="party"]
+
+[sub_resource type="StyleBoxFlat" id="PartyPlate"]
+bg_color = Color(0.24, 0.18, 0.10, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.94, 0.78, 0.40, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+shadow_color = Color(0.04, 0.04, 0.025, 0.65)
+shadow_size = 5
+shadow_offset = Vector2(0, 3)
+
+[sub_resource type="StyleBoxFlat" id="PartyHalo"]
+bg_color = Color(0.96, 0.74, 0.31, 0.09)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_left = 18
+corner_radius_bottom_right = 18
+shadow_color = Color(0.96, 0.73, 0.27, 0.18)
+shadow_size = 7
+
+[sub_resource type="StyleBoxFlat" id="MapWell"]
+bg_color = Color(0.07, 0.10, 0.095, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.51, 0.49, 0.36, 0.75)
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="ActionTrack"]
+bg_color = Color(0.10, 0.12, 0.09, 0.9)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[sub_resource type="StyleBoxFlat" id="ActionFill"]
+bg_color = Color(0.77, 0.71, 0.42, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_left = 2
+corner_radius_bottom_right = 2
+
+[node name="ExpeditionScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("theme")
+script = ExtResource("1")
+CellScene = ExtResource("cell")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 12
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Heading" type="VBoxContainer" parent="Margin/Layout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="ExpeditionTitle" type="Label" parent="Margin/Layout/Header/Heading"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"RoutePageTitle"
+theme_override_font_sizes/font_size = 30
+text = "迷雾大陆"
+text_overrun_behavior = 3
+
+[node name="StageText" type="Label" parent="Margin/Layout/Header/Heading"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.87, 0.73, 1)
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+theme_override_constants/outline_size = 4
+theme_type_variation = &"PageHint"
+theme_override_font_sizes/font_size = 16
+text = "探索征程"
+text_overrun_behavior = 3
+
+[node name="Actions" type="VBoxContainer" parent="Margin/Layout/Header"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 5
+
+[node name="ActionText" type="Label" parent="Margin/Layout/Header/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 23
+horizontal_alignment = 1
+text = "行动  6 / 6"
+
+[node name="ActionBudget" type="ProgressBar" parent="Margin/Layout/Header/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("ActionTrack")
+theme_override_styles/fill = SubResource("ActionFill")
+max_value = 6.0
+value = 6.0
+show_percentage = false
+
+[node name="ArmyButton" type="Button" parent="Margin/Layout/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(118, 44)
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"SecondaryButton"
+text = "军团整备"
+focus_mode = 2
+
+[node name="MenuButton" type="Button" parent="Margin/Layout/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(82, 44)
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"SecondaryButton"
+text = "菜单"
+focus_mode = 2
+
+[node name="Body" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="MapColumn" type="VBoxContainer" parent="Margin/Layout/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="Toolbar" type="HBoxContainer" parent="Margin/Layout/Body/MapColumn"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Coordinate" type="Label" parent="Margin/Layout/Body/MapColumn/Toolbar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.87, 0.73, 1)
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+theme_override_constants/outline_size = 4
+size_flags_horizontal = 3
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 14
+text = "选择地块"
+text_overrun_behavior = 3
+
+[node name="CenterParty" type="Button" parent="Margin/Layout/Body/MapColumn/Toolbar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 30)
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+text = "定位军团"
+focus_mode = 2
+
+[node name="ZoomOut" type="Button" parent="Margin/Layout/Body/MapColumn/Toolbar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+text = "−"
+tooltip_text = "缩小地图"
+focus_mode = 2
+
+[node name="ZoomLabel" type="Label" parent="Margin/Layout/Body/MapColumn/Toolbar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.87, 0.73, 1)
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+theme_override_constants/outline_size = 4
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "100%"
+
+[node name="ZoomIn" type="Button" parent="Margin/Layout/Body/MapColumn/Toolbar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+theme_type_variation = &"CompactButton"
+text = "+"
+tooltip_text = "放大地图"
+focus_mode = 2
+
+[node name="MapFrame" type="PanelContainer" parent="Margin/Layout/Body/MapColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("MapWell")
+
+[node name="MapScroll" type="ScrollContainer" parent="Margin/Layout/Body/MapColumn/MapFrame"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+follow_focus = false
+scroll_deadzone = 8
+
+[node name="MapCanvas" type="Control" parent="Margin/Layout/Body/MapColumn/MapFrame/MapScroll"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(896, 896)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="MapGrid" type="GridContainer" parent="Margin/Layout/Body/MapColumn/MapFrame/MapScroll/MapCanvas"]
+unique_name_in_owner = true
+layout_mode = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 16
+
+[node name="PartyLight" parent="Margin/Layout/Body/MapColumn/MapFrame/MapScroll/MapCanvas" instance=ExtResource("party_light")]
+unique_name_in_owner = true
+layout_mode = 0
+
+[node name="PartyMarker" type="Control" parent="Margin/Layout/Body/MapColumn/MapFrame/MapScroll/MapCanvas"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_right = 56.0
+offset_bottom = 56.0
+mouse_filter = 2
+
+[node name="Halo" type="Panel" parent="Margin/Layout/Body/MapColumn/MapFrame/MapScroll/MapCanvas/PartyMarker"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = -19.0
+offset_right = 19.0
+offset_bottom = 19.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("PartyHalo")
+
+[node name="Plate" type="Panel" parent="Margin/Layout/Body/MapColumn/MapFrame/MapScroll/MapCanvas/PartyMarker"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -15.0
+offset_right = 14.0
+offset_bottom = 15.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("PartyPlate")
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/Body/MapColumn/MapFrame/MapScroll/MapCanvas/PartyMarker/Plate"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+mouse_filter = 2
+modulate = Color(1, 0.89, 0.58, 1)
+texture = ExtResource("party")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ExplorationHint" type="Label" parent="Margin/Layout/Body/MapColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.87, 0.73, 1)
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+theme_override_constants/outline_size = 4
+theme_type_variation = &"PageHint"
+theme_override_font_sizes/font_size = 15
+text = "选择已知地块查看详情，沿已探索的道路前进。"
+autowrap_mode = 2
+
+[node name="Legend" type="Label" parent="Margin/Layout/Body/MapColumn"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.87, 0.73, 1)
+theme_override_colors/font_outline_color = Color(0.055, 0.045, 0.035, 0.95)
+theme_override_constants/outline_size = 4
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 13
+text = "金色旗标：军团位置   ✓ 已处理   × 不可通行"
+autowrap_mode = 2
+
+[node name="Sidebar" type="VBoxContainer" parent="Margin/Layout/Body"]
+custom_minimum_size = Vector2(306, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BossPanel" type="PanelContainer" parent="Margin/Layout/Body/Sidebar"]
+layout_mode = 2
+theme_type_variation = &"ReadingWell"
+
+[node name="BossLayout" type="VBoxContainer" parent="Margin/Layout/Body/Sidebar/BossPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Heading" type="Label" parent="Margin/Layout/Body/Sidebar/BossPanel/BossLayout"]
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 13
+text = "阶段首领"
+
+[node name="BossName" type="Label" parent="Margin/Layout/Body/Sidebar/BossPanel/BossLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 22
+text = "未知首领"
+autowrap_mode = 2
+
+[node name="BossSummary" type="Label" parent="Margin/Layout/Body/Sidebar/BossPanel/BossLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 15
+text = ""
+autowrap_mode = 2
+
+[node name="BossButton" type="Button" parent="Margin/Layout/Body/Sidebar/BossPanel/BossLayout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "准备迎战"
+disabled = true
+focus_mode = 2
+
+[node name="DetailsPanel" type="PanelContainer" parent="Margin/Layout/Body/Sidebar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"ModalPanel"
+
+[node name="DetailsLayout" type="VBoxContainer" parent="Margin/Layout/Body/Sidebar/DetailsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DetailsScroll" type="ScrollContainer" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="Details" type="VBoxContainer" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="DetailIcon" type="TextureRect" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+modulate = Color(0.94, 0.83, 0.59, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DetailTitle" type="Label" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 24
+text = "战争迷雾"
+autowrap_mode = 2
+
+[node name="DetailSubtitle" type="Label" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 14
+text = "未知之地"
+autowrap_mode = 2
+
+[node name="Rule" type="HSeparator" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+layout_mode = 2
+modulate = Color(0.7, 0.68, 0.54, 0.65)
+
+[node name="DetailDescription" type="Label" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"BodyLabel"
+theme_override_font_sizes/font_size = 17
+text = "向迷雾边缘前进，发现新的道路、伙伴与遭遇。"
+autowrap_mode = 2
+
+[node name="DetailCost" type="Label" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"ChoiceFooter"
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 2
+
+[node name="DetailReward" type="Label" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"BodyLabel"
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+
+[node name="DetailRisk" type="Label" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"WarningLabel"
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+
+[node name="DetailAvailability" type="Label" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout/DetailsScroll/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SecondaryLabel"
+theme_override_font_sizes/font_size = 15
+text = "靠近后揭示"
+autowrap_mode = 2
+
+[node name="MoveButton" type="Button" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "沿路前往"
+disabled = true
+focus_mode = 2
+
+[node name="InspectButton" type="Button" parent="Margin/Layout/Body/Sidebar/DetailsPanel/DetailsLayout"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_type_variation = &"PrimaryButton"
+text = "查看地点"
+disabled = true
+focus_mode = 2
+
+[node name="StatusMessage" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"WarningLabel"
+theme_override_font_sizes/font_size = 15
+autowrap_mode = 2
+max_lines_visible = 2
+text_overrun_behavior = 3

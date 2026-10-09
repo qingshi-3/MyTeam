@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="VfxDefinition" format=3]
+[ext_resource type="Script" path="res://src/Vfx/VfxDefinition.cs" id="def"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ground_storm_boundary.tscn" id="scene"]
+[resource]
+script = ExtResource("def")
+StableId = "ground_storm_boundary"
+DisplayName = "冰晶风暴范围边界"
+PreviewNote = "功能性范围边界；精确半径2，形成后定点持续，施法者死亡不提前结束，未制作最终风暴美术。"
+Scene = ExtResource("scene")
+Duration = 5
+Persistent = true
+Ground = true
+UsesRadius = true
+FlattenGround = false
+ReferenceRadius = 2
+Size = 180
+ReleaseDuration = 0.05

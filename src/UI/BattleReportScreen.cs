@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using TowerAutobattler.Battle;
+using TowerAutobattler.Attributes;
 using TowerAutobattler.Content;
 using TowerAutobattler.Domain;
 using TowerAutobattler.Run;
@@ -117,6 +118,12 @@ public partial class BattleReportScreen : Control
         _continue.Text = continueText;
         _settlementMessage.Visible = false;
         _settlementMessage.Text = string.Empty;
+        if (!result.RememberedGains.IsDefaultOrEmpty)
+        {
+            _settlementMessage.Text = "本场获得（尚未保存）：" + RememberedSummary();
+            _settlementMessage.Visible = true;
+            _settlementMessage.ThemeTypeVariation = "SecondaryLabel";
+        }
         _outcome.Text = PlayerFacingText.DescribeBattleOutcome(result.Outcome);
         _outcome.ThemeTypeVariation = result.Outcome switch
         {
@@ -139,6 +146,10 @@ public partial class BattleReportScreen : Control
     {
         if (consequence is null) return;
         _settlementMessage.Text = RunHealthText.Consequence(consequence);
+        if (_result is { RememberedGains.IsDefaultOrEmpty: false })
+            _settlementMessage.Text += "\n本场获得：" + RememberedSummary() +
+                (consequence.Outcome == BattleOutcome.PlayerVictory && !consequence.RunEnded
+                    ? "；本次胜利已永久保存。" : "；本次不保存永久铭记。");
         _settlementMessage.Visible = true;
         _settlementMessage.ThemeTypeVariation = consequence.Outcome == BattleOutcome.PlayerVictory ? "SecondaryLabel" : "WarningLabel";
         _continue.Text = consequence.RunEnded ? "查看征程结果" : consequence.Outcome == BattleOutcome.PlayerVictory ? "领取战利品" : "继续前进";
@@ -150,12 +161,20 @@ public partial class BattleReportScreen : Control
             ? "战斗结算暂未完成，请重试。"
             : message;
         _settlementMessage.Visible = true;
+        if (_result is { RememberedGains.IsDefaultOrEmpty: false })
+            _settlementMessage.Text += "\n本场获得：" + RememberedSummary() + "；尚未保存，重试不会重复发放。";
         _settlementMessage.ThemeTypeVariation = "WarningLabel";
         _continue.Text = "重试结算";
         _continue.Disabled = false;
         _continueReported = false;
         _continue.GrabFocus();
     }
+
+    private string RememberedSummary() => _result is null || _result.RememberedGains.IsDefaultOrEmpty
+        ? string.Empty : string.Join("；", _result.RememberedGains.GroupBy(gain => gain.TargetInstanceId).Select(group =>
+            $"{_result.Units.FirstOrDefault(unit => !unit.IsTemporary && unit.SourceInstanceId == group.Key)?.DisplayName ?? group.Key} " +
+            $"攻击 +{group.Where(gain => gain.Attribute == CombatAttribute.AttackDamage).Sum(gain => gain.Amount):0.##}／" +
+            $"生命 +{group.Where(gain => gain.Attribute == CombatAttribute.MaxHealth).Sum(gain => gain.Amount):0.##}"));
 
     private void BindComparison()
     {

@@ -19,6 +19,9 @@ public partial class RunRelicIcon : Button
     {
         ContentId = model.ContentId;
         GetNode<TextureRect>("Artwork").Texture = model.Icon;
+        var fallback = GetNode<Label>("NoIconLabel");
+        fallback.Visible = model.Icon is null;
+        fallback.Text = model.Hint.Title;
         var count = GetNode<Label>("Stacks");
         count.Visible = model.Stacks > 1;
         count.Text = $"×{model.Stacks}";

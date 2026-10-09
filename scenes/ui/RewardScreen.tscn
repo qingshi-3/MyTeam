@@ -1,9 +1,13 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/UI/RewardScreenController.cs" id="1"]
 
 [ext_resource type="Script" path="res://src/UI/RunOfferChoiceGrid.cs" id="Grid"]
 
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/RecruitmentRosterPortrait.tscn" id="RosterPortrait"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="ReceiptPortrait"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OpeningSelectionLight.tscn" id="ReceiptLight"]
 
 [sub_resource type="StyleBoxEmpty" id="CanvasPanel"]
 
@@ -15,6 +19,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
+RecruitmentRosterPortraitScene = ExtResource("RosterPortrait")
 [node name="Center" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -70,6 +75,43 @@ columns = 3
 script = ExtResource("Grid")
 ScrollOwner = NodePath("../..")
 
+[node name="RecruitmentRoster" type="HBoxContainer" parent="Center/Panel/Layout"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 22
+mouse_filter = 2
+
+[node name="Summary" type="VBoxContainer" parent="Center/Panel/Layout/RecruitmentRoster"]
+layout_mode = 2
+custom_minimum_size = Vector2(156, 106)
+alignment = 1
+mouse_filter = 2
+
+[node name="Heading" type="Label" parent="Center/Panel/Layout/RecruitmentRoster/Summary"]
+layout_mode = 2
+theme_type_variation = &"CardName"
+text = "当前队伍"
+mouse_filter = 2
+
+[node name="Counts" type="Label" parent="Center/Panel/Layout/RecruitmentRoster/Summary"]
+layout_mode = 2
+theme_type_variation = &"ChoiceFooter"
+text = "上阵 0 · 后备 0"
+mouse_filter = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Center/Panel/Layout/RecruitmentRoster"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 106)
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 0
+mouse_filter = 1
+
+[node name="Portraits" type="HBoxContainer" parent="Center/Panel/Layout/RecruitmentRoster/Scroll"]
+layout_mode = 2
+theme_override_constants/separation = 12
+mouse_filter = 2
+
 [node name="ConvertButton" type="Button" parent="Center/Panel/Layout"]
 theme_type_variation = &"SecondaryButton"
 custom_minimum_size = Vector2(220, 42)
@@ -82,3 +124,25 @@ custom_minimum_size = Vector2(220, 42)
 size_flags_horizontal = 8
 layout_mode = 2
 text = "跳过"
+
+[node name="ReceiptBlocker" type="Control" parent="."]
+visible = false
+z_index = 35
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 0
+
+[node name="ReceiptPortrait" parent="." instance=ExtResource("ReceiptPortrait")]
+visible = false
+z_index = 46
+layout_mode = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 88.0
+offset_bottom = 88.0
+PreferIllustration = true
+StoneFrame = true
+
+[node name="ReceiptLight" parent="." instance=ExtResource("ReceiptLight")]

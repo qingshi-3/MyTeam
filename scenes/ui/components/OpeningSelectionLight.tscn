@@ -1,0 +1,179 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/UI/OpeningSelectionLight.cs" id="script"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
+[ext_resource type="Texture2D" path="res://scenes/vfx/surface.tres" id="surface"]
+[ext_resource type="Shader" path="res://scenes/vfx/element_sparkle.gdshader" id="sparkle"]
+
+[sub_resource type="ShaderMaterial" id="soft"]
+shader = ExtResource("sparkle")
+shader_parameter/rays = 0.0
+shader_parameter/core_strength = 0.0
+shader_parameter/corona_strength = 1.1
+
+[node name="OpeningSelectionLight" type="Control"]
+visible = false
+z_index = 44
+layout_mode = 0
+mouse_filter = 2
+script = ExtResource("script")
+
+[node name="TravelHalo" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("surface")
+material = SubResource("soft")
+
+[node name="StartGlint" parent="." instance=ExtResource("glint")]
+visible = false
+
+[node name="LandingGlow" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("surface")
+material = SubResource("soft")
+
+[node name="Motes" type="Node2D" parent="."]
+
+[node name="Mote00" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote01" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote02" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote03" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote04" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote05" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote06" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote07" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote08" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote09" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote10" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote11" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote12" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote13" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote14" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote15" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote16" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote17" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote18" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote19" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote20" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote21" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote22" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote23" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote24" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote25" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote26" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote27" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote28" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote29" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote30" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote31" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote32" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote33" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote34" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote35" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote36" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote37" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote38" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote39" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote40" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote41" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote42" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote43" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote44" parent="Motes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote45" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote46" parent="Motes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote47" parent="Motes" instance=ExtResource("dust")]
+visible = false

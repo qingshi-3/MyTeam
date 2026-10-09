@@ -84,6 +84,13 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "战斗实验室"
 
+[node name="AbilityPrototypeButton" type="Button" parent="Center/Panel/Menu"]
+visible = false
+theme_type_variation = &"SecondaryButton"
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "能力实验"
+
 [node name="ExperienceSliceButton" type="Button" parent="Center/Panel/Menu"]
 visible = false
 theme_type_variation = &"SecondaryButton"

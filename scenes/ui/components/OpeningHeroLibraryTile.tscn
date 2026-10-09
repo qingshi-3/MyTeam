@@ -1,5 +1,6 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=19 format=3]
 [ext_resource type="Script" path="res://src/UI/OpeningCardMotion.cs" id="OpeningMotion"]
+[ext_resource type="Shader" path="res://scenes/ui/components/journey_edge_glow.gdshader" id="EdgeGlow"]
 [ext_resource type="Theme" path="res://content/ui/opening_theme.tres" id="OpeningTheme"]
 [ext_resource type="Theme" path="res://content/ui/unit_card_relic_theme.tres" id="RelicTheme"]
 
@@ -15,6 +16,9 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/TraitBadge.tscn" id="3"]
 [ext_resource type="Texture2D" path="res://assets/ui/opening/hero-stone-frame.png" id="SelectedFrameTexture"]
+
+[sub_resource type="ShaderMaterial" id="SelectionGlow"]
+shader = ExtResource("EdgeGlow")
 
 [sub_resource type="StyleBoxTexture" id="SelectedFrame"]
 texture = ExtResource("SelectedFrameTexture")
@@ -37,7 +41,7 @@ fill_to = Vector2(0.5, 1)
 
 [node name="OpeningHeroLibraryTile" type="Button"]
 theme_type_variation = &"OrbitCard"
-custom_minimum_size = Vector2(234, 351)
+custom_minimum_size = Vector2(180, 270)
 theme = ExtResource("OpeningTheme")
 size_flags_horizontal = 3
 focus_mode = 2
@@ -46,6 +50,20 @@ script = ExtResource("1")
 TraitBadgeScene = ExtResource("3")
 SelectedFrameStyle = SubResource("SelectedFrame")
 SymbolicOpeningState = true
+
+[node name="SelectionGlow" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+material = SubResource("SelectionGlow")
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -12.0
+offset_top = -18.0
+offset_right = 12.0
+offset_bottom = 18.0
+mouse_filter = 2
+texture = ExtResource("SelectedFrameTexture")
+expand_mode = 1
 
 [node name="OpeningMotion" type="Node" parent="."]
 script = ExtResource("OpeningMotion")

@@ -100,6 +100,12 @@ public static class RunOfferDetailText
             var equipment = graph.ResolveEquipment(item.Id);
             facts.Add("穿戴后作用于持有者，取下后移除装备贡献。");
             facts.AddRange(equipment.AttributeModifiers.Select(Modifier));
+            if (!equipment.UniqueAttributeModifiers.IsDefaultOrEmpty)
+                facts.AddRange(equipment.UniqueAttributeModifiers.Select(value => Modifier(value) + "（同名装备唯一）"));
+            if (equipment.LifeSteal is { } steal)
+                facts.Add($"对敌实际生命伤害的{steal.Ratio:P0}治疗自身，范围伤害效率{steal.AreaEfficiency:P0}（同类唯一）。");
+            if (equipment.ControlGuard is { } guard)
+                facts.Add($"本战首次硬控立即净化，随后{guard.WindowTicks * BattleTiming.TickSeconds:0.#}秒新受硬控时长×{guard.SubsequentDurationMultiplier:0.##}（同类唯一）。");
             if (!equipment.GrantedStatuses.IsDefaultOrEmpty)
                 facts.AddRange(equipment.GrantedStatuses.Select(status => $"穿戴时获得「{status.DisplayName}」：{StatusModelText.Describe(status)}"));
             facts.AddRange(equipment.ReactiveStatusBindings.Select(binding =>
@@ -198,7 +204,7 @@ public static class RunOfferDetailText
             amount = $"{constant.Value * 100:0.##}%";
         return name + (modifier.Operation switch
         {
-            AttributeModifierOperation.Add => "增加 ", AttributeModifierOperation.Multiply => "乘以 ", _ => "设为 "
+            AttributeModifierOperation.Add or AttributeModifierOperation.PostMultiplyAdd => "增加 ", AttributeModifierOperation.BaseAdd => "基础增加 ", AttributeModifierOperation.Multiply => "乘以 ", _ => "设为 "
         }) + amount;
     }
 

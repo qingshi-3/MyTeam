@@ -1,10 +1,17 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/UI/DeploymentScreenController.cs" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/DeploymentBoard.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/RosterLoadoutView.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/PreparedUnitDetailPanel.tscn" id="4"]
 [ext_resource type="Script" path="res://src/UI/ContextPopup.cs" id="5"]
+
+[sub_resource type="StyleBoxFlat" id="OpeningPartnersInset"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 12.0
+content_margin_bottom = 6.0
+bg_color = Color(0.09, 0.12, 0.13, 0.94)
 
 [node name="DeploymentScreen" type="Control"]
 layout_mode = 3
@@ -71,6 +78,16 @@ visible = false
 layout_mode = 2
 theme_type_variation = &"RunRiskLabel"
 autowrap_mode = 2
+
+[node name="OpeningPartners" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.94, 0.91, 0.8, 1)
+theme_override_styles/normal = SubResource("OpeningPartnersInset")
+autowrap_mode = 2
+mouse_filter = 2
 
 [node name="BoardPanel" type="MarginContainer" parent="Margin/Layout"]
 layout_mode = 2

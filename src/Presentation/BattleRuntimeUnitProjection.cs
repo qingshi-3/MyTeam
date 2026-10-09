@@ -114,7 +114,7 @@ public static class BattleRuntimeUnitProjection
             unit.CurrentMana,
             unit.MaxMana,
             unit.Shield,
-            skills?.Abilities ?? unit.Definition.AbilityLoadout?.Abilities ?? [],
+            skills?.Abilities ?? unit.AbilityLoadout?.Abilities ?? [],
             unit.LastAbilityName,
             unit.IsPersistentRosterHero,
             unit.IsTemporary, unit.AttackHitStacks, unit.Definition.AttackHitGrowth is not null, unit.Armor,

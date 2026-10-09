@@ -1,7 +1,7 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=20 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitCardOrbit.tscn" id="Annex"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitCoreStat.tscn" id="Spell"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OfferUnitCardOrbit.tscn" id="Annex"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OfferUnitCoreStat.tscn" id="Spell"]
 
 [ext_resource type="Script" path="res://src/UI/RunOfferChoiceCard.cs" id="Card"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/UnitPortrait.tscn" id="Portrait"]
@@ -13,19 +13,38 @@
 [ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-attack.svg" id="AttackIcon"]
 [ext_resource type="Texture2D" path="res://assets/ui/icons/keyword-armor.svg" id="ArmorIcon"]
 [ext_resource type="Texture2D" path="res://assets/ui/icons/time.svg" id="TimeIcon"]
-[ext_resource type="Texture2D" path="res://assets/ui/icons/hero.svg" id="StarIcon"]
+[ext_resource type="StyleBox" path="res://scenes/ui/components/offer_unit_header_plaque.tres" id="HeaderPlaque"]
+[ext_resource type="Texture2D" path="res://scenes/ui/components/offer_unit_core_plaque_texture.tres" id="CorePlaque"]
 
-[ext_resource type="PackedScene" path="res://scenes/ui/components/CardAttackStat.tscn" id="AttackMount"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/CardHealthStat.tscn" id="HealthMount"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OfferUnitCoreStat.tscn" id="AttackMount"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/OfferUnitCoreStat.tscn" id="HealthMount"]
 [ext_resource type="Texture2D" path="res://assets/ui/icons/reach.svg" id="RangeIcon"]
+
+[ext_resource type="Shader" path="res://scenes/ui/components/journey_edge_glow.gdshader" id="RecruitmentEdge"]
+[ext_resource type="Texture2D" path="res://assets/ui/opening/hero-stone-frame.png" id="RecruitmentFrame"]
+
+[sub_resource type="ShaderMaterial" id="RecruitmentGlow"]
+shader = ExtResource("RecruitmentEdge")
 
 [node name="RunOfferChoiceCard" type="Control"]
 custom_minimum_size = Vector2(280, 360)
 size_flags_horizontal = 3
 size_flags_vertical = 3
+focus_mode = 2
 theme_type_variation = &"TavernCardPanel"
 texture_filter = 2
 script = ExtResource("Card")
+
+[node name="RecruitmentGlow" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+modulate = Color(1, 1, 1, 0)
+material = SubResource("RecruitmentGlow")
+texture = ExtResource("RecruitmentFrame")
+expand_mode = 1
 
 [node name="CardFrame" type="Panel" parent="."]
 layout_mode = 1
@@ -90,6 +109,21 @@ modulate = Color(0.88, 0.75, 0.49, 1)
 expand_mode = 1
 stretch_mode = 5
 
+[node name="CoreReadingSurface" type="TextureRect" parent="Layout/Artwork"]
+z_index = 20
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -6.0
+offset_top = -100.0
+offset_right = 6.0
+offset_bottom = -42.0
+mouse_filter = 2
+texture = ExtResource("CorePlaque")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="ArtTitle" type="Label" parent="Layout/Artwork"]
 z_index = 2
 layout_mode = 1
@@ -97,105 +131,126 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -52.0
-offset_left = 42.0
-offset_right = -42.0
+offset_left = 16.0
+offset_right = -16.0
 mouse_filter = 2
 theme_type_variation = &"CardName"
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 24
+clip_text = true
+text_overrun_behavior = 3
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PrimarySpell" parent="Layout/Artwork" instance=ExtResource("Spell")]
-z_index = 2
+z_index = 20
 layout_mode = 1
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = -49.0
-offset_right = 49.0
-offset_top = -99.0
-offset_bottom = -59.0
+offset_left = -36.6667
+offset_right = 36.6667
+offset_top = -87.0
+offset_bottom = -53.0
 size_flags_horizontal = 0
 
 [node name="PrimaryAttack" parent="Layout/Artwork" instance=ExtResource("AttackMount")]
-z_index = 2
+z_index = 20
 layout_mode = 1
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = -16.0
-offset_right = 88.0
-offset_top = -78.0
-offset_bottom = 10.0
+offset_left = -110.0
+offset_right = -36.6667
+offset_top = -87.0
+offset_bottom = -53.0
 
 [node name="PrimaryHealth" parent="Layout/Artwork" instance=ExtResource("HealthMount")]
-z_index = 2
+z_index = 20
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 36.6667
+offset_right = 110.0
+offset_top = -87.0
+offset_bottom = -53.0
+
+[node name="ArtIdentity" type="Control" parent="Layout/Artwork"]
+z_index = 20
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = -8.0
+offset_right = -16.0
+offset_bottom = 30.0
+mouse_filter = 2
+
+[node name="TierPlaque" type="Panel" parent="Layout/Artwork/ArtIdentity"]
+layout_mode = 0
+offset_right = 76.0
+offset_bottom = 38.0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("HeaderPlaque")
+
+[node name="RolePlaque" type="Panel" parent="Layout/Artwork/ArtIdentity"]
 layout_mode = 1
 anchor_left = 1.0
 anchor_right = 1.0
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -94.0
-offset_right = 10.0
-offset_top = -78.0
-offset_bottom = 10.0
-
-[node name="ArtIdentity" type="Control" parent="Layout/Artwork"]
-z_index = 2
-layout_mode = 1
-anchor_right = 1.0
-offset_top = 16.0
-offset_bottom = 44.0
+offset_left = -76.0
+offset_bottom = 38.0
 mouse_filter = 2
+theme_override_styles/panel = ExtResource("HeaderPlaque")
 
-[node name="TierSymbols" type="HBoxContainer" parent="Layout/Artwork/ArtIdentity"]
+[node name="TierSymbols" type="Control" parent="Layout/Artwork/ArtIdentity"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 28.0
+offset_right = 76.0
+offset_bottom = 38.0
 mouse_filter = 1
-theme_override_constants/separation = 6
-
-[node name="Star" type="TextureRect" parent="Layout/Artwork/ArtIdentity/TierSymbols"]
-layout_mode = 2
-custom_minimum_size = Vector2(18, 18)
-size_flags_vertical = 4
-mouse_filter = 2
-texture = ExtResource("StarIcon")
-modulate = Color(0.85, 0.70, 0.39, 1)
-expand_mode = 1
-stretch_mode = 5
+focus_mode = 2
 
 [node name="Tier" type="Label" parent="Layout/Artwork/ArtIdentity/TierSymbols"]
-layout_mode = 2
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
 mouse_filter = 2
-theme_override_font_sizes/font_size = 20
-theme_override_colors/font_color = Color(0.85, 0.70, 0.39, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.97, 0.95, 0.88, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+horizontal_alignment = 0
+vertical_alignment = 1
 
 [node name="RoleSymbols" type="HBoxContainer" parent="Layout/Artwork/ArtIdentity"]
 layout_mode = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -38.0
-offset_bottom = 28.0
-alignment = 2
+offset_left = -76.0
+offset_bottom = 38.0
+alignment = 1
 mouse_filter = 1
-theme_override_constants/separation = 6
+focus_mode = 2
+theme_override_constants/separation = 10
 
 [node name="Role" type="TextureRect" parent="Layout/Artwork/ArtIdentity/RoleSymbols"]
 layout_mode = 2
-custom_minimum_size = Vector2(16, 16)
+custom_minimum_size = Vector2(24, 24)
 size_flags_vertical = 4
 mouse_filter = 2
-modulate = Color(0.84, 0.80, 0.67, 1)
+modulate = Color(0.97, 0.95, 0.88, 1)
 expand_mode = 1
 stretch_mode = 5
 
 [node name="Delivery" type="TextureRect" parent="Layout/Artwork/ArtIdentity/RoleSymbols"]
 layout_mode = 2
-custom_minimum_size = Vector2(16, 16)
+custom_minimum_size = Vector2(24, 24)
 size_flags_vertical = 4
 mouse_filter = 2
-modulate = Color(0.84, 0.80, 0.67, 1)
+modulate = Color(0.97, 0.95, 0.88, 1)
 expand_mode = 1
 stretch_mode = 5
 
@@ -466,22 +521,5 @@ size_flags_horizontal = 3
 theme_type_variation = &"PrimaryButton"
 focus_mode = 2
 text = "领取"
-
-[node name="UnitDetailsButton" type="Button" parent="."]
-z_index = 13
-layout_mode = 1
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -108.0
-offset_top = -206.0
-offset_right = -52.0
-offset_bottom = -162.0
-custom_minimum_size = Vector2(56, 44)
-theme_type_variation = &"QuietButton"
-theme_override_font_sizes/font_size = 17
-text = "详情"
-toggle_mode = true
 
 [node name="Orbit" parent="." instance=ExtResource("Annex")]

@@ -39,6 +39,25 @@ public partial class HeroSelectScreen : Control
 
     public string PreviewStableId => _previewId;
 
+    // The journey host owns the departure after the opening transaction succeeds.
+    public Control[] DeparturePortraits => new[] { _firstSeat, _secondSeat }
+        .Where(seat => seat.StableId.Length > 0).Select(seat => seat.Portrait).ToArray();
+    public Control[] DepartureSurfaces => new Control[]
+    {
+        GetNode<Control>("OpeningBackdrop"), GetNode<Control>("Margin/Layout/Title"),
+        _library, _back, _confirm, _status,
+        _firstSeat.GetNode<Control>("Name"), _secondSeat.GetNode<Control>("Name"),
+        _firstSeat.GetNode<Control>("EmptyRing"), _secondSeat.GetNode<Control>("EmptyRing"),
+        _firstSeat.GetNode<Control>("Ordinal"), _secondSeat.GetNode<Control>("Ordinal")
+    };
+
+    public void PrepareDeparture()
+    {
+        _firstSeat.CancelArrival();
+        _secondSeat.CancelArrival();
+        foreach (var tile in _tiles.Values) tile.Disclosure.Reset();
+    }
+
     public override void _Ready()
     {
         CacheNodes();
@@ -70,6 +89,14 @@ public partial class HeroSelectScreen : Control
     {
         var opening = app.Run?.OpeningRecruitment ?? throw new InvalidOperationException("Missing opening draft.");
         BindContent(app.Content, opening.CandidateIds, app.Project.Campaign.RecruitmentSupply, app.GrowthRules);
+        RefreshOpening(opening);
+    }
+
+    // A presentation snapshot entry also lets the authored screen be previewed
+    // while campaign content is being rebuilt. It never creates a run or draft.
+    public void BindOpening(IReadOnlyList<HeroSelectionViewModel> candidates, OpeningRecruitmentDto opening)
+    {
+        Bind(candidates, true);
         RefreshOpening(opening);
     }
 
@@ -122,18 +149,21 @@ public partial class HeroSelectScreen : Control
         var title = GetNode<Label>("Margin/Layout/Title");
         title.Text = opening ? "选择同行的两位英雄" : "选择英雄";
         title.ThemeTypeVariation = opening ? "OpeningTitle" : "PageTitle";
+        if (opening) title.AddThemeFontSizeOverride("font_size", 32);
+        else title.RemoveThemeFontSizeOverride("font_size");
         title.HorizontalAlignment = opening ? HorizontalAlignment.Center : HorizontalAlignment.Left;
         _back.ThemeTypeVariation = opening ? "OpeningBack" : "SecondaryButton";
         var margin = GetNode<MarginContainer>("Margin");
-        margin.AddThemeConstantOverride("margin_top", opening ? 72 : 20);
-        margin.AddThemeConstantOverride("margin_bottom", opening ? 32 : 20);
-        GetNode<Control>("Margin/Layout/Footer").CustomMinimumSize = new Vector2(0, opening ? 148 : 50);
+        margin.AddThemeConstantOverride("margin_top", opening ? 18 : 20);
+        margin.AddThemeConstantOverride("margin_bottom", opening ? 12 : 20);
+        GetNode<Control>("Margin/Layout/Footer").CustomMinimumSize = new Vector2(0, opening ? 106 : 50);
         _firstSeat.Visible = _secondSeat.Visible = opening;
         _firstSeat.Bind(null); _secondSeat.Bind(null);
         _detail.Visible = !opening;
         if (opening) _libraryPanel.AddThemeStyleboxOverride("panel", OpeningLibraryStyle);
         else _libraryPanel.RemoveThemeStyleboxOverride("panel");
-        _library.AddThemeConstantOverride("h_separation", opening ? 14 : 24);
+        _library.AddThemeConstantOverride("h_separation", opening ? 30 : 24);
+        _library.AddThemeConstantOverride("v_separation", opening ? 18 : 10);
         _libraryScroll.HorizontalScrollMode = opening ? ScrollContainer.ScrollMode.Disabled : ScrollContainer.ScrollMode.ShowNever;
         _libraryScroll.VerticalScrollMode = opening ? ScrollContainer.ScrollMode.Disabled : ScrollContainer.ScrollMode.Auto;
         _library.GetParent<Control>().SizeFlagsVertical = opening ? SizeFlags.ExpandFill : SizeFlags.Fill;
@@ -187,6 +217,10 @@ public partial class HeroSelectScreen : Control
 
     public void RefreshOpening(OpeningRecruitmentDto opening)
     {
+        var animateSelection = _opening is not null && IsVisibleInTree();
+        var seatedSources = new[] { _firstSeat, _secondSeat }
+            .Where(seat => seat.StableId.Length > 0)
+            .ToDictionary(seat => seat.StableId, seat => seat.Portrait.GetGlobalRect().GetCenter());
         _opening = opening;
         _detail.Hide();
         UpdateResponsiveColumns();
@@ -198,8 +232,17 @@ public partial class HeroSelectScreen : Control
         _hint.Text = string.Empty;
         _hint.Visible = false;
         RefreshSelectionState();
-        _firstSeat.Bind(opening.SelectedIds.Length > 0 ? _models[opening.SelectedIds[0]] : null);
-        _secondSeat.Bind(opening.SelectedIds.Length > 1 ? _models[opening.SelectedIds[1]] : null);
+        BindSeat(_firstSeat, opening.SelectedIds.Length > 0 ? opening.SelectedIds[0] : null, animateSelection, seatedSources);
+        BindSeat(_secondSeat, opening.SelectedIds.Length > 1 ? opening.SelectedIds[1] : null, animateSelection, seatedSources);
+    }
+
+    private void BindSeat(OpeningHeroSeat seat, string? stableId, bool animate, IReadOnlyDictionary<string, Vector2> seatedSources)
+    {
+        var changed = seat.StableId != (stableId ?? string.Empty);
+        seat.Bind(stableId is not null ? _models[stableId] : null);
+        if (animate && changed && stableId is not null && _tiles.TryGetValue(stableId, out var source))
+            seat.ArriveFrom(seatedSources.TryGetValue(stableId, out var previousSeat)
+                ? previousSeat : source.GetNode<Control>("%HeroPortrait").GetGlobalRect().GetCenter());
     }
 
     public void ShowOpeningError(string message)
@@ -245,13 +288,17 @@ public partial class HeroSelectScreen : Control
         if (_libraryScroll is null) return;
         var gap = _library.GetThemeConstant("h_separation");
         var opening = _opening is not null;
-        _library.Columns = opening ? Math.Max(1, _tiles.Count)
+        _library.Columns = opening ? Math.Min(3, Math.Max(1, _tiles.Count))
             : Math.Clamp((int)((_libraryScroll.Size.X + gap) / (470 + gap)), 1, 3);
         _library.SizeFlagsHorizontal = opening ? SizeFlags.ShrinkCenter : SizeFlags.ExpandFill;
         if (!opening || _tiles.Count == 0) return;
         // Reserve side air for the entire card's lift. Keep the irregular stone
         // frame at its authored 2:3 ratio; it is never stretched as a nine-patch.
-        var width = Math.Clamp(Mathf.Floor((_libraryScroll.Size.X - 32 - (_tiles.Count - 1) * gap) / _tiles.Count), 234, 320);
+        var rows = Mathf.CeilToInt(_tiles.Count / 3f);
+        var rowGap = _library.GetThemeConstant("v_separation");
+        var widthByColumns = (_libraryScroll.Size.X - 48 - 2 * gap) / 3f;
+        var widthByRows = (_libraryScroll.Size.Y - 20 - (rows - 1) * rowGap) / (rows * 1.5f);
+        var width = Math.Clamp(Mathf.Floor(Mathf.Min(widthByColumns, widthByRows)), 180, 290);
         var height = width * 1.5f;
         foreach (var tile in _tiles.Values) tile.CustomMinimumSize = new Vector2(width, height);
     }

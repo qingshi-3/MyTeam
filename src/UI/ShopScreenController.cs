@@ -35,6 +35,8 @@ public partial class ShopScreenController : Control
         _gold.Bind(SemanticIconKeys.Gold, run.Gold.ToString(), "GoldValue");
         _gold.BindCaption("持有");
         _status.Text = string.Empty;
+        GetNode<Label>("Margin/Layout/Hint").Text = app.PendingOffer is { Choices.IsEmpty: true }
+            ? "暂无商品，可以离开继续探索。" : "挑选适合队伍的商品。";
         RunOfferCardBinder.Sync(_choices, app, choiceTemplate, itemTemplate, icons, OnPurchase, shop: true);
     }
 

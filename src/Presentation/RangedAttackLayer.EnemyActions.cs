@@ -13,6 +13,19 @@ public partial class RangedAttackLayer
     private readonly Dictionary<int,ProjectileFlight> _returnBlades = [];
     private void PresentEnemyAction(BattleEvent fact, bool snap)
     {
+        if (fact.Type is "cone_afterglow_start" or "cone_afterglow_end")
+        {
+            var key = "cone-afterglow:" + fact.EntityId;
+            if (fact.Type == "cone_afterglow_end")
+            { _player.End(key, VfxEndReason.Completed); _enemyVfxExpiry.Remove(key); }
+            else if (fact.EnemyAction is { } glow)
+            {
+                _player.Play("cone_embers", new(fact.Origin, fact.Position, glow.Radius,
+                    Direction: (fact.Position-fact.Origin).Normalized(), ConeAngleDegrees: glow.AngleDegrees), key);
+                _enemyVfxExpiry[key] = glow.DurationTicks * BattleTiming.TickSeconds;
+            }
+            return;
+        }
         if (fact.EnemyAction is { } action && fact.Type != "blade_release")
         {
             var key=$"enemy:{fact.SourceRuntimeId}:{action.StartTick}:{action.Vfx}";

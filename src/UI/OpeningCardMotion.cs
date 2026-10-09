@@ -10,12 +10,16 @@ public partial class OpeningCardMotion : Node, IUiMotionHost
     public Func<bool> ReduceUiMotion { get; set; } = () => false;
     private HeroLibraryTile _card = null!;
     private Tween? _tween;
+    private Control _glow = null!;
+    private float _glowEnergy;
+    private double _lightPhase;
     private bool _selected, _down, _hovered, _reduced, _entering;
     private double _delay;
 
     public override void _Ready()
     {
         _card = GetParent<HeroLibraryTile>();
+        _glow = _card.GetNode<Control>("SelectionGlow");
         _card.OffsetTransformEnabled = true;
         _card.OffsetTransformVisualOnly = false;
         _card.OffsetTransformPivotRatio = new Vector2(.5f, .5f);
@@ -37,15 +41,20 @@ public partial class OpeningCardMotion : Node, IUiMotionHost
         Settle();
         if (!_card.IsVisibleInTree() || ReduceUiMotion()) return;
         _entering = true;
-        _delay = .045 * _card.GetIndex();
+        _delay = .075 * (_card.GetIndex() % 3) + .04 * (_card.GetIndex() / 3);
         _card.Modulate = new Color(1, 1, 1, 0);
-        _card.OffsetTransformScale = Vector2.One * 1.1f;
-        _card.OffsetTransformPosition = new Vector2(0, -22);
+        _card.OffsetTransformScale = Vector2.One * .94f;
+        _card.OffsetTransformPosition = new Vector2(0, 30);
     }
 
     public override void _Process(double delta)
     {
         if (!_card.IsVisibleInTree()) return;
+        _lightPhase += delta;
+        var lightTarget = _selected ? .72f : _hovered ? .16f : 0;
+        _glowEnergy = Mathf.MoveToward(_glowEnergy, lightTarget, (float)delta * 4.5f);
+        var breath = _selected && !ReduceUiMotion() ? 1f + .07f * Mathf.Sin((float)_lightPhase * 2f) : 1f;
+        _glow.Modulate = new Color(1, 1, 1, _glowEnergy * breath);
         var reduced = ReduceUiMotion();
         if (reduced != _reduced)
         {
@@ -59,7 +68,8 @@ public partial class OpeningCardMotion : Node, IUiMotionHost
             if (_delay < 0)
             {
                 _tween = NewTween();
-                _tween.TweenProperty(_card, "offset_transform_scale", Vector2.One, .36);
+                _tween.TweenProperty(_card, "offset_transform_scale", Vector2.One, .36)
+                    .SetTrans(Tween.TransitionType.Back);
                 _tween.TweenProperty(_card, "offset_transform_position", Vector2.Zero, .36);
                 _tween.TweenProperty(_card, "modulate:a", 1f, .13);
                 _tween.Chain().TweenCallback(Callable.From(() => { _entering = false; Refresh(); }));
@@ -84,10 +94,11 @@ public partial class OpeningCardMotion : Node, IUiMotionHost
         _card.Modulate = Colors.White;
         _card.ZIndex = _hovered ? 20 : _selected ? 2 : 0;
         if (ReduceUiMotion() || !_card.IsVisibleInTree()) { Settle(); return; }
-        var scale = _down ? .985f : _hovered ? 1.035f : 1f;
-        var y = _down ? 0 : _hovered ? -9 : _selected ? -6 : 0;
+        var scale = _down ? .974f : _hovered ? 1.025f : 1f;
+        var y = _down ? 1 : _hovered ? -5 : _selected ? -3 : 0;
         _tween = NewTween();
-        _tween.TweenProperty(_card, "offset_transform_scale", Vector2.One * scale, _down ? .065 : .20);
+        _tween.TweenProperty(_card, "offset_transform_scale", Vector2.One * scale, _down ? .065 : .24)
+            .SetTrans(_down ? Tween.TransitionType.Cubic : Tween.TransitionType.Back);
         _tween.TweenProperty(_card, "offset_transform_position", new Vector2(0, y), _down ? .065 : .20);
     }
 
@@ -102,6 +113,8 @@ public partial class OpeningCardMotion : Node, IUiMotionHost
         _card.OffsetTransformPosition = Vector2.Zero;
         _card.Modulate = Colors.White;
         _card.ZIndex = 0;
+        _glowEnergy = _selected ? .72f : 0;
+        _glow.Modulate = new Color(1, 1, 1, _glowEnergy);
     }
 
     public override void _ExitTree()

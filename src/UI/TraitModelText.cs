@@ -37,6 +37,14 @@ public static class TraitModelText
 
     private static string Mechanic(CompiledTraitMechanic m) => m.Kind switch
     {
+        TraitMechanicKind.FreezeOnAttack => $"普攻及追加攻击命中有 {Percent(m.Amount)} 概率冻结目标 {Seconds(m.DurationTicks)}。",
+        TraitMechanicKind.BaseHealthBonus => $"成员获得基础最大生命 {Percent(m.Amount)} 的额外生命，与换形加成相加。",
+        TraitMechanicKind.TransformHealth => $"成员首次换形时增加基础最大生命 {Percent(m.Amount)}，当前生命增加相同数值。",
+        TraitMechanicKind.AdditionalAttacks => $"远程成员原始普攻命中有 {Percent(m.Amount)} 概率追加攻击射程内另外 {m.Count} 名敌人，造成 {Percent(m.Secondary)} 攻击伤害，可暴击和冻结，不递归触发、不回蓝。",
+        TraitMechanicKind.OpeningCopy => $"开场随机复制1名森林成员：基础生命 {Percent(m.Amount)}、全部伤害 {Percent(m.Secondary)}；技能独立，不增加羁绊人数。",
+        TraitMechanicKind.CastStartShield => $"成员开始耗蓝施法时获得最大生命 {Percent(m.Amount)} 的护盾，持续 {Seconds(m.DurationTicks)}；同源刷新保留较大值。",
+        TraitMechanicKind.DelayedTeamStrike => $"开战 {Seconds(m.DurationTicks)} 后落雷一次：敌人受到最大生命 {Percent(m.Amount)} 的普通伤害（上限 {m.Limit}）并眩晕 {Seconds(m.Count)}；存活成员随后增加 {Percent(m.Secondary)} 攻速。",
+        TraitMechanicKind.CriticalTraining => $"成员暴击率增加 {Percent(m.Amount)}，暴击伤害倍率增加 {m.Secondary:0.##}；每名刺客独立拥有开场跳后排能力。",
         TraitMechanicKind.HealthThresholdRescue =>
             $"受到敌方伤害后仍存活且生命降至 {Percent(m.Threshold)} 或以下时，每场一次获得最大生命 {Percent(m.Amount)} 的护盾，持续 {Seconds(m.DurationTicks)}；最近的非成员常驻友军获得自身最大生命 {Percent(m.Secondary)} 的护盾，每名友军最多获得 {m.Limit} 次。",
         TraitMechanicKind.DamageTakenRamp =>

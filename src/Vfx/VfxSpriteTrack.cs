@@ -14,6 +14,7 @@ public partial class VfxSpriteTrack : Sprite2D, IVfxTrack
     [Export] public float SweepRadians { get; set; }
     [Export] public Vector2 Travel { get; set; }
     [Export] public float MotionDuration { get; set; } = .18f;
+    [Export] public float SustainedPulseAmount { get; set; } = .025f;
     [Export] public float Opacity { get; set; } = 1;
     private Vector2 _baseScale;
     private float _baseRotation;
@@ -32,7 +33,7 @@ public partial class VfxSpriteTrack : Sprite2D, IVfxTrack
         var sweep = 1 - Mathf.Pow(1 - Mathf.Clamp(localAge / Mathf.Max(.01f, MotionDuration), 0, 1), 3);
         Visible = age >= Delay && (sustained || p < 1);
         var envelope = sustained ? Mathf.Min(age / .15f, 1) : Mathf.Min(p * 12, 1) * Mathf.Pow(1 - p, .7f);
-        var size = sustained ? 1 + (reducedMotion ? 0 : .025f * Mathf.Sin(age * 3)) : Mathf.Lerp(StartScale, EndScale, p);
+        var size = sustained ? 1 + (reducedMotion ? 0 : SustainedPulseAmount * Mathf.Sin(age * 3)) : Mathf.Lerp(StartScale, EndScale, p);
         Scale = _baseScale * size * (1 + release * .25f);
         Rotation = _baseRotation + (reducedMotion ? 0 : localAge * Spin + (sweep - 1) * SweepRadians);
         Position = _basePosition + (reducedMotion ? Vector2.Zero : Travel * sweep);

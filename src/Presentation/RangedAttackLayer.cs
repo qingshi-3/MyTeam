@@ -24,6 +24,8 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
     private readonly Dictionary<string, VfxContext> _shieldContexts = [];
     private readonly Dictionary<string, (string OwnerId, VfxContext Context)> _castContexts = [];
     private readonly Dictionary<string, (string OwnerId, bool Ground, VfxContext Context)> _statusVfx = [];
+    private readonly Dictionary<string,(string OwnerId,VfxContext Context)> _guardContexts=[];
+    private readonly HashSet<string> _groundFieldKeys=[];
     private Func<string, Vector2?>? _displayPosition;
     private Func<string, Vector2?>? _bodyDisplayPosition;
     private Func<string, VfxBodyVisual?>? _bodyVisual;
@@ -63,6 +65,8 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
             _player.UpdateContext("shield:" + ownerId, WithDisplayPosition(ownerId, context));
         foreach (var (key, status) in _statusVfx)
             _player.UpdateContext(key, WithDisplayPosition(status.OwnerId, status.Context, status.Ground));
+        foreach(var (key,guard) in _guardContexts)
+            _player.UpdateContext(key,WithDisplayPosition(guard.OwnerId,guard.Context,true));
         foreach (var (key, cast) in _castContexts.ToArray())
         {
             if (_player.PlaybackFor(key) is null) _castContexts.Remove(key);
@@ -194,9 +198,11 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
         }
         else _player.Play("impact", WithDisplayPosition(hit.TargetId, hit.Context));
     }
-    public void SynchronizeUnits(IEnumerable<BattleUnitView> units)
+    public void SynchronizeUnits(IEnumerable<BattleUnitView> units,
+        IEnumerable<BattleFrontalGuardSnapshot>? frontalGuards=null,IEnumerable<BattleGroundStormSnapshot>? groundStorms=null)
     {
         var snapshot = units.ToArray();
+        SynchronizeFields(snapshot,frontalGuards,groundStorms);
         var active = new HashSet<string>(StringComparer.Ordinal);
         foreach (var unit in snapshot)
         {
@@ -223,7 +229,8 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
                         source.RuntimeId == status.SourceId && source.Alive && source.Team != unit.Team)) continue;
                 var statusKey = $"status:{unit.RuntimeId}:{status.PersistentVfx}";
                 if (!active.Add(statusKey)) continue;
-                var context = new VfxContext(unit.Position, unit.Position);
+                var context = new VfxContext(unit.Position, unit.Position,
+                    status.StableId == "attack_dodge_aura" ? status.Magnitude : 0);
                 var ground = _player.Catalog.Find(status.PersistentVfx).Ground;
                 _statusVfx[statusKey] = (unit.RuntimeId, ground, context);
                 _player.Play(status.PersistentVfx, WithDisplayPosition(unit.RuntimeId, context, ground), statusKey);
@@ -234,6 +241,28 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
             _statusVfx.Remove(key);
             _player.End(key, VfxEndReason.ScopeEnded);
         }
+    }
+    private void SynchronizeFields(BattleUnitView[] units,IEnumerable<BattleFrontalGuardSnapshot>? guards,IEnumerable<BattleGroundStormSnapshot>? storms)
+    {
+        var active=new HashSet<string>(StringComparer.Ordinal);
+        foreach(var guard in guards??[])
+        {
+            var owner=units.FirstOrDefault(u=>u.RuntimeId==guard.OwnerRuntimeId&&u.Alive);
+            if(owner is null)continue;
+            var key="guard-boundary:"+guard.OwnerRuntimeId;
+            // This short wedge communicates direction, not a maximum protection distance.
+            var context=new VfxContext(owner.Position,owner.Position,1.2f,Direction:guard.Direction);
+            active.Add(key);_guardContexts[key]=(owner.RuntimeId,context);
+            _player.Play("directional_guard_boundary",WithDisplayPosition(owner.RuntimeId,context,true),key);
+        }
+        foreach(var storm in storms??[])
+        {
+            var key="storm-boundary:"+storm.StableId;active.Add(key);
+            _player.Play("ground_storm_boundary",new(storm.Center,storm.Center,storm.Radius),key);
+        }
+        foreach(var key in _groundFieldKeys.Where(key=>!active.Contains(key)).ToArray())
+        {_player.End(key,VfxEndReason.ScopeEnded);_guardContexts.Remove(key);}
+        _groundFieldKeys.Clear();_groundFieldKeys.UnionWith(active);
     }
     public void Present(IReadOnlyList<BattleEvent> events, bool snap)
     {
@@ -407,6 +436,7 @@ public partial class RangedAttackLayer : Node2D, IVfxStage
         _castContexts.Clear();
         _trampleRush.Clear();
         _statusVfx.Clear();
+        _guardContexts.Clear();_groundFieldKeys.Clear();
         _gatherMotions.Clear();
         _displacementImpacts.Clear();
     }

@@ -80,7 +80,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
         GetNode<Label>("%EquippedSpell").Text = string.IsNullOrEmpty(growth.EquippedSpellId)
             ? "当前未预设法术"
             : $"已预设：{SpellName(rules, growth.EquippedSpellId)} → {HeroName(run, app.Content, growth.SpellTargetInstanceId)}";
-        if (growth.PendingNode is { IsBattle: true } pending)
+        if (run.PendingGrowthSnapshot is { IsBattle: true } pending)
             GetNode<Label>("%EquippedSpell").Text = string.IsNullOrEmpty(pending.ConsumedSpellId)
                 ? "本场已开始，整备已锁定。"
                 : $"本场已使用：{SpellName(rules, pending.ConsumedSpellId)} → {HeroName(run, app.Content, pending.SpellTargetInstanceId)}";
@@ -89,6 +89,22 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
         ledger.Visible = gains.Length > 0;
         ledger.Text = gains.Length == 0 ? string.Empty : "本局累计培养\n" + string.Join("\n", gains.Select(hero =>
             $"{HeroName(run, app.Content, hero.InstanceId)}：攻击 +{hero.Growth.AddedAttack:0.##} · 生命 +{hero.Growth.AddedMaxHealth:0.##}"));
+        foreach (var hero in gains)
+        {
+            var remembered = hero.Growth.History.Where(gain => gain.Source == "remembered").ToArray();
+            if (remembered.Length == 0) continue;
+            ledger.Text += $"\n其中 {HeroName(run, app.Content, hero.InstanceId)} 的已保存铭记：攻击 +" +
+                $"{remembered.Where(gain => gain.Mode == GrowthProductionMode.Attack).Sum(gain => gain.Amount):0.##} · 生命 +" +
+                $"{remembered.Where(gain => gain.Mode == GrowthProductionMode.Vitality).Sum(gain => gain.Amount):0.##}";
+        }
+        var breeders = run.Roster.Where(hero => rules.Heroes.TryGetValue(hero.ContentId, out var rule) && rule.BreedingYield > 0).ToArray();
+        foreach (var breeder in breeders)
+        {
+            ledger.Visible = true;
+            ledger.Text += (ledger.Text.Length == 0 ? string.Empty : "\n") +
+                $"{HeroName(run, app.Content, breeder.InstanceId)}：育种 {breeder.Growth.BreedingPoints} · " +
+                (run.Deployment.Contains(breeder.InstanceId) ? "上阵，放大下一份树种" : "后备，暂停育种与树种放大");
+        }
         var editable = app.CheckGrowthAction();
         var phaseHint = GetNode<Label>("%PhaseHint");
         phaseHint.Visible = !editable.Succeeded;
@@ -133,12 +149,24 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
             GetNode<Label>("%ProductionPreview").Text = "当前没有可安排生产的英雄。";
             return;
         }
+        var bonusAttack = 0f;
+        var bonusHealth = 0f;
+        foreach (var breeder in run.Roster.Where(hero => run.Deployment.Contains(hero.InstanceId)))
+            if (rules.Heroes.TryGetValue(breeder.ContentId, out var rule) && rule.BreedingYield > 0)
+            {
+                bonusAttack += breeder.Growth.BreedingPoints * rule.AttackGainPerBreedingPoint;
+                bonusHealth += breeder.Growth.BreedingPoints * rule.MaxHealthGainPerBreedingPoint;
+            }
         var output = mode == GrowthProductionMode.Research ? $"研究 +{growthHero.ResearchYield}" : target is null ? "请选择受益英雄" :
+            mode == GrowthProductionMode.Cultivation ? $"{HeroName(run, _application.Content, target.InstanceId)} 下一份树种：攻击永久 +{growthHero.FixedAttackGain + bonusAttack:0.##} · 生命永久 +{growthHero.FixedMaxHealthGain + bonusHealth:0.##}" :
             mode == GrowthProductionMode.Attack ? $"{HeroName(run, _application.Content, target.InstanceId)} 攻击永久 +{Base(target.ContentId).AttackDamage * growthHero.GrowthRate:0.##}" :
             $"{HeroName(run, _application.Content, target.InstanceId)} 生命永久 +{Base(target.ContentId).MaxHealth * growthHero.GrowthRate:0.##}";
         var eligible = run.Deployment.Contains(producer.InstanceId) && (mode == GrowthProductionMode.Research || target is not null && run.Deployment.Contains(target.InstanceId));
-        GetNode<Label>("%ProductionPreview").Text = $"下次产出：{output}\n" +
-            (eligible ? "已满足上阵条件" : "未满足上阵条件，本次无产出");
+        var assigned = string.IsNullOrEmpty(producer.Growth.ProductionTargetInstanceId)
+            ? "当前未分配培养对象"
+            : $"已分配：{ModeName(producer.Growth.ProductionMode)} → {HeroName(run, _application.Content, producer.Growth.ProductionTargetInstanceId)}";
+        GetNode<Label>("%ProductionPreview").Text = $"{assigned}\n选项预览：{output}\n" +
+            (eligible ? "满足上阵条件；保存分配后于有效非终局行动结算" : "未满足上阵条件，按此分配无产出");
         _target.Disabled = mode == GrowthProductionMode.Research;
         UnitDefinition Base(string id) => (UnitDefinition)Required(_application.Content, id).Definition;
     }
@@ -228,7 +256,7 @@ public partial class GrowthWorkbenchPanel : VBoxContainer
     private static void Add(OptionButton menu, string id, string name) { menu.AddItem(name); menu.SetItemMetadata(menu.ItemCount - 1, id); }
     private static void Select(OptionButton menu, string id) { for (var i = 0; i < menu.ItemCount; i++) if (menu.GetItemMetadata(i).AsString() == id) { menu.Select(i); return; } if (menu.ItemCount > 0) menu.Select(0); }
     private static string SelectedId(OptionButton menu) => menu.ItemCount == 0 || menu.Selected < 0 ? string.Empty : menu.GetItemMetadata(menu.Selected).AsString();
-    private static string ModeName(GrowthProductionMode mode) => mode switch { GrowthProductionMode.Attack => "攻击培养", GrowthProductionMode.Vitality => "生命培养", _ => "研究" };
+    private static string ModeName(GrowthProductionMode mode) => mode switch { GrowthProductionMode.Attack => "攻击培养", GrowthProductionMode.Vitality => "生命培养", GrowthProductionMode.Research => "研究", GrowthProductionMode.Cultivation => "树种培养", _ => "无效生产方式" };
     private static string HeroName(RunView run, ContentRegistry content, string instanceId) { var hero = run.Roster.FirstOrDefault(value => value.InstanceId == instanceId); return hero is null ? "未选择" : ((UnitDefinition)Required(content, hero.ContentId).Definition).DisplayName; }
     private static string SpellName(CompiledGrowthRules rules, string id) => rules.Spells.TryGetValue(id, out var spell) ? spell.DisplayName : id;
     private static CatalogEntry Required(ContentRegistry content, string id) => content.TryGet(id, out var entry) ? entry : throw new InvalidOperationException($"缺少内容 {id}");

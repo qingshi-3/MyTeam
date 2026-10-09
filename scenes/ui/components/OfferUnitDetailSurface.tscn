@@ -1,0 +1,181 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/ui/recruitment-reading/detail-inset-flat.png" id="Material"]
+
+[sub_resource type="AtlasTexture" id="Center"]
+atlas = ExtResource("Material")
+region = Rect2(116, 374, 1024, 530)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Top"]
+atlas = ExtResource("Material")
+region = Rect2(116, 304, 1024, 70)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Bottom"]
+atlas = ExtResource("Material")
+region = Rect2(116, 904, 1024, 70)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Left"]
+atlas = ExtResource("Material")
+region = Rect2(46, 374, 70, 530)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Right"]
+atlas = ExtResource("Material")
+region = Rect2(1140, 374, 70, 530)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="TopLeft"]
+atlas = ExtResource("Material")
+region = Rect2(46, 304, 70, 70)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="TopRight"]
+atlas = ExtResource("Material")
+region = Rect2(1140, 304, 70, 70)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="BottomLeft"]
+atlas = ExtResource("Material")
+region = Rect2(46, 904, 70, 70)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="BottomRight"]
+atlas = ExtResource("Material")
+region = Rect2(1140, 904, 70, 70)
+filter_clip = true
+
+[node name="DetailReadingSurface" type="Control"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+modulate = Color(0.85, 0.83, 0.79, 1)
+
+[node name="Center" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+mouse_filter = 2
+texture = SubResource("Center")
+expand_mode = 1
+
+[node name="Top" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = 16.0
+offset_top = 0.0
+offset_right = -16.0
+offset_bottom = 16.0
+mouse_filter = 2
+texture = SubResource("Top")
+expand_mode = 1
+
+[node name="Bottom" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -16.0
+offset_right = -16.0
+offset_bottom = 0.0
+mouse_filter = 2
+texture = SubResource("Bottom")
+expand_mode = 1
+
+[node name="Left" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 16.0
+offset_right = 16.0
+offset_bottom = -16.0
+mouse_filter = 2
+texture = SubResource("Left")
+expand_mode = 1
+
+[node name="Right" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = 16.0
+offset_right = 0.0
+offset_bottom = -16.0
+mouse_filter = 2
+texture = SubResource("Right")
+expand_mode = 1
+
+[node name="TopLeft" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 16.0
+offset_bottom = 16.0
+mouse_filter = 2
+texture = SubResource("TopLeft")
+expand_mode = 1
+
+[node name="TopRight" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -16.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 16.0
+mouse_filter = 2
+texture = SubResource("TopRight")
+expand_mode = 1
+
+[node name="BottomLeft" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 0.0
+mouse_filter = 2
+texture = SubResource("BottomLeft")
+expand_mode = 1
+
+[node name="BottomRight" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2
+texture = SubResource("BottomRight")
+expand_mode = 1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3]
+[gd_scene load_steps=48 format=3]
 
 [ext_resource type="Script" path="res://src/Audio/FeedbackAudio.cs" id="1"]
 [ext_resource type="Script" path="res://src/Audio/FeedbackSound.cs" id="2"]
@@ -24,6 +24,10 @@
 [ext_resource type="Resource" path="res://content/audio/mix/impact.tres" id="mix_impact"]
 [ext_resource type="Resource" path="res://content/audio/mix/support.tres" id="mix_support"]
 [ext_resource type="Resource" path="res://content/audio/mix/highlight.tres" id="mix_highlight"]
+
+[ext_resource type="AudioStream" path="res://assets/audio/ui/journey_d_b_then_a.wav" id="journey_open"]
+[ext_resource type="AudioStream" path="res://assets/audio/ui/journey_c_latch.wav" id="journey_close"]
+[ext_resource type="AudioStream" path="res://assets/audio/ui/journey_a_light.wav" id="journey_land"]
 
 [sub_resource type="Resource" id="s0"]
 script = ExtResource("2")
@@ -231,10 +235,54 @@ MaximumVoices = 1
 Priority = 4
 VaryPitch = false
 
+[sub_resource type="Resource" id="journey_open"]
+script = ExtResource("2")
+Cue = "journey_open"
+Stream = ExtResource("journey_open")
+VolumeDb = -10
+MinimumInterval = 0.15
+MaximumVoices = 1
+Priority = 5
+VaryPitch = false
+MaximumDuration = 0.38
+
+[sub_resource type="Resource" id="journey_close"]
+script = ExtResource("2")
+Cue = "journey_close"
+Stream = ExtResource("journey_close")
+VolumeDb = -12
+MinimumInterval = 0.15
+MaximumVoices = 1
+Priority = 5
+VaryPitch = false
+MaximumDuration = 0.2
+
+[sub_resource type="Resource" id="journey_depart"]
+script = ExtResource("2")
+Cue = "journey_depart"
+Stream = ExtResource("a8")
+VolumeDb = -16
+MinimumInterval = 0.15
+MaximumVoices = 1
+Priority = 5
+VaryPitch = false
+MaximumDuration = 0.38
+
+[sub_resource type="Resource" id="journey_arrive"]
+script = ExtResource("2")
+Cue = "journey_arrive"
+Stream = ExtResource("journey_land")
+VolumeDb = -7
+MinimumInterval = 0.15
+MaximumVoices = 1
+Priority = 5
+VaryPitch = false
+MaximumDuration = 0.2
+
 [node name="FeedbackAudio" type="Node"]
 script = ExtResource("1")
 AbilityCues = Dictionary[String, String]({"ability_ne02_temporary_death_blast": "explosion", "ability_ne02_owner_death_blast": "explosion"})
-Sounds = Array[ExtResource("2")]([SubResource("s0"), SubResource("s1"), SubResource("s2"), SubResource("s3"), SubResource("s4"), SubResource("s5"), SubResource("s6"), SubResource("s7"), SubResource("s8"), SubResource("s9"), SubResource("s10"), SubResource("s11"), SubResource("s12"), SubResource("s13"), SubResource("s14"), SubResource("s15"), SubResource("defeat")])
+Sounds = Array[ExtResource("2")]([SubResource("s0"), SubResource("s1"), SubResource("s2"), SubResource("s3"), SubResource("s4"), SubResource("s5"), SubResource("s6"), SubResource("s7"), SubResource("s8"), SubResource("s9"), SubResource("s10"), SubResource("s11"), SubResource("s12"), SubResource("s13"), SubResource("s14"), SubResource("s15"), SubResource("defeat"), SubResource("journey_open"), SubResource("journey_close"), SubResource("journey_depart"), SubResource("journey_arrive")])
 
 [node name="Voice01" type="AudioStreamPlayer" parent="."]
 bus = &"Master"

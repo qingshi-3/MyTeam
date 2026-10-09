@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UnitCoreStat.tscn" id="Base"]
+
+[node name="OfferUnitCoreStat" instance=ExtResource("Base")]
+custom_minimum_size = Vector2(70, 34)
+
+[node name="Layout" parent="." index="0"]
+offset_left = 1.0
+offset_right = -1.0
+theme_override_constants/separation = 4
+
+[node name="FactIcon" parent="Layout" index="0"]
+custom_minimum_size = Vector2(22, 22)
+
+[node name="FactValue" parent="Layout" index="1"]
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.98, 0.97, 0.92, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_constants/outline_size = 0
+text_overrun_behavior = 0

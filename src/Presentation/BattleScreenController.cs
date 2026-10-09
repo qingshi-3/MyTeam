@@ -9,6 +9,7 @@ using TowerAutobattler.Content;
 using TowerAutobattler.Domain;
 using TowerAutobattler.UI;
 using TowerAutobattler.Audio;
+using TowerAutobattler.Attributes;
 
 namespace TowerAutobattler.Presentation;
 
@@ -62,6 +63,11 @@ public partial class BattleScreenController : Control
     private string _commandFeedback = string.Empty;
     private bool _commandFeedbackError;
     private string _selectedRuntimeId = string.Empty;
+    private ulong _statisticsRefreshAt;
+    private int _statisticsTick = -1;
+    private readonly Dictionary<(CombatSourceKind, string), string> _statisticsNames = new();
+    internal int StatisticsRefreshCount { get; private set; }
+    internal string LastStatisticsExportPath { get; private set; } = "";
     public string LastRuntimeFailure { get; private set; } = string.Empty;
     public float SpeedScale => _speedScale;
     public int TacticalPoints => _simulation?.TacticalPoints ?? 0;
@@ -115,7 +121,8 @@ public partial class BattleScreenController : Control
         _tacticalCommandHud = GetNode<TacticalCommandHud>("%TacticalCommandHud");
         _inspector = GetNode<BattleInspectorDock>("%BattleInspectorDock");
         _selectedUnit = _inspector.Details;
-        _inspector.StatisticsRequested += RefreshInspectorStatistics;
+        _inspector.StatisticsRequested += RequestInspectorStatistics;
+        _inspector.ExportRequested += ExportStatistics;
         _inspector.UnitSelected += OnActorSelected;
         _endFadeOverlay = GetNode<ColorRect>("%EndFadeOverlay");
         _presentation = new BattlePresentationSession(_playback, _board, _environment, _unitsRoot,
@@ -139,7 +146,8 @@ public partial class BattleScreenController : Control
         _rangedAttackLayer.UnitHitPresented -= OnUnitHitPresented;
         _collisionToggle.Toggled -= OnGeometryToggled;
         _attackRangeToggle.Toggled -= OnGeometryToggled;
-        _inspector.StatisticsRequested -= RefreshInspectorStatistics;
+        _inspector.StatisticsRequested -= RequestInspectorStatistics;
+        _inspector.ExportRequested -= ExportStatistics;
         _ruleButton.Pressed -= ShowRules;
         _inspector.UnitSelected -= OnActorSelected;
         _pause.Pressed -= TogglePause;
@@ -164,6 +172,11 @@ public partial class BattleScreenController : Control
         {
             _content = content ?? throw new ArgumentNullException(nameof(content));
             _config = config ?? throw new ArgumentNullException(nameof(config));
+            _statisticsTick = -1;
+            _statisticsRefreshAt = 0;
+            StatisticsRefreshCount = 0;
+            LastStatisticsExportPath = "";
+            _statisticsNames.Clear();
             LastRuntimeFailure = string.Empty;
             _playback.Start(config, defaultSpeed);
             _presentation.Bind(content);
@@ -185,7 +198,7 @@ public partial class BattleScreenController : Control
             RefreshStatus();
             SyncPresenters("idle");
             RefreshEnvironmentLighting();
-            _rangedAttackLayer.SynchronizeUnits(_simulation!.UnitViews);
+            _rangedAttackLayer.SynchronizeUnits(_simulation!.UnitViews, _simulation.FrontalGuards, _simulation.GroundStorms);
             PresentResolvedFacts();
             SetProcess(true);
             SetProcessUnhandledInput(false);
@@ -255,6 +268,7 @@ public partial class BattleScreenController : Control
             PresentResolvedFacts();
             RefreshStatus();
             RefreshSelectedUnit();
+            RefreshInspectorStatistics(force: true);
             if (_simulation.Outcome != BattleOutcome.Running && !_ending) BeginEndSequence();
             return true;
         }
@@ -383,10 +397,63 @@ public partial class BattleScreenController : Control
         RefreshInspectorStatistics();
     }
 
-    private void RefreshInspectorStatistics()
+    private void RequestInspectorStatistics() => RefreshInspectorStatistics(force: true);
+
+    private void RefreshInspectorStatistics(bool force = false)
     {
-        if (_simulation is not null && _inspector.WantsStatistics)
-            _inspector.BindStatistics(_simulation.ReadUnitReports(), ResolveUnitPortrait);
+        if (_simulation is null || !_inspector.WantsStatistics) return;
+        var now = Time.GetTicksMsec();
+        if (!force && (_statisticsTick == _simulation.TickIndex || now < _statisticsRefreshAt)) return;
+        _statisticsRefreshAt = now + 250;
+        _statisticsTick = _simulation.TickIndex;
+        StatisticsRefreshCount++;
+        _inspector.BindStatistics(_terminalResult?.Units ?? _simulation.ReadUnitReports(), ResolveUnitPortrait,
+            _simulation.TickIndex, _simulation.Outcome, StatisticsSourceName,
+            _ending ? null : StatisticsRuntimeUnit, _config is null ? "" : $"种子 {_config.Seed}");
+    }
+
+    private BattleScreenRuntimeUnitSnapshot? StatisticsRuntimeUnit(string id)
+    {
+        var state = FindState(id);
+        return state is null ? null : BuildRuntimeSnapshot(state);
+    }
+
+    private string StatisticsSourceName(CombatSourceKind kind, string id)
+    {
+        if (_statisticsNames.TryGetValue((kind, id), out var cached)) return cached;
+        var graph = _content?.Graph;
+        var name = kind switch
+        {
+            CombatSourceKind.Ability => graph?.Abilities.FirstOrDefault(value => value.StableId == id)?.DisplayName,
+            CombatSourceKind.Status => graph?.Statuses.FirstOrDefault(value => value.StableId == id)?.DisplayName,
+            CombatSourceKind.Trait => graph?.Traits.FirstOrDefault(value => value.StableId == id)?.DisplayName,
+            CombatSourceKind.TacticalCommand => graph?.TacticalCommands.FirstOrDefault(value => value.StableId == id)?.DisplayName,
+            _ => null
+        };
+        if (name is null && _content?.TryGet(id, out var entry) == true)
+            name = entry.Definition switch { UnitDefinition unit => unit.DisplayName, ItemDefinition item => item.DisplayName, _ => null };
+        return _statisticsNames[(kind, id)] = name ?? (string.IsNullOrEmpty(id) ? "未归属来源" : id);
+    }
+
+    private void ExportStatistics()
+    {
+        if (_simulation is null || _config?.CaptureDetailedStatistics != true) return;
+        try
+        {
+            var reports = _terminalResult?.Units ?? _simulation.ReadUnitReports();
+            var json = BattleStatisticsExport.Serialize(_config, _title.Text, _simulation.TickIndex,
+                _simulation.Outcome, _terminalResult?.Digest, reports);
+            var directory = ProjectSettings.GlobalizePath("user://battle-statistics");
+            System.IO.Directory.CreateDirectory(directory);
+            var path = System.IO.Path.Combine(directory, $"battle-{DateTime.UtcNow:yyyyMMdd-HHmmss-fffffff}-{_config.Seed}.json");
+            System.IO.File.WriteAllText(path, json);
+            LastStatisticsExportPath = path;
+            _inspector.ShowExportResult("已导出：" + path);
+        }
+        catch (Exception error)
+        {
+            _inspector.ShowExportResult("导出失败：" + error.Message);
+        }
     }
 
     private UnitPortraitDefinition? ResolveUnitPortrait(string contentId) =>
@@ -395,7 +462,7 @@ public partial class BattleScreenController : Control
 
     private void OnActorSelected(string runtimeId)
     {
-        if (_ending) return;
+        if (_ending && !_reset.Visible) return;
         _selectedRuntimeId = runtimeId;
         RefreshSelectedUnit();
         RefreshGeometry();
@@ -516,7 +583,15 @@ public partial class BattleScreenController : Control
         ClearFloatingCues();
 
         SetProcess(false);
-        _endTransition.Begin(_reset.Visible);
+        // An experiment stays available for post-battle diagnosis. Normal journeys
+        // keep their existing transition to the production battle report.
+        if (_reset.Visible && _config?.CaptureDetailedStatistics == true)
+        {
+            _endFadeOverlay.Hide();
+            SetProcessUnhandledInput(false);
+            _inspector.ShowStatistics();
+        }
+        else _endTransition.Begin(_reset.Visible);
 
         Finished?.Invoke(_terminalResult!);
     }

@@ -1,0 +1,276 @@
+[gd_scene load_steps=27 format=3]
+
+[ext_resource type="Script" path="res://src/UI/ExpeditionMapCell.cs" id="1"]
+[ext_resource type="Texture2D" path="res://scenes/ui/expedition/terrain-grassland.svg" id="grass"]
+[ext_resource type="Texture2D" path="res://scenes/ui/expedition/terrain-forest.svg" id="forest"]
+[ext_resource type="Texture2D" path="res://scenes/ui/expedition/terrain-ruins.svg" id="ruins"]
+[ext_resource type="Texture2D" path="res://scenes/ui/expedition/terrain-water.svg" id="water"]
+[ext_resource type="Texture2D" path="res://scenes/ui/expedition/terrain-mountain.svg" id="mountain"]
+[ext_resource type="Texture2D" path="res://scenes/ui/expedition/fog.svg" id="fog"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-combat.svg" id="combat"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-elite.svg" id="elite"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-recruitment.svg" id="recruitment"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-shop.svg" id="shop"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-rest.svg" id="camp"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/tower-event.svg" id="event"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/roster-deployed.svg" id="party"]
+
+[ext_resource type="Shader" path="res://scenes/ui/expedition/map_fog_reveal.gdshader" id="fog_reveal"]
+[ext_resource type="Shader" path="res://scenes/ui/expedition/map_site_light.gdshader" id="site_light"]
+[ext_resource type="Shader" path="res://scenes/ui/expedition/map_site_discovery.gdshader" id="site_discovery"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementDust.tscn" id="dust"]
+[ext_resource type="PackedScene" path="res://scenes/vfx/ElementGlint.tscn" id="glint"]
+
+[sub_resource type="StyleBoxFlat" id="Cell"]
+bg_color = Color(0.12, 0.15, 0.12, 1)
+
+[sub_resource type="StyleBoxFlat" id="Hover"]
+bg_color = Color(0.28, 0.31, 0.27, 1)
+
+[sub_resource type="StyleBoxFlat" id="Selection"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.85, 0.43, 1)
+
+[sub_resource type="StyleBoxFlat" id="Party"]
+bg_color = Color(0.22, 0.17, 0.09, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.84, 0.4, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="ShaderMaterial" id="FogReveal"]
+resource_local_to_scene = true
+shader = ExtResource("fog_reveal")
+shader_parameter/reveal = 0.0
+shader_parameter/reveal_origin = Vector2(0.5, 0.5)
+
+[sub_resource type="ShaderMaterial" id="SiteLight"]
+resource_local_to_scene = true
+shader = ExtResource("site_light")
+shader_parameter/focus_strength = 0.0
+shader_parameter/warm_strength = 0.0
+
+[sub_resource type="ShaderMaterial" id="Discovery"]
+resource_local_to_scene = true
+shader = ExtResource("site_discovery")
+shader_parameter/discovery = 0.0
+
+[node name="ExpeditionMapCell" type="Button"]
+custom_minimum_size = Vector2(56, 56)
+theme_override_styles/normal = SubResource("Cell")
+theme_override_styles/hover = SubResource("Hover")
+theme_override_styles/pressed = SubResource("Hover")
+theme_override_styles/focus = SubResource("Hover")
+focus_mode = 2
+script = ExtResource("1")
+GrasslandTexture = ExtResource("grass")
+ForestTexture = ExtResource("forest")
+RuinsTexture = ExtResource("ruins")
+WaterTexture = ExtResource("water")
+MountainTexture = ExtResource("mountain")
+CombatIcon = ExtResource("combat")
+EliteIcon = ExtResource("elite")
+RecruitmentIcon = ExtResource("recruitment")
+ShopIcon = ExtResource("shop")
+CampIcon = ExtResource("camp")
+RuinsIcon = ExtResource("event")
+
+[node name="Ground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.34, 0.38, 0.24, 1)
+
+[node name="Terrain" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("grass")
+expand_mode = 1
+
+[node name="SiteLight" type="ColorRect" parent="."]
+visible = false
+material = SubResource("SiteLight")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Site" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Icon" type="TextureRect" parent="Site"]
+material = SubResource("Discovery")
+layout_mode = 1
+anchor_left = 0.14
+anchor_right = 0.86
+anchor_bottom = 0.68
+mouse_filter = 2
+texture = ExtResource("combat")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DiscoveryMotes" type="Control" parent="Site"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Mote0" parent="Site/DiscoveryMotes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote1" parent="Site/DiscoveryMotes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote2" parent="Site/DiscoveryMotes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Mote3" parent="Site/DiscoveryMotes" instance=ExtResource("glint")]
+visible = false
+
+[node name="Mote4" parent="Site/DiscoveryMotes" instance=ExtResource("dust")]
+visible = false
+
+[node name="Kind" type="Label" parent="Site"]
+layout_mode = 1
+anchor_top = 0.66
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.96, 0.92, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0.04, 0.06, 0.04, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "守军"
+
+[node name="Completed" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 2.0
+offset_top = -3.0
+offset_right = 22.0
+offset_bottom = 20.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.75, 0.9, 0.61, 1)
+theme_override_colors/font_outline_color = Color(0.04, 0.06, 0.04, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 17
+text = "✓"
+
+[node name="Blocked" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.78, 0.79, 0.68, 0.8)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 2
+vertical_alignment = 2
+text = "× "
+
+[node name="Fog" type="TextureRect" parent="."]
+material = SubResource("FogReveal")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("fog")
+expand_mode = 1
+
+[node name="Party" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -22.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = 22.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Party")
+
+[node name="Icon" type="TextureRect" parent="Party"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("party")
+modulate = Color(1, 0.86, 0.48, 1)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Selection" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("Selection")

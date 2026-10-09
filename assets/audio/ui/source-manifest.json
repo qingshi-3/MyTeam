@@ -6,5 +6,28 @@
   "composition": "A light click only; total 65 ms",
   "sha256": "7d25533257d3f2ffdad6c4993002407da931d0c475a509da9a754c2679461529",
   "format": "48000 Hz mono PCM16; Godot import uncompressed, no trim, normalization or loop",
-  "runtime": "FeedbackAudio.tscn ui_select; volume -4 dB; single concurrent voice; minimum interval 65 ms"
+  "runtime": "FeedbackAudio.tscn ui_select; volume -4 dB; single concurrent voice; minimum interval 65 ms",
+  "journey_sources": [
+    {
+      "cue": "journey_open",
+      "file": "journey_d_b_then_a.wav",
+      "source_file": "../ui-click-study/d_b_then_a.wav",
+      "processing": "Byte-identical copy for Godot import; the study directory has .gdignore.",
+      "sha256": "6d1e4c0f0012dbd06491cc20adb3be045dba7d35571306fff1c4a93eab6f4171"
+    },
+    {
+      "cue": "journey_close",
+      "file": "journey_c_latch.wav",
+      "source_file": "../ui-click-study/c_latch.wav",
+      "processing": "Byte-identical copy for Godot import; the study directory has .gdignore.",
+      "sha256": "0889950f91e66fcb21b5a8bf21de5e933db7d47863a14a78b8f760dd13ec8e66"
+    },
+    {
+      "cue": "journey_land",
+      "file": "journey_a_light.wav",
+      "source_file": "../ui-click-study/a_light.wav",
+      "processing": "Byte-identical copy for Godot import; the study directory has .gdignore.",
+      "sha256": "7d25533257d3f2ffdad6c4993002407da931d0c475a509da9a754c2679461529"
+    }
+  ]
 }

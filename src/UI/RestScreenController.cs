@@ -4,8 +4,9 @@ using TowerAutobattler.Project;
 
 namespace TowerAutobattler.UI;
 
-public partial class RestScreenController : Control
+public partial class RestScreenController : Control, IUiJourneySurface
 {
+    public Control ResolveJourneySurface(Vector2 source) => GetNode<Control>("Center/Panel");
     public event Action<bool>? ChoiceRequested;
 
     private OutcomeActionButton _gold = null!;
