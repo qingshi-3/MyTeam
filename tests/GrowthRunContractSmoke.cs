@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Godot;
+using TowerAutobattler.Composition;
 using TowerAutobattler.Growth;
 using TowerAutobattler.Domain;
 using TowerAutobattler.Battle;
@@ -16,7 +17,8 @@ public partial class GrowthRunContractSmoke : Node
         var code = 0;
         try
         {
-            var published = await GrowthContentPackage.CreateReadyAsync(this);
+            var published = await GrowthContentPackage.CreateReadyAsync(this,
+                defaultNewRunProfileId: RunProfileIds.GrowthTowerLegacy);
             var package = published.Package ?? throw new InvalidOperationException(string.Join(';', published.Report.CoreErrors));
             var rules = GrowthContentPackage.LoadRules(package.Content);
             VerifyOptionalAscensionBenefits(package, rules);

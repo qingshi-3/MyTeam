@@ -19,7 +19,8 @@ public partial class GrowthRewardGroupsContractSmoke : Node
         var exit = 0;
         try
         {
-            var published = await GrowthContentPackage.CreateReadyAsync(this);
+            var published = await GrowthContentPackage.CreateReadyAsync(this,
+                defaultNewRunProfileId: RunProfileIds.GrowthTowerLegacy);
             var package = published.Package ?? throw new InvalidOperationException(string.Join(';', published.Report.CoreErrors));
             var rules = GrowthContentPackage.LoadRules(package.Content);
             VerifySettlementAndIndependentClaims(package, rules);

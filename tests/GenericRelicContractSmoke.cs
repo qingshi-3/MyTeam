@@ -20,7 +20,8 @@ public partial class GenericRelicContractSmoke : Node
     {
         try
         {
-            var publication = await GrowthContentPackage.CreateReadyAsync(this);
+            var publication = await GrowthContentPackage.CreateReadyAsync(this,
+                defaultNewRunProfileId: RunProfileIds.GrowthTowerLegacy);
             var package = publication.Package ?? throw new InvalidOperationException(string.Join(";", publication.Report.CoreErrors));
             var relics = package.Content.Graph.Relics.Where(r => r.StableId.StartsWith("item_rl", StringComparison.Ordinal)).ToArray();
             Check(relics.Length == 25, "25 independent definitions published");

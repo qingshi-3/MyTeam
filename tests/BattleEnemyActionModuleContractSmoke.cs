@@ -93,7 +93,7 @@ public partial class BattleEnemyActionModuleContractSmoke : Node
         public bool CanOccupy(Vector2 position, float radius) => true;
         public void BeginCast(string ownerId, string targetId, string displayName) { }
         public void ContinueCast(string ownerId) { }
-        public void Hit(string sourceId, string targetId, float damage, CombatSourceRef origin, EffectDamageType type)
+        public void Hit(string sourceId, string targetId, float damage, CombatSourceRef origin, EffectDamageType type, bool isAreaDamage = false)
         { Hits++; if (FailHit) throw new InvalidOperationException("injected hit failure"); }
         public string? Spawn(UnitSnapshot profile, int team, Vector2 position, string ownerId) => throw new NotSupportedException();
         public void Swap(string firstId, string secondId) => throw new NotSupportedException();

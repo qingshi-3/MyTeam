@@ -5,6 +5,10 @@ Uses the existing checkout. Godot's development host loads its Debug directory;
 we stage ExportRelease assemblies there atomically and verify optimization in-game.
 A normal Debug build is restored at the end. Trace and recording measurements are
 kept separate from uninstrumented timing samples.
+
+This historical profile entry still depends on retired authored-content fixtures.
+Including its test code only preserves diagnostic compilation; this runner has
+not been revalidated against the current roster and is not a current passing gate.
 """
 import argparse
 import json
@@ -39,7 +43,8 @@ def main():
 
     try:
         command = [args.dotnet, "build", "my-team.csproj", "-c", "ExportRelease",
-                   "-p:GodotApiConfiguration=Debug", "-maxcpucount:2", "-v:minimal"]
+                   "-p:GodotApiConfiguration=Debug", "-p:MyTeamIncludeTests=true",
+                   "-maxcpucount:2", "-v:minimal"]
         if run(command, args.output / "build-release.log", 180):
             raise RuntimeError("Release build failed; see build-release.log")
         for mode in args.mode or ["core", "gui"]:

@@ -65,8 +65,11 @@ public partial class GrowthJourneyDiagnostics : Node
         try
         {
             var publication = await GrowthContentPackage.CreateReadyAsync(this);
-            var package = publication.Package ?? throw new InvalidOperationException(string.Join(';', publication.Report.CoreErrors));
-            var rules = GrowthContentPackage.LoadRules(package.Content);
+            // This diagnostic owns the historical fifteen-floor comparison.
+            // Publishing the new default must not silently change its experiment.
+            var package = (publication.Package ?? throw new InvalidOperationException(string.Join(';', publication.Report.CoreErrors)))
+                .ForProfile(RunProfileIds.GrowthTowerLegacy);
+            var rules = package.GrowthRules ?? throw new InvalidOperationException("Legacy diagnostic growth rules are missing.");
             foreach (var strategy in Strategies.Where(strategy => !string.IsNullOrEmpty(strategy.SpellId)))
                 Require(rules.Spells.ContainsKey(strategy.SpellId), $"strategy {strategy.Id} references unknown run spell {strategy.SpellId}");
             Require(rules.Spells.ContainsKey(GatherSpell) && rules.Spells.ContainsKey(GuardSpell),
@@ -81,7 +84,7 @@ public partial class GrowthJourneyDiagnostics : Node
             foreach (var profile in selectedProfiles)
             {
                 var timer = Stopwatch.StartNew();
-                var profiledPackage = package with { Project = package.Project with { Campaign = ApplyProfile(package.Project.Campaign, profile) } };
+                var profiledPackage = DiagnosticPackage(package, profile);
                 foreach (var strategy in selectedStrategies)
                 foreach (var seed in selectedSeeds)
                 {
@@ -118,6 +121,23 @@ public partial class GrowthJourneyDiagnostics : Node
             GetTree().Quit();
         }
         catch (Exception error) { GD.PrintErr("GROWTH_JOURNEY_DIAGNOSTICS_FAILED " + error); GetTree().Quit(1); }
+    }
+
+    private static CompiledGamePackage DiagnosticPackage(CompiledGamePackage package, DifficultyProfile difficulty)
+    {
+        if (package.Project.Campaign.Progression is not CompiledTowerProgression)
+            throw new InvalidOperationException("Growth journey diagnostics require the explicit legacy Tower profile.");
+        var project = package.Project with { Campaign = ApplyProfile(package.Project.Campaign, difficulty) };
+        var source = package.DefaultProfile;
+        var profile = source with
+        {
+            Project = project,
+            ContentFingerprint = RunProfileContentFingerprint.Compute(source.ProfileId, source.CompatibilityVersion,
+                source.ProgressionProtocolVersion, source.RewardProtocolVersion, source.IdentityProtocolVersion,
+                project, source.GrowthRules, package.Content.Graph)
+        };
+        return new CompiledGamePackage(package.Content, package.ProfilesById.SetItem(profile.ProfileId, profile),
+            profile.ProfileId, package.PublicationVersion) { AuthoringOwner = package.AuthoringOwner };
     }
 
     private static object RunJourney(CompiledGamePackage package, CompiledGrowthRules rules, Strategy strategy, DifficultyProfile profile, ulong seed)

@@ -26,7 +26,9 @@ public partial class GenericRelicInputSmoke : Node
             game.SaveNamespace = $"tests/generic-relics/{Guid.NewGuid():N}"; _stage.AddChild(game);
             for (var i = 0; i < 300 && game.Content is null; i++) await Frames(1);
             Check(game.Content is not null, "production content ready");
-            var compiled = GameProjectCompiler.Compile(game.ProjectDefinition!, game.Content!.Graph);
+            // This UI fixture installs legacy Tower offers directly; it does not test map transactions.
+            var compiled = GameProjectCompiler.Compile(
+                GD.Load<GameProjectDefinition>(GrowthContentPackage.LegacyProjectPath), game.Content!.Graph);
             var package = new CompiledGamePackage(game.Content, compiled.Project!, game.Content.PublicationVersion);
             var (app, save) = RunHealthFixture.New(package);
             typeof(GameRoot).GetField("_app", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(game, app);

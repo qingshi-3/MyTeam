@@ -3,5 +3,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <Nullable>enable</Nullable>
+    <MyTeamIncludeTests Condition="'$(MyTeamIncludeTests)' == '' And '$(Configuration)' == 'Debug'">true</MyTeamIncludeTests>
+    <MyTeamIncludeTests Condition="'$(MyTeamIncludeTests)' == ''">false</MyTeamIncludeTests>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="tests/archive/**/*.cs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(MyTeamIncludeTests)' != 'true'">
+    <Compile Remove="tests/**/*.cs" />
+  </ItemGroup>
 </Project>

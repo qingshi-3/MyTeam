@@ -1,0 +1,60 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://tests/JourneyPresentationPreview.cs" id="script"]
+[ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="theme"]
+[ext_resource type="PackedScene" path="res://scenes/environments/CourtyardBackdrop.tscn" id="background"]
+[ext_resource type="PackedScene" path="res://scenes/ui/MainMenuScreen.tscn" id="menu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HeroSelectScreen.tscn" id="heroes"]
+[ext_resource type="PackedScene" path="res://scenes/ui/expedition/ExpeditionScreen.tscn" id="map"]
+[ext_resource type="PackedScene" path="res://scenes/ui/RestScreen.tscn" id="camp"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UiJourneyTransition.tscn" id="motion"]
+[ext_resource type="PackedScene" path="res://scenes/audio/FeedbackAudio.tscn" id="audio"]
+
+[node name="JourneyPresentationPreview" type="Node"]
+script = ExtResource("script")
+
+[node name="World" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("theme")
+
+[node name="Courtyard" parent="World" instance=ExtResource("background")]
+[node name="Menu" parent="World" instance=ExtResource("menu")]
+[node name="Heroes" parent="World" instance=ExtResource("heroes")]
+visible = false
+[node name="Map" parent="World" instance=ExtResource("map")]
+visible = false
+offset_top = 42.0
+[node name="Camp" parent="World" instance=ExtResource("camp")]
+visible = false
+[node name="PreviewBack" type="Button" parent="World/Camp/Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"SecondaryButton"
+text = "返回地图"
+[node name="ShadowHeader" type="Control" parent="World"]
+mouse_filter = 2
+[node name="UiAudio" parent="World" instance=ExtResource("audio")]
+[node name="Transition" parent="World" instance=ExtResource("motion")]
+
+[node name="PreviewBanner" type="HBoxContainer" parent="World"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 6.0
+offset_right = 1580.0
+offset_bottom = 38.0
+z_index = 100
+theme_override_constants/separation = 24
+mouse_filter = 2
+[node name="Label" type="Label" parent="World/PreviewBanner"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "UI 动线预览 · 固定展示地图／4 个保留样板 + 2 个假人 · 不创建征程或读写存档"
+[node name="Reduced" type="CheckButton" parent="World/PreviewBanner"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "减弱动效"

@@ -157,7 +157,12 @@ public partial class ArchitectureModuleOwnershipContractSmoke : Node
         }
         public BattleUnitState Unit(string id) => _units[id];
         public bool ManaLocked(string id) => Locked;
-        public void Damage(string source, string target, float amount, CombatSourceRef origin, EffectDamageType damageType = EffectDamageType.Normal, CombatDamageClass damageClass = CombatDamageClass.Other) => Unit(target).Health -= amount;
+        public float NextRandom() => throw new NotSupportedException();
+        public void AddBaseHealth(string target, float ratio, CombatSourceRef origin) => throw new NotSupportedException();
+        public void AddAttribute(string target, CombatAttribute attribute, float amount, CombatSourceRef origin) => throw new NotSupportedException();
+        public void AdditionalAttack(string source, string target, float amount, string actionId, BattleDamageStatisticsAttribution statisticsAttribution = default) => throw new NotSupportedException();
+        public void Present(string source, string target, string cue) => throw new NotSupportedException();
+        public void Damage(string source, string target, float amount, CombatSourceRef origin, EffectDamageType damageType = EffectDamageType.Normal, CombatDamageClass damageClass = CombatDamageClass.Other, bool isAreaDamage = false) => Unit(target).Health -= amount;
         public void Heal(string source, string target, float amount, CombatSourceRef origin) => Unit(target).Health += amount;
         public float Shield(string source, string target, float amount, CombatSourceRef origin) { Unit(target).Shield += amount; return amount; }
         public void GainMana(string target, float amount) => Unit(target).CurrentMana += amount;

@@ -175,8 +175,10 @@ public partial class BattleMovementRenderSmoke : Node
             "Growth package publication failed: " + string.Join("; ", publication.Report.CoreErrors));
         var memory = new ReadOnlyRunSave(
             production.Deserialize<ActiveRunDto>(activeJson)!, production.LoadMeta(), production.LoadSettings());
-        var app = new RunApplication(package.Content, memory, package.Project,
-            GrowthContentPackage.LoadRules(package.Content));
+        // Route the cloned save through its own header; older saves use the original
+        // production namespace mapping. This adapter never writes production files.
+        var app = new RunApplication(package, memory, "growth-journey");
+        Require(app.Run is not null, "saved-roster session restored: " + app.ActiveRunLoadDiagnostic?.Message);
         var encounter = app.CurrentEncounter();
         var config = app.BuildBattleConfig(encounter, false);
         var battle = GD.Load<PackedScene>("res://scenes/ui/BattleScreen.tscn").Instantiate<BattleScreenController>();

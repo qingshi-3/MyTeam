@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Godot;
+using TowerAutobattler.Composition;
 using TowerAutobattler.App;
 using TowerAutobattler.Growth;
 using TowerAutobattler.Presentation;
@@ -61,10 +62,11 @@ public partial class GrowthEntryInputSmoke : Node
             // growth, battle results or spell stock. Continue then uses the real input path.
             game.QueueFree();
             await Frames(5);
-            var publication = await GrowthContentPackage.CreateReadyAsync(this);
+            var publication = await GrowthContentPackage.CreateReadyAsync(this,
+                defaultNewRunProfileId: RunProfileIds.GrowthTowerLegacy);
             var package = publication.Package ?? throw new InvalidOperationException(string.Join(';', publication.Report.CoreErrors));
-            var fixture = new RunApplication(package.Content, testSave, package.Project,
-                growthRules: GrowthContentPackage.LoadRules(package.Content));
+            // Persist the selected legacy profile header so the production root can resume it.
+            var fixture = new RunApplication(package, testSave, testNamespace);
             Require(fixture.BeginOpeningRecruitment(2), "合法seed2开局存档");
             game = GD.Load<PackedScene>(mainScene).Instantiate<GameRoot>();
             game.SaveNamespace = testNamespace;
@@ -271,12 +273,19 @@ public partial class GrowthEntryInputSmoke : Node
             await Until(() => screens.HeroSelection.IsVisibleInTree(), "actual new-run opening");
             var tiles = Descendants<HeroLibraryTile>(screens.HeroSelection).Where(tile => tile.IsVisibleInTree()).ToArray();
             Require(tiles.Length == 6, "six actual default-game candidates");
+            var selectedIds = new[] { tiles[0].StableId, tiles[1].StableId };
             var openingCount = CheckVisiblePortraits(screens.HeroSelection);
             await CapturePortraitEntry("opening.png");
             await Click(tiles[0]);
             await Click(tiles[1]);
             await Click(screens.HeroSelection.GetNode<Button>("%ConfirmOpening"));
-            await Until(() => screens.Tower.IsVisibleInTree(), "actual opening confirmation");
+            await Until(() => screens.Expedition.IsVisibleInTree(), "actual opening confirmation enters expedition map");
+            var confirmed = save.LoadActiveRun() ?? throw new InvalidOperationException("confirmed opening was not saved");
+            Require(RunView.For(confirmed).IsExpedition && confirmed.ProfileId == RunProfileIds.GrowthExpedition,
+                "actual default opening commits the expedition profile and map");
+            Require(confirmed.OpeningRecruitment is null && confirmed.Roster.Count == 2 &&
+                confirmed.Roster.Select(hero => hero.ContentId).ToHashSet().SetEquals(selectedIds),
+                "actual opening confirmation retains both selected heroes");
             var army = game.GetNode<ArmyOverviewController>("ArmyOverview");
             await Click(army.GetNode<Button>("%SummaryButton"));
             await Until(() => army.IsOpen, "actual heroes and equipment entry");

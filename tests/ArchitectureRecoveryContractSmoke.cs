@@ -17,7 +17,8 @@ public partial class ArchitectureRecoveryContractSmoke : Node
         var failures = new List<string>();
         try
         {
-            var gate = await GrowthContentPackage.CreateReadyAsync(this);
+            var gate = await GrowthContentPackage.CreateReadyAsync(this,
+                defaultNewRunProfileId: RunProfileIds.GrowthTowerLegacy);
             var package = gate.Package ?? throw new InvalidOperationException(string.Join("; ", gate.Report.CoreErrors));
             Require(package.GrowthRules is not null, "成长发布必须携带编译规则");
             async Task Check(string name, Func<Task> run)

@@ -16,7 +16,8 @@ public partial class OpponentChoiceContractSmoke : Node
         var code = 0;
         try
         {
-            var published = await GrowthContentPackage.CreateReadyAsync(this);
+            var published = await GrowthContentPackage.CreateReadyAsync(this,
+                defaultNewRunProfileId: RunProfileIds.GrowthTowerLegacy);
             var package = published.Package;
             if (package is null)
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Godot;
+using TowerAutobattler.Composition;
 using TowerAutobattler.Growth;
 using TowerAutobattler.Run;
 using TowerAutobattler.UI;
@@ -19,7 +20,8 @@ public partial class GrowthWorkbenchInputSmoke : Control
             _stage = new UiInputStage(this, true);
             _stage.Resize(new Vector2I(960, 540));
             var blankAscension = OS.GetCmdlineUserArgs().Contains("--blank-ascension");
-            var publication = await GrowthContentPackage.CreateReadyAsync(this);
+            var publication = await GrowthContentPackage.CreateReadyAsync(this,
+                defaultNewRunProfileId: RunProfileIds.GrowthTowerLegacy);
             var package = publication.Package ?? throw new InvalidOperationException(string.Join(';', publication.Report.CoreErrors));
             var rules = GrowthContentPackage.LoadRules(package.Content);
             var save = new MemorySave();

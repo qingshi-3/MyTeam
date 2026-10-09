@@ -17,8 +17,7 @@ using TowerAutobattler.TacticalCommands;
 public static class TestProjectFixture
 {
     public static GameProjectDefinition Authored() =>
-        GD.Load<GameProjectDefinition>("res://tests/fixtures/legacy-roster/content/project/alpha_project.tres") ??
-        throw new InvalidOperationException("alpha project resource load failed");
+        throw new InvalidOperationException("旧内容夹具已归档，依赖它的测试需随新内容迁移；见 docs/testcases/content-reset.md。不得把此状态记为测试通过。");
 
     public static CompiledGameProject Load(ContentRegistry registry)
     {
@@ -37,10 +36,10 @@ public static class TestProjectFixture
     // Frozen compatibility coverage only. New hero/dummy tests publish the current project directly.
     private static AuthoredContentPackage FrozenPackage()
     {
+        var project = Authored();
         var manifest = JsonSerializer.Deserialize<Dictionary<string, string[]>>(
             FileAccess.GetFileAsString("res://tests/fixtures/legacy-roster/manifest.json"))!;
         T[] Load<T>(string key) where T : Resource => manifest[key].Select(GD.Load<T>).ToArray();
-        var project = Authored();
         return new AuthoredContentPackage(project, project.Content,
             Load<AbilityLoadoutDefinition>("Loadouts"), Load<AbilityDefinition>("Abilities"),
             Load<StatusDefinition>("Statuses"), Load<RelicDefinition>("Relics"))

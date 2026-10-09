@@ -93,11 +93,10 @@ public partial class UnitCardDisclosureInputSmoke : Node
                 Move(new Vector2(art.GetGlobalRect().GetCenter().X, art.GetGlobalRect().End.Y - 28));
                 await Record("return-to-card", .5);
                 await Capture("offers-hover");
-                await Click(first.GetNode<Button>("UnitDetailsButton"));
-                Move(new Vector2(30, 30)); await Record("pinned", .30);
-                Require(first.Disclosure.IsPinned && first.Disclosure.IsOpen, "clicked details remain pinned off-card");
-                Move(last.GetNode<Control>("Layout/Artwork").GetGlobalRect().GetCenter()); await Record("pin-priority", .3);
-                Require(first.Disclosure.IsPinned && !last.Disclosure.IsOpen, "passing another card cannot steal pinned details");
+                Move(new Vector2(30, 30)); await Record("hover-leave", .55);
+                Require(!first.Disclosure.IsPinned && !first.Disclosure.IsOpen, "leaving the card closes its transient details");
+                Move(art.GetGlobalRect().GetCenter()); await Record("hover-reopen", .4);
+                Require(first.Disclosure.IsOpen && !first.Disclosure.IsPinned, "hover reopens details without a toggle");
                 PressKey(Key.Escape); await Record("escape-close", .30);
                 Require(!first.Disclosure.IsOpen && confirmations == 0, "escape closes without action");
                 Require(!edgeShade.IsVisibleInTree(), "escape clears edge shade");
@@ -116,20 +115,26 @@ public partial class UnitCardDisclosureInputSmoke : Node
                 Require(hint.Visible && last.Disclosure.IsOpen, "pointer can enter its own tooltip without collapse");
                 Move(new Vector2(30, 30)); await Record("leave-close", .5);
                 Require(!last.Disclosure.IsOpen, "leaving closes transient preview");
-                var button = first.GetNode<Button>("UnitDetailsButton");
-                button.GrabFocus(); PressKey(Key.Enter); await Frames(1);
+                for (var i = 0; i < 96 && !first.HasFocus(); i++)
+                { PressKey(Key.Tab); await Frames(1); }
+                Require(first.HasFocus(), "keyboard navigation reaches the candidate card itself");
+                await Record("keyboard-focus", .35);
                 _reduced = true; await Frames(3);
-                Require(first.Disclosure.IsPinned && first.Disclosure.Groups.SelectMany(group => group.GetChildren().OfType<Control>()).All(item => item.Modulate.A == 1 && item.OffsetTransformScale.IsEqualApprox(Vector2.One)), "keyboard pin and live reduced motion settle");
+                Require(first.Disclosure.IsOpen && !first.Disclosure.IsPinned && confirmations == 0 &&
+                    first.Disclosure.Groups.SelectMany(group => group.GetChildren().OfType<Control>()).All(item => item.Modulate.A == 1 && item.OffsetTransformScale.IsEqualApprox(Vector2.One)), "keyboard focus inspects without recruiting and live reduced motion settles");
                 Require(edgeShade.IsVisibleInTree() && edgeShade.Modulate.A == 1, "reduced motion settles shade too");
                 PressKey(Key.Escape); await Frames(2);
                 Require(!first.Disclosure.IsOpen, "reduced close immediate");
                 Require(!edgeShade.IsVisibleInTree(), "reduced close clears shade immediately");
                 await Click(first.ConfirmButton);
                 Require(confirmations == 1, "explicit confirmation fires exactly once");
-                await Click(button); await Click(button); await Click(button);
-                Require(first.Disclosure.IsPinned, "rapid close and reopen keeps the latest intent");
+                Move(new Vector2(30, 30)); await Record("rapid-leave", .3);
+                Move(art.GetGlobalRect().GetCenter()); await Record("rapid-reopen", .2);
+                Move(new Vector2(30, 30)); await Frames(1);
+                Move(art.GetGlobalRect().GetCenter()); await Record("rapid-hover-return", .3);
+                Require(first.Disclosure.IsOpen && !first.Disclosure.IsPinned, "rapid hover reversal keeps the latest transient intent");
                 host.Hide(); await Frames(2); host.Show(); await Frames(2);
-                Require(!first.Disclosure.IsOpen, "owner hiding clears floating canvas and pin");
+                Require(!first.Disclosure.IsOpen, "owner hiding clears floating details");
                 Require(!edgeShade.IsVisibleInTree(), "owner hiding leaves no black veil");
                 first.Bind(new RunOfferChoiceViewModel("opportunity", "机会", "", null, null, false,
                     "", "", "", "", "", "", "保留原有机会页", "规则", "领取", IsOpportunity: true), _ => confirmations++);
@@ -181,8 +186,10 @@ public partial class UnitCardDisclosureInputSmoke : Node
             Move(new Vector2(800, 150)); await Record("opening-arrival", .8);
             var library = opening.GetNode<GridContainer>("%HeroLibrary");
             var choices = library.GetChildren().OfType<HeroLibraryTile>().ToArray();
-            Require(library.Columns == 6 && choices.Length == 6 && choices.All(choice =>
-                Math.Abs(choice.Position.Y - choices[0].Position.Y) <= 1), "all six opening candidates share one row");
+            Require(library.Columns == 3 && choices.Length == 6 && choices.Take(3).All(choice =>
+                Math.Abs(choice.Position.Y - choices[0].Position.Y) <= 1) && choices.Skip(3).All(choice =>
+                Math.Abs(choice.Position.Y - choices[3].Position.Y) <= 1) && choices[3].Position.Y > choices[0].Position.Y,
+                "six opening candidates form two aligned rows of three");
             Require(opening.GetNode<PanelContainer>("%LibraryPanel").GetThemeStylebox("panel") is StyleBoxEmpty,
                 "opening candidates have no enclosing backplate");
             var firstChoice = choices[0];
@@ -191,7 +198,7 @@ public partial class UnitCardDisclosureInputSmoke : Node
                 openingScroll.ScrollVertical == 0, "all six complete candidate cards fit without scrolling");
             Require(Math.Abs(library.GetGlobalRect().GetCenter().X - openingScroll.GetGlobalRect().GetCenter().X) <= 2,
                 "the complete opening grid is centered in its available area");
-            Require(choices.All(choice => choice.Size.X >= 234 && choice.Size.Y >= 351 &&
+            Require(choices.All(choice => choice.Size.X >= 190 && choice.Size.Y >= 285 &&
                 Math.Abs(choice.Size.Y / choice.Size.X - 1.5f) < .01f &&
                 !choice.Orbit.ShowEquipment && !choice.Orbit.GetNode<Control>("TopDock/Equipment").IsVisibleInTree()),
                 "six cards retain the authored stone-frame ratio and exclude equipment");
@@ -283,7 +290,7 @@ public partial class UnitCardDisclosureInputSmoke : Node
                 "rapid card input keeps seats aligned with the authoritative draft");
             await Click(opening.GetNode<Button>("%ConfirmOpening"));
             Require(openingConfirmations == 1, "opening confirms exactly once");
-            GD.Print("UNIT_CARD_DISCLOSURE_OK opening-single-row no-backplate optional-equipment frame-selection mirrored-values split-mana nonoverlapping-header deselection buttonless-hover escape rightmost-selection confirmation");
+            GD.Print("UNIT_CARD_DISCLOSURE_OK opening-two-rows no-backplate optional-equipment frame-selection mirrored-values split-mana nonoverlapping-header deselection buttonless-hover escape rightmost-selection confirmation");
         }
         catch (Exception error) { GD.PrintErr("UNIT_CARD_DISCLOSURE_FAILED " + error); exit = 1; await Capture("failure"); }
         finally
