@@ -1,0 +1,19 @@
+{
+  "file": "archer-sdorica-v8-shape-and-value.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-df9118b2-c713-4002-bb40-33c51b29bbbc.png",
+  "tool": "built-in image_gen",
+  "width": 1024,
+  "height": 1536,
+  "sha256": "66ebde2d76681183209905b8e21acd7ddee138c8a8dc0edbd0e466f2467c8700",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "fully_transparent_pixels": 789862,
+  "generation_count": 1,
+  "status": "awaiting-user-review",
+  "prompt": "prompt-v8-sdorica-shape-and-value.json",
+  "scope": "Use the newly reverse-analyzed Sdorica painting method and previous whole-figure diagnosis; retain red/violet/gold archer identity, low draw action, exposed shoulders/thighs and transparent background.",
+  "visual_review": "Hair shape rhythm and metal glare changed; local mottled/faceted marks remain visible on hair, cloth and armor. No claim of visual acceptance or complete reference match."
+}

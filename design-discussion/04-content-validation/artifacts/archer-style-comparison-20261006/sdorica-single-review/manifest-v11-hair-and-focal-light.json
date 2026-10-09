@@ -1,0 +1,20 @@
+{
+  "file": "archer-sdorica-v11-hair-and-focal-light.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-0f8275a7-18f3-45d9-ac11-51470ed8dc17.png",
+  "tool": "built-in image_gen",
+  "width": 1116,
+  "height": 1410,
+  "sha256": "81ba6fd3d7e66d8f3be4d68fd1eb36feace35ce1eb92628fc078e182bfef8bc9",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "fully_transparent_pixels": 737091,
+  "partially_transparent_pixels": 835818,
+  "generation_count": 1,
+  "status": "awaiting-user-review",
+  "prompt": "prompt-v11-hair-and-focal-light.json",
+  "scope": "Repaint toy-like hair and reorganize highlights; user explicitly requests concentrated bright accents and localized light effects inspired by Sione. Retain current archer design direction, low bow pose and alpha background.",
+  "visual_review": "Hair now has more tapered directional strands and an altered main flow. A strong warm luminous accent appears around crown/face-side hair and on upper shoulder. Some separate loops remain; waist and knee highlights are still pronounced. No claim of final aesthetic or anatomy acceptance."
+}

@@ -1,5 +1,92 @@
 # 整局与首版内容规划：依据
 
+<a id="dual-axis-battlegrounds-evidence"></a>
+
+## 2026-10-06 双轴羁绊与酒馆成长参考
+
+针对本轮发散，读取 D59／D62／D63／D71／D73、当前十二人及征程规则，检索暴雪官方酒馆战棋种族池、战吼、亡语与永久增益材料。以下是历史版本的具体机制依据，不代表当前赛季卡池或强度；未做新对局测试，也不是完整酒馆机制盘点。
+
+- [暴雪 23.2 补丁，2022-05-09](https://hearthstone.blizzard.com/en-us/news/23784375)：新增娜迦后维持单局类型数量、纳入类型轮换；Spellcraft 产生临时法术，Lava Lurker 保留每回合首次 Spellcraft 的效果，Critter Wrangler 在施放 Spellcraft 时额外加属性，Young Murk-Eye 触发相邻鱼人战吼。支持区分全库类型／单局供给，以及资源来源／增幅支撑／培养对象的单位组合；不据此设定本项目种族数、回合数或原卡数值。
+- [暴雪 29.4.2 补丁，2024](https://hearthstone.blizzard.com/en-gb/news/24077480)：Party Elemental 按打出元素触发友方增益，Rylak 的亡语可触发相邻单位战吼，Pokey 强化本局鲜血宝石。支持以事件、效果和单位相互作用形成组合的讨论；事件频率、战斗／备战边界、成长保留对象在本项目需要另定。
+- [暴雪 33.6.2 补丁，2025-10-09](https://hearthstone.blizzard.com/en-us/news/24240524)：Kalecgos 的战吼联动强化龙、Goldrinn 的亡语提供本场野兽增益等，作为不同战斗／成长维度的辅助检索证据。本轮不采用具体参数。
+
+Agent 推论：类别上限有利于控制内容与供给复杂度，但不自动保证成形或趣味；双轴人数奖励与单位成长组合的强度及席位成本需要共同推演。关于长期核心培养与高频换人的冲突是项目适配判断，不能归为暴雪结论。
+
+<a id="portrait-reference-evidence"></a>
+
+## 2026-10-06 立绘参考选择与 DNF 来源
+
+最新直接证据为用户本次上传的十张 PNG：画风选择附件 5／6／8／9／10，最佳姿势选择附件 2／7／10；附件原件、选择标记与 SHA-256 归 [reference-manifest.json](artifacts/archer-style-comparison-20261006/selected-refinement/reference-manifest.json)。用户明确退回简化后的 `balanced/` 整批，理由是人体不合格。新三稿仅以所选附件为初始图像输入，不读取旧立绘提示词、不沿用被退回稿作人体基准。内置 image_gen 的逐次提示词、迭代原图和最终候选来源归 [交付记录](artifacts/archer-style-comparison-20261006/README.md)；A／B／C 均为 1024×1536，仓库副本与生成原件 SHA-256 一致。
+
+本轮复核为实际 PNG 观察：Astra 分析绘法，Sol 检查四肢连续、骨盆与双腿、接地状态、手与弓弦箭尾；主 Agent 逐图复核并局部修订裁切和服饰。完整弓与人物已入框；A 的后腿甲片重叠、A／B 前腿透视，C 的承重腿比例和松握手部仍属需要具体评价的余项，不能记作人体全面验收。C 一次局部生成在输出阶段被工具拒绝且未返回图片，后续明确成年角色与增加紫色战斗服覆盖的版本成功，记录随提示词保留。未启动 Godot、替换运行资源或执行运行验收。
+
+早期样稿历史：曾以 `f1_ranged` 原始精灵表为身份来源生成十一种方向，随后经历“过繁”“过素”与最终人体不合格的纠偏。根目录初稿、`restrained/` 与 `balanced/` 均保留供追溯，后两批不再作为当前推荐稿；最初样稿也只有本次用户明确选择的绘法和姿势维度获得上述评价。
+
+用户从本次对话的 60 项候选中依次选择 01、21、02、03、28、08、32、13、16、40，并特别评价 28 号具体例子“动态感强，视觉冲击强”；另补充 DNF 的立绘、特效、UI、背景、单位等全部美术类别。决定归 [D77](decisions.md#portrait-reference-selection)，下列保留具体样例，避免后续只凭游戏名替换用户实际看到的参考。
+
+### 十项已选样例
+
+| 编号／作品 | 具体样例与来源页 | 当时展示的图片 | 来源性质 |
+|---|---|---|---|
+| 01 原神 | [枫原万叶，HoYoWiki](https://wiki.hoyolab.com/pc/genshin/entry/22?lang=ja-jp) | [祈愿图](https://upload-static.hoyoverse.com/hoyolab-wiki/2022/10/12/194600931/5b58088cd334f8f4e98495571afb03c9_3937483507477867378.png?x-oss-process=image%2Fformat%2Cwebp) | 官方域名社区 Wiki／图片 CDN |
+| 21 英雄联盟 | [阿狸，官方英雄页](https://www.leagueoflegends.com/en-us/champions/ahri/) | [基础皮肤原画](https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg) | Riot 官方 |
+| 02 鸣潮 | [今汐，Prydwen](https://www.prydwen.gg/wuthering-waves/characters/jinhsi) | [抽卡立绘](https://cdn.prydwen.gg/images/wuthering-waves/characters/jinhsi_full.webp) | 第三方攻略站转载 |
+| 03 崩坏：星穹铁道 | [卡芙卡，Prydwen](https://www.prydwen.gg/star-rail/characters/kafka) | [抽卡立绘](https://cdn.prydwen.gg/images/honkai-star-rail/characters/kafka_full.webp) | 第三方攻略站转载 |
+| 28 昆特牌 | [Geralt: Igni，Alpha Coders](https://art.alphacoders.com/arts/view/113756) | [用户重点评价的具体图片](https://artfiles.alphacoders.com/113/thumb-1920-113756.jpg) | 第三方图片站，页面署名 Anna Podedworna |
+| 08 胜利女神：妮姬 | [拉毗，Anime Characters Database](https://www.animecharactersdatabase.com/characters.php?id=126162) | [角色立绘](https://ami.animecharactersdatabase.com/uploads/chars/41903-68813275.png) | 第三方角色资料站转载 |
+| 32 无畏契约 | [捷风，Inven Global](https://www.invenglobal.com/blackdesertonline/articles/10824/meet-jett-the-latest-valorant-agent-revealed-by-riot-games) | [宣传图](https://static.invenglobal.com/upload/image/2020/04/02/i1585819020905883.jpeg) | 媒体转载 Riot 宣传图 |
+| 13 Fate/Grand Order | [阿尔托莉雅，GamePress](https://fgo.gamepress.gg/servant/altria-pendragon) | [角色卡图](https://fgo.gamepress.gg/sites/default/files/styles/servant_image/public/2017-07/Artoria1.png?itok=MUclYsFl) | 第三方攻略资料站转载 |
+| 16 碧蓝幻想 Relink | [齐格飞，官方角色页](https://relink.granbluefantasy.jp/characters/detail?chara=siegfried) | [角色立绘](https://relink.granbluefantasy.jp/assets/images/common/pc/characters/siegfried.png?20260713071816) | Cygames 官方 |
+| 40 万象物语 | [Sione，官方角色页](https://www.sdorica.com/en/character/sione/) | [角色立绘](https://www.sdorica.com/assets/chars/sione/CH_Sione.png) | Rayark 官方 |
+
+这些图片在候选整理阶段核对过公开图片地址的 HTTP 状态和图像类型；本轮固定选择与出处，不将地址可访问等同于画面已逐项分析。昆特来源页本轮再次打开，核实作者署名；本轮研究工具未成功加载其图片，故 [分析建议](content-outline.md#portrait-style-guidance)未把通用动作／构图方法冒充该图的逐项视觉观察。参考包括立绘、卡图和宣传原画，不把它们都称作可直接导入的透明底素材。
+
+### 61 DNF：跨美术类别官方入口
+
+沿用原 01–60 编号，DNF 追加为 61。以下入口本轮实际打开核对，优先原作 PC DNF／DFO；`df.nexon.com` 是韩国官方站，`dfoneople.com` 是国际版官方站。本轮不将手游、DNF Duel 或其他衍生作品混作原作证据。
+
+| 类别 | 官方资料入口 | 当前可支持的研究及边界 |
+|---|---|---|
+| 人物／觉醒立绘 | [DFU 官方画廊](https://www.dnf-universe.com/?p=en)、[官方上线说明](https://www.dfoneople.com/news/notices/2230/DFU-English-Version-Open) | 公告明确包含高分辨角色插画和怪物像素图。画廊也收录比赛获奖投稿及未实装资料，后续须区分来源；本轮网页抽取未展开其 SPA 分类，尚未指定某张觉醒立绘为项目样板。 |
+| 技能与特效 | [官方职业技能演示功能说明](https://www.dfoneople.com/news/updates/877/Origin/Origin:-Character-Changes)、[官方更新视频索引](https://www.dfoneople.com/media/video/Update-Promotions) | 前者说明原作客户端转职界面提供主要技能及一次觉醒演示，并可试玩；网页本身不是可直接播放的完整技能录像。后者提供宣传与更新视频入口。本轮尚未完成具体技能的正常速度观察和逐帧拆解。 |
+| UI | [韩国官方 2020 年 UI 改版开发者笔记](https://df.nexon.com/community/news/devnote/2251540)、[国际版官方指南](https://www.dfoneople.com/gameinfo/guide) | 历史开发笔记有角色信息、装备提示、技能页与背包改版的示例和目的，可研究信息主次及分组；不当作当前版本完整 UI 规范。 |
+| 背景／场景 | [官方地下城指南示例](https://www.dfoneople.com/gameinfo/guide/DFO-Dungeon-Information/Main-Dungeons/Sky-of-a-Thousand-Seas-Normal-Dungeons)、[官方壁纸索引](https://www.dfoneople.com/media/wallpaper?page=1) | 地下城页面包含场景截图，壁纸提供完成的宣传图；两者均不等于已拆层背景资源或场景原画。本轮尚未确定具体场景样板。 |
+| 单位／怪物 | [DFU 收录说明](https://www.dfoneople.com/news/notices/2230/DFU-English-Version-Open)、[韩国官方怪物图鉴系统说明](https://df.nexon.com/df/pr/actupdate/MDAxNDQ/?cat=5&ver=pc) | 可继续查怪物像素图、外形及故事信息；系统介绍并非全量怪物独立原画目录，像素图也不能代替完整动作帧。 |
+
+本轮由 Astra 提炼候选画法、Luna 核对 DNF 来源，主 Agent 整合用户明确选择并复核关键出处。没有生成或下载新美术，没有修改运行资源；官方入口核对与后续视觉拆解是不同完成项。DNF 在各类别中均可参考，具体采用何种形体、材料、动作或构图仍应随对应任务留下样例和观察证据。
+
+## 2026-10-03 完整内容设计与静态一致性检查
+
+按用户明确的羁绊、单位属性/技能、海克斯式全局遗物范围，核对现行统一防御曲线、法力、人口/临时单位、一次升阶和大陆固定库存/有限行动规则，形成[内容包](artifacts/content-redesign/README.md)。源资料包含Riot的Galaxies、Reckoning、Dragonlands、Uncharted Realms、Gizmos、Runeterra概览及历史补丁；资料用途和数据库混合版本/抓取失败的限制见[参考映射](artifacts/content-redesign/references.md)。
+
+结构化清单与独立[检查脚本](artifacts/content-redesign/check_design.py)核对40英雄/18羁绊/32遗物/22装备、4种局内池和10套阵容、66项原始索引及有限金币/材料账，结果见[静态报告](artifacts/content-redesign/validation.md)。检查发现并修正了基础召唤搭档过晚、部分局内池职业高档人数不足、龙裔样例不属于任一完整局内池、过度依赖同一辅助的问题；没有用额外低质被动填补。
+
+静态断言不检验实际战斗强度或乐趣。报告特别记录霜庭高攻速冻结、回蓝/回响和生命/怒劲叠加风险；未运行Godot或宣称用户认可。没有修改正式规则、旧内容资源或特效，也没有生成遗物图标。
+
+## 2026-10-03 工蜂监工批评与当前配置复核
+
+用户否定MX25的“入场召唤蜂、首次攻击授盾”设计，并强调成熟原作的完整机制可以优先沿用。复核当前成长绑定：[开战工蜂](../../content/growth/abilities/hero_mx25_growth_drone.tres)仅开战触发1次，召唤1只、持续100 ticks；[被动](../../content/validation_matrix/abilities/hero_mx25_p.tres)按所属召唤物普攻命中触发，每来源一次，25盾／30 ticks；[升阶](../../content/growth/abilities/hero_mx25_ascend.tres)另加开场附近至多2友方单位各30盾／30 ticks。按当前10 ticks／秒即10秒召唤和3秒护盾。培养／研究来自独立成长规则，不是持续战斗召唤能力。
+
+另查[选目标参数默认值](../../src/Abilities/Authoring/MatrixTargetingParameters.cs)与[矩阵选目标](../../src/Battle/BattleMatrixQueries.cs)：此被动只指定NearEventSourceAllies，默认MaxTargets为1、未排除触发召唤物；以事件来源工蜂为中心，从存活同队单位按距离取最近者，正常情况下会选到工蜂自身。故原文案容易被理解为保护其他队友，但当前配置不保证这一点。该结论为静态查询语义，不冒称完成实战复现；已补注单位清单。
+
+设计评价与这项配置偏差分开：即便目标修正，当前玩法是否值得保留仍按D71的原作成套研究评审，不以修bug或加数值代替设计。此轮仅核对并记录，没有修改单位／VFX／运行代码。
+
+## 2026-10-03 内容设计重启的首轮分析
+
+回读D65／D67／D69／D70、当前单位库存、成长／构筑规则及M01-D02。按用户要求将重点转为参考驱动的新设计；[分析与草案](content-outline.md#2026-10-03-从参考材料重新设计内容d71)把66个初选各归入一个主要类别，集合核对66项无遗漏、无重复，保留原索引且不改参考库。12类用于辨别机制差异，不作为最终羁绊数量；六组玩法为Agent草案，并非已完成的英雄组合。
+
+新检索限定Riot官网的羁绊／成员设计复盘，实际打开[Reckoning Learnings](https://teamfighttactics.leagueoflegends.com/en-us/news/dev/dev-teamfight-tactics-reckoning-learnings/)与[Galaxies Team Compositions](https://teamfighttactics.leagueoflegends.com/en-gb/news/dev/dev-tft-galaxies-team-compositions/)。前者用于核对简单支撑、独特玩法和高阶期待的分工，后者用于核对羁绊、成员职责、装备和转向共同设计的方法。未把预告文章数值当作最终补丁，也未把设计者判断写成原作体验已验证；具体摘要和适用边界随草案保留。
+
+本轮未展开66项的全部成员研究、原作动态观察或新单位数值平衡，未修改正式规则、代码、运行资源或VFX。后续不能以当前归类覆盖率代替成套研究完成度。
+
+## 2026-10-03 全部现有单位效果盘点
+
+按D70先交付[129单位效果表](artifacts/content-audit-20261001/unit-effects-20261003.md)及[资源快照](artifacts/content-audit-20261001/unit-effects-20261003.json)。递归检查全部UnitDefinition资源并反查单位场景，129份定义与129个场景一一对应；129个主表编号无遗漏、无重复，引用路径存在，记录的源文件哈希与生成时一致。当前入口为探索V2，26人供给与成长覆盖分别核对；按遭遇CompositionId得到19种当前出场敌人，不以整个敌人目录推断供给。另有2种旧Boss、13种召唤体／造物、4种假人。
+
+技能条目按实际绑定说明整理，补读独立行为、成长覆盖及必要执行分支。发现GX01文案中的已有棘毒放大并未配置，当前实际新增层数为6＋1.4×攻击向下取整；GX02召唤疫焰灵但未绑定攻击施毒反应。HC01被动位于独立连击组件；MX01与MX25在成长中替换基础能力包；召唤体联动区分本体与召唤者提供的反应。表中按这些证据纠正表达，未修改原资源。升阶7项有收益、19项留白，状态与当前资源一致。
+
+本轮只改讨论和盘点文件，未启动Godot、构建、实战验证、修改正式规则或运行内容。表内其他技能说明不等于已经完成逐项实现审计，未据静态清单认定技能合理、有趣或平衡。VFX及用户点名技能保持现状。
+
 ## 2026-10-02 羁绊候选与独有单位索引固化
 
 按用户给出的 66 个编号逐项映射原表，保存游戏、版本、中文与英文名、档位、效果和来源；全部命中且无重复，756 为多多刺客。另按归属整理云顶单单位独有羁绊 125 条版本记录，包含单卡多形态与召唤配套；219 和 317 与首批候选重合。11 条共享身份／独立单位群单列，普通低档 1 人羁绊另注明边界。
@@ -95,7 +182,7 @@
 
 ## D57 玩家数值实施证据（2026-09-26）
 
-用户明确实施授权后，完成普攻输出／技能治疗、正式怒拳怒劲战内保留与31名可选英雄首轮数值校准。前后资源、角色职责说明、同框架裸装对照、阶段配置及失败结果集中在[玩家校准记录](artifacts/player-balance/README.md)。运行验证与恢复归[活动任务](../../work-items/active/player-unit-balance.md)。敌方95份玩法资源指纹未变；玩家侧收紧后，根据失败样本回调中后期遭遇倍率，没有改变敌方单位的独立定义／技能或复制美术资产。
+用户明确实施授权后，完成普攻输出／技能治疗、正式怒拳怒劲战内保留与31名可选英雄首轮数值校准。前后资源、角色职责说明、同框架裸装对照、阶段配置及失败结果集中在[玩家校准记录](artifacts/player-balance/README.md)。运行验证与恢复归[活动任务](../../work-items/archive/player-unit-balance.md)。敌方95份玩法资源指纹未变；玩家侧收紧后，根据失败样本回调中后期遭遇倍率，没有改变敌方单位的独立定义／技能或复制美术资产。
 
 新版济世医师普攻不治疗，技能与法力参数按当前资源；怒劲不再有6秒过期。下方诊断是调整前证据，不能作为当前数值。固定样本不代表自然获取或玩家胜率，旧霜羽、棘毒晚区及部分攻击组合的弱项仍保留，不据成功配置宣称全部流派等强或平衡已获认可。
 
@@ -127,7 +214,7 @@
 
 ## Q26 首轮实现的新增本地证据（2026-09-26）
 
-用户“推进”后完成现有内容的固定预算战斗校准：原始基线、参数迭代、最终矩阵及真实输入／画面记录统一归[难度校准](artifacts/difficulty/README.md)，活动范围见[任务](../../work-items/active/enemy-difficulty-and-build-gates.md)。本轮新增的是本项目实测，没有重新联网核验成熟游戏的当前补丁；下方既有研究与静态核查仍按其来源时间理解。三种完整配合与散搭的差距已在固定样本显现，玩家实际供给、整局节奏与接受度仍待试玩，不以样本数字冒充自然胜率。
+用户“推进”后完成现有内容的固定预算战斗校准：原始基线、参数迭代、最终矩阵及真实输入／画面记录统一归[难度校准](artifacts/difficulty/README.md)，活动范围见[任务](../../work-items/archive/enemy-difficulty-and-build-gates.md)。本轮新增的是本项目实测，没有重新联网核验成熟游戏的当前补丁；下方既有研究与静态核查仍按其来源时间理解。三种完整配合与散搭的差距已在固定样本显现，玩家实际供给、整局节奏与接受度仍待试玩，不以样本数字冒充自然胜率。
 
 ## Q26：现行难度结构与成熟游戏机制对照（2026-09-26）
 
@@ -158,6 +245,16 @@
 方案归[Q26](content-outline.md)，既有Q10验证方法与Q14内容审阅继续适用，不把本次静态阅读写成平衡验收。
 
 ## Q25：炉石／大巴扎UI视觉参考的实际观察（2026-09-25）
+
+### 炉石实录再研究（2026-10-03）
+
+项目动线核对：为响应用户的文字设计要求，读取 `gameplay-design/expedition-progression.md`、`tower-autobattler-core.md`、`combat-build-framework.md`、`system-design/run-progression-and-sessions.md`，以及 `GameFlowCoordinator`、`ScreenRouter`、地图输入／模型、军团与工坊局部代码。确认默认大陆六选二、地点三选一、免费预览取消、首次购物行动、战前法术预设／消费、按组奖励、阶段 Boss 及恢复目的地边界。旧 2026-10-01 交互稿仍有节点／具体选敌历史，不作为大陆权威。UI16 是基于以上内容的文字导航及转场提案，无新增客户端观察、画稿、实机验证或游戏改动。
+
+再次补证：设置菜单／商店 2 图原样归档为 `15`–`16`，累计 16 图。前者支持前后层级、统一承载面与分组观察，后者支持商人／货架／价签／侧纸面的店铺组织观察；没有对应的连续转场素材，开合与场景交接方案明确标为项目候选。用户追加要求研究场景切换和 UI 打开／关闭，具体记录见同一研究文件。
+
+后续补证：用户追加单位筛选前后与三选一 3 图，原样归档为研究目录 `12`–`14`，总计 14 张；可观察框架稳定、不同信息密度、亮核／宽光晕／包络及边缘效果对正文的让位，未量测动作曲线。用户指出动效／光效也直接提供顺滑与 Q 弹；Agent 撤回其仅有操作说明价值的狭窄分析，动作、光、投影的配合建议及证据边界见同一研究文件。无新增客户端动态覆盖或运行修改。
+
+用户否定最新招募材质整合的整体观感，提供 11 张佣兵战纪实录并要求先学、不继续做 UI。本轮[研究记录与逐图证据](artifacts/hearthstone-study-20261003/README.md)保存原图、项目前态对照、构图／部件／承载面分析；原生客户端实际看到主菜单、Esc 菜单、收藏及卡牌详情，但鼠标定位不稳定，没有完成页面遍历或连续动态观看。另读取暴雪特效及音效开发者文章，从官方磁力 GIF 提取 12 个带源文件时间的连续阶段样本，区分合并与独立落位；108 帧／9.72 秒仅为该 GIF 的文件信息，不作为当前客户端时序。GDC 只读到介绍页和入口，未观看全文。明确区分静态观察、原文件抽帧、开发者说明与项目建议；无新画稿、运行改动或审美验收。
 
 ### 整套布局规划核查（2026-10-01）
 
@@ -478,7 +575,7 @@ Q11的13.23／14.9官方补丁区分商店概率与每名英雄的有限副本�
 
 另读[King关卡质量评估演讲报道，2024-03-27](https://mobilegamer.biz/how-king-defines-a-good-candy-crush-saga-level-and-why-it-constantly-prunes-the-bad-ones/)：团队强调区分难度与投入感、考虑不同玩家技能及改动对后续进程的影响。该报道不是本项目应采用变现／留存优化或动态难度的依据，本文只用来限定“胜率等于好玩”的错误推断。
 
-本地对应证据：`work-items/active/bc-hero-roster.md`首段和`tests/FirstContentPresetsContractSmoke.cs`显示三套预设使用正式发布内容及战斗模拟；NE02曾发生5召唤物零死亡，NE10曾补选到超过3个目标。只复核已有记录／检查代码，本轮没有重新执行，不能将过去特定配置结果扩大为当前全局平衡。
+本地对应证据：`work-items/archive/bc-hero-roster.md`首段和`tests/FirstContentPresetsContractSmoke.cs`显示三套预设使用正式发布内容及战斗模拟；NE02曾发生5召唤物零死亡，NE10曾补选到超过3个目标。只复核已有记录／检查代码，本轮没有重新执行，不能将过去特定配置结果扩大为当前全局平衡。
 
 检索分组：TFT prototype/playtesting、Slay the Spire metrics driven design、Monster Train Shiny Shoe development、game balance automated simulation／Hearthstone、Candy Crush King automated playtesting及Magic Nuts & Bolts playtesting。Magic方向因检索限流未取得相关原文，未形成案例；不存在因常识印象补写其做法。原有deep调研目录只做方法关键词及相关游戏入口检查，其主体是玩家机制证据，没有用它冒充制作过程研究。
 
@@ -502,7 +599,7 @@ Q11的13.23／14.9官方补丁区分商店概率与每名英雄的有限副本�
 
 - `content/relics/definitions/`现有12项主要为属性绑定、开场盾／召唤与胜后金币。引魂灯当前全军目标属性绑定各增6%，其展示文案写士兵，存在口径差异，本轮不修运行内容；RC02明确是替换建议。构装机芯当前开场召唤引用`soldier_dummy_melee`，没有查到本定义的死亡补员，RC05是新增行为。
 - `content/equipment/definitions/`：先锋徽甲加12护甲，精工瞄具加10攻击伤害，霜痕战刃命中给攻速状态／目标寒霜并提供凛冬贡献。`content/traits/definitions/trait_winterbound.tres`现有单档门槛2，属性效果攻速+0.15；`content/statuses/status_frost.tres`当前3层转冻结。与概率冻结＋层数提高概率候选不同，不能说讨论方案已实现。
-- 英雄当前事实交叉核对本专题当前稿与`work-items/active/bc-hero-roster.md`，28名可用与外观不复用保持。HC07／HC10／HC16／HC20旧反馈和未采用建议继续有效；暂停英雄不能作为可用配套证据。
+- 英雄当前事实交叉核对本专题当前稿与`work-items/archive/bc-hero-roster.md`，28名可用与外观不复用保持。HC07／HC10／HC16／HC20旧反馈和未采用建议继续有效；暂停英雄不能作为可用配套证据。
 
 设计来源复用Q02–Q07及BC来源映射：毒防守／倍毒与The Specimen、Copycat亡语代触发、Set1极地攻击冻结、护盾当前量／受盾次数／死亡与治疗的不同输入。HC10己方尸爆承接用户NE02-P02方向；TC／RC／EC数值与具体效果为项目提案，不冒称原作相同技能。无新增联网、运行验证、供给概率核查或研究原库改动。候选唯一当前稿为content-drafts.md的D22清单。
 

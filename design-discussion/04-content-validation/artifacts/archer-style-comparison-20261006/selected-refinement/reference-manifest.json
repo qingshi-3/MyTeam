@@ -1,0 +1,82 @@
+[
+  {
+    "attachment": 1,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-0b2df097-53fd-48c2-894d-b3bc878c421a.png",
+    "file": "references/input-01.png",
+    "sha256": "d4349932e2cf6714e1cf20d87537bef51c816ef3e8951acb37d96773cac5f30a",
+    "liked_style": false,
+    "preferred_pose": false
+  },
+  {
+    "attachment": 2,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-fa8e086e-4e71-4165-819d-4abbef75625b.png",
+    "file": "references/input-02.png",
+    "sha256": "f824caad6b38ab287e627e100b1c53cd3129731f17daf120713bb6bcd0a457a2",
+    "liked_style": false,
+    "preferred_pose": true
+  },
+  {
+    "attachment": 3,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-178f093a-ee22-44c7-8051-244d3face59e.png",
+    "file": "references/input-03.png",
+    "sha256": "c8251bd255260e6c3b2c36eaec9abd9d1bf8707cca2ff026c50c2816ceb6ba93",
+    "liked_style": false,
+    "preferred_pose": false
+  },
+  {
+    "attachment": 4,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-dc05b4cb-de89-43d8-b229-c0c0ab6cb7f8.png",
+    "file": "references/input-04.png",
+    "sha256": "2f1a17e9d7ef0f4e6cc703eb6f551b192b02ed1b2588544aaa93802930089549",
+    "liked_style": false,
+    "preferred_pose": false
+  },
+  {
+    "attachment": 5,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-097bc96f-44a6-45f5-a3d6-a25b805e3d9f.png",
+    "file": "references/input-05.png",
+    "sha256": "42f61701ebedc9ad49c9e4a94ce63c1d88866ad32987609bab5a4d3b06ea5c89",
+    "liked_style": true,
+    "preferred_pose": false
+  },
+  {
+    "attachment": 6,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-56b8d654-d7aa-46fc-8054-547d5c08d7f1.png",
+    "file": "references/input-06.png",
+    "sha256": "0d510e633388c5a6cd6ded5c95d6ff5d7b58895efcd0a04b7a77f65055425b85",
+    "liked_style": true,
+    "preferred_pose": false
+  },
+  {
+    "attachment": 7,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-f325f7ed-7c4d-4e38-9bdd-580a26f15d9c.png",
+    "file": "references/input-07.png",
+    "sha256": "59c768a9985bae7ac8228635ca36fda6b1a50543a4e42d786d55164e352a161f",
+    "liked_style": false,
+    "preferred_pose": true
+  },
+  {
+    "attachment": 8,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-7e13b4e1-91bc-4584-9d27-e6fa0ff11380.png",
+    "file": "references/input-08.png",
+    "sha256": "43b5acce008cdea87193495ace14e153e2b28b22817b2cf42d840ec1add102a9",
+    "liked_style": true,
+    "preferred_pose": false
+  },
+  {
+    "attachment": 9,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-48525ee2-2416-4de9-853e-9819fda9ce07.png",
+    "file": "references/input-09.png",
+    "sha256": "cef3db057ea949eccfc91d97a95f81069df4ebd057fd21da0cf654317864fa2b",
+    "liked_style": true,
+    "preferred_pose": false
+  },
+  {
+    "attachment": 10,
+    "source": "/var/folders/6s/4tgr8f5550v639rtxs5jjqnh0000gn/T/codex-clipboard-9b3e3e74-e284-4cb7-8a05-ec524fb54771.png",
+    "file": "references/input-10.png",
+    "sha256": "5fbc55a4d29d6dbac27a8e96c40d16a2a2107ad2ca1f7105c5fd6ba232e1bb3f",
+    "liked_style": true,
+    "preferred_pose": true
+  }
+]

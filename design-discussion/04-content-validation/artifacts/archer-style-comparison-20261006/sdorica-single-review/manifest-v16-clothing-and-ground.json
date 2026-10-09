@@ -1,0 +1,16 @@
+{
+  "version": "v16",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-71091926-06b4-477f-aa1a-07e076df4378.png",
+  "saved": "/Users/qingshi/Documents/GodotProjects/MyTeam/design-discussion/04-content-validation/artifacts/archer-style-comparison-20261006/sdorica-single-review/archer-sdorica-v16-clothing-and-ground.png",
+  "width": 1024,
+  "height": 1536,
+  "bit_depth": 8,
+  "png_color_type": 2,
+  "sha256": "d0f43276d3b09cd13e36536f38cfda998a73fae0576b2426fd1c4de6916758ab",
+  "prompt": "prompt-v16-clothing-and-ground.json",
+  "annotations": "user-annotations-v16.json",
+  "ground_reference": "reference-v16-ground.png",
+  "background_requested": "opaque simple environment",
+  "generation_calls": 1,
+  "user_accepted": false
+}

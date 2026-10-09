@@ -1,0 +1,1540 @@
+{
+  "status": "D76 playable ability prototype: 12 temporary-art units and 8 attainable trait tiers; other candidates remain proposals",
+  "date": "2026-10-04",
+  "confirmed_trait_indices": [
+    "002",
+    "009",
+    "013",
+    "020",
+    "032",
+    "063",
+    "270",
+    "756"
+  ],
+  "traits": [
+    {
+      "reference_id": "002",
+      "name": "极地",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "members": [
+        "V1U01",
+        "V1U02",
+        "V1U03",
+        "V1U04",
+        "V1U05",
+        "V1U06"
+      ],
+      "reference_name": "极地"
+    },
+    {
+      "reference_id": "009",
+      "name": "斗士",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "members": [
+        "V1U02",
+        "V1U04",
+        "V1U07",
+        "V1U08",
+        "V1U09",
+        "V1U10"
+      ],
+      "reference_name": "斗士"
+    },
+    {
+      "reference_id": "013",
+      "name": "换形师",
+      "breakpoints": [
+        3,
+        6
+      ],
+      "members": [
+        "V1U08",
+        "V1U11",
+        "V1U12",
+        "V1U13",
+        "V1U14",
+        "V1U15"
+      ],
+      "reference_name": "换形师"
+    },
+    {
+      "reference_id": "020",
+      "name": "射手",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "members": [
+        "V1U03",
+        "V1U14",
+        "V1U19",
+        "V1U22",
+        "V1U23",
+        "V1U24"
+      ],
+      "reference_name": "枪手"
+    },
+    {
+      "reference_id": "032",
+      "name": "森林",
+      "breakpoints": [
+        3,
+        6
+      ],
+      "members": [
+        "V1U06",
+        "V1U11",
+        "V1U12",
+        "V1U16",
+        "V1U17",
+        "V1U24"
+      ],
+      "reference_name": "森林"
+    },
+    {
+      "reference_id": "063",
+      "name": "圣盾使",
+      "breakpoints": [
+        2,
+        4
+      ],
+      "members": [
+        "V1U01",
+        "V1U09",
+        "V1U15",
+        "V1U16",
+        "V1U18"
+      ],
+      "reference_name": "圣盾使"
+    },
+    {
+      "reference_id": "270",
+      "name": "元素",
+      "breakpoints": [
+        2,
+        4,
+        6
+      ],
+      "members": [
+        "V1U10",
+        "V1U13",
+        "V1U18",
+        "V1U19",
+        "V1U20",
+        "V1U21"
+      ],
+      "reference_name": "风暴龙"
+    },
+    {
+      "reference_id": "756",
+      "name": "刺客",
+      "breakpoints": [
+        2,
+        4
+      ],
+      "members": [
+        "V1U05",
+        "V1U17",
+        "V1U20",
+        "V1U22"
+      ],
+      "reference_name": "刺客"
+    }
+  ],
+  "units": [
+    {
+      "id": "V1U01",
+      "name": "冰脊盾卫",
+      "acquisition_tier": 1,
+      "traits": [
+        "002",
+        "063"
+      ],
+      "hp": 900,
+      "attack": 40,
+      "attack_speed": 0.55,
+      "defense": 8,
+      "range": 1,
+      "mana_start": 30,
+      "mana_max": 75,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "定向前排",
+      "skill": "举盾：0.25秒后朝当前敌人方向举盾4秒，来自前方120度的伤害降低55%，期间不能普攻或移动，可随战术转向但不自动追转身后目标。能与本人身体相交的普通投射物照常在本人结算，不扩展成隔空吸收全队子弹。举盾不是生命护盾，另由圣盾使正常授盾。",
+      "play": "首排覆盖远程主力；生命、防御、初始蓝。对身后刺客和地面范围伤害无定向优势。",
+      "reference_summary": "S1 Braum；保留方向减伤，投射物拦截限真实身体碰撞。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "有金色门盾素材，但不是极地形象；冰甲虫也没有现成的正面举盾动作。",
+        "next_action": "保留定向防守职责，补冰雪盾卫的真实外形、转向和举盾动作；不硬套金甲或虫子。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U02",
+      "name": "雷爪熊",
+      "acquisition_tier": 2,
+      "traits": [
+        "002",
+        "009"
+      ],
+      "hp": 950,
+      "attack": 65,
+      "attack_speed": 0.7,
+      "defense": 6,
+      "range": 1,
+      "mana_start": 20,
+      "mana_max": 80,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "普攻控制核心",
+      "skill": "雷爪：强化普攻8秒，每次原始普攻从主目标向2格内最多2名不同敌人传导，每名造成60%A；主目标不再吃一份传导。传导可暴击、触发极地与命中附加，不递归传导、不增加攻击回蓝。持续期间不回蓝，结束后恢复。",
+      "play": "首排侧翼接近密集敌人；攻速、吸血、防御。不是后排远射主力，必须先活到强化启动。",
+      "reference_summary": "S1 Volibear链式普攻。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u02",
+        "scene": "res://content/heroes/prototype_u02.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "留白待补",
+        "issue": "本次本地库未找到熊；不能把蜥蜴或巨兽改名为熊。传导普攻是极地核心，但目前缺承载者。",
+        "next_action": "保留近战传导玩法；补极地兽类素材，若换物种必须连同名称和攻击动作一起改。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U03",
+      "name": "寒羽射手",
+      "acquisition_tier": 1,
+      "traits": [
+        "002",
+        "020"
+      ],
+      "hp": 600,
+      "attack": 58,
+      "attack_speed": 0.8,
+      "defense": 3,
+      "range": 4,
+      "mana_start": 30,
+      "mana_max": 90,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "早期远程控制",
+      "skill": "寒冰长箭：向射程内最远敌人发箭，命中直线上第一个敌人后停止，造成1.5P伤害，眩晕0.6＋实际飞行距离×0.2秒，上限1.4秒。技能箭不触发极地普攻判定。",
+      "play": "后排拉长箭路；攻速、攻击、射程。攻速装同时提升射手触发次数与普攻控场。",
+      "reference_summary": "S1 Ashe；将距离控制缩至本项目尺度，射手身份为项目重组。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u03",
+        "scene": "res://content/heroes/prototype_u03.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "留白待补",
+        "issue": "f6_sister 有寒地服饰和大型冰晶臂具，但完整帧表显示近身冰柱／挥臂，不能据立绘认定为臂炮或弓箭。",
+        "next_action": "保留寒羽的直线控制射手职责，另找真实弓／炮和发射动作；不把寒地施法者随意归入射手。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U04",
+      "name": "寒晶巨兽",
+      "acquisition_tier": 3,
+      "traits": [
+        "002",
+        "009"
+      ],
+      "hp": 1150,
+      "attack": 60,
+      "attack_speed": 0.6,
+      "defense": 7,
+      "range": 1,
+      "mana_start": 60,
+      "mana_max": 120,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "冲锋开团",
+      "skill": "蛮横冲阵（保留基线）：沿用 ability_ee03_trample 的满蓝启动、锁定方向贯穿路径、将沿途单位推向两侧并逐敌命中一次；受控或没有合法推开空间时停止。不采用旧草案的首敌停步和范围爆发。现有参数为 100 蓝、蓄力 1.2 秒、每敌 120%A；新英雄的起始蓝、回蓝、范围和体型尺度尚待联合适配，表中旧试算值不作为接入配置。",
+      "play": "首排偏侧留出冲锋通道；生命、防御、启动蓝。采用现有冲锋动作方向，不照搬瑟庄妮无位移的大范围冰牢。",
+      "reference_summary": "保留项目冲锋；S1 Sejuani仅参考前排延迟群控职责。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u04",
+        "scene": "res://content/heroes/prototype_u04.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "previous_skill_draft": "破阵冲锋：朝4格内最远且有直线通路的敌人蓄势0.6秒，以6格/秒冲向目标，最多移动4格；遇首个敌人就在合法接触点停下。停下时对前方1.5格半径敌人造成1.6P伤害并眩晕1秒。没有直线通路则对当前近战目标执行原地撞击；位移被中断不补到达爆发。",
+      "prior_material_review": {
+        "status": "替换素材候选",
+        "issue": "原绿色持锤巨兽不符合极地；找到蓝白冰晶背刺、四足身体的巨兽及 8 帧 move/run。其 attack 自带大旋风。",
+        "next_action": "改为寒晶巨兽，保留沿途撞开的贯穿冲锋；普攻选段／补动作、脚点、体型、肩风和尘尾适配待实机验证，不能把整段旋风当普通撞击。",
+        "runtime_ready": false,
+        "asset_candidate": "res://assets/donor-units/boss_borealjuggernaut/frames.tres"
+      }
+    },
+    {
+      "id": "V1U05",
+      "name": "雪影刺客",
+      "acquisition_tier": 1,
+      "traits": [
+        "002",
+        "756"
+      ],
+      "hp": 650,
+      "attack": 60,
+      "attack_speed": 0.85,
+      "defense": 4,
+      "range": 1,
+      "mana_start": 0,
+      "mana_max": 50,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "孤立点杀",
+      "skill": "孤刃：斩击当前目标，造成2.1A普通技能伤害；释放时目标1.5格内无其他同阵营活单位则伤害变为3.5A。该技能默认不暴击，不额外施加极地。",
+      "play": "依刺客跳跃切孤立输出；攻击、暴击、吸血。遇抱团阵容改为处理边缘目标；不用额外减伤弥补无条件硬冲。",
+      "reference_summary": "S1 KhaZix孤立判定；攻击倍率是项目适配。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u05",
+        "scene": "res://content/heroes/prototype_u05.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "可适配候选",
+        "issue": "冰刃近战素材符合雪影身份；目前没有正式开场跳后排动作。孤刃明确不暴击，羁绊暴击只增益普攻。",
+        "next_action": "保留孤立点杀职责，核对普攻占比及起跳／落地；明确其暴击收益边界，不能宣传为技能暴击刺客。若收益不足再调整输出结构。",
+        "runtime_ready": false,
+        "asset_candidate": "res://assets/donor-units/f6_freeblade/frames.tres"
+      }
+    },
+    {
+      "id": "V1U06",
+      "name": "冰晶灵",
+      "acquisition_tier": 4,
+      "traits": [
+        "002",
+        "032"
+      ],
+      "hp": 760,
+      "attack": 40,
+      "attack_speed": 0.65,
+      "defense": 4,
+      "range": 4,
+      "mana_start": 50,
+      "mana_max": 125,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "后期区域输出",
+      "skill": "冰晶风暴：在5格内能覆盖最多敌人的位置生成半径2格风暴，持续5秒，每0.5秒对其中敌人造成0.38P伤害，并降低其攻速25%至离开后0.5秒；同源减速不叠加。释放前摇0.8秒，风暴生成后独立持续，本体死亡不延长也不提前删除。",
+      "play": "后排；法强、回蓝、灼伤。森林复制提供第二片火力区，两个风暴伤害可叠但攻速减益取最高。",
+      "reference_summary": "S1 Anivia持续范围伤害与攻速压制。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "撤回当前归属",
+        "issue": "冰晶施法者只有极地依据，森林身份没有材料支持；不能拿蓝色或绿色代替地域／自然身份。",
+        "next_action": "森林归属不进入实施；若要保留这条交叉，另设计寒林自然生物并补素材，当前只保留区域输出原型。",
+        "runtime_ready": false,
+        "asset_candidate": null,
+        "withheld_trait_ids": [
+          "032"
+        ]
+      }
+    },
+    {
+      "id": "V1U07",
+      "name": "怒拳斗士",
+      "acquisition_tier": 3,
+      "traits": [
+        "009"
+      ],
+      "hp": 1200,
+      "attack": 65,
+      "attack_speed": 0.65,
+      "defense": 6,
+      "range": 1,
+      "mana_start": 0,
+      "mana_max": 0,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "承伤反击核心",
+      "skill": "蓄怒重拳（保留基线）：实际生命承伤积怒；满怒、生命跨过半血线、濒死条件请求出拳，按现有队列合并。启动消耗全部怒劲 G 并获得等量 3 秒护盾，蓄力后对前方长 3 格、宽 1.6 格造成 1.0A＋0.8G 普通伤害；保持现有作者资源的时序和触发限制。本轮撤回无盾及 1.8A 的旧草案，不补升阶收益。",
+      "play": "前排承担可承受伤害；生命、吸血、防御。斗士扩大怒劲上限，过多前置护盾会延迟积怒；要选承伤位置。",
+      "reference_summary": "本项目已认可重拳与HC38资源；按作者资源恢复保留基线，新的尺度调整须另列。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u07",
+        "scene": "res://content/heroes/prototype_u07.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "previous_skill_draft": "蓄怒重拳：沿用现有无蓝条件——实际生命承伤积怒，上限0.5H；满怒、从半血及以上跌至半血以下、首次低于20%生命可请求出拳。请求合并排队，回血重过半血可重新触发半血条件，濒死条件每战一次；无自然衰减。启动消费全部G，0.75秒后对前方长3格、宽1.6格造成1.8A＋0.8G普通伤害，收势0.4秒。零怒仍有基础伤害，不送护盾、不免死。",
+      "prior_material_review": {
+        "status": "保留样板",
+        "issue": "拳手形体和重拳动作一致；草案却删了原有 3 秒怒劲盾并改伤害和蓄力。",
+        "next_action": "以现有作者资源为保留基线，撤回无盾草稿；斗士强化生命与承伤反击的关系成立，数值另做尺度适配。",
+        "runtime_ready": false,
+        "asset_candidate": "res://assets/donor-units/boss_solfist/frames.tres"
+      }
+    },
+    {
+      "id": "V1U08",
+      "name": "裂地巨兽",
+      "acquisition_tier": 3,
+      "traits": [
+        "009",
+        "013"
+      ],
+      "hp": 950,
+      "attack": 58,
+      "attack_speed": 0.65,
+      "defense": 6,
+      "range": 2,
+      "mana_start": 30,
+      "mana_max": 100,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.45,
+      "population": 1,
+      "role": "变形开团",
+      "skill": "巨兽化：本战一次，0.6秒后跳向3格内最近敌人的合法邻位，落地对1.5格内敌人造成1.8P伤害并眩晕0.8秒；无落点时原地变形并按原地范围结算。之后本战射程1、攻击定值+30、防御+4，不再积蓝。碰撞半径不随外观突然扩张；生命强化只来自已激活换形师。",
+      "play": "第二排偏前保证变形机会；生命、启动蓝、防御。变形前能短距投掷，变形后持线。",
+      "reference_summary": "S1 Gnar；不额外叠原作自带生命，以清楚分开技能和羁绊收益。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u08",
+        "scene": "res://content/heroes/prototype_u08.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "留白待补",
+        "issue": "没有配齐远程小形态和近战巨兽形态；单一巨兽缩放不能表达完整换形。",
+        "next_action": "先确定同一角色两种身体、普通攻击方式和转场；与冲锋单位区分跳跃变身开团／贯穿破阵。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U09",
+      "name": "牵引铁卫",
+      "acquisition_tier": 2,
+      "traits": [
+        "009",
+        "063"
+      ],
+      "hp": 1000,
+      "attack": 45,
+      "attack_speed": 0.55,
+      "defense": 7,
+      "range": 1,
+      "mana_start": 80,
+      "mana_max": 110,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "针对性破阵",
+      "skill": "牵引钩：扫描6格内有无遮挡钩线路径的最远敌人，0.5秒后射钩；命中后造成1.4P伤害、眩晕0.8秒，并拉到自身前方最近合法空位。路途遇墙则停在最后合法处；不可位移目标仍受伤害/合法控制。没有可钩远处目标则选择当前合法近敌；施法期间不另给下一击击飞。",
+      "play": "侧前排对齐脆弱远程；生命、防御、启动蓝。先看可拉的目标，不能保证穿过前排抓到想要的后排。",
+      "reference_summary": "S1 Blitzcrank；保留拉人破阵，删去额外击飞与强制全队索敌。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "本地机器人或铁甲不等于已经具备钩爪和牵引动作。",
+        "next_action": "保留单体拉人破阵；须有钩头、绳链、发射／回收和拉取终点。无对应材料先不接。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U10",
+      "name": "风拳武者",
+      "acquisition_tier": 2,
+      "traits": [
+        "009",
+        "270"
+      ],
+      "hp": 900,
+      "attack": 55,
+      "attack_speed": 0.75,
+      "defense": 5,
+      "range": 1,
+      "mana_start": 30,
+      "mana_max": 80,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "击退与线形控制",
+      "skill": "破阵踢：0.4秒后对当前目标造成1.6P伤害、眩晕0.8秒并沿远离自己的方向击退最多2.5格；沿路碰到的其他敌人各受0.8P伤害一次，无额外击退。无合法移动距离时仍结算初始伤害与控制，不凭空生成沿路命中。",
+      "play": "前排侧翼把敌人踢向其队友；法强、生命、回蓝。也可以通过站位把危险近战踢离主力。",
+      "reference_summary": "S7 Lee Sin；不带原作双防类别削减。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "近战素材不自动具有踢击动作，普通拳击／持刃动作不能直接代替破阵踢。",
+        "next_action": "风元素表达与腿部动作要同时成立；保留直线击退职责，与冲锋／牵引区分目标方向。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U11",
+      "name": "森爪猎手",
+      "acquisition_tier": 1,
+      "traits": [
+        "032",
+        "013"
+      ],
+      "hp": 700,
+      "attack": 52,
+      "attack_speed": 0.75,
+      "defense": 4,
+      "range": 3,
+      "mana_start": 20,
+      "mana_max": 70,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "恢复与变形近战",
+      "skill": "森爪形态：本战一次，释放后立即变为近战形态，射程1、攻击定值+25；同时在5秒内治疗自身及4格内另一名生命比例最低的受伤友军各2P，分5次结算。没有受伤队友只治疗自己；本人死亡后停止后续治疗。之后不积蓝。",
+      "play": "第二排；攻击、吸血、生命。初期辅助续战，森林复制可多照顾一名队友，变身后必须能接敌。",
+      "reference_summary": "S1 Nidalee治疗＋近战变身。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u11",
+        "scene": "res://content/heroes/prototype_u11.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "留白待补",
+        "issue": "没有森林施法形态＋猎兽形态的成对素材；普通治疗祭司不能直接改名为森爪。",
+        "next_action": "保留恢复后转近战的职责；补两态身份、治疗动作、变形后攻击，森林副本也要有独立状态。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U12",
+      "name": "蛛后",
+      "acquisition_tier": 1,
+      "traits": [
+        "032",
+        "013"
+      ],
+      "hp": 700,
+      "attack": 48,
+      "attack_speed": 0.7,
+      "defense": 4,
+      "range": 3,
+      "mana_start": 20,
+      "mana_max": 80,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "多身体前线",
+      "skill": "蛛形：本战一次，0.5秒后变为射程1的近战形态，普攻实际削减敌方生命的18%转为自疗，并在周围合法位置共生成2只小蛛；之后不积蓝。小蛛每只生命220、攻击28、攻速0.8、防御2、射程1、移动2.4、半径0.2，暴击0、P=0、无蓝，活至死亡或战斗结束；不继承装备/羁绊。小蛛不因主人死亡消失，但不能维持已败战的一方。",
+      "play": "第二排；生命、攻速、召唤物强化。依真实位置增加近战人数，满场失败的召唤不会补偿成护盾。",
+      "reference_summary": "S1 Elise变蜘蛛并召小蛛；不是入场召一个弱宠物再拼护盾被动。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "多足暗影／机械虫素材不能直接当森林蛛后；还缺前形态和可辨的小蛛。",
+        "next_action": "补自然蛛形、变形前身体及小蛛；母体／复制体／小蛛须可区分。小蛛总数明确为每次生成 2 只。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U13",
+      "name": "火翼幼龙",
+      "acquisition_tier": 2,
+      "traits": [
+        "270",
+        "013"
+      ],
+      "hp": 880,
+      "attack": 60,
+      "attack_speed": 0.75,
+      "defense": 5,
+      "range": 1,
+      "mana_start": 20,
+      "mana_max": 85,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "变形持续输出",
+      "skill": "龙形：本战一次，向远离当前目标方向移动最多1.5格到合法位置后变形；被阻挡就在原位变形。此后射程3、攻击定值+25，原始普攻命中使目标灼烧3秒，每秒0.25P普通伤害；同来源刷新、不叠层，无额外重伤。之后不积蓝。",
+      "play": "第二排；攻速、攻击、吸血。变形后更易存活到元素落雷启动，灼烧与装备同名重伤分开。",
+      "reference_summary": "S1 Shyvana远程龙形与普攻灼烧。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u13",
+        "scene": "res://content/heroes/prototype_u13.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "留白待补",
+        "issue": "已有 f5_drogon 是绿色、无明显翅膀的龙形，不能当作火翼幼龙的完整两态。",
+        "next_action": "保留变身后的远程灼烧职责；另找具备火焰主题、前后形态及发射动作的素材，不强占现有绿色龙。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U14",
+      "name": "双械游侠",
+      "acquisition_tier": 2,
+      "traits": [
+        "020",
+        "013"
+      ],
+      "hp": 850,
+      "attack": 62,
+      "attack_speed": 0.7,
+      "defense": 6,
+      "range": 1,
+      "mana_start": 40,
+      "mana_max": 80,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "换形与射手连接",
+      "skill": "炮形态：本战一次，对当前近战目标造成1.2P伤害、眩晕0.6秒并击退最多1.5格，随后切换炮形态，射程4、攻击定值+20；接下来3次原始普攻获得100%额外攻速，用完即止，额外射手追加投射物不扣次数。无近敌但满蓝时也能原地切换；之后不积蓝。",
+      "play": "前侧第二排，避免变炮前承受全部火力；攻速、攻击、吸血。炮形才是主要输出，爆发结束继续普通远射。",
+      "reference_summary": "S1 Jayce；保留近战转远程与短时速射，移除满攻速的极端值。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "锤／炮两种武器和相应姿态尚未配齐；仅改变射程或加攻速不足以让换形可见。",
+        "next_action": "保留武器转换原型，明确近战形态与炮形态的轮廓、普攻和切换；材料不到位不计为可接入换形成员。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U15",
+      "name": "暮鸦领主",
+      "acquisition_tier": 3,
+      "traits": [
+        "013",
+        "063"
+      ],
+      "hp": 1050,
+      "attack": 48,
+      "attack_speed": 0.65,
+      "defense": 6,
+      "range": 2,
+      "mana_start": 50,
+      "mana_max": 100,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "贴身续航核心",
+      "skill": "鸦群化：0.5秒后进入6秒鸦群形态，每秒对2格内至多3名最近敌人造成0.45P伤害，每命中一敌治疗自己0.3P；正常普攻、移动可继续，期间不积蓝。6秒结束对2格内敌人造成1.2P伤害并回原形，再恢复积蓝。每次启动可触发圣盾，但换形生命扩容全战仅一次。死亡/硬控中断不提前补发结束爆发。",
+      "play": "前排侧翼让身边持续有敌人；生命、法强、治疗增幅。重伤、远程风筝和爆发有明确价值。",
+      "reference_summary": "S1 Swain限时变身、范围吸取与结束爆发。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "没有领主／鸦群两态及吸取动作；暗色法师不自动等于乌鸦领主。",
+        "next_action": "后置制作；先明确可反复进出形态、完整结束／打断表现，不能只套黑烟和吸血数值。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U16",
+      "name": "花灵",
+      "acquisition_tier": 2,
+      "traits": [
+        "032",
+        "063"
+      ],
+      "hp": 850,
+      "attack": 42,
+      "attack_speed": 0.7,
+      "defense": 5,
+      "range": 1,
+      "mana_start": 30,
+      "mana_max": 65,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "短周期前排控场",
+      "skill": "绽放：成功启动后蓄势0.8秒，对自身1.8格内敌人造成1.9P伤害并眩晕0.7秒。动作期间不能移动或普攻；圣盾在启动时就保护蓄势，被打断不补伤害。",
+      "play": "前排或侧翼；生命、回蓝、防御。复制体有相同技能但较低生命与伤害，不能重复计森林人数。",
+      "reference_summary": "S3 Neeko范围爆发与控制。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u16",
+        "scene": "res://content/heroes/prototype_u16.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "留白待补",
+        "issue": "库内绿色刃虫不是花灵；花朵／植物身份与蓄势绽放均无对应单位素材。",
+        "next_action": "保留森林前排控场空位；补植物／花灵主体和近身释放动作，不为森林或圣盾人数强配虫子。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U17",
+      "name": "林牙猎手",
+      "acquisition_tier": 2,
+      "traits": [
+        "032",
+        "756"
+      ],
+      "hp": 750,
+      "attack": 68,
+      "attack_speed": 0.85,
+      "defense": 4,
+      "range": 1,
+      "mana_start": 0,
+      "mana_max": 60,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "残血追击",
+      "skill": "猎扑：选4格内当前生命绝对值最低且有合法邻位的敌人，跳到邻位，以2.3A进行一次技能攻击，可暴击并触发命中效果，随后攻速+30%持续4秒。技能攻击不触发射手生成或攻击回蓝；没有落点就对当前近战合法目标施放斩击。",
+      "play": "后排起跳，追残血；攻击、暴击、吸血。森林复制增加追猎者，复制体自身独立选目标，不保证分散。",
+      "reference_summary": "S1 Rengar追弱目标并提速；保留清晰的一条输出链。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u17",
+        "scene": "res://content/heroes/prototype_u17.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "留白待补",
+        "issue": "f2_lanternfox 的确是狐狸，但现有形象强调黑红火焰，不能未经设计便归为森林猎兽。",
+        "next_action": "找明确的林地猎兽与扑击动作；与雪影保留残血追猎／孤立爆发的区别，不只复制同一个刺客。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U18",
+      "name": "炉喉火蝎",
+      "acquisition_tier": 2,
+      "traits": [
+        "063",
+        "270"
+      ],
+      "hp": 950,
+      "attack": 48,
+      "attack_speed": 0.65,
+      "defense": 6,
+      "range": 2,
+      "mana_start": 40,
+      "mana_max": 90,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "持续扇形输出",
+      "skill": "炉喉吐息（保留基线）：沿用 ability_ee07_furnace_lizard 的锁定方向、口部持续喷流和三次伤害脉冲，控制或死亡切断后续伤害；不采用旧草案六脉冲和重写后的时长／范围。原入口仍为定时触发；接入圣盾使前须明确耗蓝启动、锁蓝和技能开始事件，未完成此适配前不计为可用圣盾成员。",
+      "play": "侧前排让扇形覆盖多人；法强、启动蓝、生命。耗蓝适配完成后，圣盾保护喷流开始阶段；元素攻速的收益须按两次喷火之间的普攻和完整循环验证。",
+      "reference_summary": "保留本项目火蝎喷火技能及已认可分层持续流表现。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u18",
+        "scene": "res://content/heroes/prototype_u18.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "previous_skill_draft": "炉喉喷火：朝当前目标锁定方向蓄势0.6秒，再喷流3秒，每0.5秒对前方长3.5格、张角50度内敌人造成0.55P伤害，共6次；期间不能普攻、移动、回蓝。硬控或死亡切断后续伤害供给，已有视觉余焰不继续造成新伤害。",
+      "prior_material_review": {
+        "status": "保留样板待适配",
+        "issue": "蝎形和口部喷火一致，元素归属成立；原技能是定时三脉冲，尚不是耗蓝六脉冲。",
+        "next_action": "保留喷流和原脉冲基线；圣盾所需耗蓝启动单独适配；重验护盾覆盖引导、打断和施法期间不普攻，不能声称已完成。",
+        "runtime_ready": false,
+        "asset_candidate": "res://assets/donor-units/f5_firebreather/frames.tres"
+      }
+    },
+    {
+      "id": "V1U19",
+      "name": "雷脉射手",
+      "acquisition_tier": 1,
+      "traits": [
+        "020",
+        "270"
+      ],
+      "hp": 620,
+      "attack": 50,
+      "attack_speed": 0.8,
+      "defense": 3,
+      "range": 4,
+      "mana_start": 0,
+      "mana_max": 40,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "攻速启动远程",
+      "skill": "雷脉箭：射向当前目标，命中首敌造成1.4P普通伤害；成功命中后自身攻速+12%，最多5层，持续本战。技能不触发射手/极地，层数不随森林等来源重复继承。",
+      "play": "后排；攻速、攻击、回蓝。低蓝技能累速，落雷后加快射手扩散；法强也能提升技能但不是唯一出装。",
+      "reference_summary": "S7 Ezreal技能叠攻速。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "能力原型已接入，素材暂用",
+        "runtime_ready": true,
+        "runtime_id": "prototype_u19",
+        "scene": "res://content/heroes/prototype_u19.tscn",
+        "next_action": "先体验能力、阵容与节奏；最终身份和动作美术后补，不视为认可。"
+      },
+      "prior_material_review": {
+        "status": "留白待补",
+        "issue": "有通用弓手，但没有选定具备雷电表达的雷脉射手；不能只凭改名解决元素归属。",
+        "next_action": "保留低蓝技能叠攻速的远程核心；补具体射手与雷电脉冲表现，和寒晶控制射手形成成长输出／控制分工。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U20",
+      "name": "疾雷刺客",
+      "acquisition_tier": 2,
+      "traits": [
+        "270",
+        "756"
+      ],
+      "hp": 760,
+      "attack": 62,
+      "attack_speed": 0.85,
+      "defense": 4,
+      "range": 1,
+      "mana_start": 30,
+      "mana_max": 75,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "后排干扰",
+      "skill": "弧刃：移到当前目标旁2格内能覆盖最多敌人的合法位置，沿穿过该目标的长2.5格、宽0.7格直线斩击，造成1.8A普通技能伤害并缴械1.2秒。若无可用位移位置则原位斩击；缴械只禁止普攻，不沉默技能。",
+      "play": "针对依赖普攻的敌后排；攻击、暴击、生命。刺客暴击主要强化平砍，需要技能暴击遗物才让弧刃暴击。",
+      "reference_summary": "S7 Qiyana短距调整、线形伤害与缴械。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "雷电刃器与移动斩击素材未选；技能不暴击而主要价值为缴械。",
+        "next_action": "明确为功能型刺客，核对其牺牲爆发换缴械是否值得；不要求所有刺客技能都暴击，也不把暴击收益写到技能上。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U21",
+      "name": "风暴古龙",
+      "acquisition_tier": 4,
+      "traits": [
+        "270"
+      ],
+      "hp": 950,
+      "attack": 45,
+      "attack_speed": 0.6,
+      "defense": 5,
+      "range": 4,
+      "mana_start": 50,
+      "mana_max": 160,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.45,
+      "population": 1,
+      "role": "长启动收束核心",
+      "skill": "雷雨：前摇0.8秒后引导3秒，按0.2秒间隔共发15道雷，每道在全场合法可选敌人中按战斗种子抽一个，造成0.7P普通伤害。同敌可多次命中；不带抽蓝。引导锁移动/普攻/回蓝，被打断失去剩余雷。",
+      "play": "后排保护位；法强、回蓝、首次控制净化。单Boss能集中雷雨但启动慢，控制链和刺客都可打断它。",
+      "reference_summary": "S7 Ao Shin长蓝全场连击；删去抽蓝，避免再叠无行动窗口。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "可适配候选",
+        "issue": "有可辨龙形但没有完成雷雨长引导；不能与火翼幼龙共用一张皮当两个完成品。",
+        "next_action": "可作为风暴古龙的外形候选，单独设计雷电引导／打断和高蓝启动；变色或附加电光尚未制作，暂不视为完成。",
+        "runtime_ready": false,
+        "asset_candidate": "res://assets/donor-units/f5_drogon/frames.tres"
+      }
+    },
+    {
+      "id": "V1U22",
+      "name": "双枪游侠",
+      "acquisition_tier": 2,
+      "traits": [
+        "020",
+        "756"
+      ],
+      "hp": 680,
+      "attack": 62,
+      "attack_speed": 0.85,
+      "defense": 4,
+      "range": 3,
+      "mana_start": 0,
+      "mana_max": 45,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "机动后排猎手",
+      "skill": "双枪滑步：沿远离当前目标方向侧滑最多1格，仍保持目标在3格内；无合法点原地开火。向目标发出一次100%A技能攻击（可暴击和命中附加），随后射出0.9P技能弹。两发均不产生射手追加或攻击回蓝；正常平砍仍完整触发射手。",
+      "play": "刺客落地后保持短射程切敌后排；攻击、暴击、吸血。射手额外攻击只扫本地范围，不隔着全图打敌前排。",
+      "reference_summary": "S1 Lucian滑步双发；刺客身份为项目组合适配。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "本地库未找到持双枪并滑步射击的角色；双刀或弓手不能冒充双枪。",
+        "next_action": "保留短程机动射手原型，补双枪素材；同时验证开场跳后排后的滑步方向不会把自己送回敌前排。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U23",
+      "name": "爆燃枪手",
+      "acquisition_tier": 3,
+      "traits": [
+        "020"
+      ],
+      "hp": 750,
+      "attack": 72,
+      "attack_speed": 0.8,
+      "defense": 4,
+      "range": 4,
+      "mana_start": 0,
+      "mana_max": 0,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "击杀启动核心",
+      "skill": "火力全开（被动，无主动）：本人在敌方常驻单位死亡前4秒内对其造成过伤害即算参与击杀，同敌至多一次。首次参与获得35%攻速；第二次后原始普攻与射手追加弹均附带0.55P爆炸，对命中处1格内敌人造成普通技能伤害。来自同一次原始动作的多枚爆炸，对同一敌人只结算一次；不再触发命中附加或射手。状态本战保留。",
+      "play": "后排配多目标阵容；攻击、攻速、暴击。打没有部件/援军的单体Boss无法启动，需换用雷脉或古龙等替补。",
+      "reference_summary": "S1 Jinx参与击杀两段启动；没有填充额外主动。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "留白待补",
+        "issue": "缺与爆燃枪手相符的持枪射击形象；击杀启动面对单 Boss 也存在启动失败风险。",
+        "next_action": "后置；补武器动作，并检查普通小怪／多目标 Boss／单 Boss 的实际价值，不能为填位增加占位主动。",
+        "runtime_ready": false,
+        "asset_candidate": null
+      }
+    },
+    {
+      "id": "V1U24",
+      "name": "爆弹游侠",
+      "acquisition_tier": 1,
+      "traits": [
+        "020",
+        "032"
+      ],
+      "hp": 650,
+      "attack": 55,
+      "attack_speed": 0.75,
+      "defense": 3,
+      "range": 4,
+      "mana_start": 0,
+      "mana_max": 55,
+      "power": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 2,
+      "body_radius": 0.32,
+      "population": 1,
+      "role": "标记爆破",
+      "skill": "爆弹：给当前目标附着4秒炸弹；本人对该目标每次普攻或射手追加攻击命中加1层，最多3层，同一来源动作最多1层。到时、满层或宿主死亡时爆炸，对1.5格内敌人造成(0.9＋0.45×层数)P伤害；爆炸不触发命中附加。不同来源的炸弹独立，本人与复制体不能替对方叠层。",
+      "play": "后排看集火目标；法强、攻速、回蓝。换目标后也可通过追加弹继续给旧炸弹叠层。",
+      "reference_summary": "S1 Tristana普攻充能炸弹。",
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "撤回当前归属",
+        "issue": "普通炸弹射手没有森林身份依据，也没有选定投弹素材。",
+        "next_action": "森林归属不进入实施；可另研究自然爆裂果实的林地投掷者，但须把身份、投掷动作与爆弹一起设计，不直接改名采用。",
+        "runtime_ready": false,
+        "asset_candidate": null,
+        "withheld_trait_ids": [
+          "032"
+        ]
+      }
+    }
+  ],
+  "specials": [
+    {
+      "id": "V1S01",
+      "name": "岩座巨龙",
+      "reference_id": "317",
+      "kind": "special_player_unit",
+      "traits": [],
+      "population": 1,
+      "hp": 1300,
+      "attack": 70,
+      "attack_speed": 0.55,
+      "defense": 9,
+      "range": 1,
+      "mana_start": 40,
+      "mana_max": 100,
+      "power": 100,
+      "ascension_benefit": null,
+      "integration_review": {
+        "status": "proposal_not_ready",
+        "runtime_ready": false,
+        "issue": "未找到岩石巨龙；可另评估绿色持锤巨兽承载镇阵巨卫身份及震地保护职责，但不能继续称龙或极地。"
+      }
+    },
+    {
+      "id": "V1B01",
+      "name": "创械监工",
+      "reference_id": "398",
+      "kind": "boss",
+      "traits": [],
+      "hp": 4800,
+      "attack": 60,
+      "attack_speed": 0.6,
+      "defense": 6,
+      "range": 4,
+      "power": 100,
+      "integration_review": {
+        "status": "proposal_not_ready",
+        "runtime_ready": false,
+        "issue": "监工与炮台必须分别具备独立、可读的实体素材；当前尚未选齐，也未验证玩家真实可达的拆台手段。"
+      }
+    }
+  ],
+  "pools": {
+    "霜枪": [
+      "V1U01",
+      "V1U02",
+      "V1U03",
+      "V1U04",
+      "V1U05",
+      "V1U06",
+      "V1U07",
+      "V1U08",
+      "V1U09",
+      "V1U10",
+      "V1U14",
+      "V1U16",
+      "V1U17",
+      "V1U18",
+      "V1U19",
+      "V1U20",
+      "V1U21",
+      "V1U22",
+      "V1U23",
+      "V1U24"
+    ],
+    "林形": [
+      "V1U01",
+      "V1U02",
+      "V1U03",
+      "V1U05",
+      "V1U06",
+      "V1U07",
+      "V1U08",
+      "V1U10",
+      "V1U11",
+      "V1U12",
+      "V1U13",
+      "V1U14",
+      "V1U15",
+      "V1U16",
+      "V1U17",
+      "V1U18",
+      "V1U19",
+      "V1U22",
+      "V1U23",
+      "V1U24"
+    ],
+    "风袭": [
+      "V1U01",
+      "V1U02",
+      "V1U03",
+      "V1U04",
+      "V1U05",
+      "V1U07",
+      "V1U09",
+      "V1U10",
+      "V1U11",
+      "V1U13",
+      "V1U14",
+      "V1U15",
+      "V1U16",
+      "V1U17",
+      "V1U18",
+      "V1U19",
+      "V1U20",
+      "V1U21",
+      "V1U22",
+      "V1U23"
+    ],
+    "坚阵": [
+      "V1U01",
+      "V1U02",
+      "V1U03",
+      "V1U04",
+      "V1U05",
+      "V1U07",
+      "V1U08",
+      "V1U09",
+      "V1U10",
+      "V1U11",
+      "V1U12",
+      "V1U14",
+      "V1U15",
+      "V1U16",
+      "V1U17",
+      "V1U18",
+      "V1U19",
+      "V1U20",
+      "V1U22",
+      "V1U23"
+    ]
+  },
+  "builds": [
+    {
+      "name": "极地压制",
+      "pool": "霜枪",
+      "units": [
+        "V1U01",
+        "V1U02",
+        "V1U03",
+        "V1U04",
+        "V1U05",
+        "V1U06",
+        "V1U14",
+        "V1U19",
+        "V1U22",
+        "V1U23"
+      ]
+    },
+    {
+      "name": "六斗承伤",
+      "pool": "坚阵",
+      "units": [
+        "V1U02",
+        "V1U04",
+        "V1U07",
+        "V1U08",
+        "V1U09",
+        "V1U10",
+        "V1U03",
+        "V1U19",
+        "V1U18",
+        "V1U15"
+      ]
+    },
+    {
+      "name": "六换形",
+      "pool": "林形",
+      "units": [
+        "V1U08",
+        "V1U11",
+        "V1U12",
+        "V1U13",
+        "V1U14",
+        "V1U15",
+        "V1U02",
+        "V1U16",
+        "V1U19",
+        "V1U24"
+      ]
+    },
+    {
+      "name": "六射手",
+      "pool": "霜枪",
+      "units": [
+        "V1U03",
+        "V1U14",
+        "V1U19",
+        "V1U22",
+        "V1U23",
+        "V1U24",
+        "V1U01",
+        "V1U02",
+        "V1U09",
+        "V1U18"
+      ]
+    },
+    {
+      "name": "六森林",
+      "pool": "林形",
+      "units": [
+        "V1U06",
+        "V1U11",
+        "V1U12",
+        "V1U16",
+        "V1U17",
+        "V1U24",
+        "V1U08",
+        "V1U15",
+        "V1U19",
+        "V1U02"
+      ]
+    },
+    {
+      "name": "圣盾续战",
+      "pool": "坚阵",
+      "units": [
+        "V1U01",
+        "V1U09",
+        "V1U15",
+        "V1U16",
+        "V1U18",
+        "V1U11",
+        "V1U12",
+        "V1U08",
+        "V1U14",
+        "V1U17"
+      ]
+    },
+    {
+      "name": "六元素",
+      "pool": "风袭",
+      "units": [
+        "V1U10",
+        "V1U13",
+        "V1U18",
+        "V1U19",
+        "V1U20",
+        "V1U21",
+        "V1U01",
+        "V1U09",
+        "V1U22",
+        "V1U15"
+      ]
+    },
+    {
+      "name": "四刺客",
+      "pool": "霜枪",
+      "units": [
+        "V1U05",
+        "V1U17",
+        "V1U20",
+        "V1U22",
+        "V1U01",
+        "V1U02",
+        "V1U09",
+        "V1U16",
+        "V1U19",
+        "V1U24"
+      ]
+    }
+  ],
+  "relic_ids": [
+    "V1R01",
+    "V1R02",
+    "V1R03",
+    "V1R04",
+    "V1R05",
+    "V1R06",
+    "V1R07",
+    "V1R08",
+    "V1R09",
+    "V1R10",
+    "V1R11",
+    "V1R12",
+    "V1R13",
+    "V1R14",
+    "V1R15",
+    "V1R16"
+  ],
+  "integration_review": {
+    "status": "ability_prototype_integrated_temporary_art",
+    "date": "2026-10-04",
+    "deferred_candidates": [
+      "V1U01",
+      "V1U06",
+      "V1U09",
+      "V1U10",
+      "V1U12",
+      "V1U14",
+      "V1U15",
+      "V1U20",
+      "V1U21",
+      "V1U22",
+      "V1U23",
+      "V1U24"
+    ],
+    "retained_skill_caveats": [
+      "V1U07: runtime grit grants shield; preserve pending review, draft removal is not approved",
+      "V1U04: runtime charge passes through and pushes aside; preserve, no first-contact stop",
+      "V1U18: runtime timed breath needs explicit mana-trigger adaptation for Protector; retain stream mechanics"
+    ],
+    "scope": "Independent save-free ability experiment; 12 prototypes integrated; final art and balance unaccepted; no campaign supply",
+    "identity_review": {
+      "status": "D76 material matching deferred for prototype",
+      "trait_names": {
+        "020": {
+          "reference_name": "枪手",
+          "project_name": "射手",
+          "meaning": "使用弓、枪或炮进行远程武器攻击的职业，不将法师自动归入。"
+        },
+        "270": {
+          "reference_name": "风暴龙",
+          "project_name": "元素",
+          "meaning": "以火、风、雷等元素力量作战的成员，不限定物种；落雷仍是共同羁绊效果。"
+        }
+      },
+      "retained_unit_identity": {
+        "V1U18": "蝎子；保留喷火素材与技能，不赋予龙族身份。",
+        "V1U04": "寒晶巨兽：选择 boss_borealjuggernaut 冰晶四足素材替代绿色 f5_tank；保留冲锋机制，动画与特效体型适配未实施。"
+      },
+      "unresolved": [
+        "逐单位缺口与处理见各 units[].integration_review；原 12 人接入建议撤回。"
+      ],
+      "runtime_changes": true
+    },
+    "previous_first_validation_batch": [
+      "V1U02",
+      "V1U03",
+      "V1U04",
+      "V1U05",
+      "V1U07",
+      "V1U08",
+      "V1U11",
+      "V1U13",
+      "V1U16",
+      "V1U17",
+      "V1U18",
+      "V1U19"
+    ],
+    "first_validation_batch": [
+      "V1U02",
+      "V1U03",
+      "V1U04",
+      "V1U05",
+      "V1U07",
+      "V1U08",
+      "V1U11",
+      "V1U13",
+      "V1U16",
+      "V1U17",
+      "V1U18",
+      "V1U19"
+    ],
+    "previous_trait_member_counts": {
+      "002": 4,
+      "009": 4,
+      "020": 2,
+      "756": 2,
+      "013": 3,
+      "032": 3,
+      "270": 3,
+      "063": 2
+    },
+    "trait_member_counts": {
+      "002": 4,
+      "009": 4,
+      "020": 2,
+      "756": 2,
+      "013": 3,
+      "032": 3,
+      "270": 3,
+      "063": 2
+    },
+    "previous_six_unit_test_rosters": {
+      "极地射手": [
+        "V1U02",
+        "V1U03",
+        "V1U04",
+        "V1U05",
+        "V1U07",
+        "V1U19"
+      ],
+      "森林换形": [
+        "V1U08",
+        "V1U11",
+        "V1U13",
+        "V1U16",
+        "V1U17",
+        "V1U18"
+      ],
+      "斗士圣盾": [
+        "V1U02",
+        "V1U04",
+        "V1U07",
+        "V1U08",
+        "V1U16",
+        "V1U18"
+      ],
+      "森林刺客": [
+        "V1U05",
+        "V1U17",
+        "V1U11",
+        "V1U16",
+        "V1U18",
+        "V1U19"
+      ]
+    },
+    "six_unit_test_rosters": {
+      "极地射手": [
+        "V1U02",
+        "V1U03",
+        "V1U04",
+        "V1U05",
+        "V1U07",
+        "V1U19"
+      ],
+      "森林换形": [
+        "V1U08",
+        "V1U11",
+        "V1U13",
+        "V1U16",
+        "V1U17",
+        "V1U18"
+      ],
+      "斗士圣盾": [
+        "V1U02",
+        "V1U04",
+        "V1U07",
+        "V1U08",
+        "V1U16",
+        "V1U18"
+      ],
+      "森林刺客": [
+        "V1U05",
+        "V1U17",
+        "V1U11",
+        "V1U16",
+        "V1U18",
+        "V1U19"
+      ]
+    },
+    "asset_adaptation_candidates": [
+      "V1U04",
+      "V1U05",
+      "V1U07",
+      "V1U18",
+      "V1U21"
+    ],
+    "supply_status": "No runtime acquisition pools; previous pools and builds remain proposals",
+    "prototype_tiers": {
+      "002": [
+        2,
+        4
+      ],
+      "009": [
+        2,
+        4
+      ],
+      "013": [
+        3
+      ],
+      "020": [
+        2
+      ],
+      "032": [
+        3
+      ],
+      "063": [
+        2
+      ],
+      "270": [
+        2
+      ],
+      "756": [
+        2
+      ]
+    }
+  }
+}

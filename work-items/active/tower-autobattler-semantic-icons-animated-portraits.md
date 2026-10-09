@@ -211,7 +211,7 @@ The handoff below records the rejected first implementation and remains useful o
 - Unit decisions and tower routes: `src/App/GameRoot.cs`; `src/UI/UnitChoiceCard.cs` and `ChoiceCard.cs`; `scenes/ui/components/UnitChoiceCard.tscn`, `HeroUnitChoiceCard.tscn`, and `ChoiceCard.tscn`.
 - Shared fact consumers: deployment (`src/UI/DeploymentUnitCard.cs`, `scenes/ui/components/DeploymentUnitCard.tscn`); Army details (`src/UI/ArmyOverviewModels.cs`, `ArmyDrawerRow.cs`, `scenes/ui/components/ArmyDrawerRow.tscn`); reports (`src/UI/BattleReportScreen.cs`, `BattleReportUnitRow.cs`, `scenes/ui/components/BattleReportUnitRow.tscn`); and selection (`src/UI/SelectedUnitPanel.cs`, `scenes/ui/components/SelectedUnitPanel.tscn`).
 - Independent portraits: `src/UI/UnitPortrait.cs` and `scenes/ui/components/UnitPortrait.tscn`. The 45 existing portrait `.tres` resources and source `SpriteFrames` were reused without modification.
-- Contracts: `tests/SemanticPresentationContractSmoke.cs/.tscn` and the relevant semantic extensions in `tests/UiSmoke.cs`. Existing `VisualCapture.tscn` was used unchanged.
+- Contracts: `tests/SemanticPresentationContractSmoke.cs/.tscn` and the relevant semantic extensions in `tests/archive/retired-content/UiSmoke.cs`. Existing `VisualCapture.tscn` was used unchanged.
 - Task memory: this activity document. The already-completed gameplay/system/QA authority updates were not redone.
 
 ### Commands And Markers
@@ -224,11 +224,11 @@ dotnet build .\my-team.csproj -maxcpucount:2 -v:minimal
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/ContentContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/GameplayContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/MovementPresentationContractSmoke.tscn
-& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/UiSmoke.tscn
+& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/archive/retired-content/UiSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/AlphaRunSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . --quit-after 5
-& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --path . --resolution 1280x720 tests/VisualCapture.tscn
-& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --path . --resolution 1600x900 tests/VisualCapture.tscn
+& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --path . --resolution 1280x720 tests/archive/retired-content/VisualCapture.tscn
+& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --path . --resolution 1600x900 tests/archive/retired-content/VisualCapture.tscn
 dotnet build-server shutdown
 ```
 

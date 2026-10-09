@@ -1,6 +1,6 @@
 # 敌人难度首轮校准 · 2026-09-26
 
-用户“推进”后的可执行首轮。规则归 `gameplay-design/tower-autobattler-core.md`，执行入口归 `work-items/active/enemy-difficulty-and-build-gates.md`；本目录是实测证据，不是另一套玩法权威。
+用户“推进”后的可执行首轮。规则归 `gameplay-design/tower-autobattler-core.md`，执行入口归 `work-items/archive/enemy-difficulty-and-build-gates.md`；本目录是实测证据，不是另一套玩法权威。
 
 ## 方法与边界
 

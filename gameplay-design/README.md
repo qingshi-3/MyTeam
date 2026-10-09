@@ -1,8 +1,11 @@
 # Gameplay Design
 
+当前内容入口：[八羁绊能力与单位](ability-prototype.md)、[随机大陆征程与培养](expedition-progression.md)。正常菜单、新局和继续已恢复，实验场景独立；旧内容清理记录见[任务](../work-items/active/content-reset.md)。具体接入与验收状态统一看[工作入口](../work-items/README.md)，不从旧库存表推定当前可玩内容。
+
 游戏的玩家侧设计权威位于本目录。研究资料、Web 图谱和活动任务不能另行定义同一条正式规则。
 
 - Core game authority: `tower-autobattler-core.md`
+- 默认成长新局的随机大陆、阶段行动、固定库存与恢复：`expedition-progression.md`；旧 Tower 与 Alpha 保持各自兼容规则。
 - 构筑、培养与替换、内容机制定位、人口及里程碑：`combat-build-framework.md`（含 2026-09-06 讨论对齐）。
 
 ## 阅读与状态

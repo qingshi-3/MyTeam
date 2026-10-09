@@ -1,0 +1,54 @@
+{
+  "base_image": "archer-sdorica-v11-hair-and-focal-light.png",
+  "coordinate_origin": "top-left",
+  "notes": [
+    {
+      "id": 1,
+      "x_percent": 60.3,
+      "y_percent": 21.4,
+      "request": "头发碎"
+    },
+    {
+      "id": 2,
+      "x_percent": 41.4,
+      "y_percent": 22.8,
+      "request": "头发碎"
+    },
+    {
+      "id": 3,
+      "x_percent": 12,
+      "y_percent": 29.5,
+      "request": "头发碎"
+    },
+    {
+      "id": 4,
+      "x_percent": 35.2,
+      "y_percent": 9.2,
+      "request": "头发碎"
+    },
+    {
+      "id": 5,
+      "x_percent": 48.9,
+      "y_percent": 69.9,
+      "request": "衣服逻辑错误"
+    },
+    {
+      "id": 6,
+      "x_percent": 60,
+      "y_percent": 58.3,
+      "request": "像打底裤的额外布层，去掉"
+    },
+    {
+      "id": 7,
+      "x_percent": 15.4,
+      "y_percent": 76.6,
+      "request": "莫名其妙的衣片，去掉"
+    },
+    {
+      "id": 8,
+      "x_percent": 66.2,
+      "y_percent": 74.5,
+      "request": "莫名其妙的衣片，去掉"
+    }
+  ]
+}

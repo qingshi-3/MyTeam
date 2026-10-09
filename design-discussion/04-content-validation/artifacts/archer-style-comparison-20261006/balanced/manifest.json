@@ -1,0 +1,115 @@
+{
+  "tool": "built-in image_gen",
+  "variants": [
+    {
+      "id": "01",
+      "label": "原神",
+      "file": "01-genshin.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-9b9f5b9b-cacb-4ce7-8253-a17325886d04.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "da49b7f52c7fb5ff9c4c605f169998a94753fcaaa61741071639302be2c1bbd8",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "21",
+      "label": "英雄联盟",
+      "file": "21-lol.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-353ae551-197f-4f66-acec-75be15a7492a.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "0035f1d3e0cc6408eb70ed94c02958d7d0e4e0ad425ce1d66cf246139b34a018",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "02",
+      "label": "鸣潮",
+      "file": "02-wuwa.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-27fa39c8-661f-4d8a-baae-9b9d39f8d83e.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "ee951ecd0a3f4806b5cc4d4becd290e7caafe9baae940d1dde0fd1b126adfb04",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "03",
+      "label": "崩坏：星穹铁道",
+      "file": "03-hsr.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-265ea38d-768b-4d77-af77-8381ab9cd931.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "ccca3b02470a9ceced00013d452ba6e01e2c1b21309af3f0daa72ded3deadc25",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "28",
+      "label": "昆特牌",
+      "file": "28-gwent.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-89beb139-9e68-4e6f-9be8-ef2263d1aa82.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "fd3658cf0e339068e514cec279edc1080d77963a40594ef11153659a17b97bf1",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "08",
+      "label": "胜利女神：妮姬",
+      "file": "08-nikke.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-99baf8e5-8a81-401b-a15e-ffabfbc5d8bf.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "9ffb06115fbd3a11de9177aebfa6a10ca0d73df46f19cf33745523e78a63671a",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "32",
+      "label": "无畏契约",
+      "file": "32-valorant.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-28ecd185-bbb2-4223-a4b2-227dd5971bcc.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "1c7c5e27e12df526f126a79528a8b4d853ce4a365d18a5e3bf66041ee738e62a",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "13",
+      "label": "Fate/Grand Order",
+      "file": "13-fgo.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-e9787b16-205f-41b8-ad2d-bdf59d3a1aa9.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "33cc494b03d896a9f84976bd442c17a6cdd7b8f90f895b0471df3b558107c2a2",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "16",
+      "label": "碧蓝幻想 Relink",
+      "file": "16-granblue.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-e5f91a8f-fb9a-4690-bf7f-5bc55e6099a1.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "6afa7de5044ec7648b90fd89c3a35fb6f48c098044764dceec942e2d5d3af202",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "40",
+      "label": "万象物语",
+      "file": "40-sdorica.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-90d18fb8-d30d-4630-9482-f9cf12f48394.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "7fd6e925873374cbffb179cee6f06f659c974c5358168b818b0f8d6303363f77",
+      "status": "candidate-awaiting-user-review"
+    },
+    {
+      "id": "61",
+      "label": "DNF",
+      "file": "61-dnf.png",
+      "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-c35681dc-c516-4ca8-9c30-db3f99286c73.png",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "82cc0023913137ee380900705c1d13da4d480cc1a4e32dc22b1fe779766c0e47",
+      "status": "candidate-awaiting-user-review"
+    }
+  ]
+}

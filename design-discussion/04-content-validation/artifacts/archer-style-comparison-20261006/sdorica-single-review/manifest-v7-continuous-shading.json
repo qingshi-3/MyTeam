@@ -1,0 +1,17 @@
+{
+  "file": "archer-sdorica-v7-continuous-shading.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-f8779693-d326-4246-ac79-659aac10cb25.png",
+  "tool": "built-in image_gen",
+  "width": 1024,
+  "height": 1536,
+  "sha256": "63a57f2070ccf79a4bf187c332a486879d2b5ac85664fe515a7b2fc9c64c943b",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "fully_transparent_pixels": 831302,
+  "generation_count": 1,
+  "status": "awaiting-user-review",
+  "scope": "Apply the supplied bare-arm reference continuous shading to violet clothing, gold armor, trim and belt; preserve current exposure, pose and transparent background."
+}

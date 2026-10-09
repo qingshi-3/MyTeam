@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>弓箭手 · 所选图基础上的三稿优化</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"PingFang SC",sans-serif;background:#18191d;color:#eee}
+*{box-sizing:border-box}body{margin:0}main{max-width:1500px;margin:auto;padding:28px}h1{font-size:25px;margin:0 0 8px}p{color:#b9b9c4;font-size:14px;margin:0;line-height:1.6}.toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:22px 0}.toolbar button,.close{background:#30323c;color:#eee;border:1px solid #555866;border-radius:7px;padding:9px 14px;font:inherit;cursor:pointer}.toolbar button:focus-visible,.zoom:focus-visible,.close:focus-visible{outline:3px solid #dfb461;outline-offset:3px}#selection{color:#ddc58e;font-size:14px}#gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.card{min-width:0}.card[hidden]{display:none}.zoom{display:block;border:0;padding:0;background:#222;width:100%;cursor:zoom-in;border-radius:8px;overflow:hidden}.zoom img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:contain}.caption{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:12px 1px;font-size:15px}.caption label{font-size:13px;white-space:nowrap;color:#b9b9c4;cursor:pointer}.caption input{accent-color:#ddbc75}.card.selected .zoom{outline:3px solid #d9b86e;outline-offset:3px}dialog{padding:0;border:0;background:#18191d;color:#eee;max-width:95vw;max-height:96vh;border-radius:8px}dialog::backdrop{background:#000c}.dialogbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:10px 16px}#large{display:block;max-width:93vw;max-height:86vh;object-fit:contain;margin:auto}.foot{margin:26px 0 5px;color:#9a9aa5;font-size:12px}@media(max-width:1000px){#gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){main{padding:16px}#gallery{grid-template-columns:1fr}h1{font-size:21px}} 
+.compare{margin:12px 0 20px;padding:9px 12px;background:#30323c;border:1px solid #666;color:#eee;border-radius:6px;cursor:pointer}.compare:focus-visible{outline:3px solid #dfb461}.card p{min-height:44px}#gallery{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:850px){#gallery{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<h1>弓箭手 · 所选图基础上的三稿优化</h1>
+<p>画风依据本次附件 5／6／8／9／10，动作依据 2／7／10。点击图片放大，使用下方按钮对照原图。三稿均待评价。</p>
+<div class="toolbar"><button id="filter" type="button" aria-pressed="false">只看留选</button><button id="clear" type="button">清空留选</button><span id="selection" aria-live="polite">尚未留选</span></div>
+<div id="gallery">
+<article class="card" data-id="A"><button class="zoom" type="button" data-file="selected-refinement/A-low-stop-painted.png" data-label="A · 低位急停 · 块面厚涂" aria-label="放大 A 低位急停 · 块面厚涂"><img src="selected-refinement/A-low-stop-painted.png" alt="A 低位急停 · 块面厚涂修订候选" loading="eager"></button><div class="caption"><strong>A · 低位急停 · 块面厚涂</strong><label><input type="checkbox" value="A"> 留选</label></div><p>第 2 张姿势 × 第 5 张块面绘法</p><button class="compare" type="button" data-original="selected-refinement/references/input-02.png" data-new="selected-refinement/A-low-stop-painted.png" data-number="02" aria-pressed="false">对照附件 02 原图</button></article>
+<article class="card" data-id="B"><button class="zoom" type="button" data-file="selected-refinement/B-forward-draw-line.png" data-label="B · 满弓前压 · 线条色块" aria-label="放大 B 满弓前压 · 线条色块"><img src="selected-refinement/B-forward-draw-line.png" alt="B 满弓前压 · 线条色块修订候选" loading="eager"></button><div class="caption"><strong>B · 满弓前压 · 线条色块</strong><label><input type="checkbox" value="B"> 留选</label></div><p>第 7 张姿势 × 第 8／9 张线条色块</p><button class="compare" type="button" data-original="selected-refinement/references/input-07.png" data-new="selected-refinement/B-forward-draw-line.png" data-number="07" aria-pressed="false">对照附件 07 原图</button></article>
+<article class="card" data-id="C"><button class="zoom" type="button" data-file="selected-refinement/C-landing-watercolor.png" data-label="C · 落定备箭 · 水彩细线" aria-label="放大 C 落定备箭 · 水彩细线"><img src="selected-refinement/C-landing-watercolor.png" alt="C 落定备箭 · 水彩细线修订候选" loading="eager"></button><div class="caption"><strong>C · 落定备箭 · 水彩细线</strong><label><input type="checkbox" value="C"> 留选</label></div><p>第 10 张姿势与水彩，整理服装与关节</p><button class="compare" type="button" data-original="selected-refinement/references/input-10.png" data-new="selected-refinement/C-landing-watercolor.png" data-number="10" aria-pressed="false">对照附件 10 原图</button></article>
+</div>
+<p class="foot">附件编号按本次十张上传顺序。前一批 balanced 因人体问题已退回。当前三稿的比例、透视与局部手部仍需评价。</p>
+</main>
+<dialog id="viewer"><div class="dialogbar"><strong id="largeLabel"></strong><button type="button" class="close" id="close">关闭 · Esc</button></div><img id="large" alt=""></dialog>
+<script>
+const gallery=document.getElementById('gallery');
+const checks=[...gallery.querySelectorAll('input')];
+const filter=document.getElementById('filter');
+const viewer=document.getElementById('viewer');
+const large=document.getElementById('large');
+let onlySelected=false;
+function update(){
+ const ids=checks.filter(x=>x.checked).map(x=>x.value);
+ gallery.querySelectorAll('.card').forEach(card=>{const selected=ids.includes(card.dataset.id);card.classList.toggle('selected',selected);card.hidden=onlySelected&&!selected;});
+ document.getElementById('selection').textContent=ids.length?'已留选：'+ids.join('、'):'尚未留选';
+ filter.setAttribute('aria-pressed',String(onlySelected));filter.textContent=onlySelected?'显示全部':'只看留选';
+ try{localStorage.setItem('archer-selected-refinement-picks',JSON.stringify(ids));}catch{}
+}
+try{const ids=JSON.parse(localStorage.getItem('archer-selected-refinement-picks')||'[]');checks.forEach(x=>x.checked=ids.includes(x.value));}catch{}
+gallery.querySelectorAll('.compare').forEach(button=>button.addEventListener('click',()=>{
+ const original=button.getAttribute('aria-pressed')!=='true';const zoom=button.closest('.card').querySelector('.zoom');
+ if(!zoom.dataset.currentLabel)zoom.dataset.currentLabel=zoom.dataset.label;
+ zoom.dataset.file=original?button.dataset.original:button.dataset.new;
+ zoom.dataset.label=original?'附件 '+button.dataset.number+' 原图':zoom.dataset.currentLabel;
+ const img=zoom.querySelector('img');img.src=zoom.dataset.file;img.alt=zoom.dataset.label;
+ button.setAttribute('aria-pressed',String(original));button.textContent=original?'返回修订稿':'对照附件 '+button.dataset.number+' 原图';
+}));
+checks.forEach(x=>x.addEventListener('change',update));
+filter.addEventListener('click',()=>{onlySelected=!onlySelected;update();});
+document.getElementById('clear').addEventListener('click',()=>{checks.forEach(x=>x.checked=false);onlySelected=false;update();});
+gallery.querySelectorAll('.zoom').forEach(button=>button.addEventListener('click',()=>{large.src=button.dataset.file;large.alt=button.dataset.label;document.getElementById('largeLabel').textContent=button.dataset.label;viewer.showModal();}));
+document.getElementById('close').addEventListener('click',()=>viewer.close());
+viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close();});
+update();
+</script>
+</body>
+</html>
+

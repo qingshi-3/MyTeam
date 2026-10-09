@@ -11,7 +11,7 @@
 - 主入口：[project.godot](../../../../project.godot) 指向 `GrowthGameRoot.tscn`。成长战役使用26名英雄的供给池，并直接复用含6件装备、15件遗物的 `pool_all_items`。14条矩阵羁绊共39档，另加载两条旧装备羁绊。
 - 正式规则：[构筑框架](../../../../gameplay-design/combat-build-framework.md)的共同构筑语言、核心与功能位、装备联动及成长基线；[核心规则](../../../../gameplay-design/tower-autobattler-core.md)的纯自动战斗、选敌、法术和独立奖励组。
 - 规划边界：[M03](../../../02-foundation-models/trait-model/decisions.md)、[M05](../../../02-foundation-models/equipment-model/decisions.md)、[M06](../../../02-foundation-models/relic-model/decisions.md)、[R08](../../../03-run-mechanisms/supply-and-economy/shops-and-rewards/decisions.md)及[内容决定](../../decisions.md)。已确认但未整合的方向按规划缺口处理，不冒充现行代码违约。
-- 范围限定：[成长活动任务](../../../../work-items/active/growth-and-composition-design.md)明确本批只制作26名代表，重点验证霜羽与构装工坊；不能把未制作全部49名本身列为错误。需要审查的是这个代表包进入主流程之后，玩家实际看到的目标、候选和效果是否自洽。
+- 范围限定：[成长活动任务](../../../../work-items/archive/growth-and-composition-design.md)明确本批只制作26名代表，重点验证霜羽与构装工坊；不能把未制作全部49名本身列为错误。需要审查的是这个代表包进入主流程之后，玩家实际看到的目标、候选和效果是否自洽。
 - [静态盘点](inventory.json)记录逐英雄标签、14条羁绊可达性、21件物品、26项升阶及来源 SHA-256。全体26名可取得英雄均为 `IsHero = true`；升阶发现池也没有池外英雄。可达性上界包含所有合法招募与发现，不代表一次正常征程保证取得这些英雄。
 
 ## 优先处理的问题

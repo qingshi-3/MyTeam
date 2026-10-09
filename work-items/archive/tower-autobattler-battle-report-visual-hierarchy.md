@@ -143,7 +143,7 @@ Status: Completed. Independent Gameplay/statistics, UI, scope, and documentation
 - Content presentation hooks: `src/Content/UnitDefinition.cs`, `src/Content/ItemDefinition.cs`, and `src/Content/UnitContentRoot.cs`.
 - Authored report/UI hierarchy: `src/UI/BattleReportScreen.cs`, `src/UI/BattleReportMetric.cs`, `src/UI/BattleReportUnitRow.cs`, `src/UI/IconText.cs`, `src/UI/ChoiceCard.cs`, `scenes/ui/BattleReportScreen.tscn`, `scenes/ui/components/BattleReportMetric.tscn`, `scenes/ui/components/BattleReportUnitRow.tscn`, `scenes/ui/components/IconText.tscn`, `scenes/ui/components/ChoiceCard.tscn`, and `content/ui/game_theme.tres`.
 - Original semantic assets: the fourteen `assets/ui/icons/{health,damage,shield,healing,mana,gold,time,kills,deaths,hero,melee,ranged,risk,loot}.svg` files. Godot generated their `.import` sidecars and compiled cache from those originals; `.godot/imported` was not edited.
-- Automated evidence: `tests/GameplayContractSmoke.cs`, `tests/MovementPresentationContractSmoke.cs`, `tests/UiSmoke.cs`, `tests/AlphaRunSmoke.cs`, and `tests/VisualCapture.cs`.
+- Automated evidence: `tests/GameplayContractSmoke.cs`, `tests/MovementPresentationContractSmoke.cs`, `tests/archive/retired-content/UiSmoke.cs`, `tests/AlphaRunSmoke.cs`, and `tests/archive/retired-content/VisualCapture.cs`.
 
 ### RED and GREEN evidence
 
@@ -157,10 +157,10 @@ dotnet build .\my-team.csproj -maxcpucount:2 -v:minimal
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/ContentContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/GameplayContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/MovementPresentationContractSmoke.tscn
-& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/UiSmoke.tscn
+& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/archive/retired-content/UiSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/AlphaRunSmoke.tscn
-& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --path . --resolution 1280x720 tests/VisualCapture.tscn
-& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --path . --resolution 1600x900 tests/VisualCapture.tscn
+& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --path . --resolution 1280x720 tests/archive/retired-content/VisualCapture.tscn
+& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --path . --resolution 1600x900 tests/archive/retired-content/VisualCapture.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . --quit-after 5
 dotnet build-server shutdown
 ```

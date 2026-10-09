@@ -1,0 +1,16 @@
+{
+  "file": "archer-sdorica-v4-transparent.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-2a9917a5-39d1-4361-a27a-e51515821123.png",
+  "tool": "built-in image_gen",
+  "width": 1024,
+  "height": 1536,
+  "sha256": "29540ebf5d8d0a484b5907143bbf97872124b2def752a5d8ecc4f504ab5878d3",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "fully_transparent_pixels": 834200,
+  "generation_count": 1,
+  "status": "background-removed-style-not-approved"
+}

@@ -1,0 +1,17 @@
+{
+  "file": "archer-sdorica-v5-cloth-values.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-f0958a95-9970-4ab6-9724-2fdc9f172197.png",
+  "tool": "built-in image_gen",
+  "width": 1024,
+  "height": 1536,
+  "sha256": "b0b904e866346df4f0e40249a5543bafbc2ceb5f06c8e47e50a5b914c3056042",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "fully_transparent_pixels": 827516,
+  "generation_count": 1,
+  "status": "awaiting-user-review",
+  "scope": "violet cloth value grouping"
+}

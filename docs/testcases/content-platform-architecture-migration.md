@@ -1,6 +1,10 @@
 # Content Platform Architecture Migration Test Cases
 
+> 2026-10-06 清理：本文涉及的 `UiSmoke` 已归档且退出编译，相关命令仅保留历史用法；当前测试从[测试导航](../../tests/README.md)选择，不能据旧内容记录宣称现行通过。
+
 Historical migration checklist. Version-3 round trips, "no schema v4" and phase-entry RED requirements below belong to that migration, not the current v6 implementation. Reuse relevant lifecycle/rollback cases under current `../../system-design/content-composition-foundation.md` and `content-system-foundation.md`; do not lower the save version or restore missing behavior merely to satisfy historical gates. This notice records no new test execution.
+
+默认大陆的多 profile 原子发布、共用遭遇与 Tower placement 编译分层、v11配置身份恢复见[地图进程验收](expedition-map-progression.md)。本页阶段编号属于既有内容平台迁移，不是地图任务五阶段；历史通过不代替本轮运行证据。
 
 ## Phase 1 — Typed Effect Kernel And Lifecycle
 
@@ -26,7 +30,7 @@ Godot --headless --path . tests/FormationDeploymentContractSmoke.tscn
 Godot --headless --path . tests/GameplayContractSmoke.tscn
 Godot --headless --path . tests/MovementPresentationContractSmoke.tscn
 Godot --headless --path . tests/AlphaRunSmoke.tscn
-Godot --headless --path . tests/UiSmoke.tscn
+Godot --headless --path . tests/archive/retired-content/UiSmoke.tscn
 Godot --headless --path . --quit-after 5 tests/CleanStartup.tscn
 git diff --check
 ```
@@ -141,6 +145,6 @@ Run the low-concurrency build, `AbilityStatusContractSmoke`, `ScalableAuthoringC
 - 独立模块：不创建模拟器；召唤准备不生成单位、共享预留不能重叠，提交前失效须拒绝，正式召唤全部完成后才消费额外召唤资格；统计回滚应撤销新增单位身份、统计与终局冻结，跨实例检查点拒绝；敌人前摇无伤害，脉冲失败可重试、控制停止后续脉冲、已释放飞刃在来源死亡后继续往返。
 - 完整权威路径：后置效果故障必须恢复先前冷却、护盾、资源及事实，成功重试只结算一次；概率状态恢复随机序列；五类敌人的原时序、换位合法性、产物上限及回滚保持既有断言。
 - 实际输入观察：实验室开始／暂停／重置／返回配置、实际模拟终局后返回；正式征程保存失败显示重试，失败不推进，成功仅推进一次。实验室不得写征程存档。
-- 固定战斗核对：使用 `tools/run_architecture_profile.py --mode core` 的既定真实 10v10 内容核对完整事件／状态指纹。脚本会暂存优化程序集并在结束恢复 Debug；此期间不要并行构建或启动其他验证。
+- 历史固定战斗核对（旧十英雄夹具已退役，迁移前不可直接运行）：使用 `tools/run_architecture_profile.py --mode core` 的既定真实 10v10 内容核对完整事件／状态指纹。脚本会暂存优化程序集并在结束恢复 Debug；此期间不要并行构建或启动其他验证。
 
 本批结果见 `outputs/architecture-ability-design-20261001/verified-results.json`。输入正确性与最终观感验收分别记录；既有 960×540 测试环境的页面裁切不算已修复。

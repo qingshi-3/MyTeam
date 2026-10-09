@@ -125,7 +125,7 @@ dotnet build my-team.csproj -maxcpucount:2 -v:minimal
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/ContentContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/GameplayContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/MovementPresentationContractSmoke.tscn
-& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/UiSmoke.tscn
+& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/archive/retired-content/UiSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/AlphaRunSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . --quit-after 5
 ```
@@ -146,7 +146,7 @@ Scoped files:
 
 - Authority and QA: `gameplay-design/tower-autobattler-core.md`, `system-design/tower-autobattler-architecture.md`, `docs/testcases/alpha-manual-qa.md`.
 - Runtime/resources: `src/Components/UnitMotionPresentationComponent.cs`, `scenes/components/UnitMotionPresentationComponent.tscn`, `src/Components/UnitAnimationComponent.cs`, `scenes/components/UnitAnimationComponent.tscn`, `src/Content/UnitContentRoot.cs`.
-- Evidence: `tests/MovementPresentationContractSmoke.cs`, `tests/VisualCapture.cs`.
+- Evidence: `tests/MovementPresentationContractSmoke.cs`, `tests/archive/retired-content/VisualCapture.cs`.
 - Task routing: this activity and the move of completed `tower-autobattler-movement-presentation.md` from `work-items/active/` to `work-items/archive/`.
 
 Simulation hashes before and after are identical:

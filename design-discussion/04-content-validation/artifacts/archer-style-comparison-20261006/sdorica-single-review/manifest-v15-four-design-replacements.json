@@ -1,0 +1,17 @@
+{
+  "version": "v15",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-1f77c572-68d6-4576-8c9e-73f5c7e0577b.png",
+  "saved": "/Users/qingshi/Documents/GodotProjects/MyTeam/design-discussion/04-content-validation/artifacts/archer-style-comparison-20261006/sdorica-single-review/archer-sdorica-v15-four-design-replacements.png",
+  "width": 1024,
+  "height": 1536,
+  "mode": "RGBA",
+  "alpha_min": 0,
+  "alpha_max": 254,
+  "fully_transparent_pixels": 791162,
+  "partially_transparent_pixels": 781702,
+  "opaque_pixels": 0,
+  "sha256": "54446d9d417747a82e7b9359065b96dc0ad1b38f34d69c2724b2363b98563f23",
+  "prompt": "prompt-v15-four-design-replacements.json",
+  "generation_calls": 1,
+  "user_accepted": false
+}

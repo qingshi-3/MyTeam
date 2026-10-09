@@ -1,35 +1,30 @@
-# Work Items
+# 工作任务入口
 
-`active/` contains confirmed, self-contained work that still needs discussion resolution, execution, or independent verification. It records task scope, progress, evidence, and resume state without overriding accepted gameplay or system authority.
+2026-10-06 整理后，`active/`保留仍有效的执行或验证范围，`archive/`保留已完成或被取代的历史任务。归档不等于观感／平衡验收通过，也不授权恢复旧内容；[归档索引](archive/README.md)列明本轮去向。
 
-`archive/` contains completed historical work and explicitly superseded/stopped work. Archiving does not itself certify implementation or acceptance: `Completed` retains its actual evidence; `Superseded` records its replacement and unresolved work. Genuine pending execution/verification remains active. Historical instructions, scope and acceptance criteria do not override current authority or authorize resuming an obsolete plan.
+## 当前推进
 
-## 当前入口（2026-09-16）
-
-| 事项 | 入口 | 当前边界 |
+| 事项 | 恢复入口 | 边界 |
 | --- | --- | --- |
-| 成长征程与构装运营闭环 | [active/growth-and-composition-design.md](active/growth-and-composition-design.md) | 本次 goal 工程交付完成：独立 `GrowthGameRoot`、地区／遭遇、v8存档、26单位代表包、成长生产、一次升阶三选一、研究法术及MX01跨战成长已接通，Alpha不变；最终构建0警告0错误，合同、真实工坊输入、关键失败路径和连续路线通过。最终平衡与玩家体验待手动验收；49名全量重构不在本次范围。 |
-| 玩家单位数值与治疗／怒劲 | [active/player-unit-balance.md](active/player-unit-balance.md) | D57：普攻输出、技能治疗；怒劲战内保留；31名发布英雄逐名校准，敌我数据隔离与素材复用。固定对照及专项验证，最终节奏待试玩。 |
-| 敌人难度与构筑门槛 | [active/enemy-difficulty-and-build-gates.md](active/enemy-difficulty-and-build-gates.md) | 用户授权首轮曲线／敌阵模板与同投入实测；阶段成长、正式战斗／预览和生命结算对接，最终平衡待试玩。 |
-| 全局生命与败战续行 | [active/run-health-and-defeat-continuation.md](active/run-health-and-defeat-continuation.md) | R11-D02已实现：非Boss扣血续行、Boss败战终局、营火恢复、UI及v7存档；专项行为、真实输入与画面检查通过，旧通用夹具阻断已记录，初值平衡待试玩。 |
-| 物件化 UI 正式替换 | [active/ui-material-overhaul.md](active/ui-material-overhaul.md) | 用户授权按炉石／大巴扎线上品质目标持续替换真实 UI；透视调研、生产美术、共享组件、真实交互与渲染验证进行中。 |
-| 统一伤害与防御 | [active/unified-damage-defense.md](active/unified-damage-defense.md) | 普通伤害统一防御；公式因子保留攻击／法强，魔抗与双类伤害词条已清理。构建、相关行为与真实UI输入／渲染通过；技能系数不变，平衡待试玩。 |
-| 军团／瑟提／机器人三英雄 | [active/duel-grit-hook-heroes.md](active/duel-grit-hook-heroes.md) | HC37–HC39独立内容、决斗／怒劲／实体飞钩、正式招募与实验室已接入；专项机制与画面验证见任务，强度和观感待试玩。 |
-| 首批贯穿特色兵 | [active/enemy-piercing-skills.md](active/enemy-piercing-skills.md) | ES01飞行箭／ES04光束（现均为统一防御的普通伤害）、独立单位与技能／VFX、有限正式遭遇及地区数值已接入。构建、专项规则、正式渲染和暂停输入检查通过；观感与平衡待试玩。 |
-| 开局与分阶招募 | [active/recruitment-opening-and-tiers.md](active/recruitment-opening-and-tiers.md) | 保存式6选2、阶段阶级供给；当前名单以受控池及招募资源为准，后续英雄追加由对应内容任务记录。材料培养、敌人成长与推荐另议。 |
-| 英雄信息场景复用 | [active/battle-lab-ui.md](active/battle-lab-ui.md) | 紧凑信息、完整详情与公共数值子场景已接入部署／军团／选英雄；构建、针对性输入与渲染检查通过，范围见任务顶部。 |
-| 代码与场景架构检查及解耦 | [archive/architecture-decoupling.md](archive/architecture-decoupling.md) | 三个职责边界已抽取并完成当前内容的编译、启动、输入及生命周期检查；旧冻结名册回归失配单独保留。 |
-| 六种位移与空间控制英雄 | [active/hero-displacement.md](active/hero-displacement.md) | HC31–HC36／MV01–MV06、共享位移、表现与预设入口实现接入完成；未构建／未运行验证，待用户体验。 |
-| 战斗实验室 UI 与交互优化 | [active/battle-lab-ui.md](active/battle-lab-ui.md) | 三栏工作区、预设浮层、选择／拖放与撤销实现整合完成；未构建、未运行交互或渲染验证，待用户体验。 |
-| BC01–BC27 英雄实现 | [active/bc-hero-roster.md](active/bc-hero-roster.md) | 首版三体系接入及当前内容基础检查已完成；最新修复HC06／HC18满蓝不放，HC18按主动范围接近伤者，并共享施法者短光。专项逻辑、移动／法力及正式画面输入检查通过，玩家体验待反馈；具体覆盖见任务顶部。 |
-| 首批设计英雄与测试假人 | [active/designed-heroes-and-test-dummies.md](active/designed-heroes-and-test-dummies.md) | 本批接入和局部验证完成，等待 HC01／HC03 体验反馈；不合并其他讨论决定。 |
-| 长期玩法讨论：全局边界、基础模型、整局机制与内容检验 | `../design-discussion/roadmap.md` | 讨论进程唯一入口；逐题记录，不边讨论边改权威，最终统一整合。 |
-| 上一轮游戏文档对齐与已知兼容问题来源 | `active/combat-build-population-framework.md` | 对齐已完成；后续讨论改走 design-discussion，不恢复旧的逐题权威同步流程。 |
-| 通用内容模型与结算链路 | `active/content-system-foundation.md` | 已实现、编译通过；行为执行和玩家验收仍待完成。 |
-| 正式装备与英雄独立法力 | `active/formal-equipment-and-hero-mana.md` | 已实现、编译通过；玩家体验待验收。 |
-| 远程攻击与基础特效 | `active/ranged-attacks-and-basic-effects.md` | 按该任务的最新证据恢复，不从旧 Alpha 重新实施。 |
-| Web 关系图与模型 | `active/gameplay-model-lab.md` | 保留工具/草案；规则快照未全面同步，不是另一份正式权威，不自动继续扩建。 |
-| 独立体验切片 | `active/gameplay-experience-slice.md` | 保留已接入成果；体验工作转正式游戏，历史下一节点已失效。 |
-| 图标与肖像 | `active/tower-autobattler-semantic-icons-animated-portraits.md` | 保留其待验收状态；不因本轮文档整理宣称完成。 |
+| 八羁绊与成长内容 | [八羁绊原型](active/eight-trait-prototype.md) | 2026-10-07已授权Goal执行[首版计划](../design-discussion/04-content-validation/artifacts/content-redesign/eight-trait-v1/implementation-plan.md) B0–B8及代表战力评估。当前作者范围为19名英雄（E8/M11）、8项升阶收益、6件正式装备（E15仅保留实验定义）、11件遗物、6种事件，以及7个基础敌人、9场普通遭遇、3场精英和3个独立Boss；B4–B7规则与敌人合同通过。B8六池矩阵、效果、续航、经济和遗物样本完成；A/B/C条件路线均有可达样本但不是未筛选自然胜率。真实GUI同局继续后完成终局Boss，并另通过非终局败战冷继续。工程与代表评估收口，手感、节奏、平衡和美术仍待用户体验。进度与证据见[八羁绊原型](active/eight-trait-prototype.md)及[校准记录](../docs/testcases/expedition-pve-calibration.md)。 |
+| 正常征程与供给 | [大陆进程](active/expedition-map-progression.md) | 原主菜单至继续流程已恢复；自然三阶段节奏、通关与平衡待验证。 |
+| UI后续页面 | [UI材质与交互](active/ui-material-overhaul.md) | UI16做到第3步普通招募，后续页面继续；认可范围和待评动作见原任务。 |
+| 战斗实验室 | [实验室任务](active/battle-lab-ui.md) | 当前内容入口与实际输入已修复；独立工具不替代正常游戏。 |
+| 动作／场景表现 | [共享特效](active/combat-vfx-and-preview.md)、[远程表现](active/ranged-attacks-and-basic-effects.md) | 保留已认可样板；各轮观感和内容适配状态独立记录。 |
+| 内容清理边界 | [内容重建](active/content-reset.md) | 保存D74清理与后续恢复证据；当前可玩内容以八羁绊任务和正式规则为准。 |
 
-上述入口是导航，不重复维护规则和详细验收。调研任务/资产维持原状，不纳入本次游戏文档清理。
+## 继续保留的专项
+
+下列任务含通用能力、独立未决项或明确暂停状态。本轮不因旧日期或部分代码完成而宣称关闭；只在相关任务触发时阅读，不作为全部立即执行队列。
+
+| 范围 | 专项入口 |
+| --- | --- |
+| 内容与属性合同 | [通用内容模型](active/content-system-foundation.md)、[装备／独立法力](active/formal-equipment-and-hero-mana.md)、[统一防御](active/unified-damage-defense.md) |
+| 招募与战前流程 | [开局及分阶招募](active/recruitment-opening-and-tiers.md)、[普通招募唯一](active/ordinary-recruitment-uniqueness.md)、[敌情与法术](active/opponent-choice-and-prebattle-spells.md)、[全局生命](active/run-health-and-defeat-continuation.md) |
+| 保留动作 | [贯穿冲锋](active/enemy-trample-charge.md) |
+| 素材与观感 | [图标及肖像](active/tower-autobattler-semantic-icons-animated-portraits.md)、[单位立绘](active/unit-anime-illustrations.md)、[物品美术与音频](active/item-art-and-basic-audio.md) |
+| 研究／草案工具 | [深层机制研究](active/deep-autobattler-mechanics-research.md)、[Web模型](active/gameplay-model-lab.md) |
+
+正式规则分别归[玩法](../gameplay-design/README.md)与[系统](../system-design/README.md)。讨论进入[短总览](../design-discussion/roadmap.md)，测试入口进入[测试导航](../tests/README.md)，详细验收进入[测试说明](../docs/testcases/README.md)。
+
+后续更新原任务的当前状态和证据链接；已被取代的批次标明替代入口再归档，不在多个首页重复追加逐轮流水账。新的独立职责才新建任务，局部修订继续使用原任务。

@@ -1,5 +1,7 @@
 # 架构恢复、发布与战斗治理专项
 
+2026-10-03 的多 profile 发布、v11状态分支、地图动作／固定库存和终局高水位新增检查归[地图进程验收](expedition-map-progression.md)。以下已有证据保留原范围；旧 Tower fixtures 须显式选 legacy profile，隔离 namespace 须显式映射，不能把切换默认配置后的未执行检查写成通过。
+
 ## 运行
 
 先按项目要求构建：`dotnet build my-team.csproj -maxcpucount:2 -v:minimal`。
@@ -34,9 +36,11 @@ python3 tools/run_architecture_checks.py --case recovery-input --case recovery-e
 
 故障页应说明数据仍保留，两个按钮完整可见，重试期间不能操作未就绪主菜单。恢复成功后新征程、返回菜单及普通结果页仍按原用途工作。测试错误页的恢复操作不替玩家自动清空 Meta；真实坏档需先修复或恢复备份。
 
-当前结果、历史失败与对应重验来源见 [活动任务](../../work-items/active/architecture-hardening.md)。该入口不是历史全部测试的替代品，也不代表整局节奏、动效品质或平衡验收。
+当前结果、历史失败与对应重验来源见 [活动任务](../../work-items/archive/architecture-hardening.md)。该入口不是历史全部测试的替代品，也不代表整局节奏、动效品质或平衡验收。
 
 ## 实际内容性能与正常速度录像
+
+> 2026-10-06 状态：以下性能入口的旧十英雄夹具已退役，当前不能直接运行。保留优化配置、完整事件／状态指纹和测量方法，待迁移夹具后再恢复；以下命令为历史用法，不是现行通过门禁。
 
 ```sh
 python3 tools/run_architecture_profile.py --dotnet /path/to/dotnet --godot /path/to/Godot

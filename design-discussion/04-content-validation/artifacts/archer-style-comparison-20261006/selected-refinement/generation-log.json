@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "successful_outputs": 11,
+  "iterations": 4,
+  "failed_call": {
+    "iteration": 3,
+    "candidate": "C",
+    "stage": "output",
+    "category": "sexual",
+    "returned_image": false,
+    "resolution": "Retried with an explicitly adult archer and fuller violet battle clothing; v4 returned a new image."
+  },
+  "note": "Iteration1 did not realize selected painting languages; retained as history. Final comparisons use v4."
+}

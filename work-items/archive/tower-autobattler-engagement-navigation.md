@@ -179,7 +179,7 @@ Changed authority/tests:
 - `docs/testcases/alpha-manual-qa.md`
 - `tests/GameplayContractSmoke.cs`
 - `tests/MovementPresentationContractSmoke.cs`
-- `tests/UiSmoke.cs`
+- `tests/archive/retired-content/UiSmoke.cs`
 - this active work item
 
 Exact verification commands:
@@ -190,7 +190,7 @@ dotnet build my-team.csproj -maxcpucount:2 -v:minimal
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/ContentContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/GameplayContractSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/MovementPresentationContractSmoke.tscn
-& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/UiSmoke.tscn
+& 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/archive/retired-content/UiSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . tests/AlphaRunSmoke.tscn
 & 'C:\Users\qs\Desktop\Godot_v4.7-stable_mono_win64\Godot_v4.7-stable_mono_win64_console.exe' --headless --path . --quit-after 5
 ```

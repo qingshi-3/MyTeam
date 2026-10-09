@@ -173,8 +173,8 @@ Independent verification accepted the final implementation, focused corrections,
 - Production manifest: all 45 unit definitions reference one unique external resource under `content/portraits/`: 8 files in `heroes`, 24 in `soldiers`, and 13 in `enemies`. `soldier_aegis_guard.tres` received the final visual zoom adjustment to 1.1.
 - Choice UI: `src/UI/UnitChoiceCard.cs`, `scenes/ui/components/UnitChoiceCard.tscn`, the inherited `scenes/ui/components/HeroUnitChoiceCard.tscn`, ordinary `scenes/ui/RewardScreen.tscn`, recruitment-only `scenes/ui/RecruitmentScreen.tscn`, `scenes/app/GameRoot.tscn`, and `src/App/GameRoot.cs`.
 - Reuse consumers: deployment model/card, Army overview model/row, and battle-report screen/row C# plus their authored component scenes under `src/UI/` and `scenes/ui/components/`.
-- Focused corrections: `scenes/ui/DeploymentScreen.tscn` widens only the roster panel; `tests/UiSmoke.cs` measures real rendered deployment facts and isolates ordinary reward from recruitment; `tests/VisualCapture.cs` captures the real recruitment screen and rejects simultaneous reward-screen visibility.
-- Contracts and evidence: `tests/WindowPortraitContractSmoke.*`, `tests/ContentContractSmoke.cs`, `tests/UiSmoke.cs`, `tests/VisualCapture.cs`, and the updated legal unit fixture plus its test-only portrait under `tests/fixtures/`.
+- Focused corrections: `scenes/ui/DeploymentScreen.tscn` widens only the roster panel; `tests/archive/retired-content/UiSmoke.cs` measures real rendered deployment facts and isolates ordinary reward from recruitment; `tests/archive/retired-content/VisualCapture.cs` captures the real recruitment screen and rejects simultaneous reward-screen visibility.
+- Contracts and evidence: `tests/WindowPortraitContractSmoke.*`, `tests/ContentContractSmoke.cs`, `tests/archive/retired-content/UiSmoke.cs`, `tests/archive/retired-content/VisualCapture.cs`, and the updated legal unit fixture plus its test-only portrait under `tests/fixtures/`.
 
 ### Commands and accepted markers
 
@@ -184,9 +184,9 @@ dotnet build my-team.csproj -maxcpucount:2 -v:minimal
 & $godotExe --headless --path . tests/WindowPortraitContractSmoke.tscn
 & $godotExe --headless --path . tests/FixtureContractSmoke.tscn
 & $godotExe --headless --path . tests/ContentContractSmoke.tscn
-& $godotExe --headless --path . tests/UiSmoke.tscn
-& $godotExe --path . --resolution 1280x720 tests/VisualCapture.tscn
-& $godotExe --path . --resolution 1600x900 tests/VisualCapture.tscn
+& $godotExe --headless --path . tests/archive/retired-content/UiSmoke.tscn
+& $godotExe --path . --resolution 1280x720 tests/archive/retired-content/VisualCapture.tscn
+& $godotExe --path . --resolution 1600x900 tests/archive/retired-content/VisualCapture.tscn
 ```
 
 - Build: `0 warnings`, `0 errors`.

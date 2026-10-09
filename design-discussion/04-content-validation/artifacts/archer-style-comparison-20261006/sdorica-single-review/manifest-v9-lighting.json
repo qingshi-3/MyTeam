@@ -1,0 +1,19 @@
+{
+  "file": "archer-sdorica-v9-lighting.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-f8762fe8-71dc-4b29-8cb1-be84bccf109b.png",
+  "tool": "built-in image_gen",
+  "width": 1024,
+  "height": 1536,
+  "sha256": "11503f4c6c03af087bd285a2096d25eedcd0ccf556a94514142cefd447e720e5",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "fully_transparent_pixels": 774521,
+  "generation_count": 1,
+  "status": "awaiting-user-review-lighting-unresolved",
+  "prompt": "prompt-v9-lighting.json",
+  "scope": "Lighting and reflection only; keep character, pose, red/violet/gold palette, costume and transparency.",
+  "visual_review": "Actual result mostly softens some local patches. Whole-figure lighting hierarchy remains too close to v8; bright thighs, skirt lining and reflective armor remain competing areas. Lighting issue not considered resolved."
+}

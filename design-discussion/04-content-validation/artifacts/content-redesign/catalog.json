@@ -1,0 +1,3057 @@
+{
+  "status": "Historical Agent proposal; superseded by user scope selection on 2026-10-04; not implemented or accepted as the current roster",
+  "version": "2026-10-03 v1",
+  "units": [
+    {
+      "id": "H01",
+      "name": "盾星卫",
+      "tier": 1,
+      "traits": [
+        "星环",
+        "护卫"
+      ],
+      "hp": 760,
+      "attack": 45,
+      "attack_speed": 0.65,
+      "defense": 7,
+      "range": 1.0,
+      "starting_mana": 30,
+      "max_mana": 70,
+      "role": "前排与低费启动",
+      "equipment": [
+        "E07",
+        "E08",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "飞盾",
+      "skill": "0.35秒前摇，向4格内最近敌人投盾，造成1.2P伤害；命中或飞行0.8秒结束后，自己获得1.8P护盾，持续5秒。路径被墙挡住仍收回并授盾。",
+      "reference": "原型：S3 波比；参考S01、S10。",
+      "position": "前排外侧承伤回蓝；护卫相邻加防，飞盾启动星环。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H02",
+      "name": "眠星使",
+      "tier": 1,
+      "traits": [
+        "星环",
+        "术师"
+      ],
+      "hp": 510,
+      "attack": 35,
+      "attack_speed": 0.7,
+      "defense": 3,
+      "range": 4.0,
+      "starting_mana": 20,
+      "max_mana": 60,
+      "role": "后排单体控制",
+      "equipment": [
+        "E01",
+        "E03",
+        "E12"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "沉眠星弹",
+      "skill": "0.4秒前摇，命中4格内当前生命百分比最高的敌人，造成0.8P伤害并昏睡2秒；受到其他伤害提前醒来，醒来额外受0.5P伤害。每次施法同目标只结算一次醒来伤害。",
+      "reference": "原型：S3 佐伊，远程控制职责见S01；本文睡眠细节为提案。",
+      "position": "后排错开主火力线；让睡眠暂时隔离副战线，需立即打断时也能用。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H03",
+      "name": "回星术士",
+      "tier": 2,
+      "traits": [
+        "星环",
+        "术师"
+      ],
+      "hp": 560,
+      "attack": 40,
+      "attack_speed": 0.75,
+      "defense": 3,
+      "range": 4.0,
+      "starting_mana": 0,
+      "max_mana": 50,
+      "role": "低蓝线形输出核心",
+      "equipment": [
+        "E01",
+        "E03",
+        "E04"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "回旋星轨",
+      "skill": "0.35秒前摇，沿当前目标方向射出长5格、宽0.7格星轨，再沿原线返回；去程和返程各造成0.95P伤害，每段每敌最多一次；两段均受统一防御。",
+      "reference": "原型：S3 阿狸的往返法术；原作真伤不照搬，本文参数为提案。",
+      "position": "后排对齐敌人纵列；有低蓝装时可替代群星主宰长期担任主力。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H04",
+      "name": "星盾祭司",
+      "tier": 2,
+      "traits": [
+        "星环",
+        "斗士"
+      ],
+      "hp": 820,
+      "attack": 45,
+      "attack_speed": 0.65,
+      "defense": 6,
+      "range": 1.0,
+      "starting_mana": 50,
+      "max_mana": 100,
+      "role": "前排范围控制",
+      "equipment": [
+        "E02",
+        "E07",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "星环震荡",
+      "skill": "0.5秒前摇，自身获得20%H护盾4秒；再过0.6秒震荡周围2格，造成1.3P伤害并眩晕1.2秒。释放成功后震荡不因普通控制取消，死亡取消。",
+      "reference": "原型：S3 妮蔻范围控制＋063圣盾；角色关系见S01。",
+      "position": "第二前排入人群；由主坦先接火，再用护盾撑到控制出手。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H05",
+      "name": "群星主宰",
+      "tier": 3,
+      "traits": [
+        "星环",
+        "术师"
+      ],
+      "hp": 610,
+      "attack": 40,
+      "attack_speed": 0.75,
+      "defense": 3,
+      "range": 4.0,
+      "starting_mana": 20,
+      "max_mana": 60,
+      "role": "重复施法成长核心",
+      "equipment": [
+        "E01",
+        "E03",
+        "E04"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "群星倾落",
+      "skill": "0.45秒前摇，向5格内当前生命百分比最高敌人依次发射3枚星弹，每枚0.50P伤害，间隔0.12秒；每次付费施法结束，本战以后多1枚，至多8枚。目标死亡后余弹改投范围内最近敌人。",
+      "reference": "原型：S3 辛德拉重复施法增加法球，详情S11；每轮增量和上限是项目提案。",
+      "position": "保护其连续施法；星环供蓝、术师回响和法强分别提高启动、频率和每弹收益。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H06",
+      "name": "星泉医师",
+      "tier": 3,
+      "traits": [
+        "星环"
+      ],
+      "hp": 650,
+      "attack": 35,
+      "attack_speed": 0.7,
+      "defense": 4,
+      "range": 4.0,
+      "starting_mana": 40,
+      "max_mana": 100,
+      "role": "全队治疗",
+      "equipment": [
+        "E02",
+        "E09",
+        "E12"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "星泉普照",
+      "skill": "存在生命低于80%的常驻友军才启动；0.7秒前摇，治疗全体存活友军1.5P生命。召唤物也受治疗，但不单独触发启动资格。",
+      "reference": "原型：S3 索拉卡团队治疗；职责见S01。",
+      "position": "后排避开范围火力；星环为治疗提供频率，也可离开星环单挂补持续性。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H07",
+      "name": "壁垒守卫",
+      "tier": 1,
+      "traits": [
+        "铁契",
+        "护卫"
+      ],
+      "hp": 820,
+      "attack": 40,
+      "attack_speed": 0.6,
+      "defense": 8,
+      "range": 1.0,
+      "starting_mana": 30,
+      "max_mana": 80,
+      "role": "抵挡密集小伤害",
+      "equipment": [
+        "E07",
+        "E08",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "壁垒姿态",
+      "skill": "0.25秒前摇，接下来5秒每次普通伤害经防御减免后再减少25，最低仍受1伤害；真实伤害不减。期间普攻和移动正常。",
+      "reference": "原型：S3 蕾欧娜减伤前排；角色关系见S01；006固定格挡机制。",
+      "position": "针对高频小伤害；大单发敌人前可换珊瑚或冰脊，不要求培养所有坦克。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H08",
+      "name": "迅刃剑士",
+      "tier": 1,
+      "traits": [
+        "铁契",
+        "决斗"
+      ],
+      "hp": 620,
+      "attack": 55,
+      "attack_speed": 0.8,
+      "defense": 4,
+      "range": 1.0,
+      "starting_mana": 0,
+      "max_mana": 50,
+      "role": "格挡与持续近战",
+      "equipment": [
+        "E05",
+        "E06",
+        "E10"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "反击架势",
+      "skill": "0.2秒前摇，1秒内招架来自正面180度的普攻伤害，随后突刺当前1.5格内敌人造成2.0A伤害并眩晕0.8秒。招架不免技能或已有持续伤害。",
+      "reference": "原型：S3 菲奥娜反击；本文招架边界为项目适配。",
+      "position": "贴侧前排，避免单独承受所有技能；与月刃凑决斗，后期可转装备给刃舞。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H09",
+      "name": "双枪游侠",
+      "tier": 2,
+      "traits": [
+        "铁契",
+        "游侠"
+      ],
+      "hp": 600,
+      "attack": 55,
+      "attack_speed": 0.8,
+      "defense": 4,
+      "range": 4.0,
+      "starting_mana": 0,
+      "max_mana": 40,
+      "role": "机动普攻核心",
+      "equipment": [
+        "E05",
+        "E06",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "滑步连射",
+      "skill": "向距离当前敌人更远且仍在4格射程内的合法位置横移1格，耗时0.2秒；随后射击两次，各0.8A伤害，都是技能攻击，允许攻击特效，不重复获得普攻回蓝。无合法位则原地射击。",
+      "reference": "原型：S3 卢锡安滑步双发；本文位置判定为提案。",
+      "position": "后排侧翼；攻速增强普攻回蓝，铁契装备可先均分再集中给他。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H10",
+      "name": "牵引钩卫",
+      "tier": 2,
+      "traits": [
+        "铁契",
+        "护卫"
+      ],
+      "hp": 850,
+      "attack": 45,
+      "attack_speed": 0.6,
+      "defense": 7,
+      "range": 1.0,
+      "starting_mana": 70,
+      "max_mana": 100,
+      "role": "拉走后排与破阵",
+      "equipment": [
+        "E02",
+        "E07",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "牵引钩",
+      "skill": "0.6秒前摇，向6格内最远可见敌人发钩，命中造成1.0P伤害并拉至自身前方最近合法点，眩晕0.8秒；不可位移目标仅受伤与眩晕。钩不能穿墙。",
+      "reference": "原型：S3 布里茨；主动拉人跨入铁契为项目重组，并非原作源计划成员。",
+      "position": "前排边侧，对位后排；勾来近身坦克没有额外奖励，站位决定价值。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H11",
+      "name": "刃舞统领",
+      "tier": 3,
+      "traits": [
+        "铁契",
+        "决斗"
+      ],
+      "hp": 800,
+      "attack": 70,
+      "attack_speed": 0.85,
+      "defense": 5,
+      "range": 1.0,
+      "starting_mana": 0,
+      "max_mana": 40,
+      "role": "击杀连续突进核心",
+      "equipment": [
+        "E06",
+        "E10",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "逐刃追斩",
+      "skill": "0.2秒前摇，突进至当前敌人相邻合法点并造成2.5A伤害；本击击杀时，0.25秒后追斩4格内当前法力最高敌人，不耗蓝。一次付费施法最多追加3次；追斩属于原技能后续，不产生新施法计数。",
+      "reference": "原型：S3 艾瑞莉娅击杀刷新，S12；追斩上限是本项目节奏提案。",
+      "position": "从侧翼先杀脆目标形成连斩；对单Boss依靠决斗与攻击装持续输出。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H12",
+      "name": "时裂行者",
+      "tier": 4,
+      "traits": [
+        "铁契",
+        "刺客",
+        "术师"
+      ],
+      "hp": 760,
+      "attack": 60,
+      "attack_speed": 0.9,
+      "defense": 5,
+      "range": 1.0,
+      "starting_mana": 40,
+      "max_mana": 100,
+      "role": "切后排与群体干扰",
+      "equipment": [
+        "E03",
+        "E10",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "时裂连击",
+      "skill": "0.45秒前摇，选6格内至多3名后排优先敌人，按从远到近顺序每0.25秒跃击一人，各造成1.2P伤害并降低25%攻速4秒；期间不可选中，结束落在末目标附近合法点。只保护自身，不暂停全场。",
+      "reference": "原型：S3 艾克多目标突击；去掉全场停时是项目适配。",
+      "position": "切后排兼降低敌方主力输出；不负责扛完整前排，可搭雪影连控。 术师回响增加一轮有限连击，不能再次从原地跳遍全场。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H13",
+      "name": "血术侍",
+      "tier": 1,
+      "traits": [
+        "血誓",
+        "术师"
+      ],
+      "hp": 620,
+      "attack": 35,
+      "attack_speed": 0.7,
+      "defense": 4,
+      "range": 3.0,
+      "starting_mana": 0,
+      "max_mana": 50,
+      "role": "吸血法术过渡核心",
+      "equipment": [
+        "E01",
+        "E03",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "汲血",
+      "skill": "0.3秒前摇，当前3格内敌人受1.1P伤害；自身治疗实际生命伤害的100%，至多1.1P；不从护盾或过量伤害吸取。",
+      "reference": "原型：弗拉基米尔汲取；S5黑夜组合与角色名单见S02。",
+      "position": "前二排侧翼承少量伤启动血誓；不能作为独立主坦。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H14",
+      "name": "铁拳门徒",
+      "tier": 2,
+      "traits": [
+        "血誓",
+        "斗士"
+      ],
+      "hp": 880,
+      "attack": 50,
+      "attack_speed": 0.75,
+      "defense": 6,
+      "range": 1.0,
+      "starting_mana": 30,
+      "max_mana": 80,
+      "role": "范围减速与前排",
+      "equipment": [
+        "E07",
+        "E08",
+        "E10"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "摧筋裂骨",
+      "skill": "0.4秒前摇，周围1.8格敌人受1.0P伤害，攻速降低25%，持续4秒；同名减速刷新不叠层。",
+      "reference": "原型：S5 李青近身范围干扰；本稿不采用S4踢出棋盘。",
+      "position": "压住普攻前排，替怒拳分担小怪；主要价值是控制，装备优先级低于主力。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H15",
+      "name": "月刃武者",
+      "tier": 2,
+      "traits": [
+        "血誓",
+        "决斗"
+      ],
+      "hp": 740,
+      "attack": 60,
+      "attack_speed": 0.85,
+      "defense": 4,
+      "range": 1.0,
+      "starting_mana": 0,
+      "max_mana": 50,
+      "role": "反复施法强化普攻",
+      "equipment": [
+        "E05",
+        "E06",
+        "E10"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "月刃",
+      "skill": "0.25秒前摇，斩击当前1.5格内敌人造成1.1P伤害；本战每次付费施法使普攻额外造成0.18P伤害，最多6层。附伤不单独触发普攻特效或回蓝。",
+      "reference": "原型：S5 亚索施法后普攻成长；统一伤害、层数为提案。",
+      "position": "决斗提高普攻与回蓝，血誓让半血后继续输出；护命装备优于第三件纯输出。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H16",
+      "name": "暮月猎手",
+      "tier": 3,
+      "traits": [
+        "血誓",
+        "游侠"
+      ],
+      "hp": 650,
+      "attack": 70,
+      "attack_speed": 0.75,
+      "defense": 4,
+      "range": 4.0,
+      "starting_mana": 30,
+      "max_mana": 100,
+      "role": "多目标射击核心",
+      "equipment": [
+        "E05",
+        "E06",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "暮月齐射",
+      "skill": "0.5秒前摇，对5格内当前生命最低的至多4名敌人各射一发，造成1.6A伤害；每名目标只一次，允许攻击特效，不产生普攻回蓝。",
+      "reference": "原型：S5 厄斐琉斯多目标攻击技能；原作定位见S02。",
+      "position": "游侠副火力与血誓后排主力；有群体治疗时半血增伤更容易兑现。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H17",
+      "name": "怒拳斗士",
+      "tier": 3,
+      "traits": [
+        "血誓",
+        "斗士"
+      ],
+      "hp": 1100,
+      "attack": 65,
+      "attack_speed": 0.65,
+      "defense": 6,
+      "range": 1.0,
+      "starting_mana": 0,
+      "max_mana": 0,
+      "role": "承伤蓄怒反击核心",
+      "equipment": [
+        "E07",
+        "E08",
+        "E10"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "蓄意轰拳",
+      "skill": "无普通法力。实际损失生命等量转为怒劲，上限50%H。怒劲满或生命从高于50%跌至不高于50%时，若怒劲大于0便排队；0.8秒前摇后消耗全部怒劲G，获得G护盾3秒，向前方长3、宽1.6格打出A+0.8G伤害。两次释放至少间隔6秒。",
+      "reference": "保留候选：HC38重拳的承伤蓄怒关系和既有动作；取消额外无说明被动，本稿触发、冷却为重设计提案。",
+      "position": "放在可承压但不会瞬死的前线；生命与防御决定能否活到出拳，盾吸收不产生怒劲。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H18",
+      "name": "棺甲卫",
+      "tier": 1,
+      "traits": [
+        "亡契",
+        "护卫"
+      ],
+      "hp": 800,
+      "attack": 45,
+      "attack_speed": 0.65,
+      "defense": 6,
+      "range": 1.0,
+      "starting_mana": 30,
+      "max_mana": 70,
+      "role": "变身持线与死亡传承",
+      "equipment": [
+        "E07",
+        "E08",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "棺甲蜕变",
+      "skill": "首次满蓝时0.5秒变形，本战H增加35%并增加同量当前生命，普攻治疗自身实际生命伤害的25%；此后关闭法力，不再重复变形。",
+      "reference": "原型：S4 伊莉丝变形续航；013换形机制，本稿属性为提案。",
+      "position": "便宜主坦，也是亡契第一层投入；死亡会把进攻收益交给后排，不靠主动送死启动。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H19",
+      "name": "冥灯牧者",
+      "tier": 2,
+      "traits": [
+        "亡契",
+        "唤灵"
+      ],
+      "hp": 680,
+      "attack": 40,
+      "attack_speed": 0.7,
+      "defense": 4,
+      "range": 3.0,
+      "starting_mana": 40,
+      "max_mana": 100,
+      "role": "预置死亡后援",
+      "equipment": [
+        "E02",
+        "E09",
+        "E14"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "冥灯守契",
+      "skill": "0.5秒前摇，为最多2名未持此契约的常驻友军挂冥灯，优先最低生命百分比，持续至本战结束；各在首次阵亡处召唤1名墓卫S01。全场最多成功标记4个不同英雄，无可标记者不施法。",
+      "reference": "原型：S2 约里克死亡后召唤援军；036召唤使。本项目不复活本人。",
+      "position": "提前给前排挂契，让前排死亡后有人续住阵线，骨弩手继续输出。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H20",
+      "name": "骨弩手",
+      "tier": 2,
+      "traits": [
+        "亡契",
+        "游侠"
+      ],
+      "hp": 600,
+      "attack": 70,
+      "attack_speed": 0.65,
+      "defense": 3,
+      "range": 5.0,
+      "starting_mana": 0,
+      "max_mana": 0,
+      "role": "第四发重击核心",
+      "equipment": [
+        "E06",
+        "E11",
+        "E13"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "第四声",
+      "skill": "无法力。每第4次普通攻击改为2.6A伤害，必定暴击；其余3次正常。额外子弹不推进计数。攻速正常受益，不照搬固定攻速转换。",
+      "reference": "原型：S3 烬第四发；暗星成员关系见S13，本稿简化攻速规则。",
+      "position": "后排最长射程位，亡契后期叠攻击；游侠额外箭继承当前攻击系数但不保证暴击。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H21",
+      "name": "影镰刺客",
+      "tier": 2,
+      "traits": [
+        "亡契",
+        "刺客"
+      ],
+      "hp": 670,
+      "attack": 60,
+      "attack_speed": 0.8,
+      "defense": 4,
+      "range": 1.0,
+      "starting_mana": 0,
+      "max_mana": 70,
+      "role": "残局斩杀与回撤",
+      "equipment": [
+        "E03",
+        "E10",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "影镰处决",
+      "skill": "0.35秒前摇，前方2格90度扇形造成1.3P伤害；命中前生命低于35%的目标改为2.6P。随后后撤2格至合法空位；若后撤无位则原地。",
+      "reference": "原型：S2 伊芙琳低血增伤与后撤；025斩杀另保留参考，不做无条件处决Boss。",
+      "position": "先切后排，再靠残血增伤收尾；保护自己比用其承伤换亡契更值。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H22",
+      "name": "墓园术士",
+      "tier": 1,
+      "traits": [
+        "亡契",
+        "唤灵"
+      ],
+      "hp": 550,
+      "attack": 35,
+      "attack_speed": 0.65,
+      "defense": 3,
+      "range": 4.0,
+      "starting_mana": 20,
+      "max_mana": 70,
+      "role": "持续召唤远程火力",
+      "equipment": [
+        "E02",
+        "E03",
+        "E14"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "墓园生长",
+      "skill": "0.4秒前摇，在当前敌人附近合法空位生成2株墓藤S02，优先距敌2至3格位置，存在8秒；自己最多4株，超过时以新株替换剩余时间最短的一株，替换不算阵亡。",
+      "reference": "原型：S2 婕拉植物召唤，S14；改为可被攻击的植物是明确适配。",
+      "position": "植物有完整持续火力；唤灵增强其存活时间，自己仍需前排保护。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H23",
+      "name": "寒羽射手",
+      "tier": 1,
+      "traits": [
+        "霜庭",
+        "游侠"
+      ],
+      "hp": 550,
+      "attack": 50,
+      "attack_speed": 0.75,
+      "defense": 3,
+      "range": 4.0,
+      "starting_mana": 40,
+      "max_mana": 90,
+      "role": "远程控制与普攻",
+      "equipment": [
+        "E02",
+        "E05",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "冰封长箭",
+      "skill": "0.6秒前摇，向6格内最远可见敌人射箭，命中首个敌人造成1.0P伤害并冻结1.2秒；箭不能穿墙，不溅射。",
+      "reference": "原型：艾希冰箭＋002极地；这里只保留成熟控制职责。",
+      "position": "后排侧翼对准高威胁敌人，普通攻击通过霜庭触发额外冻结。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H24",
+      "name": "霜鬃骑卫",
+      "tier": 3,
+      "traits": [
+        "霜庭",
+        "斗士"
+      ],
+      "hp": 1000,
+      "attack": 60,
+      "attack_speed": 0.65,
+      "defense": 7,
+      "range": 1.0,
+      "starting_mana": 60,
+      "max_mana": 120,
+      "role": "冲锋开团",
+      "equipment": [
+        "E02",
+        "E07",
+        "E08"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.42,
+      "skill_name": "霜鬃冲锋",
+      "skill": "1.2秒前摇锁定方向，以4格每秒沿最多3格路径冲锋，碰到敌人向侧面推0.6格且每敌只受1.2A伤害；结束对1.8格敌人造成0.7P伤害并冻结1秒。墙体、硬控停止冲锋；中断不触发终点爆发。",
+      "reference": "保留既有EE03地面冲锋的动作和路径表达；冻结收尾为霜庭适配提案。",
+      "position": "从侧前排冲入密集点；先看地形和敌方打断，不能靠穿墙解决接敌。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H25",
+      "name": "冰脊盾卫",
+      "tier": 2,
+      "traits": [
+        "霜庭",
+        "护卫"
+      ],
+      "hp": 950,
+      "attack": 40,
+      "attack_speed": 0.55,
+      "defense": 8,
+      "range": 1.0,
+      "starting_mana": 30,
+      "max_mana": 80,
+      "role": "朝向格挡与护后排",
+      "equipment": [
+        "E07",
+        "E08",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "冰脊坚盾",
+      "skill": "0.25秒前摇面向当前敌人举盾4秒，来自正面120度的普通伤害减免45%；自己停止移动但能普攻，期间不随敌人转身，真实伤害不减。",
+      "reference": "原型：布隆方向格挡；独立于羁绊的单体功能。",
+      "position": "挡住主射线，侧翼敌人由队友处理；狭口强、被包围弱。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H26",
+      "name": "冰矛猎手",
+      "tier": 3,
+      "traits": [
+        "霜庭",
+        "游侠"
+      ],
+      "hp": 640,
+      "attack": 55,
+      "attack_speed": 0.85,
+      "defense": 4,
+      "range": 4.0,
+      "starting_mana": 0,
+      "max_mana": 0,
+      "role": "叠矛集火核心",
+      "equipment": [
+        "E05",
+        "E06",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "拔矛",
+      "skill": "无法力。每次本人普通攻击给目标叠1支冰矛；每支储存0.45A伤害，单目标最多12支。若全部储存经目标当前防御预估足以击穿当前护盾和生命，立即拔出全部矛结算一次技能伤害；否则该目标已有6支且4秒未被本人攻击时自动拔矛。",
+      "reference": "原型：S4 卡莉丝塔叠矛终结；无通用百分比斩杀，预估不足不会假处决。",
+      "position": "集中攻击高威胁目标，换目标会延迟兑现；技能暴击只在实际结算判定，不提前计入处决预估。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H27",
+      "name": "雪影刺客",
+      "tier": 2,
+      "traits": [
+        "霜庭",
+        "刺客"
+      ],
+      "hp": 690,
+      "attack": 55,
+      "attack_speed": 0.85,
+      "defense": 4,
+      "range": 1.0,
+      "starting_mana": 40,
+      "max_mana": 90,
+      "role": "后排缴械与冻结配合",
+      "equipment": [
+        "E02",
+        "E03",
+        "E10"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "雪影突袭",
+      "skill": "0.3秒前摇，跃向4格内攻击最高敌人的相邻空位，命中周围1格至多3敌，造成1.0P伤害并缴械1.5秒；缴械只禁止普攻，不禁施法。无落点则原地对当前近战目标生效。",
+      "reference": "原型：奇亚娜近身干扰；756刺客跳后排与暴击另由羁绊提供。",
+      "position": "牵制射手，和寒羽交错控制；面对法师换成时裂或牵引钩更有价值。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H28",
+      "name": "岩鳞幼龙",
+      "tier": 2,
+      "traits": [
+        "龙裔",
+        "斗士",
+        "决斗"
+      ],
+      "hp": 860,
+      "attack": 55,
+      "attack_speed": 0.75,
+      "defense": 6,
+      "range": 1.0,
+      "starting_mana": 0,
+      "max_mana": 80,
+      "role": "变身后持续输出",
+      "equipment": [
+        "E05",
+        "E07",
+        "E10"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.42,
+      "skill_name": "岩鳞化龙",
+      "skill": "首次满蓝0.7秒变为龙形，本战H增加40%并增加等量当前生命，普攻变为2格火息，主目标1.0A、其后长1.5宽1格区域0.5A伤害；每次普攻每敌只受一次。此后关闭法力。",
+      "reference": "原型：希瓦娜变形＋013；不采用原作双人口或三倍羁绊计数。",
+      "position": "前二排承压等变形；装备攻速与生命，给风暴古龙争取启动时间。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H29",
+      "name": "炉喉火蝎",
+      "tier": 2,
+      "traits": [
+        "龙裔",
+        "术师"
+      ],
+      "hp": 780,
+      "attack": 45,
+      "attack_speed": 0.65,
+      "defense": 5,
+      "range": 2.0,
+      "starting_mana": 30,
+      "max_mana": 90,
+      "role": "持续扇形喷火核心",
+      "equipment": [
+        "E03",
+        "E07",
+        "E16"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "炉喉吐息",
+      "skill": "1秒前摇，锁方向持续喷吐1.8秒，在3格70度扇形于0、0.6、1.2秒各造成0.65P伤害；期间不能转向或移动，硬控、死亡立即断流，已完成伤害保留。",
+      "reference": "保留EE07喷火的三脉冲和已认可持续喷流；本稿改用法强输入，不继承旧身份限制。",
+      "position": "前二排斜对密集敌阵，队友限制敌人位移；配重伤装备承担当队范围压制。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H30",
+      "name": "雷鳞游侠",
+      "tier": 1,
+      "traits": [
+        "龙裔",
+        "游侠"
+      ],
+      "hp": 560,
+      "attack": 45,
+      "attack_speed": 0.75,
+      "defense": 3,
+      "range": 4.0,
+      "starting_mana": 0,
+      "max_mana": 40,
+      "role": "技能提速过渡核心",
+      "equipment": [
+        "E01",
+        "E05",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "雷鳞飞弹",
+      "skill": "0.25秒前摇向当前4格内敌人射弹，造成0.85P伤害；命中后自己本战攻速加8%，最多5层。",
+      "reference": "原型：S7 伊泽瑞尔提速技能；270风暴龙低费启动角色。",
+      "position": "过渡用低蓝装/攻速装，中后期装备可交给潮汐之灵或游侠主力。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H31",
+      "name": "风暴古龙",
+      "tier": 4,
+      "traits": [
+        "龙裔",
+        "术师"
+      ],
+      "hp": 850,
+      "attack": 45,
+      "attack_speed": 0.65,
+      "defense": 5,
+      "range": 4.0,
+      "starting_mana": 50,
+      "max_mana": 160,
+      "role": "长启动全场轰击核心",
+      "equipment": [
+        "E02",
+        "E03",
+        "E04"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.42,
+      "skill_name": "天穹雷暴",
+      "skill": "0.8秒前摇后在2.4秒内发射12道闪电，每0.2秒重新选择全场当前生命百分比最高可见敌人，每道0.40P伤害；施法期间不可移动与普攻，硬控中断剩余闪电。",
+      "reference": "原型：S7 敖兴长启动、多弹、按生命选敌，S03；数值与可见限制为提案。",
+      "position": "最后排安全位，必须有持线和启动装；不能只靠凑龙裔就默认每战放出技能。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H32",
+      "name": "潮汐学徒",
+      "tier": 1,
+      "traits": [
+        "碧潮",
+        "术师"
+      ],
+      "hp": 550,
+      "attack": 35,
+      "attack_speed": 0.7,
+      "defense": 3,
+      "range": 4.0,
+      "starting_mana": 0,
+      "max_mana": 40,
+      "role": "低蓝施法与潮汐积累",
+      "equipment": [
+        "E01",
+        "E03",
+        "E04"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "潮石连弹",
+      "skill": "0.3秒前摇沿当前敌人方向发出3枚弹，间隔0.1秒，各造成0.45P伤害；直线长4、宽0.5格，每枚在首个敌人处停止。",
+      "reference": "原型：S7.5 塔莉垭低费法师职责，S04；本文弹道为提案。",
+      "position": "碧潮起步单位，后期仍可用低蓝施法叠资源；不是只有凑数用途。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H33",
+      "name": "珊瑚护卫",
+      "tier": 1,
+      "traits": [
+        "碧潮",
+        "护卫"
+      ],
+      "hp": 850,
+      "attack": 40,
+      "attack_speed": 0.6,
+      "defense": 7,
+      "range": 1.0,
+      "starting_mana": 40,
+      "max_mana": 80,
+      "role": "自盾持线",
+      "equipment": [
+        "E07",
+        "E08",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "珊瑚岩甲",
+      "skill": "0.3秒前摇，获得30%H护盾5秒。无额外被动。",
+      "reference": "原型：S7.5 墨菲特自盾前排，阵容关系S04。",
+      "position": "碧潮的稳定承伤和护卫连接点；生命装同时增强本体与护盾。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H34",
+      "name": "踏浪剑客",
+      "tier": 3,
+      "traits": [
+        "碧潮",
+        "决斗"
+      ],
+      "hp": 800,
+      "attack": 65,
+      "attack_speed": 0.85,
+      "defense": 5,
+      "range": 1.0,
+      "starting_mana": 20,
+      "max_mana": 60,
+      "role": "破盾穿阵核心",
+      "equipment": [
+        "E06",
+        "E10",
+        "E11"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.32,
+      "skill_name": "踏浪破盾",
+      "skill": "0.3秒前摇，穿过当前目标直至其后方最近合法点，最多移动2格；沿线宽1格敌人各受2.0A伤害，并额外移除最多1.0A护盾；移除护盾的50%转为自己4秒护盾，合计最多20%H。",
+      "reference": "原型：S7.5 尼菈近战突破与破盾方向；转决斗为项目重组。",
+      "position": "对有盾前排和抱团阵型，吃攻击与续航；不是所有场景都比刃舞更强。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H35",
+      "name": "泉歌祭司",
+      "tier": 2,
+      "traits": [
+        "碧潮"
+      ],
+      "hp": 620,
+      "attack": 35,
+      "attack_speed": 0.7,
+      "defense": 4,
+      "range": 4.0,
+      "starting_mana": 50,
+      "max_mana": 100,
+      "role": "群体护盾与普攻附伤",
+      "equipment": [
+        "E02",
+        "E09",
+        "E12"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "泉歌协奏",
+      "skill": "0.5秒前摇，为4格内至多4名友军（按最低生命百分比）各授1.0P护盾4秒；这4秒内其普通攻击各附加0.18P伤害，每受益者每次普通攻击一次，额外箭不重复附伤。",
+      "reference": "原型：S7.5 萨勒芬妮护盾和攻击协作，S04列出原作成员；本文参数与上限为提案。",
+      "position": "放在射手和近战之间，能给铁契/游侠提供直接增益；输出不限定碧潮成员。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H36",
+      "name": "潮汐之灵",
+      "tier": 3,
+      "traits": [
+        "碧潮",
+        "术师"
+      ],
+      "hp": 700,
+      "attack": 40,
+      "attack_speed": 0.75,
+      "defense": 4,
+      "range": 4.0,
+      "starting_mana": 0,
+      "max_mana": 50,
+      "role": "铺标后引爆核心",
+      "equipment": [
+        "E01",
+        "E03",
+        "E04"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "潮印漩涡",
+      "skill": "连续前三次付费施法：0.3秒前摇，沿长5宽0.7格方向对未持潮印的最远敌人发浪，沿途各受0.75P并给主目标挂1枚潮印。第4次付费施法改为引爆所有潮印，各在1.3格范围造成1.8P伤害并清空印记，循环重置。印主死亡时印记移交2格内最近无印敌人，否则消失。",
+      "reference": "原型：S7.5 索姆三次铺标、下一次漩涡，S04；严格保留第四次兑现关系。",
+      "position": "低蓝和法强核心；术师回响复制当前浪/爆炸但不推进四次计数，不重复铺印。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H37",
+      "name": "吞宴巨兽",
+      "tier": 4,
+      "traits": [
+        "斗士",
+        "食神"
+      ],
+      "hp": 1250,
+      "attack": 65,
+      "attack_speed": 0.6,
+      "defense": 8,
+      "range": 1.0,
+      "starting_mana": 40,
+      "max_mana": 100,
+      "role": "永久成长与单体吞噬",
+      "equipment": [
+        "E07",
+        "E08",
+        "E10"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.42,
+      "skill_name": "吞噬",
+      "skill": "0.6秒前摇吞入当前近战非Boss敌人2秒，每0.5秒造成0.50P伤害；吞入期间目标不可被其他单位伤害，自己减伤20%。目标存活则吐向原位置附近合法点并眩晕1秒；自己死亡/被硬控则立即吐出，中止后续。Boss不能吞入，改为立即造成2.0P伤害，不禁锢。",
+      "reference": "原型：S6 塔姆吞噬及食神，S05；取消击杀产金，防止与经营收益叠成无条件选项。",
+      "position": "用来暂时移除危险前排，或长期投入培养；对Boss主要靠生命与伤害，不能跳过Boss机制。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H38",
+      "name": "岩座泰坦",
+      "tier": 4,
+      "traits": [
+        "护卫",
+        "岩座"
+      ],
+      "hp": 1300,
+      "attack": 65,
+      "attack_speed": 0.55,
+      "defense": 9,
+      "range": 1.0,
+      "starting_mana": 60,
+      "max_mana": 120,
+      "role": "保护阵地与范围重击",
+      "equipment": [
+        "E07",
+        "E08",
+        "E09"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.6,
+      "radius": 0.42,
+      "skill_name": "地脉震荡",
+      "skill": "0.7秒前摇，连续震地3次，间隔0.4秒，每次对周围2格造成0.06H+0.35P伤害；第三次击飞0.8秒；硬控中断未发生的震击。",
+      "reference": "原型：S7.5 泰拉与317岩地阵形；本文伤害时序为提案。",
+      "position": "站在自选阵地前端，护住远程发动机；不能全场自动提供减伤。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H39",
+      "name": "沙阵君王",
+      "tier": 4,
+      "traits": [
+        "唤灵",
+        "沙阵"
+      ],
+      "hp": 750,
+      "attack": 45,
+      "attack_speed": 0.75,
+      "defense": 5,
+      "range": 4.0,
+      "starting_mana": 40,
+      "max_mana": 100,
+      "role": "可布置阻挡与推线",
+      "equipment": [
+        "E02",
+        "E03",
+        "E14"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "沙墙推进",
+      "skill": "0.6秒前摇，向当前敌人方向推出长4、宽2格沙墙，沿途敌人受1.1P伤害并被推1格、眩晕0.8秒；墙在终点形成2个沙障S04，持续5秒，旧临时沙障替换不算阵亡。",
+      "reference": "原型：S4 阿兹尔及118枭雄；可布置沙兵归独有羁绊，技能是项目适配。",
+      "position": "给后排建立接敌缓冲；玩家能换部署方向，不依赖隐形嘲讽或必中控制。",
+      "ascension_benefit": null
+    },
+    {
+      "id": "H40",
+      "name": "创械大师",
+      "tier": 4,
+      "traits": [
+        "唤灵",
+        "创械"
+      ],
+      "hp": 650,
+      "attack": 35,
+      "attack_speed": 0.7,
+      "defense": 4,
+      "range": 4.0,
+      "starting_mana": 20,
+      "max_mana": 80,
+      "role": "可改装炮台核心",
+      "equipment": [
+        "E02",
+        "E03",
+        "E14"
+      ],
+      "ap": 100,
+      "crit_chance": 0.25,
+      "crit_multiplier": 1.5,
+      "move_speed": 1.4,
+      "radius": 0.32,
+      "skill_name": "炮台齐射",
+      "skill": "0.35秒前摇，若炮台S05存活，命令炮台朝最大敌群位置射3枚火箭，间隔0.2秒，每枚在1格范围造成0.65P伤害；若炮台不存在则在已配置位置附近重建，消耗本次施法，不同时射击。",
+      "reference": "原型：S9 黑默丁格可升级炮台，S06；炮台复建/火箭规则是本项目提案。",
+      "position": "围绕炮台布置保护，模块在整备选择；炮台被集中拆除时输出会明显中断。",
+      "ascension_benefit": null
+    }
+  ],
+  "traits": [
+    {
+      "id": "T01",
+      "name": "星环",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "references": [
+        64,
+        38
+      ],
+      "effect": "成员每次付费施法，分别将12/24/36法力平均分给其他存活且可收蓝的星环成员；施法者不收自己的回蓝。没有合格队友则不发，锁蓝者不暂存。",
+      "intent": "施法者、前排控制、伤害核心和治疗共同循环，越完整越稳定；借位术师可提升爆发。",
+      "members": [
+        "H01",
+        "H02",
+        "H03",
+        "H04",
+        "H05",
+        "H06"
+      ]
+    },
+    {
+      "id": "T02",
+      "name": "铁契",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "references": [
+        66
+      ],
+      "effect": "携带至少1件永久装备的铁契成员获得120/220/340生命与15%/25%/40%攻击；同一成员多件装备不增加档位收益。",
+      "intent": "先分装备启动多个成员，再集中主力；临时复制装备不白拿铁契资格。",
+      "members": [
+        "H07",
+        "H08",
+        "H09",
+        "H10",
+        "H11",
+        "H12"
+      ]
+    },
+    {
+      "id": "T03",
+      "name": "血誓",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        158
+      ],
+      "effect": "每名血誓成员本战首次生命降至50%或以下时，获得25%/45%H护盾，5秒线性衰减；触发后本战伤害提高12%/22%。",
+      "intent": "通过治疗、格挡和怒拳把半血窗口变成反攻；不会直接复活或抵挡致死一击。",
+      "members": [
+        "H13",
+        "H14",
+        "H15",
+        "H16",
+        "H17"
+      ]
+    },
+    {
+      "id": "T04",
+      "name": "亡契",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        57,
+        49
+      ],
+      "effect": "每当一名常驻友军本战首次阵亡，其余存活亡契成员获得8%/14%攻击与8/14法强，最多5层；召唤物、替换、吞食不触发。",
+      "intent": "前排倒下后后排继续接管；冥灯墓卫补战线，不能用召唤海无限叠层。",
+      "members": [
+        "H18",
+        "H19",
+        "H20",
+        "H21",
+        "H22"
+      ]
+    },
+    {
+      "id": "T05",
+      "name": "霜庭",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        2
+      ],
+      "effect": "成员普通攻击命中有20%/35%概率冻结目标0.8秒；同一普通攻击的子弹对同一敌人只判定一次，技能与衍生伤害不触发。",
+      "intent": "攻速增加控制机会，控住目标让冰矛和重射持续兑现；保留随机手感，命中概率使用战斗种子。",
+      "members": [
+        "H23",
+        "H24",
+        "H25",
+        "H26",
+        "H27"
+      ]
+    },
+    {
+      "id": "T06",
+      "name": "龙裔",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        270,
+        399
+      ],
+      "effect": "战斗第8秒一次雷暴，敌军各受其H的6%/10%普通伤害并眩晕0.6/1秒；每敌伤害上限180/300。此后龙裔成员攻速加25%/50%。",
+      "intent": "前排撑过8秒形成转折；巨龙长施法与火蝎站桩有了启动窗口，不能只靠百分比秒Boss。",
+      "members": [
+        "H28",
+        "H29",
+        "H30",
+        "H31"
+      ]
+    },
+    {
+      "id": "T07",
+      "name": "碧潮",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        315
+      ],
+      "effect": "成员法强加15/30，攻速加10%/20%；成员付费施法每次累积1潮汐，全局跨战保留。每战最多计20/35，败战保留计数，战后跨过阈值发对应奖励一次。",
+      "intent": "打出更多正常施法，同时推进下一个装备奖励；详细奖励表见供给篇。",
+      "members": [
+        "H32",
+        "H33",
+        "H34",
+        "H35",
+        "H36"
+      ]
+    },
+    {
+      "id": "T08",
+      "name": "护卫",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        14,
+        216
+      ],
+      "effect": "开战时护卫自己及1.5格内常驻友军获得3/6防御至战斗结束；多个护卫同档不叠加，取最高。",
+      "intent": "提供明确的邻接布阵价值；离开起点不会掉增益，不能靠所有人挤一起叠无穷护甲。",
+      "members": [
+        "H01",
+        "H07",
+        "H10",
+        "H18",
+        "H25",
+        "H33",
+        "H38"
+      ]
+    },
+    {
+      "id": "T09",
+      "name": "斗士",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        9
+      ],
+      "effect": "斗士H增加20%/40%，只加生命，不另塞控制或吸血。",
+      "intent": "支撑怒劲、百分比盾和变身，也提供便宜前排搭配；简单属性羁绊承担基础职责。",
+      "members": [
+        "H04",
+        "H14",
+        "H17",
+        "H24",
+        "H28",
+        "H37"
+      ]
+    },
+    {
+      "id": "T10",
+      "name": "决斗",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        101,
+        12
+      ],
+      "effect": "决斗成员每次普通攻击命中获得8%/14%攻速，最多6层，本战保留；技能攻击和额外箭不叠层。",
+      "intent": "连续普攻加速回蓝，启动反击、月刃和追斩；无需为每人额外造一套专属资源。",
+      "members": [
+        "H08",
+        "H11",
+        "H15",
+        "H28",
+        "H34"
+      ]
+    },
+    {
+      "id": "T11",
+      "name": "游侠",
+      "thresholds": [
+        2,
+        4
+      ],
+      "references": [
+        20,
+        103,
+        7
+      ],
+      "effect": "成员每第3次普通攻击额外攻击射程内1/2名其他敌人，各造成60%/75%本次主箭基础伤害；无其他目标时，改给原目标追加1发30%/45%伤害箭。",
+      "intent": "多目标清场，在单Boss战仍有较低收益；额外箭可独立暴击和触发霜庭，但不回蓝、不递归发箭。",
+      "members": [
+        "H09",
+        "H16",
+        "H20",
+        "H23",
+        "H26",
+        "H30"
+      ]
+    },
+    {
+      "id": "T12",
+      "name": "术师",
+      "thresholds": [
+        2,
+        4,
+        6
+      ],
+      "references": [
+        41,
+        102
+      ],
+      "effect": "成员付费技能结束0.3秒后回响一次相同技能，伤害系数为原技能的35%/55%/80%；回响不耗蓝，不回蓝，不触发再次施法、成长、叠球或潮汐；复制非伤害控制时持续减半，同名控制刷新不叠时。",
+      "intent": "复用法师双重施法的直观爆发；长引导回响也占动作时间，施法频率与单次威力有取舍。",
+      "members": [
+        "H02",
+        "H03",
+        "H05",
+        "H12",
+        "H13",
+        "H29",
+        "H31",
+        "H32",
+        "H36"
+      ]
+    },
+    {
+      "id": "T13",
+      "name": "唤灵",
+      "thresholds": [
+        2,
+        3
+      ],
+      "references": [
+        36
+      ],
+      "effect": "唤灵成员自己的战斗召唤物H增加25%/45%，有限存在时间增加25%/50%；不增加召唤数量，不强化复制英雄或遗物假人。",
+      "intent": "让墓卫、墓藤、沙障和炮台真正留在战场产生作用；不要求所有召唤物共享一个攻击模型。",
+      "members": [
+        "H19",
+        "H22",
+        "H39",
+        "H40"
+      ]
+    },
+    {
+      "id": "T14",
+      "name": "刺客",
+      "thresholds": [
+        2,
+        3
+      ],
+      "references": [
+        756,
+        429
+      ],
+      "effect": "开战0.8秒后跳向最远可达敌人的邻接空位；成员暴击率增加15/25个百分点，暴击倍率增加0.2/0.35，技能可暴击。3人时本战首次击杀后立即换到最远可达敌人并让下一击必暴击。",
+      "intent": "提供后排威胁；跳跃不能落在墙内或占用格，失败从侧翼正常接敌，不强制换位成功。",
+      "members": [
+        "H12",
+        "H21",
+        "H27"
+      ]
+    },
+    {
+      "id": "T15",
+      "name": "食神",
+      "thresholds": [
+        1
+      ],
+      "references": [
+        219
+      ],
+      "effect": "仅吞宴巨兽拥有。每次完成有效非终局行动后获得1次喂食资格，上限1；在整备吞食1名非部署英雄，装备全部退回，英雄移出本局名册且不能再次招募。按供体阶级1/2/3/4获得40/65/95/130永久H与3/5/7/10永久A，每局最多3次。",
+      "intent": "获得额外英雄后决定保留工具位还是集中培养；不用反复开关整备刷成长。",
+      "members": [
+        "H37"
+      ]
+    },
+    {
+      "id": "T16",
+      "name": "岩座",
+      "thresholds": [
+        1
+      ],
+      "references": [
+        317
+      ],
+      "effect": "仅岩座泰坦拥有。整备选3个合法部署位，开战站在这些位置的常驻友军获得15%减伤；受益者离开对应位置中心1格后失效，重新进入不恢复。",
+      "intent": "高价值保护有站位代价；远程易保收益，前排接敌后会丢失，3是地格数不是人数。",
+      "members": [
+        "H38"
+      ]
+    },
+    {
+      "id": "T17",
+      "name": "沙阵",
+      "thresholds": [
+        1
+      ],
+      "references": [
+        118
+      ],
+      "effect": "仅沙阵君王拥有。整备额外摆2名沙兵S03，不占常驻人口，占部署位；沙兵不能移动或普攻，可受击和阻挡。君王死亡时沙兵退场。",
+      "intent": "用两个可见身体重塑接敌和投射物路径，不能持续独立存活拖住败战判定。",
+      "members": [
+        "H39"
+      ]
+    },
+    {
+      "id": "T18",
+      "name": "创械",
+      "thresholds": [
+        1
+      ],
+      "references": [
+        398
+      ],
+      "effect": "仅创械大师拥有。整备摆1座炮台S05，不占常驻人口，占部署位；选择贯穿、爆破或破甲模块之一，每次整备可免费换。模块效果见召唤物表，炮台共享大师P与额外攻速。",
+      "intent": "在看过敌阵后调整炮台职责；舍弃原作额外商店升级，避免固定地图商店缺货使独有机制失效。",
+      "members": [
+        "H40"
+      ]
+    }
+  ],
+  "equipment": [
+    {
+      "id": "E01",
+      "name": "蓝晶护符",
+      "effect": "法强+15；法力上限降低10，最低20；不改变初始法力上限约束。",
+      "use": "低蓝连续施法，H03/H05/H32/H36；无蓝单位无效。",
+      "quality": "standard"
+    },
+    {
+      "id": "E02",
+      "name": "回响长矛",
+      "effect": "攻击+10、初始法力+15；本人普通攻击额外回复5法力，技能攻击/额外箭不触发。",
+      "use": "高蓝启动与第二次施法，H04/H06/H24/H31。",
+      "quality": "standard"
+    },
+    {
+      "id": "E03",
+      "name": "聚能冠",
+      "effect": "法强+45。",
+      "use": "纯粹放大技能；低施法次数也有收益。",
+      "quality": "standard"
+    },
+    {
+      "id": "E04",
+      "name": "珠光法印",
+      "effect": "法强+20、暴击率+20个百分点；本人技能伤害允许暴击。",
+      "use": "与R01重叠时转为暴击倍率+0.15；不是双倍技能暴击。",
+      "quality": "standard"
+    },
+    {
+      "id": "E05",
+      "name": "疾刃",
+      "effect": "攻速+15%；每次本人普通攻击命中再加4%攻速，最多10层，本战保留。",
+      "use": "H09/H15/H26持续输出；不从技能/额外箭叠层。",
+      "quality": "standard"
+    },
+    {
+      "id": "E06",
+      "name": "处刑之刃",
+      "effect": "攻击+20、暴击率+15个百分点；暴击倍率+0.25。",
+      "use": "普攻与可暴击技能主力，不赋予技能暴击资格。",
+      "quality": "standard"
+    },
+    {
+      "id": "E07",
+      "name": "巨人腰带",
+      "effect": "生命+300。",
+      "use": "盾、怒劲、变形、百分比生命技能共用。",
+      "quality": "standard"
+    },
+    {
+      "id": "E08",
+      "name": "钢铸胸甲",
+      "effect": "防御+6；来自暴击的额外伤害降低50%，普通部分正常。",
+      "use": "对高暴击多次攻击有效，不能免疫暴击附带效果。",
+      "quality": "standard"
+    },
+    {
+      "id": "E09",
+      "name": "复苏披风",
+      "effect": "生命+120、法强+15；本人制造的治疗与护盾提高20%。",
+      "use": "治疗/授盾来源放大一次，受益者装备不再次放大同一数值。",
+      "quality": "standard"
+    },
+    {
+      "id": "E10",
+      "name": "饮血刃",
+      "effect": "攻击+10；本人伤害实际削减敌方生命的18%转为自疗；范围伤害治疗效率为1/3。",
+      "use": "近战主力续航；不计算盾和过量伤害。",
+      "quality": "standard"
+    },
+    {
+      "id": "E11",
+      "name": "破甲弩",
+      "effect": "攻速+15%；本人普通攻击使目标防御降低30%，持续4秒。",
+      "use": "统一防御破甲取同类最高，不和别的百分比破甲相加。",
+      "quality": "standard"
+    },
+    {
+      "id": "E12",
+      "name": "迅启法典",
+      "effect": "初始法力+35；第一次付费技能的治疗、护盾或伤害提高20%。",
+      "use": "前排控制/群体治疗提早到来，不提高控制时长。",
+      "quality": "standard"
+    },
+    {
+      "id": "E13",
+      "name": "远射镜",
+      "effect": "攻击+12、普攻射程+1格；本人的伤害按实际距离每格提高4%，最多20%。",
+      "use": "站位换收益；近战装上也可远1格，不限制职业。",
+      "quality": "standard"
+    },
+    {
+      "id": "E14",
+      "name": "统御权杖",
+      "effect": "法强+20；本人召唤物伤害提高20%。",
+      "use": "不作用于复制英雄或无所属者的遗物假人；不乘召唤物身上的技能系数两次。",
+      "quality": "standard"
+    },
+    {
+      "id": "E15",
+      "name": "净化护符",
+      "effect": "生命+100；本战首次受到硬控时立即移除该次控制，随后3秒控制时长降低50%。",
+      "use": "可保住一次关键释放；不是整场免控，提前小控制也会消耗。",
+      "quality": "standard"
+    },
+    {
+      "id": "E16",
+      "name": "灼伤书",
+      "effect": "法强+20；技能伤害给敌人施加灼伤，每秒造成其H的1%普通伤害，持续5秒，每秒最多20；治疗降低30%。",
+      "use": "同名灼伤刷新不叠强度；持续脉冲刷新，衍生灼伤不再触发本装备。",
+      "quality": "standard"
+    },
+    {
+      "id": "E17",
+      "name": "复生甲",
+      "effect": "生命+150；本战首次阵亡后1.5秒原地复活为30%H，复活时2秒不能行动；无合法点则在最近合法点。",
+      "use": "首次阵亡触发亡契/冥灯后不撤销；复活后再死不重复首次阵亡事件。",
+      "quality": "standard"
+    },
+    {
+      "id": "E18",
+      "name": "护阵旗",
+      "effect": "生命+100、防御+2；开战自己及1.5格内至多2名最近友军获得装备者H的15%护盾，持续8秒。",
+      "use": "支持集中布阵；同名旗的盾取最大，不堆多旗初始无限盾。",
+      "quality": "standard"
+    },
+    {
+      "id": "E19",
+      "name": "无尽炉心",
+      "effect": "神器，法强+25；每第3次付费施法造成的伤害提高80%，其余技能正常；不复制施法。",
+      "use": "与术师回响共享该次倍率，但回响不推进计数。",
+      "quality": "artifact"
+    },
+    {
+      "id": "E20",
+      "name": "不动山岳",
+      "effect": "神器，生命+200、防御+4；连续2秒未移动则受伤降低25%，移动立即失效。",
+      "use": "适合守点坦克/炮台主人，位移技能与冲锋有真实代价。",
+      "quality": "artifact"
+    },
+    {
+      "id": "E21",
+      "name": "猎王战弓",
+      "effect": "神器，攻击+20、攻速+20%；击杀常驻敌人后立刻进行1次100%A额外普攻，至多每0.5秒一次。",
+      "use": "派生攻击不能再触发本装备；不会给召唤杀怪刷无限链。",
+      "quality": "artifact"
+    },
+    {
+      "id": "E22",
+      "name": "万象棱镜",
+      "effect": "神器，法强+25；每次付费技能结束后获得20法力，间隔至少2秒，延后到本人锁蓝结束发放一次。",
+      "use": "与低蓝/星环叠加要看动作占用；不由回响或追斩触发。",
+      "quality": "artifact"
+    }
+  ],
+  "relics": [
+    {
+      "id": "R01",
+      "name": "珠光莲华",
+      "quality": "强化",
+      "effect": "全体友军技能伤害可以暴击，暴击率+15个百分点；已有技能暴击资格者额外暴击倍率+0.15。",
+      "boundary": "所有可造成技能伤害的友军，含后生召唤物。无直接伤害技能也仍获得普攻暴击率。",
+      "reference": "海克斯同名方向；技能暴击类别来自429。",
+      "decision": "改变法术出装，和E04形成可替代关系。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R02",
+      "name": "狩猎律动",
+      "quality": "常规",
+      "effect": "任意友军击杀常驻敌人，自身回复20%最大生命；召唤物击杀治疗召唤物自己。",
+      "boundary": "每次死亡唯一归属；召唤敌人不给该治疗，复活再杀仍不重复同一敌身份。",
+      "reference": "海克斯Thrill of the Hunt方向，本稿数值。",
+      "decision": "清小怪时强；单Boss收益低，需要别的续航。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R03",
+      "name": "复苏之风",
+      "quality": "常规",
+      "effect": "战斗第10秒，全体存活友军回复40%已损失生命。",
+      "boundary": "只结算一次；10秒后出现的召唤物不追补。",
+      "reference": "海克斯Second Wind方向。",
+      "decision": "低血反攻/慢阵容，快攻时可能来不及产生价值。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R04",
+      "name": "飞升",
+      "quality": "强化",
+      "effect": "战斗第15秒起，全体友军伤害提高35%。",
+      "boundary": "含15秒后出现的友军；不产生技能施法事件。",
+      "reference": "海克斯Ascension方向；115/638保留作参考。",
+      "decision": "为长战选择，需要先支付前15秒生存成本。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R05",
+      "name": "星界赐福",
+      "quality": "强化",
+      "effect": "所有友军造成实际生命伤害的12%转自疗，范围伤害效率1/3；过量治疗的50%转为5秒护盾，每人最多15%H。",
+      "boundary": "任何来源的治疗都可产过量盾，同次治疗只转换一次；不从护盾和过量伤害吸取。",
+      "reference": "海克斯Celestial Blessing方向＋现有RL16。",
+      "decision": "让无治疗阵容能持续，并把装备槽腾给输出。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R06",
+      "name": "羽量级选手",
+      "quality": "常规",
+      "effect": "一、二阶英雄攻速+25%、移速+15%。",
+      "boundary": "按英雄原生供给阶级判断，升阶身份不改变资格；召唤物不继承本条。",
+      "reference": "海克斯Featherweights方向。",
+      "decision": "保留低阶主力有回报，不迫使拿到高阶就全部换掉。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R07",
+      "name": "并肩作战",
+      "quality": "强化",
+      "effect": "每激活一条多人羁绊，全体友军攻击+3%、法强+3，至多6条。",
+      "boundary": "独有一人羁绊不计；战前冻结，后生召唤物正常受益。",
+      "reference": "海克斯Stand United方向。",
+      "decision": "多条小羁绊混搭，对应放弃纯色高档的机会成本。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R08",
+      "name": "卓尔不群",
+      "quality": "强化",
+      "effect": "没有任何已激活原生羁绊的常驻英雄，生命+250、攻速+35%。",
+      "boundary": "每名英雄分别判断；独有羁绊激活会失去资格，召唤物不受益。",
+      "reference": "海克斯Built Different，S08有历史调整记录。",
+      "decision": "明确提供不凑羁绊的另一条构筑路线。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R09",
+      "name": "源能链路",
+      "quality": "常规",
+      "effect": "至少装备1件永久装备的英雄每秒回复2法力，额外生命+80。",
+      "boundary": "无蓝英雄只得生命；临时装备不计算资格，战中无装备转移。",
+      "reference": "海克斯Cybernetic Uplink方向，与066共用装备分配语法。",
+      "decision": "装备分散与施法频率联系，可帮助非铁契阵容。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R10",
+      "name": "二进制空投",
+      "quality": "强化",
+      "effect": "恰好携带2件永久装备的英雄，开战在第3槽获得1件本战临时装备。",
+      "boundary": "从airdrop池冻结每名英雄结果；不能交易、拆解、用于潘多拉；离战销毁；不占常驻背包。",
+      "reference": "海克斯Binary Airdrop，S07。",
+      "decision": "两件多养几个，还是三件集中主力，有实际取舍。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R11",
+      "name": "便携锻炉",
+      "quality": "珍奇",
+      "effect": "立刻从神器池中生成3件不同装备供选择1件，领取到背包。",
+      "boundary": "池只有1件时直接提供1件；背包满保留待领取，不消耗或变金币。",
+      "reference": "海克斯Portable Forge方向；内容通过池连接。",
+      "decision": "提供能改变主力构筑的高价值装备，不要求专用英雄。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R12",
+      "name": "百宝袋",
+      "quality": "常规",
+      "effect": "从普通装备池获得2件装备，分别独立抽取，允许同名。",
+      "boundary": "一次性获得，不随战斗重复；结果与待领取状态一起保存。",
+      "reference": "海克斯Item Grab Bag，S07；舍弃本项目没有的重铸器。",
+      "decision": "立即补装备数量，可启动铁契或两名主力。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R13",
+      "name": "潘多拉匣",
+      "quality": "强化",
+      "effect": "每个非终局有效行动结束后，允许将1件背包中的普通永久装备转换为1件不同普通装备。",
+      "boundary": "每次结算1次额度，上限1，选择消耗后冻结结果；神器/临时物品不可转换；原件从池排除，空池不消耗。",
+      "reference": "海克斯Pandora’s Items方向；主动选一件代替随机改整个背包。",
+      "decision": "低成本纠正不合用装备，必须放弃旧装备与等待下一次额度。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R14",
+      "name": "急救用具",
+      "quality": "常规",
+      "effect": "全体友军制造的治疗与护盾提高25%。",
+      "boundary": "按来源放大一次，受益者不重复乘；可叠E09为同一加法增幅45%。",
+      "reference": "海克斯First Aid Kit，S09。",
+      "decision": "盾、治疗、吸血都可用；没有对应能力时即时价值低。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R15",
+      "name": "流浪者",
+      "quality": "常规",
+      "effect": "开战周围1.5格内没有其他常驻友军的英雄，获得30%H护盾，持续10秒。",
+      "boundary": "召唤物不干扰资格，不获得护盾；资格只看开战位置，不需持续保持分散。",
+      "reference": "海克斯Exiles，S07/S09。",
+      "decision": "与护卫抱团有取舍，刺客起跳前也能享受。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R16",
+      "name": "近战训练",
+      "quality": "常规",
+      "effect": "开战位于部署区最前两列的常驻英雄获得20%攻击与3防御，本战保留。",
+      "boundary": "用地图面向敌方的局部部署坐标判断；后生单位不补发。",
+      "reference": "海克斯CQC Training方向，S07。",
+      "decision": "让站位改变增益对象；远程前置能获收益也承受危险。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R17",
+      "name": "后排之迅",
+      "quality": "常规",
+      "effect": "开战位于部署区最后一列的常驻英雄，本战攻速提高25%。",
+      "boundary": "与近战训练按实际地形列定义；部署区只有1列时仅本条生效。",
+      "reference": "海克斯Backfoot；S09记载其历史存在与移除。",
+      "decision": "争夺有限后排位置，不是无条件全队攻速。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R18",
+      "name": "日炎棋盘",
+      "quality": "强化",
+      "effect": "开战对所有初始敌人施加灼伤：每秒造成1%H普通伤害，持续10秒，每秒最多20；期间治疗降低30%。",
+      "boundary": "与E16同名灼伤取较强强度、较长剩余时长，不重复叠加；不命中后生敌人。",
+      "reference": "海克斯Sunfire Board，S07/S09。",
+      "decision": "压恢复和前排，允许省掉一件重伤装。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R19",
+      "name": "弱点洞悉",
+      "quality": "常规",
+      "effect": "全体友军普通攻击命中使目标防御降低20%、受治疗降低30%，持续4秒。",
+      "boundary": "额外箭可以施加；相同减防/重伤只刷新，不与更强同类叠乘。",
+      "reference": "海克斯Weakspot方向，S09记载历史版本。",
+      "decision": "为全队提供破甲和重伤，伤害主力不用都拿工具装备。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R20",
+      "name": "应急护甲",
+      "quality": "常规",
+      "effect": "没有任何永久装备的常驻英雄获得6防御。",
+      "boundary": "临时空投装备不会取消；不影响召唤物。",
+      "reference": "海克斯Makeshift Armor方向。",
+      "decision": "集中养主力时给没装备的工具人明确生存价值。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R21",
+      "name": "虚假前线",
+      "quality": "常规",
+      "effect": "整备可额外布置2个假人S06，不占常驻人口，但各占1部署位。",
+      "boundary": "假人属于临时友军，可受通用治疗；没有英雄/种族/职业，不计死亡传承，不延长全常驻阵亡后的战斗。",
+      "reference": "海克斯Phony Frontline，S07/S09。",
+      "decision": "多两个可布置身体改变接敌，但没有输出或永久人口。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R22",
+      "name": "新人入队",
+      "quality": "珍奇",
+      "effect": "常驻人口上限+1，最高18；立刻获得一次当前阶段英雄发现。",
+      "boundary": "在领取前确认至少有3名未拥有合法候选，否则不进入本次遗物候选池。",
+      "reference": "海克斯New Recruit，S07；附发现为项目供给适配。",
+      "decision": "直接扩展搭配空间，也给人可填，仍受18格物理限制。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R23",
+      "name": "羁绊之心",
+      "quality": "强化",
+      "effect": "取得时在3条已配置的多人羁绊中选1条，此后该羁绊人数+1。",
+      "boundary": "不赋给任何英雄新资格，只提高计数；无原生成员不能从0生效。独有羁绊不入池，同种之心整局最多1。",
+      "reference": "海克斯Heart方向；原66候选仅供来源，不是全部自动可选。",
+      "decision": "补一格成型或腾一个功能位，不新增全员徽章系统。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R24",
+      "name": "林地幻影",
+      "quality": "珍奇",
+      "effect": "开战复制1名H最高的常驻英雄，生成其70%H的幻影S07。",
+      "boundary": "幻影无装备、无羁绊/独有规则、无永久成长与授予能力；复制普通主动和战内被动，最多1个，存活15秒。",
+      "reference": "032森林复制方向；海克斯Woodland Charm作平行参考，S09。",
+      "decision": "选择复制坦克还是主力取决于生命投入，不能复制食神/炮台/沙兵规则。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R25",
+      "name": "电火花",
+      "quality": "常规",
+      "effect": "任意友军受到普通攻击实际伤害时，对2格内最多3名最近敌人造成25普通伤害。",
+      "boundary": "每名友军冷却2秒，护盾吸收也算实际伤害；反伤不是普通攻击，不互相触发。",
+      "reference": "海克斯Electrocharge方向；046雷霆参考。",
+      "decision": "持线密集交战受益，不能给远程互射无条件全场反伤。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R26",
+      "name": "离别赠礼",
+      "quality": "常规",
+      "effect": "每名常驻英雄首次阵亡时，治疗2格内至多2名生命比例最低友军各15%最大生命。",
+      "boundary": "治疗按受益者H；复活再死不重触发；召唤物能被治疗但其死亡不触发。",
+      "reference": "049光的死亡接力作全局遗物适配。",
+      "decision": "前排死亡时给接替者续战，和亡契分别提供防守/进攻。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R27",
+      "name": "公理回路",
+      "quality": "强化",
+      "effect": "每个常驻敌人本战首次死亡时，距死者最近的至多2名可收蓝友军各得12法力。",
+      "boundary": "无合格目标即失去；召唤物只有有蓝时能接收；锁蓝时不攒隐形欠账。",
+      "reference": "海克斯Axiom Arc方向；数值和邻近分配为提案。",
+      "decision": "形成击杀后的下一次技能，单Boss战收益有限。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R28",
+      "name": "战利契约",
+      "quality": "常规",
+      "effect": "本局累计击杀5名非临时敌人后，战斗结束获得1件装备，多余计数保留，可重复。",
+      "boundary": "不追溯取得前击杀；同一遭遇每名原生敌人一局最多记一次，普通失败重试不能刷；胜败都结算，终局失败只记账不发可用奖励。",
+      "reference": "用户明确示例，承接既有RL25；N=5仍为参数，不绑定具体装备。",
+      "decision": "稳定机制接bounty_equipment池，测试可只配置已有1件装备。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R29",
+      "name": "利滚利",
+      "quality": "常规",
+      "effect": "立即获得10金币；此后每次首次战胜普通/精英遭遇，按开战冻结金币的10%向下取整获得利息，单场最多3金币。",
+      "boundary": "失败重试不赚，Boss无利息；利息入账不再次产生利息。",
+      "reference": "海克斯Rich Get Richer，S07；适配有限单人战利而非PVP每回合。",
+      "decision": "存钱与当下买装备冲突，后期出现需检查剩余机会。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R30",
+      "name": "黑星",
+      "quality": "强化",
+      "effect": "首次击败每个精英遭遇，额外得到1件尚未拥有的常规或强化遗物。",
+      "boundary": "从elite_bonus池按冻结种子抽，排除所有奖励生成型遗物，空池无奖励且提前显示。",
+      "reference": "既有RL05及杀戮尖塔Black Star，来源保留在旧遗物库。",
+      "decision": "选更多精英有具体长期回报，需要阵容先能打过。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R31",
+      "name": "悬赏挑战",
+      "quality": "强化",
+      "effect": "每个阶段可给一个尚未战胜的已知精英悬赏：该敌阵H和A各提高15%，首次胜利额外从神器池三选一。",
+      "boundary": "签约免费且可在开战前取消；第一次正式开战后本阶段锁定该悬赏与难度，失败不换目标，无额外败战豁免。",
+      "reference": "项目风险契约提案，106兑现思路；不是声称云顶已有同名完整效果。",
+      "decision": "用可见风险换明确奖励，不鼓励在Boss失败即终局规则下连败攒钱。",
+      "scope": "run_global",
+      "unique": true
+    },
+    {
+      "id": "R32",
+      "name": "耐心之卵",
+      "quality": "强化",
+      "effect": "取得后完成3次有效非终局行动，孵化为一次珍奇遗物三选一。",
+      "boundary": "候选来自egg_reward池，只允许R11/R22/R24这种一次性兑现项，排除自身与持续生奖励项；取得当次不倒计时。剩余行动总数不足3则不供给。",
+      "reference": "海克斯The Golden Egg，S09；缩短至本项目有限征程。",
+      "decision": "牺牲当前强化换后续大奖，倒计时始终可见。",
+      "scope": "run_global",
+      "unique": true
+    }
+  ],
+  "pool_variants": {
+    "omit_星环": [
+      "H07",
+      "H08",
+      "H09",
+      "H10",
+      "H11",
+      "H12",
+      "H13",
+      "H14",
+      "H15",
+      "H16",
+      "H17",
+      "H18",
+      "H19",
+      "H20",
+      "H21",
+      "H22",
+      "H23",
+      "H24",
+      "H25",
+      "H26",
+      "H27",
+      "H28",
+      "H29",
+      "H30",
+      "H31",
+      "H32",
+      "H33",
+      "H34",
+      "H35",
+      "H36",
+      "H37",
+      "H38",
+      "H39",
+      "H40"
+    ],
+    "omit_血誓": [
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "H06",
+      "H07",
+      "H08",
+      "H09",
+      "H10",
+      "H11",
+      "H12",
+      "H18",
+      "H19",
+      "H20",
+      "H21",
+      "H22",
+      "H23",
+      "H24",
+      "H25",
+      "H26",
+      "H27",
+      "H28",
+      "H29",
+      "H30",
+      "H31",
+      "H32",
+      "H33",
+      "H34",
+      "H35",
+      "H36",
+      "H37",
+      "H38",
+      "H39",
+      "H40"
+    ],
+    "omit_龙裔": [
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "H06",
+      "H07",
+      "H08",
+      "H09",
+      "H10",
+      "H11",
+      "H12",
+      "H13",
+      "H14",
+      "H15",
+      "H16",
+      "H17",
+      "H18",
+      "H19",
+      "H20",
+      "H21",
+      "H22",
+      "H23",
+      "H24",
+      "H25",
+      "H26",
+      "H27",
+      "H32",
+      "H33",
+      "H34",
+      "H35",
+      "H36",
+      "H37",
+      "H38",
+      "H39",
+      "H40"
+    ],
+    "omit_碧潮": [
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "H06",
+      "H07",
+      "H08",
+      "H09",
+      "H10",
+      "H11",
+      "H12",
+      "H13",
+      "H14",
+      "H15",
+      "H16",
+      "H17",
+      "H18",
+      "H19",
+      "H20",
+      "H21",
+      "H22",
+      "H23",
+      "H24",
+      "H25",
+      "H26",
+      "H27",
+      "H28",
+      "H29",
+      "H30",
+      "H31",
+      "H37",
+      "H38",
+      "H39",
+      "H40"
+    ]
+  },
+  "selected_reference_ids": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9,
+    10,
+    12,
+    13,
+    14,
+    20,
+    25,
+    27,
+    29,
+    32,
+    36,
+    38,
+    41,
+    42,
+    46,
+    49,
+    52,
+    57,
+    63,
+    64,
+    66,
+    70,
+    73,
+    101,
+    102,
+    103,
+    104,
+    106,
+    107,
+    108,
+    115,
+    116,
+    158,
+    183,
+    216,
+    219,
+    226,
+    270,
+    268,
+    261,
+    288,
+    314,
+    315,
+    317,
+    318,
+    327,
+    336,
+    374,
+    399,
+    427,
+    429,
+    456,
+    462,
+    477,
+    488,
+    513,
+    550,
+    638,
+    696,
+    756
+  ],
+  "reference_mapping": [
+    {
+      "index": 2,
+      "source": "[云顶之弈 S1 · 极地（Glacial） · 2/4/6](https://tftset.com/set/1-beta-set/trait/glacial)",
+      "status": "采用",
+      "decision": "T05霜庭，保留普攻概率控制，成员技能围绕控线与集火组织。"
+    },
+    {
+      "index": 3,
+      "source": "[云顶之弈 S1 · 约德尔人（Yordle） · 3/6/9](https://tftset.com/set/1-beta-set/trait/yordle)",
+      "status": "后移",
+      "decision": "闪避是一种可行防守路线，但本稿已有格挡/减伤/护盾；保留下一批的完整闪避成员设计。"
+    },
+    {
+      "index": 4,
+      "source": "[云顶之弈 S1 · 元素使（Elementalist） · 3](https://tftset.com/set/1-beta-set/trait/elementalist)",
+      "status": "后移",
+      "decision": "开场巨像是独立构筑卖点，不用小植物替代；本版召唤先做主动召唤与死亡后援。"
+    },
+    {
+      "index": 5,
+      "source": "[云顶之弈 S1 · 龙（Dragon） · 2](https://tftset.com/set/1-beta-set/trait/dragon)",
+      "status": "适配限制",
+      "decision": "统一防御下不直接存在魔抗羁绊；原型保留，需改为明确伤害类别或时机保护后再成套设计。"
+    },
+    {
+      "index": 6,
+      "source": "[云顶之弈 S1 · 骑士（Knight） · 2/4/6](https://tftset.com/set/1-beta-set/trait/knight)",
+      "status": "单位化",
+      "decision": "H07固定格挡承担对密集小伤害的功能，不另加一条全队格挡羁绊。"
+    },
+    {
+      "index": 7,
+      "source": "[云顶之弈 S1 · 游侠（Ranger） · 2/4](https://tftset.com/set/1-beta-set/trait/ranger)",
+      "status": "比较后移",
+      "decision": "T11本版用多目标箭，不把概率攻速也叠进去；周期攻速可作为另一版游侠候选。"
+    },
+    {
+      "index": 9,
+      "source": "[云顶之弈 S1 · 斗士（Brawler） · 2/4/6](https://tftset.com/set/1-beta-set/trait/brawler)",
+      "status": "采用",
+      "decision": "T09斗士基础生命，是前排与百分比能力的基础连接。"
+    },
+    {
+      "index": 10,
+      "source": "[云顶之弈 S1 · 贵族（Noble） · 3/6](https://tftset.com/set/1-beta-set/trait/noble)",
+      "status": "后移",
+      "decision": "随机少量祝福到全队祝福值得单独一套成员，不作为本版铁契的额外附赠。"
+    },
+    {
+      "index": 12,
+      "source": "[云顶之弈 S1 · 剑士（Blademaster） · 3/6/9](https://tftset.com/set/1-beta-set/trait/blademaster)",
+      "status": "比较后移",
+      "decision": "本版决斗采用101叠攻速；额外同目标连击与之区分保留，不声称已实现。"
+    },
+    {
+      "index": 13,
+      "source": "[云顶之弈 S1 · 换形师（Shapeshifter） · 3/6](https://tftset.com/set/1-beta-set/trait/shapeshifter)",
+      "status": "单位化",
+      "decision": "H18、H28以一次变形改变生命/作战方式，不要求全队都变身。"
+    },
+    {
+      "index": 14,
+      "source": "[云顶之弈 S1 · 护卫（Guardian） · 2](https://tftset.com/set/1-beta-set/trait/guardian)",
+      "status": "采用",
+      "decision": "T08护卫开战邻接防御，主要决策是布阵。"
+    },
+    {
+      "index": 20,
+      "source": "[云顶之弈 S1 · 枪手（Gunslinger） · 2/4/6](https://tftset.com/set/1-beta-set/trait/gunslinger)",
+      "status": "采用",
+      "decision": "T11游侠采用额外不同目标攻击，并为单Boss提供较低的同目标补偿。"
+    },
+    {
+      "index": 25,
+      "source": "[云顶之弈 S2 · 掠食者（Predator） · 3](https://tftset.com/set/2-rise-of-the-elements/trait/predator)",
+      "status": "局部参考",
+      "decision": "H21用低生命增伤兑现收割；本版不做对所有敌人无条件百分比处决。"
+    },
+    {
+      "index": 27,
+      "source": "[云顶之弈 S2 · 狂战士（Berserker） · 3/6](https://tftset.com/set/2-rise-of-the-elements/trait/berserker)",
+      "status": "局部参考",
+      "decision": "H28变形后普攻覆盖后方区域；整套跳近身/锥形攻击职业后移。"
+    },
+    {
+      "index": 29,
+      "source": "[云顶之弈 S2 · 水晶（Crystal） · 2/4](https://tftset.com/set/2-rise-of-the-elements/trait/crystal)",
+      "status": "后移",
+      "decision": "单次伤害上限会改变高爆发解题，适合后续专门水晶单位包；不能和格挡视为一物。"
+    },
+    {
+      "index": 32,
+      "source": "[云顶之弈 S2 · 森林（Woodland） · 3/6](https://tftset.com/set/2-rise-of-the-elements/trait/woodland)",
+      "status": "遗物化",
+      "decision": "R24林地幻影；限制装备/独有规则继承，提供完整复制体定义。"
+    },
+    {
+      "index": 36,
+      "source": "[云顶之弈 S2 · 召唤使（Summoner） · 3/6](https://tftset.com/set/2-rise-of-the-elements/trait/summoner)",
+      "status": "采用",
+      "decision": "T13唤灵，配S01/S02/S03/S04/S05的不同战场职责。"
+    },
+    {
+      "index": 38,
+      "source": "[云顶之弈 S2 · 海洋（Ocean） · 2/4/6](https://tftset.com/set/2-rise-of-the-elements/trait/ocean)",
+      "status": "比较后移",
+      "decision": "T01用施法接力而非周期全队回蓝；周期回蓝保留为另一套引擎。"
+    },
+    {
+      "index": 41,
+      "source": "[云顶之弈 S2 · 魔法师（Mage） · 3/6](https://tftset.com/set/2-rise-of-the-elements/trait/mage)",
+      "status": "合并采用",
+      "decision": "T12术师采用一次回响，和102合并为一条明确的法术机制。"
+    },
+    {
+      "index": 42,
+      "source": "[云顶之弈 S2 · 地狱火（Inferno） · 3/6/9](https://tftset.com/set/2-rise-of-the-elements/trait/inferno)",
+      "status": "后移",
+      "decision": "地面持续火区需要完整移动/站位收益；E16目标灼伤不冒充地狱火地面规则。"
+    },
+    {
+      "index": 46,
+      "source": "[云顶之弈 S2 · 雷霆（Electric） · 2/3/4](https://tftset.com/set/2-rise-of-the-elements/trait/electric)",
+      "status": "遗物适配",
+      "decision": "R25取承受攻击后近身雷电反击，改触发条件；不是照搬原版暴击双向触发。"
+    },
+    {
+      "index": 49,
+      "source": "[云顶之弈 S2 · 光（Light） · 3/6/9](https://tftset.com/set/2-rise-of-the-elements/trait/light)",
+      "status": "遗物化",
+      "decision": "R26死亡治疗，T04保留进攻传承；分开让玩家选择是否组合。"
+    },
+    {
+      "index": 52,
+      "source": "[云顶之弈 S3 · 狙神（Sniper） · 2](https://tftset.com/set/3-galaxies/trait/sniper)",
+      "status": "装备化",
+      "decision": "E13按距离提高伤害，成为所有单位可选的站位收益。"
+    },
+    {
+      "index": 57,
+      "source": "[云顶之弈 S3 · 暗星（Dark Star） · 3/6/9](https://tftset.com/set/3-galaxies/trait/dark-star)",
+      "status": "采用",
+      "decision": "T04亡契以常驻友军首次阵亡推动生存者接管。"
+    },
+    {
+      "index": 63,
+      "source": "[云顶之弈 S3 · 圣盾使（Protector） · 2/4/6](https://tftset.com/set/3-galaxies/trait/protector)",
+      "status": "单位化",
+      "decision": "H04施法自盾+控制，不给所有施法者再叠一层通用盾羁绊。"
+    },
+    {
+      "index": 64,
+      "source": "[云顶之弈 S3 · 星之守护者（Star Guardian） · 3/6](https://tftset.com/set/3-galaxies/trait/star-guardian)",
+      "status": "采用",
+      "decision": "T01星环及完整六成员职责，保留引擎/控制/输出/治疗关系。"
+    },
+    {
+      "index": 66,
+      "source": "[云顶之弈 S3 · 源计划（Cybernetic） · 3/6](https://tftset.com/set/3-galaxies/trait/cybernetic)",
+      "status": "采用",
+      "decision": "T02铁契装备均分与集中主力的取舍。"
+    },
+    {
+      "index": 70,
+      "source": "[云顶之弈 S3 · 银河魔装机神（Mech-Pilot） · 3](https://tftset.com/set/3-galaxies/trait/mech-pilot)",
+      "status": "后移整包",
+      "decision": "合体必须一并设计三驾驶员、合体属性/装备继承、退出与供给；不拿现有任意三人临时拼机甲。"
+    },
+    {
+      "index": 73,
+      "source": "[云顶之弈 S3 · 爆破专家（Demolitionist） · 2](https://tftset.com/set/3-galaxies/trait/demolitionist)",
+      "status": "后移",
+      "decision": "爆破法术眩晕会与T12重复施法叠控制；本版控制由明确单位承担，保留之后成套替换职业的价值。"
+    },
+    {
+      "index": 101,
+      "source": "[云顶之弈 S4 · 决斗大师（Duelist） · 2/4/6/8](https://tftset.com/set/4-fates/trait/duelist)",
+      "status": "采用",
+      "decision": "T10决斗连续命中叠攻速，与低蓝近战技能配合。"
+    },
+    {
+      "index": 102,
+      "source": "[云顶之弈 S4 · 魔法师（Mage） · 3/6/9](https://tftset.com/set/4-fates/trait/mage)",
+      "status": "合并采用",
+      "decision": "并入T12，与041同一机制池保留版本索引，不重复造两条法师职业。"
+    },
+    {
+      "index": 103,
+      "source": "[云顶之弈 S4 · 神射手（Sharpshooter） · 2/4/6](https://tftset.com/set/4-fates/trait/sharpshooter)",
+      "status": "比较后移",
+      "decision": "本版T11采用额外选敌而非跳弹；跳弹的目标衰减和地形关系留作另一方案。"
+    },
+    {
+      "index": 104,
+      "source": "[云顶之弈 S4 · 猎人（Hunter） · 2/3/4/5](https://tftset.com/set/4-fates/trait/hunter)",
+      "status": "后移",
+      "decision": "集火低血是明确的另一种远程职业；本版用H26定点叠矛表达集中输出，未采用全队定时集火。"
+    },
+    {
+      "index": 106,
+      "source": "[云顶之弈 S4 · 福星（Fortune） · 3/6](https://tftset.com/set/4-fates/trait/fortune)",
+      "status": "风险适配",
+      "decision": "R31保留可见风险后兑现；不直接移植PVP连败，因为本项目Boss失败终局且行动有限。原福星完整机制仍保留。"
+    },
+    {
+      "index": 107,
+      "source": "[云顶之弈 S4 · 永恒之森（Elderwood） · 3/6/9](https://tftset.com/set/4-fates/trait/elderwood)",
+      "status": "后移",
+      "decision": "随时间多属性成长与龙裔8秒转折不同，本版先保留后者；永恒之森是另一套可替换主线。"
+    },
+    {
+      "index": 108,
+      "source": "[云顶之弈 S4 · 月神（Moonlight） · 3/5](https://tftset.com/set/4-fates/trait/moonlight)",
+      "status": "适配限制",
+      "decision": "本项目无通用星级，不写临时升星；若采用必须定义可见的临时技能/属性成长，不以原作词语遮住缺失规则。"
+    },
+    {
+      "index": 115,
+      "source": "[云顶之弈 S4 · 天神（Divine） · 2/4/6/8](https://tftset.com/set/4-fates/trait/divine)",
+      "status": "后移",
+      "decision": "天神的攻击/低血触发、净化、真伤需成套设计；R04仅共享长战转折，不声称已采用完整天神。"
+    },
+    {
+      "index": 116,
+      "source": "[云顶之弈 S4 · 腥红之月（Cultist） · 3/6/9](https://tftset.com/set/4-fates/trait/cultist)",
+      "status": "后移整包",
+      "decision": "团队失血召巨神仍是强候选；要连同巨神属性、落点与团队承压预算设计，不能附在亡契上顺手多送一尊。"
+    },
+    {
+      "index": 158,
+      "source": "[云顶之弈 S5 · 黑夜使者（Nightbringer） · 2/4/6/8](https://tftset.com/set/5-reckoning/trait/nightbringer)",
+      "status": "采用",
+      "decision": "T03血誓，配承伤反击、近战成长、后排射击和治疗。"
+    },
+    {
+      "index": 183,
+      "source": "[云顶之弈 S5.5 · 法师（Spellweaver） · 2/4/6](https://tftset.com/set/5-reckoning/trait/spellweaver)",
+      "status": "后移",
+      "decision": "全队施法叠法强是另一种核心引擎，本版不与星环加回响同时层层叠上。"
+    },
+    {
+      "index": 216,
+      "source": "[云顶之弈 S6 · 保镖（Bodyguard） · 2/4/6/8](https://tftset.com/set/6-gizmos-gadgets/trait/bodyguard)",
+      "status": "部分采用",
+      "decision": "T08保留防守成员与防御定位；开战嘲讽/护盾版本未同时加入。"
+    },
+    {
+      "index": 219,
+      "source": "[云顶之弈 S6 · 食神（Glutton） · 1](https://tftset.com/set/6-gizmos-gadgets/trait/glutton)",
+      "status": "独有单位",
+      "decision": "H37/T15完整喂食次数、收益、供体退场与装备归还。"
+    },
+    {
+      "index": 226,
+      "source": "[云顶之弈 S6 · 巨像（Colossus） · 2](https://tftset.com/set/6-gizmos-gadgets/trait/colossus)",
+      "status": "适配限制",
+      "decision": "不突破普通英雄1人口规则；巨像身体与控制抗性适合Boss另设计，不能直接继承双人口规则。"
+    },
+    {
+      "index": 270,
+      "source": "[云顶之弈 S7 · 风暴龙（Tempest） · 2/4/6/8](https://tftset.com/set/7-dragonlands/trait/tempest)",
+      "status": "采用",
+      "decision": "T06第8秒全场雷暴和随后攻速，成员能撑场、过渡、范围输出和终局启动。"
+    },
+    {
+      "index": 268,
+      "source": "[云顶之弈 S7 · 金鳞龙（Shimmerscale） · 3/5/7/9](https://tftset.com/set/7-dragonlands/trait/shimmerscale)",
+      "status": "后移整包",
+      "decision": "金币特殊装备应有独立装备池、金币曲线和兑现窗口；本稿普通经营遗物不是其替代品。"
+    },
+    {
+      "index": 261,
+      "source": "[云顶之弈 S7 · 怒翼龙（Ragewing） · 3/6/9](https://tftset.com/set/7-dragonlands/trait/ragewing)",
+      "status": "后移整包",
+      "decision": "怒气替代法力及施法后锁蓝狂暴很完整；本版怒拳的受伤怒劲不是同一个机制，不混称已采用。"
+    },
+    {
+      "index": 288,
+      "source": "[云顶之弈 S7 · 神龙烈焰（Revel） · 2/3/4/5](https://tftips.app/en/timeline/set7)",
+      "status": "后移",
+      "decision": "施法烟花可做独立反馈鲜明的一组，本版先让回响承担重复施法收益，避免数层不可辨识附伤。"
+    },
+    {
+      "index": 314,
+      "source": "[云顶之弈 S7.5 · 黯灵龙（Darkflight） · 2/4/6/8](https://tftips.app/en/timeline/set7)",
+      "status": "后移整包",
+      "decision": "献祭复制装备与铁契均分是两种不同装备玩法；本版先做后者，不把临时复制当免费兼得。"
+    },
+    {
+      "index": 315,
+      "source": "[云顶之弈 S7.5 · 碧波龙（Lagoon） · 3/6/9/12](https://tftips.app/en/timeline/set7)",
+      "status": "采用",
+      "decision": "T07碧潮，给出完整成员、累积阈值、奖励池、局内保存和晚拿即时收益。"
+    },
+    {
+      "index": 317,
+      "source": "[云顶之弈 S7.5 · 巨岩龙（Monolith） · 3](https://tftips.app/en/timeline/set7)",
+      "status": "独有单位",
+      "decision": "H38/T16，1名拥有者与3个位置分开；非原作3人计数。"
+    },
+    {
+      "index": 318,
+      "source": "[云顶之弈 S8 · AI 程序（A.D.M.I.N.） · 2/4/6](https://tftset.com/set/8-monsters-attack/trait/a-d-m-i-n)",
+      "status": "后移整包",
+      "decision": "自主选触发+收益需要一组稳定且互相兼容的可配置规则，本版不拿技术参数编辑器冒充玩家设计。"
+    },
+    {
+      "index": 327,
+      "source": "[云顶之弈 S8 · 福牛守护者（Ox Force） · 2/4/6/8](https://tftset.com/set/8-monsters-attack/trait/ox-force)",
+      "status": "后移",
+      "decision": "免死冲刺有价值，但与本版半血反攻需做不同完整成员包；不额外给血誓所有成员兜底免死。"
+    },
+    {
+      "index": 336,
+      "source": "[云顶之弈 S8 · 灵能使（Spellslinger） · 2/4/6/8](https://tftset.com/set/8-monsters-attack/trait/spellslinger)",
+      "status": "后移",
+      "decision": "周期攻击爆发是一套法强普攻桥梁；本版以泉歌的明确配合保留桥接，未采用完整灵能使。"
+    },
+    {
+      "index": 374,
+      "source": "[云顶之弈 S9 · 德玛西亚（Demacia） · 3/5/7/9](https://tftset.com/set/9-runeterra-reforged/trait/demacia)",
+      "status": "后移整包",
+      "decision": "选精锐、给光明装、保护邻友需专用装备池和领袖选择；不拿普通装备+属性等同原设计。"
+    },
+    {
+      "index": 399,
+      "source": "[云顶之弈 S9 · 弗雷尔卓德（Freljord） · 2/3/4](https://tftset.com/set/9-runeterra-reforged/trait/freljord)",
+      "status": "部分合并",
+      "decision": "T06采用延迟全场冲击节奏；减防、法力干扰版本保留，未同时叠进雷暴。"
+    },
+    {
+      "index": 427,
+      "source": "[云顶之弈 S9.5 · 以绪塔尔（Ixtal） · 2/3/4](https://tftips.app/en/timeline/set9)",
+      "status": "后移",
+      "decision": "随机元素地格需每种地格及对应成员适应能力；T16是明确固定阵地，不冒充其全部变化。"
+    },
+    {
+      "index": 429,
+      "source": "[云顶之弈 S9.5 · 征服者（Vanquisher） · 2/4/6](https://tftips.app/en/timeline/set9)",
+      "status": "全局与职业化",
+      "decision": "R01、E04、T14承担技能暴击资格，来源索引保留。"
+    },
+    {
+      "index": 456,
+      "source": "[云顶之弈 S10 · 电子舞曲（EDM） · 2/3/4/5](https://tftset.com/set/10-remix-rumble/trait/edm)",
+      "status": "后移整包",
+      "decision": "采样一名单位技能让其他成员复唱，必须限定完整可采样池与不同施法体型，适合作为独立后续主线。"
+    },
+    {
+      "index": 462,
+      "source": "[云顶之弈 S11 · 死神（Reaper） · 2/4](https://tftset.com/set/11-inkborn-fables/trait/reaper)",
+      "status": "后移",
+      "decision": "暴击转真伤流血保留完整候选；本版先评估直接技能暴击，不同时叠万能穿防。"
+    },
+    {
+      "index": 477,
+      "source": "[云顶之弈 S11 · 灵魂莲华（Fated） · 3/5/7/10](https://tftset.com/set/11-inkborn-fables/trait/fated)",
+      "status": "后移整包",
+      "decision": "双人结对礼物必须让每名成员的礼物都值得组合，不能只写“选两人加属性”应付。"
+    },
+    {
+      "index": 488,
+      "source": "[云顶之弈 S12 · 冰霜（Frost） · 3/5/7/9](https://tftset.com/set/12-magic-n-mayhem/trait/frost)",
+      "status": "后移整包",
+      "decision": "击杀造冰像、吸引火力、爆炸需要独立冰像与击杀节奏；本版霜庭先承接002而非同名混成两套。"
+    },
+    {
+      "index": 513,
+      "source": "[云顶之弈 S13 · 海克斯机械（Automata） · 2/4/6](https://tftset.com/set/13-into-the-arcane/trait/automata)",
+      "status": "后移",
+      "decision": "累计伤害事件后的统一爆发属于另一套完整引擎；避免与回响、箭矢、炮台未经验证地层层复触发。"
+    },
+    {
+      "index": 550,
+      "source": "[云顶之弈 S14 · 圣灵使者（Divinicorp） · 1/2/3/4/5/6/7](https://tftset.com/set/14-cyber-city/trait/divinicorp)",
+      "status": "后移整包",
+      "decision": "各成员不同全队属性与成员翻倍需要成员取舍设计，不用R07按激活羁绊计数冒充。"
+    },
+    {
+      "index": 638,
+      "source": "[云顶之弈 S16 · 恕瑞玛（Shurima） · 2/3/4](https://tftset.com/set/16-lore-legends/trait/shurima)",
+      "status": "保留待深核",
+      "decision": "后期版本原作成员、版本与反复飞升细节需单独核实；本稿不把参考库一行当作已核完的完整设计。"
+    },
+    {
+      "index": 696,
+      "source": "[云顶之弈 S18 · 永恒之森（Elderwood） · 3/5/7/9/11](https://tftset.com/set/18-enchanted-wilds/trait/elderwood)",
+      "status": "保留待深核",
+      "decision": "原作可摆植物/守卫/阶级关系需独立资料与实际表现核实；不与H22墓藤混同。"
+    },
+    {
+      "index": 756,
+      "source": "[多多自走棋 · 刺客（Assassin） · 3/6/9](https://autochesscommunity.com/wiki/synergies/assassin-class)",
+      "status": "采用",
+      "decision": "T14保留切后、暴击和高档击杀换目标；这是自走棋来源，不改写成云顶索引。"
+    }
+  ],
+  "builds": [
+    {
+      "id": "B01",
+      "name": "星环连续施法",
+      "members": [
+        "H01",
+        "H02",
+        "H03",
+        "H04",
+        "H05",
+        "H06",
+        "H07",
+        "H14",
+        "H32",
+        "H35"
+      ],
+      "expected_thresholds": {
+        "星环": 6,
+        "术师": 4,
+        "护卫": 2,
+        "斗士": 2,
+        "碧潮": 2
+      }
+    },
+    {
+      "id": "B02",
+      "name": "铁契连斩",
+      "members": [
+        "H07",
+        "H08",
+        "H09",
+        "H10",
+        "H11",
+        "H12",
+        "H15",
+        "H34",
+        "H25",
+        "H35"
+      ],
+      "expected_thresholds": {
+        "铁契": 6,
+        "决斗": 4,
+        "护卫": 2
+      }
+    },
+    {
+      "id": "B03",
+      "name": "血誓反攻",
+      "members": [
+        "H14",
+        "H15",
+        "H16",
+        "H17",
+        "H04",
+        "H24",
+        "H08",
+        "H07",
+        "H25",
+        "H06"
+      ],
+      "expected_thresholds": {
+        "血誓": 4,
+        "斗士": 4,
+        "决斗": 2,
+        "护卫": 2,
+        "霜庭": 2,
+        "铁契": 2
+      }
+    },
+    {
+      "id": "B04",
+      "name": "亡契召唤接力",
+      "members": [
+        "H18",
+        "H19",
+        "H20",
+        "H22",
+        "H40",
+        "H25",
+        "H23",
+        "H35"
+      ],
+      "expected_thresholds": {
+        "亡契": 4,
+        "唤灵": 3,
+        "护卫": 2,
+        "游侠": 2,
+        "霜庭": 2
+      }
+    },
+    {
+      "id": "B05",
+      "name": "霜庭围猎",
+      "members": [
+        "H23",
+        "H24",
+        "H25",
+        "H26",
+        "H09",
+        "H16",
+        "H06",
+        "H07"
+      ],
+      "expected_thresholds": {
+        "霜庭": 4,
+        "游侠": 4,
+        "护卫": 2,
+        "铁契": 2
+      }
+    },
+    {
+      "id": "B06",
+      "name": "龙裔雷暴",
+      "members": [
+        "H28",
+        "H29",
+        "H30",
+        "H31",
+        "H32",
+        "H13",
+        "H25",
+        "H35",
+        "H14",
+        "H07"
+      ],
+      "expected_thresholds": {
+        "龙裔": 4,
+        "术师": 4,
+        "斗士": 2,
+        "护卫": 2,
+        "血誓": 2,
+        "碧潮": 2
+      }
+    },
+    {
+      "id": "B07",
+      "name": "碧潮长线",
+      "members": [
+        "H32",
+        "H33",
+        "H35",
+        "H36",
+        "H03",
+        "H05",
+        "H01",
+        "H25",
+        "H07"
+      ],
+      "expected_thresholds": {
+        "碧潮": 4,
+        "术师": 4,
+        "护卫": 4,
+        "星环": 2
+      }
+    },
+    {
+      "id": "B08",
+      "name": "刺客混搭",
+      "members": [
+        "H12",
+        "H21",
+        "H27",
+        "H07",
+        "H10",
+        "H18",
+        "H25",
+        "H09",
+        "H35",
+        "H16"
+      ],
+      "expected_thresholds": {
+        "刺客": 3,
+        "铁契": 4,
+        "护卫": 4,
+        "亡契": 2,
+        "霜庭": 2,
+        "游侠": 2
+      }
+    },
+    {
+      "id": "B09",
+      "name": "卓尔不群",
+      "members": [
+        "H05",
+        "H07",
+        "H14",
+        "H21",
+        "H26",
+        "H34",
+        "H39",
+        "H40"
+      ],
+      "expected_thresholds": {
+        "唤灵": 2
+      }
+    },
+    {
+      "id": "B10",
+      "name": "双阵地炮台",
+      "members": [
+        "H38",
+        "H39",
+        "H40",
+        "H19",
+        "H07",
+        "H10",
+        "H25",
+        "H09",
+        "H06"
+      ],
+      "expected_thresholds": {
+        "护卫": 4,
+        "唤灵": 3,
+        "铁契": 2
+      }
+    }
+  ],
+  "summon_categories": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07"
+  ],
+  "equipment_pools": {
+    "standard_equipment": [
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08",
+      "E09",
+      "E10",
+      "E11",
+      "E12",
+      "E13",
+      "E14",
+      "E15",
+      "E16",
+      "E17",
+      "E18"
+    ],
+    "bounty_equipment": [
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08",
+      "E09",
+      "E10",
+      "E11",
+      "E12",
+      "E13",
+      "E14",
+      "E15",
+      "E16",
+      "E17",
+      "E18"
+    ],
+    "airdrop": [
+      "E03",
+      "E05",
+      "E06",
+      "E07",
+      "E08",
+      "E10",
+      "E11",
+      "E13"
+    ],
+    "artifact": [
+      "E19",
+      "E20",
+      "E21",
+      "E22"
+    ]
+  },
+  "superseded_by": "../../decisions.md#23-d73首版八个羁绊与单体特殊能力归属"
+}

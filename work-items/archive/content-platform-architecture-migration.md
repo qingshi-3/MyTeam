@@ -282,7 +282,7 @@ Changed files for Phase 0:
 - `src/Content/ContentValidator.cs`: fixed totals removed; shared authored-entry validation extracted while production `Validate` retains disk completeness and directory gates.
 - `tests/fixtures/fixture_unit.tres`: fixture now authors its required soldier category tag.
 - `tests/ContentContractSmoke.cs`: catalog-derived portrait assertions plus valid-expansion and invalid identity/reference/category conformance fixtures; existing version-3 formation/save changes preserved.
-- `tests/UiSmoke.cs`: hero-library completeness now compares stable ids against the current catalog instead of a fixed hero total; all unrelated UI coverage remains unchanged.
+- `tests/archive/retired-content/UiSmoke.cs`: hero-library completeness now compares stable ids against the current catalog instead of a fixed hero total; all unrelated UI coverage remains unchanged.
 - This activity task: phase state, evidence, risks, and resume point.
 
 Independent verification entry points:

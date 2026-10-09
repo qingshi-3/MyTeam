@@ -1,5 +1,17 @@
 # Battle Lab Test Cases
 
+## 当前内容下恢复入口与战斗（2026-10-06）
+
+根因：实验室的单位分类和 Boss 准备仍读取仅适用于旧爬塔的 `Campaign.Regions`，当前大陆征程会抛出 `Tower rules requested for an expedition`；同时旧内容清理后内置预设目录为空，入口仍强制要求默认预设。现改用兼容两种进程的 `Campaign.Encounters`，补充四个当前内容预设，并允许真正的空目录进入空白可编辑棋盘。非法条目和悬空默认名称仍会报错，不静默吞掉配置问题。
+
+- `tests/CurrentBattleLabContractSmoke.tscn`：四个预设均经过正式准备器并运行至终局，森林实际生成开场复制；检查详细统计、配置不回写、空目录可编辑、坏目录拒绝，以及正常征程详细采集仍关闭。通过标记 `CURRENT_BATTLE_LAB_CONTRACT_OK`。
+- `tests/CurrentBattleLabInputSmoke.tscn`：有窗口启动正式 `GrowthGameRoot`，960×540 宿主／1600×900 隔离视口，以真实输入建立独立征程存档，再验证菜单入口、当前全部 20 个已发布单位的库、搜索与拖放、x1 战斗、暂停、单步、统计详情、重置、返回、退出与重入。通过标记 `CURRENT_BATTLE_LAB_INPUT_OK`。比较现有正式存档、个人预设及测试征程文件的字节、大小和修改时间；本次均未改变，不将文件比较表述为零写调用计数。
+- 最终构建 0 警告／0 错误。证据：`outputs/battle-lab-restore-20261006/build-input-drag.log`、`contracts-current.log`、`input-drag.log`；已查看 `input/02-current-library.png`、`03-pointer-placement.png`、`05-paused-statistics.png`、`07-reentered-configuration.png`。早期失败日志保留：首次契约发现旧区域接口；输入夹具先等待无绘制帧，之后误用点击放置，均已修正为引擎绘制及既有拖放契约；未为测试改变产品交互。
+
+用户复核入口：主菜单 →「练习与预览」→「战斗实验室」。默认配置可直接开战；也可打开单位库，将单位拖到空格。战斗中打开「战况」查看伤害组成和硬控时长。实验室沿用原有终局战报流程；本次功能验证不代替观感、手感或阵容平衡验收。以下早期案例中的旧内容 ID 属历史记录，不代表当前发布池。
+
+> 以下为各历史版本的检查记录。旧标题中的“当前”指当时版本；涉及已退役英雄、物品或预设的入口不保证仍可运行。当前恢复与通过范围以本页顶部2026-10-06章节为准，通用规则检查仍需按实际改动选取。 `CurrentUiInputCapture`已移入`tests/archive/retired-content/`并退出编译，以下对应命令仅保留历史用法，不能直接执行；当前实验室输入使用顶部入口。
+
 ## 碰撞、普攻范围与巨兽通行（2026-09-21）
 
 自动入口：`tests/BattleGeometrySmoke.tscn` 无窗口验证普攻边距阈值／地形阻挡、体型快照、确定性和1.56格通道（1.4格身体通过、旧1.8格身体被挡）；`-- --input` 使用有窗口的正式 BattleScreen 隔离实例，通过真实鼠标／键盘操作开关、点选、暂停、单步、重开和关闭，并检查实际接敌及冲锋期间的位置。冲锋旧契约入口为 `tests/EnemyTrampleContractSmoke.tscn`。
@@ -38,7 +50,7 @@
 
 最新词条扩展沿同一 `--tooltip-icons` 入口：HC13 的 120 护盾与盾图标均为白色；全部机制／属性词条图标可加载且能实际行内渲染，名称、图标、关联数值同色。检查“攻击 200 防御 40”、前置数值、层数、增减与生命阈值归属；“每 2 秒获得 20 护盾”的 2 秒及毒范围 1.5 格保持中性；BBCode 输入只能显示为字面文本，技能名“乘乱追击”不附加重置普攻的词条释义。新增 24 项图例明确标注为展示夹具，并实际搜索悬停 HC38 验证长技能范围；截图 `after-keyword-shield-white.png`、`after-keyword-icons-palette.png`、`after-keyword-long-skill.png` 与最终日志 `keyword-icons-input.log` 均在 `.godot/ui-review/`。最终检查通过并已查看渲染。
 
-构建后使用带显示的 Godot：`--path . --windowed --resolution 1600x900 --rendering-method gl_compatibility res://tests/CurrentUiInputCapture.tscn -- --tooltip-icons`。此开关只运行本轮相关路径，不执行该入口历史的全界面采集；使用生产 GameRoot 和独立 tests 存档命名空间。
+构建后使用带显示的 Godot：`--path . --windowed --resolution 1600x900 --rendering-method gl_compatibility res://tests/archive/retired-content/CurrentUiInputCapture.tscn -- --tooltip-icons`。此开关只运行本轮相关路径，不执行该入口历史的全界面采集；使用生产 GameRoot 和独立 tests 存档命名空间。
 
 鼠标进入战斗实验室、打开单位库、搜索 HC08 并悬停；检查生命／攻击／防御／普攻间隔／射程／20/60 法力／+5/s 回蓝图标与数值，红框中的身份和操作教学不再出现。点击后 Tab／Shift-Tab 返回同一卡片也能读到同样信息；真实拖入棋盘后读取准备值；切到承伤假人无蓝量条目。检查图标加载、悬浮卡边界与实际渲染。日志和四张截图在 `.godot/ui-review/tooltip-icons-input.log`、`after-tooltip-icons-*.png`；本轮 1600×900 通过，用户图标辨识体验与配色选择尚待反馈。
 
@@ -48,7 +60,7 @@
 
 主菜单 → 战斗实验室 → 内置预设，搜索 **ES01** 或 **ES04**，分别载入“贯阵弩手／贯光术士 · 预警与贯穿”。观察超远起手、地面指示方向、源端渐亮和释放：箭逐段飞过并依次命中，光束全长亮起并只结算一次。共同上限2人，第二人衰减；第三个共线目标可被光束视觉覆盖但不再受伤。改变前后排共线／错位站位，加入控制检查蓄力取消，再看正常战斗压力是否适当。
 
-本批 `EnemyPiercingContractSmoke.tscn` 与已有 `RangedAttackContractSmoke.tscn` 通过规则检查；`EnemyPiercingVisualSmoke.tscn` 使用正式BattleScreen和发布预设，通过实际视口鼠标暂停／恢复、动态渲染、减少动态与清理检查。运行方式为带显示Godot `--path . --scene res://tests/EnemyPiercingVisualSmoke.tscn --fixed-fps 60 -- --capture=<目录>`。录制夹具将我方快照设为静止；没有走主菜单手动载入路径，也没有整局推进。最终帧2048×1081及正常速度动图位于 `.godot/enemy-piercing-review/`，具体范围归[活动任务](../../work-items/active/enemy-piercing-skills.md)。玩家操作、观感与平衡不记成已验收。
+本批 `EnemyPiercingContractSmoke.tscn` 与已有 `RangedAttackContractSmoke.tscn` 通过规则检查；`EnemyPiercingVisualSmoke.tscn` 使用正式BattleScreen和发布预设，通过实际视口鼠标暂停／恢复、动态渲染、减少动态与清理检查。运行方式为带显示Godot `--path . --scene res://tests/archive/retired-content/EnemyPiercingVisualSmoke.tscn --fixed-fps 60 -- --capture=<目录>`。录制夹具将我方快照设为静止；没有走主菜单手动载入路径，也没有整局推进。最终帧2048×1081及正常速度动图位于 `.godot/enemy-piercing-review/`，具体范围归[活动任务](../../work-items/archive/enemy-piercing-skills.md)。玩家操作、观感与平衡不记成已验收。
 
 ## 场景职责拆分验证（2026-09-16）
 
@@ -58,7 +70,7 @@
 
 ## 当前UI修复：已执行的输入与渲染检查（2026-09-13）
 
-运行 `dotnet build my-team.csproj -maxcpucount:2 -v:minimal` 后，以带显示的Godot运行 `res://tests/CurrentUiInputCapture.tscn`（不加`--headless`）。该入口使用生产GameRoot与隔离存档，通过引擎鼠标/键盘/滚轮输入完成选英雄、实验室双侧展开/折叠、单位属性技能、悬停、预设载入、团队页、战斗暂停/点选详情/完整词条滚动、统计展开/收起。当前1600×900通过并输出13张截图，主责已核对渲染；证据及限制见[活动任务当前段](../../work-items/active/battle-lab-ui.md)。下方旧批次“未验证”保留为其历史范围。
+运行 `dotnet build my-team.csproj -maxcpucount:2 -v:minimal` 后，以带显示的Godot运行 `res://tests/archive/retired-content/CurrentUiInputCapture.tscn`（不加`--headless`）。该入口使用生产GameRoot与隔离存档，通过引擎鼠标/键盘/滚轮输入完成选英雄、实验室双侧展开/折叠、单位属性技能、悬停、预设载入、团队页、战斗暂停/点选详情/完整词条滚动、统计展开/收起。当前1600×900通过并输出13张截图，主责已核对渲染；证据及限制见[活动任务当前段](../../work-items/active/battle-lab-ui.md)。下方旧批次“未验证”保留为其历史范围。
 
 后续重点：切换长技能单位后正文应回到顶部；生命/攻击/防御与攻速含义清楚；正文能滚到最后一行；展开侧栏不挤掉顶栏或开战按钮；无指令的实验室战斗不显示两块空指令卡。真实用户预设与存档不得作为自动检查的写入目标。
 
@@ -70,7 +82,7 @@
 2. **NE02 砂骨殉爆**：观察送葬人开场召唤砂骨仆，召唤物死亡后在尸体附近爆炸；送葬人存活时提供临时友军死亡监听，离场后不继续替后续召唤物触发。比较召唤物接敌位置和生存时间。
 3. **NE10 霜羽连射**：观察连射在本次选中的最多三名敌人间分配，成功冰冻后获得护盾。寒羽基础概率 25%，霜羽同盟 2／4 名成员时为 35%／50%，基础时长 0.8 秒，受控制抗性影响；无寒意、减速或叠层。徽章提供成员资格与攻速，不直接授予寒羽。对照单人、2 人、4 人配置；同一单位原生与徽章不重复计数，超过 4 人仍不超过 50%。
 
-已通过低并发构建、正式启动检查，以及[机制检查](../../tests/FirstContentSystemsContractSmoke.cs)和[实际预设战斗检查](../../tests/FirstContentPresetsContractSmoke.cs)。具体种子、输出及修复记录见[活动任务](../../work-items/active/bc-hero-roster.md)。这些是无画面的规则检查，不代表界面、箭矢／爆炸观感、节奏、平衡或整局随机供给已经验收；上述三项仍供用户实际体验。
+已通过低并发构建、正式启动检查，以及[机制检查](../../tests/FirstContentSystemsContractSmoke.cs)和[实际预设战斗检查](../../tests/FirstContentPresetsContractSmoke.cs)。具体种子、输出及修复记录见[活动任务](../../work-items/archive/bc-hero-roster.md)。这些是无画面的规则检查，不代表界面、箭矢／爆炸观感、节奏、平衡或整局随机供给已经验收；上述三项仍供用户实际体验。
 
 ## UI 与交互优化：用户观察入口（2026-09-12，待体验）
 
@@ -91,7 +103,7 @@
 
 本批正式名单为 HC01 连弩手、HC03 铁甲卫，另有可放在双方的静止／近战／远程假人。旧英雄与冰霜预设相关回归已冻结为 `tests/fixtures/legacy-roster/`；下方历史冰霜用例不再是当前正式预设要求，也不因本次小批接入重跑历史整套验收。
 
-当前针对性入口：先 `dotnet build my-team.csproj -maxcpucount:2 -v:minimal`，再串行运行 `Godot --headless --path . res://tests/DesignedContentContractSmoke.tscn`、`DesignedContentInputSmoke.tscn`、`BattleLabAppFlowContractSmoke.tscn`（后两项使用同样的命令形式）。渲染检查使用 `DesignedContentInputSmoke.tscn` 去掉 `--headless`，检查 `.godot/designed-content-input.png`；不得将无渲染输入断言当作画面验收。具体已执行证据见 [活动任务](../../work-items/active/designed-heroes-and-test-dummies.md)。
+当前针对性入口：先 `dotnet build my-team.csproj -maxcpucount:2 -v:minimal`，再串行运行 `Godot --headless --path . res://tests/DesignedContentContractSmoke.tscn`、`DesignedContentInputSmoke.tscn`、`BattleLabAppFlowContractSmoke.tscn`（后两项使用同样的命令形式）。渲染检查使用 `DesignedContentInputSmoke.tscn` 去掉 `--headless`，检查 `.godot/designed-content-input.png`；不得将无渲染输入断言当作画面验收。具体已执行证据见 [活动任务](../../work-items/archive/designed-heroes-and-test-dummies.md)。
 
 用户体验路径：
 
@@ -106,7 +118,7 @@
 
 ## 嘲讽范围与负面状态
 
-HC03 嘲讽特效入口：`DesignedTauntVisualSmoke.tscn` 使用当前正式英雄／假人和 BattleScreen，私有配置将盾将初始法力调满、关闭后续回蓝以录制单次施放，不写真实存档。`Godot --path . --rendering-method gl_compatibility --fixed-fps 60 res://tests/DesignedTauntVisualSmoke.tscn -- --capture=<目录>` 输出 390 张帧图；`--before` 仅隐藏本轮两个特效供同场景对照，不是历史实现。自动检查覆盖同源半径、非等比斜投影、圈内／圈外、真实状态绑定、可见位置跟随、刷新、到期／死亡／来源失效、减少动态及实际视口暂停／恢复输入。玩家从“铁甲卫嘲讽反伤”预设观察：边界在施放时短留，圈退后受控者头顶侧边仍有红色怒意符号，未受控者没有，解除后消失；预览室两项与正式战斗共用资源。不要以截图／断言代替用户观感认可。
+HC03 嘲讽特效入口：`DesignedTauntVisualSmoke.tscn` 使用当前正式英雄／假人和 BattleScreen，私有配置将盾将初始法力调满、关闭后续回蓝以录制单次施放，不写真实存档。`Godot --path . --rendering-method gl_compatibility --fixed-fps 60 res://tests/archive/retired-content/DesignedTauntVisualSmoke.tscn -- --capture=<目录>` 输出 390 张帧图；`--before` 仅隐藏本轮两个特效供同场景对照，不是历史实现。自动检查覆盖同源半径、非等比斜投影、圈内／圈外、真实状态绑定、可见位置跟随、刷新、到期／死亡／来源失效、减少动态及实际视口暂停／恢复输入。玩家从“铁甲卫嘲讽反伤”预设观察：边界在施放时短留，圈退后受控者头顶侧边仍有红色怒意符号，未受控者没有，解除后消失；预览室两项与正式战斗共用资源。不要以截图／断言代替用户观感认可。
 
 ## Stage 0 And Core Contracts
 

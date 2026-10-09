@@ -1,0 +1,7 @@
+{
+  "referenced_image_paths": [
+    "/Users/qingshi/Documents/GodotProjects/MyTeam/design-discussion/04-content-validation/artifacts/archer-style-comparison-20261006/sdorica-single-review/archer-sdorica-v3-color.png"
+  ],
+  "transparent_background": true,
+  "prompt": "Remove the background from this exact illustration and return a true transparent-background PNG. This is a precise background-removal edit, not a redesign or repaint. Keep the existing adult red-haired archer, her face, hair, pose, body, violet-and-gold clothes, all armor, boots, the bow, taut bowstring and single arrow exactly as they appear, with their current saturated colors and shading. Remove ALL background content: sky, clouds, pale paper wash, distant castle and bridges, ground, rocks, floor and ground shadows. Also make the negative spaces between hair locks, arms, bow, bowstring, clothing and legs fully transparent. Preserve fine bowstring and arrow edges, and preserve clean antialiased character edges without white, cream or blue halos. Keep the same canvas size and existing framing; do not recenter, resize, extend cropped parts, invent new details or change anatomy. Output the isolated character and weapon only, with real alpha transparency; no checkerboard painted into the image, no solid background and no added cast shadow."
+}

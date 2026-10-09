@@ -8,7 +8,7 @@
 
 - 用户本轮再次明确纯自走棋、无战中抓手；与[G02-D01](../../../01-global-boundaries/player-agency/decisions.md)一致。Alpha权威中的历史战术指令不能覆盖当前讨论边界，普通暂停与变速只用于观察。
 - [核心规则](../../../../gameplay-design/tower-autobattler-core.md)记录实际敵阵／空间、EE07锁向喷吐、EE09最远合法目标换位、EB01可自动攻击拆墙及EB02有限卵／幼虫。它们证明内容提供了相关行为，不证明任何建议的摆法／功能替换已有效；移动中目标与队形变化须另验证。
-- [成长活动任务](../../../../work-items/active/growth-and-composition-design.md)与[运行包](../../../04-content-validation/artifacts/growth-route/README.md)确认26名代表内容、永久成长、研究库存及开战法术已交付；不能推成全部49名单位、任意对策法术或同等成本替补均已具备。
+- [成长活动任务](../../../../work-items/archive/growth-and-composition-design.md)与[运行包](../../../04-content-validation/artifacts/growth-route/README.md)确认26名代表内容、永久成长、研究库存及开战法术已交付；不能推成全部49名单位、任意对策法术或同等成本替补均已具备。
 - 本轮读取[GrowthRunService](../../../../src/Growth/GrowthRunService.cs)的`CraftSpell`、`EquipSpell`、`BeginBattle`与`Freeze`，以及[GameFlowCoordinator](../../../../src/App/GameFlowCoordinator.cs)的`StartBattle`：战前选择法术及已部署目标，实际开战冻结参与者并消费库存；非战斗走独立`FreezeNonCombat`。尚未使用的本节点产出不因此提前变成本场战力。
 - [护阵资源](../../../../content/growth/abilities/spell_guard_formation.tres)为目标与2.5格内最多2名友军各给目标本场生命上限15%的18秒护盾；[蓄势资源](../../../../content/growth/abilities/spell_gather_momentum.tres)为目标开战加25法力。[战斗适配](../../../../src/Run/RunBattlePreparationAdapter.cs)在预览读预设、正式战斗读已消费快照。以上是静态规则核查，无本轮实际输入或观感验证，也不能证明能可靠打断特定敌人。
 - 回读[R04](../../roster-and-growth/reserves/decisions.md)、[R10](../route-progression/decisions.md)、[R11-D02](../attrition-and-recovery/decisions.md)、[R13-D01](../risk-and-reward/decisions.md)：战前轮换方向保留；外层具体形式仍开放；普通／精英失败以全局生命容错、Boss失败终局；更难遭遇与自选单场条件已有一般方向，具体选敌菜单和条件内容仍待定。R13旧文的“一律败战终局”已由R11-D02后续决定取代，本轮不复活旧基础。

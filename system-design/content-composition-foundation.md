@@ -6,11 +6,11 @@
 
 `CompiledContentGraph` 私有持有缺少场景所有者的羁绊作者资源根，寿命随已发布内容包，防止重复发布时原生缓存重用已终结的 C# 句柄；运行时继续只读取编译值，不通过这些根获取可变玩法状态。
 
-`GamePackagePublisher` 在注册表发布前统一编译项目与可选成长规则；成长规则任一错误使整包拒绝，发布版本为 0。成功的 `CompiledGamePackage.GrowthRules` 是默认成长入口交给 Run 的不可变结果，启动后不再重新读取规则资源进行第二次编译。Alpha 不要求成长规则。`GrowthGameRoot` 通过预制场景显式引用规则，并在自身生命周期内持有整份 authored package，覆盖失败、重试和成功运行。
+`GamePackagePublisher` 在注册表发布前统一编译所有 profile 的完整项目、可选成长规则和依赖并集；任一错误使整包拒绝，发布版本为 0。`CompiledGamePackage.ProfilesById` 持有不可变结果，`Project/GrowthRules` 只读兼容属性指向默认新局配置；继续旧局须先按保存身份选择完整 profile，不能沿默认规则迁移。启动后不再重新读取规则资源进行第二次编译。Alpha 不要求成长规则。`GrowthGameRoot` 在自身生命周期内持有全部 authored package，覆盖失败、重试和成功运行。具体发布、v11 路由及会话切换归[进程与会话合同](run-progression-and-sessions.md)。
 
 `GameRoot` 将内容发布、征程构造与流程启动纳入失败处理，启动完成前隐藏业务页面。失败后解除未完成流程的事件绑定，在既有结果页提供重试与退出；恢复后普通结果页恢复新局和主菜单语义。异步完成后检查根仍在树内且未待删除，重复重试不得并发启动。
 
-活动存档读取失败只报告并保留原件。明确新局写回时，无法反序列化的旧文件必须先完整复制到唯一的 `active_run.json.backups/corrupt-<guid>.bak`，随后才原子替换；备份或写入失败均不得发布新征程。不同 schema 仍保留原有版本备份。Meta 读取失败不自动重置，玩家修复或恢复备份后可重试启动。验证见 [架构治理任务](../work-items/active/architecture-hardening.md)。
+活动存档读取失败只报告并保留原件。明确新局写回时，无法反序列化的旧文件必须先完整复制到唯一的 `active_run.json.backups/corrupt-<guid>.bak`，随后才原子替换；备份或写入失败均不得发布新征程。不同 schema 仍保留原有版本备份。Meta 读取失败不自动重置，玩家修复或恢复备份后可重试启动。验证见 [架构治理任务](../work-items/archive/architecture-hardening.md)。
 
 矩阵操作的递归作者字段 `Effects` 使用可导出的 `MatrixAbilityOperationSpec[]`，保留类型提示和既有 `.tres` 表达。Godot 4.7.2 下，原 `Godot.Collections.Array<MatrixAbilityOperationSpec>` 可独立复现退出脚本保留；不要无验证地恢复此类型。发布后仍使用不可变的 `CompiledMatrixOperation.Effects`，可变战斗状态不进入作者资源。
 
@@ -52,17 +52,17 @@
 
 ## Growth Journey 征程所有权与事务
 
-- `GrowthContentPackage` 发布独立项目、目录和不可变 `CompiledGrowthRules`；`GrowthGameRoot` 只负责选择该包与独立存档命名空间。Alpha 的 `GameRoot`、内容池及无成长的旧存档保持原语义。当前规则包含 26 名代表内容和明确发现池，不声明全 49 名内容均已完成成长改造。
+- `GrowthContentPackage` 原子发布共享目录中的 Expedition／legacy Tower 完整配置及不可变 `CompiledGrowthRules`；`GrowthGameRoot` 选择该包与成长存档命名空间，再按保存头恢复完整配置。Alpha 保持单配置及原内容池。配置与会话选择见[征程合同](run-progression-and-sessions.md)。当前规则包含 26 名代表内容和明确发现池，不声明全 49 名内容均已完成成长改造。
 - `RunApplication` 是成长命令边界。生产分配、一次升阶、发现领取、研究兑换、法术预设及真实开战都只能经门面进入；UI 不直接修改 DTO。`GrowthRunService` 计算候选状态，`RunProgressionPersistenceService` 以复制后校验、保存成功再发布的事务提交。失败返回消息并保留原活动状态、选择、库存和待领取机会。
-- 非战斗节点在选择时冻结参与者与生产分配；战斗在真实开始时冻结。结算和层数推进属于同一次保存；普通败战仍按规则结算非终局成长，终局不产生下一次可用收益。生产增量记录来源、目标、模式、层数和战斗编号，攻击／生命使用受益友军内容原始值的 `4%` 固定绝对量，禁止从当前叠加后面板继续复利。
+- 非战斗节点在正式选择时冻结参与者与生产分配；战斗在真实开始时冻结。结算和对应进程推进属于同一次保存；普通败战仍按规则结算非终局成长，终局不产生下一次可用收益。生产增量记录来源、目标、模式和战斗编号，地图使用 Action 来源，legacy Tower 保留层数身份。攻击／生命使用受益友军内容原始值的 `4%` 固定绝对量，禁止从当前叠加后面板继续复利。
 - 升阶在一个事务中验证材料、扣除材料、写入一次性升阶身份并创建固定三个候选的 `PendingDiscovery`。候选不足、重复拥有、保存失败或准备锁定时不允许部分扣款。待领取发现独立于常规 `PendingOffer`，存在时不能推进下一节点或开战；保存重载沿用原候选。
 - 升阶过程只读取身份、资格和费用，不要求收益或表现资源存在。`GrowthAscensionBenefitDefinition` 单独承载可选战斗能力与实际说明；没有资源表示收益留白。`ResolveBattleLoadout` 在收益留空时继续选择完整的 `BaseLoadout`，同一投影用于战斗、预览与永久收益校验，不回退到缺少成长能力的旧单位定义。已保存的升阶身份不会因删除占位收益而丢失，也不补偿为其他临时加成。
 - `GrowthAscensionDisplayDefinition` 只承载名称与升阶后状态文字，不参与资格或战斗判定。`GrowthWorkbenchPanel.AscensionCompleted(heroInstanceId, ascensionId)` 仅在保存提交成功后通知可选表现观察者；无监听者、无动画也能完成升阶。常驻展示从 Run 的升阶身份重建，不能靠动画是否播过判断；收益留白时 UI 明示不改变该英雄战斗能力，发现奖励另行说明。当前未新配升阶特效。
 - Growth 战役使用独立 `growth_item_pool.tres` 管理当前供给；退役条目不再出现在新商店或新战利品候选中。兼容目录仍保留其定义与独立物品场景，以接续旧持有物及已冻结候选；目录可解析不等于仍在当前供给。Alpha 的历史供给不受这一局部内容清理影响。
-- 研究兑换只把法术身份及数量写入 Run 库存。预设只保存法术和目标；`TryBeginGrowthBattle` 先校验完整战斗配置，再于真实开战事务中冻结并消费，并清空下一场预设。准备异常后的重试复用 `PendingNode` 已消费身份，既不二次扣除也不允许替换。战斗准备把法术能力临时投影到指定英雄，不写入英雄永久 loadout。
+- 研究兑换只把法术身份及数量写入 Run 库存。预设只保存法术和目标；真实开战事务校验完整战斗配置、冻结并消费，随后清空下一场预设。准备异常后的重试复用地图 `Action.GrowthSnapshot` 或 legacy `Growth.PendingNode` 的已消费身份，既不二次扣除也不允许替换。地图 `BattleFreeze` 只保存入场后 Gold、起战前 BattleNumber 及输入指纹，完整输入仍由唯一 Run／Action 状态持有并受编辑锁保护。战斗准备把法术能力临时投影到指定英雄，不写入英雄永久 loadout。
 - 永久攻击／生命和升阶 loadout 由战斗准备适配器投影到实例快照；装备、羁绊等继续按既有顺序工作。战内永久收益只接受 `BattleResult` 的明确增量载荷并校验来源／触发次数；例如 MX01 每战首次成功冻结的 `+16` 最大生命。临时状态、层数和战斗属性不能整体回写 Run。
 - schema v8 为成长增加显式空状态：旧 v7 只迁移能够确定为空的成长字段，不凭历史战斗猜测产量。若v7已停在非战斗节点，迁移空参与名单／分配快照；完成原选择只授予当前节点固定材料一次，不补生产。非法或不支持的存档保留原件并拒绝载入，不静默重置。独立 Growth namespace 防止验证征程覆盖 Alpha 玩家数据。
-- 当前schema v10保存当前奖励组与剩余独立组队列，并保留v9选敌身份。新普通战直接整备，精英要求合法候选；旧已锁普通选敌、旧待领奖快照保持原资格。完整奖励／选敌／战果绑定／迁移边界见[tower-autobattler-architecture](tower-autobattler-architecture.md#默认入口与独立领奖2026-09-30)，执行证据见[活动任务](../work-items/active/opponent-choice-and-prebattle-spells.md)。
+- 历史 schema v10 保存当前奖励组与剩余独立组队列，并保留 v9 选敌身份；这些数据迁入 v11 的 Tower 状态。legacy 普通战直接整备，精英要求合法候选；旧已锁普通选敌、旧待领奖快照保持原资格。历史奖励／选敌边界见[tower-autobattler-architecture](tower-autobattler-architecture.md#默认入口与独立领奖2026-09-30)，当前 v11 类型化状态与地图 Action 归[征程合同](run-progression-and-sessions.md)。
 - 全局生命仍由 Run 节点结算拥有：普通／精英败战在生命剩余时继续，Boss 败战直接终局；成长结算不得绕过或改写该失败语义。
 
 本批数值是可调验证基线。系统权威固定的是所有权、冻结点、事务原子性、失败语义与投影边界；数值调整应留在成长规则资源，不写入 UI 或战斗特例。
@@ -71,7 +71,7 @@
 
 ### 职业／体系矩阵逻辑验证包
 
-- `scenes/app/ValidationMatrix.tscn` 经 `ValidationMatrixPackage` 发布独立 `content/validation_matrix/matrix_project.tres` 与 manifest，复用正式战斗及实验室。MX 英雄与临时单位分别有独立 `.tscn`／`.tres`，不改正式 HC、敌人定义或正式招募池；实验包使用独立存档命名空间。设计源和验收边界见 `work-items/active/trait-roster-planning.md`。
+- `scenes/app/ValidationMatrix.tscn` 经 `ValidationMatrixPackage` 发布独立 `content/validation_matrix/matrix_project.tres` 与 manifest，复用正式战斗及实验室。MX 英雄与临时单位分别有独立 `.tscn`／`.tres`，不改正式 HC、敌人定义或正式招募池；实验包使用独立存档命名空间。设计源和验收边界见 `work-items/archive/trait-roster-planning.md`。
 - `MatrixAbilityOperationSpec` 通过 Targeting、Magnitude、Execution、Reaction 四个独立参数资源组织作者字段，Kind 与嵌套 Effects 留在操作根。编译器读取它们并编译为不可变操作树，按原子类型而非具体英雄 ID 分派。嵌套效果有深度／数量／循环检查，召唤引用进入发布门禁和准备快照，所有字段及嵌套操作进入内容指纹。事件注册、延迟、计数器、条件租约和召唤寿命均归战斗实例，禁止回写资源。
 - `TraitBreakpointSpec.Mechanics` 以类型化机制声明羁绊档位，旧无机制配置保持既有指纹。开战贡献者和档位固定，临时单位受益范围独立判断；生成物不能递归新增凑档，羁绊生成的死亡收益按规则排除。额外召唤消费首次成功资格，即使容量或空间不足也不延后重试；共享召唤路径保留其原有存活上限。
 - `CombatDamageClass` 与 `ActionId` 区分普攻、主动技能、持续、反击及派生伤害，单次施法和单次普攻具有稳定行为身份，多段命中据此去重；投射物保存发射时身份。`HealthLost` 保存伤害前来源／伤害后目标生命比例，`HealingResolved.TargetHealthRatio` 保存治疗前目标比例；反应不得读后续变化的比例代替事件事实。
@@ -101,7 +101,7 @@
 - 飞行箭复用扫掠投射物，伤害类型、命中衰减及表现为显式参数；光束在释放步按路径碰撞顺序单次结算。两者走共同伤害／防御／技能命中事实链，表现回调不结算伤害。类型化 `BattleLineCue` 传递预警、释放、取消与命中；正式战斗和预览共用独立VFX场景、播放器与暂停／倍速时钟。
 - `EncounterDefinition.EnemyHealthMultiplier`／`EnemyDamageMultiplier` 为独立正数配置，编译冻结后经 `RunBattlePreparationService` 显式传入准备请求，对敌方不可变快照缩放并进入实际战斗属性。默认1，实验室保持默认；阶段战力不由机制类别推断，也不复制或临时修改共享单位／技能资源。
 
-本批发布内容、暂值与验收边界见 `work-items/active/enemy-piercing-skills.md`。
+本批发布内容、暂值与验收边界见 `work-items/archive/enemy-piercing-skills.md`。
 
 贯穿直线弹显式设置 `BattleProjectileState.ContinueAfterHitLimit`：名额用尽后跳过新碰撞伤害，但仍推进至锁定终点；普通弹默认命中耗尽即结束。表现消费独立终点事实，贯穿弹最后一段插值完成并呈现终点后释放；暂停不提前清除，终局立即清理。贯穿命中表现排到可见前端抵达接点时播放，队列归飞行实例并随清场清除，不延迟权威伤害结算。通用 `impact` 为独立短擦痕资源，不再承载范围圆环。
 
@@ -115,7 +115,7 @@
 
 ## 首批设计英雄的组合接入
 
-- 当前正式可用英雄之间一套角色外观只对应一个英雄身份；动画与头像同步，不以相同外形承载不同英雄来节省素材。可复用组件、技能原语和特效不受此限制。暂停候选可保留独立场景和资源，但必须同时退出正式英雄目录、招募池及可选内置预设；目录之外的草稿文件不等于已发布内容。当前名单与暂停映射维护于 `work-items/active/bc-hero-roster.md`。
+- 当前正式可用英雄之间一套角色外观只对应一个英雄身份；动画与头像同步，不以相同外形承载不同英雄来节省素材。可复用组件、技能原语和特效不受此限制。暂停候选可保留独立场景和资源，但必须同时退出正式英雄目录、招募池及可选内置预设；目录之外的草稿文件不等于已发布内容。当前名单与暂停映射维护于 `work-items/archive/bc-hero-roster.md`。
 
 - `UnitDefinition.ProjectileWindupSeconds` 与 `AttackReleaseProgress` 是静态动作配置，校验、指纹并冻结进快照；零前摇保留既有夹具语义。待释放箭保存在战斗实例的不可变 `ProjectileWindups` 中，前摇按攻速／序列倍率并向上对齐固定步，类型化 `BattleAttackTiming` 使角色动作与实际释放一致。释放前复核目标、射程与通路；控制取消，失败回滚，死亡／战斗结束清理，不能写回共享资源或让动画回调结算伤害。
 - 定时技能可在 `UnitAnimationComponent.TimedActionReleaseFrames` 按表现cue绑定独立SpriteFrames片段及一基释放帧。`BattleLineCue.ReleaseVfx`选择已配置片段，未配置者保留普通攻击回退；权威 `BattleAttackTiming` 分配蓄势／恢复时长，帧duration只调阶段内节奏，释放事实才允许越过挥出帧。静态帧资源不承载播放状态；重拳、冲锋预览均走正式角色表现API。
@@ -125,7 +125,7 @@
 - `IsTestDummy` 标识测试单位，正式招募与运行配置校验拒绝它；实验室允许双方布置。`UnitBehaviorComponent` 的静止／禁普攻控制用于假人。实验室 `RetainAttackStacks` 是单实例准备覆盖，并进入预设序列化与摘要，只对声明支持的战内成长组件有效；它不是 Growth Journey 的 Run 升阶或永久培养入口。
 - 当前旧英雄配置冻结在 `tests/fixtures/legacy-roster/`，只由回归夹具显式发布，不进入正式内容扫描或游戏资源目录。后续行为测试优先使用设计英雄、假人与独立合成配置。
 
-本批实现和验收见 `work-items/active/designed-heroes-and-test-dummies.md`；具体暂值仍归内容资源及讨论当前稿。
+本批实现和验收见 `work-items/archive/designed-heroes-and-test-dummies.md`；具体暂值仍归内容资源及讨论当前稿。
 
 ## 位移技能组合扩展
 
@@ -136,7 +136,7 @@
 - `BodyRadius`有效范围扩至0.1–1.5；现有单位默认值不变。实验室增删／移动／交换／恢复和ExactAll准备验证完整身体的边界、地形与互斥。正式含大体型敌阵先安排大身体，再放同伴，准备后的相同锚点用于部署预览与战斗；低层兼容生成仍可按完整身体寻找合法出生点，找不到明确失败。
 - `BattleTrampleCue`传递真实半径、固定起终点和阶段，正式与预览共用`trample_warning`／`trample_rush`。移动与两侧受击使用既有类型化位移事实及插值，VFX跟随可见脚点，不查战斗对象决定命中；暂停、取消与终局统一清理。具体内容与验收归`work-items/active/enemy-trample-charge.md`。
 
-2026-09-12 的 HC31–HC36 局部实施授权见讨论 2.3-D07，恢复入口为 `work-items/active/hero-displacement.md`。本轮不构建、不运行验证；具体技能与暂值归资源及当前稿。
+2026-09-12 的 HC31–HC36 局部实施授权见讨论 2.3-D07，恢复入口为 `work-items/archive/hero-displacement.md`。本轮不构建、不运行验证；具体技能与暂值归资源及当前稿。
 
 - `DisplacementAbilityOperationSpec` 编写种类、敌方查询、距离、时长、停止间距、目标身后偏好、Boss 资格及抵达伤害／状态。编译为不可变操作，嵌套 `ImpactStatus` 进入同一个发布依赖图。每个主动最多一个位移操作；只允许满蓝自动技能，不进入被动授予或亡语复制链。
 - `BattleDisplacements` 以 runtime id 持有不可变轨迹账本及落点预留，纳入 `BattleWorldStateCheckpoint`。准备检查目标及落点，提交后沿固定 tick 推进，抵达伤害、状态、事件与法力失败一同遵守现有事务；共享 Resource 不存移动进度。死亡／切队撤除关联动作，活着的跳跃中断收益后仍安全落地；战斗结束全部清理。
@@ -153,7 +153,7 @@
 
 虫母保持原实体和属性／状态作用域，战斗实例上的体型、攻击方式与弹体表现覆盖纳入检查点；共享静态定义不变。缩体后的后退借用已有地面位移服务。墙消失与卵孵化按离场清理，记录离场tick并防止重复消费过期产物；已孵化幼虫有独立生命周期。
 
-`BattleEnemyActionCue` 传递形状、方向与阶段，正式与预览共用独立VFX资源；表现只消费权威事实，不决定伤害。实验室与正式遭遇读取同一发布包。入口、验证记录及用户后续自行试玩的边界归 `work-items/active/enemy-five-elite-bosses.md`。
+`BattleEnemyActionCue` 传递形状、方向与阶段，正式与预览共用独立VFX资源；表现只消费权威事实，不决定伤害。实验室与正式遭遇读取同一发布包。入口、验证记录及用户后续自行试玩的边界归 `work-items/archive/enemy-five-elite-bosses.md`。
 
 ### 决斗、怒劲与飞钩原语（2026-09-19）
 
@@ -165,9 +165,9 @@
 
 `BattleCombatTechniques`中的不可变状态归战斗实例和世界检查点：决斗记录双方、队伍、期限与断开距离；怒劲记录独立过期的实际生命承伤；短盾只记录自身未消耗贡献，吸收优先扣减该贡献，到期不得删去别的护盾；重拳锁定方向、伤害快照及释放tick；飞钩保存飞行／回收／被拖单位。`BattleGritTriggers`记录半血边沿与本战已用濒死机会，伤害／治疗后及每tick观察条件。`BattleUnitActionQueue`按RuntimeId保存待执行技能、触发原因和收势结束tick；同技能合并原因，开始时重新选目标并在原能力事务内出队／消费资源，失败整体回滚。正常动作占用、位移、控制和收势时不取下一项；死亡清请求，复活不重置已用濒死机会，结束战斗全部清理。收势和表现使用同一技能时长，line_release不再假定所有技能释放帧都是80%。决斗双方不得开启主动，普通攻击及被动仍可发生，第三者不受此限制。
 
-飞钩在普通移动之后进行相对运动圆扫掠，按最早碰撞及稳定id取首个敌人；命中后请求既有地面Pull，墙体、身体和落位保留不穿透约束。回拖取消先于位移推进，避免打断后仍多拖一tick。表现只消费`duel_* / counter_strike / hook_* / line_*`事实，金属钩头／绳索跟随插值及被拖者可见身体；没有第二套表现驱动逻辑。四项独立VFX与正式战斗／预览共用VfxPlayer。入口与验证归[三英雄任务](../work-items/active/duel-grit-hook-heroes.md)。
+飞钩在普通移动之后进行相对运动圆扫掠，按最早碰撞及稳定id取首个敌人；命中后请求既有地面Pull，墙体、身体和落位保留不穿透约束。回拖取消先于位移推进，避免打断后仍多拖一tick。表现只消费`duel_* / counter_strike / hook_* / line_*`事实，金属钩头／绳索跟随插值及被拖者可见身体；没有第二套表现驱动逻辑。四项独立VFX与正式战斗／预览共用VfxPlayer。入口与验证归[三英雄任务](../work-items/archive/duel-grit-hook-heroes.md)。
 
-2026-09-12，按 `design-discussion/04-content-validation/decisions.md` 的 2.3-D06 局部实现授权扩展；本批实现与接入已完成，未构建／未运行验证，待用户体验反馈；具体完成范围与限制归 `work-items/active/bc-hero-roster.md`。具体 HC04–HC30 技能与测试数值只维护在内容资源和讨论当前稿，本节不重复英雄目录。
+2026-09-12，按 `design-discussion/04-content-validation/decisions.md` 的 2.3-D06 局部实现授权扩展；本批实现与接入已完成，未构建／未运行验证，待用户体验反馈；具体完成范围与限制归 `work-items/archive/bc-hero-roster.md`。具体 HC04–HC30 技能与测试数值只维护在内容资源和讨论当前稿，本节不重复英雄目录。
 
 - `BattleValueAbilityOperationSpec` 提供有限的伤害、治疗、护盾、法力、计数写入、可撤销属性贡献、资格条件和耗盾操作。`BattleValueTermSpec` 明确读取拥有者、选中目标、事件来源或事件承受者的属性／生命／当前盾／计数／事件实量／过疗／状态层数／负面种类／本战历史等输入；不按描述字符串执行机制，也不把所有事件实量当成同一种资源。
 - 个人计数按战斗 runtime id＋key 归属，共享计数按当前队伍＋key 归属。`BattleValueRuntime` 的不可变机制账本纳入世界检查点，与属性贡献、待返场、阵营租约和已消费尸体一同回滚；新战斗从空账本建立，不写回共享 Resource 或 Run 成长。界面读取真实战内资源与中文标签，不用动画猜测充能。
@@ -203,19 +203,21 @@
 
 ## 征程决策与保存
 
+默认地图的配置路由、类型化状态、动作身份与事务归[进程与会话合同](run-progression-and-sessions.md)。下述 v6–v10 历史字段、楼层权重和节点推进仅描述 legacy Tower；共同条件／操作、生命、招募和保存失败语义仍复用。
+
 - `CampaignDefinition.RecruitmentSupply` 引用独立 `.tres`，包含按顺序编号的2–5阶英雄组、开局权重和按绝对楼层递增的阶段权重。编译时检查全部征程池英雄唯一归阶、身份资格、权重长度/非负/总和、阶段起点与范围，以及开局能提供6名且人口能容纳2人。正式当前值为14人4阶，不从全目录推断入池资格；实验室仍读取完整发布目录。
 - `RecruitmentSupplySampler` 只读取编译快照：稳定身份派生随机源，先阶后英雄、不放回抽取，只在当前允许的非空阶重分。`RunDecisionService` 的 Recruit 池配方和兼容 `RecruitmentChoices` 查询共用此策略；生成后保存的 Offer 仍沿原快照恢复，不因读档重抽。旧快照中的合法历史英雄保留，不拿新池缩减去删除已取得内容。
 - schema v6 增加可空 `OpeningRecruitment`（不可变候选/勾选身份数组）；缺失表示既有正常征程。只有经过严格校验的开局状态可持有空名册；必须是0层/0战斗、无节点/奖励/终局、初始资源、6个合法互异候选及0–2个候选内勾选。异常状态保留原档并拒绝载入，不猜测补人或重抽。
-- `BeginOpeningRecruitment` 每次按传入的新种子生成开局，先保存再替换活动征程，即使已有未确认的开局草稿也不复用（2026-09-29 用户修订）。菜单／结局的“新征程”走该命令；“继续征程”与已有草稿的导航只绑定当前快照，不生成或保存新局。`ToggleOpeningHero` 和 `ConfirmOpeningRecruitment` 使用副本及同一保存边界；确认恰好添加所选2名、布置合法初始格并进入首战 PendingNode，保存失败不更改草稿、队伍或原征程。候选资格来自当前测试征程池，独立于旧账号解锁列表。正式 UI 仅通过这组命令开始新局；旧 `StartNewRun(heroId, seed)` 保留为测试/工具兼容入口，不是产品开局路径。
+- `BeginOpeningRecruitment` 每次按传入的新种子生成开局，先保存再替换活动征程，即使已有未确认的开局草稿也不复用（2026-09-29 用户修订）。菜单／结局的“新征程”走该命令；“继续征程”与已有草稿的导航只绑定当前快照，不生成或保存新局。`ToggleOpeningHero` 和 `ConfirmOpeningRecruitment` 使用副本及同一保存边界；确认恰好添加所选2名并布置合法初始格：地图同时生成及保存大陆与固定库存，legacy Tower 进入首战 PendingNode。确认失败不更改当前草稿或其队伍；此前新草稿成功已替换的上一局不在此恢复。候选资格来自当前测试征程池，独立于旧账号解锁列表。正式 UI 仅通过这组命令开始新局；旧 `StartNewRun(heroId, seed)` 保留为测试/工具兼容入口，不是产品开局路径。
 
 - Campaign 可配置 `RunOfferDefinition → RunChoiceDefinition → 条件/成本/成功效果/失败效果`。有限操作覆盖金币、招募、物品、生命恢复/损失、人口增长、人口上限来源；不新增升星、合并、成长曲线或独立交易经济。
-- 原有默认节点参数/资源池编译为同一 Offer 模型。`ResolveOffer(offerId, choiceId)` 验证当前资格，在副本支付全部成本并执行收益，同时消费机会/推进节点，保存成功后才发布。失败保留原状态和机会。Shop 重复购买是明确策略，不等同于一次性奖励。
+- 地图 Site 直接绑定按 stable ID 编译的 offer recipe，同 Kind 可有不同配方。原有默认节点参数/资源池仅在 Tower 适配层编译为同一 Offer 模型。`ResolveOffer(offerId, choiceId)` 验证当前资格，在副本支付全部成本并执行收益，同时消费机会/推进节点，保存成功后才发布。失败保留原状态和机会。Shop 重复购买是明确策略，不等同于一次性奖励。
 - schema v7 保留 v6 的 PendingOffer 及其选项快照；普通战胜的楼层推进和待领奖机会同次提交，读档先恢复待决机会。UI 只提交身份和选择，不直接写收益。
 - v7 新增 CurrentRunHealth／MaximumRunHealth 及可空的不可变 LastBattleConsequence。RunRules 配置生命初值、上限、普通／精英败战损失及默认营火恢复量；共享资源不保存局内值。当前格式缺生命字段或非法范围拒绝载入，非终局不得为0。合法v6可携带冻结待决项或终局凭证迁移，初始化生命且保留其余状态；v2–5继续按原资格边界迁移，只有通过全部校验并保存后发布，原格式保留备份。
-- RunNodeResolutionService 按实际结束原因验证与提交遗物transition：败战／超时不得有胜利贡献，但合法Run计数器和已消费指令金币仍写回。非Boss有余血败战同次保存扣血、战斗计数和推进，无奖励；Boss或0生命先保存终局凭证再清理。保存失败不发布副本；清理失败从已保存的凭证恢复，不能再次扣血。
+- 共用 `RunBattleResultProjector` 按实际结束原因验证与投影遗物 transition，再由对应进程协调边界提交：败战／超时不得有胜利贡献，但合法 Run 计数器和已消费指令金币仍写回。非 Boss 有余血败战同次保存扣血和战斗计数，无胜利奖励；旧塔推进楼层，地图保留敌人及位置。Boss 或 0 生命先保存终局凭证再清理。保存失败不发布副本；清理失败从已保存的凭证恢复，不能再次扣血。
 - RecoverRunHealth 为通用正整数恢复收益，RunHealthBelowMaximum 为资格条件，RunDecisionChange 返回实际生命差值。营火通过既有通用offer界面显示两个互斥选项；原默认存档中的英雄伤势恢复项移除，并补充独立全局恢复选项，机会身份与金币／已冻结恢复量不变，不重抽、不读时保存。满生命显示禁用原因。UI由RunHealthDisplay显示值快照，由RunHealthText统一预告和战报；模拟器与实验室不持有Run生命。
 - 普通招募资格由 `RunRecruitmentPolicy` 按名册全部内容身份（含后备）统一判定，覆盖固定／随机候选、旧快照的显示与领取和底层招募写入。去重依据可达 Recruit 操作，不依据展示用 ContentId；同一结果分支不能重复取得。候选不足不补重复，耗尽时保存可跳过空机会。旧快照读取只投影合法候选，不重抽或写回；成功的重复商店交易同时持久化过滤后的快照。已有旧名册不自动删除或清洗，特殊复制不借普通 Recruit 隐式放行。实现证据见 `../work-items/active/ordinary-recruitment-uniqueness.md`。
-- 终局先保存 Run 完成凭证，再提交 Meta 已应用凭证；保存失败保留 Run，重试不会重复胜利/解锁。确认 Meta 成功后才清除活动征程。
+- 终局先保存 Run 完成凭证，再提交 Meta 已到达阶段高水位及应有的胜利／解锁；败局同样须确认高水位保存成功。失败保留 Run，重试用 max 与完成 ID 去重，Meta 成功后才清除活动征程。
 - 旧格式遵守明确支持范围：无法区分旧非战斗节点是否已领奖的待决状态拒绝迁移并保留原件，不能猜测重建机会；支持的跨版本迁移保留唯一备份。损坏/读取失败与无活动存档区分。
 - 旧体验切片使用隔离内存存档并显式跳过正式奖励机会，继续自己的奖励流程，不能创建双份收益或写正式存档。
 
@@ -247,4 +249,4 @@ BattleScreen单位层Z=1，地裂裂缝和酸液液斑使用绝对地面Z=0，�
 - 状态新增有限 `DamageRules`（目标血量、身体边缘距离、首领、不同减益数、近战普攻）和 `Reactions`（事件后向自己／另一方／另一方附近敌人施加普通状态）。多个来源的同种减益只算一个稳定 ID；命中刻痕及溢出破甲复用既有状态聚合、计时和溢出。状态依赖图纳入反应目标，禁止循环及未发布引用。
 - `UseOverheal` 仅可绑定治疗承受方事件，读取 applied − effective。状态后续效果遇到 Effect 队列正在结算时加入同一个有界队列，由外层 drain 报告失败，不同步重入内核；能力原有世界事务仍承担整体回滚。新字段为空时保留既有状态定义指纹。
 - `OwnerEnteredBattle` 是独立能力触发种类；初始入场和后续召唤注册完被动后触发，不把 BattleStarted 或一般召唤操作替换为该语义。`RelicAbilityRepeatSpec` 仅接受入场／自身死亡，额外 1–3 次；在原能力成功后复制执行，沿用实际准备／提交路径，不再支付费用，禁止递归重复，受反应预算限制。
-- 本批玩法及供给范围见 `gameplay-design/generic-relics.md`；图标留空。验证入口与恢复状态见 `work-items/active/generic-relic-integration.md`。
+- 本批玩法及供给范围见 `gameplay-design/generic-relics.md`；图标留空。验证入口与恢复状态见 `work-items/archive/generic-relic-integration.md`。

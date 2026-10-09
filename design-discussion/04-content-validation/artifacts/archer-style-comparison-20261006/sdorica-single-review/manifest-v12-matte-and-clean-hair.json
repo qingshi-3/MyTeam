@@ -1,0 +1,19 @@
+{
+  "file": "archer-sdorica-v12-matte-and-clean-hair.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-61294f51-c80a-467a-9780-c5c379302f70.png",
+  "tool": "built-in image_gen",
+  "width": 1116,
+  "height": 1409,
+  "sha256": "31d43e202c32d02fee199dc1db08d96df120422a02526601fe3617203b23cd32",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "fully_transparent_pixels": 749597,
+  "generation_count": 1,
+  "status": "awaiting-user-review",
+  "prompt": "prompt-v12-matte-and-clean-hair.json",
+  "scope": "Consolidate frizzy hair into clean tapered shapes; restore matte/satin body-color areas supporting a few concentrated bright highlights; preserve current character, low bow pose and alpha.",
+  "visual_review": "Flyaway density and broad glow reduced; selected crown/shoulder highlights remain. Large curled hair forms and some fragmented armor planes remain, so material quality and overall cohesion are not considered accepted."
+}

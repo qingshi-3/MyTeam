@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>弓箭手 · 11 种立绘方向</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"PingFang SC",sans-serif;background:#18191d;color:#eee}
+*{box-sizing:border-box}body{margin:0}main{max-width:1500px;margin:auto;padding:28px}h1{font-size:25px;margin:0 0 8px}p{color:#b9b9c4;font-size:14px;margin:0;line-height:1.6}.toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:22px 0}.toolbar button,.close{background:#30323c;color:#eee;border:1px solid #555866;border-radius:7px;padding:9px 14px;font:inherit;cursor:pointer}.toolbar button:focus-visible,.zoom:focus-visible,.close:focus-visible{outline:3px solid #dfb461;outline-offset:3px}#selection{color:#ddc58e;font-size:14px}#gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.card{min-width:0}.card[hidden]{display:none}.zoom{display:block;border:0;padding:0;background:#222;width:100%;cursor:zoom-in;border-radius:8px;overflow:hidden}.zoom img{display:block;width:100%;height:auto;aspect-ratio:2/3;object-fit:contain}.caption{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:12px 1px;font-size:15px}.caption label{font-size:13px;white-space:nowrap;color:#b9b9c4;cursor:pointer}.caption input{accent-color:#ddbc75}.card.selected .zoom{outline:3px solid #d9b86e;outline-offset:3px}dialog{padding:0;border:0;background:#18191d;color:#eee;max-width:95vw;max-height:96vh;border-radius:8px}dialog::backdrop{background:#000c}.dialogbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:10px 16px}#large{display:block;max-width:93vw;max-height:86vh;object-fit:contain;margin:auto}.foot{margin:26px 0 5px;color:#9a9aa5;font-size:12px}@media(max-width:1000px){#gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){main{padding:16px}#gallery{grid-template-columns:1fr}h1{font-size:21px}} 
+</style>
+</head>
+<body>
+<main>
+<h1>已退回的历史批次：balanced</h1>
+<p>用户因人体问题退回本批次；仅保留追溯。</p>
+<div class="toolbar"><button id="filter" type="button" aria-pressed="false">只看留选</button><button id="clear" type="button">清空留选</button><span id="selection" aria-live="polite">尚未留选</span></div>
+<div id="gallery">
+<article class="card" data-id="01"><button class="zoom" type="button" data-file="balanced/01-genshin.png" data-label="01 · 原神" aria-label="放大 01 原神"><img src="balanced/01-genshin.png" alt="01 原神方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>01 · 原神</strong><label><input type="checkbox" value="01"> 留选</label></div></article>
+<article class="card" data-id="21"><button class="zoom" type="button" data-file="balanced/21-lol.png" data-label="21 · 英雄联盟" aria-label="放大 21 英雄联盟"><img src="balanced/21-lol.png" alt="21 英雄联盟方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>21 · 英雄联盟</strong><label><input type="checkbox" value="21"> 留选</label></div></article>
+<article class="card" data-id="02"><button class="zoom" type="button" data-file="balanced/02-wuwa.png" data-label="02 · 鸣潮" aria-label="放大 02 鸣潮"><img src="balanced/02-wuwa.png" alt="02 鸣潮方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>02 · 鸣潮</strong><label><input type="checkbox" value="02"> 留选</label></div></article>
+<article class="card" data-id="03"><button class="zoom" type="button" data-file="balanced/03-hsr.png" data-label="03 · 崩坏：星穹铁道" aria-label="放大 03 崩坏：星穹铁道"><img src="balanced/03-hsr.png" alt="03 崩坏：星穹铁道方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>03 · 崩坏：星穹铁道</strong><label><input type="checkbox" value="03"> 留选</label></div></article>
+<article class="card" data-id="28"><button class="zoom" type="button" data-file="balanced/28-gwent.png" data-label="28 · 昆特牌" aria-label="放大 28 昆特牌"><img src="balanced/28-gwent.png" alt="28 昆特牌方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>28 · 昆特牌</strong><label><input type="checkbox" value="28"> 留选</label></div></article>
+<article class="card" data-id="08"><button class="zoom" type="button" data-file="balanced/08-nikke.png" data-label="08 · 胜利女神：妮姬" aria-label="放大 08 胜利女神：妮姬"><img src="balanced/08-nikke.png" alt="08 胜利女神：妮姬方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>08 · 胜利女神：妮姬</strong><label><input type="checkbox" value="08"> 留选</label></div></article>
+<article class="card" data-id="32"><button class="zoom" type="button" data-file="balanced/32-valorant.png" data-label="32 · 无畏契约" aria-label="放大 32 无畏契约"><img src="balanced/32-valorant.png" alt="32 无畏契约方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>32 · 无畏契约</strong><label><input type="checkbox" value="32"> 留选</label></div></article>
+<article class="card" data-id="13"><button class="zoom" type="button" data-file="balanced/13-fgo.png" data-label="13 · Fate/Grand Order" aria-label="放大 13 Fate/Grand Order"><img src="balanced/13-fgo.png" alt="13 Fate/Grand Order方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>13 · Fate/Grand Order</strong><label><input type="checkbox" value="13"> 留选</label></div></article>
+<article class="card" data-id="16"><button class="zoom" type="button" data-file="balanced/16-granblue.png" data-label="16 · 碧蓝幻想 Relink" aria-label="放大 16 碧蓝幻想 Relink"><img src="balanced/16-granblue.png" alt="16 碧蓝幻想 Relink方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>16 · 碧蓝幻想 Relink</strong><label><input type="checkbox" value="16"> 留选</label></div></article>
+<article class="card" data-id="40"><button class="zoom" type="button" data-file="balanced/40-sdorica.png" data-label="40 · 万象物语" aria-label="放大 40 万象物语"><img src="balanced/40-sdorica.png" alt="40 万象物语方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>40 · 万象物语</strong><label><input type="checkbox" value="40"> 留选</label></div></article>
+<article class="card" data-id="61"><button class="zoom" type="button" data-file="balanced/61-dnf.png" data-label="61 · DNF" aria-label="放大 61 DNF"><img src="balanced/61-dnf.png" alt="61 DNF方向弓箭手立绘" loading="lazy"></button><div class="caption"><strong>61 · DNF</strong><label><input type="checkbox" value="61"> 留选</label></div></article>
+</div>
+<p class="foot">编号沿用原参考表。游戏名表示本次绘法的参考方向；全部为待评价样稿。</p>
+</main>
+<dialog id="viewer"><div class="dialogbar"><strong id="largeLabel"></strong><button type="button" class="close" id="close">关闭 · Esc</button></div><img id="large" alt=""></dialog>
+<script>
+const gallery=document.getElementById('gallery');
+const checks=[...gallery.querySelectorAll('input')];
+const filter=document.getElementById('filter');
+const viewer=document.getElementById('viewer');
+const large=document.getElementById('large');
+let onlySelected=false;
+function update(){
+ const ids=checks.filter(x=>x.checked).map(x=>x.value);
+ gallery.querySelectorAll('.card').forEach(card=>{const selected=ids.includes(card.dataset.id);card.classList.toggle('selected',selected);card.hidden=onlySelected&&!selected;});
+ document.getElementById('selection').textContent=ids.length?'已留选：'+ids.join('、'):'尚未留选';
+ filter.setAttribute('aria-pressed',String(onlySelected));filter.textContent=onlySelected?'显示全部':'只看留选';
+ try{localStorage.setItem('archer-style-picks',JSON.stringify(ids));}catch{}
+}
+try{const ids=JSON.parse(localStorage.getItem('archer-style-picks')||'[]');checks.forEach(x=>x.checked=ids.includes(x.value));}catch{}
+checks.forEach(x=>x.addEventListener('change',update));
+filter.addEventListener('click',()=>{onlySelected=!onlySelected;update();});
+document.getElementById('clear').addEventListener('click',()=>{checks.forEach(x=>x.checked=false);onlySelected=false;update();});
+gallery.querySelectorAll('.zoom').forEach(button=>button.addEventListener('click',()=>{large.src=button.dataset.file;large.alt=button.dataset.label;document.getElementById('largeLabel').textContent=button.dataset.label;viewer.showModal();}));
+document.getElementById('close').addEventListener('click',()=>viewer.close());
+viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.close();});
+update();
+</script>
+</body>
+</html>
+

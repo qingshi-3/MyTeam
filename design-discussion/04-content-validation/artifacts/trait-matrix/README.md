@@ -40,4 +40,4 @@ JSON是可再生成的设计源；Excel可以直接批注、编辑，但修改�
 
 [结构核对](structure-audit.json)记录ID、标签、空轴、39档、人数余量、低阶入口和上述七组连接；每名单位按唯一身份与持有标签计数，优先HC映射无重复。工作簿验证归[导出核对](verification.json)，覆盖单工作表、数据回读及渲染。制表阶段未运行Godot、战斗模拟或桌面Excel交互；后续逻辑补全的真实运行证据另见validation，不能用原结构检查代替。
 
-恢复与职责见[活动任务](../../../../work-items/active/trait-roster-planning.md)。
+恢复与职责见[活动任务](../../../../work-items/archive/trait-roster-planning.md)。

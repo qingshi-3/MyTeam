@@ -1,0 +1,21 @@
+{
+  "file": "archer-sdorica-v13-eight-annotations.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-16b263a5-b6ae-4ab5-9079-ebe2e538cf9c.png",
+  "tool": "built-in image_gen",
+  "width": 1116,
+  "height": 1409,
+  "sha256": "c154b1e6c2266e668521de07c0ff19dd8f17b4bde7d256ecbeb8ae17f2134de0",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "fully_transparent_pixels": 903214,
+  "generation_count": 1,
+  "status": "awaiting-user-review",
+  "prompt": "prompt-v13-eight-annotations.json",
+  "annotations": "user-annotations-v13.json",
+  "base_image": "archer-sdorica-v11-hair-and-focal-light.png",
+  "scope": "Use the exact user-selected image 2/v11 rather than v12. Address four specified fragmented-hair areas and four lower-garment logic/removal areas.",
+  "visual_review": "Long center, left and lower-right fabric tails removed and lower costume rebuilt as a short overlapping skirt attached to belt; bare upper thighs and transparent inter-leg gaps visible. Hair is partly consolidated but some fine illuminated edges and looping shapes remain. Do not claim all hair or aesthetic issues resolved."
+}

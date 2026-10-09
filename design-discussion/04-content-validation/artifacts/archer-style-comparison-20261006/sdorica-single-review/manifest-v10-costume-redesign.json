@@ -1,0 +1,23 @@
+{
+  "file": "archer-sdorica-v10-costume-redesign.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-fc65aa37-6336-4e03-b9c4-698c498e5ed6.png",
+  "tool": "built-in image_gen",
+  "width": 1115,
+  "height": 1410,
+  "sha256": "98268897e95c5933ac2f89d979effbf7ad6942f3cdb5cf1344270620e0fd3c37",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "fully_transparent_pixels": 806607,
+  "generation_count": 1,
+  "status": "awaiting-user-review",
+  "prompt": "prompt-v10-costume-redesign.json",
+  "reference_images": [
+    "reference-07-sdorica.png"
+  ],
+  "previous_archer_image_supplied": false,
+  "scope": "User released costume constraints to prioritize visual quality. Fresh archer design with cool steel cuirass, broad violet panels, dark leather and restrained gold details; red-haired adult identity, low archery action and transparent cutout retained.",
+  "visual_review": "Substantial visible change in costume, palette area distribution, materials and pose rendering. Steel surfaces and subdued limb hardware replace bright full-body gold; broad cloth panels replace white lining. Some local surface facets remain, and bow tip/arrow are close to frame. No claim of anatomy, lighting or aesthetic acceptance."
+}

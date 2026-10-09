@@ -79,8 +79,8 @@ Evidence: `.godot/ui-review/battle-movement/` contains the saved-roster measurem
 当前用户要求由自己在战斗实验室验收；下面入口保留供明确需要时使用，不自动反复启动引擎。
 
 - 玩法与碰撞专项：`tests/EnemyFiveContractSmoke.tscn`。覆盖发布资源、命中次数与取消、原子换位、可攻击岩墙、缩体／产卵限额及正式落位；不代表平衡／画面通过。
-- 表现夹具：`tests/EnemyFiveVisualSmoke.tscn`，可用`--case=EE07`等单项及`--capture=...`。夹具静止双方以隔离动作，不能作为实际阵容胜率依据；用户要求停止后未再运行。
-- 手工：战斗实验室加载EE07／EE08／EE09／EB01／EB02“机制试战”。分别观察扇形锁向、返刃往返、双端换位、自动拆墙与地裂、半血裂壳／虫卵。实现和实际覆盖边界归`work-items/active/enemy-five-elite-bosses.md`。
+- 表现夹具：`tests/archive/retired-content/EnemyFiveVisualSmoke.tscn`，可用`--case=EE07`等单项及`--capture=...`。夹具静止双方以隔离动作，不能作为实际阵容胜率依据；用户要求停止后未再运行。
+- 手工：战斗实验室加载EE07／EE08／EE09／EB01／EB02“机制试战”。分别观察扇形锁向、返刃往返、双端换位、自动拆墙与地裂、半血裂壳／虫卵。实现和实际覆盖边界归`work-items/archive/enemy-five-elite-bosses.md`。
 
 ```powershell
 dotnet build my-team.csproj -maxcpucount:2 -v:minimal

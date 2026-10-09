@@ -1,5 +1,16 @@
 # 战斗实验室 UI 与交互优化
 
+## 当前内容接入后的可用性修复（2026-10-06，已实现）
+
+用户反馈“战斗实验室不可用了”。范围为恢复原实验室入口和现有交互，没有替换正常游戏入口或恢复已删除的装备／遗物。
+
+- 单位分类、Boss 时间线查询改用 `Campaign.Encounters`，消除大陆征程访问旧 `Regions` 的异常。
+- 接入「当前阵容 · 双方对战」「极地 · 冻结观察」「森林 · 开场复制」「斗士 · 群体生命」四个 authored 预设。空目录进入空白编辑；坏条目或错误默认名称仍拒绝；完整初始化成功后才发布会话，避免失败后复用半初始化状态。
+- 原实验室显式开启已有详细统计。共享准备请求的开关默认关闭，正常征程仍使用原紧凑统计，终局战报流程保持原有行为。
+- 低并发构建 0 警告／0 错误；四预设完整战斗、空目录与非法目录、征程统计边界契约通过。实际隔离输入覆盖从菜单进入、库内搜索及拖放、开战、暂停／单步、战况详情、重置、返回与重入；真实存档和个人预设的文件内容与元数据未变。已审阅实际界面截图；用户体验和平衡仍待用户验收。
+
+证据和复核步骤见 `docs/testcases/battle-lab.md` 当前恢复章节，日志与截图在 `outputs/battle-lab-restore-20261006/`。实现由 Sol（high）负责，主 Agent 补修征程接口和输入夹具、审查及整合验证；独立审查 Agent 因工具线程上限未能启动。
+
 ## 碰撞／普攻可视化与 EE03 体型校准（2026-09-21，已实现）
 
 用户要求看见真实碰撞和攻击范围，并指出冲锋单位素材小、占位大，会造成看似能过的通道无法通过。本次执行沿用现有 main，无提交或玩家数据操作。
@@ -177,6 +188,8 @@
 - 已查看 1600×900 渲染：`.godot/ui-review/popup-deployment-default.png`、`popup-deployment-details.png`、`popup-army-details.png`、`popup-battle-default.png`、`popup-battle-details.png`、`popup-battle-statistics.png`、`popup-lab-default.png`、`popup-lab-unit-info.png`、`popup-lab-team.png`、`popup-lab-settings.png`、`popup-lab-library.png`，以及更新后的装备拖放截图。关闭态无固定信息栏，信息窗有四周留白，装备图标与穿戴反馈可见。
 - 本批是隔离数据下的正式 authored 场景输入检查，未做完整爬塔、全分辨率扫描或玩家沉浸感验收；未重做英雄选择／候选购买／结算报告版式。历史 `CurrentUiInputCapture`／`MainFlowUiInputCapture` 等记录仍含旧侧栏寻址，不作为当前弹窗验证入口；使用本节两个专项恢复，不冒称旧套件全通过。无新增过渡动效，不另做 reduced-motion 扫测。
 
+> 2026-10-06 清理说明：以下历史截图位于本机 `.godot/ui-review/` 缓存，当前文件已不存在；保留原路径文字供追溯，不再提供失效链接，也不作为当前可回查的验收证据。
+
 ## 当前扩展：参考图驱动的信息层级重做（2026-09-13，已实现并完成针对性输入与渲染检查）
 
 用户提供当前招募页与独立游戏角色面板、局部属性提示、并排物品候选及战报截图，指出问题是主次不清，而不是能否展示全文。本轮继续执行 UI 优化，沿用 main、保留原改动、引擎输入和隔离存档的边界。图中技能展示区域仅作为观察到的参考，本轮不新增技能演示或动画素材。
@@ -189,7 +202,7 @@
 
 最终 `dotnet build my-team.csproj -maxcpucount:2 -v:minimal` 为 0 警告／0 错误。`MainFlowUiInputCapture --offers-only` 退出 0，20 张截图：独立合法征程的招募／商店／军团／备战，以及明确标记的奖励预览；真实输入覆盖只读检查不改征程、确认后合法领取／扣款与刷新、后备实际部署、属性 hover／点击／Space同文、技能解释和折叠滚动。另一次900×900候选区检查得到两列，真实滚到最后候选展开，再恢复1600三列。`CurrentUiInputCapture` 退出0，13张截图，实际点选实验室战斗单位，检查紧凑侧栏、技能全文与统计折叠；不推进自然征程。没有把奖励预览当领取、实验室战斗当正常通塔，也没有用本轮记录重申旧版所有随机流程通过。
 
-主责已查看最终渲染：[招募并排卡](../../.godot/ui-review/after-fixture-recruitment.png)、[备战紧凑详情](../../.godot/ui-review/after-fixture-deployment-compact.png)、[属性局部悬停](../../.godot/ui-review/after-fixture-deployment-compact-attribute-hover.png)、[商店完整效果](../../.godot/ui-review/after-fixture-shop-expanded.png)、[窄候选末行](../../.godot/ui-review/after-fixture-recruitment-narrow-last-details.png)、[战斗侧栏](../../.godot/ui-review/after-battle-unit-top.png)。日志为 `.godot/ui-review/main-offer-input-review.log` 与 `input-review.log`。截图由引擎生成，未使用 Computer Use；只测试存档，未触碰真实存档或预设，运行进程已自行退出。结果表示上述输入与可见布局已检查，玩家体验仍待用户；未重做战报、开局英雄选择整体结构或技能演示画面，未全塔／全分辨率扫测。
+主责已查看最终渲染：招募并排卡（`../../.godot/ui-review/after-fixture-recruitment.png`）、备战紧凑详情（`../../.godot/ui-review/after-fixture-deployment-compact.png`）、属性局部悬停（`../../.godot/ui-review/after-fixture-deployment-compact-attribute-hover.png`）、商店完整效果（`../../.godot/ui-review/after-fixture-shop-expanded.png`）、窄候选末行（`../../.godot/ui-review/after-fixture-recruitment-narrow-last-details.png`）、战斗侧栏（`../../.godot/ui-review/after-battle-unit-top.png`）。日志为 `.godot/ui-review/main-offer-input-review.log` 与 `input-review.log`。截图由引擎生成，未使用 Computer Use；只测试存档，未触碰真实存档或预设，运行进程已自行退出。结果表示上述输入与可见布局已检查，玩家体验仍待用户；未重做战报、开局英雄选择整体结构或技能演示画面，未全塔／全分辨率扫测。
 
 恢复从本节、`RunOfferChoiceCard/RunOfferChoiceGrid`、`PreparedUnitDetailPanel`、`SelectedUnitPanel` 与上述两个输入入口继续。长期职责已同步 system-design，观察范围同步 docs/testcases/alpha-manual-qa.md；未修改玩法与数值，没有提交或推送。
 
@@ -203,7 +216,7 @@
 
 最终低并发编译 0 警告/0 错误。`tests/MainFlowUiInputCapture.cs/.tscn` 用正式 `GameRoot`、唯一 `tests/...` 存档空间、真实引擎鼠标/键盘/滚轮输入检查了新征程→路线→军团三页→招募领取→备战单位/敌人/装备→暂停/点选/恢复/加速→实际战斗报告及胜利奖励页；一次完整检查输出 `MAIN_FLOW_UI_INPUT_CAPTURE_OK captures=20`。正常征程使用真实随机种子，另一次自然样本实际战败，按事实进入失败结果，没有更改平衡或强造胜利。后续补查发现独立奖励预览缺少生产路由器的初始焦点交接，仅修测试初始化；带 `-- --offers-only` 运行的最终定点检查退出 0、输出 `captures=9 normal-battle=skipped-focused-offer-check`，覆盖合法招募领取、招募后真实棋盘部署并保存、商店实际购买扣款/刷新/离开、奖励预览滚动/继续。独立场景不冒充一条自然完整通塔路线，奖励预览不代表领取战斗奖励；新增“自然领奖再返回路线”的分支未在最后的战败样本触达。
 
-主责已查看真实渲染：[军团英雄](../../.godot/ui-review/after-main-army-top.png)、[主流程招募](../../.godot/ui-review/after-main-recruitment.png)、[备战默认详情](../../.godot/ui-review/after-main-deployment-default.png)、[敌人详情](../../.godot/ui-review/after-main-deployment-enemy.png)、[正常战斗](../../.godot/ui-review/after-main-battle-unit.png)、[战斗报告](../../.godot/ui-review/after-main-battle-report.png)、[独立招募后部署](../../.godot/ui-review/after-fixture-recruited-hero-deployed.png)、[独立商店购买后](../../.godot/ui-review/after-fixture-shop-purchased.png)、[独立奖励预览](../../.godot/ui-review/after-fixture-reward-preview-only.png)。证据统一留 `.godot/ui-review/`，最新主流程与定点日志分别为 `main-input-review.log`（含已定位的独立预览焦点失败）和 `main-offer-input-review.log`（修复后通过）。截图同名文件保留最近一次实际样本；不据此宣称所有随机分支、全塔、多分辨率、满装备背包或玩家体验通过。无动效调整，未另测 reduced-motion；所有自建游戏测试进程已退出，未关闭用户编辑器。恢复本节后读取上述输入入口与对应生产场景。
+主责已查看真实渲染：军团英雄（`../../.godot/ui-review/after-main-army-top.png`）、主流程招募（`../../.godot/ui-review/after-main-recruitment.png`）、备战默认详情（`../../.godot/ui-review/after-main-deployment-default.png`）、敌人详情（`../../.godot/ui-review/after-main-deployment-enemy.png`）、正常战斗（`../../.godot/ui-review/after-main-battle-unit.png`）、战斗报告（`../../.godot/ui-review/after-main-battle-report.png`）、独立招募后部署（`../../.godot/ui-review/after-fixture-recruited-hero-deployed.png`）、独立商店购买后（`../../.godot/ui-review/after-fixture-shop-purchased.png`）、独立奖励预览（`../../.godot/ui-review/after-fixture-reward-preview-only.png`）。证据统一留 `.godot/ui-review/`，最新主流程与定点日志分别为 `main-input-review.log`（含已定位的独立预览焦点失败）和 `main-offer-input-review.log`（修复后通过）。截图同名文件保留最近一次实际样本；不据此宣称所有随机分支、全塔、多分辨率、满装备背包或玩家体验通过。无动效调整，未另测 reduced-motion；所有自建游戏测试进程已退出，未关闭用户编辑器。恢复本节后读取上述输入入口与对应生产场景。
 
 ## 当前修复：属性与详情可读性、容器布局（2026-09-13，已实现并完成针对性输入/截图检查）
 
@@ -211,9 +224,9 @@
 
 完成范围：选英雄详情绑定正式主被动（含HC01组件被动）并补足防御、普攻频率/倍率、射程和法力等属性；实验室棋盘宿主改为不向外传播子节点最小尺寸的Control，按分配空间缩放/居中，属性四卡前置，词条单独折叠；战斗详情常显主被动，内部滚动、368px侧栏及内边距约束；修复提示卡换内容后实际高度不收缩；实验室战斗未配置指令时隐藏空指令HUD，已配置指令与正常战斗沿原入口显示。保持战斗规则、单位/装备内容与真实存档不变，使用隔离测试SaveNamespace；只main，不提交推送。
 
-验证：最终 `dotnet build my-team.csproj -maxcpucount:2 -v:minimal` 0警告/0错误；带显示运行 `res://tests/CurrentUiInputCapture.tscn`，输出 `CURRENT_UI_INPUT_CAPTURE_OK size=1600x900 captures=13`。从生产主菜单通过 `Input.ParseInputEvent` 点击选英雄、HC08预览、Tab与正文滚轮，再进实验室选HC01/HC08、悬停、独立折叠/展开双侧、搜索/选择/关闭/载入NE01预设、团队配置、棋盘选择、开战/暂停、单位属性与技能详情、滚到词条末尾、战况展开/收起；检查主要按钮和容器处于视口内。中途模拟输入曾漏发滚轮释放，使后续鼠标点击被捕获；修复测试输入后原折叠按钮正常，无绕过UI直接调用折叠方法。测试不保存用户预设，不推进正常征程。
+验证：最终 `dotnet build my-team.csproj -maxcpucount:2 -v:minimal` 0警告/0错误；带显示运行 `res://tests/archive/retired-content/CurrentUiInputCapture.tscn`，输出 `CURRENT_UI_INPUT_CAPTURE_OK size=1600x900 captures=13`。从生产主菜单通过 `Input.ParseInputEvent` 点击选英雄、HC08预览、Tab与正文滚轮，再进实验室选HC01/HC08、悬停、独立折叠/展开双侧、搜索/选择/关闭/载入NE01预设、团队配置、棋盘选择、开战/暂停、单位属性与技能详情、滚到词条末尾、战况展开/收起；检查主要按钮和容器处于视口内。中途模拟输入曾漏发滚轮释放，使后续鼠标点击被捕获；修复测试输入后原折叠按钮正常，无绕过UI直接调用折叠方法。测试不保存用户预设，不推进正常征程。
 
-已检查最终渲染图：[选英雄完整详情](../../.godot/ui-review/after-hero-hc08-top.png)、[实验室属性与技能](../../.godot/ui-review/after-lab-hc01-top.png)、[悬停卡](../../.godot/ui-review/after-lab-hc08-hover.png)、[预设浮层](../../.godot/ui-review/after-lab-preset-modal.png)、[团队配置](../../.godot/ui-review/after-lab-team.png)、[战斗详情](../../.godot/ui-review/after-battle-unit-top.png)、[完整词条末尾](../../.godot/ui-review/after-battle-skill-bottom.png)、[战况面板](../../.godot/ui-review/after-battle-statistics.png)。证据目录 `.godot/ui-review/`，运行日志 `input-review.log`。检查覆盖上述1600×900路径，不表示所有界面/全分辨率或玩家体验已验收；无动效设计变化，不新增reduced-motion流程。后续按用户偏好优先使用引擎输入模拟与截图，不使用Computer Use。
+已检查最终渲染图：选英雄完整详情（`../../.godot/ui-review/after-hero-hc08-top.png`）、实验室属性与技能（`../../.godot/ui-review/after-lab-hc01-top.png`）、悬停卡（`../../.godot/ui-review/after-lab-hc08-hover.png`）、预设浮层（`../../.godot/ui-review/after-lab-preset-modal.png`）、团队配置（`../../.godot/ui-review/after-lab-team.png`）、战斗详情（`../../.godot/ui-review/after-battle-unit-top.png`）、完整词条末尾（`../../.godot/ui-review/after-battle-skill-bottom.png`）、战况面板（`../../.godot/ui-review/after-battle-statistics.png`）。证据目录 `.godot/ui-review/`，运行日志 `input-review.log`。检查覆盖上述1600×900路径，不表示所有界面/全分辨率或玩家体验已验收；无动效设计变化，不新增reduced-motion流程。后续按用户偏好优先使用引擎输入模拟与截图，不使用Computer Use。
 
 状态（2026-09-12）：**悬停详情、双侧折叠与战况侧栏已接入；继续完成说明层级、彩色粗体词条及同名被动合并。未构建、未运行交互或渲染验证，待用户体验。**
 

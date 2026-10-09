@@ -1,0 +1,48 @@
+[
+  {
+    "id": "A",
+    "name": "A-low-stop-painted",
+    "poseNumber": 2,
+    "styleNumbers": [
+      5,
+      8
+    ],
+    "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-5cd1ffb5-e4dd-454a-b94c-a69a7560e8f3.png",
+    "file": "A-low-stop-painted.png",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "6858dff7a828e4cd759014697edb5bd8fdda0369a98c3655ad846cbeee0ac296",
+    "status": "revision-candidate-awaiting-user-review"
+  },
+  {
+    "id": "B",
+    "name": "B-forward-draw-line",
+    "poseNumber": 7,
+    "styleNumbers": [
+      8,
+      9,
+      6
+    ],
+    "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-c4b6be2e-4700-40bd-b846-8b74a0ce2ea3.png",
+    "file": "B-forward-draw-line.png",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "92dfb56a50f3c47b3f556ac33ee6e640cdc2d0892e844490ffe7b39b23c30644",
+    "status": "revision-candidate-awaiting-user-review"
+  },
+  {
+    "id": "C",
+    "name": "C-landing-watercolor",
+    "poseNumber": 10,
+    "styleNumbers": [
+      10,
+      6
+    ],
+    "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-e1d66ca8-7554-4776-8d59-fbcf58d8f918.png",
+    "file": "C-landing-watercolor.png",
+    "width": 1024,
+    "height": 1536,
+    "sha256": "435f84ca699c2cbde3f6dc09ba38be9a2f32a52e4d7ab0b2f80585794f4f45a4",
+    "status": "revision-candidate-awaiting-user-review"
+  }
+]

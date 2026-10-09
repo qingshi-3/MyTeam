@@ -129,7 +129,7 @@ Restore deployment as a truthful direct-manipulation flow and correct hero-libra
 - Authored enemy preview: `scenes/ui/components/EnemyDeploymentPreview.tscn`, `src/UI/EnemyDeploymentPreview.cs`, and its generated script UID.
 - Hero selection: `src/UI/HeroLibraryTile.cs`, `src/UI/HeroSelectScreen.cs`.
 - Authority/QA: `gameplay-design/tower-autobattler-core.md`, `system-design/tower-autobattler-architecture.md`, `docs/testcases/alpha-manual-qa.md`.
-- Focused evidence: `tests/DeploymentInputHeroSelectionContractSmoke.cs/.tscn`, `tests/DeploymentInputHeroSelectionCapture.cs/.tscn`, their generated script UIDs, and ignored capture output under `.godot/qa/deployment-input-hero-selection/`.
+- Focused evidence: `tests/DeploymentInputHeroSelectionContractSmoke.cs/.tscn`, `tests/archive/retired-content/DeploymentInputHeroSelectionCapture.cs/.tscn`, their generated script UIDs, and ignored capture output under `.godot/qa/deployment-input-hero-selection/`.
 
 ## Resume Condition
 

@@ -6,7 +6,7 @@ Reading boundary (2026-09-06): existing exact rules remain the current contract 
 
 ## Product Identity
 
-The game is a single-player tower-climbing roguelite hero-roster autobattler. The player chooses two heroes from six random opening candidates, grows a changing population and build during the run, deploys a formation on the spatial battlefield, and watches it resolve through real-time automatic combat. The default journey uses growth, pre-battle preparation and single-battle spells; combat has no tactical-command input. The legacy Alpha command loadout remains accessible through the developer menu.
+The game is a single-player roguelite hero-roster autobattler. New default journeys explore a random continent; legacy Tower journeys and Alpha retain their original progression. The player chooses two heroes from six random opening candidates, grows a changing population and build during the run, deploys a formation on the spatial battlefield, and watches it resolve through real-time automatic combat. The default journey uses growth, pre-battle preparation and single-battle spells; combat has no tactical-command input. The legacy Alpha command loadout remains accessible through the developer menu.
 
 The main pleasure is seeing a deliberately constructed hero team operate across a readable spatial battlefield. It is not a traditional turn-by-turn tactics game, a PvP economy autobattler, a permanent troop-management game, or passive playback without meaningful preparation.
 
@@ -20,21 +20,21 @@ The main pleasure is seeing a deliberately constructed hero team operate across 
 
 2026-09-26按用户明确实施要求：普通攻击对敌人输出，不再因治疗强度为正自动替换成治疗友军。济世医师、盈光祭司通过各自主动技能治疗，保留明确的治疗转伤害／过量治疗转盾及其他英雄已有吸血等技能效果。治疗技能照常检查法力、合法目标、范围与视线；满蓝但目标不合法不扣资源。
 
-玩家与敌方使用独立单位定义和需要分别调参的技能资源；相同外观复用贴图、动画、VFX与行为实现。当前31名发布英雄完成首轮逐名数值校准，17名现行征程池与7名保留库的开放范围不变。数值与验证边界见[玩家数值任务](../work-items/active/player-unit-balance.md)，不将首轮参数当作最终平衡。
+玩家与敌方使用独立单位定义和需要分别调参的技能资源；相同外观复用贴图、动画、VFX与行为实现。当前31名发布英雄完成首轮逐名数值校准，17名现行征程池与7名保留库的开放范围不变。数值与验证边界见[玩家数值任务](../work-items/archive/player-unit-balance.md)，不将首轮参数当作最终平衡。
 
 ## 全局生命与败战续行
 
 2026-09-26 按用户实施授权接入 R11-D02。全局生命是独立局内资源，每战英雄满血与战中治疗均不重置或恢复它。首版初始／上限100，普通败战扣20，精英败战扣30；超时按同场次败战处理。数值由 RunRules 资源配置，属于待试玩校准的初值。
 
-非Boss败战后生命大于0则保留阵型并进入下一层，无胜利金币或战利品；已花费的战术指令金币及合法遗物状态照常结算。生命扣至0则征程结束。所有区域／最终Boss失败或超时，无论生命还剩多少都直接结束征程。胜利不扣全局生命，原胜利奖励与阵亡撤出部署规则保持；最终Boss胜利通关。
+非Boss败战后生命大于0则保留阵型，无胜利金币或战利品；默认大陆保留敌人与原位置，可另付行动重试或绕行，legacy Tower 进入下一层。已花费的战术指令金币及合法遗物状态照常结算。生命扣至0则征程结束。所有区域／最终Boss失败或超时，无论生命还剩多少都直接结束征程。胜利不扣全局生命，原胜利奖励与阵亡撤出部署规则保持；最终Boss胜利通关。
 
-默认营火提供恢复25全局生命（不超过上限）或原有金币收益的互斥选择；满血禁用恢复，也可放弃机会。普通战斗治疗不能回血到此资源。通用选择支持独立恢复操作供后续内容复用，当前不新增恢复物品、改事件概率或增加生命支出。
+默认大陆营地的恢复／金币选择见[大陆规则](expedition-progression.md#首轮作者基线)，满血禁用恢复，取消预览不处理地点。旧塔营火保持恢复25全局生命（不超过上限）或原有金币收益的互斥选择，也可放弃机会。普通战斗治疗不能回血到此资源。通用选择支持独立恢复操作供后续内容复用，当前不新增恢复物品、改事件概率或增加生命支出。
 
 路线与部署预告失败代价，征程资源栏及正式战斗显示全局生命；战报展示实际扣血、余量和下一步，终局区分Boss失败与生命耗尽。实验室不使用征程生命。敌人曲线的首轮校准见下节，生命初值与恢复成本仍待联合试玩。
 
-## 阶段难度与构筑检验（2026-09-26首轮）
+## 旧 Tower 难度与构筑检验（2026-09-26首轮）
 
-用户授权 D56 / Q26 首轮实施。15 层／三区保持；开局按两名英雄准备。前段允许过渡，首区 Boss 检查初步协作，中区逐步要求可持续的主配合，末区要求主配合与基本补短板，同时保留成型后的优势战。人数和零散装备应能帮助过渡，但不能作为稳定的后期通关保证。功能位与有效替代组合仍有价值，不把特定英雄名单或羁绊数量变为硬性入场条件。
+本节保留 legacy Tower 的 D56 / Q26 首轮规则；默认大陆的配方与阶段见[大陆规则](expedition-progression.md)。旧塔 15 层／三区保持；开局按两名英雄准备。前段允许过渡，首区 Boss 检查初步协作，中区逐步要求可持续的主配合，末区要求主配合与基本补短板，同时保留成型后的优势战。人数和零散装备应能帮助过渡，但不能作为稳定的后期通关保证。功能位与有效替代组合仍有价值，不把特定英雄名单或羁绊数量变为硬性入场条件。
 
 每种正式遭遇从有限的完整敌阵模板中选取，固定职责与初始站位，再按种子选择地形；不会读取玩家阵容来针对性加难。普通战突出一类压力，精英组合已见过的压力，Boss 保留原有技能与阶段。区内生命／攻击曲线与地区倍率相乘，初始人数由模板决定；具体参数和成员以 `content/project/encounters/` 为准。其范围是初始敌人的生命和攻击，不会把固定数值技能、护盾、召唤物等所有数值自动同比放大。
 
@@ -76,11 +76,11 @@ Hero role hierarchy, shared build grammar, population scaling, explicit count ba
 
 ## Opening And Recruitment Supply
 
-The bounded 2026-09-16 execution replaces free choice of one hero plus a random companion with six unique random candidates and exactly two player selections. Selection can be cancelled; candidates and selections survive menu navigation and reload. Confirmation opens the first ordinary battle's deployment screen without granting a third companion. The current test campaign makes its opening pool available independently of the legacy two-hero account unlock list; it does not erase account history.
+The bounded 2026-09-16 execution replaces free choice of one hero plus a random companion with six unique random candidates and exactly two player selections. Selection can be cancelled; candidates and selections survive menu navigation and reload. Confirmation adds exactly the selected two heroes: the default Expedition generates and saves its map, while legacy Tower opens the first ordinary battle's deployment screen. The current test campaign makes its opening pool available independently of the legacy two-hero account unlock list; it does not erase account history.
 
 2026-09-29 用户明确修订：“新征程”每次重新随机生成六名候选并清空勾选，即使上一轮尚未确认；“继续征程”恢复原候选与勾选，返回菜单和读档本身不重抽。新征程保存成功后才替换旧征程，失败保留原状态。随机仍允许不同征程出现相同英雄，不额外加入跨局排除。
 
-The run pool contains 14 heroes across four acquisition tiers (4/4/4/2), supporting poison, death/summon and frost attack builds plus shared functions. Excluded run-pool heroes remain published for laboratory use and existing rosters. Tier means acquisition stage, not stars or cultivation rank; this pass does not retune hero combat attributes. The 300-hero long-term library and five-tier budget remain future content planning.
+The following pool membership and floor-weight table describe the legacy Alpha/Tower supply. Default Expedition uses the shared growth supply with explicit biome weights described in [Expedition progression](expedition-progression.md#首轮作者基线). The legacy run pool contains 14 heroes across four acquisition tiers (4/4/4/2), supporting poison, death/summon and frost attack builds plus shared functions. Excluded run-pool heroes remain published for laboratory use and existing rosters. Tier means acquisition stage, not stars or cultivation rank; this pass does not retune hero combat attributes. The 300-hero long-term library and five-tier budget remain future content planning.
 
 | Opportunity (one-based floor) | Tier 1 | Tier 2 | Tier 3 | Tier 4 |
 | --- | ---: | ---: | ---: | ---: |
@@ -96,9 +96,9 @@ These are initial tuning weights. Each slot draws an allowed nonempty tier first
 
 所有有技能的单位都提供真实技能状态，不按英雄、敌人或阵营过滤。头顶保留生命、护盾及主要技能的真实法力、怒劲或周期进度条；空资源也保留，不虚构回蓝。头顶不常驻“法／怒”“待释放”等文字，不飘技能名；控制或有害状态可显示一个简洁图标。资源类型、条件／常驻被动、等待／排队原因、状态层数与时长在点选详情中查看。满资源不保证立刻出手。首领读取当前阶段技能；单位死亡隐藏头顶资源，返场恢复当前状态。显示本身不改变技能原有释放条件、数值或动作顺序。
 
-The designed roster keeps HC01 连弩手 and HC03 铁甲卫 and adds HC04–HC30, one newly authored hero for each BC01–BC27 mechanism under the user's 2026-09-12 implementation authorization. Each new hero has a fixed mana skill and fixed passive; multiple event bindings may implement one passive. Three stationary, melee, and ranged laboratory dummies remain available on either side and are excluded from recruitment. HC02 and the old roster remain excluded. Names, numbers, exact submechanism choices, and full build supply are provisional; authoring does not certify balance or player acceptance. This batch's implementation and validation history is maintained in `../work-items/active/bc-hero-roster.md`; the current hero drafts are in `../design-discussion/04-content-validation/content-drafts.md`. Existing HC01/HC03 evidence remains separately recorded in `../work-items/active/designed-heroes-and-test-dummies.md`. Other G/M/R discussions have not been merged by this content pass.
+The designed roster keeps HC01 连弩手 and HC03 铁甲卫 and adds HC04–HC30, one newly authored hero for each BC01–BC27 mechanism under the user's 2026-09-12 implementation authorization. Each new hero has a fixed mana skill and fixed passive; multiple event bindings may implement one passive. Three stationary, melee, and ranged laboratory dummies remain available on either side and are excluded from recruitment. HC02 and the old roster remain excluded. Names, numbers, exact submechanism choices, and full build supply are provisional; authoring does not certify balance or player acceptance. This batch's implementation and validation history is maintained in `../work-items/archive/bc-hero-roster.md`; the current hero drafts are in `../design-discussion/04-content-validation/content-drafts.md`. Existing HC01/HC03 evidence remains separately recorded in `../work-items/archive/designed-heroes-and-test-dummies.md`. Other G/M/R discussions have not been merged by this content pass.
 
-2026-09-19局部实施增加HC37军团斗士、HC38怒拳斗士、HC39铁钩机兵。军团以短时双向决斗配合受普攻反击吸血；怒拳以近期生命承伤积怒劲，消费为短盾和锁向范围重拳；机兵以实体飞钩抓沿途首敌，低血每战一次护盾提供容错。保持固定一主动一被动、自动施放、战后清理；军团与机兵使用满蓝条件，怒拳于2026-09-20改为下述无蓝条件。不迁入原作全部机制。当前暂定机兵为招募二档，军团／怒拳为三档，均有实验室专用预设；具体数值由各自技能资源维护，平衡与观感仍待试玩。实施与验证归`../work-items/active/duel-grit-hook-heroes.md`。
+2026-09-19局部实施增加HC37军团斗士、HC38怒拳斗士、HC39铁钩机兵。军团以短时双向决斗配合受普攻反击吸血；怒拳以近期生命承伤积怒劲，消费为短盾和锁向范围重拳；机兵以实体飞钩抓沿途首敌，低血每战一次护盾提供容错。保持固定一主动一被动、自动施放、战后清理；军团与机兵使用满蓝条件，怒拳于2026-09-20改为下述无蓝条件。不迁入原作全部机制。当前暂定机兵为招募二档，军团／怒拳为三档，均有实验室专用预设；具体数值由各自技能资源维护，平衡与观感仍待试玩。实施与验证归`../work-items/archive/duel-grit-hook-heroes.md`。
 
 HC38怒拳斗士无蓝：怒劲满、生命从50%及以上跌至50%以下、生命低于20%均能触发重拳。20%濒死每战一次，复活不重置；半血触发在生命恢复至50%及以上后可重置。每个单位独立保存条件技能请求，同一技能的待执行原因合并，等当前蓄力、释放和收势完整结束后再施放下一次；不覆盖正在执行的动作。2026-09-26按用户要求取消怒劲自然流失：实际生命承伤累计，上限最大生命50%，等待／受控／被治疗均不扣除；施放时消费，死亡或战斗结束清空。零怒劲仍有基础伤害，无额外护盾。控制／缺少合法目标时等待，死亡清理队列，不把濒死阈值当作免死。
 
@@ -112,7 +112,7 @@ HC01 retains Battle-local uncapped attack-speed stacks, base target-switch reset
 - Reused temporary-unit templates do not inherit the persistent hero mana cycle. Authored non-mana Boss/passive behavior remains its own mechanism.
 - Resource bars, inspection details, equipment slots, shields, and status stacks/timing expose actual runtime facts. Cast effects are driven by successful cast events, not inferred from changes in mana. Numerical tuning and player experience remain pending hands-on acceptance.
 
-The 2026-09-12 displacement extension adds HC31–HC36 with fixed active/passive drafts for charge, leap, blink, knockback, pull and gathering. They use the same roster contract and laboratory; names, numbers and opening full mana are provisional. Scope and the explicit no-build/no-runtime-validation boundary are recorded in `../work-items/active/hero-displacement.md`.
+The 2026-09-12 displacement extension adds HC31–HC36 with fixed active/passive drafts for charge, leap, blink, knockback, pull and gathering. They use the same roster contract and laboratory; names, numbers and opening full mana are provisional. Scope and the explicit no-build/no-runtime-validation boundary are recorded in `../work-items/archive/hero-displacement.md`.
 
 ## Temporary Units
 
@@ -154,7 +154,7 @@ Authored death effects distinguish consuming a temporary ally, using an eligible
 - Roster heroes, enemies, bosses, and temporary units remain independent report entries with alive/defeated state, persistent/temporary identity, source attribution, and final facts. Temporary-unit rates use their actual join tick rather than whole-battle duration. Positive tied leaders may receive explainable highest-damage, highest-damage-taken, or highest-healing awards; an all-zero category grants none, and the report has no opaque composite rating or MVP formula.
 - Report damage counts only health and shield actually removed; overkill is excluded. Report healing counts only health actually restored; overheal is excluded. Concrete lethal sources receive kills, temporary units own independent statistics, and floor/environment contributions remain unowned rather than being falsely credited.
 - Each immutable unit result additionally records join tick, first terminal defeat tick, attack-action count, and effective healing-event count; the battle result records successful tactical-command uses. One attack action counts once even when splash or piercing affects several targets, one positive effective heal counts once for its credited source, and failed/zero-effective heals or commands count nothing. Active lifetime runs from join through first defeat or the result tick, clamps to at least one fixed simulation tick, and is the only divisor for report DPS/HPS. Positive target-side effective damage taken not reconciled to opposing credited unit damage may be labelled separately as environment damage but is never assigned to a unit.
-- The report continues to rewards after an ordinary victory, to run success after the final victory, to the next floor after a non-Boss defeat/timeout with health remaining, or to run failure after Boss defeat/timeout or exhausted global health.
+- The report follows accepted saved progression: pending rewards after victory, success after the final Boss, the continent after a continuing Expedition defeat, or the next floor for legacy Tower. Boss defeat/timeout or exhausted global health leads to failure.
 
 ### Explicit Skill Displacement
 
@@ -181,15 +181,19 @@ Authored death effects distinguish consuming a temporary ally, using an eligible
 
 ## Run Structure
 
-### 已确认重点方向：地图与多战线（2026-09-06）
+### 默认随机大陆（2026-10-03）
+
+新局的完整玩家合同归[随机大陆征程](expedition-progression.md)：六选二后探索有迷雾、绕路和守关的大陆，按阶段行动准备 Boss，服务库存固定，查看与行走不生产成长。16×16、三阶段各6行动、39地点是首轮作者基线，仍待节奏验收。原成长存档继续完整 legacy Tower，不补生成地图。
+
+### 战场地图与多战线的后续方向（2026-09-06）
 
 - 地图是玩法设计重点，不只是无障碍规则棋盘的皮肤。地形、通路、接敌和不同战线应使英雄分配、射程、机动、控制与支援具有实际意义。
 - 地图上的节点性 Boss 应提前提供有助于准备的机制信息，给调整阵容/装备留下窗口，而非只在遭遇克制时才揭示。信息提前多久、精确程度与调整窗口待定；不承诺公开全部行动或数值。
 - 障碍、多战线是方向；多层战场、守点、护送、目标物、分批接敌等只是候选实现，尚未选定地图方案或胜负条件。
 - 现有 `10×6` 逻辑空间、玩家 `0..2` 列和 18 个候选部署位是当前实现/验收基线，不是所有未来地图必须长成同一矩形的设计目标。新的地图方案须显式处理部署容量、通行、视线、出生和胜负契约；本次讨论不修改已确认的 10/18 人口里程碑，也不授权突破现有边界。
-- 尚未指定地图工作的实施顺序。不要将 Agent 的“先做最小样例”建议写成已获批准的任务。
+- 默认大陆的探索进程已另获实施授权；本节的多层战场、守点等候选不随之外推为已采用或已实施。
 
-### Current Run Baseline
+### Legacy Alpha / Tower Baseline
 
 The complete Alpha contains three themed tower regions. Each region has a route containing combat, elite, recruitment, shop, event, rest, and boss opportunities. A run ends in final boss victory, Boss defeat/timeout, or exhaustion of global Run health; an ordinary battle loss may continue under the global-health rule above.
 
@@ -206,7 +210,7 @@ Floor rules are visible before combat and are data-driven. The initial content m
 - ES01贯阵弩手与ES04贯光术士均使用独立于普攻的超远技能距离。先显示方向、源端逐渐充能，再沿开始时锁定的方向释放；目标移动不会转向。蓄力中受控、死亡或施法者位移／换队取消未释放技能。
 - 贯阵弩手发射有实际飞行时间的贯穿箭；贯光术士在释放瞬间造成一次直线伤害。当前共同初值为1.2战斗秒蓄力、最多2名目标，首个120%攻击力、第二个80%；这是专门技能配置，不覆盖普通贯穿弹的衰减规则。分散／错位站位和打断提供应对，不要求指定解题英雄。
 - 机制类别与阶段数值分开；基础兵在后期继续存在，通过独立遭遇生命／攻击倍率调整战力。原始接入采用有限遭遇替换首位敌人；当前出场与人数改由本节阶段难度规则下的完整敌阵模板维护，每场仍至多一名贯穿特色兵。
-- 内容数值和出场配置为可调测试基线，详见 `work-items/active/enemy-piercing-skills.md`；本批不固定整局类别配额，也不代表整局成长、难度或体系平衡已通过试玩。
+- 内容数值和出场配置为可调测试基线，详见 `work-items/archive/enemy-piercing-skills.md`；本批不固定整局类别配额，也不代表整局成长、难度或体系平衡已通过试玩。
 
 ## 五名机制精英与首领（2026-09-19 局部实施）
 
@@ -216,7 +220,7 @@ Floor rules are visible before combat and are data-driven. The initial content m
 - EB01 岩垒督军：直径2.2格；普通近战→短时岩墙→窄线地裂→收招。墙有独立血量，阻挡身体和飞行物，普通自动攻击可拆除；地裂可以越过自己的墙。死亡／中断清墙，不永久封路。
 - EB02 裂壳虫母：半血时一次裂壳，直径2.4→1.4格并沿合法地面退开；血量、护盾、状态保留，期间仍受伤。之后使用酸液并产卵；卵约3秒孵化，卵与幼虫存活合计最多2，总计最多两批／4枚卵。母死取消未孵化卵，已孵化幼虫留场参与胜负清理。
 - 首区／末区首领分别为EB01／EB02，中区保留幽影首领。当前精英组合由完整模板维护：首区贯阵弩手／EE07／EE08，中区冲阵配后排火力，末区换位火网或冲阵回刃。此项覆盖原先只随机替换领队的接入配置；机制密度及数值仍待试玩。
-- 五项均有战斗实验室预设。实现恢复与验收边界见 `work-items/active/enemy-five-elite-bosses.md`；不代表整局成长和构筑平衡已验收。
+- 五项均有战斗实验室预设。实现恢复与验收边界见 `work-items/archive/enemy-five-elite-bosses.md`；不代表整局成长和构筑平衡已验收。
 
 ## 霜羽冰冻（2026-09-20 修订）
 
@@ -226,7 +230,7 @@ Floor rules are visible before combat and are data-driven. The initial content m
 
 ## 成长征程的具体选敌与单场法术（2026-09-30）
 
-正式主菜单“开始新征程／继续征程”默认进入成长玩法，使用原成长存档；旧Alpha入口置于“练习与预览”中，不把旧档自动转换。开局六选二确认后进入当前路线。普通战选择节点后直接整备、查看本场实际敌军，不额外弹出选敌；精英战提供至多三个具体敌阵，至少两个不同组成可供比较。每项显示实际单位与数量、机制压力、金币／研究／材料胜利收益及失败代价；敌人详情可查看本场开战属性、技能与初始位置。确认后进入整备，场上仍可查看实际敌阵与地形。
+本节具体选敌保留为 legacy 成长 Tower 规则；默认新局按[大陆规则](expedition-progression.md)在不同地点之间选择，普通与精英各地点只有一个固定敌阵。继续旧局使用原成长存档；旧Alpha入口置于“练习与预览”中，不把旧档自动转换。旧塔开局六选二确认后进入原路线。普通战选择节点后直接整备、查看本场实际敌军，不额外弹出选敌；精英战提供至多三个具体敌阵，至少两个不同组成可供比较。每项显示实际单位与数量、机制压力、金币／研究／材料胜利收益及失败代价；敌人详情可查看本场开战属性、技能与初始位置。确认后进入整备，场上仍可查看实际敌阵与地形。
 
 候选由本局种子、层数、节点类型和已制作敌阵决定，不按玩家阵容临时生成克制。浏览、返回或继续游戏不会重抽；确认才保存并锁定该对手。额外收益只在胜利后获得，普通／精英败战仍按全局生命规则推进，不能获得所选额外收益。具体选敌集中在精英挑战，Boss目前保留固定必经遭遇，待制作完整候选后再扩展；旧Alpha维持原行为。已锁定普通对手的旧v9存档继续原战斗及承诺收益，新普通战不提供候选额外奖励。
 
@@ -251,9 +255,9 @@ Floor rules are visible before combat and are data-driven. The initial content m
 
 胜利的基础收益直接到账，与构筑领奖分开。成长配置按本场实际提供的物品类别分别生成装备组和遗物组，组内取舍；当前起测配置为每个有候选的类别最多三个候选、选择一件，也可独立跳过。领取装备不消耗遗物名额，跳过一组不影响另一组或已到账基础收益。候选不足时少给，空组不出现；不推定所有战斗永久必须提供全部类别。类别频率、候选数和节奏仍待试玩。
 
-整份候选随胜利冻结，领奖中途继续游戏恢复原组与剩余候选，不重抽、不重复发基础收益或成长产出。旧版本的一次混合待领奖机会保持原资格，不在迁移时扩大成两个名额。普通遗物默认唯一，取得后不再进入普通供给，明确可重复的内容除外；装备允许同名。商店购买消耗对应现货，其他商品可继续买，购买不自动补货；本批没有新增主动刷新。
+默认大陆的基础候选在地图生成时冻结，胜利后按当前取得资格激活；legacy Tower 保留随胜利冻结候选的路径。领奖中途继续游戏恢复原组与剩余候选，不重抽、不重复发基础收益或成长产出。旧版本的一次混合待领奖机会保持原资格，不在迁移时扩大成两个名额。普通遗物默认唯一，取得后不再进入普通供给，明确可重复的内容除外；装备允许同名。商店购买消耗对应现货，其他商品可继续买，购买不自动补货；本批没有新增主动刷新。
 
-当前仍沿用15节点／三区与三选节点的外层基线。本批整合入口、奖励和战前抓手，不将该外层循环标为新的整局方案；用户指出的主循环替代形式仍待R10回接。
+15节点／三区和三选节点仅保留在 legacy Tower。默认大陆的阶段推进、固定库存和 Exhausted 与主动 Skip 的区别由[大陆规则](expedition-progression.md#服务固定库存与奖励)维护。
 
 ## Alpha Content
 
@@ -271,7 +275,7 @@ Existing hero and unit content is reclassified pragmatically. Hero-grade roster 
 ## Progression And Failure
 
 - Hero recruitment, replacement, upgrades, equipment, relics, tactical-command loadout, events, and route risk form the run build.
-- Defeated roster members and cross-floor health must matter without making the starting hero's defeat or one early casualty automatically invalidate a run.
+- Defeat affects formation and global Run health under the rules above. Heroes start each battle at full health; the starting hero's defeat alone does not end a run.
 - Victory, defeat, restart, unlock, save, and resume are part of the playable loop rather than debug-only flows.
 - The Alpha is accepted as a complete playable product slice, not as commercial launch balance or final art polish.
 
@@ -285,7 +289,7 @@ Existing hero and unit content is reclassified pragmatically. Hero-grade roster 
 - Starting freezes a deep configuration snapshot and creates fresh production battle runtime state. Returning restores the unchanged editable configuration; health, Statuses, cooldowns, counters, modifiers, and other battle mutation never copy back. Reset, replacement, exit, and re-entry rebuild or dispose every Battle-owned scope.
 - Battle controls provide pause, continue, one fixed tick while paused, displayed x1/x2/x4 speed, reset, and return to configuration through the production Battle screen boundary. Equal canonical configuration plus seed must reproduce the same terminal result and deterministic event/digest projection.
 - Built-in presets are authored data. User presets are versioned JSON under `user://battle_lab/` and contain stable ids and mutable Lab configuration only, never Resources or battle runtime state. Lab use must produce zero production Meta, Settings or Active Run writes, regardless of save-schema version.
-- Built-in presets retain the default, HC01 growth/U01, and HC03 taunt examples and add 27 `BCxx · 英雄名 · 机制` configurations. These use designed heroes and test dummies, start as clearly labelled free experiments, and exercise production Battle behavior. A preset is a mechanism observation setup, not a final recommended team or proof of balance. Concrete content ids are preset data only and never runtime dispatch.
+- Current built-in presets are `当前阵容 · 双方对战`, `极地 · 冻结观察`, `森林 · 开场复制`, and `斗士 · 群体生命`, using the currently published units without retired Equipment or Relics. An empty authored catalog opens a blank editable laboratory; malformed entries or an invalid explicit default remain errors. A preset is a mechanism observation setup, not a final recommended team or proof of balance. Concrete content ids are preset data only and never runtime dispatch. The laboratory enables detailed battle statistics; ordinary expedition battles keep their existing collection policy.
 
 ## Visual Information Hierarchy
 

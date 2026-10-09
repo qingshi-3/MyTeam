@@ -1,6 +1,6 @@
 # 通用遗物验证
 
-恢复入口：[活动任务](../../work-items/active/generic-relic-integration.md)。规则：[当前测试清单](../../gameplay-design/generic-relics.md)。全部使用隔离存档，不读写玩家真实征程。
+历史入口：[已归档任务](../../work-items/archive/generic-relic-integration.md)。下文是旧遗物成品批次的验证记录；D74已清空该库存，不能按旧清单恢复当前遗物。通用事件／装备池能力保留，现行内容边界见[内容清理](content-reset.md)和[征程规则](../../gameplay-design/expedition-progression.md)。原检查使用隔离存档，不读写玩家真实征程。
 
 ## 自动正确性
 

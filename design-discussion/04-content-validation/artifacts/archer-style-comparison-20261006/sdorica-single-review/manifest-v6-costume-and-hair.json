@@ -1,0 +1,17 @@
+{
+  "file": "archer-sdorica-v6-costume-and-hair.png",
+  "source": "/Users/qingshi/.codex/generated_images/01a10d68-72b2-7862-aaa2-e0ad5c067002/exec-8a43bdf3-7c9a-4cef-9b46-d8f39fc7f17b.png",
+  "tool": "built-in image_gen",
+  "width": 1024,
+  "height": 1536,
+  "sha256": "49d3c7c5fe375922d105a8bd9f1f3cf163b0a89d499cf4caaf8119771e7cfbdd",
+  "alpha_verified": true,
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "fully_transparent_pixels": 840618,
+  "generation_count": 1,
+  "status": "awaiting-user-review",
+  "scope": "shoulder and upper-thigh coverage; unified hair lighting"
+}

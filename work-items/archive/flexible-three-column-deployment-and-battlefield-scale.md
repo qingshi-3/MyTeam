@@ -163,8 +163,8 @@ This is a large cross-system behavior change spanning Map, Deployment, Runtime S
    M system-design/tower-autobattler-architecture.md
    M tests/GameplayContractSmoke.cs
    M tests/SemanticPresentationContractSmoke.cs
-   M tests/UiSmoke.cs
-   M tests/VisualCapture.cs
+   M tests/archive/retired-content/UiSmoke.cs
+   M tests/archive/retired-content/VisualCapture.cs
    M tests/VisualHierarchyContractSmoke.cs
    D work-items/active/tower-autobattler-dynamic-battle-report.md
    M work-items/active/tower-autobattler-semantic-icons-animated-portraits.md
@@ -186,7 +186,7 @@ This is a large cross-system behavior change spanning Map, Deployment, Runtime S
   ?? work-items/archive/tower-autobattler-dynamic-battle-report.md
   ```
 
-- 2026-08-30: Protected overlapping pre-task SHA-256 evidence was captured for prior accepted dirty work: `system-design/tower-autobattler-architecture.md` `E7A9012C…05AA`; `docs/testcases/alpha-manual-qa.md` `C1C3FA76…7900`; `scenes/ui/BattleScreen.tscn` `C1BEBF73…FACC`; `scenes/ui/DeploymentScreen.tscn` `1C6FFADC…9CE0`; `scenes/ui/components/DeploymentCell.tscn` `99121055…4949`; `tests/GameplayContractSmoke.cs` `9AEC416D…F6E7`; `tests/UiSmoke.cs` `28C6C785…5AA`; and `tests/VisualCapture.cs` `DBD8C83B…D3CA`. User Godot processes PID `23260` and `49048` were observed read-only and remain protected from control.
+- 2026-08-30: Protected overlapping pre-task SHA-256 evidence was captured for prior accepted dirty work: `system-design/tower-autobattler-architecture.md` `E7A9012C…05AA`; `docs/testcases/alpha-manual-qa.md` `C1C3FA76…7900`; `scenes/ui/BattleScreen.tscn` `C1BEBF73…FACC`; `scenes/ui/DeploymentScreen.tscn` `1C6FFADC…9CE0`; `scenes/ui/components/DeploymentCell.tscn` `99121055…4949`; `tests/GameplayContractSmoke.cs` `9AEC416D…F6E7`; `tests/archive/retired-content/UiSmoke.cs` `28C6C785…5AA`; and `tests/archive/retired-content/VisualCapture.cs` `DBD8C83B…D3CA`. User Godot processes PID `23260` and `49048` were observed read-only and remain protected from control.
 - 2026-08-30: Gameplay, system, and manual-QA authority now replace the fixed-anchor contract with the confirmed 18-cell player zone, movable hero, version-3 formation state, exact preview/spawn parity, transactional command boundary, and independent responsive board projections before runtime implementation began.
 - 2026-08-30: Formation state milestone completed. Active-run version 3 adds JSON-safe `HeroCell` plus six `DeploymentCells` while preserving the six soldier identity entries. Version 2 migrates before validation to the exact legacy cells. Hero move/swap and soldier deploy/move/swap/replace/withdraw share one run-owned transaction with zero saves for rejection, one save for success, and complete identity/cell rollback after one failed save. Battle setup consumes exact persisted cells and rejects illegal/duplicate player positions instead of relocating them. Casualty cleanup preserves hero and unaffected cell records.
 - 2026-08-30: Focused evidence is green: low-concurrency build `0 warnings / 0 errors`; `FormationDeploymentContractSmoke` emitted `FORMATION_DEPLOYMENT_CONTRACT_OK schema=v2-v3 invalid=duplicate,out-of-zone,out-of-bounds,wrong-count,stale-id commands=hero-move,hero-swap,soldier-move,soldier-swap,reserve-replace,withdraw rollback=exact save=once zone=18 spawn=exact casualty=stable projection=responsive-remap`. All save fixtures used `user://tests/formation-schema/` or in-memory fakes; the default active-run namespace was never read or written.
@@ -242,6 +242,6 @@ Completed and independently accepted. Do not resume this activity. Any later cha
 - Expected diagnostics: `ContentContractSmoke` deliberately emits its five lifecycle gate errors before its success marker. `UiSmoke` retains the established test-only `GrabFocus` warning and exits zero.
 - Remaining subjective checks: an independent verifier should manually exercise continuous drag, gamepad traversal across cells and fixed actions, and repeated live resize during a real crowded moving battle. Static/native evidence found no clipping, stale hit target, inspector obstruction, or motion endpoint drift.
 - The worktree remains intentionally dirty on `main`; unrelated pre-task and later battle-report changes are preserved. User Godot processes PID `23260` and `49048` remain running and untouched. No branch, commit, push, donor write, or real-save mutation occurred.
-- Independent verifier entry: rebuild, run `tests/FormationDeploymentContractSmoke.tscn`, then run native `tests/VisualCapture.tscn` at `1600×900` and `1280×720` and compare the six key screenshots above before repeating the full serial matrix.
+- Independent verifier entry: rebuild, run `tests/FormationDeploymentContractSmoke.tscn`, then run native `tests/archive/retired-content/VisualCapture.tscn` at `1600×900` and `1280×720` and compare the six key screenshots above before repeating the full serial matrix.
 
 Independent acceptance is complete. This verification record is final.
