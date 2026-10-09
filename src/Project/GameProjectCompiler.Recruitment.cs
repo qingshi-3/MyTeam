@@ -36,7 +36,7 @@ public static partial class GameProjectCompiler
             context.Report.Error($"{source}: opening must supply six distinct heroes.");
         var stages = ImmutableArray.CreateBuilder<CompiledRecruitmentStage>();
         var previous = -1;
-        foreach (var stage in authored.Stages ?? [])
+        foreach (var stage in campaign.Progression is TowerProgressionDefinition ? authored.Stages ?? [] : [])
         {
             if (stage is null || stage.StartFloorIndex <= previous || stage.StartFloorIndex < 0 ||
                 stage.StartFloorIndex >= campaign.FloorsPerRegion * campaign.Regions.Length || !ValidWeights(stage.TierWeights))
@@ -44,7 +44,7 @@ public static partial class GameProjectCompiler
             previous = stage.StartFloorIndex;
             stages.Add(new(stage.StartFloorIndex, [.. stage.TierWeights]));
         }
-        if (stages.Count == 0 || stages[0].StartFloorIndex != 0)
+        if (campaign.Progression is TowerProgressionDefinition && (stages.Count == 0 || stages[0].StartFloorIndex != 0))
             context.Report.Error($"{source}: stages must start at floor index zero.");
         return context.Report.HasCoreErrors ? null : new(tiers.ToImmutable(), [.. authored.OpeningTierWeights], stages.ToImmutable());
     }

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_relic_r06"
+DisplayName = "破阵撬棍"
+Description = "对受击前生命严格高于90%的敌人造成的伤害提高25%。"
+Rarity = 0
+ProductKind = 0
+AllowRepeatAcquisition = false
+Tags = Array[StringName]([&"item", &"relic", &"v1"])

@@ -63,7 +63,7 @@ public sealed record FormationMoveCommand(
 
 public static class ActiveRunFormationSchema
 {
-    public const int CurrentVersion = 10;
+    public const int CurrentVersion = 11;
     private const int LegacyDeploymentCapacity = 6;
 
     public static void InitializeVersion4(ActiveRunDto run)
@@ -102,9 +102,9 @@ public static class ActiveRunFormationSchema
                    run.LegacyHeroCell is null && run.LegacyDeploymentCells is null;
         // A historical pending opportunity keeps exactly its frozen claim right;
         // migration neither splits it into extra rewards nor redraws candidates.
-        if (run.PendingRewardGroups.IsDefault || !run.PendingRewardGroups.IsEmpty ||
-            run.PendingOffer is { RewardCategory: not RunRewardCategory.None }) return false;
-        if (run.Version == 9)
+        if (run.PendingRewardGroups.IsDefault || run.Version < 10 && (!run.PendingRewardGroups.IsEmpty ||
+            run.PendingOffer is { RewardCategory: not RunRewardCategory.None })) return false;
+        if (run.Version is 9 or 10)
         {
             if (run.LegacyHeroId is not null || run.LegacyHeroHealthRatio != 0 ||
                 run.LegacyHeroCell is not null || run.LegacyDeploymentCells is not null) return false;

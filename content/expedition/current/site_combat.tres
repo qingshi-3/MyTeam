@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ExpeditionSiteDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/ExpeditionSiteDefinition.cs" id="script"]
+
+
+
+[resource]
+script = ExtResource("script")
+StableId = "exp_site_combat"
+DisplayName = "普通敌人"
+Kind = 0
+CountPerBiome = 7
+ActionCost = 1

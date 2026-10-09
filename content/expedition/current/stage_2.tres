@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ExpeditionStageDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/ExpeditionStageDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/expedition/current/gloam_boss.tres" id="boss"]
+
+
+[resource]
+script = ExtResource("script")
+StableId = "eight_trait_stage_2"
+DisplayName = "第2阶段"
+Actions = 6
+AdvancedDiscovery = true
+Boss = ExtResource("boss")

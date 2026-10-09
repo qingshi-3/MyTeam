@@ -1,0 +1,294 @@
+[gd_resource type="Resource" script_class="GrowthRulesDefinition" format=3]
+[ext_resource type="Script" path="res://src/Growth/GrowthRulesDefinition.cs" id="rules"]
+[ext_resource type="Script" path="res://src/Growth/GrowthHeroDefinition.cs" id="hero"]
+[ext_resource type="Script" path="res://src/Growth/GrowthAscensionDisplayDefinition.cs" id="display"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u02.tres" id="prototype_u02"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u03.tres" id="prototype_u03"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u04.tres" id="prototype_u04"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u05.tres" id="prototype_u05"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u07.tres" id="prototype_u07"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u08.tres" id="prototype_u08"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u11.tres" id="prototype_u11"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u13.tres" id="prototype_u13"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u16.tres" id="prototype_u16"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u17.tres" id="prototype_u17"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u18.tres" id="prototype_u18"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u19.tres" id="prototype_u19"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u25.tres" id="prototype_u25"]
+
+[ext_resource type="Script" path="res://src/Growth/GrowthAscensionBenefitDefinition.cs" id="benefit"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u14.tres" id="prototype_u14"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u20.tres" id="prototype_u20"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u02_ascended.tres" id="ascended2"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u07_ascended.tres" id="ascended7"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u19_ascended.tres" id="ascended19"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u01.tres" id="prototype_u01"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u06.tres" id="prototype_u06"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u18_ascended.tres" id="ascended18"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u21.tres" id="prototype_u21"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u22.tres" id="prototype_u22"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u11_ascended.tres" id="ascended11"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u17_ascended.tres" id="ascended17"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u21_ascended.tres" id="ascended21"]
+
+[ext_resource type="Resource" path="res://content/abilities/loadouts/prototype_u22_ascended.tres" id="ascended22"]
+
+[sub_resource type="Resource" id="benefit2"]
+script = ExtResource("benefit")
+Description = "雷爪每次原始普攻的额外目标上限由2提高至3，第三目标仍造成60%攻击伤害；单一目标没有额外命中。"
+BattleLoadout = ExtResource("ascended2")
+
+[sub_resource type="Resource" id="benefit7"]
+script = ExtResource("benefit")
+Description = "蓄意轰拳成功释放后，回复本次消耗怒劲20%的生命；打断不治疗、不返还怒劲。"
+BattleLoadout = ExtResource("ascended7")
+
+[sub_resource type="Resource" id="benefit19"]
+script = ExtResource("benefit")
+Description = "技能箭首次成功命中获得2层攻速，之后每次1层，最多7层；未命中不增加。"
+BattleLoadout = ExtResource("ascended19")
+
+[sub_resource type="Resource" id="benefit18"]
+script = ExtResource("benefit")
+Description = "完成第三次喷火后，在原扇区留下1.5秒余焰，每0.5秒造成20%攻击伤害。"
+BattleLoadout = ExtResource("ascended18")
+
+[sub_resource type="Resource" id="benefit11"]
+script = ExtResource("benefit")
+Description = "完整维持5秒换形治疗后，为该次实际接受治疗且仍存活的单位获得有效治疗量20%的护盾，持续4秒。"
+BattleLoadout = ExtResource("ascended11")
+
+[sub_resource type="Resource" id="benefit17"]
+script = ExtResource("benefit")
+Description = "扑击直接击杀常驻敌人后，在动作恢复结束返还30法力；每次施法最多一次。"
+BattleLoadout = ExtResource("ascended17")
+
+[sub_resource type="Resource" id="benefit21"]
+script = ExtResource("benefit")
+Description = "完整释放15道雷后返还40法力，中断不返还。"
+BattleLoadout = ExtResource("ascended21")
+
+[sub_resource type="Resource" id="benefit22"]
+script = ExtResource("benefit")
+Description = "第二发技能弹命中后，向主目标2格内另一名最近敌人弹射，造成60%法强伤害。"
+BattleLoadout = ExtResource("ascended22")
+
+[sub_resource type="Resource" id="display"]
+script = ExtResource("display")
+DisplayName = "升阶"
+CompletedLabel = "已升阶"
+
+[sub_resource type="Resource" id="prototype_u02"]
+script = ExtResource("hero")
+ContentId = "prototype_u02"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u02_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u02")
+AscensionBenefit = SubResource("benefit2")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u03"]
+script = ExtResource("hero")
+ContentId = "prototype_u03"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u03_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u03")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u04"]
+script = ExtResource("hero")
+ContentId = "prototype_u04"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u04_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u04")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u05"]
+script = ExtResource("hero")
+ContentId = "prototype_u05"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u05_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u05")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u07"]
+script = ExtResource("hero")
+ContentId = "prototype_u07"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u07_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u07")
+AscensionBenefit = SubResource("benefit7")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u08"]
+script = ExtResource("hero")
+ContentId = "prototype_u08"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u08_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u08")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u11"]
+script = ExtResource("hero")
+ContentId = "prototype_u11"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u11_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u11")
+AscensionBenefit = SubResource("benefit11")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u13"]
+script = ExtResource("hero")
+ContentId = "prototype_u13"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u13_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u13")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u16"]
+script = ExtResource("hero")
+ContentId = "prototype_u16"
+ProductionModes = PackedInt32Array(3)
+GrowthRate = 0.0
+FixedAttackGain = 4.0
+FixedMaxHealthGain = 40.0
+AscensionId = "prototype_u16_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u16")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u17"]
+script = ExtResource("hero")
+ContentId = "prototype_u17"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u17_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u17")
+AscensionBenefit = SubResource("benefit17")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u18"]
+script = ExtResource("hero")
+ContentId = "prototype_u18"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u18_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u18")
+AscensionBenefit = SubResource("benefit18")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u19"]
+script = ExtResource("hero")
+ContentId = "prototype_u19"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+AscensionId = "prototype_u19_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u19")
+AscensionBenefit = SubResource("benefit19")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u25"]
+script = ExtResource("hero")
+ContentId = "prototype_u25"
+ProductionModes = PackedInt32Array()
+GrowthRate = 0.04
+BreedingYield = 1
+AttackGainPerBreedingPoint = 1.0
+MaxHealthGainPerBreedingPoint = 10.0
+AscensionId = "prototype_u25_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u25")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u14"]
+script = ExtResource("hero")
+ContentId = "prototype_u14"
+ProductionModes = PackedInt32Array()
+AscensionId = "prototype_u14_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u14")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u20"]
+script = ExtResource("hero")
+ContentId = "prototype_u20"
+ProductionModes = PackedInt32Array()
+AscensionId = "prototype_u20_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u20")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u01"]
+script = ExtResource("hero")
+ContentId = "prototype_u01"
+ProductionModes = PackedInt32Array()
+AscensionId = "prototype_u01_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u01")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u06"]
+script = ExtResource("hero")
+ContentId = "prototype_u06"
+ProductionModes = PackedInt32Array()
+AscensionId = "prototype_u06_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u06")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u21"]
+script = ExtResource("hero")
+ContentId = "prototype_u21"
+ProductionModes = PackedInt32Array()
+AscensionId = "prototype_u21_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u21")
+AscensionBenefit = SubResource("benefit21")
+MaterialCategory = "general"
+
+[sub_resource type="Resource" id="prototype_u22"]
+script = ExtResource("hero")
+ContentId = "prototype_u22"
+ProductionModes = PackedInt32Array()
+AscensionId = "prototype_u22_ascension"
+AscensionDisplay = SubResource("display")
+BaseLoadout = ExtResource("prototype_u22")
+AscensionBenefit = SubResource("benefit22")
+MaterialCategory = "general"
+
+[resource]
+script = ExtResource("rules")
+StableId = "eight_trait_growth_v1"
+Heroes = Array[Resource]([SubResource("prototype_u02"), SubResource("prototype_u03"), SubResource("prototype_u04"), SubResource("prototype_u05"), SubResource("prototype_u07"), SubResource("prototype_u08"), SubResource("prototype_u11"), SubResource("prototype_u13"), SubResource("prototype_u16"), SubResource("prototype_u17"), SubResource("prototype_u18"), SubResource("prototype_u19"), SubResource("prototype_u25"), SubResource("prototype_u14"), SubResource("prototype_u20"), SubResource("prototype_u01"), SubResource("prototype_u06"), SubResource("prototype_u21"), SubResource("prototype_u22")])
+FirstDiscoveryPool = PackedStringArray("prototype_u01", "prototype_u06", "prototype_u08", "prototype_u13", "prototype_u14", "prototype_u17", "prototype_u18", "prototype_u20", "prototype_u21", "prototype_u22", "prototype_u25")
+AdvancedDiscoveryPool = PackedStringArray("prototype_u01", "prototype_u06", "prototype_u08", "prototype_u13", "prototype_u14", "prototype_u17", "prototype_u18", "prototype_u20", "prototype_u21", "prototype_u22", "prototype_u25")
+MaterialsPerNode = 1
+AscensionCost = 4

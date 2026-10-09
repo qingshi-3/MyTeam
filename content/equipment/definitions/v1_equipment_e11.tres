@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="3"]
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentReactiveStatusBindingSpec.cs" id="4"]
+[ext_resource type="Resource" path="res://content/statuses/v1_armor_break.tres" id="5"]
+
+[sub_resource type="Resource" id="AttackSpeedMagnitude"]
+script = ExtResource("3")
+Value = 1.1
+
+[sub_resource type="Resource" id="AttackSpeedModifier"]
+script = ExtResource("2")
+Attribute = 3
+Operation = 1
+Magnitude = SubResource("AttackSpeedMagnitude")
+Priority = 0
+SlotId = "v1_equipment_e11_attack_speed"
+
+[sub_resource type="Resource" id="ArmorBreakBinding"]
+script = ExtResource("4")
+EventKind = 3
+Target = 1
+Source = 1
+Priority = 0
+Status = ExtResource("5")
+OwnerRole = 0
+UniqueRuleId = "armor_break"
+
+[resource]
+script = ExtResource("1")
+StableId = "v1_equipment_e11"
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("AttackSpeedModifier")])
+ReactiveStatusBindings = Array[EquipmentReactiveStatusBindingSpec]([SubResource("ArmorBreakBinding")])

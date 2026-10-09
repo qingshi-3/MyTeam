@@ -29,6 +29,33 @@ window/stretch/aspect="expand"
 
 project/assembly_name="my-team"
 
+[input]
+
+expedition_move_up={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194320), Object(InputEventKey,"physical_keycode":87)]
+}
+
+expedition_move_down={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194322), Object(InputEventKey,"physical_keycode":83)]
+}
+
+expedition_move_left={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194319), Object(InputEventKey,"physical_keycode":65)]
+}
+
+expedition_move_right={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194321), Object(InputEventKey,"physical_keycode":68)]
+}
+
+expedition_interact={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194309), Object(InputEventKey,"keycode":4194310)]
+}
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

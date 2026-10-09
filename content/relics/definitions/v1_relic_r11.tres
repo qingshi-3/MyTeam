@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RelicDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicRunRuleSpec.cs" id="2"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_pools/bounty_equipment.tres" id="3"]
+
+[sub_resource type="Resource" id="NativeKillReward"]
+script = ExtResource("2")
+RuleId = "r11_native_kill_reward"
+Kind = 11
+Amount = 1.0
+Limit = 6
+RewardPool = ExtResource("3")
+
+[resource]
+script = ExtResource("1")
+StableId = "v1_relic_r11"
+RunRules = Array[RelicRunRuleSpec]([SubResource("NativeKillReward")])

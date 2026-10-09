@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+StableId = "equipment_all"
+Kind = 1
+ContentIds = PackedStringArray("v1_equipment_e02", "v1_equipment_e03", "v1_equipment_e06", "v1_equipment_e07", "v1_equipment_e10", "v1_equipment_e11")

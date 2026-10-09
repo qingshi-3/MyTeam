@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[sub_resource type="Resource" id="self"]
+script = ExtResource("target")
+Target = 0
+Radius = 1.5
+[sub_resource type="Resource" id="windup_time"]
+script = ExtResource("execution")
+DurationTicks = 3
+[sub_resource type="Resource" id="aura_time"]
+script = ExtResource("execution")
+DurationTicks = 25
+[sub_resource type="Resource" id="aura"]
+script = ExtResource("operation")
+Kind = 38
+Targeting = SubResource("self")
+Execution = SubResource("aura_time")
+[sub_resource type="Resource" id="cast"]
+script = ExtResource("operation")
+Kind = 35
+Targeting = SubResource("self")
+Execution = SubResource("windup_time")
+Effects = [SubResource("aura")]
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u25_a"
+DisplayName = "庇护领域"
+Description = "耗蓝后蓄势0.3秒，可被控制打断。跟随自身的1.5格区域持续2.5秒，区域内友军闪避普通及合格追加攻击；不阻挡技能或持续伤害，死亡立即停止。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 110
+CooldownTicks = 5
+Operations = [SubResource("cast")]

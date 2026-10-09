@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="ExpeditionEncounterDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/ExpeditionEncounterDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Project/EncounterDefinition.cs" id="enc"]
+[ext_resource type="Script" path="res://src/Project/EncounterCompositionDefinition.cs" id="comp"]
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="pool"]
+[ext_resource type="Script" path="res://src/Project/RunRewardRecipeDefinition.cs" id="reward"]
+[ext_resource type="Resource" path="res://content/expedition/current/floors.tres" id="floors"]
+
+[sub_resource type="Resource" id="pool"]
+script = ExtResource("pool")
+StableId = "crown_combat_enemies"
+Kind = 2
+ContentIds = PackedStringArray("enemy_ee03_trample_brute", "enemy_ee07_furnace_lizard", "enemy_ee09_swap_envoy", "enemy_e32_wood_archer")
+
+[sub_resource type="Resource" id="formation"]
+script = ExtResource("comp")
+StableId = "crown_combat_formation"
+DisplayName = "巡逻阵容"
+EnemyIds = PackedStringArray("enemy_ee03_trample_brute", "enemy_ee07_furnace_lizard", "enemy_ee09_swap_envoy", "enemy_e32_wood_archer")
+Cells = Array[Vector2i]([Vector2i(6, 1), Vector2i(6, 4), Vector2i(9, 2), Vector2i(9, 5)])
+
+[sub_resource type="Resource" id="encounter"]
+script = ExtResource("enc")
+StableId = "crown_combat_encounter"
+NodeType = 0
+TitlePattern = "巡逻 · 王冠复合阵"
+EnemyPool = SubResource("pool")
+FloorRulePool = ExtResource("floors")
+BaseEnemyCount = 4
+AddRegionIndexToCount = false
+Compositions = Array[Resource]([SubResource("formation")])
+
+[sub_resource type="Resource" id="reward"]
+script = ExtResource("reward")
+StableId = "crown_combat_reward"
+Gold = 7
+
+[resource]
+script = ExtResource("script")
+StableId = "crown_combat_profile"
+Encounter = SubResource("encounter")
+CompositionId = "crown_combat_formation"
+FinalHealthMultiplier = 2.7
+FinalDamageMultiplier = 1.7
+OpeningCandidate = false
+Reward = SubResource("reward")

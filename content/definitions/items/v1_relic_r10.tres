@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_relic_r10"
+DisplayName = "复苏之风"
+Description = "第10秒末为当时存活的我方单位回复35%已损失生命；本战一次，之后出生不补。"
+Rarity = 0
+ProductKind = 0
+AllowRepeatAcquisition = false
+Tags = Array[StringName]([&"item", &"relic", &"v1"])

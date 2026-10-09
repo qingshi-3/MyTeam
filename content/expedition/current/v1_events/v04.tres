@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="RunOfferDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/RunOfferDefinition.cs" id="offer"]
+[ext_resource type="Script" path="res://src/Project/RunChoiceDefinition.cs" id="choice"]
+[ext_resource type="Script" path="res://src/Project/RunOperationDefinition.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Project/RunConditionDefinition.cs" id="condition"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_pools/relic_all.tres" id="pool"]
+
+[sub_resource type="Resource" id="injured"]
+script = ExtResource("condition")
+Kind = 5
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("operation")
+Kind = 7
+Amount = 20
+
+[sub_resource type="Resource" id="choice"]
+script = ExtResource("choice")
+StableId = "v1_event_v04_alternative"
+DisplayName = "恢复 20 全局生命"
+Conditions = Array[Resource]([SubResource("injured")])
+Operations = Array[Resource]([SubResource("effect")])
+
+[resource]
+script = ExtResource("offer")
+StableId = "v1_event_v04"
+Kind = 3
+DisplayName = "行者遗赠"
+AllowSkip = false
+Pool = ExtResource("pool")
+PoolAction = 1
+PoolChoiceCount = 2
+Choices = Array[Resource]([SubResource("choice")])
+

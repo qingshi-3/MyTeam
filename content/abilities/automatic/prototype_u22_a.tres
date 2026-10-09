@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+
+[sub_resource type="Resource" id="self"]
+script = ExtResource("target")
+Target = 0
+Range = 3
+Radius = 2
+
+[sub_resource type="Resource" id="enemy"]
+script = ExtResource("target")
+Target = 30
+Range = 3
+
+[sub_resource type="Resource" id="magnitude"]
+script = ExtResource("magnitude")
+SpellPowerRatio = 0.9
+Amount = 1
+AttackRatio = 1
+EventRatio = 0
+
+[sub_resource type="Resource" id="execution"]
+script = ExtResource("execution")
+DurationTicks = 0
+Count = 1
+IntervalTicks = 2
+
+[sub_resource type="Resource" id="payoff"]
+script = ExtResource("operation")
+Kind = 48
+Targeting = SubResource("self")
+Magnitude = SubResource("magnitude")
+Execution = SubResource("execution")
+
+[sub_resource type="Resource" id="windup_time"]
+script = ExtResource("execution")
+DurationTicks = 2
+
+[sub_resource type="Resource" id="windup"]
+script = ExtResource("operation")
+Kind = 35
+Targeting = SubResource("enemy")
+Execution = SubResource("windup_time")
+Effects = [SubResource("payoff")]
+
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u22_a"
+DisplayName = "滑步双发"
+Description = "蓄势0.2秒后合法滑步最多1格并保持3格可攻击；否则原地。一次100%攻击的技能攻击后发射90%法强技能弹，两发不触发射手追加或攻击回蓝。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 45
+CooldownTicks = 5
+Operations = [SubResource("windup")]

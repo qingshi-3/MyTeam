@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_relic_r03"
+DisplayName = "金线衬垫"
+Description = "战斗中每持有1金币，我方单位最大生命提高1.5；金币变化时同步调整，仅本场有效。"
+Rarity = 0
+ProductKind = 0
+AllowRepeatAcquisition = false
+Tags = Array[StringName]([&"item", &"relic", &"v1"])

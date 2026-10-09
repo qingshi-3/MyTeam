@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="ExpeditionEncounterDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/ExpeditionEncounterDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Project/EncounterDefinition.cs" id="enc"]
+[ext_resource type="Script" path="res://src/Project/EncounterCompositionDefinition.cs" id="comp"]
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="pool"]
+[ext_resource type="Script" path="res://src/Project/RunRewardRecipeDefinition.cs" id="reward"]
+[ext_resource type="Resource" path="res://content/expedition/current/floors.tres" id="floors"]
+[ext_resource type="Script" path="res://src/Project/BossTimelineDefinition.cs" id="timeline"]
+[ext_resource type="Script" path="res://src/Project/BossPhaseDefinition.cs" id="phase"]
+[ext_resource type="Resource" path="res://content/abilities/loadouts/loadout_v1_boss_breach.tres" id="loadout"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_pools/reward_relic.tres" id="reward0"]
+[sub_resource type="Resource" id="pool"]
+script = ExtResource("pool")
+StableId = "ember_boss_enemies"
+Kind = 2
+ContentIds = PackedStringArray("v1_boss_breach", "enemy_e31_iron_guard_ember_guard", "enemy_e32_wood_archer_ember_guard")
+
+[sub_resource type="Resource" id="formation"]
+script = ExtResource("comp")
+StableId = "ember_boss_formation"
+DisplayName = "守关阵容"
+EnemyIds = PackedStringArray("v1_boss_breach", "enemy_e31_iron_guard_ember_guard", "enemy_e32_wood_archer_ember_guard")
+Cells = Array[Vector2i]([Vector2i(6, 2), Vector2i(8, 1), Vector2i(9, 4)])
+
+[sub_resource type="Resource" id="phase"]
+script = ExtResource("phase")
+StableId = "ember_boss_phase"
+DisplayName = "破阵领主"
+StartHealthRatio = 1.0
+AbilityLoadout = ExtResource("loadout")
+
+[sub_resource type="Resource" id="timeline"]
+script = ExtResource("timeline")
+StableId = "ember_boss_timeline"
+BossContentId = "v1_boss_breach"
+Phases = Array[Resource]([SubResource("phase")])
+
+[sub_resource type="Resource" id="encounter"]
+script = ExtResource("enc")
+StableId = "ember_boss_encounter"
+NodeType = 6
+TitlePattern = "守关 · 破阵领主"
+EnemyPool = SubResource("pool")
+FloorRulePool = ExtResource("floors")
+BaseEnemyCount = 3
+AddRegionIndexToCount = false
+Compositions = Array[Resource]([SubResource("formation")])
+LeadEnemyId = "v1_boss_breach"
+BossTimeline = SubResource("timeline")
+
+[sub_resource type="Resource" id="reward"]
+script = ExtResource("reward")
+StableId = "ember_boss_reward"
+Gold = 18
+
+Groups = Array[Resource]([ExtResource("reward0")])
+[resource]
+script = ExtResource("script")
+StableId = "ember_boss_profile"
+Encounter = SubResource("encounter")
+CompositionId = "ember_boss_formation"
+FinalHealthMultiplier = 1
+FinalDamageMultiplier = 1
+OpeningCandidate = false
+Reward = SubResource("reward")

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_relic_r08"
+DisplayName = "弑王弹头"
+Description = "对正式Boss身份敌人伤害提高18%，普通护卫不受影响。"
+Rarity = 0
+ProductKind = 0
+AllowRepeatAcquisition = false
+Tags = Array[StringName]([&"item", &"relic", &"v1"])

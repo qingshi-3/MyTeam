@@ -49,7 +49,8 @@ public static partial class GameProjectCompiler
                 report.Error($"{source}: initial population must fit both opening heroes.");
             if (campaign.StarterPool.ContentIds.Length < rules.StarterRosterHeroCount)
                 report.Error($"{source}: starter pool cannot supply the configured distinct initial roster count.");
-            campaign = RunOfferDefaults.WithDefaults(campaign, rules, id => context.Entry(id));
+            if (campaign.Progression is CompiledTowerProgression)
+                campaign = RunOfferDefaults.WithDefaults(campaign, rules, id => context.Entry(id));
         }
         var presentation = CompilePresentation(authored.Presentation!, report);
         if (authored.MatrixStatusRules is null && authored.ResourcePath.StartsWith("res://content/", StringComparison.Ordinal))
@@ -76,11 +77,18 @@ public static partial class GameProjectCompiler
     public static ImmutableArray<AbilityLoadoutDefinition?> CollectAbilityLoadoutReferences(
         GameProjectDefinition? authored)
     {
-        if (authored?.Campaign?.Regions is null) return [];
+        if (authored?.Campaign is null) return [];
+        var encounters = authored.Campaign.Progression switch
+        {
+            TowerProgressionDefinition tower => tower.Regions.SelectMany(region => region?.Encounters ?? []),
+            ExpeditionProgressionDefinition expedition => expedition.Biomes.SelectMany(biome => biome?.Encounters ?? [])
+                .Concat(expedition.Stages.Select(stage => stage.Boss)).Where(profile => profile is not null)
+                .Select(profile => profile!.Encounter),
+            _ => []
+        };
         var seen = new HashSet<AbilityLoadoutDefinition>(ReferenceEqualityComparer.Instance);
         var references = ImmutableArray.CreateBuilder<AbilityLoadoutDefinition?>();
-        foreach (var region in authored.Campaign.Regions)
-        foreach (var encounter in region?.Encounters ?? [])
+        foreach (var encounter in encounters)
         foreach (var phase in encounter?.BossTimeline?.Phases ?? [])
             if (phase?.AbilityLoadout is not null && seen.Add(phase.AbilityLoadout))
                 references.Add(phase.AbilityLoadout);
@@ -91,6 +99,10 @@ public static partial class GameProjectCompiler
     {
         var source = Source(authored);
         context.RegisterStableId(authored.StableId, authored);
+        if (authored.Progression is ExpeditionProgressionDefinition expedition)
+            return CompileExpeditionCampaign(authored, expedition, context);
+        if (authored.Progression is not TowerProgressionDefinition)
+        { context.Report.Error($"{source}: missing progression definition."); return null; }
         if (authored.FloorsPerRegion <= 0) context.Report.Error($"{source}: FloorsPerRegion must be positive.");
         if (authored.Regions is null || authored.Regions.Length == 0)
             context.Report.Error($"{source}: campaign requires at least one region.");
@@ -587,7 +599,9 @@ public static partial class GameProjectCompiler
             RegisterStableId(authored.StableId, authored);
             if (authored.Kind != expectedKind)
                 Report.Error($"{bindingSource}: pool '{authored.StableId}' has kind {authored.Kind}, expected {expectedKind}.");
-            if (authored.ContentIds is null || authored.ContentIds.Length == 0)
+            // Item content may intentionally be unfilled during a content rebuild.
+            // Unit and battlefield pools still require executable content.
+            if (authored.ContentIds is null || authored.ContentIds.Length == 0 && expectedKind != ContentPoolKind.Item)
                 Report.Error($"{source}: pool is empty.");
             var unique = new HashSet<string>(StringComparer.Ordinal);
             foreach (var id in authored.ContentIds ?? [])

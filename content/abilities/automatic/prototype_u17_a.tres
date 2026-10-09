@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="5"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+Target = 27
+Range = 4
+LandingSide = true
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+DurationTicks = 4
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("1")
+Target = 13
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("3")
+AttackRatio = 2.3
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("4")
+Kind = 33
+Targeting = SubResource("s2")
+Magnitude = SubResource("s3")
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("1")
+Target = 0
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("3")
+Amount = 0.3
+
+[sub_resource type="Resource" id="s7"]
+script = ExtResource("2")
+Attribute = 3
+DurationTicks = 40
+
+[sub_resource type="Resource" id="s8"]
+script = ExtResource("4")
+Kind = 13
+Targeting = SubResource("s5")
+Magnitude = SubResource("s6")
+Execution = SubResource("s7")
+
+[sub_resource type="Resource" id="s9"]
+script = ExtResource("4")
+Kind = 20
+Targeting = SubResource("s0")
+Execution = SubResource("s1")
+Effects = [SubResource("s4"), SubResource("s8")]
+
+[resource]
+script = ExtResource("5")
+StableId = "prototype_u17_a"
+DisplayName = "猎杀扑击"
+Description = "跃向4格内当前生命最低的敌人，追加一次230%攻击伤害，可暴击；获得30%攻速4秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 60
+CooldownTicks = 5
+MaxUses = 0
+Operations = [SubResource("s9")]

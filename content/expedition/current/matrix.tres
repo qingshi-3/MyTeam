@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="MatrixStatusRulesDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/MatrixStatusRulesDefinition.cs" id="script"]
+
+
+[resource]
+script = ExtResource("script")
+

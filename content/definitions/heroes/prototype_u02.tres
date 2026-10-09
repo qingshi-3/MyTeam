@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u02.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_002"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_009"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u02"
+DisplayName = "雷爪熊"
+Description = "能力原型；外观为临时素材。雷爪：强化普攻8秒，每次原始普攻从主目标向2格内最多2名不同敌人传导，每名造成60%A；主目标不再吃一份传导。传导可暴击、触发极地与命中附加，不递归传导、不增加攻击回蓝。持续期间不回蓝，结束后恢复。"
+IsHero = true
+Role = 1
+MaxHealth = 950
+AttackDamage = 65
+AttackRange = 0.35
+AttackDelivery = 0
+AttackCooldown = 1.4286
+Armor = 6
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 80
+StartingMana = 20
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

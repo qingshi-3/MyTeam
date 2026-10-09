@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicRunRuleSpec.cs" id="2"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_pools/elite_relic.tres" id="3"]
+
+[sub_resource type="Resource" id="EliteReward"]
+script = ExtResource("2")
+RuleId = "r05_elite_reward"
+Kind = 4
+Amount = 1.0
+RewardPool = ExtResource("3")
+
+[resource]
+script = ExtResource("1")
+StableId = "v1_relic_r05"
+RunRules = Array[RelicRunRuleSpec]([SubResource("EliteReward")])

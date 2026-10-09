@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" format=3]
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="equipment"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="modifier"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="constant"]
+
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentControlGuardSpec.cs" id="guard"]
+
+[sub_resource type="Resource" id="control"]
+script = ExtResource("guard")
+RuleId = "first_hard_control"
+WindowTicks = 30
+SubsequentDurationMultiplier = 0.5
+
+[sub_resource type="Resource" id="amount0"]
+script = ExtResource("constant")
+Value = 120.0
+
+[sub_resource type="Resource" id="mod0"]
+script = ExtResource("modifier")
+Attribute = 0
+Operation = 0
+Magnitude = SubResource("amount0")
+SlotId = "v1_e15_0"
+
+[resource]
+script = ExtResource("equipment")
+StableId = "v1_equipment_e15"
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("mod0")])
+ControlGuard = SubResource("control")

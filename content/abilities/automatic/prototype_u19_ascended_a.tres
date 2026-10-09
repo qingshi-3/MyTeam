@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ChargedLineAbilityOperationSpec.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+Range = 8
+Radius = 0.12
+ChargeTicks = 2
+AttackMultiplier = 0
+SpellPowerMultiplier = 1.4
+MaximumHits = 1
+ProjectileSpeed = 12
+HoldPosition = false
+
+[resource]
+script = ExtResource("2")
+StableId = "prototype_u19_ascended_a"
+DisplayName = "雷脉箭"
+Description = "短暂拉弓后射出直线箭，命中首名敌人造成140%法强伤害；首个成功命中获得2层攻速，随后每次1层，每层12%，最多7层；未命中不加。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 40
+CooldownTicks = 5
+Operations = [SubResource("s0")]

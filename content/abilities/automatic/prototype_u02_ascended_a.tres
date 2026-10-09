@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixReactionParameters.cs" id="2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="5"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="6"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+Target = 0
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+Event = 1
+SourceRelation = 1
+OncePerAction = true
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("3")
+DurationTicks = 80
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("1")
+Target = 28
+Range = 2
+MaxTargets = 3
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("4")
+AttackRatio = 0.6
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("5")
+Kind = 33
+Targeting = SubResource("s3")
+Magnitude = SubResource("s4")
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("5")
+Kind = 34
+Targeting = SubResource("s0")
+Reaction = SubResource("s1")
+Execution = SubResource("s2")
+Effects = [SubResource("s5")]
+
+[sub_resource type="Resource" id="mana_self"]
+script = ExtResource("1")
+Target = 0
+[sub_resource type="Resource" id="mana_time"]
+script = ExtResource("3")
+Attribute = 10
+DurationTicks = 80
+[sub_resource type="Resource" id="mana_suppression"]
+script = ExtResource("5")
+Kind = 32
+Targeting = SubResource("mana_self")
+Execution = SubResource("mana_time")
+
+[resource]
+script = ExtResource("6")
+StableId = "prototype_u02_ascended_a"
+DisplayName = "雷爪"
+Description = "强化普攻8秒：向主目标附近3名其他敌人追加60%攻击伤害，可暴击和冻结；期间不回蓝。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 80
+CooldownTicks = 5
+MaxUses = 0
+Operations = [SubResource("s6"), SubResource("mana_suppression")]

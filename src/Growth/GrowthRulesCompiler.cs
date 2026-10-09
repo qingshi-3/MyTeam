@@ -23,7 +23,12 @@ public static class GrowthRulesCompiler
         {
             if (hero.ProductionModes.Any(mode => !Enum.IsDefined((GrowthProductionMode)mode)) ||
                 hero.ProductionModes.Distinct().Count() != hero.ProductionModes.Length ||
-                !float.IsFinite(hero.GrowthRate) || hero.GrowthRate < 0 || hero.ResearchYield < 0)
+                !float.IsFinite(hero.GrowthRate) || hero.GrowthRate < 0 || hero.ResearchYield < 0 ||
+                !float.IsFinite(hero.FixedAttackGain) || hero.FixedAttackGain < 0 ||
+                !float.IsFinite(hero.FixedMaxHealthGain) || hero.FixedMaxHealthGain < 0 || hero.BreedingYield < 0 ||
+                !float.IsFinite(hero.AttackGainPerBreedingPoint) || hero.AttackGainPerBreedingPoint < 0 ||
+                !float.IsFinite(hero.MaxHealthGainPerBreedingPoint) || hero.MaxHealthGainPerBreedingPoint < 0 ||
+                hero.BreedingYield == 0 && (hero.AttackGainPerBreedingPoint != 0 || hero.MaxHealthGainPerBreedingPoint != 0))
                 throw new InvalidOperationException($"成长产出配置无效：{hero.ContentId}");
             if (!entries.TryGetValue(hero.ContentId, out var entry) || entry.Definition is not UnitDefinition { IsHero: true })
                 throw new InvalidOperationException($"Growth hero is not a published hero: {hero.ContentId}");
@@ -36,8 +41,13 @@ public static class GrowthRulesCompiler
                 hero.ResearchYield, hero.AscensionId,
                 hero.AscensionDisplay is { } display ? new(display.DisplayName, display.CompletedLabel) : null,
                 benefit is null ? null : new(benefit.Description, graph.ResolveLoadout(benefit.BattleLoadout!)),
-                hero.BaseLoadout is null ? null : graph.ResolveLoadout(hero.BaseLoadout), hero.MaterialCategory);
+                hero.BaseLoadout is null ? null : graph.ResolveLoadout(hero.BaseLoadout), hero.MaterialCategory,
+                hero.FixedAttackGain, hero.FixedMaxHealthGain, hero.BreedingYield,
+                hero.AttackGainPerBreedingPoint, hero.MaxHealthGainPerBreedingPoint);
         }, StringComparer.Ordinal);
+
+        if (heroes.Values.Count(hero => hero.BreedingYield > 0) > 1)
+            throw new InvalidOperationException("当前育种规则只支持一种常驻育种英雄，多个来源尚未定义叠加规则。");
 
         var spells = definition.Spells.ToImmutableDictionary(spell => spell.StableId, spell =>
         {

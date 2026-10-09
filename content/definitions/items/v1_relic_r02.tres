@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_relic_r02"
+DisplayName = "封存钱匣"
+Description = "取得后每次首次有效地点入场获得2金币；首次商店支付金币后停止。取得当次、免费回访和Boss不发。"
+Rarity = 0
+ProductKind = 0
+AllowRepeatAcquisition = false
+Tags = Array[StringName]([&"item", &"relic", &"v1"])

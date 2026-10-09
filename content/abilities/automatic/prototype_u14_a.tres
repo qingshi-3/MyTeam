@@ -1,0 +1,96 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[sub_resource type="Resource" id="self"]
+script = ExtResource("target")
+Target = 0
+[sub_resource type="Resource" id="enemy"]
+script = ExtResource("target")
+Target = 30
+Range = 20
+
+[sub_resource type="Resource" id="strike_amount"]
+script = ExtResource("magnitude")
+Amount = 1.5
+SpellPowerRatio = 1.2
+
+[sub_resource type="Resource" id="strike_time"]
+script = ExtResource("execution")
+DurationTicks = 6
+
+[sub_resource type="Resource" id="strike"]
+script = ExtResource("operation")
+Kind = 42
+Targeting = SubResource("self")
+Magnitude = SubResource("strike_amount")
+Execution = SubResource("strike_time")
+
+[sub_resource type="Resource" id="range"]
+script = ExtResource("target")
+Target = 0
+Range = 4
+
+[sub_resource type="Resource" id="attack_amount"]
+script = ExtResource("magnitude")
+Amount = 20
+
+[sub_resource type="Resource" id="attack_time"]
+script = ExtResource("execution")
+Attribute = 1
+DurationTicks = 3600
+
+[sub_resource type="Resource" id="attack"]
+script = ExtResource("operation")
+Kind = 13
+Targeting = SubResource("self")
+Magnitude = SubResource("attack_amount")
+Execution = SubResource("attack_time")
+
+[sub_resource type="Resource" id="speed_amount"]
+script = ExtResource("magnitude")
+Amount = 1
+
+[sub_resource type="Resource" id="speed_time"]
+script = ExtResource("execution")
+Count = 3
+DurationTicks = 3600
+Key = "three_original_attacks"
+
+[sub_resource type="Resource" id="speed"]
+script = ExtResource("operation")
+Kind = 43
+Targeting = SubResource("self")
+Magnitude = SubResource("speed_amount")
+Execution = SubResource("speed_time")
+
+[sub_resource type="Resource" id="form"]
+script = ExtResource("operation")
+Kind = 31
+Targeting = SubResource("range")
+Effects = [SubResource("attack"), SubResource("speed")]
+
+[sub_resource type="Resource" id="windup_time"]
+script = ExtResource("execution")
+DurationTicks = 3
+
+[sub_resource type="Resource" id="windup"]
+script = ExtResource("operation")
+Kind = 35
+Targeting = SubResource("enemy")
+Execution = SubResource("windup_time")
+Effects = [SubResource("strike"), SubResource("form")]
+
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u14_a"
+DisplayName = "双械转换"
+Description = "蓄势0.3秒后转换为4格远程、攻击+20；近敌受到120%法强伤害、0.6秒眩晕及最多1.5格击退，推不动仍转换。之后3次原始普攻攻速+100%，追加不耗次；转换后锁蓝。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 80
+CooldownTicks = 5
+MaxUses = 1
+Operations = [SubResource("windup")]

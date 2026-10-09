@@ -16,15 +16,19 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/components/ArmyOverview.tscn" id="14"]
 [ext_resource type="PackedScene" path="res://scenes/ui/BattleReportScreen.tscn" id="15"]
 [ext_resource type="PackedScene" path="res://scenes/ui/RecruitmentScreen.tscn" id="16"]
-[ext_resource type="Resource" path="res://content/growth/growth_project.tres" id="17"]
-[ext_resource type="Resource" path="res://content/growth/growth_rules.tres" id="growth_rules"]
+[ext_resource type="Resource" path="res://content/expedition/current/project.tres" id="17"]
+[ext_resource type="Resource" path="res://content/expedition/current/growth_rules.tres" id="growth_rules"]
 [ext_resource type="Script" path="res://src/App/AppScreenHost.cs" id="18"]
 [ext_resource type="PackedScene" path="res://scenes/ui/BattleLabScreen.tscn" id="19"]
 [ext_resource type="PackedScene" path="res://scenes/audio/FeedbackAudio.tscn" id="audio"]
 
 [ext_resource type="PackedScene" path="res://scenes/environments/CourtyardBackdrop.tscn" id="courtyard"]
 
-[ext_resource type="Resource" path="res://content/validation_matrix/matrix_lab_presets.tres" id="matrix_presets"]
+[ext_resource type="Resource" path="res://content/battle-lab/battle_lab_presets.tres" id="matrix_presets"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/expedition/ExpeditionScreen.tscn" id="expedition_screen"]
+
+[ext_resource type="PackedScene" path="res://scenes/ui/components/UiJourneyTransition.tscn" id="journey_transition"]
 
 [node name="GameRoot" type="Control" unique_id=257826745]
 layout_mode = 3
@@ -37,7 +41,7 @@ theme = ExtResource("2")
 script = ExtResource("1")
 ProjectDefinition = ExtResource("17")
 RulesDefinition = ExtResource("growth_rules")
-SaveNamespace = "growth-journey"
+SaveNamespace = "eight-trait-journey"
 
 [node name="UiAudio" parent="." instance=ExtResource("audio")]
 
@@ -61,6 +65,10 @@ visible = false
 layout_mode = 1
 
 [node name="TowerScreen" parent="Screens" unique_id=329741647 instance=ExtResource("5")]
+visible = false
+layout_mode = 1
+
+[node name="ExpeditionScreen" parent="Screens" instance=ExtResource("expedition_screen")]
 visible = false
 layout_mode = 1
 
@@ -107,6 +115,9 @@ layout_mode = 1
 
 [node name="SettingsScreen" parent="Screens" unique_id=615417697 instance=ExtResource("13")]
 visible = false
+layout_mode = 1
+
+[node name="JourneyTransition" parent="Screens" instance=ExtResource("journey_transition")]
 layout_mode = 1
 
 [node name="ArmyOverview" parent="." unique_id=593151342 instance=ExtResource("14")]

@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u17.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_032"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_756"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u17"
+DisplayName = "林牙猎手"
+Description = "能力原型；外观为临时素材。猎扑：选4格内当前生命绝对值最低且有合法邻位的敌人，跳到邻位，以2.3A进行一次技能攻击，可暴击并触发命中效果，随后攻速+30%持续4秒。技能攻击不触发射手生成或攻击回蓝；没有落点就对当前近战合法目标施放斩击。"
+IsHero = true
+Role = 4
+MaxHealth = 750
+AttackDamage = 68
+AttackRange = 0.35
+AttackDelivery = 0
+AttackCooldown = 1.1765
+Armor = 4
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 60
+StartingMana = 0
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

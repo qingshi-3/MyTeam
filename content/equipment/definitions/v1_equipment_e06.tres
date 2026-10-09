@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="3"]
+
+[sub_resource type="Resource" id="AttackMagnitude"]
+script = ExtResource("3")
+Value = 18.0
+
+[sub_resource type="Resource" id="AttackModifier"]
+script = ExtResource("2")
+Attribute = 1
+Operation = 0
+Magnitude = SubResource("AttackMagnitude")
+Priority = 0
+SlotId = "v1_equipment_e06_attack"
+
+[sub_resource type="Resource" id="CriticalChanceMagnitude"]
+script = ExtResource("3")
+Value = 0.1
+
+[sub_resource type="Resource" id="CriticalChanceModifier"]
+script = ExtResource("2")
+Attribute = 8
+Operation = 0
+Magnitude = SubResource("CriticalChanceMagnitude")
+Priority = 0
+SlotId = "v1_equipment_e06_critical_chance"
+
+[sub_resource type="Resource" id="CriticalDamageMagnitude"]
+script = ExtResource("3")
+Value = 0.2
+
+[sub_resource type="Resource" id="CriticalDamageModifier"]
+script = ExtResource("2")
+Attribute = 9
+Operation = 0
+Magnitude = SubResource("CriticalDamageMagnitude")
+Priority = 0
+SlotId = "v1_equipment_e06_critical_damage"
+
+[resource]
+script = ExtResource("1")
+StableId = "v1_equipment_e06"
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("AttackModifier"), SubResource("CriticalChanceModifier"), SubResource("CriticalDamageModifier")])

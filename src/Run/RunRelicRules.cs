@@ -12,7 +12,7 @@ using TowerAutobattler.Relics;
 namespace TowerAutobattler.Run;
 
 // Called only on detached run projections. The outer node / choice transaction owns publication.
-public sealed class RunRelicRules(ContentRegistry content)
+public sealed partial class RunRelicRules(ContentRegistry content)
 {
     public IEnumerable<(ItemInstanceDto Item, CompiledRelicRunRule Rule)> Rules(ActiveRunDto run) =>
         run.Items.ToArray().SelectMany(item =>
@@ -33,7 +33,7 @@ public sealed class RunRelicRules(ContentRegistry content)
     {
         foreach (var (item, rule) in Rules(run).ToArray())
         {
-            if (rule.Kind == RelicRunRuleKind.NodeGoldUntilPurchase && item.Charges == 0)
+            if (rule.Kind == RelicRunRuleKind.NodeGoldUntilPurchase && item.Charges == 0 && type != TowerNodeType.Boss)
                 GainGold(run, checked((int)rule.Amount * item.Stacks));
             if (rule.Kind == RelicRunRuleKind.ShopHealing && type == TowerNodeType.Shop)
                 run.CurrentRunHealth = RunHealthPolicy.Recover(run, checked((int)rule.Amount * item.Stacks));
@@ -101,13 +101,19 @@ public sealed class RunRelicRules(ContentRegistry content)
                 RelicRunRuleKind.EliteReward when encounter.IsElite && result.Outcome == BattleOutcome.PlayerVictory => (int)rule.Amount * item.Stacks,
                 RelicRunRuleKind.CounterReward => checked((result.RelicTransition?.CounterTransitions
                     .Where(c => c.InstanceId == item.InstanceId && c.CounterId == rule.CounterId).Sum(c => c.ThresholdExecutions) ?? 0) * (int)rule.Amount * item.Stacks),
+                RelicRunRuleKind.VictoryNativeKillReward => BountyDraws(run, item, rule, result, encounter),
                 _ => 0
             };
+            if (draws < 0) return false;
             for (var draw = 0; draw < draws; draw++)
             {
                 var eligible = rule.ContentIds.Where(id => RunItemSupplyPolicy.CanAcquire(run, id, content)).Order(StringComparer.Ordinal).ToArray();
-                if (eligible.Length == 0) continue; // Exhausted unique-relic pools do not mint substitute currency.
-                var key = $"{run.Seed:x16}:{run.FloorIndex}:{run.BattleNumber}:{item.InstanceId}:{rule.RuleId}:{rule.PoolId}:{draw}";
+                if (eligible.Length == 0)
+                {
+                    if (rule.Kind == RelicRunRuleKind.VictoryNativeKillReward) return false;
+                    continue; // Exhausted unique-relic pools do not mint substitute currency.
+                }
+                var key = $"{(run.Expedition is null ? $"{run.Seed:x16}:{run.FloorIndex}" : run.Action!.Source.ActionId)}:{run.BattleNumber}:{item.InstanceId}:{rule.RuleId}:{rule.PoolId}:{draw}";
                 var roll = System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(SHA256.HashData(Encoding.UTF8.GetBytes(key)));
                 if (!grant(run, eligible[roll % eligible.Length])) return false;
             }

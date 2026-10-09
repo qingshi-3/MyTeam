@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[sub_resource type="Resource" id="enemy"]
+script = ExtResource("target")
+Target = 6
+Range = 5
+Radius = 2
+MaxTargets = 1
+[sub_resource type="Resource" id="payoff_target"]
+script = ExtResource("target")
+Target = 0
+Radius = 2
+[sub_resource type="Resource" id="payoff_amount"]
+script = ExtResource("magnitude")
+Amount = 0.25
+SpellPowerRatio = 0.38
+[sub_resource type="Resource" id="payoff_time"]
+script = ExtResource("execution")
+DurationTicks = 50
+IntervalTicks = 5
+[sub_resource type="Resource" id="payoff"]
+script = ExtResource("operation")
+Kind = 46
+Targeting = SubResource("payoff_target")
+Magnitude = SubResource("payoff_amount")
+Execution = SubResource("payoff_time")
+[sub_resource type="Resource" id="windup_time"]
+script = ExtResource("execution")
+DurationTicks = 8
+[sub_resource type="Resource" id="windup"]
+script = ExtResource("operation")
+Kind = 35
+Targeting = SubResource("enemy")
+Execution = SubResource("windup_time")
+Effects = [SubResource("payoff")]
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u06_a"
+DisplayName = "冰晶风暴"
+Description = "蓄势0.8秒，在5格内最密集敌人中心形成半径2风暴5秒；每0.5秒38%法强范围伤害，区内攻速降低25%，离开0.5秒结束，同类取强不叠。本体死亡不取消已经成形的区域。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 125
+CooldownTicks = 5
+Operations = [SubResource("windup")]

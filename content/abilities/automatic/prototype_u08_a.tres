@@ -1,0 +1,131 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="5"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+Target = 2
+Range = 3
+LandingSide = true
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+DurationTicks = 4
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("1")
+Target = 0
+Range = 0.35
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("1")
+Target = 0
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("3")
+Amount = 30
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("2")
+Attribute = 1
+DurationTicks = 3600
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("4")
+Kind = 13
+Targeting = SubResource("s3")
+Magnitude = SubResource("s4")
+Execution = SubResource("s5")
+
+[sub_resource type="Resource" id="s7"]
+script = ExtResource("1")
+Target = 0
+
+[sub_resource type="Resource" id="s8"]
+script = ExtResource("3")
+Amount = 4
+
+[sub_resource type="Resource" id="s9"]
+script = ExtResource("2")
+Attribute = 4
+DurationTicks = 3600
+
+[sub_resource type="Resource" id="s10"]
+script = ExtResource("4")
+Kind = 13
+Targeting = SubResource("s7")
+Magnitude = SubResource("s8")
+Execution = SubResource("s9")
+
+[sub_resource type="Resource" id="s11"]
+script = ExtResource("1")
+Target = 2
+Range = 1.5
+MaxTargets = 64
+
+[sub_resource type="Resource" id="s12"]
+script = ExtResource("3")
+SpellPowerRatio = 1.8
+
+[sub_resource type="Resource" id="s13"]
+script = ExtResource("4")
+Kind = 0
+Targeting = SubResource("s11")
+Magnitude = SubResource("s12")
+
+[sub_resource type="Resource" id="s14"]
+script = ExtResource("1")
+Target = 2
+Range = 1.5
+MaxTargets = 64
+
+[sub_resource type="Resource" id="s15"]
+script = ExtResource("2")
+DurationTicks = 8
+
+[sub_resource type="Resource" id="s16"]
+script = ExtResource("4")
+Kind = 30
+Targeting = SubResource("s14")
+Execution = SubResource("s15")
+
+[sub_resource type="Resource" id="s17"]
+script = ExtResource("4")
+Kind = 31
+Targeting = SubResource("s2")
+Effects = [SubResource("s6"), SubResource("s10"), SubResource("s13"), SubResource("s16")]
+
+[sub_resource type="Resource" id="s18"]
+script = ExtResource("4")
+Kind = 37
+Targeting = SubResource("s0")
+Execution = SubResource("s1")
+Effects = [SubResource("s17")]
+
+[sub_resource type="Resource" id="wind_target"]
+script = ExtResource("1")
+Target = 0
+[sub_resource type="Resource" id="wind_time"]
+script = ExtResource("2")
+DurationTicks = 6
+[sub_resource type="Resource" id="wind"]
+script = ExtResource("4")
+Kind = 35
+Targeting = SubResource("wind_target")
+Execution = SubResource("wind_time")
+Effects = [SubResource("s18")]
+
+[resource]
+script = ExtResource("5")
+StableId = "prototype_u08_a"
+DisplayName = "巨兽跃变"
+Description = "跃向3格内敌人，落地对周围敌人造成180%法强伤害并眩晕0.8秒；变为近战巨兽，攻击+30、防御+4，每战一次。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 100
+CooldownTicks = 5
+MaxUses = 0
+Operations = [SubResource("wind")]

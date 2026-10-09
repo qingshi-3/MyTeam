@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[sub_resource type="Resource" id="enemy"]
+script = ExtResource("target")
+Target = 30
+Range = 20
+[sub_resource type="Resource" id="payoff_target"]
+script = ExtResource("target")
+Target = 0
+Radius = 1.04719755
+[sub_resource type="Resource" id="payoff_amount"]
+script = ExtResource("magnitude")
+Amount = 0.55
+[sub_resource type="Resource" id="payoff_time"]
+script = ExtResource("execution")
+DurationTicks = 40
+IntervalTicks = 1
+[sub_resource type="Resource" id="payoff"]
+script = ExtResource("operation")
+Kind = 45
+Targeting = SubResource("payoff_target")
+Magnitude = SubResource("payoff_amount")
+Execution = SubResource("payoff_time")
+[sub_resource type="Resource" id="windup_time"]
+script = ExtResource("execution")
+DurationTicks = 3
+[sub_resource type="Resource" id="windup"]
+script = ExtResource("operation")
+Kind = 35
+Targeting = SubResource("enemy")
+Execution = SubResource("windup_time")
+Effects = [SubResource("payoff")]
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u01_a"
+DisplayName = "冰脊方向盾"
+Description = "蓄势0.3秒，冻结方向举盾4秒：前方120度普通及合格追加攻击伤害降低55%，直接技能和背后攻击不受影响；持盾期间不移动、不普攻。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 80
+CooldownTicks = 5
+Operations = [SubResource("windup")]

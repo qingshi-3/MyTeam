@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/EnemyOriginalAttackCycleSpec.cs" id="operation"]
+[sub_resource type="Resource" id="action"]
+script = ExtResource("operation")
+Every = 4
+WindupTicks = 4
+DamageMultiplier = 1.8
+[resource]
+script = ExtResource("ability")
+StableId = "v1_e32_fourth_arrow"
+DisplayName = "蓄势重箭"
+Description = "每第四次合法原始攻击开始蓄势0.4秒，造成180%普攻伤害；被打断仍消耗本次计数，追加攻击不计数。"
+ActivationKind = 2
+Trigger = 25
+MaxUses = 1
+FirstTriggerTick = 0
+IntervalTicks = 0
+Operations = [SubResource("action")]

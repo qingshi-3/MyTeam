@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+
+[sub_resource type="Resource" id="self"]
+script = ExtResource("target")
+Target = 0
+Range = 4
+MaxTargets = 2
+
+[sub_resource type="Resource" id="healing_amount"]
+script = ExtResource("magnitude")
+SpellPowerRatio = 0.4
+Amount = 0.2
+
+[sub_resource type="Resource" id="healing_time"]
+script = ExtResource("execution")
+DurationTicks = 50
+Count = 5
+IntervalTicks = 10
+
+[sub_resource type="Resource" id="healing"]
+script = ExtResource("operation")
+Kind = 49
+Targeting = SubResource("self")
+Magnitude = SubResource("healing_amount")
+Execution = SubResource("healing_time")
+
+[sub_resource type="Resource" id="form_target"]
+script = ExtResource("target")
+Target = 0
+Range = 0.35
+
+[sub_resource type="Resource" id="attack_amount"]
+script = ExtResource("magnitude")
+Amount = 25
+
+[sub_resource type="Resource" id="attack_time"]
+script = ExtResource("execution")
+Attribute = 1
+DurationTicks = 3600
+
+[sub_resource type="Resource" id="attack"]
+script = ExtResource("operation")
+Kind = 13
+Targeting = SubResource("self")
+Magnitude = SubResource("attack_amount")
+Execution = SubResource("attack_time")
+
+[sub_resource type="Resource" id="form"]
+script = ExtResource("operation")
+Kind = 31
+Targeting = SubResource("form_target")
+Effects = [SubResource("attack")]
+
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u11_ascended_a"
+DisplayName = "野性复苏"
+Description = "自身与当时最受伤的1名友军各回复200%法强生命，换形攻击+25；五跳保持释放当刻及其后每秒，完整5秒后为仍存活的实际接收者给予累计有效治疗20%的4秒盾。过疗不计，死亡或清场不给完成盾，铭记保持。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 70
+CooldownTicks = 5
+MaxUses = 1
+Operations = [SubResource("healing"), SubResource("form")]

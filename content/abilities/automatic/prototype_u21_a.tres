@@ -1,0 +1,59 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+
+[sub_resource type="Resource" id="self"]
+script = ExtResource("target")
+Target = 0
+Range = 20
+Radius = 0
+
+[sub_resource type="Resource" id="enemy"]
+script = ExtResource("target")
+Target = 30
+Range = 20
+
+[sub_resource type="Resource" id="magnitude"]
+script = ExtResource("magnitude")
+SpellPowerRatio = 0.7
+Amount = 0
+AttackRatio = 0
+EventRatio = 0
+
+[sub_resource type="Resource" id="execution"]
+script = ExtResource("execution")
+DurationTicks = 30
+Count = 15
+IntervalTicks = 2
+
+[sub_resource type="Resource" id="payoff"]
+script = ExtResource("operation")
+Kind = 47
+Targeting = SubResource("self")
+Magnitude = SubResource("magnitude")
+Execution = SubResource("execution")
+
+[sub_resource type="Resource" id="windup_time"]
+script = ExtResource("execution")
+DurationTicks = 8
+
+[sub_resource type="Resource" id="windup"]
+script = ExtResource("operation")
+Kind = 35
+Targeting = SubResource("enemy")
+Execution = SubResource("windup_time")
+Effects = [SubResource("payoff")]
+
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u21_a"
+DisplayName = "雷雨引导"
+Description = "蓄势0.8秒后引导3秒，15道雷每0.2秒随机命中合法敌人，造成70%法强伤害；引导锁移动、普攻和回蓝，硬控或死亡取消余雷。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 160
+CooldownTicks = 5
+Operations = [SubResource("windup")]

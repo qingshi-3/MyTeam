@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="RunOfferDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/RunOfferDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Project/RunChoiceDefinition.cs" id="choice"]
+[ext_resource type="Script" path="res://src/Project/RunOperationDefinition.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Project/RunConditionDefinition.cs" id="condition"]
+
+[sub_resource type="Resource" id="injured_condition"]
+script = ExtResource("condition")
+Kind = 5
+
+[sub_resource type="Resource" id="restore_operation"]
+script = ExtResource("operation")
+Kind = 7
+Amount = 25
+
+[sub_resource type="Resource" id="gold_operation"]
+script = ExtResource("operation")
+Kind = 0
+Amount = 8
+
+[sub_resource type="Resource" id="restore_choice"]
+script = ExtResource("choice")
+StableId = "exp_camp_restore"
+DisplayName = "休养整顿"
+Description = "恢复 25 全局生命。"
+Conditions = Array[Resource]([SubResource("injured_condition")])
+Operations = Array[Resource]([SubResource("restore_operation")])
+
+[sub_resource type="Resource" id="gold_choice"]
+script = ExtResource("choice")
+StableId = "exp_camp_gold"
+DisplayName = "领取军费"
+Description = "获得 8 金币。"
+Operations = Array[Resource]([SubResource("gold_operation")])
+
+[resource]
+script = ExtResource("script")
+StableId = "exp_camp"
+Kind = 4
+DisplayName = "旅途营地"
+AllowSkip = false
+Choices = Array[Resource]([SubResource("restore_choice"), SubResource("gold_choice")])

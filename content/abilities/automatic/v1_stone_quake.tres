@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/EnemyStoneQuakeSpec.cs" id="operation"]
+[sub_resource type="Resource" id="action"]
+script = ExtResource("operation")
+Radius = 2
+WindupTicks = 7
+PulseIntervalTicks = 5
+PulseCount = 3
+RecoveryTicks = 5
+AttackMultiplier = 0.7
+ArmorMultiplier = 8
+CompletionArmor = 4
+ArmorDurationTicks = 60
+[resource]
+script = ExtResource("ability")
+StableId = "v1_stone_quake"
+DisplayName = "岩震"
+Description = "第5秒起每8秒请求施放；蓄势0.7秒后，每0.5秒对自身中心2格内敌人震击，共3次，每次造成70%攻击加8倍防御伤害。完整结束后防御+4持续6秒，同源不叠；受控、位移或死亡打断。"
+ActivationKind = 1
+Trigger = 2
+MaxUses = 0
+FirstTriggerTick = 50
+IntervalTicks = 80
+Operations = [SubResource("action")]

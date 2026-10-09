@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="relic"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicCombatRuleSpec.cs" id="rule"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicAttributeBindingSpec.cs" id="binding"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicPlayerTeamTargetSpec.cs" id="target"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="modifier"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="magnitude"]
+[sub_resource type="Resource" id="team"]
+script = ExtResource("target")
+[sub_resource type="Resource" id="crit_amount"]
+script = ExtResource("magnitude")
+Value = 0.05
+[sub_resource type="Resource" id="crit_modifier"]
+script = ExtResource("modifier")
+Attribute = 8
+Operation = 0
+Magnitude = SubResource("crit_amount")
+SlotId = "r09_critical_chance"
+[sub_resource type="Resource" id="crit_binding"]
+script = ExtResource("binding")
+BindingId = "r09_critical_chance"
+Target = SubResource("team")
+Modifier = SubResource("crit_modifier")
+[sub_resource type="Resource" id="combat"]
+script = ExtResource("rule")
+RuleId = "r09_combat"
+Kind = 3
+Amount = 8
+Threshold = 0
+Tick = 0
+[resource]
+script = ExtResource("relic")
+StableId = "v1_relic_r09"
+CombatRules = Array[RelicCombatRuleSpec]([SubResource("combat")])
+AttributeBindings = Array[RelicAttributeBindingSpec]([SubResource("crit_binding")])

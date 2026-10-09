@@ -50,7 +50,7 @@ public static class RunBattlePreparationAdapter
                     item.ContentId,
                     item.OwnerHeroInstanceId,
                     item.SlotIndex)).ToImmutableArray(),
-                Growth: ProjectGrowth(hero, growthRules, run.Growth)));
+                Growth: ProjectGrowth(hero, growthRules, run.Growth, GrowthRunService.GetPending(run))));
         for (var index = 0; index < encounter.EnemyIds.Count; index++)
             units.Add(new BattlePreparationUnitSource(
                 $"enemy-{index}",
@@ -86,9 +86,9 @@ public static class RunBattlePreparationAdapter
                 encounter.EncounterId,
                 encounter.NodeType,
                 run.Seed,
-                run.FloorIndex,
+                string.IsNullOrEmpty(encounter.ExpeditionProfileId) ? run.FloorIndex : -1,
                 run.BattleNumber,
-                encounter.CompositionId),
+                encounter.CompositionId) { OriginKey = OriginKey(run, encounter) },
             floorRule,
             units.ToImmutable(),
             placements.ToImmutable(),
@@ -105,18 +105,30 @@ public static class RunBattlePreparationAdapter
                 : BattlePlacementValidation.None);
     }
 
+    public static string OriginKey(ActiveRunDto run, EncounterPlan encounter)
+    {
+        if (string.IsNullOrEmpty(encounter.ExpeditionProfileId)) return string.Empty;
+        if (run.Action?.Source is { LegacyFloorIndex: null } source && !string.IsNullOrWhiteSpace(source.ActionId))
+            return source.ActionId;
+        // Read-only preparation can exist before an action is committed. Its
+        // namespace can never be accepted as a paid battle's receipt origin.
+        return string.Create(System.Globalization.CultureInfo.InvariantCulture,
+            $"preview-v1:{run.Seed:x16}:{run.BattleNumber}:{encounter.ExpeditionSiteId}:{encounter.ExpeditionProfileId}:{encounter.FloorRuleId}");
+    }
+
     internal static BattleUnitGrowth? ProjectGrowth(RosterHeroInstanceDto hero,
-        CompiledGrowthRules? rules, GrowthRunDto? runGrowth = null) =>
-        ProjectGrowth(RosterHeroView.For(hero), rules, runGrowth is null ? null : GrowthRunView.For(runGrowth));
+        CompiledGrowthRules? rules, GrowthRunDto? runGrowth = null, GrowthNodeSnapshotDto? pending = null) =>
+        ProjectGrowth(RosterHeroView.For(hero), rules, runGrowth is null ? null : GrowthRunView.For(runGrowth),
+            pending is null ? null : GrowthNodeSnapshotView.For(pending));
 
     public static BattleUnitGrowth? ProjectGrowth(RosterHeroView hero,
-        CompiledGrowthRules? rules, GrowthRunView? runGrowth = null)
+        CompiledGrowthRules? rules, GrowthRunView? runGrowth = null, GrowthNodeSnapshotView? pending = null)
     {
         if (rules is null) return null;
         rules.Heroes.TryGetValue(hero.ContentId, out var definition);
         var loadout = definition?.ResolveBattleLoadout(!string.IsNullOrEmpty(hero.Growth.AscensionId));
         // Preview reads the selection; an already-started battle reads its paid snapshot.
-        var started = runGrowth?.PendingNode is { IsBattle: true } node ? node : null;
+        var started = (pending ?? runGrowth?.PendingNode) is { IsBattle: true } node ? node : null;
         var spellId = started?.ConsumedSpellId ?? runGrowth?.EquippedSpellId ?? "";
         var target = started?.SpellTargetInstanceId ?? runGrowth?.SpellTargetInstanceId ?? "";
         var canUse = started is not null || runGrowth?.SpellInventory.GetValueOrDefault(spellId) > 0;
@@ -135,6 +147,11 @@ public static class RunBattlePreparationAdapter
             : encounter.EnemyCells.ToArray();
         var radii = encounter.EnemyIds.Select(id => content.TryGet(id, out var entry) && entry.Definition is UnitDefinition unit
             ? unit.BodyRadius : BattlefieldSpace.DefaultBodyRadius).ToArray();
+        // A complete, legal authored formation is authoritative. Validate all bodies
+        // before reserving any anchor; partial preservation can consume space needed
+        // by a larger ally. Legacy invalid formations keep the deterministic fallback.
+        if (!encounter.EnemyCells.IsDefaultOrEmpty && AuthoredEnemyFormationFits(cells, radii, floor))
+            return cells;
         // Reserve large bodies first, then resolve even small anchors against terrain and prior bodies.
         // Preview and battle share this result instead of relying on silent simulator relocation.
         var reserved = new List<int>();
@@ -154,5 +171,26 @@ public static class RunBattlePreparationAdapter
             reserved.Add(index);
         }
         return cells;
+    }
+
+    private static bool AuthoredEnemyFormationFits(Vector2I[] cells, float[] radii,
+        IBattleFloorRuleRuntime floor)
+    {
+        var enemyBoundary = BattlefieldLayout.Width / 2f - BattlefieldSpace.CellHalfExtent;
+        var playerBoundary = BattlefieldLayout.PlayerDeploymentColumns - BattlefieldSpace.CellHalfExtent;
+        for (var index = 0; index < cells.Length; index++)
+        {
+            var position = BattlefieldSpace.CellCenter(cells[index]);
+            if (!BattlefieldLayout.IsInBounds(cells[index]) ||
+                position.X - radii[index] < Math.Max(enemyBoundary, playerBoundary) ||
+                !BattlefieldSpace.IsPositionTerrainClear(position, radii[index],
+                    BattlefieldLayout.Width, BattlefieldLayout.Height, floor.CanOccupy))
+                return false;
+            for (var other = 0; other < index; other++)
+                if (position.DistanceTo(BattlefieldSpace.CellCenter(cells[other])) <
+                    radii[index] + radii[other] + BattlefieldSpace.BodyClearance)
+                    return false;
+        }
+        return true;
     }
 }

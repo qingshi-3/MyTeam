@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ExpeditionSiteDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/ExpeditionSiteDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_events/v01.tres" id="v01"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_events/v02.tres" id="v02"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_events/v03.tres" id="v03"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_events/v04.tres" id="v04"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_events/v05.tres" id="v05"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_events/v06.tres" id="v06"]
+
+
+
+[resource]
+script = ExtResource("script")
+StableId = "exp_site_ruin"
+DisplayName = "遗迹"
+Kind = 4
+CountPerBiome = 1
+ActionCost = 1
+OfferRecipes = Array[Resource]([ExtResource("v01"), ExtResource("v02"), ExtResource("v03"), ExtResource("v04"), ExtResource("v05"), ExtResource("v06")])

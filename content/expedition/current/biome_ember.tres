@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ExpeditionBiomeDefinition" format=3]
+
+[ext_resource type="Resource" path="res://content/expedition/current/ember_combat.tres" id="combat"]
+[ext_resource type="Resource" path="res://content/expedition/current/ember_elite.tres" id="elite"]
+[ext_resource type="Script" path="res://src/Project/ExpeditionBiomeDefinition.cs" id="script"]
+
+
+[ext_resource type="Resource" path="res://content/expedition/current/v1_ember_patrol.tres" id="extra0"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_ember_aid.tres" id="extra1"]
+
+[resource]
+script = ExtResource("script")
+StableId = "biome_ember"
+DisplayName = "余烬林境"
+Color = Color(0.36, 0.47, 0.23, 1)
+Encounters = Array[Resource]([ExtResource("combat"), ExtResource("extra0"), ExtResource("extra1"), ExtResource("elite")])
+RecruitmentWeights = PackedInt32Array(100, 0)

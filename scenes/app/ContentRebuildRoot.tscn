@@ -1,0 +1,113 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://src/App/ContentRebuildRoot.cs" id="root"]
+[ext_resource type="Theme" path="res://content/ui/RealmTheme.tres" id="theme"]
+[ext_resource type="PackedScene" path="res://scenes/environments/CourtyardBackdrop.tscn" id="background"]
+[ext_resource type="PackedScene" path="res://scenes/ui/BattleScreen.tscn" id="battle"]
+[ext_resource type="PackedScene" path="res://scenes/ui/AbilityPrototypePanel.tscn" id="prototype"]
+[node name="ContentRebuildRoot" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("theme")
+script = ExtResource("root")
+[node name="Background" parent="." instance=ExtResource("background")]
+[node name="Menu" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+[node name="Panel" type="PanelContainer" parent="Menu"]
+layout_mode = 2
+custom_minimum_size = Vector2(780, 0)
+theme_type_variation = &"ModalPanel"
+[node name="Margin" type="MarginContainer" parent="Menu/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_bottom = 28
+[node name="Rows" type="VBoxContainer" parent="Menu/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+[node name="Title" type="Label" parent="Menu/Panel/Margin/Rows"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "能力实验"
+horizontal_alignment = 1
+[node name="Explanation" type="Label" parent="Menu/Panel/Margin/Rows"]
+layout_mode = 2
+text = "自由配置双方阵容，查看羁绊与技能效果。
+实验战斗不影响征程进度。"
+horizontal_alignment = 1
+[node name="Prototype" type="Button" parent="Menu/Panel/Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+custom_minimum_size = Vector2(0, 48)
+text = "八羁绊 · 能力实验"
+[node name="Status" type="Label" parent="Menu/Panel/Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "正在校验保留技能……"
+horizontal_alignment = 1
+[node name="Skills" type="HBoxContainer" parent="Menu/Panel/Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 10
+[node name="Punch" type="Button" parent="Menu/Panel/Margin/Rows/Skills"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
+disabled = true
+text = "蓄意轰拳"
+[node name="Charge" type="Button" parent="Menu/Panel/Margin/Rows/Skills"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
+disabled = true
+text = "冲锋"
+[node name="Fire" type="Button" parent="Menu/Panel/Margin/Rows/Skills"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
+disabled = true
+text = "蝎子喷火"
+[node name="Swap" type="Button" parent="Menu/Panel/Margin/Rows/Skills"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 50)
+disabled = true
+text = "位置交换"
+[node name="Vfx" type="Button" parent="Menu/Panel/Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "特效预览室"
+[node name="Environment" type="Button" parent="Menu/Panel/Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "场景预览"
+[node name="BackToGame" type="Button" parent="Menu/Panel/Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "返回主菜单"
+
+[node name="Quit" type="Button" parent="Menu/Panel/Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "退出游戏"
+[node name="Battle" parent="." instance=ExtResource("battle")]
+visible = false
+layout_mode = 1
+
+[node name="PrototypePanel" parent="." instance=ExtResource("prototype")]
+visible = false

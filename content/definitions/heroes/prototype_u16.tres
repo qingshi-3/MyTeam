@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u16.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_032"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_063"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u16"
+DisplayName = "花灵"
+Description = "能力原型；外观为临时素材。花灵绽放：耗蓝后蓄势0.3秒，治疗4格内生命比例最低的受伤友军160%法强，可治疗自己；同生命比例按稳定身份排序。无受伤目标时保留法力、不施放，控制可打断蓄势。"
+IsHero = true
+Role = 3
+MaxHealth = 650
+AttackDamage = 34
+AttackRange = 3
+AttackDelivery = 1
+AttackCooldown = 1.5385
+Armor = 3
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 60
+StartingMana = 20
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

@@ -65,7 +65,8 @@ public sealed class BattleLabPresetStore
         foreach (var definition in catalog?.Presets ?? [])
         {
             if (definition is null || string.IsNullOrWhiteSpace(definition.DisplayName) ||
-                string.IsNullOrWhiteSpace(definition.PresetJson)) continue;
+                string.IsNullOrWhiteSpace(definition.PresetJson))
+                throw new InvalidOperationException("内置战斗实验室预设缺少名称或配置。");
             var preset = JsonSerializer.Deserialize<BattleLabPresetDto>(definition.PresetJson, _options);
             if (!ValidateShape(preset))
                 throw new InvalidOperationException($"内置战斗实验室预设无效：{definition.DisplayName}");
@@ -74,7 +75,10 @@ public sealed class BattleLabPresetStore
         }
         _builtIns = builtIns;
         DefaultPresetName = catalog?.DefaultPresetName ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(DefaultPresetName) || !_builtIns.ContainsKey(DefaultPresetName))
+        // An empty authored catalog still permits editing and saving a blank lab.
+        // A populated catalog must keep its explicit default valid.
+        if (_builtIns.Count == 0 && string.IsNullOrWhiteSpace(DefaultPresetName)) DefaultPresetName = string.Empty;
+        else if (string.IsNullOrWhiteSpace(DefaultPresetName) || !_builtIns.ContainsKey(DefaultPresetName))
             throw new InvalidOperationException("战斗实验室默认预设未配置或不存在。");
     }
 

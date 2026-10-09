@@ -68,9 +68,7 @@ public sealed class BattleLabContentIndex
             finally { root.Free(); }
         }
         _occupiableCells = occupiableCells.ToImmutable();
-        var encounterSets = package.Project.Campaign.Regions
-            .SelectMany(region => region.Encounters.Values)
-            .ToArray();
+        var encounterSets = package.Project.Campaign.Encounters.ToArray();
         var normalIds = encounterSets
             .Where(encounter => encounter.NodeType == TowerNodeType.Combat)
             .SelectMany(encounter => encounter.EnemyPool.ContentIds.Append(encounter.LeadEnemyId))

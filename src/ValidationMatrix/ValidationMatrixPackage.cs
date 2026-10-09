@@ -21,6 +21,8 @@ public static class ValidationMatrixPackage
     public const string ProjectPath="res://content/validation_matrix/matrix_project.tres";
     public static Task<GamePackagePublicationResult> CreateReadyAsync(Node treeOwner)
     {
+        if (!FileAccess.FileExists(ProjectPath))
+            throw new InvalidOperationException("旧单位矩阵已退役。本轮有效检查见 docs/testcases/content-reset.md。");
         var manifest=JsonSerializer.Deserialize<Dictionary<string,string[]>>(
             FileAccess.GetFileAsString("res://content/validation_matrix/manifest.json"))
             ??throw new InvalidOperationException("Matrix manifest is missing.");

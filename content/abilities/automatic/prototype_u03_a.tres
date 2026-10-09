@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ChargedLineAbilityOperationSpec.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="2"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+Range = 12
+Radius = 0.12
+ChargeTicks = 2
+AttackMultiplier = 0
+SpellPowerMultiplier = 1.5
+MaximumHits = 1
+ProjectileSpeed = 12
+HoldPosition = false
+
+[resource]
+script = ExtResource("2")
+StableId = "prototype_u03_a"
+DisplayName = "寒晶箭"
+Description = "短暂拉弓后射出直线箭，命中首名敌人造成150%法强伤害；眩晕0.6秒，命中时每格距离增加0.2秒，最多1.4秒。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 90
+CooldownTicks = 5
+Operations = [SubResource("s0")]

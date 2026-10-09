@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using TowerAutobattler.Content;
@@ -11,10 +12,20 @@ public static partial class GameProjectCompiler
     private static ImmutableDictionary<RunOfferKind, CompiledRunOffer> CompileRunOffers(
         CampaignDefinition authored, CompilationContext context)
     {
+        var recipes = CompileOfferRecipes(authored.RunOffers ?? [], context);
         var result = ImmutableDictionary.CreateBuilder<RunOfferKind, CompiledRunOffer>();
-        foreach (var offer in authored.RunOffers ?? [])
+        foreach (var offer in recipes.Values)
+            if (!result.TryAdd(offer.Kind, offer)) context.Report.Error($"Duplicate tower offer binding for {offer.Kind}.");
+        return result.ToImmutable();
+    }
+
+    private static ImmutableDictionary<string, CompiledRunOffer> CompileOfferRecipes(
+        System.Collections.Generic.IEnumerable<RunOfferDefinition> authoredOffers, CompilationContext context)
+    {
+        var result = ImmutableDictionary.CreateBuilder<string, CompiledRunOffer>(StringComparer.Ordinal);
+        foreach (var offer in authoredOffers.Distinct())
         {
-            if (offer is null) { context.Report.Error($"{Source(authored)}: null RunOffer."); continue; }
+            if (offer is null) { context.Report.Error("Run offers: null RunOffer."); continue; }
             var source = Source(offer);
             context.RegisterStableId(offer.StableId, offer);
             if (!Enum.IsDefined(offer.Kind) || !Enum.IsDefined(offer.PoolAction) || string.IsNullOrWhiteSpace(offer.DisplayName) ||
@@ -26,6 +37,12 @@ public static partial class GameProjectCompiler
                 pool = context.CompilePool(offer.Pool, offer.PoolAction == RunPoolAction.Recruit ? ContentPoolKind.Soldier : ContentPoolKind.Item, source);
                 if (offer.PoolChoiceCount <= 0) context.Report.Error($"{source}: PoolChoiceCount must be positive.");
             }
+            if (offer.PoolAction == RunPoolAction.PayGoldOrHealth && (offer.Kind != RunOfferKind.Event ||
+                pool is null || offer.PoolChoiceCount != 1 || offer.PoolGoldCost <= 0 || offer.PoolHealthCost <= 0 ||
+                pool.ContentIds.Any(id => context.Entry(id).Definition is not ItemDefinition { ProductKind: ItemProductKind.Relic })))
+                context.Report.Error($"{source}: shared reward requires an Event, one relic draw and positive gold/health costs.");
+            if (offer.PoolAction != RunPoolAction.PayGoldOrHealth && (offer.PoolGoldCost != 0 || offer.PoolHealthCost != 0))
+                context.Report.Error($"{source}: shared reward costs require PayGoldOrHealth.");
             var choices = ImmutableArray.CreateBuilder<CompiledRunChoice>();
             foreach (var choice in offer.Choices ?? [])
             {
@@ -57,20 +74,23 @@ public static partial class GameProjectCompiler
                     Operations(choice.Costs, true, "cost"), Operations(choice.Operations, false, "operation"), choice.SuccessChance,
                     Operations(choice.FailureOperations, false, "failure")));
             }
-            var poolChoices = pool is null ? [] : CompilePoolChoices(pool, offer.PoolAction, context);
-            if (choices.Count == 0 && poolChoices.Length == 0) context.Report.Error($"{source}: offer has no executable choices.");
+            var poolChoices = pool is null ? [] : CompilePoolChoices(pool, offer.PoolAction, context, offer.PoolGoldCost, offer.PoolHealthCost);
+            var emptyShop = offer.Kind == RunOfferKind.Shop && offer.AllowSkip &&
+                offer.PoolAction == RunPoolAction.BuyItem && pool is { Kind: ContentPoolKind.Item, ContentIds.IsEmpty: true };
+            if (choices.Count == 0 && poolChoices.Length == 0 && !emptyShop)
+                context.Report.Error($"{source}: offer has no executable choices.");
             if (choices.Select(choice => choice.StableId).Concat(poolChoices.Select(choice => choice.StableId)).Distinct().Count() != choices.Count + poolChoices.Length)
                 context.Report.Error($"{source}: duplicate choice identity.");
             var compiledOffer = new CompiledRunOffer(offer.StableId, offer.Kind, offer.DisplayName, offer.AllowSkip,
                 offer.Repeatable, pool, offer.PoolAction, offer.PoolChoiceCount, choices.ToImmutable()) { PoolChoices = poolChoices };
-            if (result.ContainsKey(offer.Kind)) context.Report.Error($"{source}: duplicate offer binding for {offer.Kind}.");
-            else result.Add(offer.Kind, compiledOffer);
+            if (!result.TryAdd(offer.StableId, compiledOffer)) context.Report.Error($"{source}: duplicate recipe id.");
         }
         return result.ToImmutable();
     }
 
-    private static ImmutableArray<CompiledRunChoice> CompilePoolChoices(CompiledContentPool pool, RunPoolAction action, CompilationContext context) =>
-        pool.ContentIds.Select(id =>
+    private static ImmutableArray<CompiledRunChoice> CompilePoolChoices(CompiledContentPool pool, RunPoolAction action, CompilationContext context,
+        int goldCost = 0, int healthCost = 0) =>
+        pool.ContentIds.SelectMany(id =>
         {
             var definition = context.Entry(id).Definition;
             var name = definition is UnitDefinition unit ? unit.DisplayName : ((ItemDefinition)definition).DisplayName;
@@ -78,8 +98,18 @@ public static partial class GameProjectCompiler
             var costs = action == RunPoolAction.BuyItem
                 ? ImmutableArray.Create(new CompiledRunOperation(RunOperationKind.SpendGold, ((ItemDefinition)definition).Price))
                 : ImmutableArray<CompiledRunOperation>.Empty;
-            return new CompiledRunChoice(id, name, description, [], costs,
+            if (action == RunPoolAction.PayGoldOrHealth)
+                return new[]
+                {
+                    new CompiledRunChoice(id + ":gold", name + "（金币领取）", description, [],
+                        [new CompiledRunOperation(RunOperationKind.SpendGold, goldCost)],
+                        [new CompiledRunOperation(RunOperationKind.GrantItem, 1, ContentId: id)], FailureOperations: [], ContentId: id),
+                    new CompiledRunChoice(id + ":health", name + "（生命领取）", description, [],
+                        [new CompiledRunOperation(RunOperationKind.SpendRunHealth, healthCost)],
+                        [new CompiledRunOperation(RunOperationKind.GrantItem, 1, ContentId: id)], FailureOperations: [], ContentId: id)
+                };
+            return new[] { new CompiledRunChoice(id, name, description, [], costs,
                 [new CompiledRunOperation(action == RunPoolAction.Recruit ? RunOperationKind.Recruit : RunOperationKind.GrantItem, 1, ContentId: id)],
-                FailureOperations: [], ContentId: id);
+                FailureOperations: [], ContentId: id) };
         }).ToImmutableArray();
 }

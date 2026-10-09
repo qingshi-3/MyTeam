@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_equipment_e07"
+DisplayName = "巨人腰带"
+Description = "基础最大生命提高250点，参与斗士与换形的生命加成。"
+Rarity = 0
+ProductKind = 1
+AllowRepeatAcquisition = true
+Price = 8
+Tags = Array[StringName]([&"item", &"equipment", &"v1"])

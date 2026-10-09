@@ -1,0 +1,27 @@
+[gd_resource type="Resource" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/GritPunchAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="operation"]
+script = ExtResource("operation")
+CounterKey = "grit"
+LowHealthRatio = 0.5
+CriticalHealthRatio = 0.2
+Range = 3
+Radius = 0.8
+ChargeTicks = 6
+RecoveryTicks = 4
+ShieldTicks = 30
+AttackRatio = 1
+GritDamageRatio = 0.8
+SuccessHealGritRatio = 0.2
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u07_ascended_a"
+DisplayName = "蓄怒重拳"
+Description = "成功释放重拳后按本次消耗怒劲的20%治疗自身；取消无治疗且不退还怒劲。怒劲满、生命跌破 50% 或低于 20% 时触发，濒死触发每战一次。消耗全部怒劲并获得等量的 3 秒护盾，蓄力后对前方 3 格、宽 1.6 格的敌人造成攻击力 100% 加怒劲 80% 的伤害。"
+ActivationKind = 1
+Trigger = 24
+ManaCost = 0
+CooldownTicks = 5
+Echoable = false
+Operations = [SubResource("operation")]

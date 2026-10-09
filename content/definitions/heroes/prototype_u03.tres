@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u03.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_002"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_020"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u03"
+DisplayName = "寒羽射手"
+Description = "能力原型；外观为临时素材。寒冰长箭：向射程内最远敌人发箭，命中直线上第一个敌人后停止，造成1.5P伤害，眩晕0.6＋实际飞行距离×0.2秒，上限1.4秒。技能箭不触发极地普攻判定。"
+IsHero = true
+Role = 2
+MaxHealth = 600
+AttackDamage = 58
+AttackRange = 4
+AttackDelivery = 1
+AttackCooldown = 1.25
+Armor = 3
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 90
+StartingMana = 30
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

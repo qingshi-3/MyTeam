@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_equipment_e02"
+DisplayName = "回响长矛"
+Description = "攻击力提高10点、起始法力提高15点。原始普攻额外回复5点法力（同名装备唯一），仍受锁蓝和法力上限约束。"
+Rarity = 0
+ProductKind = 1
+AllowRepeatAcquisition = true
+Price = 8
+Tags = Array[StringName]([&"item", &"equipment", &"v1"])

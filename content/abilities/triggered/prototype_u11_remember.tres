@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[sub_resource type="Resource" id="self"]
+script = ExtResource("target")
+Target = 0
+MaxTargets = 1
+[sub_resource type="Resource" id="key"]
+script = ExtResource("execution")
+Key = "ally_fixed_gains"
+[sub_resource type="Resource" id="entry"]
+script = ExtResource("operation")
+Kind = 39
+Targeting = SubResource("self")
+Execution = SubResource("key")
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u11_remember"
+DisplayName = "铭记"
+Description = "保留自己本场新收到的合格常驻友军固定攻血授予。"
+ActivationKind = 2
+Trigger = 25
+MaxUses = 1
+Operations = [SubResource("entry")]

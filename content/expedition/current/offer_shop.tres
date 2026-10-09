@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RunOfferDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/RunOfferDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/expedition/current/items.tres" id="pool"]
+
+
+[resource]
+script = ExtResource("script")
+StableId = "eight_trait_shop"
+Kind = 1
+DisplayName = "商店"
+AllowSkip = true
+Repeatable = true
+Pool = ExtResource("pool")
+PoolAction = 2
+PoolChoiceCount = 3

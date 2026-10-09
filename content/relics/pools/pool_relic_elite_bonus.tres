@@ -1,9 +1,0 @@
-[gd_resource type="Resource" format=3]
-
-[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="r0"]
-
-[resource]
-script = ExtResource("r0")
-StableId = "pool_relic_elite_bonus"
-Kind = 1
-ContentIds = PackedStringArray("item_rl11_crowbar", "item_rl15_scythe", "item_rl19_topaz")

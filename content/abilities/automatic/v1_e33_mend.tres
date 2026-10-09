@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="5"]
+
+[sub_resource type="Resource" id="wounded_ally"]
+script = ExtResource("1")
+Target = 29
+Range = 4
+
+[sub_resource type="Resource" id="windup"]
+script = ExtResource("2")
+DurationTicks = 3
+
+[sub_resource type="Resource" id="locked_target"]
+script = ExtResource("1")
+Target = 13
+Range = 30
+
+[sub_resource type="Resource" id="healing"]
+script = ExtResource("3")
+SpellPowerRatio = 1.5
+
+[sub_resource type="Resource" id="heal"]
+script = ExtResource("4")
+Kind = 1
+Targeting = SubResource("locked_target")
+Magnitude = SubResource("healing")
+
+[sub_resource type="Resource" id="cast"]
+script = ExtResource("4")
+Kind = 35
+Targeting = SubResource("wounded_ally")
+Execution = SubResource("windup")
+Effects = [SubResource("heal")]
+
+[resource]
+script = ExtResource("5")
+StableId = "v1_e33_mend"
+DisplayName = "野战救护"
+Description = "耗蓝后蓄势0.3秒，治疗4格内生命比例最低的受伤友军150%法强，可治疗自己；同生命比例按稳定身份排序。无受伤目标时保留法力、不施放，控制可打断蓄势。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 65
+CooldownTicks = 5
+AutomaticTarget = 1
+Operations = [SubResource("cast")]

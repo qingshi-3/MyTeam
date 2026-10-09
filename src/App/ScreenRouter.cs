@@ -42,10 +42,12 @@ public sealed class ScreenRouter
         Control target,
         RunView? run,
         ContentRegistry? content,
-        CompiledRunRules? rules)
+        CompiledRunRules? rules,
+        Control? retainedArtwork = null,
+        bool focus = true)
     {
         ArgumentNullException.ThrowIfNull(target);
-        foreach (var screen in _screens) screen.Visible = screen == target;
+        foreach (var screen in _screens) screen.Visible = screen == target || screen == retainedArtwork;
         Current = target;
         var showArmy = run is not null && content is not null && rules is not null &&
             _armyOverlayScreens.Contains(target);
@@ -61,6 +63,17 @@ public sealed class ScreenRouter
             _armyOverview.Bind(ArmyOverviewFactory.Build(run!, content!, rules!));
         target.OffsetTop = _authoredTopOffsets[target] + (showArmy || showRelics ? _armyOverview.HeaderReservedHeight : 0f);
         target.OffsetLeft = _authoredLeftOffsets[target] + (showRelics ? _armyOverview.TraitsReservedWidth : 0f);
+        if (focus) FocusCurrent();
+    }
+
+    public void FocusCurrent()
+    {
+        if (Current is not { } target || !target.IsVisibleInTree()) return;
+        if (target is ExpeditionScreenController expedition)
+        {
+            expedition.FocusParty();
+            return;
+        }
         foreach (var node in target.FindChildren("*", "Button", true, false))
             if (node is Button { Disabled: false } button && button.IsVisibleInTree())
             {

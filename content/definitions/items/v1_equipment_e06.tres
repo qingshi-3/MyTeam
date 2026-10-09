@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_equipment_e06"
+DisplayName = "处刑之刃"
+Description = "攻击力提高18点，暴击率提高10个百分点，暴击伤害倍率提高0.20。"
+Rarity = 0
+ProductKind = 1
+AllowRepeatAcquisition = true
+Price = 8
+Tags = Array[StringName]([&"item", &"equipment", &"v1"])

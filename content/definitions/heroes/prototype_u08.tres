@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u08.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_009"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_013"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u08"
+DisplayName = "裂地巨兽"
+Description = "能力原型；外观为临时素材。巨兽化：本战一次，0.6秒后跳向3格内最近敌人的合法邻位，落地对1.5格内敌人造成1.8P伤害并眩晕0.8秒；无落点时原地变形并按原地范围结算。之后本战射程1、攻击定值+30、防御+4，不再积蓝。碰撞半径不随外观突然扩张；生命强化只来自已激活换形师。"
+IsHero = true
+Role = 1
+MaxHealth = 950
+AttackDamage = 58
+AttackRange = 2
+AttackDelivery = 1
+AttackCooldown = 1.5385
+Armor = 6
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 100
+StartingMana = 30
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.45
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Godot;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Domain;
 using TowerAutobattler.Project;
@@ -18,6 +20,8 @@ public sealed class GameFlowCoordinator : IDisposable
     private readonly CompiledProjectPresentation _presentation;
     private readonly RunBattleFlow _runBattle;
     private readonly BattleLabFlow _battleLab;
+    private int _expeditionSelection = -1;
+    private int _expeditionKeyboardTarget = -1;
     private bool _connected;
 
     public GameFlowCoordinator(
@@ -56,6 +60,14 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.Tower.NodeSelected += SelectNode;
         _screens.Tower.OpponentSelected += SelectOpponent;
         _screens.Tower.AbandonRequested += AbandonRun;
+        _screens.Expedition.CellSelected += SelectExpeditionCell;
+        _screens.Expedition.MoveRequested += MoveExpedition;
+        _screens.Expedition.StepRequested += StepExpedition;
+        _screens.Expedition.InteractRequested += InteractExpedition;
+        _screens.Expedition.InspectRequested += InspectExpeditionSite;
+        _screens.Expedition.BossRequested += PreviewExpeditionBoss;
+        _screens.Expedition.ArmyRequested += _screens.OpenArmyOverview;
+        _screens.Expedition.MenuRequested += ShowMainMenu;
         _screens.Deployment.BackRequested += ShowTower;
         _screens.Deployment.StartRequested += StartBattle;
         _screens.Deployment.GrowthWorkbenchRequested += _screens.OpenGrowthWorkbench;
@@ -100,6 +112,14 @@ public sealed class GameFlowCoordinator : IDisposable
         _screens.Tower.NodeSelected -= SelectNode;
         _screens.Tower.OpponentSelected -= SelectOpponent;
         _screens.Tower.AbandonRequested -= AbandonRun;
+        _screens.Expedition.CellSelected -= SelectExpeditionCell;
+        _screens.Expedition.MoveRequested -= MoveExpedition;
+        _screens.Expedition.StepRequested -= StepExpedition;
+        _screens.Expedition.InteractRequested -= InteractExpedition;
+        _screens.Expedition.InspectRequested -= InspectExpeditionSite;
+        _screens.Expedition.BossRequested -= PreviewExpeditionBoss;
+        _screens.Expedition.ArmyRequested -= _screens.OpenArmyOverview;
+        _screens.Expedition.MenuRequested -= ShowMainMenu;
         _screens.Deployment.BackRequested -= ShowTower;
         _screens.Deployment.StartRequested -= StartBattle;
         _screens.Deployment.GrowthWorkbenchRequested -= _screens.OpenGrowthWorkbench;
@@ -141,6 +161,8 @@ public sealed class GameFlowCoordinator : IDisposable
             ShowResult("开局未能保存", "原征程已保留。无法写入新存档或备份旧档，请检查存档目录的访问权限和可用空间后重试。");
             return;
         }
+        _expeditionSelection = -1;
+        _expeditionKeyboardTarget = -1;
         ShowOpeningDraft();
     }
 
@@ -176,7 +198,8 @@ public sealed class GameFlowCoordinator : IDisposable
         {
             var victory = run.TerminalVictory;
             var summary = run.LastBattleConsequence is { } consequence ? RunHealthText.Consequence(consequence) : "终局记录已安全保存。";
-            if (App.ResumeTerminalCompletion()) ShowResult(victory ? "登塔成功" : "征程结束", summary);
+            var victoryTitle = App.IsExpedition ? "征程胜利" : "登塔成功";
+            if (App.ResumeTerminalCompletion()) ShowResult(victory ? victoryTitle : "征程结束", summary);
             else
             {
                 _screens.Reward.ShowTerminalFailure("终局记录尚未保存，原征程已保留；修复存储问题后可重试，不会重复发放胜利奖励。");
@@ -184,11 +207,140 @@ public sealed class GameFlowCoordinator : IDisposable
             }
             return;
         }
+        if (App.IsExpedition && App.ExpeditionBattleCommitted)
+        {
+            _runBattle.SetEncounter(App.CurrentEncounter());
+            _runBattle.StartBattle();
+            return;
+        }
         if (run.PendingOffer is not null) { ShowPendingOffer(); return; }
+        if (App.IsExpedition)
+        {
+            ShowExpedition();
+            if (run.Growth?.PendingDiscovery is not null) _screens.OpenGrowthWorkbench();
+            return;
+        }
         if (run.PendingNode) { OpenSelectedNode(); return; }
         _screens.Tower.Bind(App, _presentation.ChoiceCard, _presentation.SemanticIcons);
         Show(AppScreenId.Tower);
         if (run.Growth?.PendingDiscovery is not null) _screens.OpenGrowthWorkbench();
+    }
+
+    private void ShowExpedition()
+    {
+        _screens.Expedition.Bind(ExpeditionScreenPresenter.Build(App, _presentation.SemanticIcons, _expeditionSelection));
+        Show(AppScreenId.Expedition);
+    }
+
+    private void SelectExpeditionCell(int cellIndex)
+    {
+        _expeditionSelection = cellIndex;
+        _screens.Expedition.Bind(ExpeditionScreenPresenter.Build(App, _presentation.SemanticIcons, cellIndex));
+    }
+
+    private void MoveExpedition(int cellIndex)
+    {
+        var moved = App.MoveExpedition(cellIndex);
+        if (App.Expedition is { } map)
+        {
+            _expeditionSelection = map.PositionIndex;
+            _expeditionKeyboardTarget = map.PositionIndex;
+        }
+        ShowExpedition();
+        if (!moved) _screens.Expedition.ShowMessage("未能前往此处。请沿已知道路移动，或先处理挡路的守军；原位置已保留。");
+    }
+
+    private void StepExpedition(Vector2I direction)
+    {
+        if (Math.Abs(direction.X) + Math.Abs(direction.Y) != 1 || App.Expedition is not { } map) return;
+        if (App.ExpeditionInteractionLocked || map.RemainingActions <= 0)
+        {
+            _screens.Expedition.ShowMessage("当前不能探索，请先完成待处理事项或准备首领战。");
+            return;
+        }
+        var column = map.PositionIndex % map.Size + direction.X;
+        var row = map.PositionIndex / map.Size + direction.Y;
+        if (column < 0 || row < 0 || column >= map.Size || row >= map.Size)
+        {
+            _expeditionKeyboardTarget = map.PositionIndex;
+            _expeditionSelection = map.PositionIndex;
+            ShowExpedition();
+            _screens.Expedition.ShowMessage("已到达大陆边界，请换个方向。");
+            return;
+        }
+        var target = row * map.Size + column;
+        _expeditionKeyboardTarget = target;
+        _expeditionSelection = target;
+        if (App.CanMoveExpedition(target)) { MoveExpedition(target); return; }
+        ShowExpedition();
+        _screens.Expedition.ShowMessage(map.Cells[target].Walkable && map.Cells[target].Blocked
+            ? "前方守军挡路：按回车查看敌情，或换个方向绕行。"
+            : "前方地形无法通行，请换个方向。");
+    }
+
+    private void InteractExpedition()
+    {
+        if (App.Expedition is not { } map) return;
+        var target = _expeditionKeyboardTarget;
+        var adjacent = target >= 0 && target < map.Cells.Length &&
+            Math.Abs(target % map.Size - map.PositionIndex % map.Size) +
+            Math.Abs(target / map.Size - map.PositionIndex / map.Size) <= 1;
+        if (!adjacent || !map.Cells[target].Revealed || !App.CanInteractExpeditionSite(map.Cells[target].SiteId))
+            target = map.PositionIndex;
+        var cell = map.Cells[target];
+        if (cell.Revealed && !string.IsNullOrEmpty(cell.SiteId) && App.CanInteractExpeditionSite(cell.SiteId))
+        {
+            _expeditionSelection = target;
+            InspectExpeditionSite(cell.SiteId);
+        }
+        else _screens.Expedition.ShowMessage(map.RemainingActions <= 0
+            ? "本阶段行动已用尽，请整备军团并选择迎战首领。"
+            : "此处没有可交互的地点。走到地点上，或面向相邻守军，再按回车。");
+    }
+
+    private void InspectExpeditionSite(string siteId)
+    {
+        if (App.Run?.Growth?.PendingDiscovery is not null) { _screens.OpenGrowthWorkbench(); return; }
+        try
+        {
+            if (!App.InspectExpeditionSite(siteId))
+            {
+                ShowExpedition();
+                _screens.Expedition.ShowMessage("暂时无法处理此处。请靠近地点并检查剩余行动；原状态已保留。");
+                return;
+            }
+            // Keyboard interaction may address the party's site while the
+            // pointer inspects another cell. Present the accepted source before
+            // handing the page over; this does not change the interaction target.
+            if (App.Expedition is { } map)
+            {
+                var source = map.Cells.FirstOrDefault(cell => cell.SiteId == siteId);
+                if (source is not null) SelectExpeditionCell(source.Index);
+            }
+            if (App.PendingOffer is not null) { ShowPendingOffer(); return; }
+            _runBattle.SetEncounter(App.PreviewExpeditionEncounter(siteId));
+            ShowDeployment();
+        }
+        catch (Exception exception)
+        {
+            ShowExpedition();
+            _screens.Expedition.ShowMessage("无法打开地点详情：" + exception.Message);
+        }
+    }
+
+    private void PreviewExpeditionBoss()
+    {
+        if (App.Run?.Growth?.PendingDiscovery is not null) { _screens.OpenGrowthWorkbench(); return; }
+        try
+        {
+            _runBattle.SetEncounter(App.PreviewExpeditionBoss());
+            ShowDeployment();
+        }
+        catch (Exception exception)
+        {
+            ShowExpedition();
+            _screens.Expedition.ShowMessage("无法准备首领战：" + exception.Message);
+        }
     }
 
     private void SelectNode(TowerNodeType type)
@@ -244,6 +396,8 @@ public sealed class GameFlowCoordinator : IDisposable
         // Rebind the underlying page without dismissing the workbench/focus scope.
         _runBattle.RefreshDeployment();
         if (_screens.Tower.Visible) _screens.Tower.Bind(App, _presentation.ChoiceCard, _presentation.SemanticIcons);
+        if (_screens.Expedition.Visible)
+            _screens.Expedition.Bind(ExpeditionScreenPresenter.Build(App, _presentation.SemanticIcons, _expeditionSelection));
         _screens.BindEquipmentManagement(App);
     }
 
@@ -266,7 +420,24 @@ public sealed class GameFlowCoordinator : IDisposable
 
     private void ClaimRecruit(string stableId)
     {
-        ResolveRunChoice(stableId);
+        if (_screens.Recruitment.IsRecruitmentReceiptPlaying ||
+            App.PendingOffer is not { Kind: RunOfferKind.Recruitment } offer) return;
+        var application = App;
+        var result = application.ResolveOffer(offer.OfferId, stableId);
+        if (!result.Succeeded)
+        {
+            _feedback?.Invoke("ui_error");
+            _screens.Recruitment.ShowDecisionMessage(result.Message);
+            return;
+        }
+        // Persistence and roster ownership are settled before any animation.
+        // Closing/replacing this screen may discard the receipt, never the hero.
+        _screens.RefreshRunOverview(application);
+        _screens.Recruitment.PresentRecruitmentAccepted(stableId, application, () =>
+        {
+            if (_connected && ReferenceEquals(_application(), application) &&
+                _screens.Recruitment.IsVisibleInTree()) ShowTower();
+        });
     }
 
     private void ClaimItem(string stableId)
@@ -283,6 +454,7 @@ public sealed class GameFlowCoordinator : IDisposable
 
     private void SkipRecruitment()
     {
+        if (_screens.Recruitment.IsRecruitmentReceiptPlaying) return;
         SkipRunOffer();
     }
 

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="3"]
+
+[sub_resource type="Resource" id="SpellPowerMagnitude"]
+script = ExtResource("3")
+Value = 45.0
+
+[sub_resource type="Resource" id="SpellPowerModifier"]
+script = ExtResource("2")
+Attribute = 2
+Operation = 0
+Magnitude = SubResource("SpellPowerMagnitude")
+Priority = 0
+SlotId = "v1_equipment_e03_spell_power"
+
+[resource]
+script = ExtResource("1")
+StableId = "v1_equipment_e03"
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("SpellPowerModifier")])

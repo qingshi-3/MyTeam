@@ -46,14 +46,16 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
                 id => content.TryGet(id, out var entry) ? entry : throw new InvalidOperationException("Missing offer content: " + id))
             : project.Campaign;
 
-    private PendingRunOffer CreateOffer(ActiveRunDto run, CompiledRunOffer definition)
+    public PendingRunOffer CreateOffer(ActiveRunDto run, CompiledRunOffer definition,
+        string? frozenIdentity = null, ImmutableArray<int> recruitmentWeights = default, string? samplingIdentity = null)
     {
-        var identity = $"{run.Seed:x16}:{run.FloorIndex}:{run.BattleNumber}:{definition.StableId}";
+        var identity = frozenIdentity ?? $"{run.Seed:x16}:{run.FloorIndex}:{run.BattleNumber}:{definition.StableId}";
+        var samplingKey = samplingIdentity ?? identity;
         var selected = new HashSet<string>(StringComparer.Ordinal);
         var fixedChoices = definition.Choices
             .Where(choice => RunItemSupplyPolicy.CanOffer(run, choice, content) &&
                 RunRecruitmentPolicy.TrySelect(run, choice, selected)).ToImmutableArray();
-        var poolOrder = definition.PoolChoices.OrderBy(choice => StableRoll(identity + ":" + choice.StableId)).AsEnumerable();
+        var poolOrder = definition.PoolChoices.OrderBy(choice => StableRoll(samplingKey + ":" + choice.StableId)).AsEnumerable();
         if (definition.PoolAction == RunPoolAction.Recruit && project.Campaign.RecruitmentSupply is { } supply)
         {
             // Authored pool recipes each grant one hero. Use the operation identity,
@@ -63,16 +65,22 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
                 .Where(choice => !selected.Contains(choice.Operations[0].ContentId))
                 .GroupBy(choice => choice.Operations[0].ContentId, StringComparer.Ordinal)
                 .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
-            poolOrder = RecruitmentSupplySampler.Draw(supply, eligible.Keys, supply.WeightsAt(run.FloorIndex),
-                definition.PoolChoiceCount, identity).Select(id => eligible[id]);
+            poolOrder = RecruitmentSupplySampler.Draw(supply, eligible.Keys, recruitmentWeights.IsDefault ? supply.WeightsAt(run.FloorIndex) : recruitmentWeights,
+                definition.PoolChoiceCount, samplingKey).Select(id => eligible[id]);
         }
         var pooled = poolOrder
             .Where(choice => RunItemSupplyPolicy.CanOffer(run, choice, content) &&
                 RunRecruitmentPolicy.TrySelect(run, choice, selected))
             .Take(definition.PoolChoiceCount).ToImmutableArray();
+        if (definition.PoolAction == RunPoolAction.PayGoldOrHealth)
+            pooled = definition.PoolChoices.Where(choice => RunItemSupplyPolicy.CanOffer(run, choice, content))
+                .GroupBy(choice => choice.ContentId, StringComparer.Ordinal)
+                .OrderBy(group => StableRoll(samplingKey + ":" + group.Key)).ThenBy(group => group.Key, StringComparer.Ordinal)
+                .Take(1).SelectMany(group => group).ToImmutableArray();
         var choices = fixedChoices.AddRange(pooled);
         return new PendingRunOffer(identity, definition.Kind, definition.DisplayName, definition.AllowSkip || choices.IsEmpty, definition.Repeatable,
-            run.FloorIndex, run.BattleNumber, choices) { RewardCategory = definition.RewardCategory };
+            frozenIdentity is null ? run.FloorIndex : -1, frozenIdentity is null ? run.BattleNumber : 0, choices)
+            { RecipeId = definition.StableId, RewardCategory = definition.RewardCategory, SamplingKey = samplingIdentity ?? string.Empty };
     }
 
     public RunDecisionResult Resolve(ActiveRunDto? run, string offerId, string? choiceId)
@@ -82,31 +90,9 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
         if (!persistence.ValidateRun(run)) return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "当前征程状态无效，未作修改。");
         offer = RelicRules.PresentOffer(run, VisibleOffer(run, RunOfferDefaults.RefreshHealthChoices(offer, project.RunRules)));
         var working = persistence.CloneRun(run);
-        var chanceSucceeded = true;
-        if (choiceId is null)
-        {
-            if (!offer.AllowSkip) return RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "该选择不能跳过。");
-            RelicRules.SkipReward(working, offer);
-        }
-        else
-        {
-            var choice = offer.Choices.SingleOrDefault(candidate => candidate.StableId == choiceId);
-            if (choice is null) return RunDecisionResult.Reject(RunDecisionFailure.UnknownChoice, "此选项不属于当前机会。");
-            var eligibility = Check(working, choice);
-            if (!eligibility.Succeeded) return eligibility;
-            try
-            {
-                foreach (var cost in choice.Costs)
-                    if (!Apply(working, cost, true)) return RunDecisionResult.Reject(RunDecisionFailure.InsufficientResources, "无法支付全部代价，未作修改。");
-                if (offer.Kind == RunOfferKind.Shop && choice.Costs.Any(cost => cost.Kind == RunOperationKind.SpendGold && cost.Amount > 0))
-                    RelicRules.PaidShopPurchase(working);
-                chanceSucceeded = StableRoll(offer.OfferId + ":outcome:" + choice.StableId) / (double)uint.MaxValue < choice.SuccessChance;
-                if (choice.SuccessChance == 1) chanceSucceeded = true;
-                foreach (var operation in chanceSucceeded ? choice.Operations : choice.FailureOperations)
-                    if (!Apply(working, operation, false)) return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "当前无法完成全部效果，代价与收益均未提交。");
-            }
-            catch (OverflowException) { return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "数值超出支持范围，未作修改。"); }
-        }
+        var evaluation = Evaluator.ApplyChoice(working, offer, choiceId);
+        if (!evaluation.Succeeded) return evaluation;
+        var chanceSucceeded = evaluation.ChanceSucceeded;
         if (choiceId is null || !offer.Repeatable)
         {
             if (offer.Kind == RunOfferKind.CombatReward && !working.PendingRewardGroups.IsEmpty)
@@ -133,121 +119,15 @@ public sealed class RunDecisionService(ContentRegistry content, CompiledGameProj
             });
         }
         if (!persistence.ValidateRun(working)) return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "结果不符合征程规则，未作修改。");
-        var changes = Changes(run, working);
+        var changes = RunChoiceEvaluator.Changes(run, working);
         if (!persistence.TryPublish(working, run)) return RunDecisionResult.Reject(RunDecisionFailure.PersistenceFailed, "保存失败，机会、代价和原状态均已保留，请重试。");
         return new RunDecisionResult(true, RunDecisionFailure.None, chanceSucceeded ? "选择已完成。" : "冒险未成功，已结算该选项注明的结果。", chanceSucceeded) { Changes = changes };
     }
 
-    public RunDecisionResult Check(ActiveRunDto run, CompiledRunChoice choice)
-    {
-        if (!RunRecruitmentPolicy.CanOffer(run, choice))
-            return RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "普通招募不能取得同名英雄（包含后备）。");
-        if (!RunItemSupplyPolicy.CanOffer(run, choice, content))
-            return RunDecisionResult.Reject(RunDecisionFailure.NotEligible, "已拥有该唯一遗物，不能重复取得。");
-        foreach (var condition in choice.Conditions)
-        {
-            var satisfied = condition.Kind switch
-            {
-                RunConditionKind.GoldAtLeast => run.Gold >= condition.Amount,
-                RunConditionKind.RunHealthBelowMaximum => run.CurrentRunHealth < run.MaximumRunHealth,
-                RunConditionKind.RosterHealthAtLeast => run.Roster.All(hero => hero.HealthRatio >= condition.Ratio),
-                RunConditionKind.PopulationBelowCap => run.CurrentPopulation < RunPopulationPolicy.Evaluate(run, project.RunRules).EffectivePopulationCap,
-                RunConditionKind.StartingHeroIs => run.Roster.Count > 0 && run.Roster[0].ContentId == condition.ContentId,
-                RunConditionKind.HasContent => run.Roster.Count(hero => hero.ContentId == condition.ContentId) +
-                    run.Items.Where(item => item.ContentId == condition.ContentId).Sum(item => (long)item.Stacks) +
-                    run.EquipmentInventory.Count(item => item.ContentId == condition.ContentId) +
-                    run.Roster.SelectMany(hero => hero.Equipment).Count(item => item.ContentId == condition.ContentId) >= condition.Amount,
-                _ => false
-            };
-            if (!satisfied) return RunDecisionResult.Reject(RunDecisionFailure.NotEligible,
-                condition.Kind == RunConditionKind.RunHealthBelowMaximum ? "全局生命已满。" : "尚未满足此选项的条件。");
-        }
-        var preview = persistence.CloneRun(run);
-        try
-        {
-            foreach (var cost in choice.Costs)
-                if (!Apply(preview, cost, true)) return RunDecisionResult.Reject(RunDecisionFailure.InsufficientResources, "资源不足以支付此选项的全部代价。");
-        }
-        catch (OverflowException) { return RunDecisionResult.Reject(RunDecisionFailure.InvalidOperation, "代价超出支持范围。"); }
-        return new(true, RunDecisionFailure.None, "");
-    }
-
+    public RunDecisionResult Check(ActiveRunDto run, CompiledRunChoice choice) => Evaluator.Check(run, choice);
+    private RunChoiceEvaluator Evaluator => new(content, project, persistence,
+        new RunRewardEconomyService(content, project, persistence, null, growth));
     private PendingRunOffer VisibleOffer(ActiveRunDto run, PendingRunOffer offer) =>
         RunItemSupplyPolicy.VisibleOffer(run, RunRecruitmentPolicy.VisibleOffer(run, offer), content);
-
-    private bool Apply(ActiveRunDto run, CompiledRunOperation operation, bool isCost)
-    {
-        switch (operation.Kind)
-        {
-            case RunOperationKind.GainGold: RelicRules.GainGold(run, operation.Amount); return true;
-            case RunOperationKind.RecoverRunHealth:
-                run.CurrentRunHealth = RunHealthPolicy.Recover(run, operation.Amount); return true;
-            case RunOperationKind.SpendGold:
-                if (run.Gold < operation.Amount) return false;
-                run.Gold -= operation.Amount; return true;
-            case RunOperationKind.Recruit:
-            case RunOperationKind.GrantItem:
-                // These primitive helpers edit a detached projection through a sink
-                // that never writes; only Resolve's outer commit may publish it.
-                var detached = new DetachedSave(run);
-                var detachedPersistence = new RunProgressionPersistenceService(content, detached, project, growth?.Rules);
-                var detachedGrowth = new GrowthRunService(content, project, growth?.Rules, detachedPersistence);
-                var rewards = new RunRewardEconomyService(content, project, detachedPersistence, run, detachedGrowth);
-                for (var index = 0; index < operation.Amount; index++)
-                    if (!(operation.Kind == RunOperationKind.Recruit ? rewards.Recruit(run, operation.ContentId) : rewards.GrantItem(run, operation.ContentId))) return false;
-                return true;
-            case RunOperationKind.RecoverRoster:
-                var targets = run.Roster.Where((_, index) => operation.Target == RunRosterTarget.All ||
-                    operation.Target == RunRosterTarget.StartingHero && index == 0 || operation.Target == RunRosterTarget.OtherHeroes && index != 0).ToArray();
-                if (isCost && targets.Any(hero => hero.HealthRatio + operation.Ratio < operation.MinimumHealthRatio)) return false;
-                foreach (var hero in targets) hero.HealthRatio = Math.Clamp(hero.HealthRatio + operation.Ratio, operation.MinimumHealthRatio, 1);
-                return true;
-            case RunOperationKind.GrantPopulation:
-                var population = RunPopulationPolicy.Evaluate(run, project.RunRules);
-                if (run.CurrentPopulation > population.EffectivePopulationCap - operation.Amount) return false;
-                run.CurrentPopulation += operation.Amount; return true;
-            case RunOperationKind.IncreasePopulationCap:
-                if (run.PopulationCapSources.Any(source => source.SourceId == operation.SourceId)) return false;
-                var cap = RunPopulationPolicy.Evaluate(run, project.RunRules).EffectivePopulationCap;
-                if (operation.Amount > project.RunRules.PhysicalDeploymentCeiling - cap) return false;
-                run.PopulationCapSources.Add(new() { SourceId = operation.SourceId, Amount = operation.Amount }); return true;
-            default: return false;
-        }
-    }
-
     private static uint StableRoll(string key) => System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(SHA256.HashData(Encoding.UTF8.GetBytes(key)));
-
-    private static ImmutableArray<RunDecisionChange> Changes(ActiveRunDto before, ActiveRunDto after)
-    {
-        var result = ImmutableArray.CreateBuilder<RunDecisionChange>();
-        if (before.Gold != after.Gold) result.Add(new(RunChangeKind.Gold, "", "", before.Gold, after.Gold));
-        if (before.CurrentRunHealth != after.CurrentRunHealth)
-            result.Add(new(RunChangeKind.RunHealth, "", "", before.CurrentRunHealth, after.CurrentRunHealth));
-        if (before.CurrentPopulation != after.CurrentPopulation) result.Add(new(RunChangeKind.Population, "", "", before.CurrentPopulation, after.CurrentPopulation));
-        var oldCap = before.PopulationCapSources.Sum(source => (long)source.Amount);
-        var newCap = after.PopulationCapSources.Sum(source => (long)source.Amount);
-        if (oldCap != newCap) result.Add(new(RunChangeKind.PopulationCap, "", "", oldCap, newCap));
-        foreach (var hero in after.Roster)
-        {
-            var previous = before.Roster.SingleOrDefault(candidate => candidate.InstanceId == hero.InstanceId);
-            if (previous is null) result.Add(new(RunChangeKind.HeroAdded, hero.InstanceId, hero.ContentId, 0, 1));
-            else if (previous.HealthRatio != hero.HealthRatio) result.Add(new(RunChangeKind.HeroHealth, hero.InstanceId, hero.ContentId, previous.HealthRatio, hero.HealthRatio));
-        }
-        var oldIds = before.Items.Select(item => item.InstanceId).Concat(before.EquipmentInventory.Select(item => item.InstanceId))
-            .Concat(before.Roster.SelectMany(hero => hero.Equipment).Select(item => item.InstanceId)).ToHashSet(StringComparer.Ordinal);
-        foreach (var item in after.Items.Where(item => !oldIds.Contains(item.InstanceId))) result.Add(new(RunChangeKind.ItemAdded, item.InstanceId, item.ContentId, 0, item.Stacks));
-        foreach (var item in after.EquipmentInventory.Where(item => !oldIds.Contains(item.InstanceId))) result.Add(new(RunChangeKind.ItemAdded, item.InstanceId, item.ContentId, 0, 1));
-        return result.ToImmutable();
-    }
-
-    private sealed class DetachedSave(ActiveRunDto run) : IRunSaveService
-    {
-        public MetaProgressDto LoadMeta() => new();
-        public SettingsDto LoadSettings() => new();
-        public ActiveRunDto? LoadActiveRun() => run;
-        public bool SaveMeta(MetaProgressDto value) => true;
-        public bool SaveSettings(SettingsDto value) => true;
-        public bool SaveActiveRun(ActiveRunDto value) => true;
-        public void DeleteActiveRun() { }
-    }
 }

@@ -40,6 +40,11 @@ public sealed class RunRewardEconomyService
         RunItemSupplyPolicy.CanAcquire(run, itemId, _content) && TryNextInstanceSequence(run, out var sequence) &&
         AddItem(run, itemId, definition.ProductKind, sequence);
 
+    internal bool RecruitToProjection(ActiveRunDto run, string id) =>
+        run.OpeningRecruitment is null && _content.TryGet(id, out var entry) &&
+        entry.Definition is UnitDefinition { IsEnemy: false, IsTestDummy: false } &&
+        run.Roster.Count < run.CurrentPopulation + _rules.ReserveCapacity && AddRosterHero(run, id) is not null;
+
     public ActiveRunDto? CreateNewRun(string heroId, ulong seed, IReadOnlyCollection<string> unlockedHeroIds)
     {
         if (!unlockedHeroIds.Contains(heroId) || !_content.TryGet(heroId, out var heroEntry) ||
@@ -51,6 +56,7 @@ public sealed class RunRewardEconomyService
             Gold = _rules.StartingGold
         };
         ActiveRunFormationSchema.InitializeVersion4(run, _rules);
+        _persistence.InitHeader(run);
         var startingHero = AddRosterHero(run, heroId, "player-hero");
         if (startingHero is null) return null;
         Place(run, startingHero.InstanceId, BattlefieldLayout.Version2HeroCell);
@@ -83,6 +89,7 @@ public sealed class RunRewardEconomyService
         var run = new ActiveRunDto { Seed = seed == 0 ? 1UL : seed, Gold = _rules.StartingGold,
             CurrentPopulation = _rules.InitialPopulation };
         ActiveRunFormationSchema.InitializeVersion4(run, _rules);
+        _persistence.InitHeader(run);
         _growth?.InitializeRun(run);
         var candidates = RecruitmentSupplySampler.Draw(supply, _project.Campaign.RecruitmentPool.ContentIds,
             supply.OpeningTierWeights, CompiledRecruitmentSupply.OpeningCandidateCount, $"{run.Seed:x16}:opening");
@@ -101,7 +108,7 @@ public sealed class RunRewardEconomyService
         return _persistence.ValidateRun(working) && _persistence.TryPublish(working, run);
     }
 
-    public bool ConfirmOpening(ActiveRunDto? run)
+    public bool ConfirmOpening(ActiveRunDto? run, Func<ActiveRunDto, bool>? initializeProgression = null)
     {
         if (run?.OpeningRecruitment is not { SelectedIds.Length: CompiledRecruitmentSupply.OpeningSelectionCount } opening ||
             !_persistence.ValidateRun(run)) return false;
@@ -117,6 +124,7 @@ public sealed class RunRewardEconomyService
         working.SelectedNode = TowerNodeType.Combat;
         // Growth players inspect and choose their first opponent after drafting.
         working.PendingNode = working.Growth is null;
+        if (initializeProgression is not null && !initializeProgression(working)) return false;
         return _persistence.ValidateRun(working) && _persistence.TryPublish(working, run);
     }
 
@@ -257,13 +265,24 @@ public sealed class RunRewardEconomyService
         run.BattleNumber++;
         run.Gold = Math.Max(0, run.Gold - result.GoldSpent);
         var goldBeforeRewards = run.Gold;
-        run.Gold += encounter.IsBoss
+        var expeditionProfile = _project.Campaign.Progression is CompiledExpedition expedition &&
+            expedition.Encounters.TryGetValue(encounter.ExpeditionProfileId, out var authored) ? authored : null;
+        run.Gold = checked(run.Gold + (expeditionProfile?.Reward.Gold ?? (encounter.IsBoss
             ? _rules.BossBattleGold
-            : encounter.IsElite ? _rules.EliteBattleGold : _rules.NormalBattleGold;
+            : encounter.IsElite ? _rules.EliteBattleGold : _rules.NormalBattleGold)));
+        if (expeditionProfile is not null)
+        {
+            run.Gold = checked(run.Gold + expeditionProfile.Composition.RewardGold);
+            if (run.Growth is { } growth)
+            {
+                growth.Research = checked(growth.Research + expeditionProfile.Composition.RewardResearch);
+                growth.Materials = checked(growth.Materials + expeditionProfile.Composition.RewardMaterials);
+            }
+        }
         if (run.Roster.Count > 0 && _rules.StartingHeroEconomy.TryGetValue(run.Roster[0].ContentId, out var economy))
             run.Gold = checked(run.Gold + economy.BattleGoldBonus);
         run.Gold += relicGoldDelta;
-        if (run.Growth is not null && !string.IsNullOrEmpty(run.SelectedOpponentOptionId))
+        if (run.Expedition is null && run.Growth is not null && !string.IsNullOrEmpty(run.SelectedOpponentOptionId))
         {
             var option = new TowerGenerator(_project.Campaign).OpponentOptions(run, encounter.NodeType)
                 .Single(candidate => candidate.OptionId == run.SelectedOpponentOptionId);
@@ -313,6 +332,7 @@ public sealed class RunRewardEconomyService
             InstanceId = $"item-{sequence}",
             ContentId = itemId,
             Stacks = 1,
+            RunRuleStates = RunRelicRules.InitialRunRuleStates(run, definition),
             Counters = RelicRunScope.InitialRunCounters(definition)
                 .Select(counter => new RelicCounterStateDto
                 {

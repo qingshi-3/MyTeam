@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_equipment_e10"
+DisplayName = "饮血刃"
+Description = "攻击力提高10点；本人对敌人实际造成的生命伤害的12%治疗自身，范围伤害效率为三分之一（同类吸血唯一）。护盾吸收和过量伤害不计入。"
+Rarity = 0
+ProductKind = 1
+AllowRepeatAcquisition = true
+Price = 8
+Tags = Array[StringName]([&"item", &"equipment", &"v1"])

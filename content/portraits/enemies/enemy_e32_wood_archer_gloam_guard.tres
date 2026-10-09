@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="UnitPortraitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitPortraitDefinition.cs" id="script"]
+[ext_resource type="SpriteFrames" path="res://assets/donor-units/f1_ranged/frames.tres" id="frames"]
+[resource]
+script = ExtResource("script")
+StableId = "enemy_e32_wood_archer_gloam_guard"
+Frames = ExtResource("frames")
+AnimationName = &"idle"
+Zoom = 1.35

@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u13.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_270"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_013"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u13"
+DisplayName = "火翼幼龙"
+Description = "能力原型；外观为临时素材。向后换位1.5格，首次成功变为3格远程形态，自身攻击+25。向开场锁定的两名其他常驻伙伴各授予本场12攻击、120最大生命与120当前生命；亡者不补选，合格铭记者可在非终局胜利后保留。"
+IsHero = true
+Role = 1
+MaxHealth = 880
+AttackDamage = 50
+AttackRange = 0.35
+AttackDelivery = 0
+AttackCooldown = 1.4286
+Armor = 5
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 85
+StartingMana = 20
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

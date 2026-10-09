@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_equipment_e15"
+DisplayName = "净化护符"
+Description = "最大生命+120；本战首次硬控立即化解，随后3秒新受硬控时长减半（唯一）。缴械不消耗此效果。"
+Rarity = 0
+ProductKind = 1
+AllowRepeatAcquisition = true
+Price = 8
+Tags = Array[StringName]([&"item", &"equipment", &"v1"])

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RunOfferDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/RunOfferDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/expedition/current/heroes.tres" id="pool"]
+
+
+[resource]
+script = ExtResource("script")
+StableId = "exp_recruit_choice"
+Kind = 0
+DisplayName = "旅途伙伴"
+Pool = ExtResource("pool")
+PoolAction = 0
+PoolChoiceCount = 3

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ExpeditionSiteDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/ExpeditionSiteDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/expedition/current/offer_recruit.tres" id="offer"]
+
+
+
+[resource]
+script = ExtResource("script")
+StableId = "exp_site_recruit"
+DisplayName = "旅途伙伴"
+Kind = 2
+CountPerBiome = 2
+ActionCost = 1
+Offer = ExtResource("offer")

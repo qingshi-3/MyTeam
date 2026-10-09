@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u01.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_002"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_063"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u01"
+DisplayName = "冰脊盾卫"
+Description = "能力原型；外观为临时复用素材。锁定施放时敌人方向举盾4秒，前方120度原始普攻及合格追加伤害降低55%；不挡背后或直接技能。持盾停止移动与普攻，方向不追转。"
+IsHero = true
+Role = 0
+MaxHealth = 1000
+AttackDamage = 40
+AttackRange = 0.35
+AttackDelivery = 0
+AttackCooldown = 1.81818182
+Armor = 8
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 80
+StartingMana = 40
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

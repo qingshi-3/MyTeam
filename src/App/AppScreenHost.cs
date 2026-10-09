@@ -15,6 +15,7 @@ public enum AppScreenId
     MainMenu,
     HeroSelection,
     Tower,
+    Expedition,
     Deployment,
     Battle,
     BattleReport,
@@ -39,11 +40,15 @@ public partial class AppScreenHost : Control
     private ScreenRouter _router = null!;
     private ArmyOverviewController _armyOverview = null!;
     private Control _environment = null!;
+    private UiJourneyTransition _journey = null!;
+    public bool IsTransitioning => _journey is not null && _journey.IsPlaying
+        || Recruitment is not null && Recruitment.IsRecruitmentReceiptPlaying;
     public event Action? GrowthChanged;
 
     public MainMenuScreenController MainMenu { get; private set; } = null!;
     public HeroSelectScreen HeroSelection { get; private set; } = null!;
     public TowerScreenController Tower { get; private set; } = null!;
+    public ExpeditionScreenController Expedition { get; private set; } = null!;
     public DeploymentScreenController Deployment { get; private set; } = null!;
     public BattleScreenController Battle { get; private set; } = null!;
     public BattleReportScreen BattleReport { get; private set; } = null!;
@@ -61,6 +66,7 @@ public partial class AppScreenHost : Control
         MainMenu = GetNode<MainMenuScreenController>("MainMenuScreen");
         HeroSelection = GetNode<HeroSelectScreen>("HeroSelectScreen");
         Tower = GetNode<TowerScreenController>("TowerScreen");
+        Expedition = GetNode<ExpeditionScreenController>("ExpeditionScreen");
         Deployment = GetNode<DeploymentScreenController>("DeploymentScreen");
         Battle = GetNode<BattleScreenController>("BattleScreen");
         BattleReport = GetNode<BattleReportScreen>("BattleReportScreen");
@@ -75,6 +81,7 @@ public partial class AppScreenHost : Control
         _screens.Add(AppScreenId.MainMenu, MainMenu);
         _screens.Add(AppScreenId.HeroSelection, HeroSelection);
         _screens.Add(AppScreenId.Tower, Tower);
+        _screens.Add(AppScreenId.Expedition, Expedition);
         _screens.Add(AppScreenId.Deployment, Deployment);
         _screens.Add(AppScreenId.Battle, Battle);
         _screens.Add(AppScreenId.BattleReport, BattleReport);
@@ -89,18 +96,21 @@ public partial class AppScreenHost : Control
 
         var armyOverview = GetNode<ArmyOverviewController>(ArmyOverviewPath);
         _environment = GetNode<Control>(EnvironmentPath);
+        _journey = GetNode<UiJourneyTransition>("JourneyTransition");
         _armyOverview = armyOverview;
         _armyOverview.EquipmentChanged += RefreshEquipmentDisplay;
         _armyOverview.GrowthChanged += RefreshGrowthDisplay;
         _armyOverview.OpenChanged += Deployment.SetGlobalInspectionOpen;
+        _armyOverview.OpenChanged += Expedition.SetGlobalInspectionOpen;
+        Expedition.SetGlobalInspectionOpen(_armyOverview.IsOpen);
         Deployment.EquipmentOverlayChanged += _armyOverview.SetPageInspectionOpen;
         Deployment.LoadoutChanged += _armyOverview.RefreshTraits;
         armyOverview.BindModalFocusScope(this);
         _router = new ScreenRouter(
             _screens.Values.ToArray(),
-            [Tower, Deployment, Reward, Recruitment, Shop, Event, Rest],
+            [Tower, Expedition, Deployment, Reward, Recruitment, Shop, Event, Rest],
             armyOverview,
-            [Tower, Deployment, Reward, Recruitment, Shop, Event, Rest, Battle, BattleReport]);
+            [Tower, Expedition, Deployment, Reward, Recruitment, Shop, Event, Rest, Battle, BattleReport]);
     }
 
     public Control Screen(AppScreenId id) => _screens.TryGetValue(id, out var screen)
@@ -112,6 +122,7 @@ public partial class AppScreenHost : Control
         if (_armyOverview is not null) _armyOverview.EquipmentChanged -= RefreshEquipmentDisplay;
         if (_armyOverview is not null) _armyOverview.GrowthChanged -= RefreshGrowthDisplay;
         if (_armyOverview is not null) _armyOverview.OpenChanged -= Deployment.SetGlobalInspectionOpen;
+        if (_armyOverview is not null) _armyOverview.OpenChanged -= Expedition.SetGlobalInspectionOpen;
         if (Deployment is not null && _armyOverview is not null)
         {
             Deployment.EquipmentOverlayChanged -= _armyOverview.SetPageInspectionOpen;
@@ -120,9 +131,33 @@ public partial class AppScreenHost : Control
     }
 
     public void BindEquipmentManagement(RunApplication app) => _armyOverview.BindEquipmentManagement(app);
+    public void BindJourneySound(Action<string> play)
+    {
+        _journey.PlaySound = play;
+        Recruitment.PlaySound = play;
+    }
+
+    // The receipt shows an already saved acquisition. Refresh the persistent
+    // counters now, without rebinding/removing the source card or routing again.
+    public void RefreshRunOverview(RunApplication app)
+    {
+        BindEquipmentManagement(app);
+        if (app.Run is { } run)
+            _armyOverview.Bind(ArmyOverviewFactory.Build(run, app.Content, app.Rules));
+    }
+
+    public override void _Input(InputEvent input)
+    {
+        // This also covers the sibling global army button, outside the page's
+        // own blocker. The short receipt cannot trigger a second UI operation.
+        if (Recruitment is not null && Recruitment.IsRecruitmentReceiptPlaying &&
+            input is InputEventKey or InputEventMouse or InputEventJoypadButton or InputEventJoypadMotion)
+            GetViewport().SetInputAsHandled();
+    }
     private void RefreshEquipmentDisplay() => Deployment.RefreshEquipment();
     private void RefreshGrowthDisplay() => GrowthChanged?.Invoke();
     public void OpenGrowthWorkbench() => _armyOverview.OpenGrowthWorkbench();
+    public void OpenArmyOverview() => _armyOverview.OpenArmyOverview();
 
     public void Show(
         AppScreenId id,
@@ -130,9 +165,26 @@ public partial class AppScreenHost : Control
         ContentRegistry? content,
         CompiledRunRules? rules)
     {
-        _router.Show(Screen(id), run, content, rules);
+        _journey.Cancel();
+        var from = _router.Current;
+        var target = Screen(id);
+        var entry = target == Expedition && (from is null || from == MainMenu || from == HeroSelection);
+        if (entry) Expedition.PrepareForJourneyEntry();
+        var animate = from != target && (from is null && target == MainMenu
+            || from == MainMenu && (target == HeroSelection || target == Expedition)
+            || target == MainMenu && (from == HeroSelection || from == Expedition)
+            || from == HeroSelection && target == Expedition
+            || from == Expedition && IsMapVisit(target)
+            || target == Expedition && from is not null && IsMapVisit(from));
+        _router.Show(target, run, content, rules, animate ? from : null, !animate);
+        if (animate)
+            _journey.Begin(from, target, Expedition, _armyOverview,
+                from == HeroSelection && target == Expedition, _router.FocusCurrent);
         // The battle owns its paused/scaled scenery. Other screens use the
         // root's idle courtyard, avoiding two full-screen atmosphere draws.
         _environment.Visible = id != AppScreenId.Battle;
     }
+
+    private bool IsMapVisit(Control screen) => screen == Recruitment || screen == Reward || screen == Shop || screen == Event
+        || screen == Rest || screen == Deployment;
 }

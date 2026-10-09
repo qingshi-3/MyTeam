@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CampaignDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/CampaignDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/expedition/current/progression.tres" id="progression"]
+[ext_resource type="Resource" path="res://content/expedition/current/heroes.tres" id="heroes"]
+[ext_resource type="Resource" path="res://content/expedition/current/items.tres" id="items"]
+[ext_resource type="Resource" path="res://content/expedition/current/supply.tres" id="supply"]
+
+
+[resource]
+script = ExtResource("script")
+StableId = "eight_trait_campaign"
+Progression = ExtResource("progression")
+StarterPool = ExtResource("heroes")
+RecruitmentPool = ExtResource("heroes")
+ItemRewardPool = ExtResource("items")
+ShopPool = ExtResource("items")
+RecruitmentSupply = ExtResource("supply")
+SeparateItemRewardCategories = true

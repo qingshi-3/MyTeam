@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" format=3]
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="equipment"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="modifier"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="constant"]
+
+[sub_resource type="Resource" id="amount0"]
+script = ExtResource("constant")
+Value = 10.0
+
+[sub_resource type="Resource" id="mod0"]
+script = ExtResource("modifier")
+Attribute = 1
+Operation = 0
+Magnitude = SubResource("amount0")
+SlotId = "v1_e02_0"
+
+[sub_resource type="Resource" id="amount1"]
+script = ExtResource("constant")
+Value = 15.0
+
+[sub_resource type="Resource" id="mod1"]
+script = ExtResource("modifier")
+Attribute = 11
+Operation = 0
+Magnitude = SubResource("amount1")
+SlotId = "v1_e02_1"
+
+[sub_resource type="Resource" id="amount2"]
+script = ExtResource("constant")
+Value = 5.0
+
+[sub_resource type="Resource" id="mod2"]
+script = ExtResource("modifier")
+Attribute = 16
+Operation = 0
+Magnitude = SubResource("amount2")
+SlotId = "v1_e02_2"
+
+[resource]
+script = ExtResource("equipment")
+StableId = "v1_equipment_e02"
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("mod0"), SubResource("mod1")])
+UniqueAttributeModifiers = Array[AttributeModifierSpec]([SubResource("mod2")])

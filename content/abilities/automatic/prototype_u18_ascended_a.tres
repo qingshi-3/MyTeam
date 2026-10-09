@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/ConeBreathAbilityOperationSpec.cs" id="operation"]
+[sub_resource type="Resource" id="action"]
+script = ExtResource("operation")
+AfterglowDurationTicks = 15
+AfterglowIntervalTicks = 5
+AfterglowAttackMultiplier = 0.2
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u18_ascended_a"
+DisplayName = "炉喉吐息"
+Description = "锁定方向喷吐三段扇形火焰；成功完成第三脉冲后留下原扇区余焰1.5秒，每0.5秒造成释放时20%攻击力的持续伤害。控制可打断吐息；已释放余焰不随控制或死亡取消。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 90
+CooldownTicks = 40
+IntervalTicks = 0
+Operations = [SubResource("action")]

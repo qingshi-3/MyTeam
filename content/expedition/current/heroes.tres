@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="script"]
+
+
+[resource]
+script = ExtResource("script")
+StableId = "eight_trait_heroes"
+Kind = 0
+ContentIds = PackedStringArray("prototype_u01", "prototype_u02", "prototype_u03", "prototype_u04", "prototype_u05", "prototype_u06", "prototype_u07", "prototype_u08", "prototype_u11", "prototype_u13", "prototype_u14", "prototype_u16", "prototype_u17", "prototype_u18", "prototype_u19", "prototype_u20", "prototype_u21", "prototype_u22", "prototype_u25")

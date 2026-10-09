@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixReactionParameters.cs" id="2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="4"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="5"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="6"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+Target = 0
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+Event = 2
+SourceRelation = 1
+OncePerAction = true
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("1")
+Target = 13
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("3")
+Amount = 2
+Maximum = 14
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("4")
+DurationTicks = 6
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("5")
+Kind = 30
+Targeting = SubResource("s2")
+Magnitude = SubResource("s3")
+Execution = SubResource("s4")
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("5")
+Kind = 18
+Targeting = SubResource("s0")
+Reaction = SubResource("s1")
+Effects = [SubResource("s5")]
+
+[resource]
+script = ExtResource("6")
+StableId = "prototype_u03_hit"
+DisplayName = "寒晶箭命中"
+Description = "技能命中时执行控制或成长。"
+ActivationKind = 2
+Trigger = 25
+ManaCost = 0
+CooldownTicks = 5
+MaxUses = 1
+Operations = [SubResource("s6")]

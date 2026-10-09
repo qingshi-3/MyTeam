@@ -81,21 +81,27 @@ internal sealed class BattleLabFlow : IDisposable
     private void EnsureBattleLabSession()
     {
         if (_battleLabSession is not null) return;
-        _battleLabIndex = new BattleLabContentIndex(new CompiledGamePackage(
+        var index = new BattleLabContentIndex(new CompiledGamePackage(
             App.Content,
             App.Project,
             App.Content.PublicationVersion));
-        _battleLabPresets = new BattleLabPresetStore(_lab.PresetCatalog);
-        if (!_battleLabPresets.TryLoad(_battleLabPresets.DefaultPresetName, out var preset))
-            throw new InvalidOperationException("默认战斗实验室预设无法读取。");
-        var snapshot = BattleLabPresetStore.ToSnapshot(preset);
-        _battleLabSession = new BattleLabSession(
-            _battleLabIndex,
-            snapshot.CurrentPopulation,
-            snapshot.Seed,
-            snapshot.Mode,
-            snapshot.FloorRuleId);
-        _battleLabSession.Restore(snapshot);
+        var presets = new BattleLabPresetStore(_lab.PresetCatalog);
+        BattleLabSession session;
+        if (presets.BuiltIns.Count == 0)
+            session = new BattleLabSession(index, index.Rules.InitialPopulation);
+        else
+        {
+            if (!presets.TryLoad(presets.DefaultPresetName, out var preset))
+                throw new InvalidOperationException("默认战斗实验室预设无法读取。");
+            var snapshot = BattleLabPresetStore.ToSnapshot(preset);
+            session = new BattleLabSession(index, snapshot.CurrentPopulation,
+                snapshot.Seed, snapshot.Mode, snapshot.FloorRuleId);
+            session.Restore(snapshot);
+        }
+        // Publish the session only after the complete default has passed validation.
+        _battleLabIndex = index;
+        _battleLabPresets = presets;
+        _battleLabSession = session;
     }
 
     internal void StartBattleLabBattle()

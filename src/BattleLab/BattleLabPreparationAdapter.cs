@@ -72,7 +72,8 @@ public sealed class BattleLabPreparationAdapter
                 BattlePlacementValidation.ExactAll,
                 HeroRuleOverride: HeroRuleSnapshot.Neutral,
                 AdditionalBossTimelines: ResolveBossTimelines(snapshot),
-                MatrixStatusRules: _index.Package.Project.MatrixStatusRules);
+                MatrixStatusRules: _index.Package.Project.MatrixStatusRules,
+                CaptureDetailedStatistics: true);
             return BattlePreparationAssembler.Assemble(request);
         }
         finally { floorRoot.Free(); }
@@ -117,7 +118,7 @@ public sealed class BattleLabPreparationAdapter
     private ImmutableArray<BossTimelineSnapshot> ResolveBossTimelines(BattleLabStartSnapshot snapshot)
     {
         var bosses = snapshot.Units.Select(unit => unit.ContentId).ToHashSet(StringComparer.Ordinal);
-        var matches = _index.Package.Project.Campaign.Regions.SelectMany(region => region.Encounters.Values)
+        var matches = _index.Package.Project.Campaign.Encounters
             .Select(encounter => encounter.BossTimeline).Where(timeline => timeline is not null &&
                 bosses.Contains(timeline.BossContentId)).Select(timeline => timeline!)
             .DistinctBy(timeline => timeline.StableId).OrderBy(timeline => timeline.StableId, StringComparer.Ordinal).ToArray();

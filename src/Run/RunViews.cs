@@ -27,6 +27,13 @@ public sealed class RunView
     }
     internal static RunView For(ActiveRunDto source) => Views.GetValue(source, static value => new(value));
     public int Version => _source.Version;
+    public string RunId => _source.RunId;
+    public bool IsExpedition => _source.Expedition is not null;
+    public int? ExpeditionStageIndex => _source.Expedition?.StageIndex;
+    public int? ExpeditionRemainingActions => _source.Expedition?.RemainingActions;
+    public RunActionSource? CurrentActionSource => _source.Action?.Source;
+    public GrowthNodeSnapshotView? PendingGrowthSnapshot => GrowthRunService.GetPending(_source) is { } value
+        ? GrowthNodeSnapshotView.For(value) : null;
     public ulong Seed => _source.Seed;
     public int CurrentRunHealth => _source.CurrentRunHealth;
     public int MaximumRunHealth => _source.MaximumRunHealth;
@@ -46,7 +53,19 @@ public sealed class RunView
     public TowerNodeType SelectedNode => _source.SelectedNode;
     public string SelectedOpponentOptionId => _source.SelectedOpponentOptionId;
     public PendingRunOffer? PendingOffer => _source.PendingOffer;
-    public ImmutableArray<PendingRunOffer> PendingRewardGroups => _source.PendingRewardGroups;
+    public ImmutableArray<PendingRunOffer> PendingRewardGroups
+    {
+        get
+        {
+            if (_source.Expedition is null) return _source.PendingRewardGroups;
+            if (_source.Action is not { Phase: RunActionPhase.Rewards } action || action.RewardGroups.IsDefaultOrEmpty)
+                return [];
+            var next = action.RewardCursor + 1;
+            return next > 0 && next < action.RewardGroups.Length
+                ? action.RewardGroups.Slice(next, action.RewardGroups.Length - next)
+                : [];
+        }
+    }
     public string TerminalCompletionId => _source.TerminalCompletionId;
     public bool TerminalVictory => _source.TerminalVictory;
     public GrowthRunView? Growth => _source.Growth is { } value ? GrowthRunView.For(value) : null;
@@ -78,6 +97,7 @@ public sealed class RunItemView
     {
         _source = source;
         Counters = new(() => _source.Counters.Count, index => _source.Counters[index] is { } value ? RunRelicCounterView.For(value) : null!);
+        RunRuleStates = new(() => _source.RunRuleStates.Count, index => _source.RunRuleStates[index] is { } value ? RunRelicRunRuleView.For(value) : null!);
     }
     internal static RunItemView For(ItemInstanceDto source) => Views.GetValue(source, static value => new(value));
     public string InstanceId => _source.InstanceId;
@@ -86,6 +106,19 @@ public sealed class RunItemView
     public int Charges => _source.Charges;
     public int Roll => _source.Roll;
     public ReadOnlyListView<RunRelicCounterView> Counters { get; }
+    public ReadOnlyListView<RunRelicRunRuleView> RunRuleStates { get; }
+}
+
+public sealed class RunRelicRunRuleView
+{
+    private static readonly ConditionalWeakTable<RelicRunRuleStateDto, RunRelicRunRuleView> Views = new();
+    private readonly RelicRunRuleStateDto _source;
+    private RunRelicRunRuleView(RelicRunRuleStateDto source) => _source = source;
+    internal static RunRelicRunRuleView For(RelicRunRuleStateDto source) => Views.GetValue(source, static value => new(value));
+    public string RuleId => _source.RuleId;
+    public long GrantedAtSequence => _source.GrantedAtSequence;
+    public int Remainder => _source.Remainder;
+    public int ClearedSiteCount => _source.ClearedSites.Count;
 }
 
 public sealed class RunRelicCounterView
@@ -140,6 +173,7 @@ public sealed class HeroGrowthView
     }
     internal static HeroGrowthView For(HeroGrowthDto source) => Views.GetValue(source, static value => new(value));
     public float AddedAttack => _source.AddedAttack;
+    public int BreedingPoints => _source.BreedingPoints;
     public float AddedMaxHealth => _source.AddedMaxHealth;
     public string AscensionId => _source.AscensionId;
     public GrowthProductionMode ProductionMode => _source.ProductionMode;
@@ -156,6 +190,7 @@ public sealed class GrowthGainView
         _source = source;
     }
     internal static GrowthGainView For(GrowthGainDto source) => Views.GetValue(source, static value => new(value));
+    public RunActionSource? ActionSource => _source.ActionSource;
     public int FloorIndex => _source.FloorIndex;
     public int BattleNumber => _source.BattleNumber;
     public string ProducerInstanceId => _source.ProducerInstanceId;
@@ -164,6 +199,11 @@ public sealed class GrowthGainView
     public float Amount => _source.Amount;
     public string AbilityId => _source.AbilityId;
     public string Source => _source.Source;
+    public string OperationKey => _source.OperationKey;
+    public string RememberAbilityId => _source.RememberAbilityId;
+    public string RememberOperationKey => _source.RememberOperationKey;
+    public int GrantOrdinal => _source.GrantOrdinal;
+    public int GrantedTick => _source.GrantedTick;
 }
 
 public sealed class GrowthRunView
@@ -184,6 +224,7 @@ public sealed class GrowthRunView
     public string EquippedSpellId => _source.EquippedSpellId;
     public string SpellTargetInstanceId => _source.SpellTargetInstanceId;
     public GrowthDiscoveryView? PendingDiscovery => _source.PendingDiscovery is { } value ? GrowthDiscoveryView.For(value) : null;
+    // Tower compatibility slot. Cross-progression presentation uses RunView.PendingGrowthSnapshot.
     public GrowthNodeSnapshotView? PendingNode => _source.PendingNode is { } value ? GrowthNodeSnapshotView.For(value) : null;
     public int LastSettledFloorIndex => _source.LastSettledFloorIndex;
     public ReadOnlyListView<GrowthSettlementView> History { get; }
@@ -215,11 +256,14 @@ public sealed class GrowthNodeSnapshotView
         Assignments = new(() => _source.Assignments.Count, index => _source.Assignments[index] is { } value ? GrowthAssignmentView.For(value) : null!);
     }
     internal static GrowthNodeSnapshotView For(GrowthNodeSnapshotDto source) => Views.GetValue(source, static value => new(value));
+    public RunActionSource? ActionSource => _source.Source;
     public int FloorIndex => _source.FloorIndex;
     public int BattleNumber => _source.BattleNumber;
     public bool IsBattle => _source.IsBattle;
     public ReadOnlyListView<string> ParticipantInstanceIds { get; }
     public ReadOnlyListView<GrowthAssignmentView> Assignments { get; }
+    public GrowthBreedingSnapshotView? Breeding => _source.Breeding is { } value
+        ? new(value.ProducerInstanceId, value.Points) : null;
     public string ConsumedSpellId => _source.ConsumedSpellId;
     public string SpellTargetInstanceId => _source.SpellTargetInstanceId;
 }
@@ -248,12 +292,18 @@ public sealed class GrowthSettlementView
         Gains = new(() => _source.Gains.Count, index => _source.Gains[index] is { } value ? GrowthGainView.For(value) : null!);
     }
     internal static GrowthSettlementView For(GrowthSettlementDto source) => Views.GetValue(source, static value => new(value));
+    public RunActionSource? ActionSource => _source.Source;
     public int FloorIndex => _source.FloorIndex;
     public int BattleNumber => _source.BattleNumber;
     public bool IsBattle => _source.IsBattle;
     public ReadOnlyListView<GrowthGainView> Gains { get; }
     public int MaterialsGranted => _source.MaterialsGranted;
+    public GrowthBreedingGainView? Breeding => _source.Breeding is { } value
+        ? new(value.ProducerInstanceId, value.PreviousPoints, value.Amount) : null;
 }
+
+public sealed record GrowthBreedingSnapshotView(string ProducerInstanceId, int Points);
+public sealed record GrowthBreedingGainView(string ProducerInstanceId, int PreviousPoints, int Amount);
 
 internal static class RunReadDictionaries
 {

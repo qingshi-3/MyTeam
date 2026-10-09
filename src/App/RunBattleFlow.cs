@@ -27,6 +27,7 @@ internal sealed class RunBattleFlow : IDisposable
     private string _pendingSettlementMessage = string.Empty;
     private RunBattleResolution? _pendingBattleResolution;
     private bool _pendingFinalBoss;
+    private bool _pendingExpedition;
     private bool _battleResolutionCommitted;
     private bool _battleReportShown;
     private bool _battleReportContinued;
@@ -130,7 +131,10 @@ internal sealed class RunBattleFlow : IDisposable
         if (_battleResolutionCommitted || _encounter is null || _pendingBattleResult is not null) return;
         _pendingBattleResult = result;
         _pendingEncounterTitle = _encounter.Title;
-        _pendingFinalBoss = App.Run?.FloorIndex == App.Project.Campaign.TotalFloors - 1 && _encounter.IsBoss;
+        _pendingExpedition = App.IsExpedition;
+        _pendingFinalBoss = _encounter.IsBoss && (App.IsExpedition
+            ? App.IsFinalExpeditionStage
+            : App.Run?.FloorIndex == App.Project.Campaign.TotalFloors - 1);
         TryResolvePendingBattle();
     }
 
@@ -166,8 +170,10 @@ internal sealed class RunBattleFlow : IDisposable
         else if (_pendingFinalBoss)
         {
             _postBattleRoute = PostBattleRoute.Success;
-            _pendingResultTitle = "登塔成功";
-            _pendingResultSummary = "塔顶主宰已被击败。新的英雄与更高难度正在等待下一次征程。\n本局战斗摘要：" + _pendingBattleResult.Digest[..12];
+            _pendingResultTitle = _pendingExpedition ? "征程胜利" : "登塔成功";
+            _pendingResultSummary = (_pendingExpedition
+                ? "最终首领已被击败，军团完成了这次大陆征程。\n本局战斗摘要："
+                : "塔顶主宰已被击败。新的英雄与更高难度正在等待下一次征程。\n本局战斗摘要：") + _pendingBattleResult.Digest[..12];
         }
         else
             _postBattleRoute = PostBattleRoute.Reward;
@@ -205,6 +211,7 @@ internal sealed class RunBattleFlow : IDisposable
         _pendingEncounterTitle = string.Empty;
         _pendingSettlementMessage = string.Empty;
         _pendingFinalBoss = false;
+        _pendingExpedition = false;
         _battleResolutionCommitted = false;
         _battleReportShown = false;
         _battleReportContinued = false;

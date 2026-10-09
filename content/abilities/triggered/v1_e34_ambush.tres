@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+Target = 0
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+DurationTicks = 8
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("1")
+Target = 26
+Range = 20
+LandingSide = true
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("2")
+DurationTicks = 4
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("3")
+Kind = 20
+Targeting = SubResource("s2")
+Execution = SubResource("s3")
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("3")
+Kind = 35
+Targeting = SubResource("s0")
+Execution = SubResource("s1")
+Effects = [SubResource("s4")]
+
+[resource]
+script = ExtResource("4")
+StableId = "v1_e34_ambush"
+DisplayName = "后排突入"
+Description = "开场0.8秒后跃向敌人后排，每战一次；无合法落点时留在原地，不附带额外斩击。"
+ActivationKind = 2
+Trigger = 25
+ManaCost = 0
+CooldownTicks = 5
+MaxUses = 1
+Operations = [SubResource("s5")]

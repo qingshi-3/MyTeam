@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TowerAutobattler.Battle;
 using TowerAutobattler.Project;
-using TowerAutobattler.Relics;
 using TowerAutobattler.Growth;
 
 namespace TowerAutobattler.Run;
@@ -38,7 +37,7 @@ public sealed class RunNodeResolutionService
     private readonly CompiledGameProject _project;
     private readonly TowerGenerator _tower;
     private readonly RunProgressionPersistenceService _persistence;
-    private readonly RunBattlePreparationService _battlePreparation;
+    private readonly RunBattleResultProjector _battleResults;
     private readonly RunRewardEconomyService _rewards;
     private readonly RunDecisionService _decisions;
     private readonly GrowthRunService? _growth;
@@ -56,10 +55,11 @@ public sealed class RunNodeResolutionService
         _project = project ?? throw new ArgumentNullException(nameof(project));
         _tower = tower ?? throw new ArgumentNullException(nameof(tower));
         _persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
-        _battlePreparation = battlePreparation ?? throw new ArgumentNullException(nameof(battlePreparation));
+        ArgumentNullException.ThrowIfNull(battlePreparation);
         _rewards = rewards ?? throw new ArgumentNullException(nameof(rewards));
         _decisions = decisions;
         _growth = growth;
+        _battleResults = new RunBattleResultProjector(_project, battlePreparation, _rewards, growth);
     }
 
     public IReadOnlyList<TowerNodeOption> CurrentOptions(ActiveRunDto? run) =>
@@ -122,56 +122,12 @@ public sealed class RunNodeResolutionService
             return new RunBattleResolution(
                 false, false, active, result.Outcome, RunBattleResolutionFailure.Rejected);
 
-        var expectedReason = result.Outcome switch
-        {
-            BattleOutcome.PlayerVictory => RelicBattleCompletionReason.PlayerVictory,
-            BattleOutcome.PlayerDefeat => RelicBattleCompletionReason.PlayerDefeat,
-            BattleOutcome.Timeout => RelicBattleCompletionReason.Timeout,
-            _ => RelicBattleCompletionReason.None
-        };
-        var validation = _battlePreparation.ValidateTransition(active, transition, expectedReason);
-        if (!validation.Succeeded)
-            return new RunBattleResolution(
-                false, false, active, result.Outcome, RunBattleResolutionFailure.Rejected);
-
-        var working = _persistence.CloneRun(active);
-        var relicApply = _battlePreparation.ApplyTransition(working, transition, expectedReason);
-        if (!relicApply.Succeeded)
-            return new RunBattleResolution(
-                false, false, active, result.Outcome, RunBattleResolutionFailure.Rejected);
-        foreach (var projected in relicApply.ProjectedInstances)
-        {
-            var item = working.Items.First(instance => instance.InstanceId == projected.InstanceId);
-            item.Stacks = projected.Stacks;
-            item.Charges = projected.Charges;
-            item.Roll = projected.Roll;
-            item.Counters = projected.Counters.Select(counter => new RelicCounterStateDto
-            {
-                CounterId = counter.CounterId,
-                Value = counter.Value
-            }).ToList();
-        }
         var victory = result.Outcome == BattleOutcome.PlayerVictory;
-        if (victory)
-            _rewards.ApplyBattleVictory(working, result, encounter, relicApply.GoldDelta);
-        else
-        {
-            // A loss preserves the prepared formation. A fresh battle restores hero health;
-            // only the Run resource is spent, and no victory rewards are created.
-            foreach (var hero in working.Roster) hero.HealthRatio = 1f;
-            working.Gold -= result.GoldSpent;
-            working.BattleNumber = checked(working.BattleNumber + 1);
-            working.CurrentRunHealth = Math.Max(0, working.CurrentRunHealth -
-                RunHealthPolicy.DefeatLoss(_project.RunRules, encounter.NodeType));
-        }
-
-        var finalVictory = victory && working.FloorIndex == _project.Campaign.TotalFloors - 1 && encounter.IsBoss;
-        var ended = finalVictory || !victory && (encounter.IsBoss || working.CurrentRunHealth == 0);
-        working.LastBattleConsequence = new(result.Outcome, active.CurrentRunHealth, victory ? active.CurrentRunHealth : working.CurrentRunHealth,
-            working.MaximumRunHealth, encounter.IsBoss, ended);
-        if (!_rewards.RelicRules.SettleBattle(working, result, encounter, active.Gold, _rewards.GrantToProjection))
-            return new(false, false, active, result.Outcome, RunBattleResolutionFailure.Rejected);
-        if (_growth is not null && !_growth.ApplyBattlePermanentGains(working, result.PermanentGains, !ended))
+        var finalVictory = victory && active.FloorIndex == _project.Campaign.TotalFloors - 1 && encounter.IsBoss;
+        var ended = finalVictory || !victory && (encounter.IsBoss ||
+            active.CurrentRunHealth <= RunHealthPolicy.DefeatLoss(_project.RunRules, encounter.NodeType));
+        var working = _persistence.CloneRun(active);
+        if (!_battleResults.TryApply(active, working, result, encounter, ended, out _))
             return new(false, false, active, result.Outcome, RunBattleResolutionFailure.Rejected);
         if (ended)
         {
@@ -231,6 +187,7 @@ public sealed class RunNodeResolutionService
         identity.EncounterId == encounter.EncounterId &&
         identity.NodeType == encounter.NodeType &&
         identity.RunSeed == run.Seed &&
+        string.IsNullOrEmpty(identity.OriginKey) &&
         identity.FloorIndex == run.FloorIndex &&
         identity.BattleNumber == run.BattleNumber &&
         identity.CompositionId == encounter.CompositionId;

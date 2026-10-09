@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="TraitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitCountingPolicySpec.cs" id="1"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitMechanicSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitBreakpointSpec.cs" id="3"]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitDefinition.cs" id="4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+DuplicateContentPolicy = 1
+CountEquipment = false
+CountExplicitExtra = false
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+Kind = 16
+Amount = 0.2
+DurationTicks = 40
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("3")
+MinValue = 2
+MaxValue = 99
+DisplayStyle = "TraitActive"
+TargetPolicy = 1
+Mechanics = [SubResource("s1")]
+
+[resource]
+script = ExtResource("4")
+StableId = "prototype_063"
+DisplayName = "圣盾使"
+SemanticIconKey = "trait"
+CountingPolicy = SubResource("s0")
+Breakpoints = [SubResource("s2")]

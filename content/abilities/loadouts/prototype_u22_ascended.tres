@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="AbilityLoadoutDefinition" format=3]
+[ext_resource type="Resource" path="res://content/abilities/automatic/prototype_u22_ascended_a.tres" id="active"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityLoadoutDefinition.cs" id="loadout"]
+[ext_resource type="Resource" path="res://content/abilities/triggered/prototype_assassin_entry.tres" id="entry"]
+
+[resource]
+script = ExtResource("loadout")
+Abilities = [ExtResource("active"), ExtResource("entry")]

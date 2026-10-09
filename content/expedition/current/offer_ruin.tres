@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="RunOfferDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/RunOfferDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Project/RunChoiceDefinition.cs" id="choice"]
+[ext_resource type="Script" path="res://src/Project/RunOperationDefinition.cs" id="operation"]
+
+[sub_resource type="Resource" id="safe_operation"]
+script = ExtResource("operation")
+Kind = 0
+Amount = 6
+
+[sub_resource type="Resource" id="risky_operation"]
+script = ExtResource("operation")
+Kind = 0
+Amount = 18
+
+[sub_resource type="Resource" id="safe_choice"]
+script = ExtResource("choice")
+StableId = "exp_ruin_safe"
+DisplayName = "稳妥搜寻"
+Description = "获得 6 金币。"
+Operations = Array[Resource]([SubResource("safe_operation")])
+
+[sub_resource type="Resource" id="risky_choice"]
+script = ExtResource("choice")
+StableId = "exp_ruin_risky"
+DisplayName = "深入探险"
+Description = "65% 概率获得 18 金币；失败无收益。"
+SuccessChance = 0.65
+Operations = Array[Resource]([SubResource("risky_operation")])
+FailureOperations = Array[Resource]([])
+
+[resource]
+script = ExtResource("script")
+StableId = "exp_ruin"
+Kind = 3
+DisplayName = "遗迹探寻"
+AllowSkip = false
+Choices = Array[Resource]([SubResource("safe_choice"), SubResource("risky_choice")])

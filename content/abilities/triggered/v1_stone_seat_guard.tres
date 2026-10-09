@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/EnemySeatGuardSpec.cs" id="operation"]
+[sub_resource type="Resource" id="action"]
+script = ExtResource("operation")
+GuardCells = Array[Vector2i]([Vector2i(6, 0), Vector2i(6, 2), Vector2i(6, 4)])
+DamageMultiplier = 0.8
+[resource]
+script = ExtResource("ability")
+StableId = "v1_stone_seat_guard"
+DisplayName = "岩座守护"
+Description = "开场保护三个指定位置的常驻伙伴，使其所受伤害降低20%；守望者死亡时解除，移动不解除，复活与后生单位不补绑。"
+ActivationKind = 2
+Trigger = 25
+MaxUses = 1
+FirstTriggerTick = 0
+IntervalTicks = 0
+Operations = [SubResource("action")]

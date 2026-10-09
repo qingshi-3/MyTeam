@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ContentPoolDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="script"]
+
+
+[resource]
+script = ExtResource("script")
+StableId = "eight_trait_floors"
+Kind = 3
+ContentIds = PackedStringArray("rule_clear")

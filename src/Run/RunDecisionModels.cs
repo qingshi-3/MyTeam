@@ -24,6 +24,9 @@ public enum RunRewardCategory { None, Equipment, Relic }
 public sealed record PendingRunOffer(string OfferId, RunOfferKind Kind, string DisplayName,
     bool AllowSkip, bool Repeatable, int FloorIndex, int BattleNumber, ImmutableArray<CompiledRunChoice> Choices)
 {
+    public string RecipeId { get; init; } = string.Empty;
+    public RunActionSource? Source { get; init; }
+    public string SamplingKey { get; init; } = string.Empty;
     // None preserves a frozen legacy or explicitly authored opportunity as one group.
     public RunRewardCategory RewardCategory { get; init; }
 }

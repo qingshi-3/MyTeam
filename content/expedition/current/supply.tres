@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="RecruitmentSupplyDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/RecruitmentSupplyDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Project/RecruitmentTierDefinition.cs" id="tier"]
+
+[sub_resource type="Resource" id="tier1"]
+script = ExtResource("tier")
+HeroIds = PackedStringArray("prototype_u02", "prototype_u03", "prototype_u04", "prototype_u05", "prototype_u07", "prototype_u11", "prototype_u16", "prototype_u19")
+
+[sub_resource type="Resource" id="tier2"]
+script = ExtResource("tier")
+HeroIds = PackedStringArray("prototype_u01", "prototype_u06", "prototype_u08", "prototype_u13", "prototype_u14", "prototype_u17", "prototype_u18", "prototype_u20", "prototype_u21", "prototype_u22", "prototype_u25")
+
+[resource]
+script = ExtResource("script")
+Tiers = Array[Resource]([SubResource("tier1"), SubResource("tier2")])
+OpeningTierWeights = PackedInt32Array(100, 0)

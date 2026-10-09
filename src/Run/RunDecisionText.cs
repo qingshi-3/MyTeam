@@ -47,6 +47,8 @@ public static class RunDecisionText
         RunOperationKind.GainGold => $"获得 {operation.Amount} 金币",
         RunOperationKind.RecoverRunHealth => $"恢复 {operation.Amount} 全局生命（不超过上限）",
         RunOperationKind.SpendGold => $"支付 {operation.Amount} 金币",
+        RunOperationKind.SpendRunHealth => $"支付 {operation.Amount} 全局生命（支付后至少保留 1）",
+        RunOperationKind.RevealSites => $"揭示最近 {operation.Amount} 处未知地点（可预览详情，不移动或清除守军）",
         RunOperationKind.GrantItem => $"获得 {contentName(operation.ContentId)} × {operation.Amount}",
         RunOperationKind.Recruit => $"{contentName(operation.ContentId)} × {operation.Amount} 加入队伍",
         RunOperationKind.RecoverRoster => Health(operation, cost),

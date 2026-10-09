@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="RunOfferDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/RunOfferDefinition.cs" id="offer"]
+[ext_resource type="Script" path="res://src/Project/RunChoiceDefinition.cs" id="choice"]
+[ext_resource type="Script" path="res://src/Project/RunOperationDefinition.cs" id="operation"]
+[ext_resource type="Resource" path="res://content/expedition/current/v1_pools/relic_general.tres" id="pool"]
+
+[sub_resource type="Resource" id="effect"]
+script = ExtResource("operation")
+Kind = 0
+Amount = 4
+
+[sub_resource type="Resource" id="choice"]
+script = ExtResource("choice")
+StableId = "v1_event_v06_alternative"
+DisplayName = "领取 4 金币离开"
+Operations = Array[Resource]([SubResource("effect")])
+
+[resource]
+script = ExtResource("offer")
+StableId = "v1_event_v06"
+Kind = 3
+DisplayName = "守护祭坛"
+AllowSkip = false
+Pool = ExtResource("pool")
+PoolAction = 3
+PoolChoiceCount = 1
+PoolGoldCost = 8
+PoolHealthCost = 10
+Choices = Array[Resource]([SubResource("choice")])
+

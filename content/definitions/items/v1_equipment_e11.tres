@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/Content/ItemDefinition.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Id = "v1_equipment_e11"
+DisplayName = "破甲弩"
+Description = "攻击速度提高10%；普通及合格追加攻击命中时，使目标护甲降低20%，持续4秒。同名装备的破甲效果唯一，同类效果刷新持续时间且不叠加。"
+Rarity = 0
+ProductKind = 1
+AllowRepeatAcquisition = true
+Price = 8
+Tags = Array[StringName]([&"item", &"equipment", &"v1"])

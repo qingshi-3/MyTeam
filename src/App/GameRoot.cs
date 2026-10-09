@@ -25,6 +25,7 @@ public partial class GameRoot : Control
     private UiFeedbackBinding? _uiFeedback;
     private UiMotionBinding? _uiMotion;
     private bool _bootstrapping;
+    private ContentRebuildRoot? _abilityPrototype;
 
     public ContentRegistry? Content => _app?.Content;
     internal GameFlowCoordinator Flow => _flow ??
@@ -37,6 +38,7 @@ public partial class GameRoot : Control
     {
         _screens = GetNode<AppScreenHost>(ScreenHostPath);
         var audio = GetNode<FeedbackAudio>("UiAudio");
+        _screens.BindJourneySound(audio.RequestUi);
         _uiFeedback = new UiFeedbackBinding(this, audio, _screens.MainMenu);
         _uiMotion = new UiMotionBinding(this, () => _app?.Settings.ReduceUiMotion ?? false);
         await BootstrapAsync();
@@ -65,13 +67,14 @@ public partial class GameRoot : Control
             var registry = package.Content;
             var project = package.Project;
             SemanticIcons.Configure(project.Presentation.SemanticIcons);
-            _app = new RunApplication(registry, new SaveService(SaveNamespace), project, growthRules: package.GrowthRules);
+            _app = new RunApplication(package, new SaveService(SaveNamespace), SaveNamespace);
             var audio = GetNode<FeedbackAudio>("UiAudio");
             _flow = new GameFlowCoordinator(() => _app, _screens, project.Presentation, Quit, audio.RequestUi);
             _flow.Start();
             _screens.MainMenu.ExperienceSliceRequested += OpenExperienceSlice;
             _screens.MainMenu.VfxPreviewRequested += OpenVfx;
             _screens.MainMenu.EnvironmentPreviewRequested += OpenEnvironment;
+            _screens.MainMenu.AbilityPrototypeRequested += OpenAbilityPrototype;
             _screens.MainMenu.GrowthJourneyRequested += OpenGrowthJourney;
             _screens.MainMenu.BindJourney(_app.GrowthRules is not null);
             _screens.Visible = true;
@@ -89,6 +92,8 @@ public partial class GameRoot : Control
 
     public override void _ExitTree()
     {
+        if (_abilityPrototype is not null)
+            _abilityPrototype.ReturnRequested -= CloseAbilityPrototype;
         _uiMotion?.Dispose();
         _uiMotion = null;
         _uiFeedback?.Dispose();
@@ -104,6 +109,7 @@ public partial class GameRoot : Control
             _screens.MainMenu.ExperienceSliceRequested -= OpenExperienceSlice;
             _screens.MainMenu.VfxPreviewRequested -= OpenVfx;
             _screens.MainMenu.EnvironmentPreviewRequested -= OpenEnvironment;
+            _screens.MainMenu.AbilityPrototypeRequested -= OpenAbilityPrototype;
             _screens.MainMenu.GrowthJourneyRequested -= OpenGrowthJourney;
             _screens.Result.NewRunRequested -= RetryBootstrap;
             _screens.Result.MenuRequested -= Quit;
@@ -115,6 +121,23 @@ public partial class GameRoot : Control
     private void OpenExperienceSlice() => GetTree().ChangeSceneToFile("res://scenes/app/ExperienceSlice.tscn");
     private void OpenVfx() => GetTree().ChangeSceneToFile("res://scenes/app/VfxPreview.tscn");
     private void OpenEnvironment() => GetTree().ChangeSceneToFile("res://scenes/app/EnvironmentPreview.tscn");
+    private void OpenAbilityPrototype()
+    {
+        if (_abilityPrototype is not null) return;
+        _abilityPrototype = GD.Load<PackedScene>("res://scenes/app/ContentRebuildRoot.tscn").Instantiate<ContentRebuildRoot>();
+        _abilityPrototype.ReturnRequested += CloseAbilityPrototype;
+        _screens.Hide();
+        AddChild(_abilityPrototype);
+    }
+
+    private void CloseAbilityPrototype()
+    {
+        if (_abilityPrototype is null) return;
+        _abilityPrototype.ReturnRequested -= CloseAbilityPrototype;
+        _abilityPrototype.QueueFree();
+        _abilityPrototype = null;
+        _screens.Show();
+    }
     private void OpenGrowthJourney() => GetTree().ChangeSceneToFile(_app?.GrowthRules is null
         ? "res://scenes/app/GrowthGameRoot.tscn" : "res://scenes/app/GameRoot.tscn");
 

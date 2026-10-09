@@ -16,6 +16,7 @@ public static partial class GameProjectCompiler
         if (authored.OpponentChoiceCount is < 0 or > 3 ||
             authored.OpponentChoiceCount > 0 && authored.NodeType is not (TowerNodeType.Combat or TowerNodeType.Elite))
             context.Report.Error($"{source}: opponent choices allow 1–3 ordinary/elite formations; bosses remain mandatory.");
+        if (floorsPerRegion > 0)
         foreach (var curve in new[] { authored.LocalHealthMultipliers, authored.LocalDamageMultipliers })
             if (curve is null || (curve.Length != 0 && curve.Length != floorsPerRegion) ||
                 curve.Any(value => !float.IsFinite(value) || value <= 0 || value > 10))
@@ -30,8 +31,8 @@ public static partial class GameProjectCompiler
             if (composition is null) { context.Report.Error($"{source}: null encounter composition."); continue; }
             context.RegisterStableId(composition.StableId, composition);
             if (!ids.Add(composition.StableId) || string.IsNullOrWhiteSpace(composition.DisplayName) ||
-                composition.MinLocalFloor < 0 || composition.MaxLocalFloor >= floorsPerRegion ||
-                composition.MaxLocalFloor < composition.MinLocalFloor)
+                floorsPerRegion > 0 && (composition.MinLocalFloor < 0 || composition.MaxLocalFloor >= floorsPerRegion ||
+                composition.MaxLocalFloor < composition.MinLocalFloor))
                 context.Report.Error($"{source}: composition requires unique identity, display name and a valid local floor range.");
             var enemies = composition.EnemyIds ?? [];
             if (composition.RewardGold is < 0 or > 100 || composition.RewardResearch is < 0 or > 100 ||
@@ -41,8 +42,10 @@ public static partial class GameProjectCompiler
                 composition.OpponentChoiceOnly && authored.OpponentChoiceCount == 0)
                 context.Report.Error($"{source}: selectable formation requires a pressure summary and bounded nonnegative victory rewards.");
             var cells = composition.Cells?.ToArray() ?? [];
+            // Author anchors can occupy the enemy half. The Run preparation
+            // adapter validates complete body footprints on the selected terrain.
             if (enemies.Length is < 1 or > 8 || cells.Length != enemies.Length || cells.Distinct().Count() != cells.Length ||
-                cells.Any(cell => !BattlefieldLayout.IsInBounds(cell) || cell.X < BattlefieldLayout.Width - BattlefieldLayout.PlayerDeploymentColumns))
+                cells.Any(cell => !BattlefieldLayout.IsInBounds(cell) || cell.X < BattlefieldLayout.Width / 2))
                 context.Report.Error($"{source}: composition must place 1–8 enemies at distinct enemy-side cells.");
             foreach (var enemy in enemies)
             {

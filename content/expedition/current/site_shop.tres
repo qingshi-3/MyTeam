@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ExpeditionSiteDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/ExpeditionSiteDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/expedition/current/offer_shop.tres" id="offer"]
+
+
+
+[resource]
+script = ExtResource("script")
+StableId = "exp_site_shop"
+DisplayName = "旅途商店"
+Kind = 3
+CountPerBiome = 1
+ActionCost = 1
+Offer = ExtResource("offer")

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/portraits/enemies/enemy_e34_ambush_scout_gloam_guard.tres" id="portrait"]
+[resource]
+script = ExtResource("script")
+Id = "enemy_e34_ambush_scout_gloam_guard"
+DisplayName = "幽暮潜袭斥候"
+Description = "首版敌人；行为与参数独立配置，外观复用已有素材。"
+Portrait = ExtResource("portrait")
+Role = 4
+Faction = 7
+IsHero = false
+IsEnemy = true
+RecruitCost = 0
+MaxHealth = 620
+AttackDamage = 43.4
+Armor = 3
+AttackCooldown = 1.17647059
+AttackRange = 0.35
+AttackDelivery = 0
+BodyRadius = 0.32
+MoveInterval = 0.45
+SpellPower = 100
+CriticalChance = 0
+MaxMana = 0
+StartingMana = 0
+ManaPerSecond = 0
+ManaPerAttack = 0
+ManaPerDamageRatio = 0
+ManaPerHitCap = 0
+Tags = Array[StringName]([&"enemy"])

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Immutable;
 using Godot;
 using TowerAutobattler.Battle;
@@ -82,15 +83,27 @@ public sealed record CompiledTowerRegion(
 
 public sealed record CompiledCampaign(
     string StableId,
-    int FloorsPerRegion,
-    ImmutableArray<CompiledTowerRegion> Regions,
-    CompiledTowerNodeTable NodeTable,
+    CompiledProgression Progression,
     CompiledContentPool StarterPool,
     CompiledContentPool RecruitmentPool,
     CompiledContentPool ItemRewardPool,
     CompiledContentPool ShopPool)
 {
-    public int TotalFloors => FloorsPerRegion * Regions.Length;
+    public CompiledCampaign(string stableId, int floorsPerRegion, ImmutableArray<CompiledTowerRegion> regions,
+        CompiledTowerNodeTable nodeTable, CompiledContentPool starterPool, CompiledContentPool recruitmentPool,
+        CompiledContentPool itemRewardPool, CompiledContentPool shopPool)
+        : this(stableId, new CompiledTowerProgression(floorsPerRegion, regions, nodeTable), starterPool,
+            recruitmentPool, itemRewardPool, shopPool) { }
+    public CompiledTowerProgression Tower => Progression as CompiledTowerProgression
+        ?? throw new System.InvalidOperationException("Tower rules requested for an expedition.");
+    public int FloorsPerRegion { get => Tower.FloorsPerRegion; init => Progression = Tower with { FloorsPerRegion = value }; }
+    public ImmutableArray<CompiledTowerRegion> Regions { get => Tower.Regions; init => Progression = Tower with { Regions = value }; }
+    public CompiledTowerNodeTable NodeTable { get => Tower.NodeTable; init => Progression = Tower with { NodeTable = value }; }
+    public int TotalFloors => Tower.FloorsPerRegion * Tower.Regions.Length;
+    public ImmutableDictionary<string, CompiledRunOffer> OfferRecipesById { get; init; } = ImmutableDictionary<string, CompiledRunOffer>.Empty;
+    public System.Collections.Generic.IEnumerable<CompiledEncounter> Encounters => Progression is CompiledExpedition expedition
+        ? expedition.Encounters.Values.Select(value => value.Encounter).DistinctBy(value => value.StableId)
+        : Tower.Regions.SelectMany(region => region.Encounters.Values);
     public CompiledRecruitmentSupply? RecruitmentSupply { get; init; }
     public bool SeparateItemRewardCategories { get; init; }
     public ImmutableDictionary<RunOfferKind, CompiledRunOffer> RunOffers { get; init; } = ImmutableDictionary<RunOfferKind, CompiledRunOffer>.Empty;

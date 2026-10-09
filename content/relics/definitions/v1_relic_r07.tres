@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RelicDefinition" format=3]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicDefinition.cs" id="relic"]
+[ext_resource type="Script" path="res://src/Relics/Authoring/RelicCombatRuleSpec.cs" id="rule"]
+[sub_resource type="Resource" id="combat"]
+script = ExtResource("rule")
+RuleId = "r07_combat"
+Kind = 1
+Amount = 0.15
+Threshold = 1.5
+Tick = 0
+[resource]
+script = ExtResource("relic")
+StableId = "v1_relic_r07"
+CombatRules = Array[RelicCombatRuleSpec]([SubResource("combat")])

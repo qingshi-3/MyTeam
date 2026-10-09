@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="GameProjectDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/GameProjectDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/catalogs/skill_samples.tres" id="catalog"]
+[ext_resource type="Resource" path="res://content/expedition/current/campaign.tres" id="campaign"]
+[ext_resource type="Resource" path="res://content/expedition/current/run_rules.tres" id="rules"]
+[ext_resource type="Resource" path="res://content/ui/project_presentation.tres" id="presentation"]
+[ext_resource type="Resource" path="res://content/expedition/current/matrix.tres" id="matrix"]
+
+
+[resource]
+script = ExtResource("script")
+StableId = "eight_trait_journey_v1"
+Content = ExtResource("catalog")
+Campaign = ExtResource("campaign")
+RunRules = ExtResource("rules")
+Presentation = ExtResource("presentation")
+MatrixStatusRules = ExtResource("matrix")

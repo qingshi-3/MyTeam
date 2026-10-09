@@ -37,6 +37,11 @@ public sealed class RunBattlePreparationService
         ArgumentNullException.ThrowIfNull(encounter);
         if (run.Roster.Count == 0) throw new InvalidOperationException("Player roster is empty.");
         var compiledEncounter = ResolveEncounter(encounter);
+        var expeditionProfile = ResolveExpeditionProfile(encounter);
+        if (expeditionProfile is not null && run.Action is { Phase: RunActionPhase.Battle } action &&
+            (action.Source.LegacyFloorIndex is not null || string.IsNullOrWhiteSpace(action.Source.ActionId) ||
+             action.Encounter is not { } frozen || !SameExpeditionPlan(frozen, encounter)))
+            throw new InvalidOperationException("Committed expedition battle cannot change its frozen encounter.");
         var bossTimeline = ToBattleTimeline(compiledEncounter.BossTimeline);
         if (!_project.FloorRules.TryGetValue(encounter.FloorRuleId, out var ruleScene))
             throw new InvalidOperationException($"Missing compiled floor rule: {encounter.FloorRuleId}");
@@ -47,7 +52,7 @@ public sealed class RunBattlePreparationService
             if (requireLegalFormation && !RunFormationPolicy.Validate(run, _rules, floorRuntime.CanOccupy))
                 throw new InvalidOperationException("Player formation is invalid for the selected floor rule.");
 
-            var relics = _relics.PrepareBattle(Key(run), Bindings(run));
+            var relics = _relics.PrepareBattle(Key(run, encounter), Bindings(run));
             // Growth battles execute the prepared roster and one-shot spell automatically.
             // Historical loadout ids stay in Run saves but confer no combat intervention.
             var tacticalCommands = _growthRules is null
@@ -69,8 +74,10 @@ public sealed class RunBattlePreparationService
                 Units = encounter.IsElite ? request.Units.Select(unit => unit.Team == 1 && !unit.IsTemporary
                     ? unit with { HealthRatio = unit.HealthRatio * new RunRelicRules(_content).EliteHealthRatio(run) } : unit).ToImmutableArray() : request.Units,
                 MatrixStatusRules = _project.MatrixStatusRules,
-                EnemyHealthMultiplier = compiledEncounter.EnemyHealthMultiplier * LocalMultiplier(compiledEncounter.LocalHealthMultipliers, run),
-                EnemyDamageMultiplier = compiledEncounter.EnemyDamageMultiplier * LocalMultiplier(compiledEncounter.LocalDamageMultipliers, run)
+                EnemyHealthMultiplier = expeditionProfile?.FinalHealthMultiplier ??
+                    compiledEncounter.EnemyHealthMultiplier * LocalMultiplier(compiledEncounter.LocalHealthMultipliers, run),
+                EnemyDamageMultiplier = expeditionProfile?.FinalDamageMultiplier ??
+                    compiledEncounter.EnemyDamageMultiplier * LocalMultiplier(compiledEncounter.LocalDamageMultipliers, run)
             });
         }
         finally { rule.Free(); }
@@ -91,8 +98,17 @@ public sealed class RunBattlePreparationService
         RelicBattleCompletionReason expectedReason = RelicBattleCompletionReason.PlayerVictory) =>
         _relics.ApplyTransition(Key(run), Bindings(run), transition, expectedReason);
 
-    private RelicRunKey Key(ActiveRunDto run) =>
-        new(run.Seed, run.Roster[0].ContentId, run.FloorIndex, run.BattleNumber);
+    private RelicRunKey Key(ActiveRunDto run, EncounterPlan? encounter = null)
+    {
+        if (_project.Campaign.Progression is not CompiledExpedition)
+            return new(run.Seed, run.Roster[0].ContentId, run.FloorIndex, run.BattleNumber);
+        var origin = encounter is not null ? RunBattlePreparationAdapter.OriginKey(run, encounter)
+            : run.Action is { Phase: RunActionPhase.Battle, Source: { LegacyFloorIndex: null } source }
+                ? source.ActionId : string.Empty;
+        if (string.IsNullOrWhiteSpace(origin))
+            throw new InvalidOperationException("Expedition battle transition has no committed action origin.");
+        return new(run.Seed, run.Roster[0].ContentId, -1, run.BattleNumber) { OriginKey = origin };
+    }
 
     private RunItemBinding[] Bindings(ActiveRunDto run) => run.Items.Select(item => new RunItemBinding(
         Required(item.ContentId),
@@ -115,8 +131,7 @@ public sealed class RunBattlePreparationService
 
     private CompiledEncounter ResolveEncounter(EncounterPlan encounter)
     {
-        var matches = _project.Campaign.Regions
-            .SelectMany(region => region.Encounters.Values)
+        var matches = _project.Campaign.Encounters
             .Where(candidate => candidate.StableId == encounter.EncounterId)
             .ToArray();
         if (matches.Length != 1 || matches[0].NodeType != encounter.NodeType)
@@ -124,6 +139,33 @@ public sealed class RunBattlePreparationService
                 $"Encounter '{encounter.EncounterId}' is not an unambiguous compiled {encounter.NodeType} encounter.");
         return matches[0];
     }
+
+    private CompiledExpeditionEncounter? ResolveExpeditionProfile(EncounterPlan plan)
+    {
+        if (_project.Campaign.Progression is not CompiledExpedition expedition)
+        {
+            if (!string.IsNullOrEmpty(plan.ExpeditionProfileId))
+                throw new InvalidOperationException("An expedition encounter cannot use tower progression.");
+            return null;
+        }
+        if (!expedition.Encounters.TryGetValue(plan.ExpeditionProfileId, out var profile) ||
+            profile.Encounter.StableId != plan.EncounterId || profile.Encounter.NodeType != plan.NodeType ||
+            profile.Composition.StableId != plan.CompositionId ||
+            !profile.Composition.EnemyIds.SequenceEqual(plan.EnemyIds, StringComparer.Ordinal) ||
+            !profile.Composition.Cells.SequenceEqual(plan.EnemyCells) ||
+            !profile.Encounter.FloorRulePool.ContentIds.Contains(plan.FloorRuleId, StringComparer.Ordinal) ||
+            plan.IsBoss != (profile.Encounter.NodeType == TowerNodeType.Boss) ||
+            plan.IsElite != (profile.Encounter.NodeType == TowerNodeType.Elite))
+            throw new InvalidOperationException("The expedition encounter differs from its frozen authored profile.");
+        return profile;
+    }
+
+    private static bool SameExpeditionPlan(EncounterPlan first, EncounterPlan second) =>
+        first.ExpeditionProfileId == second.ExpeditionProfileId && first.ExpeditionSiteId == second.ExpeditionSiteId &&
+        first.ExpeditionBoss == second.ExpeditionBoss && first.EncounterId == second.EncounterId &&
+        first.CompositionId == second.CompositionId && first.FloorRuleId == second.FloorRuleId &&
+        first.NodeType == second.NodeType && first.IsBoss == second.IsBoss && first.IsElite == second.IsElite &&
+        first.EnemyIds.SequenceEqual(second.EnemyIds, StringComparer.Ordinal) && first.EnemyCells.SequenceEqual(second.EnemyCells);
 
     private static BossTimelineSnapshot? ToBattleTimeline(CompiledBossTimeline? timeline) => timeline is null
         ? null

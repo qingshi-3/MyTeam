@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="magnitude"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="execution"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="operation"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[sub_resource type="Resource" id="self"]
+script = ExtResource("target")
+Target = 0
+[sub_resource type="Resource" id="enemy"]
+script = ExtResource("target")
+Target = 30
+Range = 20
+
+[sub_resource type="Resource" id="line_target"]
+script = ExtResource("target")
+Target = 0
+Range = 2.5
+Radius = 0.35
+
+[sub_resource type="Resource" id="line_amount"]
+script = ExtResource("magnitude")
+Amount = 2
+AttackRatio = 1.8
+
+[sub_resource type="Resource" id="line_time"]
+script = ExtResource("execution")
+DurationTicks = 12
+
+[sub_resource type="Resource" id="line"]
+script = ExtResource("operation")
+Kind = 44
+Targeting = SubResource("line_target")
+Magnitude = SubResource("line_amount")
+Execution = SubResource("line_time")
+
+[sub_resource type="Resource" id="windup_time"]
+script = ExtResource("execution")
+DurationTicks = 2
+
+[sub_resource type="Resource" id="windup"]
+script = ExtResource("operation")
+Kind = 35
+Targeting = SubResource("enemy")
+Execution = SubResource("windup_time")
+Effects = [SubResource("line")]
+
+[resource]
+script = ExtResource("ability")
+StableId = "prototype_u20_a"
+DisplayName = "疾雷斩"
+Description = "蓄势0.2秒后移动到目标旁至多2格的合法位置，无落点原位释放；沿目标方向2.5格长、0.7格宽直线斩180%攻击并缴械1.2秒。技能不暴击，不触发攻击命中附效。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 75
+CooldownTicks = 5
+Operations = [SubResource("windup")]

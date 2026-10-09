@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="1"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="2"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="3"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="4"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+Target = 1
+Range = 1.4
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("2")
+AttackRatio = 2.1
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("3")
+Kind = 0
+Targeting = SubResource("s0")
+Magnitude = SubResource("s1")
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("1")
+Target = 1
+Range = 1.4
+TargetCondition = 9
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("2")
+AttackRatio = 1.4
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("3")
+Kind = 0
+Targeting = SubResource("s3")
+Magnitude = SubResource("s4")
+
+[resource]
+script = ExtResource("4")
+StableId = "prototype_u05_a"
+DisplayName = "孤袭"
+Description = "造成210%攻击伤害；目标周围1.5格无友军时额外造成140%攻击伤害。"
+ActivationKind = 1
+Trigger = 5
+ManaCost = 50
+CooldownTicks = 5
+MaxUses = 0
+Operations = [SubResource("s2"), SubResource("s5")]

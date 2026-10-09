@@ -13,9 +13,9 @@ using TowerAutobattler.Run;
 
 namespace TowerAutobattler.Growth;
 
-// Owns mutable growth state. Every public command edits a detached Run and
-// publishes only after the whole command validates and saves successfully.
-public sealed class GrowthRunService(
+// Owns growth projections. Player commands clone/validate/publish; action lifecycle
+// projections edit only the coordinator's detached working copy and never save.
+public sealed partial class GrowthRunService(
     ContentRegistry content,
     CompiledGameProject project,
     CompiledGrowthRules? rules,
@@ -41,8 +41,10 @@ public sealed class GrowthRunService(
             return GrowthCommandResult.Reject("当前阶段不能操作工坊。");
         if (growth.PendingDiscovery is not null)
             return GrowthCommandResult.Reject("请先领取已经支付的发现奖励。");
-        if (growth.PendingNode is not null)
-            return GrowthCommandResult.Reject(growth.PendingNode.IsBattle ? "本场战斗已经开始，整备状态已冻结。" : "当前节点的生产状态已冻结。");
+        if (GetPending(run) is { } pending)
+            return GrowthCommandResult.Reject(pending.IsBattle ? "本场战斗已经开始，整备状态已冻结。" : "当前节点的生产状态已冻结。");
+        if (run.Expedition is not null && (run.Action is not null || growth.PendingNode is not null))
+            return GrowthCommandResult.Reject("请先完成当前行动和奖励领取。");
         return GrowthCommandResult.Success();
     }
 
@@ -52,7 +54,7 @@ public sealed class GrowthRunService(
         if (!check.Succeeded) return check;
         var producer = run!.Roster.SingleOrDefault(hero => hero.InstanceId == producerId);
         var target = run.Roster.SingleOrDefault(hero => hero.InstanceId == targetId);
-        if (producer is null || target is null || !rules!.Heroes.TryGetValue(producer.ContentId, out var definition) ||
+        if (!Enum.IsDefined(mode) || producer is null || target is null || !rules!.Heroes.TryGetValue(producer.ContentId, out var definition) ||
             !definition.ProductionModes.Contains(mode))
             return GrowthCommandResult.Reject("生产者、受益者或生产方式无效。");
         if (mode == GrowthProductionMode.Research && !string.IsNullOrEmpty(targetId) && producerId != targetId)
@@ -69,8 +71,8 @@ public sealed class GrowthRunService(
         var check = CheckAction(run);
         if (!check.Succeeded) return check;
         var growth = run!.Growth!;
-        if (run.PendingOffer is not null || growth.PendingNode is not null ||
-            run.PendingNode && RunDecisionService.KindFor(run.SelectedNode) is not null)
+        if (run.Expedition is null && (run.PendingOffer is not null || GetPending(run) is not null ||
+            run.PendingNode && RunDecisionService.KindFor(run.SelectedNode) is not null))
             return GrowthCommandResult.Reject("升阶只能在未冻结的战斗整备阶段进行。");
         var hero = run.Roster.SingleOrDefault(candidate => candidate.InstanceId == heroId);
         if (hero is null || !rules!.Heroes.TryGetValue(hero.ContentId, out var definition) ||
@@ -159,57 +161,102 @@ public sealed class GrowthRunService(
 
     public GrowthCommandResult BeginBattle(ActiveRunDto? run, EncounterPlan encounter)
     {
+        if (run?.Expedition is not null)
+            return GrowthCommandResult.Reject("地图战斗必须由行动事务统一提交。");
         if (rules is null) return GrowthCommandResult.Success();
-        if (run?.Growth is not { } state || state.RulesId != rules.StableId)
+        if (run is null) return GrowthCommandResult.Reject("当前没有可开始的征程。");
+        var alreadyFrozen = GetPending(run) is not null;
+        var working = persistence.CloneRun(run);
+        var result = BeginBattleProjection(working, encounter);
+        if (!result.Succeeded || alreadyFrozen) return result;
+        return Commit(working, run, "战斗成长状态已冻结。", "保存失败，法术未消耗且战斗未开始。");
+    }
+
+    // The map coordinator authenticates the encounter and creates Action.Source
+    // before calling this, then validates the final BattleFreeze and saves once.
+    // Rejected projections do not consume inventory or install a partial snapshot.
+    public GrowthCommandResult BeginBattleProjection(ActiveRunDto working, EncounterPlan encounter)
+    {
+        if (rules is null) return GrowthCommandResult.Success();
+        if (working.Growth is not { } state || state.RulesId != rules.StableId)
             return GrowthCommandResult.Reject("当前征程没有可用的成长状态。");
-        if (run.OpeningRecruitment is not null || !string.IsNullOrEmpty(run.TerminalCompletionId))
+        if (working.OpeningRecruitment is not null || !string.IsNullOrEmpty(working.TerminalCompletionId))
             return GrowthCommandResult.Reject("当前阶段不能开始战斗。");
-        if (run!.Growth!.PendingDiscovery is not null) return GrowthCommandResult.Reject("请先领取发现奖励再开始下一场战斗。");
-        if (!run.PendingNode || encounter.NodeType != run.SelectedNode || RunDecisionService.KindFor(run.SelectedNode) is not null)
-            return GrowthCommandResult.Reject("当前没有可开始的战斗节点。");
-        var expected = new TowerGenerator(project.Campaign).Encounter(run, run.SelectedNode);
-        if (encounter.EncounterId != expected.EncounterId || encounter.Title != expected.Title ||
-            encounter.FloorRuleId != expected.FloorRuleId || encounter.IsBoss != expected.IsBoss ||
-            encounter.IsElite != expected.IsElite || !encounter.EnemyIds.SequenceEqual(expected.EnemyIds) ||
-            encounter.CompositionId != expected.CompositionId || !encounter.EnemyCells.SequenceEqual(expected.EnemyCells))
-            return GrowthCommandResult.Reject("战斗计划与当前节点不匹配。");
-        if (state.PendingNode is { } frozen)
-            return frozen.IsBattle && frozen.FloorIndex == run.FloorIndex && frozen.BattleNumber == run.BattleNumber
+        if (state.PendingDiscovery is not null) return GrowthCommandResult.Reject("请先领取发现奖励再开始下一场战斗。");
+        if (working.Expedition is not null)
+        {
+            if (state.PendingNode is not null || !ValidMapSource(RunProgressionContext.Source(working)) ||
+                working.Action is null || encounter.NodeType is not (TowerNodeType.Combat or TowerNodeType.Elite or TowerNodeType.Boss))
+                return GrowthCommandResult.Reject("当前没有有效的地图战斗行动来源。");
+        }
+        else
+        {
+            if (!working.PendingNode || encounter.NodeType != working.SelectedNode || RunDecisionService.KindFor(working.SelectedNode) is not null)
+                return GrowthCommandResult.Reject("当前没有可开始的战斗节点。");
+            var expected = new TowerGenerator(project.Campaign).Encounter(working, working.SelectedNode);
+            if (encounter.EncounterId != expected.EncounterId || encounter.Title != expected.Title ||
+                encounter.FloorRuleId != expected.FloorRuleId || encounter.IsBoss != expected.IsBoss ||
+                encounter.IsElite != expected.IsElite || !encounter.EnemyIds.SequenceEqual(expected.EnemyIds) ||
+                encounter.CompositionId != expected.CompositionId || !encounter.EnemyCells.SequenceEqual(expected.EnemyCells))
+                return GrowthCommandResult.Reject("战斗计划与当前节点不匹配。");
+        }
+        if (GetPending(working) is { } frozen)
+            return frozen.IsBattle && MatchesCurrentAction(working, frozen) && frozen.BattleNumber == working.BattleNumber
                 ? GrowthCommandResult.Success("本场战斗已冻结，可安全重试启动。")
                 : GrowthCommandResult.Reject("当前节点已有不匹配的成长快照。");
-        var working = persistence.CloneRun(run);
         var snapshot = Freeze(working, true);
-        var selected = working.Growth!.EquippedSpellId;
+        if (working.Expedition is not null && AlreadySettled(working, snapshot))
+            return GrowthCommandResult.Reject("当前行动已经结算，不能重复冻结成长或消耗法术。");
+        var selected = state.EquippedSpellId;
         if (!string.IsNullOrEmpty(selected))
         {
-            if (!rules!.Spells.ContainsKey(selected) || working.Growth.SpellInventory.GetValueOrDefault(selected) <= 0 ||
-                !snapshot.ParticipantInstanceIds.Contains(working.Growth.SpellTargetInstanceId))
+            if (!rules.Spells.ContainsKey(selected) || state.SpellInventory.GetValueOrDefault(selected) <= 0 ||
+                !snapshot.ParticipantInstanceIds.Contains(state.SpellTargetInstanceId))
                 return GrowthCommandResult.Reject("法术库存或目标已失效，请重新选择。");
-            working.Growth.SpellInventory[selected]--;
+            state.SpellInventory[selected]--;
             snapshot.ConsumedSpellId = selected;
-            snapshot.SpellTargetInstanceId = working.Growth.SpellTargetInstanceId;
-            working.Growth.EquippedSpellId = string.Empty;
-            working.Growth.SpellTargetInstanceId = string.Empty;
+            snapshot.SpellTargetInstanceId = state.SpellTargetInstanceId;
+            state.EquippedSpellId = string.Empty;
+            state.SpellTargetInstanceId = string.Empty;
         }
-        return Commit(working, run, "战斗成长状态已冻结。", "保存失败，法术未消耗且战斗未开始。");
+        SetPending(working, snapshot);
+        return GrowthCommandResult.Success("战斗成长状态已冻结。");
     }
 
     public bool FreezeNonCombat(ActiveRunDto working)
     {
         if (rules is null || working.Growth is null) return true;
-        if (working.Growth.PendingDiscovery is not null || working.Growth.PendingNode is not null) return false;
-        Freeze(working, false);
+        if (working.Growth.PendingDiscovery is not null || GetPending(working) is not null) return false;
+        if (working.Expedition is not null && (working.Growth.PendingNode is not null ||
+            working.Action is null || !ValidMapSource(RunProgressionContext.Source(working)))) return false;
+        var snapshot = Freeze(working, false);
+        if (working.Expedition is not null && AlreadySettled(working, snapshot)) return false;
+        SetPending(working, snapshot);
         return true;
     }
 
     public bool SettleNode(ActiveRunDto working)
     {
         if (rules is null || working.Growth is null) return true;
-        var snapshot = working.Growth.PendingNode;
-        if (snapshot is null || snapshot.FloorIndex != working.FloorIndex || snapshot.BattleNumber > working.BattleNumber ||
-            working.Growth.LastSettledFloorIndex >= snapshot.FloorIndex) return false;
+        var snapshot = GetPending(working);
+        if (snapshot is null || !MatchesCurrentAction(working, snapshot) || snapshot.BattleNumber > working.BattleNumber ||
+            AlreadySettled(working, snapshot) || !ValidAssignments(working, snapshot) || !ValidBreedingSnapshot(working, snapshot)) return false;
+        var breedingAttack = 0f;
+        var breedingHealth = 0f;
+        RosterHeroInstanceDto? breeder = null;
+        CompiledGrowthHero? breedingRule = null;
+        if (snapshot.Breeding is { } breeding)
+        {
+            breeder = working.Roster.Single(hero => hero.InstanceId == breeding.ProducerInstanceId);
+            breedingRule = rules.Heroes[breeder.ContentId];
+            if ((long)breeding.Points + breedingRule.BreedingYield > int.MaxValue) return false;
+            breedingAttack = breeding.Points * breedingRule.AttackGainPerBreedingPoint;
+            breedingHealth = breeding.Points * breedingRule.MaxHealthGainPerBreedingPoint;
+            if (!float.IsFinite(breedingAttack) || !float.IsFinite(breedingHealth)) return false;
+        }
         var settlement = new GrowthSettlementDto
         {
+            Source = snapshot.Source,
             FloorIndex = snapshot.FloorIndex,
             BattleNumber = snapshot.BattleNumber,
             IsBattle = snapshot.IsBattle,
@@ -217,9 +264,9 @@ public sealed class GrowthRunService(
         };
         var battleGainKeys = new HashSet<string>(StringComparer.Ordinal);
         foreach (var gain in working.Roster.SelectMany(hero => hero.Growth.History).Where(gain =>
-                     gain.FloorIndex == snapshot.FloorIndex && gain.BattleNumber == snapshot.BattleNumber && gain.Source == "battle"))
+                     SameGainAction(working, gain, snapshot.Source, snapshot.FloorIndex, snapshot.BattleNumber) && gain.Source is "battle" or "remembered"))
         {
-            var key = $"{gain.ProducerInstanceId}:{gain.TargetInstanceId}:{gain.AbilityId}:{gain.Mode}:{gain.Amount:R}";
+            var key = $"{gain.Source}:{gain.ProducerInstanceId}:{gain.TargetInstanceId}:{gain.AbilityId}:{gain.OperationKey}:{gain.GrantOrdinal}:{gain.Mode}:{gain.Amount:R}";
             if (battleGainKeys.Add(key)) settlement.Gains.Add(gain);
         }
         foreach (var assignment in snapshot.Assignments)
@@ -235,16 +282,38 @@ public sealed class GrowthRunService(
             var target = working.Roster.SingleOrDefault(hero => hero.InstanceId == assignment.TargetInstanceId);
             if (target is null || !snapshot.ParticipantInstanceIds.Contains(target.InstanceId) ||
                 !content.TryGet(target.ContentId, out var targetEntry) || targetEntry.Definition is not UnitDefinition definition) continue;
-            var amount = (assignment.Mode == GrowthProductionMode.Attack ? definition.AttackDamage : definition.MaxHealth) * producerRule.GrowthRate;
-            if (!float.IsFinite(amount) || amount <= 0) continue;
-            if (assignment.Mode == GrowthProductionMode.Attack) target.Growth.AddedAttack += amount;
-            else target.Growth.AddedMaxHealth += amount;
-            AddGain(target, settlement, snapshot, assignment, amount);
+            // A cultivation assignment is one frozen action entitlement. Both fixed
+            // attributes are projected into the same detached transaction and save.
+            var (attack, health) = assignment.Mode switch
+            {
+                GrowthProductionMode.Attack => (definition.AttackDamage * producerRule.GrowthRate, 0f),
+                GrowthProductionMode.Vitality => (0f, definition.MaxHealth * producerRule.GrowthRate),
+                GrowthProductionMode.Cultivation => (producerRule.FixedAttackGain + breedingAttack, producerRule.FixedMaxHealthGain + breedingHealth),
+                _ => throw new InvalidOperationException("不支持的成长生产方式。")
+            };
+            var nextAttack = target.Growth.AddedAttack + attack;
+            var nextHealth = target.Growth.AddedMaxHealth + health;
+            if (!float.IsFinite(nextAttack) || !float.IsFinite(nextHealth) || attack < 0 || health < 0) return false;
+            target.Growth.AddedAttack = nextAttack;
+            target.Growth.AddedMaxHealth = nextHealth;
+            if (attack > 0) AddGain(target, settlement, snapshot, assignment, attack, GrowthProductionMode.Attack);
+            if (health > 0) AddGain(target, settlement, snapshot, assignment, health, GrowthProductionMode.Vitality);
+        }
+        // The current seed uses the committed old points. Increasing breeding
+        // happens after all assignments, in this same detached transaction.
+        if (breeder is not null && breedingRule is not null)
+        {
+            settlement.Breeding = new GrowthBreedingGainDto
+            {
+                ProducerInstanceId = breeder.InstanceId, PreviousPoints = snapshot.Breeding!.Points,
+                Amount = breedingRule.BreedingYield
+            };
+            breeder.Growth.BreedingPoints += breedingRule.BreedingYield;
         }
         working.Growth.Materials = checked(working.Growth.Materials + rules.MaterialsPerNode);
-        working.Growth.LastSettledFloorIndex = snapshot.FloorIndex;
+        if (working.Expedition is null) working.Growth.LastSettledFloorIndex = snapshot.FloorIndex;
         working.Growth.History.Add(settlement);
-        working.Growth.PendingNode = null;
+        SetPending(working, null);
         return true;
     }
 
@@ -252,7 +321,8 @@ public sealed class GrowthRunService(
         ImmutableArray<BattlePermanentGain> gains, bool apply)
     {
         if (gains.IsDefaultOrEmpty) return true;
-        if (rules is null || working.Growth?.PendingNode is not { IsBattle: true } snapshot) return false;
+        if (rules is null || GetPending(working) is not { IsBattle: true } snapshot ||
+            working.Expedition is not null && (!MatchesCurrentAction(working, snapshot) || AlreadySettled(working, snapshot))) return false;
         var keys = new HashSet<string>(StringComparer.Ordinal);
         foreach (var gain in gains)
         {
@@ -271,6 +341,7 @@ public sealed class GrowthRunService(
             else hero.Growth.AddedMaxHealth += gain.Amount;
             hero.Growth.History.Add(new GrowthGainDto
             {
+                ActionSource = snapshot.Source,
                 FloorIndex = snapshot.FloorIndex,
                 BattleNumber = snapshot.BattleNumber,
                 ProducerInstanceId = gain.SourceInstanceId,
@@ -287,28 +358,48 @@ public sealed class GrowthRunService(
     public bool Validate(ActiveRunDto run)
     {
         if (run.Roster.Any(hero => hero?.Growth is null || hero.Growth.AscensionId is null ||
-            hero.Growth.ProductionTargetInstanceId is null || hero.Growth.History is null || hero.Growth.History.Any(gain => gain is null) ||
-            !float.IsFinite(hero.Growth.AddedAttack) || hero.Growth.AddedAttack < 0 ||
+            !Enum.IsDefined(hero.Growth.ProductionMode) || hero.Growth.ProductionTargetInstanceId is null || hero.Growth.History is null || hero.Growth.History.Any(gain => gain is null) ||
+            hero.Growth.BreedingPoints < 0 || !float.IsFinite(hero.Growth.AddedAttack) || hero.Growth.AddedAttack < 0 ||
             !float.IsFinite(hero.Growth.AddedMaxHealth) || hero.Growth.AddedMaxHealth < 0)) return false;
         if (run.Growth is null) return rules is null;
-        if (rules is null || run.Growth.RulesId is null || run.Growth.EquippedSpellId is null ||
-            run.Growth.SpellTargetInstanceId is null || run.Growth.RulesId != rules.StableId || run.Growth.Materials < 0 || run.Growth.Research < 0 ||
-            run.Growth.LastSettledFloorIndex < -1 || run.Growth.LastSettledFloorIndex > run.FloorIndex ||
-            run.Growth.CategoryMaterials is null || run.Growth.SpellInventory is null || run.Growth.History is null ||
-            run.Growth.History.Any(value => value is null || value.FloorIndex < 0 || value.FloorIndex > run.FloorIndex ||
-                value.BattleNumber < 0 || value.BattleNumber > run.BattleNumber ||
-                value.MaterialsGranted < 0 || value.Gains is null || value.Gains.Any(gain => !ValidGain(gain))) ||
-            run.Growth.History.GroupBy(value => value.FloorIndex).Any(group => group.Count() != 1) ||
-            run.Growth.CategoryMaterials.Any(pair => string.IsNullOrWhiteSpace(pair.Key) || pair.Value < 0) ||
-            run.Growth.SpellInventory.Any(pair => !rules.Spells.ContainsKey(pair.Key) || pair.Value < 0)) return false;
+        var growth = run.Growth;
+        var map = run.Expedition is not null;
+        if (rules is null || growth.RulesId is null || growth.EquippedSpellId is null ||
+            growth.SpellTargetInstanceId is null || growth.RulesId != rules.StableId || growth.Materials < 0 || growth.Research < 0 ||
+            (map ? growth.PendingNode is not null || growth.LastSettledFloorIndex != -1 :
+                growth.LastSettledFloorIndex < -1 || growth.LastSettledFloorIndex > run.FloorIndex) ||
+            growth.CategoryMaterials is null || growth.SpellInventory is null || growth.History is null ||
+            growth.History.Any(value => value is null || !ValidSettlement(run, value)) ||
+            growth.CategoryMaterials.Any(pair => string.IsNullOrWhiteSpace(pair.Key) || pair.Value < 0) ||
+            growth.SpellInventory.Any(pair => !rules.Spells.ContainsKey(pair.Key) || pair.Value < 0)) return false;
+        if (map)
+        {
+            if (project.Campaign.Progression is not CompiledExpedition expedition ||
+                growth.History.Any(value => value.Source!.StageIndex >= expedition.Stages.Length) ||
+                growth.History.GroupBy(value => value.Source!.ActionId, StringComparer.Ordinal).Any(group => group.Count() != 1) ||
+                growth.History.GroupBy(value => value.Source!.Sequence).Any(group => group.Count() != 1)) return false;
+            for (var index = 1; index < growth.History.Count; index++)
+                if (growth.History[index - 1].Source!.Sequence >= growth.History[index].Source!.Sequence ||
+                    growth.History[index - 1].Source!.StageIndex > growth.History[index].Source!.StageIndex) return false;
+            if (RunProgressionContext.Source(run) is { } current &&
+                growth.History.Any(value => value.Source!.Sequence > current.Sequence || value.Source.StageIndex > current.StageIndex)) return false;
+        }
+        else if (growth.History.GroupBy(value => value.FloorIndex).Any(group => group.Count() != 1)) return false;
+
+        if (!ValidBreedingHistory(run) || !ValidRememberedHistory(run)) return false;
+
         var ids = run.Roster.Select(hero => hero.InstanceId).ToHashSet(StringComparer.Ordinal);
-        if (string.IsNullOrEmpty(run.Growth.EquippedSpellId) != string.IsNullOrEmpty(run.Growth.SpellTargetInstanceId) ||
-            !string.IsNullOrEmpty(run.Growth.EquippedSpellId) &&
-             (!rules.Spells.ContainsKey(run.Growth.EquippedSpellId) ||
-             run.Growth.SpellInventory.GetValueOrDefault(run.Growth.EquippedSpellId) <= 0 ||
-             !ids.Contains(run.Growth.SpellTargetInstanceId) || !run.Deployment.Contains(run.Growth.SpellTargetInstanceId))) return false;
+        if (string.IsNullOrEmpty(growth.EquippedSpellId) != string.IsNullOrEmpty(growth.SpellTargetInstanceId) ||
+            !string.IsNullOrEmpty(growth.EquippedSpellId) &&
+             (!rules.Spells.ContainsKey(growth.EquippedSpellId) ||
+             growth.SpellInventory.GetValueOrDefault(growth.EquippedSpellId) <= 0 ||
+             !ids.Contains(growth.SpellTargetInstanceId) || !run.Deployment.Contains(growth.SpellTargetInstanceId))) return false;
         foreach (var hero in run.Roster)
         {
+            if (hero.Growth.History.Any(gain => !ValidGain(run, gain) ||
+                map && !growth.History.Any(settlement =>
+                    SameGainAction(run, gain, settlement.Source, settlement.FloorIndex, settlement.BattleNumber) &&
+                    settlement.Gains.Any(recorded => SameGain(recorded, gain))))) return false;
             if (!rules.Heroes.TryGetValue(hero.ContentId, out var definition))
             {
                 if (!string.IsNullOrEmpty(hero.Growth.AscensionId)) return false;
@@ -318,10 +409,9 @@ public sealed class GrowthRunService(
             if (!definition.ProductionModes.Contains(hero.Growth.ProductionMode) &&
                 !string.IsNullOrEmpty(hero.Growth.ProductionTargetInstanceId)) return false;
             if (!string.IsNullOrEmpty(hero.Growth.ProductionTargetInstanceId) && !ids.Contains(hero.Growth.ProductionTargetInstanceId)) return false;
-            if (hero.Growth.History.Any(gain => !ValidGain(gain) || gain.FloorIndex > run.FloorIndex || gain.BattleNumber > run.BattleNumber)) return false;
         }
-        var correctPool = run.FloorIndex < project.Campaign.FloorsPerRegion ? rules.FirstDiscoveryPool : rules.AdvancedDiscoveryPool;
-        if (run.Growth.PendingDiscovery is { } discovery &&
+        var correctPool = RunProgressionContext.IsAdvancedDiscovery(run, project) ? rules.AdvancedDiscoveryPool : rules.FirstDiscoveryPool;
+        if (growth.PendingDiscovery is { } discovery &&
             (string.IsNullOrWhiteSpace(discovery.OfferId) || string.IsNullOrWhiteSpace(discovery.UpgradedHeroInstanceId) ||
              !ids.Contains(discovery.UpgradedHeroInstanceId) ||
              discovery.OfferId != DiscoveryIdentity(run, discovery.UpgradedHeroInstanceId) ||
@@ -330,10 +420,11 @@ public sealed class GrowthRunService(
                  run.Roster.Any(hero => hero.ContentId == id)) ||
              (long)run.Roster.Count >= (long)run.CurrentPopulation + project.RunRules.ReserveCapacity ||
              run.Roster.Single(hero => hero.InstanceId == discovery.UpgradedHeroInstanceId).Growth.AscensionId.Length == 0)) return false;
-        if (run.Growth.PendingNode is { } node &&
-            (node.ParticipantInstanceIds is null || node.Assignments is null || node.ConsumedSpellId is null ||
-             node.SpellTargetInstanceId is null || node.FloorIndex != run.FloorIndex || node.BattleNumber != run.BattleNumber ||
-             node.IsBattle != (RunDecisionService.KindFor(run.SelectedNode) is null) ||
+        if (GetPending(run) is { } node &&
+            (!ValidBreedingSnapshot(run, node) || node.ParticipantInstanceIds is null || node.Assignments is null || node.ConsumedSpellId is null ||
+             node.SpellTargetInstanceId is null || !MatchesCurrentAction(run, node) || node.BattleNumber != run.BattleNumber ||
+             map && AlreadySettled(run, node) ||
+             !map && node.IsBattle != (RunDecisionService.KindFor(run.SelectedNode) is null) ||
              node.ParticipantInstanceIds.Distinct().Count() != node.ParticipantInstanceIds.Count ||
              node.ParticipantInstanceIds.Any(id => string.IsNullOrWhiteSpace(id) || !ids.Contains(id)) ||
              node.Assignments.GroupBy(value => value?.ProducerInstanceId).Any(group => group.Key is null || group.Count() != 1) ||
@@ -349,12 +440,33 @@ public sealed class GrowthRunService(
         return true;
     }
 
-    private static bool ValidGain(GrowthGainDto? gain) => gain is not null && gain.FloorIndex >= 0 &&
-        gain.BattleNumber >= 0 && !string.IsNullOrWhiteSpace(gain.ProducerInstanceId) &&
-        !string.IsNullOrWhiteSpace(gain.TargetInstanceId) && Enum.IsDefined(gain.Mode) &&
+    private static bool ValidGain(ActiveRunDto run, GrowthGainDto? gain) => gain is not null &&
+        (run.Expedition is not null ? ValidMapSource(gain.ActionSource) : gain.FloorIndex >= 0 && gain.FloorIndex <= run.FloorIndex) &&
+        gain.BattleNumber >= 0 && gain.BattleNumber <= run.BattleNumber && !string.IsNullOrWhiteSpace(gain.ProducerInstanceId) &&
+        !string.IsNullOrWhiteSpace(gain.TargetInstanceId) &&
+        (gain.Mode is GrowthProductionMode.Attack or GrowthProductionMode.Vitality or GrowthProductionMode.Research) &&
         gain.AbilityId is not null && gain.Source is not null && float.IsFinite(gain.Amount) && gain.Amount >= 0 &&
         (string.IsNullOrEmpty(gain.Source) && string.IsNullOrEmpty(gain.AbilityId) ||
-         gain.Source == "battle" && !string.IsNullOrWhiteSpace(gain.AbilityId));
+         gain.Source is "battle" or "remembered" && !string.IsNullOrWhiteSpace(gain.AbilityId)) &&
+        (gain.Source == "remembered" ? ValidRememberedMetadata(gain) :
+            gain.OperationKey == "" && gain.RememberAbilityId == "" && gain.RememberOperationKey == "" &&
+            gain.GrantOrdinal == 0 && gain.GrantedTick == 0);
+
+    private static bool ValidSettlement(ActiveRunDto run, GrowthSettlementDto settlement) =>
+        (run.Expedition is not null ? ValidMapSource(settlement.Source) : settlement.FloorIndex >= 0 && settlement.FloorIndex <= run.FloorIndex) &&
+        settlement.BattleNumber >= 0 && settlement.BattleNumber <= run.BattleNumber &&
+        settlement.MaterialsGranted >= 0 && settlement.Gains is not null && settlement.Gains.All(gain =>
+            ValidGain(run, gain) && (run.Expedition is null ||
+                SameGainAction(run, gain, settlement.Source, settlement.FloorIndex, settlement.BattleNumber) &&
+                (gain.Source is not ("battle" or "remembered") || settlement.IsBattle)));
+
+    private static bool SameGain(GrowthGainDto first, GrowthGainDto second) =>
+        first.ActionSource == second.ActionSource && first.BattleNumber == second.BattleNumber &&
+        first.ProducerInstanceId == second.ProducerInstanceId && first.TargetInstanceId == second.TargetInstanceId &&
+        first.Mode == second.Mode && first.Amount == second.Amount && first.AbilityId == second.AbilityId && first.Source == second.Source &&
+        first.OperationKey == second.OperationKey && first.RememberAbilityId == second.RememberAbilityId &&
+        first.RememberOperationKey == second.RememberOperationKey && first.GrantOrdinal == second.GrantOrdinal &&
+        first.GrantedTick == second.GrantedTick;
 
     private static bool MatchesPermanentOperation(CompiledAbilityLoadout? loadout, BattlePermanentGain gain)
     {
@@ -378,12 +490,88 @@ public sealed class GrowthRunService(
             operation.Attribute == gain.Attribute && operation.Amount == gain.Amount);
     }
 
+    public static GrowthNodeSnapshotDto? GetPending(ActiveRunDto run) =>
+        run.Expedition is not null ? run.Action?.GrowthSnapshot : run.Growth?.PendingNode;
+
+    public static void SetPending(ActiveRunDto run, GrowthNodeSnapshotDto? snapshot)
+    {
+        if (run.Expedition is null)
+        {
+            if (run.Growth is not null) run.Growth.PendingNode = snapshot;
+            else if (snapshot is not null) throw new InvalidOperationException("A growth snapshot requires growth state.");
+            return;
+        }
+        if (run.Growth?.PendingNode is not null)
+            throw new InvalidOperationException("An expedition cannot own a legacy growth snapshot.");
+        if (run.Action is { } action) action.GrowthSnapshot = snapshot;
+        else if (snapshot is not null) throw new InvalidOperationException("An expedition growth snapshot requires an action owner.");
+    }
+
+    private static bool ValidMapSource(RunActionSource? source) => source is not null &&
+        !string.IsNullOrWhiteSpace(source.ActionId) && source.Sequence > 0 && source.StageIndex >= 0 &&
+        source.SiteId is not null && source.LegacyFloorIndex is null;
+
+    private static bool MatchesCurrentAction(ActiveRunDto run, GrowthNodeSnapshotDto snapshot) =>
+        run.Expedition is not null
+            ? ValidMapSource(snapshot.Source) && snapshot.Source == RunProgressionContext.Source(run)
+            : snapshot.FloorIndex == run.FloorIndex;
+
+    private static bool AlreadySettled(ActiveRunDto run, GrowthNodeSnapshotDto snapshot) =>
+        run.Expedition is not null
+            ? snapshot.Source is not { } source || run.Growth!.History.Any(settlement =>
+                settlement.Source is { } previous && (previous.ActionId == source.ActionId || previous.Sequence >= source.Sequence))
+            : run.Growth!.LastSettledFloorIndex >= snapshot.FloorIndex;
+
+    private static bool SameGainAction(ActiveRunDto run, GrowthGainDto gain, RunActionSource? source,
+        int legacyFloorIndex, int battleNumber) => gain.BattleNumber == battleNumber &&
+        (run.Expedition is not null ? source is not null && gain.ActionSource == source : gain.FloorIndex == legacyFloorIndex);
+
+    private bool ValidAssignments(ActiveRunDto run, GrowthNodeSnapshotDto snapshot) =>
+        snapshot.ParticipantInstanceIds is not null && snapshot.Assignments is not null &&
+        snapshot.Assignments.All(assignment => assignment is not null && Enum.IsDefined(assignment.Mode) &&
+            snapshot.ParticipantInstanceIds.Contains(assignment.ProducerInstanceId) &&
+            snapshot.ParticipantInstanceIds.Contains(assignment.TargetInstanceId) &&
+            run.Roster.FirstOrDefault(hero => hero.InstanceId == assignment.ProducerInstanceId) is { } producer &&
+            rules!.Heroes.TryGetValue(producer.ContentId, out var definition) &&
+            definition.ProductionModes.Contains(assignment.Mode) &&
+            (assignment.Mode != GrowthProductionMode.Research || assignment.TargetInstanceId == assignment.ProducerInstanceId)) &&
+        snapshot.Assignments.Select(assignment => assignment.ProducerInstanceId).Distinct(StringComparer.Ordinal).Count() == snapshot.Assignments.Count;
+
+    private bool ValidBreedingSnapshot(ActiveRunDto run, GrowthNodeSnapshotDto snapshot)
+    {
+        if (snapshot.ParticipantInstanceIds is null) return false;
+        var eligible = run.Roster.Where(hero => snapshot.ParticipantInstanceIds.Contains(hero.InstanceId) &&
+            rules!.Heroes.TryGetValue(hero.ContentId, out var definition) && definition.BreedingYield > 0).ToArray();
+        if (eligible.Length == 0) return snapshot.Breeding is null;
+        return eligible.Length == 1 && snapshot.Breeding is { Points: >= 0 } breeding &&
+            breeding.ProducerInstanceId == eligible[0].InstanceId && breeding.Points == eligible[0].Growth.BreedingPoints;
+    }
+
+    private bool ValidBreedingHistory(ActiveRunDto run)
+    {
+        var totals = new Dictionary<string, long>(StringComparer.Ordinal);
+        foreach (var settlement in run.Growth!.History)
+        {
+            if (settlement.Breeding is not { } gain) continue;
+            if (string.IsNullOrWhiteSpace(gain.ProducerInstanceId) || gain.PreviousPoints < 0 || gain.Amount <= 0 ||
+                run.Roster.FirstOrDefault(hero => hero.InstanceId == gain.ProducerInstanceId) is not { } hero ||
+                !rules!.Heroes.TryGetValue(hero.ContentId, out var rule) || rule.BreedingYield != gain.Amount ||
+                totals.GetValueOrDefault(hero.InstanceId) != gain.PreviousPoints) return false;
+            var next = (long)gain.PreviousPoints + gain.Amount;
+            if (next > int.MaxValue) return false;
+            totals[hero.InstanceId] = next;
+        }
+        return run.Roster.All(hero => hero.Growth.BreedingPoints == totals.GetValueOrDefault(hero.InstanceId) &&
+            (hero.Growth.BreedingPoints == 0 || rules!.Heroes.TryGetValue(hero.ContentId, out var rule) && rule.BreedingYield > 0));
+    }
+
     private GrowthNodeSnapshotDto Freeze(ActiveRunDto run, bool battle)
     {
         var participants = run.Deployment.Where(id => !string.IsNullOrEmpty(id)).Distinct(StringComparer.Ordinal).ToList();
         var snapshot = new GrowthNodeSnapshotDto
         {
-            FloorIndex = run.FloorIndex,
+            Source = RunProgressionContext.Source(run),
+            FloorIndex = run.Expedition is null ? run.FloorIndex : -1,
             BattleNumber = run.BattleNumber,
             IsBattle = battle,
             ParticipantInstanceIds = participants
@@ -391,26 +579,31 @@ public sealed class GrowthRunService(
         foreach (var id in participants)
         {
             var hero = run.Roster.Single(candidate => candidate.InstanceId == id);
+            if (rules!.Heroes.TryGetValue(hero.ContentId, out var breedingRule) && breedingRule.BreedingYield > 0)
+            {
+                if (snapshot.Breeding is not null) throw new InvalidOperationException("一次行动不能冻结多个育种来源。");
+                snapshot.Breeding = new GrowthBreedingSnapshotDto { ProducerInstanceId = id, Points = hero.Growth.BreedingPoints };
+            }
             if (!rules!.Heroes.TryGetValue(hero.ContentId, out var definition) ||
                 !definition.ProductionModes.Contains(hero.Growth.ProductionMode)) continue;
             var target = hero.Growth.ProductionMode == GrowthProductionMode.Research ? id : hero.Growth.ProductionTargetInstanceId;
             if (hero.Growth.ProductionMode != GrowthProductionMode.Research && !participants.Contains(target)) continue;
             snapshot.Assignments.Add(new GrowthAssignmentDto { ProducerInstanceId = id, TargetInstanceId = target, Mode = hero.Growth.ProductionMode });
         }
-        run.Growth!.PendingNode = snapshot;
         return snapshot;
     }
 
     private List<string> DiscoveryCandidates(ActiveRunDto run, string heroId)
     {
-        var pool = run.FloorIndex < project.Campaign.FloorsPerRegion ? rules!.FirstDiscoveryPool : rules!.AdvancedDiscoveryPool;
+        var pool = RunProgressionContext.IsAdvancedDiscovery(run, project) ? rules!.AdvancedDiscoveryPool : rules!.FirstDiscoveryPool;
         var owned = run.Roster.Select(hero => hero.ContentId).ToHashSet(StringComparer.Ordinal);
         return pool.Where(id => !owned.Contains(id)).Distinct(StringComparer.Ordinal)
             .OrderBy(id => StableRoll(DiscoveryIdentity(run, heroId) + ":" + id)).Take(3).ToList();
     }
 
     private static string DiscoveryIdentity(ActiveRunDto run, string heroId) =>
-        $"growth:{run.Seed:x16}:{run.FloorIndex}:{run.BattleNumber}:{heroId}";
+        run.Expedition is null ? $"growth:{run.Seed:x16}:{run.FloorIndex}:{run.BattleNumber}:{heroId}" :
+        $"growth:{RunProgressionContext.Identity(run)}:{heroId}";
 
     private static uint StableRoll(string value) =>
         System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
@@ -426,11 +619,11 @@ public sealed class GrowthRunService(
     }
 
     private static void AddGain(RosterHeroInstanceDto target, GrowthSettlementDto settlement,
-        GrowthNodeSnapshotDto snapshot, GrowthAssignmentDto assignment, float amount)
+        GrowthNodeSnapshotDto snapshot, GrowthAssignmentDto assignment, float amount, GrowthProductionMode? gainMode = null)
     {
-        var gain = new GrowthGainDto { FloorIndex = snapshot.FloorIndex, BattleNumber = snapshot.BattleNumber,
+        var gain = new GrowthGainDto { ActionSource = snapshot.Source, FloorIndex = snapshot.FloorIndex, BattleNumber = snapshot.BattleNumber,
             ProducerInstanceId = assignment.ProducerInstanceId, TargetInstanceId = assignment.TargetInstanceId,
-            Mode = assignment.Mode, Amount = amount };
+            Mode = gainMode ?? assignment.Mode, Amount = amount };
         target.Growth.History.Add(gain);
         settlement.Gains.Add(gain);
     }

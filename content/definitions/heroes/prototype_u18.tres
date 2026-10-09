@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u18.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_063"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_270"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u18"
+DisplayName = "炉喉火蝎"
+Description = "能力原型；外观为临时素材。炉喉吐息（保留基线）：沿用 ability_ee07_furnace_lizard 的锁定方向、口部持续喷流和三次伤害脉冲，控制或死亡切断后续伤害；不采用旧草案六脉冲和重写后的时长／范围。原入口仍为定时触发；接入圣盾使前须明确耗蓝启动、锁蓝和技能开始事件，未完成此适配前不计为可用圣盾成员。"
+IsHero = true
+Role = 1
+MaxHealth = 950
+AttackDamage = 48
+AttackRange = 2
+AttackDelivery = 1
+AttackCooldown = 1.5385
+Armor = 6
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 90
+StartingMana = 40
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

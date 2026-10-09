@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="AbilityDefinition" format=3]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/AbilityDefinition.cs" id="ability"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixAbilityOperationSpec.cs" id="op"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixTargetingParameters.cs" id="target"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixExecutionParameters.cs" id="exec"]
+[ext_resource type="Script" path="res://src/Abilities/Authoring/MatrixMagnitudeParameters.cs" id="magnitude"]
+[sub_resource type="Resource" id="self"]
+script = ExtResource("target")
+Target = 0
+[sub_resource type="Resource" id="time"]
+script = ExtResource("exec")
+DurationTicks = 4
+[sub_resource type="Resource" id="duration"]
+script = ExtResource("exec")
+DurationTicks = 40
+[sub_resource type="Resource" id="value"]
+script = ExtResource("magnitude")
+Amount = 150
+[sub_resource type="Resource" id="shield"]
+script = ExtResource("op")
+Kind = 2
+Targeting = SubResource("self")
+Execution = SubResource("duration")
+Magnitude = SubResource("value")
+[sub_resource type="Resource" id="windup"]
+script = ExtResource("op")
+Kind = 35
+Targeting = SubResource("self")
+Execution = SubResource("time")
+Effects = [SubResource("shield")]
+[resource]
+script = ExtResource("ability")
+StableId = "v1_e31_shield"
+DisplayName = "铁卫架盾"
+Description = "第3秒起每9秒请求架盾；蓄势0.4秒后获得150护盾，持续4秒。控制可打断，错过的请求不补发。"
+ActivationKind = 1
+Trigger = 2
+FirstTriggerTick = 30
+IntervalTicks = 90
+Operations = [SubResource("windup")]

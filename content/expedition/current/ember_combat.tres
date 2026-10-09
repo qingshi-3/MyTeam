@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="ExpeditionEncounterDefinition" format=3]
+[ext_resource type="Script" path="res://src/Project/ExpeditionEncounterDefinition.cs" id="script"]
+[ext_resource type="Script" path="res://src/Project/EncounterDefinition.cs" id="enc"]
+[ext_resource type="Script" path="res://src/Project/EncounterCompositionDefinition.cs" id="comp"]
+[ext_resource type="Script" path="res://src/Project/ContentPoolDefinition.cs" id="pool"]
+[ext_resource type="Script" path="res://src/Project/RunRewardRecipeDefinition.cs" id="reward"]
+[ext_resource type="Resource" path="res://content/expedition/current/floors.tres" id="floors"]
+
+[sub_resource type="Resource" id="pool"]
+script = ExtResource("pool")
+StableId = "ember_combat_enemies"
+Kind = 2
+ContentIds = PackedStringArray("enemy_ee03_trample_brute", "enemy_ee07_furnace_lizard")
+
+[sub_resource type="Resource" id="formation"]
+script = ExtResource("comp")
+StableId = "ember_combat_formation"
+DisplayName = "巡逻阵容"
+EnemyIds = PackedStringArray("enemy_ee03_trample_brute", "enemy_ee07_furnace_lizard")
+Cells = Array[Vector2i]([Vector2i(6, 1), Vector2i(8, 4)])
+
+[sub_resource type="Resource" id="encounter"]
+script = ExtResource("enc")
+StableId = "ember_combat_encounter"
+NodeType = 0
+TitlePattern = "巡逻 · 破阵与炉火"
+EnemyPool = SubResource("pool")
+FloorRulePool = ExtResource("floors")
+BaseEnemyCount = 2
+AddRegionIndexToCount = false
+Compositions = Array[Resource]([SubResource("formation")])
+
+[sub_resource type="Resource" id="reward"]
+script = ExtResource("reward")
+StableId = "ember_combat_reward"
+Gold = 7
+
+[resource]
+script = ExtResource("script")
+StableId = "ember_combat_profile"
+Encounter = SubResource("encounter")
+CompositionId = "ember_combat_formation"
+FinalHealthMultiplier = 1.4
+FinalDamageMultiplier = 1.1
+OpeningCandidate = true
+Reward = SubResource("reward")

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="3"]
+
+[ext_resource type="Script" path="res://src/Equipment/Authoring/EquipmentLifeStealSpec.cs" id="steal"]
+
+[sub_resource type="Resource" id="life_steal"]
+script = ExtResource("steal")
+RuleId = "health_damage_lifesteal"
+Ratio = 0.12
+AreaEfficiency = 0.33333334
+
+[sub_resource type="Resource" id="SpellPowerMagnitude"]
+script = ExtResource("3")
+Value = 10.0
+
+[sub_resource type="Resource" id="SpellPowerModifier"]
+script = ExtResource("2")
+Attribute = 1
+Operation = 0
+Magnitude = SubResource("SpellPowerMagnitude")
+Priority = 0
+SlotId = "v1_equipment_e10_attack"
+
+[resource]
+script = ExtResource("1")
+StableId = "v1_equipment_e10"
+LifeSteal = SubResource("life_steal")
+AttributeModifiers = Array[AttributeModifierSpec]([SubResource("SpellPowerModifier")])

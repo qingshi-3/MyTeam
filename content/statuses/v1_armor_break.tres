@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="StatusDefinition" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/Statuses/Authoring/StatusDefinition.cs" id="1"]
+[ext_resource type="Script" path="res://src/Attributes/AttributeModifierSpec.cs" id="2"]
+[ext_resource type="Script" path="res://src/Attributes/ConstantAttributeMagnitudeSpec.cs" id="3"]
+
+[sub_resource type="Resource" id="ArmorMultiplier"]
+script = ExtResource("3")
+Value = 0.8
+
+[sub_resource type="Resource" id="ArmorModifier"]
+script = ExtResource("2")
+Attribute = 4
+Operation = 1
+Magnitude = SubResource("ArmorMultiplier")
+Priority = 0
+SlotId = "v1_armor_break_armor"
+
+[resource]
+script = ExtResource("1")
+StableId = "v1_armor_break"
+DisplayName = "破甲"
+Behavior = 2
+Disposition = 2
+DurationKind = 1
+DurationTicks = 40
+AggregationPolicy = 1
+StackLimit = 1
+OverflowPolicy = 1
+DurationRefreshPolicy = 1
+AttributeModifiers = Array[Resource]([SubResource("ArmorModifier")])

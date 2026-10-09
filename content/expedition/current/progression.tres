@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="ExpeditionProgressionDefinition" format=3]
+
+[ext_resource type="Script" path="res://src/Project/ExpeditionProgressionDefinition.cs" id="script"]
+[ext_resource type="Resource" path="res://content/expedition/current/biome_ember.tres" id="biome_ember"]
+[ext_resource type="Resource" path="res://content/expedition/current/biome_gloam.tres" id="biome_gloam"]
+[ext_resource type="Resource" path="res://content/expedition/current/biome_crown.tres" id="biome_crown"]
+[ext_resource type="Resource" path="res://content/expedition/current/stage_1.tres" id="stage_1"]
+[ext_resource type="Resource" path="res://content/expedition/current/stage_2.tres" id="stage_2"]
+[ext_resource type="Resource" path="res://content/expedition/current/stage_3.tres" id="stage_3"]
+[ext_resource type="Resource" path="res://content/expedition/current/site_combat.tres" id="site_combat"]
+[ext_resource type="Resource" path="res://content/expedition/current/site_elite.tres" id="site_elite"]
+[ext_resource type="Resource" path="res://content/expedition/current/site_recruit.tres" id="site_recruit"]
+[ext_resource type="Resource" path="res://content/expedition/current/site_shop.tres" id="site_shop"]
+[ext_resource type="Resource" path="res://content/expedition/current/site_camp.tres" id="site_camp"]
+[ext_resource type="Resource" path="res://content/expedition/current/site_ruin.tres" id="site_ruin"]
+
+
+
+[resource]
+script = ExtResource("script")
+StableId = "eight_trait_expedition_v1"
+Size = 16
+GenerationVersion = 1
+MaximumAttempts = 64
+Biomes = Array[Resource]([ExtResource("biome_ember"), ExtResource("biome_gloam"), ExtResource("biome_crown")])
+Stages = Array[Resource]([ExtResource("stage_1"), ExtResource("stage_2"), ExtResource("stage_3")])
+Sites = Array[Resource]([ExtResource("site_combat"), ExtResource("site_elite"), ExtResource("site_recruit"), ExtResource("site_shop"), ExtResource("site_camp"), ExtResource("site_ruin")])

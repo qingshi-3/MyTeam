@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u04.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_002"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_009"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u04"
+DisplayName = "寒晶巨兽"
+Description = "能力原型；外观为临时素材。蛮横冲阵（保留基线）：沿用 ability_ee03_trample 的满蓝启动、锁定方向贯穿路径、将沿途单位推向两侧并逐敌命中一次；受控或没有合法推开空间时停止。不采用旧草案的首敌停步和范围爆发。现有参数为 100 蓝、蓄力 1.2 秒、每敌 120%A；新英雄的起始蓝、回蓝、范围和体型尺度尚待联合适配，表中旧试算值不作为接入配置。"
+IsHero = true
+Role = 1
+MaxHealth = 1150
+AttackDamage = 60
+AttackRange = 0.35
+AttackDelivery = 0
+AttackCooldown = 1.6667
+Armor = 7
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 120
+StartingMana = 60
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

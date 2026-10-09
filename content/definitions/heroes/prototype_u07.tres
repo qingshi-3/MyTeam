@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u07.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_009"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u07"
+DisplayName = "怒拳斗士"
+Description = "能力原型；外观为临时素材。蓄怒重拳（保留基线）：实际生命承伤积怒；满怒、生命跨过半血线、濒死条件请求出拳，按现有队列合并。启动消耗全部怒劲 G 并获得等量 3 秒护盾，蓄力后对前方长 3 格、宽 1.6 格造成 1.0A＋0.8G 普通伤害；保持现有作者资源的时序和触发限制。本轮撤回无盾及 1.8A 的旧草案，不补升阶收益。"
+IsHero = true
+Role = 1
+MaxHealth = 1200
+AttackDamage = 65
+AttackRange = 0.35
+AttackDelivery = 0
+AttackCooldown = 1.5385
+Armor = 6
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 0
+StartingMana = 0
+ManaPerSecond = 0
+ManaPerAttack = 0
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5

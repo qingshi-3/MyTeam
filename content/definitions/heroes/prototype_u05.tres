@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitDefinition" format=3]
+[ext_resource type="Script" path="res://src/Traits/Authoring/TraitContributionSpec.cs" id="1"]
+[ext_resource type="Resource" path="res://content/portraits/heroes/prototype_u05.tres" id="2"]
+[ext_resource type="Script" path="res://src/Content/UnitDefinition.cs" id="3"]
+
+[sub_resource type="Resource" id="s0"]
+script = ExtResource("1")
+TraitId = "prototype_002"
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+TraitId = "prototype_756"
+
+[resource]
+script = ExtResource("3")
+Id = "prototype_u05"
+DisplayName = "雪影刺客"
+Description = "能力原型；外观为临时素材。孤刃：斩击当前目标，造成2.1A普通技能伤害；释放时目标1.5格内无其他同阵营活单位则伤害变为3.5A。该技能默认不暴击，不额外施加极地。"
+IsHero = true
+Role = 4
+MaxHealth = 650
+AttackDamage = 60
+AttackRange = 0.35
+AttackDelivery = 0
+AttackCooldown = 1.1765
+Armor = 4
+SpellPower = 100
+CriticalChance = 0.25
+CriticalDamage = 1.5
+MaxMana = 50
+StartingMana = 0
+ManaPerSecond = 3
+ManaPerAttack = 10
+MoveInterval = 0.5
+BodyRadius = 0.32
+Portrait = ExtResource("2")
+TraitContributions = [SubResource("s0"), SubResource("s1")]
+Tags = Array[StringName]([&"hero"])
+ManaPerDamageRatio = 40
+ManaPerHitCap = 5
